@@ -21,7 +21,7 @@ export interface AgentPresence {
   status: 'online' | 'away' | 'offline' | 'reconnecting';
   joinedAt: string;
   lastSeen: string;
-  cursorPosition?: { x: number; y: number; path: string };
+  cursorPosition?: { x: number; y: number; path?: string };
   activeSection?: string;
   focusNode?: string;
   selectionRange?: AgentSelectionRange;
@@ -98,7 +98,7 @@ export interface PresenceEvents {
   agent_left: (data: { agentId: string; presence: AgentPresence }) => void;
   cursor_updated: (data: {
     agentId: string;
-    cursorPosition: { x: number; y: number; path: string };
+    cursorPosition: { x: number; y: number; path?: string };
   }) => void;
   section_updated: (data: { agentId: string; activeSection: string }) => void;
   focus_updated: (data: { agentId: string; focusNode: string }) => void;
@@ -227,7 +227,7 @@ export class AgentPresenceManager extends EventEmitter<PresenceEvents> {
   /**
    * Update cursor position
    */
-  updateCursor(agentId: string, x: number, y: number, path: string): void {
+  updateCursor(agentId: string, x: number, y: number, path?: string): void {
     const presence = this.presences.get(agentId);
 
     if (presence) {

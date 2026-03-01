@@ -3,6 +3,10 @@ export type {
   DashStorageBackend,
   DashStorageChange,
   DashSyncClient,
+  DashSyncRule,
+  DashSyncUrgency,
+  DashSyncRules,
+  DashStorageAdapterHooks,
   DashStorageAdapterOptions,
 } from './DashStorageAdapter';
 

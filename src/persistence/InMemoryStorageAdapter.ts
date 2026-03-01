@@ -18,6 +18,10 @@ export class InMemoryStorageAdapter implements StorageAdapter {
     this.store.delete(key);
   }
 
+  async flushSync(): Promise<void> {
+    /* noop */
+  }
+
   clear(): void {
     this.store.clear();
   }

@@ -205,7 +205,7 @@ export interface PresenceEmotion {
 export interface PresenceInfo {
   userId: string;
   nodeId: string;
-  cursor?: { x: number; y: number };
+  cursor?: { x: number; y: number; path?: string };
   focusNode?: string;
   selection?: PresenceSelection;
   typing?: PresenceTyping;
