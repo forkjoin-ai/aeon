@@ -12,7 +12,7 @@ export type TransactionSignerPayloadMap = Record<string, unknown>;
 
 export type TransactionSignerExecuteRequest<
   TPayloads extends TransactionSignerPayloadMap,
-  TAction extends keyof TPayloads & string = keyof TPayloads & string,
+  TAction extends keyof TPayloads & string = keyof TPayloads & string
 > = {
   action: TAction;
   payload: TPayloads[TAction];
@@ -32,7 +32,9 @@ export type TransactionSignerErrorCode =
   | 'unknown_action'
   | 'upstream_error';
 
-export interface TransactionSignerExecuteResponse<TAction extends string = string> {
+export interface TransactionSignerExecuteResponse<
+  TAction extends string = string
+> {
   success: boolean;
   action: TAction;
   chainId: number;
@@ -60,7 +62,7 @@ export interface TransactionSignerHealth {
 }
 
 export interface ITransactionSigner<
-  TPayloads extends TransactionSignerPayloadMap = TransactionSignerPayloadMap,
+  TPayloads extends TransactionSignerPayloadMap = TransactionSignerPayloadMap
 > {
   execute<TAction extends keyof TPayloads & string>(
     request: TransactionSignerExecuteRequest<TPayloads, TAction>
@@ -74,7 +76,7 @@ export interface ITransactionSigner<
 }
 
 export class NullTransactionSigner<
-  TPayloads extends TransactionSignerPayloadMap = TransactionSignerPayloadMap,
+  TPayloads extends TransactionSignerPayloadMap = TransactionSignerPayloadMap
 > implements ITransactionSigner<TPayloads>
 {
   async execute<TAction extends keyof TPayloads & string>(
@@ -92,7 +94,9 @@ export class NullTransactionSigner<
   async getSigner<TAction extends keyof TPayloads & string>(
     action: TAction
   ): Promise<TransactionSignerMetadata<TAction>> {
-    throw new Error(`Transaction signer metadata unavailable for action: ${action}`);
+    throw new Error(
+      `Transaction signer metadata unavailable for action: ${action}`
+    );
   }
 
   async health(): Promise<TransactionSignerHealth> {
@@ -105,7 +109,7 @@ export class NullTransactionSigner<
 }
 
 export function createTransactionSignerAdapter<
-  TPayloads extends TransactionSignerPayloadMap,
+  TPayloads extends TransactionSignerPayloadMap
 >(contract: ITransactionSigner<TPayloads>): ITransactionSigner<TPayloads> {
   return contract;
 }
