@@ -203,7 +203,7 @@ export class PrefetchingEngine {
       .join(' → ');
 
     for (const [key, pattern] of this.patterns.entries()) {
-      if (key.includes(recentTypeSequence)) {
+      if (key.includes(recentTypeSequence) && pattern.sequence.length > 0) {
         const nextType = pattern.sequence[pattern.sequence.length - 1];
 
         const prediction: OperationPrediction = {
