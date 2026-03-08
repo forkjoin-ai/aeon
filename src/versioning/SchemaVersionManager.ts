@@ -246,10 +246,12 @@ export class SchemaVersionManager {
    */
   parseVersion(versionString: string): SchemaVersion {
     const parts = versionString.split('.').map(Number);
+    const safeInt = (v: number | undefined): number =>
+      v !== undefined && Number.isFinite(v) ? v : 0;
     return {
-      major: parts[0] || 0,
-      minor: parts[1] || 0,
-      patch: parts[2] || 0,
+      major: safeInt(parts[0]),
+      minor: safeInt(parts[1]),
+      patch: safeInt(parts[2]),
       timestamp: new Date().toISOString(),
       description: '',
       breaking: false,

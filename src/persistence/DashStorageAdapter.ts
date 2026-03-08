@@ -190,7 +190,9 @@ export class DashStorageAdapter implements StorageAdapter {
   }
 
   private getPrefixMatch(key: string): string | null {
-    if (!this.rules.prefixes) return null;
+    if (!this.rules.prefixes) {
+      return null;
+    }
     // Match longest prefix first
     const prefixes = Object.keys(this.rules.prefixes).sort(
       (a, b) => b.length - a.length

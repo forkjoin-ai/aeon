@@ -191,12 +191,15 @@ export class AdaptiveCompressionOptimizer {
     }
 
     this.stats.totalBatches++;
-    this.stats.averageCompressionMs =
-      this.compressionHistory.reduce((sum, h) => sum + h.timeMs, 0) /
-      this.compressionHistory.length;
-    this.stats.averageRatio =
-      this.compressionHistory.reduce((sum, h) => sum + h.ratio, 0) /
-      this.compressionHistory.length;
+    const historyLength = this.compressionHistory.length;
+    if (historyLength > 0) {
+      this.stats.averageCompressionMs =
+        this.compressionHistory.reduce((sum, h) => sum + h.timeMs, 0) /
+        historyLength;
+      this.stats.averageRatio =
+        this.compressionHistory.reduce((sum, h) => sum + h.ratio, 0) /
+        historyLength;
+    }
   }
 
   /**
