@@ -25,6 +25,7 @@ import { bigContentFluxSite, bigContentFluxMeta } from '../fixtures/big-content-
 import { microfrontendFluxSite, microfrontendFluxMeta } from '../fixtures/microfrontend-flux';
 import { serveHttp1, http1RoundTrips } from '../protocols/http1';
 import { serveHttp2, http2RoundTrips } from '../protocols/http2';
+import { serveHttp3, http3RoundTrips } from '../protocols/http3';
 import { serveAeonFlow, aeonFlowRoundTrips } from '../protocols/aeon-flow';
 import { serveAeonFluxHttp, serveAeonFluxFlow, aeonFluxHttpRoundTrips, aeonFluxFlowRoundTrips } from '../protocols/aeon-flux';
 import type { SiteManifest, SiteResult, Protocol, CompressionAlgo, ComparisonRow } from '../types';
@@ -44,6 +45,8 @@ function runSite(
         return serveHttp1(resource, compression);
       case 'http2':
         return serveHttp2(resource, compression, i === 0);
+      case 'http3':
+        return serveHttp3(resource, compression, i === 0);
       case 'aeon-flow':
         return serveAeonFlow(resource, compression, site.resources.length);
       case 'aeon-flux-http':
@@ -69,6 +72,10 @@ function runSite(
       break;
     case 'http2':
       roundTrips = http2RoundTrips(site.resources.length);
+      maxConcurrentStreams = 100;
+      break;
+    case 'http3':
+      roundTrips = http3RoundTrips(site.resources.length);
       maxConcurrentStreams = 100;
       break;
     case 'aeon-flow':
@@ -153,6 +160,7 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
       row.protocol === 'aeon-flow' ? 'Aeon Flow' :
       row.protocol === 'aeon-flux-http' ? 'Aeon-Flux/HTTP' :
       row.protocol === 'aeon-flux-flow' ? 'Aeon-Flux/Flow' :
+      row.protocol === 'http3' ? 'HTTP/3' :
       row.protocol === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
     console.log(
       '  ' +
@@ -176,8 +184,8 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
 // Original Protocol Tests (HTTP/1.1, HTTP/2, Aeon Flow)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const protocols: Protocol[] = ['http1', 'http2', 'aeon-flow'];
-const allProtocols: Protocol[] = ['http1', 'http2', 'aeon-flow', 'aeon-flux-http', 'aeon-flux-flow'];
+const protocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow'];
+const allProtocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow', 'aeon-flux-http', 'aeon-flux-flow'];
 const compressions: CompressionAlgo[] = ['none', 'gzip', 'brotli'];
 
 describe('Protocol Shootoff', () => {
@@ -297,9 +305,10 @@ describe('Protocol Shootoff', () => {
   describe('Full matrix comparison', () => {
     it('Big Content: HTTP vs Aeon vs Aeon-Flux (brotli)', () => {
       const results: SiteResult[] = [
-        // Original site through 3 protocols
+        // Original site through 4 protocols
         runSite(bigContentSite, 'http1', 'brotli'),
         runSite(bigContentSite, 'http2', 'brotli'),
+        runSite(bigContentSite, 'http3', 'brotli'),
         runSite(bigContentSite, 'aeon-flow', 'brotli'),
         // Flux site through 2 transports
         runSite(bigContentFluxSite, 'aeon-flux-http', 'brotli'),
@@ -335,6 +344,7 @@ describe('Protocol Shootoff', () => {
       const results: SiteResult[] = [
         runSite(microfrontendSite, 'http1', 'brotli'),
         runSite(microfrontendSite, 'http2', 'brotli'),
+        runSite(microfrontendSite, 'http3', 'brotli'),
         runSite(microfrontendSite, 'aeon-flow', 'brotli'),
         runSite(microfrontendFluxSite, 'aeon-flux-http', 'brotli'),
         runSite(microfrontendFluxSite, 'aeon-flux-flow', 'brotli'),
@@ -426,13 +436,14 @@ describe('Protocol Shootoff', () => {
           p === 'aeon-flow' ? 'Aeon Flow' :
           p === 'aeon-flux-http' ? 'Aeon-Flux/HTTP' :
           p === 'aeon-flux-flow' ? 'Aeon-Flux/Flow' :
+          p === 'http3' ? 'HTTP/3' :
           p === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
 
         console.log(`    Smallest wire size:     ${protoLabel(bestByWire.protocol)} + ${bestByWire.comp} (${formatBytes(bestByWire.wire)})`);
         console.log(`    Lowest framing overhead: ${protoLabel(bestByOverhead.protocol)} + ${bestByOverhead.comp} (${bestByOverhead.pct.toFixed(3)}%)`);
 
         const h1rtt = http1RoundTrips(manifest.resources.length);
-        console.log(`    Round trips:            HTTP/1.1=${h1rtt}, HTTP/2=2, Aeon Flow=1, Aeon-Flux/HTTP=2, Aeon-Flux/Flow=1`);
+        console.log(`    Round trips:            HTTP/1.1=${h1rtt}, HTTP/2=2, HTTP/3=1, Aeon Flow=1, Aeon-Flux/HTTP=2, Aeon-Flux/Flow=1`);
 
         // Show the raw payload reduction from Flux
         const origRaw = manifest.resources.reduce((s, r) => s + r.size, 0);
