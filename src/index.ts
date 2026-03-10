@@ -59,6 +59,9 @@ export * from './presence';
 // Crypto module (UCAN + ZK encryption)
 export * from './crypto';
 
+// Flow module (fork/race/collapse protocol primitive)
+export * from './flow';
+
 /**
  * STUBS for React components and hooks
  * These are normally provided by @affectively/aeon-flux-react but are
