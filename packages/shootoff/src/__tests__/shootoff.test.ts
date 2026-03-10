@@ -1,23 +1,32 @@
 /**
  * Aeon Flow Protocol Shootoff
  *
- * Head-to-head comparison: Aeon Flow vs HTTP/1.1 vs HTTP/2
+ * Head-to-head comparison: HTTP/1.1 vs HTTP/2 vs Aeon Flow vs Aeon-Flux
  * with no compression, gzip, and brotli.
  *
- * Same payloads, same compression, same TLS assumptions.
- * The ONLY variable is the protocol framing.
+ * Same content served four ways:
+ * 1. HTTP/1.1 — N resources, 6 parallel connections
+ * 2. HTTP/2 — N resources, 100 multiplexed streams
+ * 3. Aeon Flow — N resources, 256 forked streams, 1 RTT
+ * 4. Aeon-Flux (HTTP) — 1 pre-rendered resource over HTTP
+ * 5. Aeon-Flux (Flow) — 1 pre-rendered resource over flow protocol
  *
- * Two site profiles:
- * 1. "Whip Worthington's Flaxseed Empire" — big content site (few large resources)
- * 2. "The Wally Wallington Wonder Archive" — microfrontend (many small modules)
+ * Four site profiles:
+ * 1. "Whip Worthington's Flaxseed Empire" — big content (12 resources, ~2.5 MB)
+ * 2. "The Wally Wallington Wonder Archive" — microfrontend (95 resources, ~1.8 MB)
+ * 3. Whip Worthington Flux — same content, pre-rendered (1 resource, ~1.56 MB)
+ * 4. Wally Wallington Flux — same content, pre-rendered (1 resource, ~230 KB)
  */
 
 import { describe, it, expect } from 'vitest';
 import { bigContentSite } from '../fixtures/big-content';
 import { microfrontendSite } from '../fixtures/microfrontend';
+import { bigContentFluxSite, bigContentFluxMeta } from '../fixtures/big-content-flux';
+import { microfrontendFluxSite, microfrontendFluxMeta } from '../fixtures/microfrontend-flux';
 import { serveHttp1, http1RoundTrips } from '../protocols/http1';
 import { serveHttp2, http2RoundTrips } from '../protocols/http2';
 import { serveAeonFlow, aeonFlowRoundTrips } from '../protocols/aeon-flow';
+import { serveAeonFluxHttp, serveAeonFluxFlow, aeonFluxHttpRoundTrips, aeonFluxFlowRoundTrips } from '../protocols/aeon-flux';
 import type { SiteManifest, SiteResult, Protocol, CompressionAlgo, ComparisonRow } from '../types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -37,6 +46,10 @@ function runSite(
         return serveHttp2(resource, compression, i === 0);
       case 'aeon-flow':
         return serveAeonFlow(resource, compression, site.resources.length);
+      case 'aeon-flux-http':
+        return serveAeonFluxHttp(resource, compression);
+      case 'aeon-flux-flow':
+        return serveAeonFluxFlow(resource, compression);
     }
   });
 
@@ -61,6 +74,14 @@ function runSite(
     case 'aeon-flow':
       roundTrips = aeonFlowRoundTrips(site.resources.length);
       maxConcurrentStreams = 256;
+      break;
+    case 'aeon-flux-http':
+      roundTrips = aeonFluxHttpRoundTrips();
+      maxConcurrentStreams = 1;
+      break;
+    case 'aeon-flux-flow':
+      roundTrips = aeonFluxFlowRoundTrips();
+      maxConcurrentStreams = 1;
       break;
   }
 
@@ -89,7 +110,6 @@ function formatBytes(bytes: number): string {
 }
 
 function buildTable(results: SiteResult[]): ComparisonRow[] {
-  // Baseline = HTTP/1.1 no compression
   const baseline = results.find(r => r.protocol === 'http1' && r.compression === 'none');
   const baselineWire = baseline?.totalWireBytes ?? 1;
 
@@ -109,12 +129,12 @@ function buildTable(results: SiteResult[]): ComparisonRow[] {
 }
 
 function printTable(siteName: string, rows: ComparisonRow[]): void {
-  console.log(`\n${'═'.repeat(130)}`);
+  console.log(`\n${'═'.repeat(140)}`);
   console.log(`  ${siteName}`);
-  console.log(`${'═'.repeat(130)}`);
+  console.log(`${'═'.repeat(140)}`);
   console.log(
     '  ' +
-    'Protocol'.padEnd(14) +
+    'Protocol'.padEnd(18) +
     'Compress'.padEnd(10) +
     'Raw'.padEnd(12) +
     'Wire'.padEnd(12) +
@@ -126,14 +146,17 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
     'Decode'.padEnd(12) +
     'Savings'
   );
-  console.log(`  ${'─'.repeat(126)}`);
+  console.log(`  ${'─'.repeat(136)}`);
 
   for (const row of rows) {
-    const protoLabel = row.protocol === 'aeon-flow' ? 'Aeon Flow' :
-                       row.protocol === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
+    const protoLabel =
+      row.protocol === 'aeon-flow' ? 'Aeon Flow' :
+      row.protocol === 'aeon-flux-http' ? 'Aeon-Flux/HTTP' :
+      row.protocol === 'aeon-flux-flow' ? 'Aeon-Flux/Flow' :
+      row.protocol === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
     console.log(
       '  ' +
-      protoLabel.padEnd(14) +
+      protoLabel.padEnd(18) +
       row.compression.padEnd(10) +
       row.totalRaw.padEnd(12) +
       row.totalWire.padEnd(12) +
@@ -150,10 +173,11 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// Tests
+// Original Protocol Tests (HTTP/1.1, HTTP/2, Aeon Flow)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const protocols: Protocol[] = ['http1', 'http2', 'aeon-flow'];
+const allProtocols: Protocol[] = ['http1', 'http2', 'aeon-flow', 'aeon-flux-http', 'aeon-flux-flow'];
 const compressions: CompressionAlgo[] = ['none', 'gzip', 'brotli'];
 
 describe('Protocol Shootoff', () => {
@@ -166,18 +190,14 @@ describe('Protocol Shootoff', () => {
           const result = runSite(bigContentSite, proto, comp);
           allResults.push(result);
 
-          // Basic sanity: wire bytes should be > 0
           expect(result.totalWireBytes).toBeGreaterThan(0);
-          // Framing overhead should be positive
           expect(result.totalFramingOverhead).toBeGreaterThan(0);
-          // Compressed should be <= raw (or equal for no compression of random data)
           expect(result.totalCompressedBytes).toBeLessThanOrEqual(result.totalRawBytes * 1.1);
         });
       }
     }
 
     it('prints comparison table', () => {
-      // Run all if not already run
       if (allResults.length === 0) {
         for (const proto of protocols) {
           for (const comp of compressions) {
@@ -188,7 +208,6 @@ describe('Protocol Shootoff', () => {
       const rows = buildTable(allResults);
       printTable('Whip Worthington\'s Flaxseed Empire — Big Content Site (12 resources, ~2.5 MB)', rows);
 
-      // Aeon Flow should have less framing overhead than HTTP/1.1
       const aeonBrotli = allResults.find(r => r.protocol === 'aeon-flow' && r.compression === 'brotli')!;
       const http1Brotli = allResults.find(r => r.protocol === 'http1' && r.compression === 'brotli')!;
       expect(aeonBrotli.totalFramingOverhead).toBeLessThan(http1Brotli.totalFramingOverhead);
@@ -222,37 +241,153 @@ describe('Protocol Shootoff', () => {
       const rows = buildTable(allResults);
       printTable('The Wally Wallington Wonder Archive — Microfrontend (95 resources, ~1.8 MB)', rows);
 
-      // This is where Aeon should really shine — many small resources
       const aeonBrotli = allResults.find(r => r.protocol === 'aeon-flow' && r.compression === 'brotli')!;
       const http1Brotli = allResults.find(r => r.protocol === 'http1' && r.compression === 'brotli')!;
       const http2Brotli = allResults.find(r => r.protocol === 'http2' && r.compression === 'brotli')!;
 
-      // Aeon should have dramatically less framing overhead than HTTP/1.1 for many resources
       expect(aeonBrotli.totalFramingOverhead).toBeLessThan(http1Brotli.totalFramingOverhead);
-      // Aeon should also beat HTTP/2 on framing overhead
       expect(aeonBrotli.totalFramingOverhead).toBeLessThan(http2Brotli.totalFramingOverhead);
-      // Aeon should use fewer round trips
       expect(aeonBrotli.roundTrips).toBeLessThan(http1Brotli.roundTrips);
     });
   });
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Aeon-Flux Tests — Pre-rendered Self-Contained Sites
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  describe('Whip Worthington Flux (pre-rendered big content)', () => {
+    const fluxProtocols: Protocol[] = ['aeon-flux-http', 'aeon-flux-flow'];
+
+    for (const proto of fluxProtocols) {
+      for (const comp of compressions) {
+        it(`${proto} + ${comp}`, () => {
+          const result = runSite(bigContentFluxSite, proto, comp);
+
+          expect(result.totalWireBytes).toBeGreaterThan(0);
+          expect(result.totalFramingOverhead).toBeGreaterThan(0);
+          expect(result.totalCompressedBytes).toBeLessThanOrEqual(result.totalRawBytes * 1.1);
+          // Only 1 resource
+          expect(result.resources.length).toBe(1);
+        });
+      }
+    }
+  });
+
+  describe('Wally Wallington Flux (pre-rendered microfrontend)', () => {
+    const fluxProtocols: Protocol[] = ['aeon-flux-http', 'aeon-flux-flow'];
+
+    for (const proto of fluxProtocols) {
+      for (const comp of compressions) {
+        it(`${proto} + ${comp}`, () => {
+          const result = runSite(microfrontendFluxSite, proto, comp);
+
+          expect(result.totalWireBytes).toBeGreaterThan(0);
+          expect(result.totalFramingOverhead).toBeGreaterThan(0);
+          expect(result.totalCompressedBytes).toBeLessThanOrEqual(result.totalRawBytes * 1.1);
+          expect(result.resources.length).toBe(1);
+        });
+      }
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Cross-Comparison Matrix
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  describe('Full matrix comparison', () => {
+    it('Big Content: HTTP vs Aeon vs Aeon-Flux (brotli)', () => {
+      const results: SiteResult[] = [
+        // Original site through 3 protocols
+        runSite(bigContentSite, 'http1', 'brotli'),
+        runSite(bigContentSite, 'http2', 'brotli'),
+        runSite(bigContentSite, 'aeon-flow', 'brotli'),
+        // Flux site through 2 transports
+        runSite(bigContentFluxSite, 'aeon-flux-http', 'brotli'),
+        runSite(bigContentFluxSite, 'aeon-flux-flow', 'brotli'),
+      ];
+
+      // Use HTTP/1.1 original as baseline for savings
+      const baseline = results[0].totalWireBytes;
+      const rows = results.map(r => ({
+        protocol: r.protocol,
+        compression: r.compression,
+        totalRaw: formatBytes(r.totalRawBytes),
+        totalWire: formatBytes(r.totalWireBytes),
+        overhead: formatBytes(r.totalFramingOverhead),
+        overheadPct: `${r.framingOverheadPercent.toFixed(2)}%`,
+        compressionRatio: `${(r.compressionRatio * 100).toFixed(1)}%`,
+        roundTrips: r.roundTrips,
+        encodeMs: `${(r.totalEncodeUs / 1000).toFixed(2)}ms`,
+        decodeMs: `${(r.totalDecodeUs / 1000).toFixed(2)}ms`,
+        savings: `${((1 - r.totalWireBytes / baseline) * 100).toFixed(1)}%`,
+      }));
+
+      printTable('BIG CONTENT CROSS-COMPARISON (brotli)', rows);
+
+      // Flux/Flow should have lowest framing overhead
+      const fluxFlow = results.find(r => r.protocol === 'aeon-flux-flow')!;
+      const http1 = results.find(r => r.protocol === 'http1')!;
+      expect(fluxFlow.totalFramingOverhead).toBeLessThan(http1.totalFramingOverhead);
+      expect(fluxFlow.roundTrips).toBeLessThanOrEqual(http1.roundTrips);
+    });
+
+    it('Microfrontend: HTTP vs Aeon vs Aeon-Flux (brotli)', () => {
+      const results: SiteResult[] = [
+        runSite(microfrontendSite, 'http1', 'brotli'),
+        runSite(microfrontendSite, 'http2', 'brotli'),
+        runSite(microfrontendSite, 'aeon-flow', 'brotli'),
+        runSite(microfrontendFluxSite, 'aeon-flux-http', 'brotli'),
+        runSite(microfrontendFluxSite, 'aeon-flux-flow', 'brotli'),
+      ];
+
+      const baseline = results[0].totalWireBytes;
+      const rows = results.map(r => ({
+        protocol: r.protocol,
+        compression: r.compression,
+        totalRaw: formatBytes(r.totalRawBytes),
+        totalWire: formatBytes(r.totalWireBytes),
+        overhead: formatBytes(r.totalFramingOverhead),
+        overheadPct: `${r.framingOverheadPercent.toFixed(2)}%`,
+        compressionRatio: `${(r.compressionRatio * 100).toFixed(1)}%`,
+        roundTrips: r.roundTrips,
+        encodeMs: `${(r.totalEncodeUs / 1000).toFixed(2)}ms`,
+        decodeMs: `${(r.totalDecodeUs / 1000).toFixed(2)}ms`,
+        savings: `${((1 - r.totalWireBytes / baseline) * 100).toFixed(1)}%`,
+      }));
+
+      printTable('MICROFRONTEND CROSS-COMPARISON (brotli)', rows);
+
+      // Flux should be dramatically smaller — 230KB vs 1.8MB raw
+      const fluxFlow = results.find(r => r.protocol === 'aeon-flux-flow')!;
+      const http1 = results.find(r => r.protocol === 'http1')!;
+      expect(fluxFlow.totalWireBytes).toBeLessThan(http1.totalWireBytes);
+      // Flux should have lowest overhead percentage
+      expect(fluxFlow.framingOverheadPercent).toBeLessThan(http1.framingOverheadPercent);
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Head-to-Head Summary
+  // ═══════════════════════════════════════════════════════════════════════════
+
   describe('Head-to-head summary', () => {
     it('prints winner analysis', () => {
       const sites = [
-        { manifest: bigContentSite, label: 'Big Content (Whip Worthington)' },
-        { manifest: microfrontendSite, label: 'Microfrontend (Wally Wallington)' },
+        { manifest: bigContentSite, fluxManifest: bigContentFluxSite, fluxMeta: bigContentFluxMeta, label: 'Big Content (Whip Worthington)' },
+        { manifest: microfrontendSite, fluxManifest: microfrontendFluxSite, fluxMeta: microfrontendFluxMeta, label: 'Microfrontend (Wally Wallington)' },
       ];
 
-      console.log(`\n${'═'.repeat(90)}`);
-      console.log('  HEAD-TO-HEAD WINNER ANALYSIS');
-      console.log(`${'═'.repeat(90)}`);
+      console.log(`\n${'═'.repeat(100)}`);
+      console.log('  HEAD-TO-HEAD WINNER ANALYSIS — FULL MATRIX');
+      console.log(`${'═'.repeat(100)}`);
 
-      for (const { manifest, label } of sites) {
+      for (const { manifest, fluxManifest, fluxMeta, label } of sites) {
         console.log(`\n  ${label}:`);
 
         const bestByWire = { protocol: '' as Protocol, comp: '' as CompressionAlgo, wire: Infinity };
         const bestByOverhead = { protocol: '' as Protocol, comp: '' as CompressionAlgo, pct: Infinity };
 
+        // Test original site through original protocols
         for (const proto of protocols) {
           for (const comp of compressions) {
             const r = runSite(manifest, proto, comp);
@@ -269,17 +404,48 @@ describe('Protocol Shootoff', () => {
           }
         }
 
-        const wireLabel = bestByWire.protocol === 'aeon-flow' ? 'Aeon Flow' :
-                          bestByWire.protocol === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
-        const overheadLabel = bestByOverhead.protocol === 'aeon-flow' ? 'Aeon Flow' :
-                              bestByOverhead.protocol === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
+        // Test flux site through flux protocols
+        const fluxProtos: Protocol[] = ['aeon-flux-http', 'aeon-flux-flow'];
+        for (const proto of fluxProtos) {
+          for (const comp of compressions) {
+            const r = runSite(fluxManifest, proto, comp);
+            if (r.totalWireBytes < bestByWire.wire) {
+              bestByWire.protocol = proto;
+              bestByWire.comp = comp;
+              bestByWire.wire = r.totalWireBytes;
+            }
+            if (r.framingOverheadPercent < bestByOverhead.pct) {
+              bestByOverhead.protocol = proto;
+              bestByOverhead.comp = comp;
+              bestByOverhead.pct = r.framingOverheadPercent;
+            }
+          }
+        }
 
-        console.log(`    Smallest wire size:     ${wireLabel} + ${bestByWire.comp} (${formatBytes(bestByWire.wire)})`);
-        console.log(`    Lowest framing overhead: ${overheadLabel} + ${bestByOverhead.comp} (${bestByOverhead.pct.toFixed(3)}%)`);
+        const protoLabel = (p: Protocol) =>
+          p === 'aeon-flow' ? 'Aeon Flow' :
+          p === 'aeon-flux-http' ? 'Aeon-Flux/HTTP' :
+          p === 'aeon-flux-flow' ? 'Aeon-Flux/Flow' :
+          p === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
 
-        // RTT comparison
+        console.log(`    Smallest wire size:     ${protoLabel(bestByWire.protocol)} + ${bestByWire.comp} (${formatBytes(bestByWire.wire)})`);
+        console.log(`    Lowest framing overhead: ${protoLabel(bestByOverhead.protocol)} + ${bestByOverhead.comp} (${bestByOverhead.pct.toFixed(3)}%)`);
+
         const h1rtt = http1RoundTrips(manifest.resources.length);
-        console.log(`    Round trips:            HTTP/1.1=${h1rtt}, HTTP/2=2, Aeon Flow=1`);
+        console.log(`    Round trips:            HTTP/1.1=${h1rtt}, HTTP/2=2, Aeon Flow=1, Aeon-Flux/HTTP=2, Aeon-Flux/Flow=1`);
+
+        // Show the raw payload reduction from Flux
+        const origRaw = manifest.resources.reduce((s, r) => s + r.size, 0);
+        const fluxRaw = fluxManifest.resources.reduce((s, r) => s + r.size, 0);
+        const reduction = ((1 - fluxRaw / origRaw) * 100).toFixed(1);
+        console.log(`    Flux payload reduction: ${formatBytes(origRaw)} → ${formatBytes(fluxRaw)} (${reduction}% smaller via tree-shaking + inlining)`);
+        console.log(`    Pre-rendered HTML:      ${formatBytes(fluxMeta.htmlSize)} (from prerenderPage())`);
+        console.log(`    Tree-shaken CSS:        ${formatBytes(fluxMeta.cssSize)}`);
+        console.log(`    Normie features:        0 (static HTML, no intelligence)`);
+        console.log(`    Flux features (${fluxMeta.features.length}):`);
+        for (const feat of fluxMeta.features) {
+          console.log(`      + ${feat}`);
+        }
       }
 
       console.log();
