@@ -14,7 +14,7 @@ I then show that **classical queueing theory is contained as the $\beta_1 = 0$ s
 
 `o -> o -> o -> o -> o -> o`
 
-The conveyor belt was not new when Ford adopted it in 1913. The conveyor belt is just a path graph -- a line. One-dimensional. Simply connected. No branching. Every node has exactly one predecessor and one successor. An optimized pipeline today implements causal masking to speed it up further. I subvert the sequential paradigm entirely, and prove it to be a pathological case of a higher order, with an equally quotidian solution.
+The conveyor belt was not new when Ford adopted it in 1913. The conveyor belt is just a path graph -- a lin: one-dimensional simply connected and without branching. Every node has exactly one predecessor and one successor. An optimized pipeline today implements causal masking to speed it up further. I subvert the sequential paradigm entirely, and prove it to be a pathological case of a higher order, with an equally quotidian solution.
 
 ```
       o -> o

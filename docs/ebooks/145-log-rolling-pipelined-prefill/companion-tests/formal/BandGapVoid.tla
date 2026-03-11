@@ -1,30 +1,29 @@
 ------------------------------ MODULE BandGapVoid ------------------------------
 EXTENDS Naturals, FiniteSets
 
-CONSTANTS MaxEnergy, AllowedEnergies
+CONSTANTS MaxEnergy, AllowedFamilies
 
-VARIABLE hold
+VARIABLE allowed
 
-Init == hold = 0
-Next == hold' = hold
-Spec == Init /\ [][Next]_hold
+vars == <<allowed>>
+
+Init == allowed \in AllowedFamilies
+Next == allowed' \in AllowedFamilies
+Spec == Init /\ [][Next]_vars
 
 AllEnergies == 0..MaxEnergy
-ForbiddenEnergies == AllEnergies \ AllowedEnergies
+ForbiddenEnergies == AllEnergies \ allowed
 BandGapExists == Cardinality(ForbiddenEnergies) > 0
 Beta2 == IF BandGapExists THEN 1 ELSE 0
 
 InvAllowedSubset ==
-  /\ hold = hold
-  /\ AllowedEnergies \subseteq AllEnergies
+  allowed \subseteq AllEnergies
 
 InvBandGapExists ==
-  /\ hold = hold
   /\ BandGapExists
   /\ \E e \in 1..(MaxEnergy - 1): e \in ForbiddenEnergies
 
 InvVoidIsPositive ==
-  /\ hold = hold
-  /\ BandGapExists => Beta2 > 0
+  BandGapExists => Beta2 > 0
 
 =============================================================================
