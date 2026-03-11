@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { AeonFlowProtocol, FIN, POISON } from '../../flow';
+import { AeonFlowProtocol, FIN, VENT } from '../../flow';
 import type { FlowTransport, FlowFrame } from '../../flow';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -57,7 +57,7 @@ function createLinkedTransports(): [FlowTransport, FlowTransport] {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// ESI Flow Pattern Tests — fork/race/collapse primitives
+// ESI Flow Pattern Tests — fork/race/fold primitives
 // ═══════════════════════════════════════════════════════════════════════════════
 
 describe('Flow ESI Processor Pattern', () => {
@@ -82,14 +82,14 @@ describe('Flow ESI Processor Pattern', () => {
       expect(winner).toBe(cacheId);
       expect(new TextDecoder().decode(result)).toBe('cached response');
 
-      // Inference stream should be poisoned (loser)
+      // Inference stream should be vented (loser)
       const inferStream = flow.getStream(inferId);
-      expect(inferStream?.state).toBe('poisoned');
+      expect(inferStream?.state).toBe('vented');
 
       flow.destroy();
     });
 
-    it('should pick inference when cache misses (poisoned)', async () => {
+    it('should pick inference when cache misses (vented)', async () => {
       const transport = createRecordingTransport();
       const flow = new AeonFlowProtocol(transport);
 
@@ -99,8 +99,8 @@ describe('Flow ESI Processor Pattern', () => {
       // Race must be started before streams resolve
       const racePromise = flow.race([cacheId, inferId]);
 
-      // Cache miss → poison the cache stream
-      flow.poison(cacheId);
+      // Cache miss → vent the cache stream
+      flow.vent(cacheId);
 
       // Inference returns
       flow.send(inferId, new TextEncoder().encode('inferred response'));
@@ -114,15 +114,15 @@ describe('Flow ESI Processor Pattern', () => {
       flow.destroy();
     });
 
-    it('should handle both streams failing via collapse (graceful degradation)', async () => {
+    it('should handle both streams failing via fold (graceful degradation)', async () => {
       const transport = createRecordingTransport();
       const flow = new AeonFlowProtocol(transport);
 
       const parent = flow.openStream();
       const [cacheId, inferId] = flow.fork(parent, 2);
 
-      // Use collapse instead of race for all-fail case (collapse handles all-poisoned)
-      const collapsePromise = flow.collapse(
+      // Use fold instead of race for all-fail case (fold handles all-vented)
+      const foldPromise = flow.fold(
         [cacheId, inferId],
         (results: Map<number, Uint8Array>) => {
           // No results — return fallback marker
@@ -136,26 +136,26 @@ describe('Flow ESI Processor Pattern', () => {
       );
 
       // Both fail
-      flow.poison(cacheId);
-      flow.poison(inferId);
+      flow.vent(cacheId);
+      flow.vent(inferId);
 
-      const result = await collapsePromise;
+      const result = await foldPromise;
       expect(new TextDecoder().decode(result)).toBe('FALLBACK');
 
       flow.destroy();
     });
   });
 
-  describe('batch processing with fork/collapse', () => {
-    it('should fork N directive streams and collapse results', async () => {
+  describe('batch processing with fork/fold', () => {
+    it('should fork N directive streams and fold results', async () => {
       const transport = createRecordingTransport();
       const flow = new AeonFlowProtocol(transport);
 
       const root = flow.openStream();
       const directiveIds = flow.fork(root, 3);
 
-      // Start collapse BEFORE finishing streams
-      const collapsePromise = flow.collapse(
+      // Start fold BEFORE finishing streams
+      const foldPromise = flow.fold(
         directiveIds,
         (results: Map<number, Uint8Array>) => {
           const parts: string[] = [];
@@ -176,7 +176,7 @@ describe('Flow ESI Processor Pattern', () => {
       flow.send(directiveIds[2], new TextEncoder().encode('result-2'));
       flow.finish(directiveIds[2]);
 
-      const merged = await collapsePromise;
+      const merged = await foldPromise;
 
       expect(new TextDecoder().decode(merged)).toBe(
         'result-0|result-1|result-2'
@@ -185,15 +185,15 @@ describe('Flow ESI Processor Pattern', () => {
       flow.destroy();
     });
 
-    it('should handle partial failures in collapse', async () => {
+    it('should handle partial failures in fold', async () => {
       const transport = createRecordingTransport();
       const flow = new AeonFlowProtocol(transport);
 
       const root = flow.openStream();
       const directiveIds = flow.fork(root, 3);
 
-      // Start collapse BEFORE resolving streams
-      const collapsePromise = flow.collapse(
+      // Start fold BEFORE resolving streams
+      const foldPromise = flow.fold(
         directiveIds,
         (results: Map<number, Uint8Array>) => {
           const parts: string[] = [];
@@ -208,12 +208,12 @@ describe('Flow ESI Processor Pattern', () => {
       flow.send(directiveIds[0], new TextEncoder().encode('result-0'));
       flow.finish(directiveIds[0]);
 
-      flow.poison(directiveIds[1]); // This one fails
+      flow.vent(directiveIds[1]); // This one fails
 
       flow.send(directiveIds[2], new TextEncoder().encode('result-2'));
       flow.finish(directiveIds[2]);
 
-      const merged = await collapsePromise;
+      const merged = await foldPromise;
       const text = new TextDecoder().decode(merged);
 
       // Only the 2 successful streams contribute
@@ -245,7 +245,7 @@ describe('Flow ESI Processor Pattern', () => {
       flow.finish(d0Cache);
 
       // Directive 1: cache misses, inference wins
-      flow.poison(d1Cache);
+      flow.vent(d1Cache);
       flow.send(d1Infer, new TextEncoder().encode('d1-inferred'));
       flow.finish(d1Infer);
 
@@ -262,27 +262,27 @@ describe('Flow ESI Processor Pattern', () => {
     });
   });
 
-  describe('poison propagation', () => {
-    it('should poison all children when parent is poisoned', () => {
+  describe('vent propagation', () => {
+    it('should vent all children when parent is vented', () => {
       const transport = createRecordingTransport();
       const flow = new AeonFlowProtocol(transport);
 
       const root = flow.openStream();
       const children = flow.fork(root, 3);
 
-      // Poison the parent
-      flow.poison(root);
+      // Vent the parent
+      flow.vent(root);
 
-      // All children should be poisoned
+      // All children should be vented
       for (const childId of children) {
         const stream = flow.getStream(childId);
-        expect(stream?.state).toBe('poisoned');
+        expect(stream?.state).toBe('vented');
       }
 
       flow.destroy();
     });
 
-    it('should poison grandchildren when parent is poisoned', () => {
+    it('should vent grandchildren when parent is vented', () => {
       const transport = createRecordingTransport();
       const flow = new AeonFlowProtocol(transport);
 
@@ -290,15 +290,15 @@ describe('Flow ESI Processor Pattern', () => {
       const children = flow.fork(root, 2);
       const grandchildren = flow.fork(children[0], 2);
 
-      // Poison root
-      flow.poison(root);
+      // Vent root
+      flow.vent(root);
 
-      // Everything should be poisoned
+      // Everything should be vented
       for (const childId of children) {
-        expect(flow.getStream(childId)?.state).toBe('poisoned');
+        expect(flow.getStream(childId)?.state).toBe('vented');
       }
       for (const gcId of grandchildren) {
-        expect(flow.getStream(gcId)?.state).toBe('poisoned');
+        expect(flow.getStream(gcId)?.state).toBe('vented');
       }
 
       flow.destroy();
@@ -319,7 +319,7 @@ describe('Flow ESI Processor Pattern', () => {
       flow.finish(s0);
       expect(flow.getActiveStreams().length).toBe(2);
 
-      flow.poison(s2);
+      flow.vent(s2);
       expect(flow.getActiveStreams().length).toBe(1);
 
       flow.finish(s4);
@@ -357,7 +357,7 @@ describe('Flow ESI Processor Pattern', () => {
     });
   });
 
-  describe('onFrame / onStreamEnd / onStreamPoisoned handlers', () => {
+  describe('onFrame / onStreamEnd / onStreamVented handlers', () => {
     it('should fire frame handler when data arrives via linked transport', () => {
       const [tA, tB] = createLinkedTransports();
       const client = new AeonFlowProtocol(tA, { role: 'client' });
@@ -403,18 +403,18 @@ describe('Flow ESI Processor Pattern', () => {
       flow.destroy();
     });
 
-    it('should fire poison handler on POISON', () => {
+    it('should fire vent handler on VENT', () => {
       const transport = createRecordingTransport();
       const flow = new AeonFlowProtocol(transport);
 
       const streamId = flow.openStream();
-      let poisoned = false;
-      flow.onStreamPoisoned(streamId, () => {
-        poisoned = true;
+      let vented = false;
+      flow.onStreamVented(streamId, () => {
+        vented = true;
       });
 
-      flow.poison(streamId);
-      expect(poisoned).toBe(true);
+      flow.vent(streamId);
+      expect(vented).toBe(true);
 
       flow.destroy();
     });

@@ -18,7 +18,7 @@
  *   - HTTP POST → flow stream open + data frames + FIN
  *   - HTTP response → flow frames + FIN
  *   - HTTP streaming response → flow frames (no FIN until complete)
- *   - HTTP error → POISON frame
+ *   - HTTP error → VENT frame
  *
  * Wire format between nginx module and this bridge:
  *   Control messages are length-prefixed JSON.

@@ -1,7 +1,7 @@
 /**
  * Aeon Flow Protocol — Type Definitions
  *
- * The Aeon Flow Protocol extracts the fork/race/collapse primitive that
+ * The Aeon Flow Protocol extracts the fork/race/fold primitive that
  * appears independently across the entire stack (inference, ESI, sync,
  * shell, frontend) into a unified, protocol-level abstraction with a
  * pure binary wire format.
@@ -17,10 +17,10 @@
 export const FORK    = 0x01;
 /** Race: marks streams as racing — first to complete wins */
 export const RACE    = 0x02;
-/** Collapse: merge results from multiple streams into one */
-export const COLLAPSE = 0x04;
-/** Poison: NaN propagation, error, or cancellation */
-export const POISON  = 0x08;
+/** Fold: merge results from multiple streams into one */
+export const FOLD = 0x04;
+/** Vent: NaN propagation, error, or cancellation */
+export const VENT  = 0x08;
 /** Fin: stream is complete, no more frames will be sent */
 export const FIN     = 0x10;
 
@@ -34,7 +34,7 @@ export const FIN     = 0x10;
  * FlowFrame {
  *   stream_id: u16      // multiplexed stream identifier
  *   sequence:  u32      // position within stream
- *   flags:     u8       // FORK | RACE | COLLAPSE | POISON | FIN
+ *   flags:     u8       // FORK | RACE | FOLD | VENT | FIN
  *   length:    u24      // payload length (up to 16MB)
  *   payload:   [u8]     // raw bytes
  * }
@@ -46,7 +46,7 @@ export interface FlowFrame {
   streamId: number;
   /** Sequence number within the stream (u32) */
   sequence: number;
-  /** Bitfield of frame flags (FORK, RACE, COLLAPSE, POISON, FIN) */
+  /** Bitfield of frame flags (FORK, RACE, FOLD, VENT, FIN) */
   flags: number;
   /** Raw payload bytes */
   payload: Uint8Array;
@@ -60,15 +60,15 @@ export interface FlowFrame {
 export type FlowStreamState =
   | 'open'
   | 'racing'
-  | 'collapsing'
+  | 'folding'
   | 'closed'
-  | 'poisoned';
+  | 'vented';
 
 /**
  * A logical stream within the protocol.
  *
- * Streams form a tree: fork() creates children, race()/collapse()
- * operate on sibling streams, poison() propagates down the tree.
+ * Streams form a tree: fork() creates children, race()/fold()
+ * operate on sibling streams, vent() propagates down the tree.
  */
 export interface FlowStream {
   /** Stream identifier (even = client-initiated, odd = server-initiated) */
@@ -83,7 +83,7 @@ export interface FlowStream {
   nextSequence: number;
   /** Number of frames buffered (for backpressure) */
   bufferedFrames: number;
-  /** Accumulated result frames (for race/collapse) */
+  /** Accumulated result frames (for race/fold) */
   results: Uint8Array[];
 }
 
@@ -157,8 +157,8 @@ export interface FlowProtocolEvents {
   frame: { streamId: number; frame: FlowFrame };
   /** A stream reached the FIN state */
   streamEnd: { streamId: number };
-  /** A stream was poisoned */
-  streamPoisoned: { streamId: number };
+  /** A stream was vented */
+  streamVented: { streamId: number };
   /** Backpressure: stream is paused */
   streamPaused: { streamId: number };
   /** Backpressure: stream is resumed */

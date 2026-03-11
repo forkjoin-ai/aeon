@@ -6,8 +6,8 @@ import {
   AeonFlowProtocol,
   FORK,
   RACE,
-  COLLAPSE,
-  POISON,
+  FOLD,
+  VENT,
   FIN,
 } from '../../flow';
 import type { FlowFrame, FlowTransport } from '../../flow';
@@ -307,9 +307,9 @@ describe('FlowCodec', () => {
   });
 
   describe('async create', () => {
-    it('should create a codec (JS fallback)', async () => {
+    it('should create a codec with graceful fallback', async () => {
       const c = await FlowCodec.create();
-      expect(c.isWasmAccelerated).toBe(false);
+      expect(typeof c.isWasmAccelerated).toBe('boolean');
 
       // Should still work correctly
       const frame: FlowFrame = {
@@ -321,6 +321,22 @@ describe('FlowCodec', () => {
       const encoded = c.encode(frame);
       const { frame: decoded } = c.decode(encoded);
       expect(decoded.streamId).toBe(1);
+    });
+
+    it('should fallback to JS on invalid wasm in auto mode', async () => {
+      const c = await FlowCodec.create({
+        wasmModule: new Uint8Array([0xde, 0xad, 0xbe, 0xef]),
+      });
+      expect(c.isWasmAccelerated).toBe(false);
+    });
+
+    it('should throw in force mode when wasm is invalid', async () => {
+      await expect(
+        FlowCodec.create({
+          wasmMode: 'force',
+          wasmModule: new Uint8Array([0xde, 0xad, 0xbe, 0xef]),
+        }),
+      ).rejects.toThrow();
     });
   });
 });
@@ -367,45 +383,45 @@ describe('AeonFlowProtocol — stream lifecycle', () => {
     protocol.destroy();
   });
 
-  it('should poison a stream and propagate to children', () => {
+  it('should vent a stream and propagate to children', () => {
     const transport = createRecordingTransport();
     const protocol = new AeonFlowProtocol(transport);
 
     const parent = protocol.openStream();
     const [child1, child2] = protocol.fork(parent, 2);
 
-    const parentPoisonSpy = vi.fn();
-    const child1PoisonSpy = vi.fn();
-    const child2PoisonSpy = vi.fn();
+    const parentVentSpy = vi.fn();
+    const child1VentSpy = vi.fn();
+    const child2VentSpy = vi.fn();
 
-    protocol.onStreamPoisoned(parent, parentPoisonSpy);
-    protocol.onStreamPoisoned(child1, child1PoisonSpy);
-    protocol.onStreamPoisoned(child2, child2PoisonSpy);
+    protocol.onStreamVented(parent, parentVentSpy);
+    protocol.onStreamVented(child1, child1VentSpy);
+    protocol.onStreamVented(child2, child2VentSpy);
 
-    protocol.poison(parent);
+    protocol.vent(parent);
 
-    expect(protocol.getStream(parent)?.state).toBe('poisoned');
-    expect(protocol.getStream(child1)?.state).toBe('poisoned');
-    expect(protocol.getStream(child2)?.state).toBe('poisoned');
-    expect(parentPoisonSpy).toHaveBeenCalledTimes(1);
-    expect(child1PoisonSpy).toHaveBeenCalledTimes(1);
-    expect(child2PoisonSpy).toHaveBeenCalledTimes(1);
+    expect(protocol.getStream(parent)?.state).toBe('vented');
+    expect(protocol.getStream(child1)?.state).toBe('vented');
+    expect(protocol.getStream(child2)?.state).toBe('vented');
+    expect(parentVentSpy).toHaveBeenCalledTimes(1);
+    expect(child1VentSpy).toHaveBeenCalledTimes(1);
+    expect(child2VentSpy).toHaveBeenCalledTimes(1);
 
     protocol.destroy();
   });
 
-  it('should not poison an already closed stream', () => {
+  it('should not vent an already closed stream', () => {
     const transport = createRecordingTransport();
     const protocol = new AeonFlowProtocol(transport);
 
     const id = protocol.openStream();
     protocol.finish(id);
 
-    const poisonSpy = vi.fn();
-    protocol.onStreamPoisoned(id, poisonSpy);
-    protocol.poison(id);
+    const ventSpy = vi.fn();
+    protocol.onStreamVented(id, ventSpy);
+    protocol.vent(id);
 
-    expect(poisonSpy).not.toHaveBeenCalled();
+    expect(ventSpy).not.toHaveBeenCalled();
 
     protocol.destroy();
   });
@@ -501,9 +517,9 @@ describe('AeonFlowProtocol — race', () => {
     expect(winner).toBe(s2);
     expect(Array.from(result)).toEqual([42, 43]);
 
-    // Losers should be poisoned
-    expect(protocol.getStream(s1)?.state).toBe('poisoned');
-    expect(protocol.getStream(s3)?.state).toBe('poisoned');
+    // Losers should be vented
+    expect(protocol.getStream(s1)?.state).toBe('vented');
+    expect(protocol.getStream(s3)?.state).toBe('vented');
 
     protocol.destroy();
   });
@@ -520,18 +536,18 @@ describe('AeonFlowProtocol — race', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// Collapse Tests
+// Fold Tests
 // ═══════════════════════════════════════════════════════════════════════════════
 
-describe('AeonFlowProtocol — collapse', () => {
-  it('should collapse multiple streams via merger function', async () => {
+describe('AeonFlowProtocol — fold', () => {
+  it('should fold multiple streams via merger function', async () => {
     const transport = createRecordingTransport();
     const protocol = new AeonFlowProtocol(transport);
 
     const parent = protocol.openStream();
     const [s1, s2, s3] = protocol.fork(parent, 3);
 
-    const collapsePromise = protocol.collapse(
+    const foldPromise = protocol.fold(
       [s1, s2, s3],
       (results) => {
         // Concatenate all results in stream-id order
@@ -560,23 +576,23 @@ describe('AeonFlowProtocol — collapse', () => {
     protocol.send(s3, new Uint8Array([3]));
     protocol.finish(s3);
 
-    const merged = await collapsePromise;
+    const merged = await foldPromise;
     expect(Array.from(merged)).toEqual([1, 2, 3]);
 
     protocol.destroy();
   });
 
-  it('should handle poisoned streams in collapse (they contribute nothing)', async () => {
+  it('should handle vented streams in fold (they contribute nothing)', async () => {
     const transport = createRecordingTransport();
     const protocol = new AeonFlowProtocol(transport);
 
     const parent = protocol.openStream();
     const [s1, s2] = protocol.fork(parent, 2);
 
-    const collapsePromise = protocol.collapse(
+    const foldPromise = protocol.fold(
       [s1, s2],
       (results) => {
-        // Only non-poisoned results appear in the map
+        // Only non-vented results appear in the map
         let totalLen = 0;
         for (const v of results.values()) totalLen += v.length;
         const merged = new Uint8Array(totalLen);
@@ -593,23 +609,23 @@ describe('AeonFlowProtocol — collapse', () => {
     protocol.send(s1, new Uint8Array([10, 20]));
     protocol.finish(s1);
 
-    // s2 is poisoned
-    protocol.poison(s2);
+    // s2 is vented
+    protocol.vent(s2);
 
-    const merged = await collapsePromise;
+    const merged = await foldPromise;
     expect(Array.from(merged)).toEqual([10, 20]);
 
     protocol.destroy();
   });
 
-  it('should handle all streams poisoned in collapse', async () => {
+  it('should handle all streams vented in fold', async () => {
     const transport = createRecordingTransport();
     const protocol = new AeonFlowProtocol(transport);
 
     const parent = protocol.openStream();
     const [s1, s2] = protocol.fork(parent, 2);
 
-    const collapsePromise = protocol.collapse(
+    const foldPromise = protocol.fold(
       [s1, s2],
       (results) => {
         // No results — return empty
@@ -617,10 +633,10 @@ describe('AeonFlowProtocol — collapse', () => {
       }
     );
 
-    protocol.poison(s1);
-    protocol.poison(s2);
+    protocol.vent(s1);
+    protocol.vent(s2);
 
-    const merged = await collapsePromise;
+    const merged = await foldPromise;
     expect(merged.length).toBe(0);
 
     protocol.destroy();
@@ -783,10 +799,10 @@ describe('AeonFlowProtocol — edge cases', () => {
 
     const s1 = protocol.openStream(); // open
     const s2 = protocol.openStream(); // will close
-    const s3 = protocol.openStream(); // will poison
+    const s3 = protocol.openStream(); // will vent
 
     protocol.finish(s2);
-    protocol.poison(s3);
+    protocol.vent(s3);
 
     const active = protocol.getActiveStreams();
     expect(active.length).toBe(1);
@@ -807,16 +823,16 @@ describe('AeonFlowProtocol — edge cases', () => {
     expect(protocol.getActiveStreams().length).toBe(0);
   });
 
-  it('should handle re-poisoning a poisoned stream (no-op)', () => {
+  it('should handle re-venting a vented stream (no-op)', () => {
     const transport = createRecordingTransport();
     const protocol = new AeonFlowProtocol(transport);
 
     const id = protocol.openStream();
     const spy = vi.fn();
-    protocol.onStreamPoisoned(id, spy);
+    protocol.onStreamVented(id, spy);
 
-    protocol.poison(id);
-    protocol.poison(id); // Should be a no-op
+    protocol.vent(id);
+    protocol.vent(id); // Should be a no-op
 
     expect(spy).toHaveBeenCalledTimes(1);
 

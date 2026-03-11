@@ -3,7 +3,7 @@
  *
  * Proves:
  *   1. Little's Law is the β₁ = 0 degenerate case of the pipeline equation
- *   2. Erlang blocking is poison propagation at β₁ = 0
+ *   2. Erlang blocking is vent propagation at β₁ = 0
  *   3. Jackson networks are fork/join without race
  *   4. Each classical result recovers from the topological framework
  *
@@ -11,6 +11,19 @@
  */
 
 import { describe, it, expect } from 'vitest';
+
+function makeRng(seed: number): () => number {
+  let state = seed >>> 0;
+  return () => {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return state / 0x100000000;
+  };
+}
+
+function expSample(rate: number, rng: () => number): number {
+  const u = Math.max(rng(), Number.EPSILON);
+  return -Math.log(u) / rate;
+}
 
 describe('Queueing Theory Subsumption (§5)', () => {
 
@@ -76,9 +89,54 @@ describe('Queueing Theory Subsumption (§5)', () => {
       // Pipeline is C× faster — Little's Law can't express this
       expect(pipelineThroughput / sequentialThroughput).toBe(C);
     });
+
+    it('discrete-event M/M/1 simulation satisfies Little\'s Law', () => {
+      const lambda = 7.5; // arrivals/sec
+      const mu = 10.0; // services/sec
+      const jobs = 40_000;
+      const rng = makeRng(0xC0FFEE);
+
+      let arrivalTime = 0;
+      let serverFreeAt = 0;
+      let totalTimeInSystem = 0;
+      const events: Array<{ time: number; delta: number }> = [];
+
+      for (let i = 0; i < jobs; i++) {
+        arrivalTime += expSample(lambda, rng);
+        const serviceTime = expSample(mu, rng);
+        const serviceStart = Math.max(arrivalTime, serverFreeAt);
+        const depart = serviceStart + serviceTime;
+        serverFreeAt = depart;
+
+        totalTimeInSystem += depart - arrivalTime;
+        events.push({ time: arrivalTime, delta: +1 });
+        events.push({ time: depart, delta: -1 });
+      }
+
+      events.sort((a, b) => a.time - b.time);
+      const startTime = events[0]?.time ?? 0;
+      const endTime = serverFreeAt;
+
+      let inSystem = 0;
+      let prev = startTime;
+      let area = 0;
+      for (const e of events) {
+        area += inSystem * (e.time - prev);
+        inSystem += e.delta;
+        prev = e.time;
+      }
+
+      const horizon = endTime - startTime;
+      const L = area / horizon;
+      const W = totalTimeInSystem / jobs;
+      const lambdaEff = jobs / horizon;
+
+      // Empirical Little's Law: L ≈ λW
+      expect(Math.abs(L - lambdaEff * W)).toBeLessThan(0.1);
+    });
   });
 
-  describe('Erlang Blocking as Poison at β₁ = 0', () => {
+  describe('Erlang Blocking as Vent at β₁ = 0', () => {
     /**
      * Erlang B formula: probability of blocking with m servers and A offered load
      *   B(m, A) = (A^m / m!) / Σ(k=0..m) (A^k / k!)
@@ -86,9 +144,9 @@ describe('Queueing Theory Subsumption (§5)', () => {
      * At β₁ = 0 (m = 1):
      *   B(1, A) = A / (1 + A)
      *
-     * In the topological framework, blocking IS poison propagation.
-     * A blocked request poisons upstream. With β₁ > 0, alternative
-     * paths exist — poison one, route to another.
+     * In the topological framework, blocking IS vent propagation.
+     * A blocked request vents upstream. With β₁ > 0, alternative
+     * paths exist -- vent one, route to another.
      */
 
     function erlangB(m: number, A: number): number {
@@ -123,21 +181,21 @@ describe('Queueing Theory Subsumption (§5)', () => {
       expect(b8).toBeLessThan(0.05);    // <5% blocked at β₁=7
     });
 
-    it('poison propagation depth = 0 when β₁ > 0 and alternative paths exist', () => {
-      // With multiple paths (β₁ > 0), a poisoned path doesn't block the system
+    it('vent propagation depth = 0 when β₁ > 0 and alternative paths exist', () => {
+      // With multiple paths (β₁ > 0), a vented path doesn't block the system.
       // The race continues on surviving paths
 
       const paths = 4; // β₁ = 3
-      const poisonedPaths = 1;
-      const survivingPaths = paths - poisonedPaths;
+      const ventedPaths = 1;
+      const survivingPaths = paths - ventedPaths;
 
       // System still works as long as at least one path survives
       expect(survivingPaths).toBeGreaterThan(0);
 
-      // Probability ALL paths are poisoned (system-level blocking):
-      const pPoison = 0.3; // 30% chance each path fails
-      const pAllPoisoned = Math.pow(pPoison, paths);
-      expect(pAllPoisoned).toBeLessThan(0.01); // <1% with 4 paths at 30% each
+      // Probability ALL paths are vented (system-level blocking):
+      const pVent = 0.3; // 30% chance each path fails
+      const pAllVented = Math.pow(pVent, paths);
+      expect(pAllVented).toBeLessThan(0.01); // <1% with 4 paths at 30% each
     });
   });
 
@@ -149,7 +207,7 @@ describe('Queueing Theory Subsumption (§5)', () => {
      * In the topological framework:
      *   - Jackson routing = fork with fixed weights (no race)
      *   - Each queue = a pipeline stage at β₁ = 0
-     *   - Product-form solution = independence of collapse operations
+     *   - Product-form solution = independence of fold operations
      *
      * Jackson networks are β₁ = 0 at each node with probabilistic fork.
      * Add race (β₁ > 0 at each node) and you get the topological framework.
@@ -191,6 +249,45 @@ describe('Queueing Theory Subsumption (§5)', () => {
       const topoMax = Math.min(...newRates);
       expect(topoMax).toBe(15); // New bottleneck moves to node 3
       expect(topoMax).toBeGreaterThan(jacksonMax); // 50% improvement
+    });
+
+    it('parallel servers (β₁ > 0) reduce queueing delay in simulation', () => {
+      const lambda = 30; // arrivals/sec
+      const mu = 10; // service/sec per server
+      const jobs = 20_000;
+
+      function simulateMMc(c: number): { avgWait: number; throughput: number } {
+        const rng = makeRng(0xABC000 + c);
+        const serverFree = Array.from({ length: c }, () => 0);
+        let arrival = 0;
+        let totalWait = 0;
+
+        for (let i = 0; i < jobs; i++) {
+          arrival += expSample(lambda, rng);
+          const service = expSample(mu, rng);
+
+          let bestIdx = 0;
+          for (let s = 1; s < c; s++) {
+            if (serverFree[s] < serverFree[bestIdx]) bestIdx = s;
+          }
+
+          const start = Math.max(arrival, serverFree[bestIdx]);
+          totalWait += start - arrival;
+          serverFree[bestIdx] = start + service;
+        }
+
+        const finish = Math.max(...serverFree);
+        return {
+          avgWait: totalWait / jobs,
+          throughput: jobs / finish,
+        };
+      }
+
+      const single = simulateMMc(1); // β₁ = 0
+      const fourWay = simulateMMc(4); // β₁ = 3
+
+      expect(fourWay.avgWait).toBeLessThan(single.avgWait);
+      expect(fourWay.throughput).toBeGreaterThan(single.throughput);
     });
   });
 });

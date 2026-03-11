@@ -178,6 +178,7 @@ export class UDPFlowTransport implements FlowTransport {
     };
 
     this.reassembler = new FrameReassembler(this.config.reassembler);
+    this.upgradeCodecInBackground();
   }
 
   /**
@@ -266,6 +267,21 @@ export class UDPFlowTransport implements FlowTransport {
     this.inflight.clear();
     this.fragmentGroups.clear();
     this.reassembler.reset();
+  }
+
+  /**
+   * Attempt to upgrade to WASM codec without delaying transport readiness.
+   */
+  private upgradeCodecInBackground(): void {
+    FlowCodec.create()
+      .then((codec) => {
+        if (codec.isWasmAccelerated) {
+          this.codec = codec;
+        }
+      })
+      .catch(() => {
+        // Graceful fallback: keep JS codec
+      });
   }
 
   // ─── Stats ─────────────────────────────────────────────────────────────
@@ -708,6 +724,7 @@ export class WebTransportFlowTransport implements FlowTransport {
   private constructor(wt: any) {
     this.wt = wt;
     this.reassembler = new FrameReassembler();
+    this.upgradeCodecInBackground();
   }
 
   /**
@@ -744,7 +761,7 @@ export class WebTransportFlowTransport implements FlowTransport {
       datagram[2] = 0;
       datagram[3] = 1;
       datagram.set(data, FRAGMENT_HEADER_SIZE);
-      this.writer.write(datagram).catch(() => {});
+      this.writer.write(datagram).catch(() => undefined);
     } else {
       const frameId = this.nextFrameId++ & 0xFFFF;
       const totalFragments = Math.ceil(data.length / maxPayload);
@@ -760,7 +777,7 @@ export class WebTransportFlowTransport implements FlowTransport {
         datagram[2] = i;
         datagram[3] = totalFragments;
         datagram.set(chunk, FRAGMENT_HEADER_SIZE);
-        this.writer.write(datagram).catch(() => {});
+        this.writer.write(datagram).catch(() => undefined);
       }
     }
   }
@@ -834,5 +851,20 @@ export class WebTransportFlowTransport implements FlowTransport {
     } catch {
       // Stream closed
     }
+  }
+
+  /**
+   * Attempt to upgrade to WASM codec without delaying transport startup.
+   */
+  private upgradeCodecInBackground(): void {
+    FlowCodec.create()
+      .then((codec) => {
+        if (codec.isWasmAccelerated) {
+          this.codec = codec;
+        }
+      })
+      .catch(() => {
+        // Graceful fallback: keep JS codec
+      });
   }
 }

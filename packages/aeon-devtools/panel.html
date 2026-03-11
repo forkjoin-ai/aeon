@@ -13,10 +13,10 @@
   --accent: #3b82f6;
   --fork: #a6e3a1;
   --race: #f9e2af;
-  --poison: #f38ba8;
+  --vent: #f38ba8;
   --fin: #89b4fa;
   --data: #cdd6f4;
-  --collapse: #cba6f7;
+  --fold: #cba6f7;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -68,8 +68,8 @@ body { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; backgrou
 .flag-data { color: var(--data); }
 .flag-fork { color: var(--fork); font-weight: bold; }
 .flag-race { color: var(--race); font-weight: bold; }
-.flag-collapse { color: var(--collapse); font-weight: bold; }
-.flag-poison { color: var(--poison); font-weight: bold; }
+.flag-fold { color: var(--fold); font-weight: bold; }
+.flag-vent { color: var(--vent); font-weight: bold; }
 .flag-fin { color: var(--fin); }
 
 /* ─── Stream Tree Panel ───────────────────────────────────────── */
@@ -80,13 +80,13 @@ body { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; backgrou
 }
 .stream-node.open { border-left-color: var(--accent); }
 .stream-node.closed { border-left-color: var(--fin); }
-.stream-node.poisoned { border-left-color: var(--poison); }
+.stream-node.vented { border-left-color: var(--vent); }
 .stream-children { margin-left: 24px; }
 .stream-id { font-weight: bold; color: var(--accent); }
 .stream-state { font-size: 10px; padding: 1px 6px; border-radius: 3px; margin-left: 8px; }
 .stream-state.open { background: #1a4731; color: var(--fork); }
 .stream-state.closed { background: #1a3a5c; color: var(--fin); }
-.stream-state.poisoned { background: #4a1a2e; color: var(--poison); }
+.stream-state.vented { background: #4a1a2e; color: var(--vent); }
 
 /* ─── Frames Panel ────────────────────────────────────────────── */
 .frame-list { padding: 8px; }
@@ -95,7 +95,7 @@ body { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; backgrou
   border-radius: 4px; border-left: 3px solid var(--border);
 }
 .frame-item.fork { border-left-color: var(--fork); }
-.frame-item.poison { border-left-color: var(--poison); }
+.frame-item.vent { border-left-color: var(--vent); }
 .frame-item.fin { border-left-color: var(--fin); }
 .frame-item .frame-header {
   display: flex; gap: 16px; font-size: 11px; color: var(--text-dim);

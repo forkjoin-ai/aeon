@@ -13,7 +13,7 @@
  *   - USB:        WebUSB for hardware devices (Rabbit R1, embedded)
  *   - HTTP:       nginx bridge — HTTP is the normie projection of Aeon
  *
- * fork/race/collapse works identically regardless of transport.
+ * fork/race/fold works identically regardless of transport.
  * Everything speaks Aeon internally. HTTP is just the projection.
  */
 export { DashRelayFlowTransport, createDashRelayFlow, type DashRelayLike, type DashRelayFlowConfig, } from './dashrelay';

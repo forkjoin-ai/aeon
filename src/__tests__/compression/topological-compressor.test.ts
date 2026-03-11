@@ -1,10 +1,10 @@
 /**
  * Topological Compressor Tests
  *
- * Validates fork/race/collapse compression:
+ * Validates fork/race/fold compression:
  *   - Round-trip correctness (compress → decompress = original)
  *   - Per-chunk adaptive codec selection
- *   - Poison propagation (codecs worse than raw are discarded)
+ *   - Vent propagation (codecs worse than raw are discarded)
  *   - Self-describing frame format
  *   - Data-type-specific codec wins (RLE for repetitive, delta for sequential, LZ77 for patterns)
  *   - Edge cases (empty, tiny, large, random)
@@ -159,7 +159,7 @@ describe('TopologicalCompressor', () => {
   });
 
   // ==========================================================================
-  // Codec Selection (Fork/Race/Collapse)
+  // Codec Selection (Fork/Race/Fold)
   // ==========================================================================
 
   describe('per-chunk codec selection', () => {
@@ -201,20 +201,20 @@ describe('TopologicalCompressor', () => {
   });
 
   // ==========================================================================
-  // Poison Propagation
+  // Vent Propagation
   // ==========================================================================
 
-  describe('poison propagation', () => {
-    it('poisons codecs that expand data', () => {
+  describe('vent propagation', () => {
+    it('vents codecs that expand data', () => {
       const tc = new TopologicalCompressor({ chunkSize: 64 });
       const original = makeRandom(64);
       const result = tc.compress(original);
 
-      // At least some codecs should be poisoned for random data
-      expect(result.chunks[0].poisoned).toBeGreaterThan(0);
+      // At least some codecs should be vented for random data
+      expect(result.chunks[0].vented).toBeGreaterThan(0);
     });
 
-    it('never poisons the raw codec', () => {
+    it('never vents the raw codec', () => {
       const tc = new TopologicalCompressor({ chunkSize: 64 });
       const original = makeRandom(64);
       const result = tc.compress(original);
@@ -224,14 +224,14 @@ describe('TopologicalCompressor', () => {
       expect(result.chunks[0].codecId).toBe(0);
     });
 
-    it('poisons nothing when all codecs compress well', () => {
+    it('vents nothing when all codecs compress well', () => {
       const tc = new TopologicalCompressor({ chunkSize: 256 });
       const original = new Uint8Array(256).fill(0);
       const result = tc.compress(original);
 
       // All-zeros: every codec should compress (or at least not expand)
       // RLE will definitely compress, delta will stay same size, etc.
-      // But some may be poisoned if they expand
+      // But some may be vented if they expand
       expect(result.chunks[0].codecId).toBe(1); // RLE wins
     });
   });
@@ -276,7 +276,7 @@ describe('TopologicalCompressor', () => {
         expect(chunk.originalSize).toBe(chunkSize);
         expect(chunk.compressedSize).toBeGreaterThan(0);
         expect(typeof chunk.ratio).toBe('number');
-        expect(chunk.poisoned).toBeGreaterThanOrEqual(0);
+        expect(chunk.vented).toBeGreaterThanOrEqual(0);
       }
     });
   });

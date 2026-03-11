@@ -48,7 +48,7 @@ export * from './optimization';
 export * from './presence';
 // Crypto module (UCAN + ZK encryption)
 export * from './crypto';
-// Flow module (fork/race/collapse protocol primitive)
+// Flow module (fork/race/fold protocol primitive)
 export * from './flow';
 // Transport module (every wire format that matters)
 export * from './transport';

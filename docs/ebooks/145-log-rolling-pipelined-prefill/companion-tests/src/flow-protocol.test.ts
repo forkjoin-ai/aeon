@@ -3,7 +3,7 @@
  *
  * Proves:
  *   1. 10-byte frame header is self-describing
- *   2. Fork/race/collapse/poison primitives work on the wire
+ *   2. Fork/race/fold/vent primitives work on the wire
  *   3. WorkFrame ↔ FlowFrame isomorphism
  *   4. Frame overhead comparison vs HTTP/1.1, HTTP/2, HTTP/3
  *
@@ -14,12 +14,14 @@ import { describe, it, expect } from 'vitest';
 import {
   FlowCodec,
   HEADER_SIZE,
+  MAX_PAYLOAD_LENGTH,
+  FrameReassembler,
 } from '@aeon/flow';
 import {
   FORK,
   RACE,
-  COLLAPSE,
-  POISON,
+  FOLD,
+  VENT,
   FIN,
 } from '@aeon/flow';
 import type { FlowFrame } from '@aeon/flow';
@@ -34,7 +36,7 @@ describe('Flow Protocol (§8)', () => {
      * FlowFrame {
      *   stream_id: u16      // 2 bytes — multiplexed stream identifier
      *   sequence:  u32      // 4 bytes — position within stream
-     *   flags:     u8       // 1 byte  — FORK | RACE | COLLAPSE | POISON | FIN
+     *   flags:     u8       // 1 byte  — FORK | RACE | FOLD | VENT | FIN
      *   length:    u24      // 3 bytes — payload length (up to 16MB)
      *   payload:   [u8]     // variable
      * }
@@ -75,8 +77,22 @@ describe('Flow Protocol (§8)', () => {
       expect(encoded.length).toBe(10);
     });
 
+    it('u24 payload length cap is enforced', () => {
+      expect(MAX_PAYLOAD_LENGTH).toBe(0xFFFFFF);
+
+      const oversized = new Uint8Array(MAX_PAYLOAD_LENGTH + 1);
+      const frame: FlowFrame = {
+        streamId: 1,
+        sequence: 0,
+        flags: FIN,
+        payload: oversized,
+      };
+
+      expect(() => codec.encode(frame)).toThrow(RangeError);
+    });
+
     it('each flag bit is independent', () => {
-      const flags = [FORK, RACE, COLLAPSE, POISON, FIN];
+      const flags = [FORK, RACE, FOLD, VENT, FIN];
       const values = [0x01, 0x02, 0x04, 0x08, 0x10];
 
       for (let i = 0; i < flags.length; i++) {
@@ -88,12 +104,12 @@ describe('Flow Protocol (§8)', () => {
       }
 
       // All flags can be combined
-      const all = FORK | RACE | COLLAPSE | POISON | FIN;
+      const all = FORK | RACE | FOLD | VENT | FIN;
       expect(all).toBe(0x1F);
     });
   });
 
-  describe('§8.4 Fork/Race/Collapse on the Wire', () => {
+  describe('§8.4 Fork/Race/Fold on the Wire', () => {
 
     it('fork creates child streams', () => {
       // Parent forks 3 child streams
@@ -126,7 +142,7 @@ describe('Flow Protocol (§8)', () => {
       const winner = results.sort((a, b) => a.timeUs - b.timeUs)[0];
       expect(winner.streamId).toBe(4);
 
-      // Winner sends FIN, losers get poisoned
+      // Winner sends FIN, losers get vented
       const winFrame = codec.encode({
         streamId: winner.streamId,
         sequence: 1,
@@ -134,51 +150,122 @@ describe('Flow Protocol (§8)', () => {
         payload: new Uint8Array(winner.size),
       });
 
-      const poisonFrames = results
+      const ventFrames = results
         .filter(r => r.streamId !== winner.streamId)
         .map(r => codec.encode({
           streamId: r.streamId,
           sequence: 0,
-          flags: POISON,
+          flags: VENT,
           payload: new Uint8Array(0),
         }));
 
       expect(codec.decode(winFrame).frame.flags & FIN).toBeTruthy();
-      expect(poisonFrames).toHaveLength(2);
-      for (const pf of poisonFrames) {
-        expect(codec.decode(pf).frame.flags & POISON).toBeTruthy();
+      expect(ventFrames).toHaveLength(2);
+      for (const vf of ventFrames) {
+        expect(codec.decode(vf).frame.flags & VENT).toBeTruthy();
       }
     });
 
-    it('collapse merges results from child streams', () => {
-      // After fork+race, collapse sends the final result on the parent stream
-      const collapseFrame = codec.encode({
+    it('fold merges results from child streams', () => {
+      // After fork+race, fold sends the final result on the parent stream
+      const foldFrame = codec.encode({
         streamId: 0, // back on parent
         sequence: 1,
-        flags: COLLAPSE | FIN,
+        flags: FOLD | FIN,
         payload: new TextEncoder().encode('merged result'),
       });
 
-      const { frame: decoded } = codec.decode(collapseFrame);
-      expect(decoded.flags & COLLAPSE).toBeTruthy();
+      const { frame: decoded } = codec.decode(foldFrame);
+      expect(decoded.flags & FOLD).toBeTruthy();
       expect(decoded.flags & FIN).toBeTruthy();
       expect(decoded.streamId).toBe(0); // Parent stream
 
-      // β₁ returns to 0 after collapse
+      // β₁ returns to 0 after fold
     });
 
-    it('poison propagates downstream', () => {
-      // Parent poisoned → all children poisoned
-      const parentPoison = codec.encode({
+    it('vent propagates downstream', () => {
+      // Parent vented -> all descendants vented
+      const parentVent = codec.encode({
         streamId: 0,
         sequence: 0,
-        flags: POISON,
+        flags: VENT,
         payload: new TextEncoder().encode('timeout'),
       });
 
-      const { frame: decoded } = codec.decode(parentPoison);
-      expect(decoded.flags & POISON).toBeTruthy();
+      const { frame: decoded } = codec.decode(parentVent);
+      expect(decoded.flags & VENT).toBeTruthy();
       expect(new TextDecoder().decode(decoded.payload)).toBe('timeout');
+    });
+
+    it('vent rule is down-only, never across siblings', () => {
+      // Stream tree: 0 -> {2,4}; 2 -> {6,8}; 4 -> {10}
+      const children = new Map<number, number[]>([
+        [0, [2, 4]],
+        [2, [6, 8]],
+        [4, [10]],
+        [6, []],
+        [8, []],
+        [10, []],
+      ]);
+
+      function ventDescendants(root: number): Set<number> {
+        const vented = new Set<number>();
+        const stack = [root];
+        while (stack.length > 0) {
+          const node = stack.pop()!;
+          vented.add(node);
+          for (const child of children.get(node) ?? []) stack.push(child);
+        }
+        return vented;
+      }
+
+      const ventedFrom2 = ventDescendants(2);
+      expect(ventedFrom2.has(2)).toBe(true);
+      expect(ventedFrom2.has(6)).toBe(true);
+      expect(ventedFrom2.has(8)).toBe(true);
+
+      // Sibling branch of 2 (stream 4 and its descendant 10) must survive.
+      expect(ventedFrom2.has(4)).toBe(false);
+      expect(ventedFrom2.has(10)).toBe(false);
+    });
+  });
+
+  describe('Covering Map via Reassembly', () => {
+    it('reassembler restores in-order sequence for a stream', () => {
+      const reassembler = new FrameReassembler();
+
+      const streamId = 7;
+      const mk = (sequence: number): FlowFrame => ({
+        streamId,
+        sequence,
+        flags: 0,
+        payload: new Uint8Array([sequence]),
+      });
+
+      // Out-of-order arrival: 0,2,1.
+      const deliver0 = reassembler.push(mk(0));
+      const deliver2 = reassembler.push(mk(2));
+      const deliver1 = reassembler.push(mk(1));
+
+      expect(deliver0.map((f) => f.sequence)).toEqual([0]);
+      expect(deliver2).toEqual([]);
+      expect(deliver1.map((f) => f.sequence)).toEqual([1, 2]);
+    });
+
+    it('out-of-order on one stream does not block another stream', () => {
+      const reassembler = new FrameReassembler();
+
+      const a1: FlowFrame = { streamId: 1, sequence: 1, flags: 0, payload: new Uint8Array([1]) };
+      const b0: FlowFrame = { streamId: 2, sequence: 0, flags: FIN, payload: new Uint8Array([9]) };
+
+      // Stream 1 is missing sequence 0, so sequence 1 buffers.
+      expect(reassembler.push(a1)).toEqual([]);
+
+      // Stream 2 should still deliver immediately.
+      const deliveredB = reassembler.push(b0);
+      expect(deliveredB).toHaveLength(1);
+      expect(deliveredB[0].streamId).toBe(2);
+      expect(deliveredB[0].sequence).toBe(0);
     });
   });
 

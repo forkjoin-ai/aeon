@@ -1,18 +1,18 @@
 /**
- * Topological Compressor — Fork/Race/Collapse Applied to Compression
+ * Topological Compressor — Fork/Race/Fold Applied to Compression
  *
- * Two-level fork/race/collapse:
+ * Two-level fork/race/fold:
  *
  *   LEVEL 1 (stream): Fork the entire input into global strategies.
  *     - Path A: Global brotli on the whole stream (cross-chunk dictionary)
  *     - Path B: Global gzip on the whole stream
  *     - Path C: Per-chunk topological compression (Level 2)
- *     Race all paths. Collapse to smallest.
+ *     Race all paths. Fold to smallest.
  *
  *   LEVEL 2 (chunk): For each chunk, fork all codecs.
  *     - Race codecs per chunk. Smallest wins.
- *     - Poison codecs whose output >= raw.
- *     - Collapse: self-describing frame per chunk.
+ *     - Vent codecs whose output >= raw.
+ *     - Fold: self-describing frame per chunk.
  *
  * Stream-level format (when streamRace is enabled):
  *   [0]       u8    strategy        (0 = per-chunk, N>0 = global codec ID)
@@ -49,8 +49,8 @@ export interface ChunkResult {
   compressedSize: number;
   /** Compression ratio for this chunk (0 = no compression, 1 = perfect) */
   ratio: number;
-  /** How many codecs were poisoned (output >= input) */
-  poisoned: number;
+  /** How many codecs were vented (output >= input) */
+  vented: number;
 }
 
 /** Overall compression result */
@@ -157,7 +157,7 @@ export class TopologicalCompressor {
   }
 
   /**
-   * Compress data using fork/race/collapse.
+   * Compress data using fork/race/fold.
    *
    * When streamRace=false (default): per-chunk race only.
    * When streamRace=true: two-level race — global codecs vs per-chunk topo.
@@ -217,13 +217,13 @@ export class TopologicalCompressor {
 
       let bestCodecId = 0;
       let bestCompressed = chunk;
-      let poisonCount = 0;
+      let ventCount = 0;
 
       for (const codec of codecs) {
         const compressed = codec.encode(chunk);
 
         if (compressed.length >= chunk.length && codec.id !== 0) {
-          poisonCount++;
+          ventCount++;
           continue;
         }
 
@@ -255,7 +255,7 @@ export class TopologicalCompressor {
         originalSize: chunk.length,
         compressedSize: frame.length,
         ratio: chunk.length > 0 ? 1 - frame.length / chunk.length : 0,
-        poisoned: poisonCount,
+        vented: ventCount,
       });
     }
 
@@ -338,7 +338,7 @@ export class TopologicalCompressor {
   // ════════════════════════════════════════════════════════════════════════
 
   /**
-   * Two-level fork/race/collapse:
+   * Two-level fork/race/fold:
    *
    *   FORK (stream level):
    *     ├─ Path 0: Per-chunk topological (Level 2)
@@ -346,7 +346,7 @@ export class TopologicalCompressor {
    *     ├─ Path 2: Global codec B on entire stream
    *     └─ ...
    *   RACE: Smallest total output wins
-   *   COLLAPSE: 5-byte strategy header + compressed data
+   *   FOLD: 5-byte strategy header + compressed data
    *
    * On homogeneous text, global brotli wins (cross-chunk dictionary).
    * On mixed content, per-chunk topo wins (adapts per region).
@@ -388,7 +388,7 @@ export class TopologicalCompressor {
           });
         }
       } catch {
-        // Codec unavailable or failed — poisoned
+        // Codec unavailable or failed — vented
       }
     }
 
@@ -405,7 +405,7 @@ export class TopologicalCompressor {
       }
     }
 
-    // ── COLLAPSE: Build stream-level output ──
+    // ── FOLD: Build stream-level output ──
     const streamHeader = encodeStreamHeader(bestStrategy, data.length);
 
     // β₁: outer race has (globalCandidates.length + 1) paths,

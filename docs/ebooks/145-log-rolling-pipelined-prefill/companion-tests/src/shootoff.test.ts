@@ -247,5 +247,31 @@ describe('Shootoff (§8.5)', () => {
       expect(pure.decompress(pureResult.data)).toEqual(data);
       expect(full.decompress(fullResult.data)).toEqual(data);
     });
+
+    it('two-level stream race is no worse than any participating strategy', () => {
+      const data = makeTextPayload(120_000);
+
+      const chunked = new TopologicalCompressor({
+        chunkSize: 4096,
+        codecs: BUILTIN_CODECS,
+      }).compress(data);
+
+      const twoLevel = new TopologicalCompressor({
+        chunkSize: 4096,
+        codecs: BUILTIN_CODECS,
+        streamRace: true,
+      }).compress(data);
+
+      const brotli = brotliCompressSync(Buffer.from(data), {
+        params: { [constants.BROTLI_PARAM_QUALITY]: 4 },
+      });
+      const gzip = gzipSync(Buffer.from(data), { level: 6 });
+
+      const candidates: number[] = [5 + chunked.compressedSize];
+      if (brotli.length < data.length) candidates.push(5 + brotli.length);
+      if (gzip.length < data.length) candidates.push(5 + gzip.length);
+
+      expect(twoLevel.compressedSize).toBe(Math.min(...candidates));
+    });
   });
 });

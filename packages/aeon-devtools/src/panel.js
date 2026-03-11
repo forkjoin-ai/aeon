@@ -115,8 +115,8 @@ function ingestFrame(frame, direction, timestamp) {
   if (frame.flags & AEON_FLAGS.FIN) {
     stream.state = 'closed';
   }
-  if (frame.flags & AEON_FLAGS.POISON) {
-    stream.state = 'poisoned';
+  if (frame.flags & AEON_FLAGS.VENT) {
+    stream.state = 'vented';
   }
   if (frame.flags & AEON_FLAGS.FORK) {
     // Parse child stream IDs from payload
@@ -191,10 +191,10 @@ function renderWaterfall() {
 
 function getBarColor(flags) {
   if (flags & AEON_FLAGS.FORK) return 'var(--fork)';
-  if (flags & AEON_FLAGS.POISON) return 'var(--poison)';
+  if (flags & AEON_FLAGS.VENT) return 'var(--vent)';
   if (flags & AEON_FLAGS.FIN) return 'var(--fin)';
   if (flags & AEON_FLAGS.RACE) return 'var(--race)';
-  if (flags & AEON_FLAGS.COLLAPSE) return 'var(--collapse)';
+  if (flags & AEON_FLAGS.FOLD) return 'var(--fold)';
   return 'var(--accent)';
 }
 
@@ -285,10 +285,10 @@ function renderStats() {
   const totalStreams = Object.keys(state.streams).length;
   const openStreams = Object.values(state.streams).filter(s => s.state === 'open').length;
   const closedStreams = Object.values(state.streams).filter(s => s.state === 'closed').length;
-  const poisonedStreams = Object.values(state.streams).filter(s => s.state === 'poisoned').length;
+  const ventedStreams = Object.values(state.streams).filter(s => s.state === 'vented').length;
 
   const forkFrames = state.frames.filter(f => f.frame.flags & AEON_FLAGS.FORK).length;
-  const poisonFrames = state.frames.filter(f => f.frame.flags & AEON_FLAGS.POISON).length;
+  const ventFrames = state.frames.filter(f => f.frame.flags & AEON_FLAGS.VENT).length;
   const finFrames = state.frames.filter(f => f.frame.flags & AEON_FLAGS.FIN).length;
   const dataFrames = state.frames.filter(f => f.frame.flags === 0 && f.frame.length > 0).length;
 
@@ -299,11 +299,11 @@ function renderStats() {
     <div class="stat-row"><span class="stat-label">DATA frames</span><span class="stat-value">${dataFrames}</span></div>
     <div class="stat-row"><span class="stat-label">FORK frames</span><span class="stat-value">${forkFrames}</span></div>
     <div class="stat-row"><span class="stat-label">FIN frames</span><span class="stat-value">${finFrames}</span></div>
-    <div class="stat-row"><span class="stat-label">POISON frames</span><span class="stat-value">${poisonFrames}</span></div>
+    <div class="stat-row"><span class="stat-label">VENT frames</span><span class="stat-value">${ventFrames}</span></div>
     <div class="stat-row"><span class="stat-label">Payload bytes</span><span class="stat-value">${formatBytes(totalPayload)}</span></div>
     <div class="stat-row"><span class="stat-label">Framing overhead</span><span class="stat-value">${formatBytes(totalOverhead)} (${overheadPct}%)</span></div>
     <div class="stat-row"><span class="stat-label">Total wire bytes</span><span class="stat-value">${formatBytes(totalWire)}</span></div>
-    <div class="stat-row"><span class="stat-label">Streams</span><span class="stat-value">${totalStreams} total (${openStreams} open, ${closedStreams} closed, ${poisonedStreams} poisoned)</span></div>
+    <div class="stat-row"><span class="stat-label">Streams</span><span class="stat-value">${totalStreams} total (${openStreams} open, ${closedStreams} closed, ${ventedStreams} vented)</span></div>
     <div class="stat-row"><span class="stat-label">Duration</span><span class="stat-value">${elapsed.toFixed(1)}ms</span></div>
     <div class="stat-row"><span class="stat-label">Throughput</span><span class="stat-value">${elapsed > 0 ? formatBytes(totalPayload / (elapsed / 1000)) + '/s' : 'N/A'}</span></div>
   `;

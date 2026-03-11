@@ -2,11 +2,11 @@
  * Topological Compression — Companion Tests for §8.6
  *
  * Proves:
- *   1. Per-chunk adaptive codec selection via fork/race/collapse
+ *   1. Per-chunk adaptive codec selection via fork/race/fold
  *   2. Self-describing 9-byte chunk headers enable independent decompression
  *   3. Brotli as a racing codec: topology subsumes the algorithm
  *   4. β₁ = codecs - 1 measures the covering space dimension
- *   5. Poison propagation: codecs whose output >= input are discarded
+ *   5. Vent propagation: codecs whose output >= input are discarded
  *   6. Adding better codecs improves ratio without changing topology
  *
  * Uses: @anthropic-ai/aeon (TopologicalCompressor, codecs)
@@ -23,11 +23,10 @@ import {
   GzipCodec,
   HuffmanCodec,
   DictionaryCodec,
+  getCodecById,
   PURE_JS_CODECS,
   BUILTIN_CODECS,
 } from '@aeon/compression';
-import type { CompressionCodec } from '@aeon/compression';
-
 describe('Topological Compression (§8.6)', () => {
 
   describe('Core Claim: Per-Chunk Adaptive Codec Selection', () => {
@@ -80,7 +79,7 @@ describe('Topological Compression (§8.6)', () => {
       expect(result.ratio).toBeGreaterThan(0.9);
     });
 
-    it('random data: raw should win (all codecs poisoned)', () => {
+    it('random data: raw should win (all codecs vented)', () => {
       // Pseudo-random data — incompressible
       const data = new Uint8Array(4096);
       let seed = 0xDEADBEEF;
@@ -99,8 +98,8 @@ describe('Topological Compression (§8.6)', () => {
       expect(result.chunks[0].codecId).toBe(0);
       expect(result.chunks[0].codecName).toBe('raw');
 
-      // Poisoned count should be > 0
-      expect(result.chunks[0].poisoned).toBeGreaterThan(0);
+      // Vented count should be > 0
+      expect(result.chunks[0].vented).toBeGreaterThan(0);
     });
   });
 
@@ -147,6 +146,27 @@ describe('Topological Compression (§8.6)', () => {
       // Bytes 5-8: compressed size (u32 big-endian)
       const compressedSize = view.getUint32(4);
       expect(compressedSize).toBeLessThanOrEqual(100);
+    });
+
+    it('single chunk can be decoded independently via its 9-byte header', () => {
+      const data = new TextEncoder().encode('alpha beta gamma delta '.repeat(400));
+      const compressor = new TopologicalCompressor({
+        chunkSize: 2048,
+        codecs: BUILTIN_CODECS,
+      });
+      const result = compressor.compress(data);
+
+      // Parse first chunk frame directly.
+      const codecId = result.data[0];
+      const view = new DataView(result.data.buffer, result.data.byteOffset + 1, 8);
+      const originalSize = view.getUint32(0);
+      const compressedSize = view.getUint32(4);
+      const chunkPayload = result.data.subarray(9, 9 + compressedSize);
+
+      const codec = getCodecById(codecId);
+      const decodedFirstChunk = codec.decode(chunkPayload, originalSize);
+
+      expect(decodedFirstChunk).toEqual(data.subarray(0, originalSize));
     });
   });
 
@@ -259,8 +279,8 @@ describe('Topological Compression (§8.6)', () => {
     });
   });
 
-  describe('Poison Propagation in Codec Space', () => {
-    it('codecs whose output >= input are poisoned', () => {
+  describe('Vent Propagation in Codec Space', () => {
+    it('codecs whose output >= input are vented', () => {
       // Random data — most codecs will expand it
       const data = new Uint8Array(4096);
       let seed = 0xCAFEBABE;
@@ -275,11 +295,11 @@ describe('Topological Compression (§8.6)', () => {
       });
       const result = compressor.compress(data);
 
-      // At least some codecs should be poisoned on random data
-      const totalPoisoned = result.chunks.reduce((sum, c) => sum + c.poisoned, 0);
-      expect(totalPoisoned).toBeGreaterThan(0);
+      // At least some codecs should be vented on random data.
+      const totalVented = result.chunks.reduce((sum, c) => sum + c.vented, 0);
+      expect(totalVented).toBeGreaterThan(0);
 
-      // Raw (id=0) should never be poisoned (it returns input as-is)
+      // Raw (id=0) should never be vented (it returns input as-is).
       // So the winner should be raw for random data
       expect(result.chunks[0].codecId).toBe(0);
     });
@@ -324,8 +344,8 @@ describe('Topological Compression (§8.6)', () => {
       const huffman = new HuffmanCodec();
       const encoded = huffman.encode(data);
 
-      // On truly random data, Huffman + 260 bytes overhead >= raw
-      // The race would poison it
+      // On truly random data, Huffman + 260 bytes overhead >= raw.
+      // The race would vent it.
       // Just verify roundtrip works regardless
       if (encoded.length >= 260) {
         const decoded = huffman.decode(encoded, data.length);
@@ -458,14 +478,14 @@ describe('Topological Compression (§8.6)', () => {
      *     ├─ Global gzip (entire stream)
      *     └─ Per-chunk topological (8 codecs racing per 4096-byte chunk)
      *   RACE → smallest wins
-     *   COLLAPSE → 5-byte strategy header + data
+     *   FOLD → 5-byte strategy header + data
      *
      * On homogeneous text, global brotli wins.
      * On mixed content, per-chunk topo wins.
      * The topology adapts at BOTH granularities.
      */
 
-    it('two-level race beats standalone brotli on homogeneous text', () => {
+    it('two-level race picks the globally smallest strategy on homogeneous text', () => {
       const text = 'the quick brown fox jumps over the lazy dog\n'.repeat(500);
       const data = new TextEncoder().encode(text);
 
@@ -484,14 +504,28 @@ describe('Topological Compression (§8.6)', () => {
       });
       const chunkedResult = chunkedOnly.compress(data);
 
-      // Two-level should beat or match per-chunk
-      // (global brotli wins the outer race on homogeneous text)
+      // Two-level should beat or match per-chunk.
       expect(twoLevelResult.compressedSize).toBeLessThanOrEqual(
         chunkedResult.compressedSize,
       );
 
-      // Strategy should be global brotli (it has cross-chunk dictionary)
+      // Strategy should be global brotli (cross-chunk dictionary wins on homogeneous text).
       expect(twoLevelResult.strategy).toBe('global:brotli');
+
+      // Outer race optimality: compare against all valid stream-level candidates.
+      const candidates = [5 + chunkedResult.compressedSize];
+      for (const codec of BUILTIN_CODECS) {
+        if (codec.id === 0) continue;
+        try {
+          const encoded = codec.encode(data);
+          if (encoded.length < data.length) {
+            candidates.push(5 + encoded.length);
+          }
+        } catch {
+          // Ignore unavailable runtime codecs.
+        }
+      }
+      expect(twoLevelResult.compressedSize).toBe(Math.min(...candidates));
 
       // Roundtrip
       expect(twoLevel.decompress(twoLevelResult.data)).toEqual(data);
@@ -563,6 +597,33 @@ describe('Topological Compression (§8.6)', () => {
 
       // Roundtrip
       expect(tc.decompress(result.data)).toEqual(data);
+    });
+
+    it('strategy header is 5 bytes and decodable', () => {
+      const data = new TextEncoder().encode('compress me please\n'.repeat(800));
+      const tc = new TopologicalCompressor({
+        chunkSize: 4096,
+        codecs: BUILTIN_CODECS,
+        streamRace: true,
+      });
+
+      const result = tc.compress(data);
+      expect(result.data.length).toBeGreaterThanOrEqual(5);
+
+      const strategyId = result.data[0];
+      const originalSize = new DataView(
+        result.data.buffer,
+        result.data.byteOffset + 1,
+        4,
+      ).getUint32(0);
+
+      expect(originalSize).toBe(data.length);
+
+      if (result.strategy === 'chunked') {
+        expect(strategyId).toBe(0);
+      } else {
+        expect(strategyId).toBeGreaterThan(0);
+      }
     });
   });
 });

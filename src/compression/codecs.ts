@@ -287,7 +287,7 @@ export class BrotliCodec implements CompressionCodec {
         },
       }));
     } catch {
-      // node:zlib unavailable (browser/CF Workers) — return raw (will be poisoned)
+      // node:zlib unavailable (browser/CF Workers) — return raw (will be vented)
       return data;
     }
   }

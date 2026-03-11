@@ -123,7 +123,7 @@ export class FrameReassembler {
     }
     /**
      * Clean up a stream's reassembly state.
-     * Call when a stream is closed or poisoned.
+     * Call when a stream is closed or vented.
      */
     closeStream(streamId) {
         const state = this.streams.get(streamId);

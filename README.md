@@ -16,7 +16,7 @@ In the Affectively framework, if "halos" are the users, then **Aeons are the col
 
 **Aeon** is a comprehensive TypeScript library for building distributed, collaborative applications. It provides the primitives needed for:
 
-- **Aeon Flow Protocol** - 10-byte binary multiplexing with fork/race/collapse over UDP
+- **Aeon Flow Protocol** - 10-byte binary multiplexing with fork/race/fold over UDP
 - **Distributed Synchronization** - Coordinate sync sessions across multiple nodes
 - **Schema Versioning** - Manage schema evolution with migrations and rollbacks
 - **Data Replication** - Configure consistency levels and replication policies
@@ -67,10 +67,10 @@ const flow = new AeonFlowProtocol(transport, {
   maxConcurrentStreams: 256,
 });
 
-// Fork 3 streams, race them, collapse to winner
+// Fork 3 streams, race them, fold to winner
 const results = await flow.fork([stream1, stream2, stream3]);
 const winner = await flow.race(results);
-await flow.collapse(winner);
+await flow.fold(winner);
 ```
 
 **UDP features:**
@@ -242,7 +242,7 @@ if (reconciler.detectConflicts('user:123')) {
 
 ### Flow (`@affectively/aeon/flow`)
 
-Binary multiplexing protocol with fork/race/collapse primitives.
+Binary multiplexing protocol with fork/race/fold primitives.
 
 - `AeonFlowProtocol` - Protocol engine (transport-agnostic)
 - `FlowCodec` - Frame encoding/decoding (10-byte headers)
@@ -401,7 +401,7 @@ disableLogging();
 | Feature | Aeon | Yjs | Automerge | QUIC |
 |---------|------|-----|-----------|------|
 | Binary Multiplexing | ✅ 10-byte frames | ❌ | ❌ | ✅ Complex framing |
-| Fork/Race/Collapse | ✅ | ❌ | ❌ | ❌ |
+| Fork/Race/Fold | ✅ | ❌ | ❌ | ❌ |
 | UDP Transport | ✅ Native | ❌ | ❌ | ✅ |
 | Zero HOL Blocking | ✅ | ❌ | ❌ | ✅ |
 | Schema Versioning | ✅ | ❌ | ❌ | ❌ |

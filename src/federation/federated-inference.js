@@ -9,10 +9,10 @@
  *   1. Discovers peers via DashRelay room or Bluetooth/WebRTC mesh
  *   2. Forks a flow stream per peer for the same prompt
  *   3. Races all streams — fastest inference result wins
- *   4. Poisons slower streams to free their resources
+ *   4. Vents slower streams to free their resources
  *   5. Returns the winning result to the caller
  *
- * This is fork/race/collapse at the network level —
+ * This is fork/race/fold at the network level —
  * the same primitive that handles ESI cache vs inference,
  * but applied across physical devices.
  *
@@ -64,10 +64,10 @@ function encodeCapabilities(caps) {
  * forks the same prompt to multiple peers, races them, and returns
  * the fastest result.
  *
- * Uses AeonFlowProtocol for fork/race/collapse:
+ * Uses AeonFlowProtocol for fork/race/fold:
  *   - fork(root, N) creates N child streams, one per peer
  *   - race(children) picks the first to complete
- *   - Losers are automatically poisoned
+ *   - Losers are automatically vented
  */
 export class FederatedInferenceCoordinator {
     peers = new Map();

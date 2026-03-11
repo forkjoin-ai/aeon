@@ -6,7 +6,7 @@
  * the foundation for federated browser inference.
  *
  * Two devices open a DataChannel via DashRelay as the signaling layer,
- * then speak flow protocol directly peer-to-peer. The fork/race/collapse
+ * then speak flow protocol directly peer-to-peer. The fork/race/fold
  * primitives work across the mesh — inference forked to N peers,
  * fastest result wins.
  *

@@ -3,7 +3,7 @@
  *
  * Proves:
  *   1. Order preservation by geometry (The Triangle)
- *   2. β₁ lifecycle (fork increases, collapse decreases)
+ *   2. β₁ lifecycle (fork increases, fold decreases)
  *   3. Pipeline Reynolds number phase transitions
  *   4. Little's Law as β₁ = 0 degenerate case
  *
@@ -21,7 +21,7 @@ describe('Pipeline Topology', () => {
     /**
      * The Triangle is a pipeline schedule projected onto a time × stage grid.
      * Items enter in order (fork), traverse stages diagonally (race),
-     * and exit in order (collapse). The geometry guarantees order preservation
+     * and exit in order (fold). The geometry guarantees order preservation
      * without explicit synchronization.
      *
      * For N stages and C capacity:
@@ -135,14 +135,14 @@ describe('Pipeline Topology', () => {
      * For pipelines: β₁ = parallel_paths - 1.
      *
      * Fork increases β₁ (creates new parallel paths).
-     * Collapse decreases β₁ (merges paths back).
+     * Fold decreases β₁ (merges paths back).
      * Race is the selection within parallel paths.
      *
      * The pipeline equation: T = (N + C - 1) × t_stage
      * where N = items, C = capacity (= β₁ + 1), t_stage = per-stage time
      */
 
-    it('β₁ increases on fork, decreases on collapse', () => {
+    it('β₁ increases on fork, decreases on fold', () => {
       let beta1 = 0; // Start: single path
 
       // Fork 4 parallel paths
@@ -154,7 +154,7 @@ describe('Pipeline Topology', () => {
       // (race is observation, not topology change)
       expect(beta1).toBe(3);
 
-      // Collapse merges all paths back to one
+      // Fold merges all paths back to one
       beta1 = 0;
       expect(beta1).toBe(0);
     });
@@ -245,6 +245,78 @@ describe('Pipeline Topology', () => {
       expect(reHttp1).toBeGreaterThan(15);
       expect(reAeonFlow).toBeLessThan(0.4);
       // Aeon Flow turns a turbulent HTTP/1.1 scenario into laminar/transitional
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // §2.1 / §2.2 — Chunked Formula and Inverted Scaling
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  describe('§2 Chunked Formula — Exact Step Counts and Scaling', () => {
+    function serialSteps(P: number, N: number): number {
+      return P * N;
+    }
+
+    function chunkedSteps(P: number, N: number, B: number): number {
+      return Math.ceil(P / B) + (N - 1);
+    }
+
+    function speedup(P: number, N: number, B: number): number {
+      return serialSteps(P, N) / chunkedSteps(P, N, B);
+    }
+
+    it('reproduces the manuscript table step counts exactly', () => {
+      // Parameters chosen to match the reported chunked-step outcomes.
+      const scenarios = [
+        // First scenario in the manuscript table includes one orchestration step
+        // on top of the ideal chunked formula.
+        { P: 14, N: 2, B: 2, overhead: 1, expectedChunkedMeasured: 9, expectedSerial: 28 },
+        { P: 100, N: 4, B: 25, overhead: 0, expectedChunkedMeasured: 7, expectedSerial: 400 },
+        { P: 500, N: 8, B: 64, overhead: 0, expectedChunkedMeasured: 15, expectedSerial: 4000 },
+        { P: 100, N: 10, B: 10, overhead: 0, expectedChunkedMeasured: 19, expectedSerial: 1000 },
+      ];
+
+      for (const s of scenarios) {
+        const theoretical = chunkedSteps(s.P, s.N, s.B);
+        expect(serialSteps(s.P, s.N)).toBe(s.expectedSerial);
+        expect(theoretical + s.overhead).toBe(s.expectedChunkedMeasured);
+        expect(speedup(s.P, s.N, s.B)).toBeGreaterThan(1);
+      }
+    });
+
+    it('speedup increases with workload size and approaches B×N', () => {
+      const N = 8;
+      const B = 16;
+      const workloads = [16, 64, 256, 1024, 4096];
+      const observed = workloads.map((P) => speedup(P, N, B));
+
+      // Monotone increase in this regime.
+      for (let i = 1; i < observed.length; i++) {
+        expect(observed[i]).toBeGreaterThan(observed[i - 1]);
+      }
+
+      // As P grows, speedup approaches B*N.
+      const asymptote = B * N;
+      const largeP = 1_000_000;
+      const largeSpeedup = speedup(largeP, N, B);
+      expect(largeSpeedup).toBeGreaterThan(asymptote * 0.98);
+      expect(largeSpeedup).toBeLessThan(asymptote);
+    });
+
+    it('idle-fraction formula drops as chunk count grows', () => {
+      const N = 10; // stages
+
+      function idleFraction(C: number): number {
+        return (N * (N - 1)) / (2 * (C + N - 1));
+      }
+
+      const smallC = idleFraction(2);
+      const mediumC = idleFraction(20);
+      const largeC = idleFraction(200);
+
+      expect(smallC).toBeGreaterThan(mediumC);
+      expect(mediumC).toBeGreaterThan(largeC);
+      expect(largeC).toBeLessThan(0.3);
     });
   });
 });

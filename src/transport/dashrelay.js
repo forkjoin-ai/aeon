@@ -12,7 +12,7 @@
  *   - Automatic reconnection with exponential backoff
  *
  * This transport wraps DashRelay's broadcast/message system as a
- * FlowTransport interface, enabling flow protocol (fork/race/collapse)
+ * FlowTransport interface, enabling flow protocol (fork/race/fold)
  * over the relay mesh. Every app in the stack — forge sites, shell,
  * inference, presence, CRDT sync — speaks Aeon flow protocol over
  * DashRelay internally. HTTP is just the normie projection.

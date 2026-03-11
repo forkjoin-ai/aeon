@@ -18,22 +18,22 @@ Timeline view of all Aeon Flow frames — the equivalent of Chrome's Network wat
 - Timestamp (ms from connection start)
 - Stream ID
 - Sequence number
-- Frame type (DATA, FORK, FIN, POISON, RACE, COLLAPSE)
+- Frame type (DATA, FORK, FIN, VENT, RACE, FOLD)
 - Payload size
 - Visual timeline bar with color coding:
   - Blue: DATA
   - Green: FORK
   - Blue-light: FIN
-  - Red: POISON
+  - Red: VENT
   - Yellow: RACE
-  - Purple: COLLAPSE
+  - Purple: FOLD
 
 ### Stream Tree
 
 Hierarchical view of all streams. FORK frames create parent→child relationships, displayed as a tree. Each node shows:
 
 - Stream ID
-- State (OPEN / CLOSED / POISONED)
+- State (OPEN / CLOSED / VENTED)
 - Frame count and bytes received
 
 ### Frames
@@ -48,10 +48,10 @@ Detailed frame-by-frame inspector. Each frame can be expanded to show:
 Protocol statistics:
 
 - Total frames (sent/received breakdown)
-- Frame type counts (DATA, FORK, FIN, POISON)
+- Frame type counts (DATA, FORK, FIN, VENT)
 - Payload bytes vs framing overhead (with percentage)
 - Total wire bytes
-- Active/closed/poisoned stream counts
+- Active/closed/vented stream counts
 - Duration and throughput
 
 ## How It Works

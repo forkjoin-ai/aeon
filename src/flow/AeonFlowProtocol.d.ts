@@ -1,5 +1,5 @@
 /**
- * Aeon Flow Protocol — Stream Multiplexing with Fork/Race/Collapse
+ * Aeon Flow Protocol — Stream Multiplexing with Fork/Race/Fold
  *
  * The Flow Layer sits between the Frame Layer (FlowCodec) and the
  * Application Layer (inference, ESI, sync, shell, speculate). It manages
@@ -10,16 +10,16 @@
  *   reality branching.
  *
  * - **Race**: Mark streams as racing. The first to send a FIN frame wins.
- *   Losers are automatically poisoned. Used for speculative decoding,
+ *   Losers are automatically vented. Used for speculative decoding,
  *   cache races, A/B testing.
  *
- * - **Collapse**: Wait for all streams to complete (or poison), then
+ * - **Fold**: Wait for all streams to complete (or vent), then
  *   merge their results via a caller-provided function. Used for shard
  *   assembly, fragment stitching, branch reconciliation.
  *
  * Stream IDs: even = client-initiated, odd = server-initiated (like HTTP/2).
  * Backpressure via per-stream high-water mark (configurable, default 64).
- * Poison propagates from parent to all descendants.
+ * Vent propagates from parent to all descendants.
  *
  * @see docs/ebooks/145-log-rolling-pipelined-prefill/ch14-aeon-flow-protocol.md
  */
@@ -30,7 +30,7 @@ type VoidHandler = () => void;
  * AeonFlowProtocol
  *
  * Manages multiplexed binary streams over a transport with
- * fork/race/collapse semantics.
+ * fork/race/fold semantics.
  */
 export declare class AeonFlowProtocol {
     private streams;
@@ -41,9 +41,9 @@ export declare class AeonFlowProtocol {
     private config;
     private frameHandlers;
     private endHandlers;
-    private poisonHandlers;
+    private ventHandlers;
     private raceGroups;
-    private collapseGroups;
+    private foldGroups;
     constructor(transport: FlowTransport, config?: Partial<FlowProtocolConfig>);
     /**
      * Open a new root stream (no parent).
@@ -63,7 +63,7 @@ export declare class AeonFlowProtocol {
      * Fork a parent stream into N child streams.
      *
      * Each child stream is independent and can send/receive frames.
-     * The parent tracks all children. Poisoning the parent poisons all children.
+     * The parent tracks all children. Venting the parent vents all children.
      *
      * @param parentStreamId The stream to fork from
      * @param count Number of child streams to create
@@ -72,7 +72,7 @@ export declare class AeonFlowProtocol {
     fork(parentStreamId: number, count: number): number[];
     /**
      * Race multiple streams. The first to send a FIN frame wins.
-     * All other streams in the race are automatically poisoned.
+     * All other streams in the race are automatically vented.
      *
      * @param streamIds Streams to race (must all be open)
      * @returns Promise resolving with the winner's stream ID and final payload
@@ -82,14 +82,14 @@ export declare class AeonFlowProtocol {
         result: Uint8Array;
     }>;
     /**
-     * Collapse multiple streams: wait for all to complete (or poison),
+     * Fold multiple streams: wait for all to complete (or vent),
      * then merge their results.
      *
-     * @param streamIds Streams to collapse
+     * @param streamIds Streams to fold
      * @param merger Function that merges results from all streams
      * @returns Promise resolving with the merged result
      */
-    collapse(streamIds: number[], merger: (results: Map<number, Uint8Array>) => Uint8Array): Promise<Uint8Array>;
+    fold(streamIds: number[], merger: (results: Map<number, Uint8Array>) => Uint8Array): Promise<Uint8Array>;
     /**
      * Send a payload on a stream.
      */
@@ -102,12 +102,12 @@ export declare class AeonFlowProtocol {
      */
     finish(streamId: number, finalPayload?: Uint8Array): void;
     /**
-     * Poison a stream. Sends a POISON frame and propagates to all descendants.
+     * Vent a stream. Sends a VENT frame and propagates to all descendants.
      *
-     * Poisoning is the protocol-level equivalent of NaN propagation,
+     * Venting is the protocol-level equivalent of NaN propagation,
      * AbortSignal cancellation, or error cascading.
      */
-    poison(streamId: number): void;
+    vent(streamId: number): void;
     /**
      * Register a handler for frames arriving on a specific stream.
      */
@@ -117,18 +117,18 @@ export declare class AeonFlowProtocol {
      */
     onStreamEnd(streamId: number, handler: VoidHandler): () => void;
     /**
-     * Register a handler for when a stream is poisoned.
+     * Register a handler for when a stream is vented.
      */
-    onStreamPoisoned(streamId: number, handler: VoidHandler): () => void;
+    onStreamVented(streamId: number, handler: VoidHandler): () => void;
     /**
      * Close the protocol and underlying transport.
-     * Poisons all open streams first.
+     * Vents all open streams first.
      */
     destroy(): void;
     private handleIncoming;
     private handleFrame;
     private settleRace;
-    private settleCollapse;
+    private settleFold;
     private allocateStreamId;
     private createStream;
     private requireStream;

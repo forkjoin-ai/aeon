@@ -1,11 +1,11 @@
 /**
  * Aeon Flow Module
  *
- * The unified fork/race/collapse protocol primitive with a binary wire format.
+ * The unified fork/race/fold protocol primitive with a binary wire format.
  *
  * Protocol layers:
  *   Application (inference | esi | sync | ghost | speculate)
- *   Flow Layer  (fork/race/collapse, stream mux, backpressure, poison)
+ *   Flow Layer  (fork/race/fold, stream mux, backpressure, vent)
  *   Frame Layer (binary codec, zerocopy buffers)
  *   Transport   (WebSocket | TCP | UDP | WebRTC DataChannel | WebTransport | IPC)
  *
@@ -22,8 +22,8 @@ export { FlowCodec, HEADER_SIZE, MAX_PAYLOAD_LENGTH } from './FlowCodec';
 export {
   FORK,
   RACE,
-  COLLAPSE,
-  POISON,
+  FOLD,
+  VENT,
   FIN,
   DEFAULT_FLOW_CONFIG,
 } from './types';

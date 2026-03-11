@@ -1,5 +1,5 @@
 /**
- * Aeon Flow Protocol — Stream Multiplexing with Fork/Race/Collapse
+ * Aeon Flow Protocol — Stream Multiplexing with Fork/Race/Fold
  *
  * The Flow Layer sits between the Frame Layer (FlowCodec) and the
  * Application Layer (inference, ESI, sync, shell, speculate). It manages
@@ -10,16 +10,16 @@
  *   reality branching.
  *
  * - **Race**: Mark streams as racing. The first to send a FIN frame wins.
- *   Losers are automatically poisoned. Used for speculative decoding,
+ *   Losers are automatically vented. Used for speculative decoding,
  *   cache races, A/B testing.
  *
- * - **Collapse**: Wait for all streams to complete (or poison), then
+ * - **Fold**: Wait for all streams to complete (or vent), then
  *   merge their results via a caller-provided function. Used for shard
  *   assembly, fragment stitching, branch reconciliation.
  *
  * Stream IDs: even = client-initiated, odd = server-initiated (like HTTP/2).
  * Backpressure via per-stream high-water mark (configurable, default 64).
- * Poison propagates from parent to all descendants.
+ * Vent propagates from parent to all descendants.
  *
  * @see docs/ebooks/145-log-rolling-pipelined-prefill/ch14-aeon-flow-protocol.md
  */
@@ -28,8 +28,8 @@ import { FlowCodec } from './FlowCodec';
 import {
   FORK,
   RACE,
-  COLLAPSE,
-  POISON,
+  FOLD,
+  VENT,
   FIN,
   DEFAULT_FLOW_CONFIG,
 } from './types';
@@ -52,12 +52,12 @@ type VoidHandler = () => void;
  * AeonFlowProtocol
  *
  * Manages multiplexed binary streams over a transport with
- * fork/race/collapse semantics.
+ * fork/race/fold semantics.
  */
 export class AeonFlowProtocol {
   private streams: Map<number, FlowStream> = new Map();
-  private nextEvenId: number = 0;
-  private nextOddId: number = 1;
+  private nextEvenId = 0;
+  private nextOddId = 1;
   private codec: FlowCodec;
   private transport: FlowTransport;
   private config: FlowProtocolConfig;
@@ -65,7 +65,7 @@ export class AeonFlowProtocol {
   // Event handlers
   private frameHandlers: Map<number, Set<FrameHandler>> = new Map();
   private endHandlers: Map<number, Set<VoidHandler>> = new Map();
-  private poisonHandlers: Map<number, Set<VoidHandler>> = new Map();
+  private ventHandlers: Map<number, Set<VoidHandler>> = new Map();
 
   // Race tracking
   private raceGroups: Map<string, {
@@ -74,8 +74,8 @@ export class AeonFlowProtocol {
     settled: boolean;
   }> = new Map();
 
-  // Collapse tracking
-  private collapseGroups: Map<string, {
+  // Fold tracking
+  private foldGroups: Map<string, {
     streamIds: number[];
     merger: (results: Map<number, Uint8Array>) => Uint8Array;
     resolve: (result: Uint8Array) => void;
@@ -91,6 +91,7 @@ export class AeonFlowProtocol {
     this.transport = transport;
     this.config = { ...DEFAULT_FLOW_CONFIG, ...config };
     this.codec = FlowCodec.createSync();
+    this.upgradeCodecInBackground();
 
     // Wire up incoming data
     this.transport.onReceive((data: Uint8Array) => {
@@ -125,7 +126,7 @@ export class AeonFlowProtocol {
    */
   getActiveStreams(): FlowStream[] {
     return Array.from(this.streams.values()).filter(
-      (s) => s.state !== 'closed' && s.state !== 'poisoned'
+      (s) => s.state !== 'closed' && s.state !== 'vented'
     );
   }
 
@@ -137,7 +138,7 @@ export class AeonFlowProtocol {
    * Fork a parent stream into N child streams.
    *
    * Each child stream is independent and can send/receive frames.
-   * The parent tracks all children. Poisoning the parent poisons all children.
+   * The parent tracks all children. Venting the parent vents all children.
    *
    * @param parentStreamId The stream to fork from
    * @param count Number of child streams to create
@@ -172,12 +173,12 @@ export class AeonFlowProtocol {
   }
 
   // ═══════════════════════════════════════════════════════════════════════
-  // Race: first stream to FIN wins, losers are poisoned
+  // Race: first stream to FIN wins, losers are vented
   // ═══════════════════════════════════════════════════════════════════════
 
   /**
    * Race multiple streams. The first to send a FIN frame wins.
-   * All other streams in the race are automatically poisoned.
+   * All other streams in the race are automatically vented.
    *
    * @param streamIds Streams to race (must all be open)
    * @returns Promise resolving with the winner's stream ID and final payload
@@ -220,37 +221,37 @@ export class AeonFlowProtocol {
   }
 
   // ═══════════════════════════════════════════════════════════════════════
-  // Collapse: wait for all streams, merge results
+  // Fold: wait for all streams, merge results
   // ═══════════════════════════════════════════════════════════════════════
 
   /**
-   * Collapse multiple streams: wait for all to complete (or poison),
+   * Fold multiple streams: wait for all to complete (or vent),
    * then merge their results.
    *
-   * @param streamIds Streams to collapse
+   * @param streamIds Streams to fold
    * @param merger Function that merges results from all streams
    * @returns Promise resolving with the merged result
    */
-  collapse(
+  fold(
     streamIds: number[],
     merger: (results: Map<number, Uint8Array>) => Uint8Array
   ): Promise<Uint8Array> {
     if (streamIds.length < 1) {
-      throw new RangeError('Collapse requires at least 1 stream');
+      throw new RangeError('Fold requires at least 1 stream');
     }
 
-    // Mark all streams as collapsing
+    // Mark all streams as folding
     for (const id of streamIds) {
       const stream = this.requireStream(id);
-      stream.state = 'collapsing';
+      stream.state = 'folding';
     }
 
-    // Send COLLAPSE frame on each stream
+    // Send FOLD frame on each stream
     for (const id of streamIds) {
-      this.sendFrame(id, COLLAPSE, new Uint8Array(0));
+      this.sendFrame(id, FOLD, new Uint8Array(0));
     }
 
-    const groupId = `collapse-${streamIds.join('-')}-${Date.now()}`;
+    const groupId = `fold-${streamIds.join('-')}-${Date.now()}`;
 
     return new Promise((resolve) => {
       const group = {
@@ -262,28 +263,28 @@ export class AeonFlowProtocol {
         settled: false,
       };
 
-      this.collapseGroups.set(groupId, group);
+      this.foldGroups.set(groupId, group);
 
-      // Listen for FIN or POISON on each stream
+      // Listen for FIN or VENT on each stream
       for (const id of streamIds) {
         this.onStreamEnd(id, () => {
-          this.settleCollapse(groupId, id, false);
+          this.settleFold(groupId, id, false);
         });
-        this.onStreamPoisoned(id, () => {
-          this.settleCollapse(groupId, id, true);
+        this.onStreamVented(id, () => {
+          this.settleFold(groupId, id, true);
         });
       }
     });
   }
 
   // ═══════════════════════════════════════════════════════════════════════
-  // Send / Poison / Close
+  // Send / Vent / Close
   // ═══════════════════════════════════════════════════════════════════════
 
   /**
    * Send a payload on a stream.
    */
-  send(streamId: number, payload: Uint8Array, flags: number = 0): void {
+  send(streamId: number, payload: Uint8Array, flags = 0): void {
     const stream = this.requireStream(streamId);
 
     // Backpressure check
@@ -293,7 +294,7 @@ export class AeonFlowProtocol {
       );
     }
 
-    // Accumulate locally so race/collapse can read results
+    // Accumulate locally so race/fold can read results
     if (payload.length > 0) {
       stream.results.push(payload);
     }
@@ -329,31 +330,31 @@ export class AeonFlowProtocol {
   }
 
   /**
-   * Poison a stream. Sends a POISON frame and propagates to all descendants.
+   * Vent a stream. Sends a VENT frame and propagates to all descendants.
    *
-   * Poisoning is the protocol-level equivalent of NaN propagation,
+   * Venting is the protocol-level equivalent of NaN propagation,
    * AbortSignal cancellation, or error cascading.
    */
-  poison(streamId: number): void {
+  vent(streamId: number): void {
     const stream = this.streams.get(streamId);
-    if (!stream || stream.state === 'poisoned' || stream.state === 'closed') {
+    if (!stream || stream.state === 'vented' || stream.state === 'closed') {
       return; // Already dead
     }
 
-    stream.state = 'poisoned';
-    this.sendFrame(streamId, POISON, new Uint8Array(0));
+    stream.state = 'vented';
+    this.sendFrame(streamId, VENT, new Uint8Array(0));
 
-    // Notify poison handlers
-    const handlers = this.poisonHandlers.get(streamId);
+    // Notify vent handlers
+    const handlers = this.ventHandlers.get(streamId);
     if (handlers) {
       for (const handler of handlers) {
         handler();
       }
     }
 
-    // Propagate poison to all children (recursively)
+    // Propagate vent to all children (recursively)
     for (const childId of stream.children) {
-      this.poison(childId);
+      this.vent(childId);
     }
   }
 
@@ -388,13 +389,13 @@ export class AeonFlowProtocol {
   }
 
   /**
-   * Register a handler for when a stream is poisoned.
+   * Register a handler for when a stream is vented.
    */
-  onStreamPoisoned(streamId: number, handler: VoidHandler): () => void {
-    let handlers = this.poisonHandlers.get(streamId);
+  onStreamVented(streamId: number, handler: VoidHandler): () => void {
+    let handlers = this.ventHandlers.get(streamId);
     if (!handlers) {
       handlers = new Set();
-      this.poisonHandlers.set(streamId, handlers);
+      this.ventHandlers.set(streamId, handlers);
     }
     handlers.add(handler);
     return () => { handlers!.delete(handler); };
@@ -406,20 +407,20 @@ export class AeonFlowProtocol {
 
   /**
    * Close the protocol and underlying transport.
-   * Poisons all open streams first.
+   * Vents all open streams first.
    */
   destroy(): void {
     for (const [id, stream] of this.streams) {
-      if (stream.state !== 'closed' && stream.state !== 'poisoned') {
+      if (stream.state !== 'closed' && stream.state !== 'vented') {
         stream.state = 'closed';
       }
     }
     this.streams.clear();
     this.frameHandlers.clear();
     this.endHandlers.clear();
-    this.poisonHandlers.clear();
+    this.ventHandlers.clear();
     this.raceGroups.clear();
-    this.collapseGroups.clear();
+    this.foldGroups.clear();
     this.transport.close();
   }
 
@@ -454,8 +455,8 @@ export class AeonFlowProtocol {
     const stream = this.streams.get(streamId)!;
 
     // Handle control flags
-    if (flags & POISON) {
-      this.poison(streamId);
+    if (flags & VENT) {
+      this.vent(streamId);
       return;
     }
 
@@ -506,7 +507,7 @@ export class AeonFlowProtocol {
   }
 
   // ═══════════════════════════════════════════════════════════════════════
-  // Private: race/collapse settlement
+  // Private: race/fold settlement
   // ═══════════════════════════════════════════════════════════════════════
 
   private settleRace(groupId: string, winnerId: number): void {
@@ -519,10 +520,10 @@ export class AeonFlowProtocol {
       ? this.concatenateResults(winnerStream.results)
       : new Uint8Array(0);
 
-    // Poison all losers
+    // Vent all losers
     for (const id of group.streamIds) {
       if (id !== winnerId) {
-        this.poison(id);
+        this.vent(id);
       }
     }
 
@@ -530,30 +531,30 @@ export class AeonFlowProtocol {
     this.raceGroups.delete(groupId);
   }
 
-  private settleCollapse(
+  private settleFold(
     groupId: string,
     streamId: number,
-    wasPoisoned: boolean
+    wasVented: boolean
   ): void {
-    const group = this.collapseGroups.get(groupId);
+    const group = this.foldGroups.get(groupId);
     if (!group || group.settled) return;
 
     group.completed.add(streamId);
 
-    if (!wasPoisoned) {
+    if (!wasVented) {
       const stream = this.streams.get(streamId);
       if (stream) {
         group.results.set(streamId, this.concatenateResults(stream.results));
       }
     }
-    // Poisoned streams contribute nothing to the merge
+    // Vented streams contribute nothing to the merge
 
-    // Check if all streams have completed or been poisoned
+    // Check if all streams have completed or been vented
     if (group.completed.size >= group.streamIds.length) {
       group.settled = true;
       const merged = group.merger(group.results);
       group.resolve(merged);
-      this.collapseGroups.delete(groupId);
+      this.foldGroups.delete(groupId);
     }
   }
 
@@ -639,5 +640,21 @@ export class AeonFlowProtocol {
       offset += chunk.length;
     }
     return result;
+  }
+
+  /**
+   * Attempt to upgrade to WASM codec without delaying protocol startup.
+   * JS codec remains the correctness path if WASM is unavailable.
+   */
+  private upgradeCodecInBackground(): void {
+    FlowCodec.create()
+      .then((codec) => {
+        if (codec.isWasmAccelerated) {
+          this.codec = codec;
+        }
+      })
+      .catch(() => {
+        // Graceful fallback: keep JS codec
+      });
   }
 }

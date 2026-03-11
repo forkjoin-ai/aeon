@@ -80,9 +80,10 @@ The work is framed through the lens of Wally Wallington's "Forgotten Technology"
 | UDP transport tests | `open-source/aeon/src/__tests__/flow/udp-flow-transport.test.ts` | UDP fragmentation, ACK bitmaps, congestion |
 | Reassembler tests | `open-source/aeon/src/__tests__/flow/frame-reassembler.test.ts` | 31-test out-of-order reassembly suite |
 | Rhizome router | `apps/edge-workers/src/workers/aeon-rhizome.ts` | `aeon://` publication and edge resolution APIs |
-| `TopologyAnalyzer` | `open-source/aeon/src/topology/TopologyAnalyzer.ts` | Betti numbers, fork/join detection, topological deficit (Buleys) |
+| `TopologyAnalyzer` | `open-source/aeon/src/topology/TopologyAnalyzer.ts` | Betti numbers, fork/join detection, topological deficit (Bules) |
 | `TopologySampler` | `open-source/aeon/src/topology/TopologySampler.ts` | Runtime sampling of deficit over time |
 | Topology tests | `open-source/aeon/src/__tests__/topology/topology.test.ts` | 24-test Betti number + deficit + sampler suite |
+| TLA+ formal suite | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/` | Mechanized checks for C1–C4, §7 formulas, §6.11–§6.12 deficits; parser-validated with `aeon-logic` before TLC |
 
 ## Performance Impact
 

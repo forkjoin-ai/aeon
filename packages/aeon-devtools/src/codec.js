@@ -14,8 +14,8 @@ const AEON_HEADER_SIZE = 10;
 const AEON_FLAGS = {
   FORK:     0x01,
   RACE:     0x02,
-  COLLAPSE: 0x04,
-  POISON:   0x08,
+  FOLD: 0x04,
+  VENT:   0x08,
   FIN:      0x10,
 };
 
@@ -70,8 +70,8 @@ function getFlagNames(flags) {
   const parts = [];
   if (flags & AEON_FLAGS.FORK) parts.push('FORK');
   if (flags & AEON_FLAGS.RACE) parts.push('RACE');
-  if (flags & AEON_FLAGS.COLLAPSE) parts.push('COLLAPSE');
-  if (flags & AEON_FLAGS.POISON) parts.push('POISON');
+  if (flags & AEON_FLAGS.FOLD) parts.push('FOLD');
+  if (flags & AEON_FLAGS.VENT) parts.push('VENT');
   if (flags & AEON_FLAGS.FIN) parts.push('FIN');
   if (parts.length === 0) parts.push('DATA');
   return parts.join('|');
@@ -79,10 +79,10 @@ function getFlagNames(flags) {
 
 function getFlagClass(flags) {
   if (flags & AEON_FLAGS.FORK) return 'fork';
-  if (flags & AEON_FLAGS.POISON) return 'poison';
+  if (flags & AEON_FLAGS.VENT) return 'vent';
   if (flags & AEON_FLAGS.FIN) return 'fin';
   if (flags & AEON_FLAGS.RACE) return 'race';
-  if (flags & AEON_FLAGS.COLLAPSE) return 'collapse';
+  if (flags & AEON_FLAGS.FOLD) return 'fold';
   return 'data';
 }
 

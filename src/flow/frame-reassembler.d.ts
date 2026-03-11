@@ -73,7 +73,7 @@ export declare class FrameReassembler {
     getMissingSequences(streamId: number): number[];
     /**
      * Clean up a stream's reassembly state.
-     * Call when a stream is closed or poisoned.
+     * Call when a stream is closed or vented.
      */
     closeStream(streamId: number): void;
     /**
