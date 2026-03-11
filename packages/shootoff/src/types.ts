@@ -26,7 +26,7 @@ export interface SiteManifest {
 }
 
 /** Compression algorithm */
-export type CompressionAlgo = 'none' | 'gzip' | 'brotli';
+export type CompressionAlgo = 'none' | 'gzip' | 'brotli' | 'topo-pure' | 'topo-full';
 
 /** Protocol under test */
 export type Protocol = 'http1' | 'http2' | 'http3' | 'aeon-flow' | 'aeon-flux-http' | 'aeon-flux-flow';

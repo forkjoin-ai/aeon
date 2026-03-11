@@ -103,4 +103,4 @@ Shares the binary codec from `../nginx-aeon-flow/src/ngx_aeon_flow_codec.c` via 
 ## See Also
 
 - [`nginx-aeon-flow`](../nginx-aeon-flow/) — The reverse direction (HTTP → Aeon Flow)
-- [Chapter 16: The nginx Module](../../../docs/ebooks/145-log-rolling-pipelined-prefill/ch16-nginx-aeon-flow-module.md)
+- [Chapter 16: The nginx Module](../../docs/ebooks/145-log-rolling-pipelined-prefill/ch16-nginx-aeon-flow-module.md)

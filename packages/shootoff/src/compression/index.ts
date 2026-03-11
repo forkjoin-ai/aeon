@@ -9,6 +9,8 @@
  */
 
 import { gzipSync, brotliCompressSync, constants } from 'node:zlib';
+import { TopologicalCompressor } from '../../../../src/compression/TopologicalCompressor';
+import { PURE_JS_CODECS, BUILTIN_CODECS } from '../../../../src/compression/codecs';
 import type { CompressionAlgo } from '../types';
 
 /**
@@ -89,6 +91,16 @@ export function compress(payload: Uint8Array, algo: CompressionAlgo): Uint8Array
           [constants.BROTLI_PARAM_QUALITY]: 4, // nginx default for on-the-fly
         },
       }));
+
+    case 'topo-pure': {
+      const compressor = new TopologicalCompressor({ chunkSize: 4096, codecs: PURE_JS_CODECS });
+      return compressor.compress(payload).data;
+    }
+
+    case 'topo-full': {
+      const compressor = new TopologicalCompressor({ chunkSize: 4096, codecs: BUILTIN_CODECS });
+      return compressor.compress(payload).data;
+    }
   }
 }
 

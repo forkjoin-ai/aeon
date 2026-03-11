@@ -1,0 +1,20 @@
+{
+  "name": "fork-race-collapse-companion",
+  "version": "1.0.0",
+  "description": "Reproducible companion tests for 'Fork/Race/Collapse Is All You Need' (arXiv manuscript)",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:pipeline": "vitest run -t 'Pipeline'",
+    "test:flow": "vitest run -t 'Flow Protocol'",
+    "test:compression": "vitest run -t 'Topological Compression'",
+    "test:shootoff": "vitest run -t 'Shootoff'",
+    "test:queueing": "vitest run -t 'Queueing Theory'"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  }
+}

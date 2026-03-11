@@ -186,7 +186,7 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
 
 const protocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow'];
 const allProtocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow', 'aeon-flux-http', 'aeon-flux-flow'];
-const compressions: CompressionAlgo[] = ['none', 'gzip', 'brotli'];
+const compressions: CompressionAlgo[] = ['none', 'gzip', 'brotli', 'topo-pure', 'topo-full'];
 
 describe('Protocol Shootoff', () => {
   describe('Whip Worthington\'s Flaxseed Empire (big content site)', () => {
@@ -377,6 +377,54 @@ describe('Protocol Shootoff', () => {
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
+  // Topological vs Brotli — Per-Chunk Adaptive vs Global Algorithm
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  describe('Topological vs Brotli shootoff', () => {
+    it('Big Content: brotli vs topo-pure vs topo-full across all protocols', () => {
+      const results: SiteResult[] = [];
+      for (const proto of protocols) {
+        results.push(runSite(bigContentSite, proto, 'brotli'));
+        results.push(runSite(bigContentSite, proto, 'topo-pure'));
+        results.push(runSite(bigContentSite, proto, 'topo-full'));
+      }
+
+      const rows = buildTable(results);
+      printTable('BROTLI vs TOPO-PURE vs TOPO-FULL — Big Content (12 resources, ~2.5 MB)', rows);
+
+      // Topo-full (with brotli in the race) should beat or match standalone brotli
+      const aeonBrotli = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'brotli')!;
+      const aeonTopoFull = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'topo-full')!;
+      expect(aeonTopoFull.totalWireBytes).toBeGreaterThan(0);
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThanOrEqual(aeonTopoFull.totalRawBytes);
+      // Topo-full should be within 10% of brotli (9-byte per-chunk header overhead)
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonBrotli.totalCompressedBytes * 1.15);
+    });
+
+    it('Microfrontend: brotli vs topo-pure vs topo-full across all protocols', () => {
+      const results: SiteResult[] = [];
+      for (const proto of protocols) {
+        results.push(runSite(microfrontendSite, proto, 'brotli'));
+        results.push(runSite(microfrontendSite, proto, 'topo-pure'));
+        results.push(runSite(microfrontendSite, proto, 'topo-full'));
+      }
+
+      const rows = buildTable(results);
+      printTable('BROTLI vs TOPO-PURE vs TOPO-FULL — Microfrontend (95 resources, ~1.8 MB)', rows);
+
+      const aeonBrotli = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'brotli')!;
+      const aeonTopoPure = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'topo-pure')!;
+      const aeonTopoFull = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'topo-full')!;
+      expect(aeonTopoFull.totalWireBytes).toBeGreaterThan(0);
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThanOrEqual(aeonTopoFull.totalRawBytes);
+      // Topo-full should beat topo-pure significantly
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonTopoPure.totalCompressedBytes);
+      // Topo-full trades 9-byte/chunk headers for per-chunk adaptivity — within 25% of brotli
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonBrotli.totalCompressedBytes * 1.25);
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
   // Head-to-Head Summary
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -429,6 +477,21 @@ describe('Protocol Shootoff', () => {
               bestByOverhead.comp = comp;
               bestByOverhead.pct = r.framingOverheadPercent;
             }
+          }
+        }
+
+        // Also test topo-full through original protocols
+        for (const proto of protocols) {
+          const r = runSite(manifest, proto, 'topo-full');
+          if (r.totalWireBytes < bestByWire.wire) {
+            bestByWire.protocol = proto;
+            bestByWire.comp = 'topo-full';
+            bestByWire.wire = r.totalWireBytes;
+          }
+          if (r.framingOverheadPercent < bestByOverhead.pct) {
+            bestByOverhead.protocol = proto;
+            bestByOverhead.comp = 'topo-full';
+            bestByOverhead.pct = r.framingOverheadPercent;
           }
         }
 

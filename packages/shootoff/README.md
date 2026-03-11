@@ -69,5 +69,5 @@ sites/                 Demo site HTML
 
 ## See Also
 
-- [Chapter 15: The Shootoff](../../../docs/ebooks/145-log-rolling-pipelined-prefill/ch15-the-shootoff.md) — Full analysis and Wallington mapping
-- [Chapter 16: The nginx Module](../../../docs/ebooks/145-log-rolling-pipelined-prefill/ch16-nginx-aeon-flow-module.md) — Putting Aeon Flow behind nginx
+- [Chapter 15: The Shootoff](../../docs/ebooks/145-log-rolling-pipelined-prefill/ch15-the-shootoff.md) — Full analysis and Wallington mapping
+- [Chapter 16: The nginx Module](../../docs/ebooks/145-log-rolling-pipelined-prefill/ch16-nginx-aeon-flow-module.md) — Putting Aeon Flow behind nginx

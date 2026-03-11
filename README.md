@@ -82,6 +82,15 @@ await flow.collapse(winner);
 
 Roadmap vision: see [ROADMAP.md](./ROADMAP.md).
 
+## Documentation
+
+- Live documentation: [docs.aeonflux.dev](https://docs.aeonflux.dev)
+- Repo docs index: [open-source/aeon/docs/README.md](./docs/README.md)
+- Ebooks index: [open-source/aeon/docs/ebooks/README.md](./docs/ebooks/README.md)
+- Volume 145 book: [open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/README.md)
+- ArXiv manuscript source: [open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md](./docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md)
+- Companion reproducibility tests: [open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md)
+
 ## Installation
 
 ```bash
