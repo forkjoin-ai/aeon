@@ -36,7 +36,7 @@ All 4 shards run IN PARALLEL.
 Wall-clock for Phase 1: 7 steps (not 28).
 ```
 
-Without the Buley Rotation, the Wallington Rotation processes all 100 tokens as 4 chunks through 4 nodes = 7 steps. With the Buley Rotation, each shard has only 25 tokens → 4 chunks of ~6 → also ~7 steps. The win isn't in the chunking — it's that all shards run simultaneously.
+Without the Bule Rotation, the Wallington Rotation processes all 100 tokens as 4 chunks through 4 nodes = 7 steps. With the Bule Rotation, each shard has only 25 tokens → 4 chunks of ~6 → also ~7 steps. The win isn't in the chunking — it's that all shards run simultaneously.
 
 But wait — with 4 shards and 4 nodes, we're generating 16 chunks total. The multiplexed scheduler interleaves them across the same 4 nodes. The pipeline Reynolds number drops (more chunks relative to nodes), meaning MORE laminar flow and BETTER utilization. The Worthington Whip actually *improves* the turbulence problem it inherited from the Wallington Rotation.
 
@@ -110,7 +110,7 @@ The `LayerNodeClient` interface already includes an `AbortSignal` parameter expl
 
 ## Performance
 
-| Config | Without Buley | With Buley (S=4) | Speedup |
+| Config | Without Bule | With Bule (S=4) | Speedup |
 |--------|--------------|-----------------|---------|
 | 100T, 4N | 7 steps | ~7 + 3 = 10 steps* | See below |
 | 400T, 4N | 7 steps | ~7 + 3 = 10 steps* | Pipeline throughput 4x |

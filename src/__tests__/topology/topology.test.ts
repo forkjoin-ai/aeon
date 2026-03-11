@@ -86,7 +86,7 @@ describe('TopologyAnalyzer', () => {
       expect(report.deficit).toBeDefined();
       expect(report.deficit!.deficit).toBe(0);
       expect(report.deficit!.utilization).toBe(1.0);
-      expect(report.deficit!.assessment).toContain('0 Buleys');
+      expect(report.deficit!.assessment).toContain('0 Bules');
     });
 
     it('Δβ > 0 when implementation is too sequential', () => {
@@ -95,7 +95,7 @@ describe('TopologyAnalyzer', () => {
 
       expect(report.deficit!.deficit).toBe(3);
       expect(report.deficit!.utilization).toBe(0);
-      expect(report.deficit!.assessment).toContain('Buleys of waste');
+      expect(report.deficit!.assessment).toContain('Bules of waste');
     });
 
     it('Δβ < 0 when over-forked', () => {
@@ -120,7 +120,7 @@ describe('TopologyAnalyzer', () => {
       const report = TopologyAnalyzer.analyze(graph);
 
       expect(report.deficit!.deficit).toBe(3);
-      expect(report.deficit!.assessment).toContain('Buleys of waste');
+      expect(report.deficit!.assessment).toContain('Bules of waste');
     });
 
     it('healthcare with parallel tests: Δβ = 0', () => {
@@ -132,7 +132,7 @@ describe('TopologyAnalyzer', () => {
       const report = TopologyAnalyzer.analyze(graph);
 
       expect(report.deficit!.deficit).toBe(0);
-      expect(report.deficit!.assessment).toContain('0 Buleys');
+      expect(report.deficit!.assessment).toContain('0 Bules');
     });
   });
 
