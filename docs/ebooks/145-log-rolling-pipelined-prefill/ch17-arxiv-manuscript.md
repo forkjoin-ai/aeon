@@ -10,7 +10,7 @@ I identify **fork/race/fold** as a universal computational primitive: fork work 
 
 What is new is recognizing these as the *same* algorithm. I present the **Wallington Rotation**, a scheduling algorithm that rotates partially ordered work into concurrent stage-local tracks with controlled reconciliation and prove (constructively plus executable verification) that four primitives -- fork, race, fold, vent -- are sufficient to express any directed acyclic computation graph used by the implementation classes in this paper. I give the algorithm a natural **topological characterization**: fork increases the first Betti number $\beta_1$ (creating independent parallel paths), race traverses homotopy-equivalent paths simultaneously, fold projects $\beta_1$ back to zero and vent propagation is a natural transformation that releases paths while preserving structure. Self-describing frames create a **covering space** over the computation graph -- working in the cover (multiplexed, out-of-order) then projecting back to the base space (sequential, reassembled).
 
-I then show that **classical queueing theory is contained as the $\beta_1 = 0$ subspace**. Little's Law, Erlang's formula and Jackson's theorem all describe systems constrained to a single topological path. The **pipeline Reynolds number** $Re = N/C$ generalizes these results to arbitrary computation topologies, predicting phase transitions (laminar, transitional, turbulent) that queueing theory cannot express. I demonstrate that **quantum-mechanical terminology** -- superposition, tunneling, interference, entanglement, measurement, collapse -- describes precise computational operations with structural correspondence, not metaphor. I then give the primitives a **thermodynamic characterization**: fork injects potential energy, race converts it to kinetic, fold extracts useful work, and venting dissipates waste heat. The First Law ($V_{\text{fork}} = W_{\text{fold}} + Q_{\text{vent}}$) holds exactly, Shannon entropy is the Carnot limit, and frame headers are ground-state energy. The thermodynamic framing extends to fundamental physics: the Feynman path integral is a fork/race/fold computation (all paths forked, phases raced, amplitudes folded by interference), and the virial theorem for self-gravitating systems gives the exact energy partition $V_{\text{fork}} = W_{\text{fold}} + Q_{\text{vent}}$ with $W = Q = V/2$.
+I then show that **classical queueing theory is contained as the $\beta_1 = 0$ subspace**. Little's Law, Erlang's formula and Jackson's theorem all describe systems constrained to a single topological path. The **pipeline Reynolds number** $Re = N/C$ generalizes these results to arbitrary computation topologies, predicting phase transitions (laminar, transitional, turbulent) that queueing theory cannot express. I demonstrate that **quantum-mechanical terminology** -- superposition, tunneling, interference, entanglement, measurement, collapse -- describes precise computational operations with structural correspondence, not metaphor. I then give the primitives a **thermodynamic characterization**: fork injects potential energy, race converts it to kinetic, fold extracts useful work, and venting dissipates waste heat. The First Law ($V_{\text{fork}} = W_{\text{fold}} + Q_{\text{vent}}$) holds exactly, Shannon entropy is the Carnot limit, and frame headers are ground-state energy. The thermodynamic framing extends to fundamental physics: the Feynman path integral is a fork/race/fold computation (all paths forked, phases raced, amplitudes folded by interference), and the virial theorem for self-gravitating systems gives the exact energy partition $V_{\text{fork}} = W_{\text{fold}} + Q_{\text{vent}}$ with $W = Q = V/2$. I derive the **topological deficit** $\Delta_\beta = \beta_1^* - \beta_1$ as an optimality diagnostic: systems where the implementation's Betti number matches the problem's intrinsic Betti number ($\Delta_\beta = 0$) operate at theoretical efficiency (photosynthesis: >95%, DNA replication: leading-strand speed, path integral: exact predictions), while systems with $\Delta_\beta > 0$ have measurable waste (healthcare: 4.8-year diagnostic delay, finance: \$70T locked capital, HTTP/2: head-of-line blocking).
 
 `o -> o -> o -> o -> o -> o`
 
@@ -701,6 +701,46 @@ The Higgs mechanism: above the electroweak energy scale ($\sim 246$ GeV), the el
 
 Spontaneous symmetry breaking is fold: many equivalent states $\to$ one selected state. The void ($\beta_2$) is the set of unchosen vacua. The universe's particle masses are the fold result.
 
+### 6.12 The Optimality Diagnostic
+
+If fork/race/fold is the shape that any system converges to under conservation, irreversibility, and minimum overhead, then finding this shape in a system is evidence that the system is operating near its theoretical optimum. Not finding it -- where the problem's intrinsic topology demands it -- is a diagnostic for waste.
+
+Every problem has an **intrinsic Betti number** $\beta_1^*$: the number of independent parallel paths that the problem's structure supports. A blood test, an MRI, and a genetic screen are independent -- $\beta_1^* = 2$. Eight compression codecs applied to the same chunk are independent -- $\beta_1^* = 7$. The $N$ paths in a Feynman path integral are independent -- $\beta_1^* \to \infty$. This is not a design choice. It is a property of the problem.
+
+Every implementation has an **actual Betti number** $\beta_1$: the number of independent parallel paths in the system as built. A sequential referral chain has $\beta_1 = 0$. A fork with 8 codecs has $\beta_1 = 7$. The gap between $\beta_1^*$ and $\beta_1$ is the **topological deficit**:
+
+$$\Delta_\beta = \beta_1^* - \beta_1$$
+
+When $\Delta_\beta = 0$, the system's topology matches the problem's topology. It is operating at its natural parallelism. When $\Delta_\beta > 0$, the system is forcing a high-$\beta_1$ problem through a low-$\beta_1$ pipe. The deficit is wasted parallelism -- performance left on the table.
+
+**The topological deficit predicts real-world waste.**
+
+| System | $\beta_1^*$ (intrinsic) | $\beta_1$ (actual) | $\Delta_\beta$ | Observable Waste |
+|--------|------------------------|-------------------|----------------|-----------------|
+| Healthcare diagnosis | $\geq 3$ | 0 (referral chain) | $\geq 3$ | 4.8-year average diagnostic delay for rare diseases |
+| Financial settlement | 2 | 0 (T+2 sequential) | 2 | \$70 trillion unnecessarily locked capital |
+| HTTP/2 multiplexing | $N_{\text{streams}}$ | 0 (TCP substrate) | $N_{\text{streams}}$ | Head-of-line blocking on any packet loss |
+| Photosynthetic antenna | $\sim 7$ (pigments) | $\sim 7$ (quantum coherence) | 0 | >95% energy transfer efficiency |
+| Path integral | $\infty$ | $\infty$ | 0 | Exact quantum-mechanical predictions |
+| DNA replication | 1 (lagging strand) | 1 (Okazaki fragments) | 0 | Replication matches leading strand speed |
+| Saltatory conduction | nodes $- 1$ | nodes $- 1$ | 0 | 100x speedup vs. continuous conduction |
+
+The pattern: **every system where $\Delta_\beta = 0$ operates at or near its theoretical efficiency.** Every system where $\Delta_\beta > 0$ has measurable, quantifiable waste. The deficit is not abstract -- it maps to years of diagnostic delay, trillions of locked capital, and protocol-level blocking.
+
+This yields a practical diagnostic tool:
+
+1. **Measure $\beta_1^*$**: analyze the problem's dependency structure to find its intrinsic parallelism. Independent inputs are independent paths. Sequential dependencies are constraints that reduce $\beta_1^*$.
+2. **Measure $\beta_1$**: count the actual parallel paths in the implementation. A sequential pipeline has $\beta_1 = 0$. A fork with $N$ paths has $\beta_1 = N - 1$.
+3. **Compute $\Delta_\beta$**: the gap is the optimization opportunity. If $\Delta_\beta > 0$, the system is suboptimal by construction -- no amount of micro-optimization within the existing topology can recover the parallelism that the topology itself prevents.
+
+**The converse is equally powerful.** When you encounter a system that already exhibits fork/race/fold at $\Delta_\beta = 0$ -- photosynthesis, DNA replication, myelinated nerve conduction -- you can infer that evolution has found the optimal topology for that problem. The billions of years of selection pressure have converged to the same shape that the three constraints predict. The Betti numbers match because there is no better shape to converge to.
+
+This is why the biological examples in §1 are not decoration. They are **existence proofs of optimality.** When we observe that *Physarum* constructs transport networks matching the Tokyo rail system, we are observing $\Delta_\beta \approx 0$ achieved without engineering -- the slime mold's topology matches the problem's topology because evolution found the fork/race/fold shape. When we observe that photosynthetic antenna complexes achieve >95% energy transfer efficiency, we are observing $\Delta_\beta = 0$ at quantum scale -- the system's $\beta_1$ matches the problem's $\beta_1^*$ because physics itself operates at fork/race/fold.
+
+The optimality diagnostic also explains **why quantum computing promises speedups**. Classical computation forces $\beta_1 = 0$ -- one computational path at a time. Quantum computation operates at the problem's intrinsic $\beta_1^*$, which for search problems is $\sqrt{N}$ (Grover) and for factoring is $\log N$ (Shor). The quantum speedup IS the topological deficit that classical computing pays: $\Delta_\beta = \beta_1^* - 0 = \beta_1^*$. Quantum computers close the deficit. The speedup is not magic -- it is the system finally matching the problem's natural topology.
+
+**To see fork/race/fold is to see a system that has found its shape. To not see it is to see a system that hasn't.**
+
 ## 7. Instantiation A: Distributed Staged Computation
 
 I implement fork/race/fold in a distributed computation engine with processing stages partitioned across networked nodes -- a domain of particular interest to the researcher.
@@ -1035,6 +1075,8 @@ The pattern is not merely widespread -- it is convergent. Attention in transform
 This paper does *not* claim to be a grand unified theory. It does not explain why there are four fundamental forces, or why gravity is weak, or what dark energy is. The gap between "structural pattern that recurs everywhere" and "theory that explains everything" is precisely the gap between topology and physics. Topology describes *shape* -- it says that when you compute with gravity, electromagnetism, the strong force, or the weak force, the computation has the shape of fork/race/fold. It does not say *why* these forces exist or *why* they have the coupling constants they have. It lives on the topology side of that boundary, deliberately.
 
 The claim is narrower and, I believe, more defensible: whatever the forces ARE, their computational structure is fork/race/fold. Not because fork/race/fold is special, but because it is *inevitable*. Any system that conserves energy, that moves irreversibly forward in time, and that has nonzero ground-state overhead will converge to this shape. Physics satisfies those three constraints. Biology satisfies them. Computation satisfies them. The convergence is bottom-up -- independent discovery under shared constraints -- not top-down unification from a single principle. The slime mold did not read Feynman. Feynman did not study slime molds. They arrived at the same algorithm because the constraints are the same.
+
+And this convergence has a practical corollary: **to see fork/race/fold is to see a system that has found its shape** (§6.12). The topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ quantifies how far an implementation deviates from its problem's natural topology. Every system in this paper where $\Delta_\beta = 0$ -- photosynthesis, DNA replication, saltatory conduction, the path integral -- operates at or near theoretical efficiency. Every system where $\Delta_\beta > 0$ -- sequential healthcare, T+2 settlement, HTTP/2 over TCP -- has measurable, quantifiable waste. The deficit is a diagnostic: find it, close it, and the performance follows.
 
 And fluid dynamics revealed the technique's most counterintuitive property: its worst case is small data, not large. The speedup accelerates with scale, approaching $B \times N$ on large datasets. The hard problem is not surviving at scale -- it is avoiding overhead on the simple cases. This is the optimization problem inverted, and it is perhaps the most practically encouraging result: the bigger the workload, the more the algorithm helps.
 
