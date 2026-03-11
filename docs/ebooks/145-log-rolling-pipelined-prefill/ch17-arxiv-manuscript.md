@@ -586,15 +586,11 @@ At 100ms RTT, HTTP/1.1 needs 16 round trips (1.6 seconds of pure latency). Aeon 
 
 ## 8. Instantiation C: Topological Compression
 
-### 8.1 Topological Compression: The Topology Subsumes the Algorithm
+### 8.1 The Claim and Its Limits
 
-The same fork/race/collapse primitive applies to compression itself. Traditional compression selects ONE algorithm globally -- brotli for all chunks, gzip for all chunks. This is $\beta_1 = 0$: a single path through the codec space.
+The same fork/race/collapse primitive applies to compression. **Topological compression** forks all available codecs per chunk, races them and collapses to the winner. Each chunk independently selects its best codec. The output is a sequence of self-describing frames (9-byte header: codec ID, original size, compressed size). $\beta_1 = \text{codecs} - 1$.
 
-**Topological compression** forks ALL available codecs per chunk, races them and collapses to the winner. Each chunk independently selects its best codec. The output is a sequence of self-describing frames (9-byte header: codec ID, original size, compressed size). $\beta_1 = \text{codecs} - 1$.
-
-The key insight: **the topology subsumes the algorithm**. Any compression algorithm can be plugged into the race as a codec. If brotli is fast, I make it faster -- by racing it per-chunk against raw (which wins on already-compressed binary data where brotli wastes cycles expanding). If a better algorithm appears tomorrow, it enters the race without changing the topology. The covering space grows; the base space doesn't change.
-
-I benchmark four configurations across both sites, all on Aeon Flow ($\beta_1$-optimal transport). The codec lineup:
+I implement this with eight codecs:
 
 | ID | Codec | Type | Best on |
 |----|-------|------|---------|
@@ -607,31 +603,71 @@ I benchmark four configurations across both sites, all on Aeon Flow ($\beta_1$-o
 | 6 | Huffman | Pure JS | Skewed byte distributions |
 | 7 | Dictionary | Pure JS | Web content (HTML/CSS/JS keywords) |
 
+### 8.2 What the Benchmarks Actually Show
+
+I benchmark across both sites on Aeon Flow transport. The results are honest:
+
 **Big Content Site** (12 resources, ~2.22 MB):
 
 | Compression | Wire Size | Ratio | $\beta_1$ |
 |-------------|-----------|-------|-----------|
-| Brotli (global) | 905 KB | 39.8% | 0 |
+| Brotli (global, quality 4) | 905 KB | 39.8% | 0 |
+| Topo-full (8 codecs per-chunk) | 1005 KB | 44.2% | 7 |
 | Topo-pure (6 pure-JS codecs per-chunk) | 1.17 MB | 52.5% | 5 |
-| Topo-full (all 8 codecs per-chunk) | 1005 KB | 44.2% | 7 |
 
 **Microfrontend Site** (95 resources, ~617 KB):
 
 | Compression | Wire Size | Ratio | $\beta_1$ |
 |-------------|-----------|-------|-----------|
-| Brotli (global) | 131 KB | 20.9% | 0 |
+| Brotli (global, quality 4) | 131 KB | 20.9% | 0 |
+| Topo-full (8 codecs per-chunk) | 159 KB | 25.4% | 7 |
 | Topo-pure (6 pure-JS codecs per-chunk) | 229 KB | 36.8% | 5 |
-| Topo-full (all 8 codecs per-chunk) | 159 KB | 25.4% | 7 |
 
-Topo-full includes brotli as one of its racing codecs. On homogeneous text, brotli wins every chunk -- so topo-full converges to brotli's ratio plus the 9-byte per-chunk header tax (~4–5% overhead on large payloads, ~10–15% on many small ones). On mixed content with already-compressed binary (images, fonts, WOFF2), brotli is poisoned on those chunks -- its output exceeds the raw input -- and raw wins automatically. The topology adapts; the global algorithm cannot.
+**Standalone brotli wins on compression ratio.** On these benchmarks -- homogeneous web content -- global brotli beats per-chunk topological compression by 4–15 percentage points. This is not surprising: brotli compresses the entire stream with a sliding window that builds dictionary context across chunks. Per-chunk compression resets the dictionary every 4096 bytes.
 
-But the deeper result is structural. Topo-pure -- six codecs implemented in pure JavaScript, zero dependencies -- achieves 36.8% ratio on the microfrontend. The Huffman codec (canonical entropy coding, capturing the core of Zstandard's entropy stage) wins on chunks with skewed byte distributions. The Dictionary codec (63 pre-seeded web content patterns: HTML tags, CSS properties, JS keywords) wins on web-heavy chunks where repeated domain-specific strings appear. Adding brotli and gzip (C-native algorithms with decades of optimization) to the race drops this to 25.4%. The topology didn't change. The codecs changed. Tomorrow a learned codec or a neural compressor enters the race and the ratio drops again. The topology remains invariant.
+The two-level race (§8.3) confirms this. When given the choice between global brotli and per-chunk topological, it picks global brotli every time on these payloads, matching standalone brotli's ratio plus 5 bytes of strategy header. Per-chunk topological never wins the stream-level race on homogeneous content because the 9-byte per-chunk header tax and the loss of cross-chunk dictionary context always exceed whatever the per-chunk adaptive selection saves.
 
-**This is what subsumption means.** The topology is not an alternative to brotli. It is the space in which brotli competes. Brotli at $\beta_1 = 0$ is a degenerate case of topological compression at $\beta_1 = 7$. Just as Little's Law is a degenerate case of the pipeline equation (§2.1) and HTTP/2 multiplexing is a degenerate case of fork/race/collapse (§7.4), global compression is a degenerate case of per-chunk adaptive compression. The topology always subsumes the algorithm.
+### 8.3 Two-Level Stream Race
 
-The progression tells the story: 4 codecs ($\beta_1 = 3$) → 6 codecs ($\beta_1 = 5$) → 8 codecs ($\beta_1 = 7$). Each expansion of the covering space improved compression without changing the base space. The `TopologicalCompressor` is unchanged across all three configurations -- only the codec array grows. This is the covering space guarantee: work in the cover (race codecs per-chunk), project back to the base (concatenate self-describing frames).
+I extend the topology to race at two levels:
 
-Executable evidence is available in two independent suites: the companion topological-compression obligations [21] and the production `TopologicalCompressor` tests in the open-source `@affectively/aeon` package [20]. Together they verify per-chunk adaptive winner selection, 9-byte self-describing chunk headers, codec poison behavior (discarding expansions), $\beta_1 = \text{codecs} - 1$ invariants and roundtrip correctness across edge cases and large payloads.
+```
+FORK (stream level):
+  ├─ Path 0: Per-chunk topological (8 codecs × each 4096-byte chunk)
+  ├─ Path 1: Global brotli (entire stream, cross-chunk dictionary)
+  ├─ Path 2: Global gzip (entire stream)
+  └─ ...
+RACE → smallest total output wins
+COLLAPSE → 5-byte strategy header + compressed data
+```
+
+This guarantees that topological compression is **never worse** than standalone brotli -- because brotli is one of its racing paths. On these benchmarks it is never **better** either. The 5-byte stream header is the only overhead.
+
+### 8.4 What the Topology Actually Provides
+
+If topological compression does not beat brotli on ratio, what is the point?
+
+**1. Subsumption, not superiority.** The topology is the space in which brotli competes. Brotli at $\beta_1 = 0$ is a degenerate case of topological compression at $\beta_1 = 7$. The two-level race includes brotli as a contestant. If brotli is best, the topology selects it. If something better appears tomorrow -- a learned codec, a neural compressor, a domain-specific dictionary -- it enters the race without changing the architecture. The `TopologicalCompressor` is unchanged; only the codec array grows.
+
+**2. Platform independence.** Brotli requires `node:zlib` (Node, Bun, Deno). In browsers and Cloudflare Workers, it is unavailable. Topo-pure -- six codecs in pure JavaScript, zero dependencies -- achieves 36.8% ratio on the microfrontend with no native code. The topology degrades gracefully: full ratio when brotli is available, reasonable ratio when it is not.
+
+**3. Per-chunk random access.** The per-chunk format enables decompression of individual chunks without processing the entire stream. For seeking into large payloads, resuming interrupted transfers, or parallel decompression, this is structurally impossible with global brotli.
+
+**4. Adaptive codec selection on heterogeneous data.** On the per-chunk level, different regions of the input genuinely select different codecs. The shootoff shows 3 distinct codecs winning across 151 chunks on realistic web content (brotli for text chunks, dictionary for web-pattern-heavy chunks, raw for incompressible binary). No single algorithm achieves this without the topology.
+
+**5. The real compression win is framing, not codecs.** The paper's compression contribution is not beating brotli's ratio. It is the 30× reduction in framing overhead (§7.4): Aeon Flow uses 1.9 KB of framing for 95 resources where HTTP/1.1 uses 56.3 KB. On the microfrontend, framing overhead drops from 8.4% to 0.3% of the payload. This saving is orthogonal to which codec compresses the content.
+
+### 8.5 Honest Assessment
+
+The per-chunk topological approach pays a real cost: 9 bytes per chunk of header overhead and the loss of cross-chunk dictionary context. On homogeneous content (which describes most web payloads), this cost exceeds the benefit of adaptive codec selection. Global brotli, with its full-stream dictionary, simply compresses text better than any per-chunk approach can.
+
+The two-level stream race eliminates this disadvantage by including global brotli as a racing path. But it also reveals that per-chunk topological compression, as currently implemented, is not the winning strategy for web content. It is a structurally sound framework that provides platform independence, random access and future extensibility -- at the cost of matching, not beating, the state of the art on ratio.
+
+The progression 4 codecs ($\beta_1 = 3$) → 6 codecs ($\beta_1 = 5$) → 8 codecs ($\beta_1 = 7$) demonstrates the covering space property: each expansion improved pure-JS compression without changing the base space. But adding brotli and gzip to the race, while improving per-chunk results, still cannot overcome the fundamental advantage of global dictionary context.
+
+**The topology subsumes the algorithm. It does not necessarily surpass it.** I will not pretend this is the result I wanted. I wanted to dust brotli -- to show that topological compression, by racing eight codecs per chunk with adaptive selection, could outperform decades of careful engineering in a C-native algorithm. It does not. Global brotli with its full-stream dictionary context is genuinely excellent at compressing web content, and no amount of per-chunk cleverness overcomes the fundamental information advantage of seeing the entire input at once. The honest conclusion is that the topology provides structural guarantees -- subsumption, platform independence, random access, extensibility -- but not ratio superiority. That is still worth having. It is not the same as winning.
+
+Executable evidence is available in two independent suites: the companion topological-compression obligations [21] and the production `TopologicalCompressor` tests in the open-source `@affectively/aeon` package [20]. Together they verify per-chunk adaptive winner selection, 9-byte self-describing chunk headers, codec poison behavior (discarding expansions), two-level stream race strategy selection, $\beta_1 = \text{codecs} - 1$ invariants and roundtrip correctness across edge cases and large payloads.
 
 ### 8.2 Applications
 
