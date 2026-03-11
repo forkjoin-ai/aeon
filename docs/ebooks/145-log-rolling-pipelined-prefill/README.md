@@ -51,11 +51,15 @@ The work is framed through the lens of Wally Wallington's "Forgotten Technology"
 
 18. **[The UDP Transport: TCP Had Its 40-Year Run](ch18-udp-transport.md)** — Every flow frame carries its own identity (`stream_id` + `sequence`), making TCP's ordered delivery redundant. `UDPFlowTransport` with MTU-aware fragmentation (4-byte header, 255 fragments × 1468 bytes), ACK bitmaps (14 bytes covers 64 sequences), AIMD congestion control, and `FrameReassembler` for per-stream out-of-order reconstruction. `WebTransportFlowTransport` bridges browsers via HTTP/3 unreliable datagrams. Fallback chain: UDP → WebTransport → WebSocket → TCP.
 
-19. **[Inverting the Conveyor Belt](ch19-inverting-the-conveyor-belt.md)** — The 1900s gave us the assembly line: make everything sequential. Fork/race/collapse inverts it: make everything parallel, collapse to the answer. Applied to financial markets (T+2 → T+0 settlement, multi-venue fork/race execution, market data as self-describing frames), healthcare (parallel diagnostic pathways, 4.8 years → weeks), drug discovery ($2.6B pipeline → parallel candidates), construction (critical path → parallel floor streams), trading (FIFO order book → batch collapse), manufacturing (andon cord → per-stream poison), education (grade-level conveyor → parallel subject streams), and emergency response (sequential dispatch → simultaneous fork, 12 min → 90 sec).
+19. **[Inverting the Conveyor Belt](ch19-inverting-the-conveyor-belt.md)** — The 1900s gave us the assembly line: make everything sequential. Fork/race/fold inverts it: make everything parallel, fold to the answer. Applied to financial markets (T+2 → T+0 settlement, multi-venue fork/race execution, market data as self-describing frames), healthcare (parallel diagnostic pathways, 4.8 years → weeks), drug discovery ($2.6B pipeline → parallel candidates), construction (critical path → parallel floor streams), trading (FIFO order book → batch fold), manufacturing (andon cord → per-stream vent), education (grade-level conveyor → parallel subject streams), and emergency response (sequential dispatch → simultaneous fork, 12 min → 90 sec).
 
-20. **[Algorithmic Naturalism](ch20-algorithmic-naturalism.md)** — Fork/race/collapse was discovered 4 billion years ago. Grade A quantitative isomorphisms: DNA replication (Okazaki fragments = self-describing frames with out-of-order reassembly), polysome translation (Wallington Rotation, pipeline Re predicts ribosome stalling at Re < 0.6), saltatory conduction (chunked pipeline, 100x speedup matches Wallington formula exactly), photosynthetic light-harvesting (fork/race at quantum scale, >95% efficiency). Grade B structural homologies: immune system V(D)J (10^11 parallel fork/race), neural spike trains (self-describing frames), natural selection, epidemiology (herd immunity = ACK bitmap coverage), ant colonies (weighted ACKs with decay). Nature converges on these algorithms because they solve throughput under constraint, search under uncertainty, and coordination without centralization — the same three problems distributed computing faces.
+20. **[Algorithmic Naturalism](ch20-algorithmic-naturalism.md)** — Fork/race/fold was discovered 4 billion years ago. Grade A quantitative isomorphisms: DNA replication (Okazaki fragments = self-describing frames with out-of-order reassembly), polysome translation (Wallington Rotation, pipeline Re predicts ribosome stalling at Re < 0.6), saltatory conduction (chunked pipeline, 100x speedup matches Wallington formula exactly), photosynthetic light-harvesting (fork/race at quantum scale, >95% efficiency). Grade B structural homologies: immune system V(D)J (10^11 parallel fork/race), neural spike trains (self-describing frames), natural selection, epidemiology (herd immunity = ACK bitmap coverage), ant colonies (weighted ACKs with decay). Nature converges on these algorithms because they solve throughput under constraint, search under uncertainty, and coordination without centralization — the same three problems distributed computing faces.
 
-21. **[Topology of Computation](ch21-topology-of-computation.md)** — Fork/race/collapse as a topological transformation. Betti numbers classify computation graphs (β₀ = connected components = independent computations, β₁ = cycles = feedback loops, β₂ = voids = unreachable states). Covering spaces formalize pipeline stages. Homotopy equivalence proves fork/race/collapse preserves computational topology while reducing geometric complexity. Persistent homology tracks how topological features (parallelism, synchronization barriers, dead branches) appear and disappear across pipeline depth. The Wallington Rotation is a deformation retract — same topology, less geometry.
+21. **[Topology of Computation](ch21-topology-of-computation.md)** — Fork/race/fold as a topological transformation. Betti numbers classify computation graphs (β₀ = connected components = independent computations, β₁ = cycles = feedback loops, β₂ = voids = unreachable states). Covering spaces formalize pipeline stages. Homotopy equivalence proves fork/race/fold preserves computational topology while reducing geometric complexity. Persistent homology tracks how topological features (parallelism, synchronization barriers, dead branches) appear and disappear across pipeline depth. The Wallington Rotation is a deformation retract — same topology, less geometry.
+
+22. **[Energy Mechanics of Fork/Race/Fold](ch22-energy-mechanics.md)** — The complete thermodynamic reframing. Fork = potential energy injection. Race = kinetic energy conversion. Fold = useful work extraction. Vent = waste heat dissipation. Backpressure = conservation constraint. The First Law (V_fork = W_fold + Q_vent), the Second Law (fold is irreversible), the Third Law (minimum frame overhead is ground-state energy). The two-level stream race as a two-stage heat engine. Shannon entropy as the Carnot limit. Why brotli can't be beaten (it's already near Carnot efficiency for text) and why the topology's value is reliability, not superiority. The pipeline Triangle as an energy envelope. Complete energy dictionary mapping every primitive to its thermodynamic analogue.
+
+23. **[Emergent Connections — Nine Resonances of Fork/Race/Fold](ch23-emergent-connections.md)** — Nine structural isomorphisms that emerge from the energy rename. Hylomorphism (fork/fold = unfold/fold, the canonical recursion scheme). The Carnot cycle (four strokes = four primitives, same optimality proofs). Race is timeless (pure exploration between two irreversible commitments). Protein folding (the native state IS the fold, chaperones ARE vents). The manifold hypothesis (fold is projection, β₁ → 0 is dimensionality reduction). Attention IS race (QK^T is race, softmax is vent, V projection is fold). Loss = Q (training minimizes waste heat, gradient descent = ∂Q/∂θ). Breathing is venting (mitochondria are fork/race/fold engines, lungs are vents). The void (no unfold primitive — fold is irreversible — this IS the Second Law).
 
 ## Key Modules
 
@@ -65,7 +69,7 @@ The work is framed through the lens of Wally Wallington's "Forgotten Technology"
 | `serialInference()` | `open-source/aether/src/gcp-coordinator.ts` | Wires pipeline into inference path |
 | `executeLayerStage()` | `open-source/aether/src/gcp-coordinator.ts` | Per-node forward with retry/circuit breaker (unchanged) |
 | Pipeline tests | `apps/edge-workers/src/lib/multi-arch/__tests__/pipelined-prefill.test.ts` | 9-test verification suite |
-| `AeonFlowProtocol` | `open-source/aeon/src/flow/AeonFlowProtocol.ts` | Fork/race/collapse stream multiplexing |
+| `AeonFlowProtocol` | `open-source/aeon/src/flow/AeonFlowProtocol.ts` | Fork/race/fold stream multiplexing |
 | `FlowCodec` | `open-source/aeon/src/flow/FlowCodec.ts` | 10-byte binary frame codec |
 | Flow tests | `open-source/aeon/src/__tests__/flow/flow.test.ts` | 39 protocol + 31 reassembler + UDP transport tests |
 | Shootoff benchmarks | `open-source/aeon/packages/shootoff/` | Protocol comparison: Aeon Flow vs HTTP/1.1 vs HTTP/2 |
@@ -98,15 +102,17 @@ Per-token pipeline speedup approaches N. Chunked pipeline compounds causal maski
 | Round Road (#3) | Multi-head attention parallelism | Ch. 6 |
 | Multi-Stage Cribbing | Weight loading `Promise.all()` | Ch. 6 |
 | The Wallington Rotation | Chunked pipeline — causal masking × log-rolling | Ch. 10 |
-| The Worthington Whip | Fork/collapse — shard known tokens across parallel pipelines | Ch. 12 |
+| The Worthington Whip | Fork/fold — shard known tokens across parallel pipelines | Ch. 12 |
 | The Speculative Tree | Branch/prune — race unknown tokens through the same pipeline | Ch. 13 |
-| The Aeon Flow Protocol | Fork/race/collapse — the unified primitive across all layers | Ch. 14 |
+| The Aeon Flow Protocol | Fork/race/fold — the unified primitive across all layers | Ch. 14 |
 | The Shootoff | Protocol benchmarking — quantifying the pivot advantage | Ch. 15 |
 | The nginx Module | Rolling Pivot — browser stays HTTP, backend swings Aeon Flow | Ch. 16 |
 | The UDP Transport | Gravity Harvest — let the stone fall into the hole (drop TCP overhead) | Ch. 18 |
-| Inverting the Conveyor Belt | Every sequential bottleneck is a candidate for fork/race/collapse | Ch. 19 |
+| Inverting the Conveyor Belt | Every sequential bottleneck is a candidate for fork/race/fold | Ch. 19 |
 | Algorithmic Naturalism | Nature converged on these algorithms 4 billion years ago | Ch. 20 |
-| Topology of Computation | Betti numbers, covering spaces, homotopy — fork/race/collapse preserves topology | Ch. 21 |
+| Topology of Computation | Betti numbers, covering spaces, homotopy — fork/race/fold preserves topology | Ch. 21 |
+| Energy Mechanics | Fork = potential, race = kinetic, fold = work, vent = heat | Ch. 22 |
+| Emergent Connections | Nine resonances: hylomorphism, Carnot, timeless race, protein folding, manifold, attention, loss=Q, breathing, the void | Ch. 23 |
 
 ## Prerequisites
 
