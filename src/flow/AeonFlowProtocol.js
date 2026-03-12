@@ -50,6 +50,7 @@ export class AeonFlowProtocol {
         this.transport = transport;
         this.config = { ...DEFAULT_FLOW_CONFIG, ...config };
         this.codec = FlowCodec.createSync();
+        this.upgradeCodecInBackground();
         // Wire up incoming data
         this.transport.onReceive((data) => {
             this.handleIncoming(data);
@@ -502,5 +503,20 @@ export class AeonFlowProtocol {
             offset += chunk.length;
         }
         return result;
+    }
+    /**
+     * Attempt to upgrade to WASM codec without delaying protocol startup.
+     * JS codec remains the correctness path if WASM is unavailable.
+     */
+    upgradeCodecInBackground() {
+        FlowCodec.create()
+            .then((codec) => {
+            if (codec.isWasmAccelerated) {
+                this.codec = codec;
+            }
+        })
+            .catch(() => {
+            // Graceful fallback: keep JS codec
+        });
     }
 }

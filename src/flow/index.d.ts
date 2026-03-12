@@ -16,7 +16,7 @@
  */
 export { AeonFlowProtocol } from './AeonFlowProtocol';
 export { FlowCodec, HEADER_SIZE, MAX_PAYLOAD_LENGTH } from './FlowCodec';
-export { FORK, RACE, FOLD, VENT, FIN, DEFAULT_FLOW_CONFIG, } from './types';
+export { FORK, RACE, FOLD, VENT, FIN, POISON, DEFAULT_FLOW_CONFIG, } from './types';
 export type { FlowFrame, FlowStream, FlowStreamState, FlowTransport, FlowProtocolConfig, FlowProtocolEvents, } from './types';
 export { UDPFlowTransport, WebTransportFlowTransport, UDP_MTU, FRAGMENT_HEADER_SIZE, MAX_FRAGMENT_PAYLOAD, ACK_FLAG, } from './UDPFlowTransport';
 export type { UDPFlowTransportConfig } from './UDPFlowTransport';

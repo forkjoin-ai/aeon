@@ -18,6 +18,8 @@ export declare const FOLD = 4;
 export declare const VENT = 8;
 /** Fin: stream is complete, no more frames will be sent */
 export declare const FIN = 16;
+/** Poison: stream is terminated due to error or cancellation */
+export declare const POISON = 32;
 /**
  * A single frame on the wire.
  *

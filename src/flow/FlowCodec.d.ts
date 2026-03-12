@@ -32,6 +32,7 @@ export interface FlowCodecCreateOptions {
     wasmMode?: WasmMode;
     /**
      * Optional caller-supplied WASM module or bytes.
+     * Useful in Node/Bun where the caller controls file loading.
      */
     wasmModule?: WasmModuleInput;
 }
@@ -43,6 +44,7 @@ export interface FlowCodecCreateOptions {
  */
 export declare class FlowCodec {
     private wasmInstance;
+    private wasmState;
     private constructor();
     /**
      * Create a FlowCodec. Tries WASM acceleration, falls back to JS.
@@ -89,4 +91,13 @@ export declare class FlowCodec {
      * Payloads are zerocopy views into the original buffer.
      */
     decodeBatch(buffer: Uint8Array): FlowFrame[];
+    private decodeHeader;
+    private decodeHeaderInJavaScript;
+    private decodeHeaderWithWasm;
+    private refreshWasmViews;
+    private static createWasmState;
+    private static instantiateWasm;
+    private static toUint8Array;
+    private static loadDefaultWasmModule;
 }
+export {};

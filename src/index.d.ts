@@ -39,6 +39,7 @@ export * from './optimization';
 export * from './presence';
 export * from './crypto';
 export * from './flow';
+export * from './topology';
 export * from './transport';
 export * from './federation';
 /**

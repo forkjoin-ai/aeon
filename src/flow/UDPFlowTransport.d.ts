@@ -102,6 +102,10 @@ export declare class UDPFlowTransport implements FlowTransport {
     send(data: Uint8Array): void;
     onReceive(handler: (data: Uint8Array) => void): void;
     close(): void;
+    /**
+     * Attempt to upgrade to WASM codec without delaying transport readiness.
+     */
+    private upgradeCodecInBackground;
     /** Get reassembly statistics */
     getReassemblerStats(): Readonly<import("./frame-reassembler").ReassemblerStats>;
     /** Current congestion window size */
@@ -184,4 +188,8 @@ export declare class WebTransportFlowTransport implements FlowTransport {
     onReceive(handler: (data: Uint8Array) => void): void;
     close(): void;
     private readLoop;
+    /**
+     * Attempt to upgrade to WASM codec without delaying transport startup.
+     */
+    private upgradeCodecInBackground;
 }

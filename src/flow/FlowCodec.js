@@ -27,8 +27,15 @@ export const MAX_PAYLOAD_LENGTH = 0xFFFFFF;
  */
 export class FlowCodec {
     wasmInstance = null;
+    wasmState = null;
     constructor(wasmInstance) {
         this.wasmInstance = wasmInstance;
+        if (wasmInstance) {
+            this.wasmState = FlowCodec.createWasmState(wasmInstance);
+            if (!this.wasmState) {
+                this.wasmInstance = null;
+            }
+        }
     }
     /**
      * Create a FlowCodec. Tries WASM acceleration, falls back to JS.
@@ -45,24 +52,24 @@ export class FlowCodec {
             }
             return new FlowCodec(null);
         }
-        const source = options.wasmModule ?? null;
+        let source = options.wasmModule ?? null;
         if (!source) {
-            if (wasmMode === 'force') {
-                throw new Error('FlowCodec WASM module not found (expected src/flow/wasm/aeon-flow-codec.wasm)');
+            source = await FlowCodec.loadDefaultWasmModule();
+            if (!source) {
+                if (wasmMode === 'force') {
+                    throw new Error('FlowCodec WASM module not found (expected src/flow/wasm/aeon-flow-codec.wasm)');
+                }
+                return new FlowCodec(null);
             }
-            return new FlowCodec(null);
         }
         try {
-            if (source instanceof WebAssembly.Module) {
-                new WebAssembly.Instance(source, {});
+            const wasmInstance = await FlowCodec.instantiateWasm(source);
+            const codec = new FlowCodec(wasmInstance);
+            if (codec.isWasmAccelerated)
+                return codec;
+            if (wasmMode === 'force') {
+                throw new Error('FlowCodec WASM exports are missing required symbols');
             }
-            else {
-                const bytes = source instanceof ArrayBuffer
-                    ? new Uint8Array(source)
-                    : new Uint8Array(source.buffer, source.byteOffset, source.byteLength);
-                await WebAssembly.instantiate(bytes, {});
-            }
-            // JS path remains canonical in this build artifact.
             return new FlowCodec(null);
         }
         catch (error) {
@@ -82,7 +89,7 @@ export class FlowCodec {
      * Whether WASM acceleration is active.
      */
     get isWasmAccelerated() {
-        return this.wasmInstance !== null;
+        return this.wasmInstance !== null && this.wasmState !== null;
     }
     // ═══════════════════════════════════════════════════════════════════════
     // Encode
@@ -127,13 +134,8 @@ export class FlowCodec {
         if (buffer.length - offset < HEADER_SIZE) {
             throw new RangeError(`Buffer too small: need at least ${HEADER_SIZE} bytes, have ${buffer.length - offset}`);
         }
-        const view = new DataView(buffer.buffer, buffer.byteOffset + offset, buffer.byteLength - offset);
-        const streamId = view.getUint16(0);
-        const sequence = view.getUint32(2);
-        const flags = buffer[offset + 6];
-        const length = (buffer[offset + 7] << 16) |
-            (buffer[offset + 8] << 8) |
-            buffer[offset + 9];
+        const header = this.decodeHeader(buffer, offset);
+        const { streamId, sequence, flags, length } = header;
         if (buffer.length - offset - HEADER_SIZE < length) {
             throw new RangeError(`Buffer too small for payload: need ${length} bytes, have ${buffer.length - offset - HEADER_SIZE}`);
         }
@@ -188,5 +190,120 @@ export class FlowCodec {
             offset += bytesRead;
         }
         return frames;
+    }
+    decodeHeader(buffer, offset) {
+        if (!this.wasmState) {
+            return this.decodeHeaderInJavaScript(buffer, offset);
+        }
+        return this.decodeHeaderWithWasm(buffer, offset);
+    }
+    decodeHeaderInJavaScript(buffer, offset) {
+        const view = new DataView(buffer.buffer, buffer.byteOffset + offset, buffer.byteLength - offset);
+        return {
+            streamId: view.getUint16(0),
+            sequence: view.getUint32(2),
+            flags: buffer[offset + 6],
+            length: (buffer[offset + 7] << 16) |
+                (buffer[offset + 8] << 8) |
+                buffer[offset + 9],
+        };
+    }
+    decodeHeaderWithWasm(buffer, offset) {
+        const wasmState = this.wasmState;
+        if (!wasmState) {
+            return this.decodeHeaderInJavaScript(buffer, offset);
+        }
+        this.refreshWasmViews(wasmState);
+        wasmState.memoryBytes.set(buffer.subarray(offset, offset + HEADER_SIZE), wasmState.framePtr);
+        const bytesRead = wasmState.exports.decodeFrame(wasmState.framePtr, wasmState.streamIdPtr, wasmState.sequencePtr, wasmState.flagsPtr, wasmState.lengthPtr);
+        if (bytesRead !== HEADER_SIZE) {
+            throw new RangeError(`WASM decoder returned invalid header size ${bytesRead} (expected ${HEADER_SIZE})`);
+        }
+        return {
+            streamId: wasmState.memoryView.getUint16(wasmState.streamIdPtr, true),
+            sequence: wasmState.memoryView.getUint32(wasmState.sequencePtr, true),
+            flags: wasmState.memoryBytes[wasmState.flagsPtr],
+            length: wasmState.memoryView.getUint32(wasmState.lengthPtr, true),
+        };
+    }
+    refreshWasmViews(state) {
+        if (state.memoryBytes.buffer === state.exports.memory.buffer) {
+            return;
+        }
+        state.memoryBytes = new Uint8Array(state.exports.memory.buffer);
+        state.memoryView = new DataView(state.exports.memory.buffer);
+    }
+    static createWasmState(wasmInstance) {
+        const exports = wasmInstance.exports;
+        const memory = exports.memory;
+        const allocate = exports.allocate;
+        const decodeFrame = exports.decode_frame;
+        if (!(memory instanceof WebAssembly.Memory))
+            return null;
+        if (typeof allocate !== 'function')
+            return null;
+        if (typeof decodeFrame !== 'function')
+            return null;
+        const wasmExports = {
+            memory,
+            allocate: allocate,
+            decodeFrame: decodeFrame,
+        };
+        const framePtr = wasmExports.allocate(HEADER_SIZE);
+        const streamIdPtr = wasmExports.allocate(2);
+        const sequencePtr = wasmExports.allocate(4);
+        const flagsPtr = wasmExports.allocate(1);
+        const lengthPtr = wasmExports.allocate(4);
+        return {
+            exports: wasmExports,
+            framePtr,
+            streamIdPtr,
+            sequencePtr,
+            flagsPtr,
+            lengthPtr,
+            memoryBytes: new Uint8Array(memory.buffer),
+            memoryView: new DataView(memory.buffer),
+        };
+    }
+    static async instantiateWasm(source) {
+        if (source instanceof WebAssembly.Module) {
+            return new WebAssembly.Instance(source, {});
+        }
+        const bytes = FlowCodec.toUint8Array(source);
+        const result = await WebAssembly.instantiate(bytes, {});
+        if (result instanceof WebAssembly.Instance) {
+            return result;
+        }
+        if (typeof result === 'object' &&
+            result !== null &&
+            'instance' in result) {
+            const maybeInstance = result.instance;
+            if (maybeInstance instanceof WebAssembly.Instance) {
+                return maybeInstance;
+            }
+        }
+        throw new Error('Unexpected WebAssembly.instantiate result');
+    }
+    static toUint8Array(source) {
+        if (source instanceof ArrayBuffer) {
+            return new Uint8Array(source);
+        }
+        return new Uint8Array(source.buffer, source.byteOffset, source.byteLength);
+    }
+    static async loadDefaultWasmModule() {
+        if (typeof fetch !== 'function')
+            return null;
+        // Construct dynamically to avoid hard build-time asset coupling.
+        const wasmPath = './wasm/' + 'aeon-flow-codec.wasm';
+        const wasmUrl = new URL(wasmPath, import.meta.url);
+        try {
+            const response = await fetch(wasmUrl);
+            if (!response.ok)
+                return null;
+            return new Uint8Array(await response.arrayBuffer());
+        }
+        catch {
+            return null;
+        }
     }
 }

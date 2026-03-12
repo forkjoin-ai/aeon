@@ -21,6 +21,8 @@ export const FOLD = 0x04;
 export const VENT = 0x08;
 /** Fin: stream is complete, no more frames will be sent */
 export const FIN = 0x10;
+/** Poison: stream is terminated due to error or cancellation */
+export const POISON = 0x20;
 /**
  * Default protocol configuration.
  */
