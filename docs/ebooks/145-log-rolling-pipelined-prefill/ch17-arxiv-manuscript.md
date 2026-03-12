@@ -1294,7 +1294,7 @@ Fork/race/fold is all you need.
 
 [1] A. Tero, S. Takagi, T. Saigusa, K. Ito, D. P. Bebber, M. D. Fricker, K. Yumiki, R. Kobayashi, T. Nakagaki, "Rules for Biologically Inspired Adaptive Network Design," *Science*, 327(5964):439–442, 2010.
 
-[2] T. W. Buley, "Aeon Pipelines: A Computation Topology Engine," open-source implementation, 2026. https://github.com/affectively-ai/aeon/tree/main/open-source/aeon-pipelines
+[2] T. W. Buley, "Aeon Pipelines: A Computation Topology Engine," open-source implementation, 2026. https://forkracefold.com/content/map-reduce-readiness.test.ts.txt
 
 [3] D. Akita, I. Kunita, M. D. Fricker, S. Kuroda, K. Sato, T. Nakagaki, "Experimental Models for Murray's Law," *Journal of Vascular Research*, 52(2):75–88, 2016.
 
@@ -1330,9 +1330,9 @@ Fork/race/fold is all you need.
 
 [19] A. M. Turing, "The Chemical Basis of Morphogenesis," *Philosophical Transactions of the Royal Society B*, 237(641), 1952.
 
-[20] T. W. Buley, "Aeon Core Runtime (Flow + Compression) and Test Suite," open-source implementation, 2026. https://github.com/affectively-ai/aeon/tree/main/open-source/aeon
+[20] T. W. Buley, "Aeon Core Runtime (Flow + Compression) and Test Suite," open-source implementation, 2026. https://forkracefold.com/content/companion-tests-README.md
 
-[21] T. W. Buley, "Fork/Race/Fold Companion Tests," reproducibility suite, 2026. https://github.com/affectively-ai/aeon/tree/main/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests
+[21] T. W. Buley, "Fork/Race/Fold Companion Tests," reproducibility suite, 2026. https://forkracefold.com/content/companion-tests-README.md
 
 [22] R. P. Feynman, A. R. Hibbs, "Quantum Mechanics and Path Integrals," McGraw-Hill, 1965.
 
