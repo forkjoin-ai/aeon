@@ -418,7 +418,7 @@ The conveyor belt uses only composition. Fork/race/fold uses both composition an
 
 Little's Law states: $L = \lambda W$, where $L$ is the average number of items in a system, $\lambda$ is the arrival rate and $W$ is the average time in the system. This is the foundational result of queueing theory, proved by Little in 1961 [7] and considered universal within its domain.
 
-**Containment theorem (operational form).** Under assumptions C1-C4 and standard Markovian service models, the fork/race/fold framework recovers canonical queueing results when constrained to $\beta_1 = 0$, and strictly extends them when $\beta_1 > 0$ by adding topology as a control variable. The executable proofs in §11 include direct tests for Little, Erlang-style blocking behavior and Jackson-style bottleneck limits [21].
+**Containment theorem (operational form).** Under assumptions C1-C4 and standard Markovian service models, the fork/race/fold framework recovers canonical queueing results when constrained to $\beta_1 = 0$, and strictly extends them when $\beta_1 > 0$ by adding topology as a control variable. The executable proofs in §12 include direct tests for Little, Erlang-style blocking behavior and Jackson-style bottleneck limits [21].
 
 But Little's Law assumes $\beta_1 = 0$. It describes a system with one path -- items enter, wait, get served, exit. There is no concept of forking, no concept of racing, no concept of folding parallel results. When $\beta_1 > 0$, Little's Law still holds *per path*, but says nothing about the *topology* of the system -- how paths interact, when to fork, when to fold, when to vent.
 
@@ -962,7 +962,7 @@ A lightweight predictor generates $K$ candidate continuations (fork). All $K$ br
 
 ### 8.1 Design Principle
 
-The patterns -- fork, race, fold, vent -- recur identically in edge composition, service worker preloading, fragment assembly, deploy artifact streaming, CRDT synchronization and other independent domains validated in §11. Rather than reimplementing per domain, I extract the primitive into a binary wire protocol on UDP dubbed Aeon Flow. [20]
+The patterns -- fork, race, fold, vent -- recur identically in edge composition, service worker preloading, fragment assembly, deploy artifact streaming, CRDT synchronization and other independent domains validated in §12. Rather than reimplementing per domain, I extract the primitive into a binary wire protocol on UDP dubbed Aeon Flow. [20]
 
 ### 8.2 Wire Format
 
@@ -1393,4 +1393,4 @@ Fork/race/fold is all you need.
 
 ## Reproducibility
 
-Source code, test suites and protocol comparison benchmarks are available under open-source license [2, 20, 21, 26]. The scheduler, flow protocol, compression subsystem, computation topology engine and formal parser/tooling layer are independently testable. The validation totals reported in §11 are reproducible from the linked suites.
+Source code, test suites and protocol comparison benchmarks are available under open-source license [2, 20, 21, 26]. The scheduler, flow protocol, compression subsystem, computation topology engine and formal parser/tooling layer are independently testable. The validation totals reported in §12 are reproducible from the linked suites.
