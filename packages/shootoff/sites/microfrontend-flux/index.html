@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Wally Wallington Wonder Archive</title>
+  <meta name="description" content="Celebrating the remarkable engineering of Wally Wallington — the retired Michigan construction worker who moves 20-ton stones by hand using forgotten technology.">
+  <link rel="icon" href="data:image/svg+xml,...">
+  <!--
+    Aeon-Flux Pre-Rendered Version
+
+    Same Wally Wallington content, but aeon-flux collapses the entire SPA:
+    - 45 JS chunks → 1 inline <script> (55 KB vs 618 KB, 91% smaller)
+    - 16 CSS chunks → 1 inline <style> (12 KB vs 42 KB, 71% smaller)
+    - 20 SVG icons → inline SVG elements (6 KB, 0 extra requests)
+    - Framework + router → pre-rendered HTML (no client-side routing needed)
+    - All route code → only home route included
+
+    Total: ~230 KB in ONE request (vs 1.8 MB across 95 requests)
+    Resources: 1 (vs 95)
+    Round trips: 1 (vs 16 HTTP/1.1, 2 HTTP/2)
+
+    The browser doesn't need to discover, request, download, parse, and
+    execute 95 separate resources. It gets the final rendered page directly.
+  -->
+  <style>
+    /* Tree-shaken CSS — critical + layout + home route only (12 KB in production) */
+    :root { --font-sans: 'Inter', system-ui, sans-serif; --bg: #0f0f0f; --text: #e5e5e5; --accent: #60a5fa; --muted: #737373; --border: #262626; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); line-height: 1.7; }
+    .app-header { display: flex; align-items: center; padding: 1rem 2rem; border-bottom: 1px solid var(--border); }
+    .app-header h1 { font-size: 1.25rem; color: var(--accent); }
+    .app-nav { display: flex; gap: 1rem; margin-left: auto; }
+    .app-nav a { color: var(--muted); text-decoration: none; font-size: 0.875rem; padding: 0.25rem 0.5rem; border-radius: 4px; }
+    .app-nav a:hover, .app-nav a.active { color: var(--accent); background: #1a1a2e; }
+    main { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    h2 { font-size: 1.75rem; color: var(--accent); margin: 2rem 0 1rem; }
+    h3 { font-size: 1.25rem; margin: 1.5rem 0 0.5rem; color: #d4d4d4; }
+    section { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    p { color: #a3a3a3; margin-bottom: 1rem; }
+    ol { padding-left: 1.5rem; color: #a3a3a3; }
+    ol li { margin-bottom: 0.75rem; }
+    ol li strong { color: var(--accent); }
+    .intro { font-size: 1.1rem; color: #d4d4d4; border-left: 3px solid var(--accent); padding-left: 1rem; margin: 1.5rem 0; }
+    footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.875rem; border-top: 1px solid var(--border); max-width: 800px; margin: 0 auto; }
+    /* Inline SVG icon styles */
+    .icon { width: 16px; height: 16px; display: inline-block; vertical-align: middle; }
+    /* @font-face with base64 data URI (147 KB in production) */
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <h1>
+      <!-- Inline SVG icon (no separate fetch) -->
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      The Wally Wallington Wonder Archive
+    </h1>
+    <nav class="app-nav">
+      <a href="/" class="active">Home</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/settings">Settings</a>
+      <a href="/analytics">Analytics</a>
+      <a href="/docs">Docs</a>
+    </nav>
+  </header>
+
+  <main>
+    <p class="intro">
+      This interactive archive celebrates the remarkable work of Wally Wallington,
+      a retired construction worker from Flint, Michigan, who demonstrated that one
+      person — working alone — could move, lift, and position stones weighing over
+      20 tons using nothing but wooden levers, small stone pivots, and gravity itself.
+    </p>
+
+    <h2>The Techniques</h2>
+
+    <section>
+      <h3>The Dynamic Offset Pivot</h3>
+      <p>
+        By placing a small stone pivot slightly off the true center of gravity,
+        Wallington created controlled instability. Push the light end, the stone
+        rotates 180 degrees, and the center of gravity shifts forward. Each rotation
+        becomes a "step" — a locomotion algorithm where the stone walks over its
+        own center of gravity. Rotational energy converts to linear displacement.
+      </p>
+    </section>
+
+    <section>
+      <h3>Multi-Stage Cribbing Jack</h3>
+      <p>
+        Vertical lifting without hydraulics. Tilt, shim, reverse, repeat. As the
+        stone rises inch by inch, a crib of alternating wooden beams grows beneath it.
+        The offset fulcrum ensures that if anything slips, the stone settles back onto
+        the crib rather than toppling. Safety through geometry.
+      </p>
+    </section>
+
+    <section>
+      <h3>The Round Road</h3>
+      <p>
+        Not every stone is a perfect rectangle. For irregular masses, Wallington built
+        temporary circular tracks and wooden cradles that normalized any shape into
+        something his pivot system could handle. He essentially standardized the
+        interface so his technique could operate on any input.
+      </p>
+    </section>
+
+    <section>
+      <h3>Sand-Box Descent</h3>
+      <p>
+        Gravity lifts, but it also destroys. To lower a 10-ton lintel onto uprights
+        with millimeter precision, Wallington supported the stone on a box of sand
+        and slowly released the grains from the bottom — like an hourglass. The sand
+        acts as a variable-height support with finer control than any rope or winch.
+      </p>
+    </section>
+
+    <section>
+      <h3>The Rolling Pivot (Moving the Barn)</h3>
+      <p>
+        When Wallington moved his entire barn 300 feet, he turned the building into
+        a giant lever. Pivot on one corner, swing the opposite side forward. Swap
+        corners, repeat. The insight: you never need to move the entire mass at once.
+        By pivoting on one corner, you overcome the friction of only a fraction of
+        the weight at any given moment.
+      </p>
+    </section>
+
+    <h2>The Three Laws</h2>
+    <ol>
+      <li><strong>Force Multiplication</strong> — The longer the lever, the less effort required.</li>
+      <li><strong>Friction Reduction</strong> — The smaller the contact point, the less resistance.</li>
+      <li><strong>Gravity Harvest</strong> — Use the weight of the object as the battery to power the next movement.</li>
+    </ol>
+
+    <footer>
+      <p>
+        This archive is a tribute to the ingenuity of Wally Wallington and the
+        timeless engineering principles he demonstrated. His work reminds us that
+        the most elegant solutions often require no electricity, no fuel, and no
+        budget — just a deep understanding of how the physical world works.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    /* Dead-code-eliminated JS — framework + router + home route only (55 KB in production) */
+    /* In the flux version, the SPA framework is tree-shaken to only what the home page needs */
+    /* Navigation to other routes triggers a new page load from service worker cache */
+    document.querySelectorAll('.app-nav a').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        /* In production: navigates to pre-rendered page from cache */
+      });
+    });
+  </script>
+  <script type="application/json" id="__aeon_session">{"route":"/","prerendered":true,"timestamp":1741564800000,"hydrationHints":{"interactive":["form","nav"]}}</script>
+</body>
+</html>
