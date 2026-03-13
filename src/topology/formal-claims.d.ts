@@ -17,6 +17,40 @@ export interface TurbulentIdleResult {
     readonly denominator: number;
     readonly idleFraction: number;
 }
+export interface FrontierFillResult {
+    readonly frontierByLayer: readonly number[];
+    readonly layerCount: number;
+    readonly frontierArea: number;
+    readonly peakFrontier: number;
+    readonly envelopeArea: number;
+    readonly frontierFill: number;
+    readonly wally: number;
+    readonly frontierDeficit: number;
+}
+export interface PipelineOccupancyResult {
+    readonly stageCount: number;
+    readonly chunkCount: number;
+    readonly frontierArea: number;
+    readonly capacityArea: number;
+    readonly frontierFill: number;
+    readonly occupancyDeficit: number;
+}
+export type PipelineRegime = 'laminar' | 'transitional' | 'turbulent';
+export type ParallelismAction = 'expand' | 'staggered-expand' | 'hold' | 'multiplex' | 'constrain';
+export interface AdaptiveParallelismPolicyResult {
+    readonly intrinsicBeta1: number;
+    readonly actualBeta1: number;
+    readonly topologyDeficit: number;
+    readonly stageCount: number;
+    readonly chunkCount: number;
+    readonly reynoldsEstimate: number;
+    readonly regime: PipelineRegime;
+    readonly frontierFill: number;
+    readonly occupancyDeficit: number;
+    readonly highOccupancyDeficit: boolean;
+    readonly action: ParallelismAction;
+    readonly rationale: string;
+}
 export interface QuantumDeficitResult {
     readonly sqrtN: number;
     readonly searchSize: number;
@@ -39,6 +73,15 @@ export interface SettlementDeficitResult {
 export declare function worthingtonWhipSavings(shards: number): WorthingtonWhipResult;
 export declare function speculativeTreeExpectedAccepted(alpha: number, depth: number): SpeculativeTreeResult;
 export declare function turbulentIdleFraction(stageCount: number, chunkCount: number): TurbulentIdleResult;
+export declare function frontierFill(frontierByLayer: readonly number[]): FrontierFillResult;
+export declare function pipelineOccupancy(stageCount: number, chunkCount: number): PipelineOccupancyResult;
+export declare function classifyPipelineRegime(stageCount: number, chunkCount: number): PipelineRegime;
+export declare function adaptiveParallelismPolicy(config: {
+    intrinsicBeta1: number;
+    actualBeta1: number;
+    stageCount: number;
+    chunkCount: number;
+}): AdaptiveParallelismPolicyResult;
 export declare function quantumDeficitIdentity(sqrtN: number): QuantumDeficitResult;
 export declare function protocolDeficits(streamCount: number): ProtocolDeficitResult;
 export declare function settlementDeficits(): SettlementDeficitResult;

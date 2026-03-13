@@ -1,0 +1,79 @@
+{
+  "label": "toy-attention-fold-ablation-v1",
+  "config": {
+    "queryCount": 81,
+    "pathCount": 3,
+    "outputDimension": 2,
+    "exactSampleMseTolerance": 0.01
+  },
+  "strategies": {
+    "linear": {
+      "meanSquaredError": 0,
+      "maxAbsoluteError": 0,
+      "exactWithinToleranceFraction": 1
+    },
+    "winner-take-all": {
+      "meanSquaredError": 0.16337889613066797,
+      "maxAbsoluteError": 1.0807264616124395,
+      "exactWithinToleranceFraction": 0.18518518518518517
+    },
+    "early-stop": {
+      "meanSquaredError": 1.0711659087798262,
+      "maxAbsoluteError": 2.033544768741956,
+      "exactWithinToleranceFraction": 0.07407407407407407
+    }
+  },
+  "rankingByMeanSquaredError": [
+    "linear",
+    "winner-take-all",
+    "early-stop"
+  ],
+  "predictedRankingMatches": true,
+  "samplePredictions": [
+    {
+      "query": -2,
+      "teacher": [
+        0.9572018463528679,
+        -0.41744586635018216
+      ],
+      "winnerTakeAll": [
+        1,
+        -0.5
+      ],
+      "earlyStop": [
+        1,
+        -0.5
+      ]
+    },
+    {
+      "query": 0,
+      "teacher": [
+        0.03333333333333327,
+        0.36666666666666664
+      ],
+      "winnerTakeAll": [
+        1,
+        -0.5
+      ],
+      "earlyStop": [
+        1,
+        -0.5
+      ]
+    },
+    {
+      "query": 2,
+      "teacher": [
+        -1.0335447687419559,
+        0.43573125440474225
+      ],
+      "winnerTakeAll": [
+        -1.1,
+        0.4
+      ],
+      "earlyStop": [
+        1,
+        -0.5
+      ]
+    }
+  ]
+}

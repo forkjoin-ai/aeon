@@ -59,13 +59,13 @@ import (
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const (
-	HeaderSize    = 10
-	MaxPayload    = 0xFFFFFF
-	FlagFork      = 0x01
-	FlagRace      = 0x02
-	FlagCollapse  = 0x04
-	FlagPoison    = 0x08
-	FlagFIN       = 0x10
+	HeaderSize   = 10
+	MaxPayload   = 0xFFFFFF
+	FlagFork     = 0x01
+	FlagRace     = 0x02
+	FlagCollapse = 0x04
+	FlagPoison   = 0x08
+	FlagFIN      = 0x10
 )
 
 // Frame is a single Aeon Flow protocol frame.
@@ -79,9 +79,9 @@ type Frame struct {
 
 // FrameEvent records a frame with timing information.
 type FrameEvent struct {
-	Frame    Frame
-	Time     time.Time
-	Elapsed  time.Duration
+	Frame     Frame
+	Time      time.Time
+	Elapsed   time.Duration
 	Direction string // "send" or "recv"
 }
 
@@ -431,10 +431,25 @@ func doForkRequest(addr, rootPath string, childPaths []string, headers map[strin
 }
 
 // doHTTPRequest performs a standard HTTP request (for comparison).
-func doHTTPRequest(rawURL string, verbose bool) ([]byte, time.Duration, error) {
+func doHTTPRequest(rawURL string, headers map[string]string, verbose bool) ([]byte, time.Duration, error) {
 	start := time.Now()
 
-	resp, err := http.Get(rawURL)
+	req, err := http.NewRequest("GET", rawURL, nil)
+	if err != nil {
+		return nil, 0, err
+	}
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+
+	if verbose {
+		fmt.Fprintf(os.Stderr, "HTTP request headers applied: %d\n", len(req.Header))
+		if req.Header.Get("Authorization") != "" {
+			fmt.Fprintln(os.Stderr, "Authorization header: present")
+		}
+	}
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -751,7 +766,7 @@ func main() {
 
 	// ─── HTTP mode ──────────────────────────────────────────────────────
 	if *httpMode {
-		body, elapsed, err := doHTTPRequest(args[0], *verbose)
+		body, elapsed, err := doHTTPRequest(args[0], headers, *verbose)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
@@ -785,7 +800,7 @@ func main() {
 		}
 
 		fmt.Fprintf(os.Stderr, "─── HTTP ───────────────────────────────────────────\n")
-		httpBody, httpElapsed, err := doHTTPRequest(args[1], *verbose)
+		httpBody, httpElapsed, err := doHTTPRequest(args[1], headers, *verbose)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "HTTP error: %v\n", err)
 		}
@@ -870,10 +885,10 @@ func main() {
 		}
 
 		type raceResult struct {
-			body    []byte
-			events  []FrameEvent
-			err     error
-			idx     int
+			body   []byte
+			events []FrameEvent
+			err    error
+			idx    int
 		}
 
 		results := make(chan raceResult, len(args))

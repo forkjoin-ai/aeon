@@ -159,6 +159,107 @@ theorem quantum_speedup_equals_classical_deficit_plus_one {sqrtN : Nat}
   rw [Nat.mul_div_right sqrtN hSqrtN]
   omega
 
+def linearFoldInt (left right : Int) : Int := left + right
+
+def winnerByMagnitudeFold (left right : Int) : Int :=
+  if Int.natAbs left >= Int.natAbs right then left else right
+
+def earlyStopFold (left _right : Int) : Int := left
+
+def linearFold3 (first second third : Int) : Int :=
+  linearFoldInt (linearFoldInt first second) third
+
+def winnerByMagnitudeFold3 (first second third : Int) : Int :=
+  winnerByMagnitudeFold (winnerByMagnitudeFold first second) third
+
+def earlyStopFold3 (first second third : Int) : Int :=
+  earlyStopFold (earlyStopFold first second) third
+
+def PartitionAdditive (fold2 : Int -> Int -> Int) (fold3 : Int -> Int -> Int -> Int) : Prop :=
+  ∀ first second third, fold3 first second third = linearFoldInt (fold2 first second) third
+
+def OrderInvariant (fold2 : Int -> Int -> Int) : Prop :=
+  ∀ first second, fold2 first second = fold2 second first
+
+def CancellationTargetFamily (fold2 : Int -> Int -> Int) : Prop :=
+  ∀ value, fold2 value (-value) = 0
+
+theorem linear_fold_partition_additivity {a b c : Int} :
+    linearFoldInt (linearFoldInt a b) c = linearFoldInt a (linearFoldInt b c) := by
+  simp [linearFoldInt, Int.add_assoc]
+
+theorem linear_fold_partition_additive_global :
+    PartitionAdditive linearFoldInt linearFold3 := by
+  intro first second third
+  simp [linearFold3, linearFoldInt, Int.add_assoc]
+
+theorem linear_fold_order_invariant_on_cancellation_witness :
+    linearFoldInt 1 (-1) = linearFoldInt (-1) 1 := by
+  decide
+
+theorem linear_fold_preserves_cancellation_target_family :
+    CancellationTargetFamily linearFoldInt := by
+  intro value
+  simp [CancellationTargetFamily, linearFoldInt]
+
+theorem winner_selection_partition_counterexample :
+    winnerByMagnitudeFold (winnerByMagnitudeFold 1 2) 3 ≠
+      linearFoldInt (winnerByMagnitudeFold 1 2) 3 := by
+  decide
+
+theorem early_stop_fold_order_sensitive :
+    earlyStopFold 1 (-1) ≠ earlyStopFold (-1) 1 := by
+  decide
+
+theorem winner_selection_misses_cancellation_target_family :
+    ¬ CancellationTargetFamily winnerByMagnitudeFold := by
+  intro hFamily
+  have hWitness := hFamily 1
+  have hCounterexample : winnerByMagnitudeFold 1 (-1) ≠ 0 := by
+    native_decide
+  exact hCounterexample hWitness
+
+theorem early_stop_misses_cancellation_target_family :
+    ¬ CancellationTargetFamily earlyStopFold := by
+  intro hFamily
+  have hWitness := hFamily 1
+  have hCounterexample : earlyStopFold 1 (-1) ≠ 0 := by
+    native_decide
+  exact hCounterexample hWitness
+
+theorem winner_selection_not_partition_additive :
+    ¬ PartitionAdditive winnerByMagnitudeFold winnerByMagnitudeFold3 := by
+  intro hPartition
+  have hWitness := hPartition 2 1 (-2)
+  have hCounterexample :
+      winnerByMagnitudeFold3 2 1 (-2) ≠
+        linearFoldInt (winnerByMagnitudeFold 2 1) (-2) := by
+    native_decide
+  exact hCounterexample hWitness
+
+theorem early_stop_not_partition_additive :
+    ¬ PartitionAdditive earlyStopFold earlyStopFold3 := by
+  intro hPartition
+  have hWitness := hPartition 1 0 (-1)
+  have hCounterexample :
+      earlyStopFold3 1 0 (-1) ≠
+        linearFoldInt (earlyStopFold 1 0) (-1) := by
+    native_decide
+  exact hCounterexample hWitness
+
+theorem winner_selection_not_order_invariant :
+    ¬ OrderInvariant winnerByMagnitudeFold := by
+  intro hInvariant
+  have hWitness := hInvariant 1 (-1)
+  have hCounterexample : winnerByMagnitudeFold 1 (-1) ≠ winnerByMagnitudeFold (-1) 1 := by
+    native_decide
+  exact hCounterexample hWitness
+
+theorem early_stop_not_order_invariant :
+    ¬ OrderInvariant earlyStopFold := by
+  intro hInvariant
+  exact early_stop_fold_order_sensitive (hInvariant 1 (-1))
+
 def protocolIntrinsicBeta1 (streamCount : Nat) : Nat := streamCount - 1
 
 def tcpBeta1 : Nat := 0
@@ -194,6 +295,49 @@ theorem settlement_deficit_values :
     settlementDeficit .parallel = 0 := by
   unfold settlementDeficit settlementIntrinsicBeta1 settlementImplementationBeta1
   constructor <;> decide
+
+structure WeightedQueueBalance where
+  mass : Nat
+  customerTime : Nat
+  sojournTime : Nat
+  balanced : customerTime = sojournTime
+
+def weightedCustomerTime : List WeightedQueueBalance -> Nat
+  | [] => 0
+  | balance :: rest => balance.mass * balance.customerTime + weightedCustomerTime rest
+
+def weightedSojournTime : List WeightedQueueBalance -> Nat
+  | [] => 0
+  | balance :: rest => balance.mass * balance.sojournTime + weightedSojournTime rest
+
+def totalScenarioMass : List WeightedQueueBalance -> Nat
+  | [] => 0
+  | balance :: rest => balance.mass + totalScenarioMass rest
+
+theorem weighted_queue_customer_time_balance (balances : List WeightedQueueBalance) :
+    weightedCustomerTime balances = weightedSojournTime balances := by
+  induction balances with
+  | nil =>
+      rfl
+  | cons balance rest ih =>
+      simp [weightedCustomerTime, weightedSojournTime, balance.balanced, ih]
+
+theorem weighted_queue_expectation_balance (balances : List WeightedQueueBalance) :
+    weightedCustomerTime balances / totalScenarioMass balances =
+      weightedSojournTime balances / totalScenarioMass balances := by
+  rw [weighted_queue_customer_time_balance]
+
+theorem weighted_queue_prefix_customer_time_balance
+    (balances : List WeightedQueueBalance) (n : Nat) :
+    weightedCustomerTime (balances.take n) =
+      weightedSojournTime (balances.take n) := by
+  exact weighted_queue_customer_time_balance (balances.take n)
+
+theorem weighted_queue_prefix_expectation_balance
+    (balances : List WeightedQueueBalance) (n : Nat) :
+    weightedCustomerTime (balances.take n) / totalScenarioMass (balances.take n) =
+      weightedSojournTime (balances.take n) / totalScenarioMass (balances.take n) := by
+  rw [weighted_queue_prefix_customer_time_balance]
 
 def beta2FromBandGap (bandGapExists : Bool) : Nat :=
   if bandGapExists then 1 else 0

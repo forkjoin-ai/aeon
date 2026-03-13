@@ -13,4 +13,4 @@
  */
 export { TopologyAnalyzer, } from './TopologyAnalyzer';
 export { TopologySampler, } from './TopologySampler';
-export { beta2FromBandGap, firstLawConserved, protocolDeficits, quantumDeficitIdentity, settlementDeficits, speculativeTreeExpectedAccepted, turbulentIdleFraction, worthingtonWhipSavings, } from './formal-claims';
+export { adaptiveParallelismPolicy, beta2FromBandGap, classifyPipelineRegime, frontierFill, firstLawConserved, pipelineOccupancy, protocolDeficits, quantumDeficitIdentity, settlementDeficits, speculativeTreeExpectedAccepted, turbulentIdleFraction, worthingtonWhipSavings, } from './formal-claims';

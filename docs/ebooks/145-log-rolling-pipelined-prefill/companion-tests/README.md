@@ -5,6 +5,7 @@
 - Test sources: [src/README.md](./src/README.md)
 - Formal artifacts: [formal/README.md](./formal/README.md)
 - Script helpers: [scripts/README.md](./scripts/README.md)
+- Generated artifacts: [artifacts/README.md](./artifacts/README.md)
 
 Reproducible test suite for the claims in the arXiv manuscript.
 
@@ -13,6 +14,14 @@ Reproducible test suite for the claims in the arXiv manuscript.
 ```bash
 bun install
 bun run test
+bun run test:gate1
+bun run test:gate1:hard
+bun run test:gate2
+bun run test:gate3
+bun run test:gate4
+bun run test:gate5
+bun run test:quantum-ablation
+bun run test:toy-attention-ablation
 bun run test:formal:parser
 bun run test:formal
 ```
@@ -24,21 +33,32 @@ bun run test:formal
 | `pipeline-topology.test.ts` | §1.1 The Triangle, §3 Pipeline Equation | Order preservation, β₁ lifecycle, Re phase transitions |
 | `flow-protocol.test.ts` | §8 The Wire, §8.2.1 Self-Describing Frames | 10-byte framing, fork/race/fold/vent semantics on wire |
 | `topological-compression.test.ts` | §8.6 Topological Compression | Per-chunk adaptive codec selection, subsumption |
-| `pipeline-formulas.test.ts` | §7 formulas | Worthington Whip, Speculative Tree, turbulent idle-fraction bounds, cross-shard correction crossover characterization |
+| `pipeline-formulas.test.ts` | §7 formulas | Worthington Whip, Speculative Tree, turbulent idle-fraction bounds, frontier-fill / occupancy-deficit complements, cross-shard correction crossover characterization, and A1/A2 assumption-boundary falsification checks for modeled step-count speedups |
 | `cross-shard-stochastic.test.ts` | §7.3 limitation closure | Finite crossover characterization under stochastic service laws and adaptive shard heuristics |
 | `dag-completeness.test.ts` | §2.4 completeness | Executable finite-DAG decomposition coverage (partition totality, edge-cover exactness, and source-to-sink path-set preservation) |
 | `quantum-topology.test.ts` | §6.11–§6.12, §13 | Quantum deficit identity, band-gap as β₂, convergence simulation under three constraints |
+| `quantum-correspondence-boundary.test.ts` | §6.12 | Finite-kernel linear path-sum equivalence checks, partition/permutation invariants, and explicit nonlinear winner/early-stop counterexamples that bound the correspondence claim |
+| `quantum-recombination-ablation.test.ts` | §6.12 | Same-path-family ablation harness: swap only the fold rule and predict the resulting loss of kernel agreement, partition additivity, order invariance, and cancellation |
+| `toy-attention-fold-ablation.test.ts` + `scripts/toy-attention-fold-ablation.ts` | §1.7, §6.12 | Fixed-parameter toy attention ablation: hold keys, values, score function, and query grid constant; swap only the fold rule; measure the resulting output degradation in a reproducible artifact |
 | `deficit-evidence.test.ts` | §6.12 evidence table, §8.3 | Protocol/settlement/healthcare deficits and entropy-vent trend checks |
 | `map-reduce-readiness.test.ts` | §6.14 heuristic | Executable checks for `Q_mr`, `O_beta`, `R_qr` bounds/monotonicity, necessity of nonzero topological opportunity in the migration simulator, independent rank correlation, and non-automatic-quantum-advantage counterexamples |
+| `gate1-wallclock.test.ts` + `scripts/gate1-wallclock-matrix.ts` | §14.1 evidence-bounded wall-clock claim | Live distributed wall-clock matrix (loopback + external-endpoint modes), including single-host and six-distinct-host non-loopback artifacts, with p50/p95 summaries, bootstrap CIs, and explicit pass/fail criteria |
+| `scripts/gate1-hard-workloads.ts` + `gate1-wallclock.ts` hard profile | §14.1 supplementary wall-clock evidence | CPU-heavy benchmark slice (MD5 grind + semiprime-factor kernels) demonstrating fixture-scoped tractability shifts via chunked scheduling on CPU-only infrastructure; does not claim impossibility on a single CPU |
+| `gate2-protocol-corpus.test.ts` + `scripts/gate2-protocol-corpus.ts` | §14.1 evidence-bounded protocol claim | Seeded heterogeneous protocol corpus matrix (Aeon Flow vs HTTP/3) across predeclared environment cells with bootstrap CI + per-site win-rate criteria for framing, median completion, and p95 completion; emits explicit PASS/DENY artifacts |
+| `gate3-compression-corpus.test.ts` + `scripts/gate3-compression-corpus.ts` | §14.1 evidence-bounded compression claim | Seeded heterogeneous compression corpus matrix comparing topological per-chunk racing against fixed-codec and heuristic baselines, with bootstrap CI + win-rate criteria and explicit PASS/DENY artifacts |
+| `gate4-rqr-holdout.test.ts` + `scripts/gate4-rqr-holdout.ts` | §14.1 evidence-bounded predictive-screening claim | Out-of-sample `R_qr` screening evidence with fixed train/holdout split rules, 95% bootstrap CIs, decile calibration summaries, and explicit PASS/DENY artifact output |
+| `gate5-bio-effect-size.test.ts` + `scripts/gate5-bio-effect-size.ts` | §14.1 evidence-bounded biological mapping | Predeclared comparative biological effect-size harness (saltatory conduction, photosynthesis step-vs-system efficiency, Okazaki chunking) with Monte Carlo uncertainty, pooled bootstrap CIs, and explicit PASS/DENY artifacts |
+| `scripts/quantum-recombination-ablation.ts` + `artifacts/quantum-recombination-ablation.{json,md}` | §6.12 | Reproducible invariant-loss matrix for same-path-family fold ablations; predicts exactly which path-sum invariants survive under linear recombination and fail under nonlinear selection |
+| `scripts/toy-attention-fold-ablation.ts` + `artifacts/toy-attention-fold-ablation.{json,md}` | §1.7, §6.12 | Reproducible behavioral ablation for a toy attention model; predicts the teacher-reconstruction error introduced by replacing linear fold with nonlinear selection at fixed parameters |
 | `physics-hierarchy.test.ts` | §6.11 | Executable hierarchy checks for path-integral/race/fold mappings and energy partitions (model scope) |
 | `emergent-connections.test.ts` | Chapter 23 | Executable analog checks for nine emergent correspondences (model scope) |
 | `thermodynamics.test.ts` | §6 Thermodynamics | First Law accounting, Carnot/Shannon bounds, ground-state overhead |
-| `queueing-subsumption.test.ts` | §5 End of Queueing Theory | Little's Law as β₁=0 degenerate case |
+| `queueing-subsumption.test.ts` | §5 End of Queueing Theory | Canonical queueing boundary cases, exhaustive finite-trace work-conserving identities, bounded multiclass network conservation, finite-support stochastic-mixture expectation checks, exact probabilistic queue/network kernel propagation checks, a larger exact three-slot multiclass network witness, and an explicit worst-case small-data ramp-up branch |
 | `shootoff.test.ts` | §8.5 Shootoff Benchmarks | Protocol comparison with real compression |
 | `evidence-traceability.test.ts` + `evidence-sources.ts` | §6.12 evidence table | Citation/provenance/evidence-type/calibration checks for empirical constants, plus manuscript-reference resolution checks |
-| `formal/*.tla` + TLC | §2.5, §6.11–§6.12, §7, §8.3 | Mechanized checks for C1–C4, §7 formulas, quantum/topology deficits, Bu beauty-optimality scaffolds, protocol/settlement deficits, and band-gap voids |
-| `formal/lean/*.lean` + Lake | §2.4–§2.5, §4, §6.12, §7, §11, §13 | Theorem-level mechanization with explicit assumptions for quantitative identities and top-level theorem schemas (including convergence schema) |
-| `formal-parser-compat.test.ts` + `scripts/validate-formal-artifacts.ts` | §11 Validation | Self-hosted `aeon-logic` parsing + round-trip validation for all `.tla/.cfg` artifacts |
+| `formal/*.tla` + TLC | §2.5, §4, §6.11–§6.12, §7, §8.3 | Mechanized checks for C1–C4, queueing sample-path/network/stochastic-mixture conservation, exact finite-state probabilistic queue and multiclass-network kernels, a larger exact finite-support multiclass-network cube, §7 formulas, frontier-fill / occupancy-deficit complement laws, the Wallace/crank metric on bounded three-layer frontiers, turbulent-multiplexing monotonicity, quantum/topology deficits, Bu beauty-optimality scaffolds, protocol/settlement deficits, and band-gap voids |
+| `formal/lean/*.lean` + `runLeanSandbox`/Lake | §2.4–§2.5, §4, §6.12, §7, §11, §13 | Theorem-level mechanization with constructive quantitative identities (including the Wallace/crank frontier metric, turbulent-multiplexing monotonicity, weighted queueing expectation balance, finite-prefix truncation balance, infinite weighted-sum queue balance, countably supported stochastic queue laws via `PMF`, measure-theoretic `lintegral` conservation, monotone truncation-to-limit queue balance, and the linear-vs-nonlinear correspondence boundary) plus top-level theorem schemas for the stronger uninstantiated convergence/limit claims, built through `@affectively/aeon-logic`'s Lean sandbox |
+| `formal-parser-compat.test.ts` + `scripts/validate-formal-artifacts.ts` | §11 Validation | Self-hosted `aeon-logic` parsing + round-trip validation for all `.tla/.cfg` artifacts, plus Lean project inspection through `runLeanSandbox` |
 | `scripts/formal-parser-equivalence.ts` | §11 Validation | Differential semantic-equivalence harness against Java SANY parse outcomes (agreement on valid corpus, round-trip corpus and invalid mutations) |
 
 ## Running Individual Sections
@@ -49,6 +69,14 @@ bun test:flow          # §8
 bun test:compression   # §8.6
 bun test:thermodynamics # §6
 bun test:shootoff      # §8.5
+bun test:gate1         # §14.1 wall-clock matrix evidence + artifact generation
+bun test:gate1:hard    # §14.1 supplementary CPU-hard workload wall-clock evidence
+bun test:gate2         # §14.1 protocol-corpus evidence + artifact generation
+bun test:gate3         # §14.1 compression-corpus evidence + artifact generation
+bun test:gate4         # §14.1 out-of-sample R_qr evidence + artifact generation
+bun test:gate5         # §14.1 biological effect-size evidence + artifact generation
+bun test:quantum-ablation # §6.12 same-path-family fold-ablation artifact generation
+bun test:toy-attention-ablation # §1.7, §6.12 fixed-parameter toy-attention ablation artifact generation
 bun test:queueing      # §5
 bun test:formal:parser # aeon-logic parser preflight for formal artifacts
 bun test:formal:lean   # Lean theorem build
@@ -60,4 +88,4 @@ bun test:all           # vitest suite + TLA+ model check
 
 ## Dependencies
 
-This test suite depends on `@anthropic-ai/aeon` (runtime protocol/compression primitives) and `@affectively/aeon-logic` (self-hosted TLC/TLA parser + formal compatibility adapters).
+This test suite depends on `@anthropic-ai/aeon` (runtime protocol/compression primitives) and `@affectively/aeon-logic` (self-hosted TLC/TLA parser, Lean sandbox, and formal compatibility adapters).

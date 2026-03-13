@@ -1,0 +1,209 @@
+{
+  "protocol": {
+    "id": "gate4-rqr-out-of-sample-v1",
+    "splitRule": "Training and holdout cohorts are generated from independent seeds with shifted workload distributions; holdout cohorts are never used in model fitting.",
+    "scoringRules": [
+      "Evaluate only predeclared CI/threshold checks below; no post-hoc threshold tuning.",
+      "Use 95% bootstrap confidence intervals with fixed seed and fixed resample count.",
+      "Gate PASS requires every criterion to pass; otherwise DENY."
+    ]
+  },
+  "config": {
+    "seed": 4869967,
+    "trainSamples": 360,
+    "holdoutSamples": 520,
+    "bootstrapResamples": 3000,
+    "decileCount": 10,
+    "monotonicTolerance": 0.005,
+    "thresholds": {
+      "spearmanLowerCi": 0.24,
+      "slopeLowerCi": 0.3,
+      "quartileDeltaLowerCi": 0.08,
+      "predictedPearsonLowerCi": 0.15,
+      "maxDecileMonotonicViolations": 3
+    }
+  },
+  "training": {
+    "sampleCount": 360,
+    "model": {
+      "intercept": 0.05068264073780877,
+      "slope": 0.3212997716864382,
+      "pearson": 0.23635183684373018,
+      "spearman": 0.23635794641017868,
+      "rmse": 0.058271859730844595
+    }
+  },
+  "holdout": {
+    "sampleCount": 520,
+    "lowerQuartileRqr": 0.0001439277290734905,
+    "upperQuartileRqr": 0.023944783582893307,
+    "lowQuartileMeanGain": 0.02263286701186988,
+    "highQuartileMeanGain": 0.15032025378067818,
+    "spearman": {
+      "value": 0.5167525020092328,
+      "ci95": {
+        "low": 0.445994866951474,
+        "high": 0.5752456692012791
+      }
+    },
+    "slope": {
+      "value": 0.6507066779229016,
+      "ci95": {
+        "low": 0.4267754673105786,
+        "high": 1.0315190457413768
+      }
+    },
+    "quartileDelta": {
+      "value": 0.1276873867688083,
+      "ci95": {
+        "low": 0.10007424780395553,
+        "high": 0.15330668646121354
+      }
+    },
+    "predictedPearson": {
+      "value": 0.24762130174901845,
+      "ci95": {
+        "low": 0.1756732186783555,
+        "high": 0.3470051671158057
+      }
+    },
+    "predictedRmse": 0.12541818678665567,
+    "deciles": [
+      {
+        "decile": 1,
+        "count": 52,
+        "meanRqr": 0,
+        "meanObservedGain": 0.01795237409002188,
+        "meanPredictedGain": 0.05068264073780874
+      },
+      {
+        "decile": 2,
+        "count": 52,
+        "meanRqr": 0,
+        "meanObservedGain": 0.019651486719852656,
+        "meanPredictedGain": 0.05068264073780874
+      },
+      {
+        "decile": 3,
+        "count": 52,
+        "meanRqr": 0.0002618578426712637,
+        "meanObservedGain": 0.045517863341100744,
+        "meanPredictedGain": 0.050766775602873355
+      },
+      {
+        "decile": 4,
+        "count": 52,
+        "meanRqr": 0.0019689047786253435,
+        "meanObservedGain": 0.05998830027033063,
+        "meanPredictedGain": 0.051315249393653437
+      },
+      {
+        "decile": 5,
+        "count": 52,
+        "meanRqr": 0.004841042519045004,
+        "meanObservedGain": 0.10086142969959469,
+        "meanPredictedGain": 0.052238066593902295
+      },
+      {
+        "decile": 6,
+        "count": 52,
+        "meanRqr": 0.008039493825470707,
+        "meanObservedGain": 0.09449579935693465,
+        "meanPredictedGain": 0.053265728268407066
+      },
+      {
+        "decile": 7,
+        "count": 52,
+        "meanRqr": 0.01364198481756418,
+        "meanObservedGain": 0.09337184234864973,
+        "meanPredictedGain": 0.055065807345042
+      },
+      {
+        "decile": 8,
+        "count": 52,
+        "meanRqr": 0.023708782794701604,
+        "meanObservedGain": 0.09566780993130052,
+        "meanPredictedGain": 0.05830026723670975
+      },
+      {
+        "decile": 9,
+        "count": 52,
+        "meanRqr": 0.044843356963119425,
+        "meanObservedGain": 0.16424705844957738,
+        "meanPredictedGain": 0.0650908010917125
+      },
+      {
+        "decile": 10,
+        "count": 52,
+        "meanRqr": 0.13859342564638932,
+        "meanObservedGain": 0.16478175082070357,
+        "meanPredictedGain": 0.09521267675523498
+      }
+    ],
+    "monotonicViolations": 1
+  },
+  "gate": {
+    "pass": true,
+    "criteria": [
+      {
+        "id": "spearman_ci_low",
+        "description": "Holdout rank correlation between R_qr and realized gain stays positive out-of-sample",
+        "threshold": "95% CI low >= 0.240",
+        "observed": 0.5167525020092328,
+        "ci95": {
+          "low": 0.445994866951474,
+          "high": 0.5752456692012791
+        },
+        "pass": true
+      },
+      {
+        "id": "slope_ci_low",
+        "description": "Holdout linear slope d(gain)/d(R_qr) remains materially positive",
+        "threshold": "95% CI low >= 0.300",
+        "observed": 0.6507066779229016,
+        "ci95": {
+          "low": 0.4267754673105786,
+          "high": 1.0315190457413768
+        },
+        "pass": true
+      },
+      {
+        "id": "quartile_delta_ci_low",
+        "description": "Top-quartile R_qr workloads outperform bottom quartile on realized gain",
+        "threshold": "95% CI low >= 0.080",
+        "observed": 0.1276873867688083,
+        "ci95": {
+          "low": 0.10007424780395553,
+          "high": 0.15330668646121354
+        },
+        "pass": true
+      },
+      {
+        "id": "predicted_pearson_ci_low",
+        "description": "Training-fit predictor remains correlated with holdout realized gain",
+        "threshold": "95% CI low >= 0.150",
+        "observed": 0.24762130174901845,
+        "ci95": {
+          "low": 0.1756732186783555,
+          "high": 0.3470051671158057
+        },
+        "pass": true
+      },
+      {
+        "id": "decile_monotonicity",
+        "description": "Decile mean gains are near-monotone in R_qr",
+        "threshold": "violations <= 3",
+        "observed": 1,
+        "pass": true
+      }
+    ],
+    "failedCriterionIds": [],
+    "passedCriterionIds": [
+      "spearman_ci_low",
+      "slope_ci_low",
+      "quartile_delta_ci_low",
+      "predicted_pearson_ci_low",
+      "decile_monotonicity"
+    ]
+  }
+}

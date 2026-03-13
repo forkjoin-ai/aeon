@@ -1,3 +1,11 @@
+---
+ebook_epub_access: membership_or_shop
+ebook_membership_tiers: aeon-library, topology-circle
+ebook_patreon_shop_url: https://www.patreon.com/c/twbuley/shop
+ebook_epub_cta_label: Get EPUB with membership
+ebook_featured_excerpt_chapters: ch14-aeon-flow-protocol, ch21-topology-of-computation
+---
+
 # Volume 145: Log-Rolling Pipelined Prefill — Rotational Mechanics for Distributed Inference
 
 > *"You don't need to move the entire mass at once. By pivoting on one corner, you are only overcoming the friction of a fraction of the weight at any given moment."* — Wally Wallington
@@ -5,6 +13,7 @@
 - Parent index: [Ebook Library](../README.md)
 - Live docs home: [docs.aeonflux.dev](https://docs.aeonflux.dev)
 - ArXiv manuscript source: [Manuscript Draft (Chapter 17)](./ch17-arxiv-manuscript.md)
+- Citation audit: [Citation Fact-Check Audit](./ch17-arxiv-manuscript-citation-audit.md)
 - Companion tests: [Companion Test Suite](./companion-tests/README.md)
 
 ## About This Book
@@ -47,7 +56,7 @@ The work is framed through the lens of Wally Wallington's "Forgotten Technology"
 
 16. **[The nginx Module: Aeon Flow Behind the Reverse Proxy](ch16-nginx-aeon-flow-module.md)** — `ngx_aeon_flow_module`: a C module that lets nginx speak Aeon Flow to backends while serving HTTP to browsers. Connection pooling, fork/race/collapse/poison semantics, ESI fragment assembly, and the Rolling Pivot architecture — browser stays put (HTTP), backend swings forward (Aeon Flow). Zerocopy codec, poison-on-disconnect cleanup, and HPACK-free framing.
 
-17. **[ArXiv Manuscript Draft](ch17-arxiv-manuscript.md)** — Full paper draft framing the Wallington Rotation as the core domain-agnostic algorithm, with the Worthington Whip as its high-gain extension, plus concrete implementations in Aether distributed inference and Aeon Flow transport.
+17. **[ArXiv Manuscript Draft](ch17-arxiv-manuscript.md)** — Full paper draft framing the Wallington Rotation as the core domain-agnostic algorithm, with the Worthington Whip as its high-gain extension, plus concrete implementations in Aether distributed inference and Aeon Flow transport, a bounded queueing generalization covering discipline/multiclass-network/finite-support stochastic-mixture/exact finite-state probabilistic-transition layers, and explicit unit-test plus Lean validation of the linear-vs-nonlinear correspondence boundary, including same-path-family fold ablations and fixed-parameter toy-attention behavioral ablations, in the companion evidence.
 
 18. **[The UDP Transport: TCP Had Its 40-Year Run](ch18-udp-transport.md)** — Every flow frame carries its own identity (`stream_id` + `sequence`), making TCP's ordered delivery redundant. `UDPFlowTransport` with MTU-aware fragmentation (4-byte header, 255 fragments × 1468 bytes), ACK bitmaps (14 bytes covers 64 sequences), AIMD congestion control, and `FrameReassembler` for per-stream out-of-order reconstruction. `WebTransportFlowTransport` bridges browsers via HTTP/3 unreliable datagrams. Fallback chain: UDP → WebTransport → WebSocket → TCP.
 
@@ -83,7 +92,14 @@ The work is framed through the lens of Wally Wallington's "Forgotten Technology"
 | `TopologyAnalyzer` | `open-source/aeon/src/topology/TopologyAnalyzer.ts` | Betti numbers, fork/join detection, topological deficit (Bules) |
 | `TopologySampler` | `open-source/aeon/src/topology/TopologySampler.ts` | Runtime sampling of deficit over time |
 | Topology tests | `open-source/aeon/src/__tests__/topology/topology.test.ts` | 24-test Betti number + deficit + sampler suite |
-| TLA+ formal suite | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/` | Mechanized checks for C1–C4, §7 formulas, §6.11–§6.12 deficits; parser-validated with `aeon-logic` before TLC |
+| TLA+ formal suite | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/` | Mechanized checks for C1–C4, queueing sample-path/network/stochastic-mixture conservation, exact finite-state probabilistic queue and multiclass-network kernels, a larger exact finite-support multiclass-network cube, infinite weighted-sum, countably supported stochastic (`PMF`), measure-theoretic queueing lifts via the paired Lean theorem package, the Wallace/crank frontier metric, turbulent-multiplexing monotonicity, §7 formulas, §6.11–§6.12 deficits, and the linear-vs-nonlinear correspondence boundary; parser-validated with `aeon-logic` before TLC |
+| Wall-clock matrix evidence harness | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gate1-wallclock-matrix.ts` | Live distributed benchmark matrix with loopback and external-endpoint modes (including six-distinct-host non-loopback runs), RTT/loss/workload cells, p50/p95 summaries, bootstrap CIs, and explicit pass/fail artifacts |
+| Hard-workload wall-clock harness | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gate1-hard-workloads.ts` | Supplementary CPU-heavy benchmark slice (MD5 grind + semiprime factor kernels) for fixture-scoped tractability-shift evidence on CPU-only infrastructure |
+| Protocol-corpus evidence harness | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gate2-protocol-corpus.ts` | Seeded heterogeneous protocol corpus evidence (Aeon Flow vs HTTP/3) across predeclared environment cells with bootstrap-CI and win-rate criteria for framing/median/p95 completion claims |
+| Compression-corpus evidence harness | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gate3-compression-corpus.ts` | Seeded heterogeneous compression corpus evidence (topological racing vs fixed-codec and heuristic baselines) with bootstrap-CI and win-rate criteria for robust advantage claims |
+| Out-of-sample R_qr evidence harness | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gate4-rqr-holdout.ts` | Fixed train/holdout screening evidence for R_qr with bootstrap-CI criteria, decile calibration summaries, and explicit PASS/DENY artifacts |
+| Biological effect-size evidence harness | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gate5-bio-effect-size.ts` | Predeclared comparative biological effect-size evidence with uncertainty propagation and pooled bootstrap-CI criteria (saltatory conduction, polysome throughput, Okazaki chunking) |
+| Toy attention fold-ablation harness | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/toy-attention-fold-ablation.ts` | Fixed-parameter toy attention behavioral ablation that swaps only the fold rule and writes reproducible MSE/exact-reconstruction artifacts |
 
 ## Performance Impact
 

@@ -8,3 +8,4 @@ Lean source modules for the formal theorem package.
 Primary entrypoint:
 
 - `ForkRaceFoldTheorems.lean`
+- `ForkRaceFoldTheorems/README.md`: constructive claims, multiplexing/Wallace theorems, queueing measure-limit theorems, and higher-level theorem schemas, including the §6.12 correspondence-boundary theorems.

@@ -42,6 +42,40 @@ theorem queueing_strict_extension_at_positive_beta (assumptions : QueueContainme
   intro hPositive
   exact assumptions.topologyControlAtPositiveBeta hPositive
 
+structure QueueLimitAssumptions where
+  finiteTruncationsBalanced : Nat -> Prop
+  truncationsExhaustSupport : Prop
+  monotoneSupportApproximation : Prop
+  measurableCustomerTime : Prop
+  measurableSojournTime : Prop
+  integrableDominatingEnvelope : Prop
+  limitBalance : Prop
+  limitFromBalancedTruncations :
+    truncationsExhaustSupport ->
+    monotoneSupportApproximation ->
+    measurableCustomerTime ->
+    measurableSojournTime ->
+    integrableDominatingEnvelope ->
+    (∀ n, finiteTruncationsBalanced n) ->
+    limitBalance
+
+theorem queue_limit_schema (assumptions : QueueLimitAssumptions) :
+    assumptions.truncationsExhaustSupport ->
+    assumptions.monotoneSupportApproximation ->
+    assumptions.measurableCustomerTime ->
+    assumptions.measurableSojournTime ->
+    assumptions.integrableDominatingEnvelope ->
+    (∀ n, assumptions.finiteTruncationsBalanced n) ->
+    assumptions.limitBalance := by
+  intro hExhaust hMonotone hCustomer hSojourn hEnvelope hBalanced
+  exact assumptions.limitFromBalancedTruncations
+    hExhaust
+    hMonotone
+    hCustomer
+    hSojourn
+    hEnvelope
+    hBalanced
+
 structure DagExpressibilityAssumptions where
   finiteDag : Prop
   decompositionExists : Prop

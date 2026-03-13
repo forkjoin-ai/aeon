@@ -1,0 +1,339 @@
+{
+  "label": "gnosis-fold-training-benchmark-v1",
+  "config": {
+    "seedCount": 8,
+    "epochs": 720,
+    "learningRate": 0.035,
+    "exactPredictionTolerance": 0.05,
+    "trainSampleCount": 49,
+    "evalSampleCount": 36,
+    "targetFamily": "left-minus-right"
+  },
+  "topology": {
+    "nodeCount": 5,
+    "edgeCount": 3,
+    "structuralBeta1": 1,
+    "branchCount": 2,
+    "parameterCount": 4
+  },
+  "strategies": {
+    "linear": {
+      "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/fold-training-linear.gg",
+      "topologyNodeCount": 5,
+      "topologyEdgeCount": 3,
+      "structuralBeta1": 1,
+      "branchCount": 2,
+      "parameterCount": 4,
+      "seedMetrics": [
+        {
+          "seed": 1,
+          "trainMeanSquaredError": 1.240770540498291e-31,
+          "evalMeanSquaredError": 6.267832007900238e-32,
+          "exactWithinToleranceFraction": 1,
+          "cancellationLineMeanAbsoluteError": 6.013708050052931e-17
+        },
+        {
+          "seed": 2,
+          "trainMeanSquaredError": 2.1119197504452034e-31,
+          "evalMeanSquaredError": 1.559575270521575e-31,
+          "exactWithinToleranceFraction": 1,
+          "cancellationLineMeanAbsoluteError": 1.942890293094024e-16
+        },
+        {
+          "seed": 3,
+          "trainMeanSquaredError": 2.1345592534649387e-31,
+          "evalMeanSquaredError": 1.6042996436745675e-31,
+          "exactWithinToleranceFraction": 1,
+          "cancellationLineMeanAbsoluteError": 1.3877787807814457e-17
+        },
+        {
+          "seed": 4,
+          "trainMeanSquaredError": 1.810531366494972e-31,
+          "evalMeanSquaredError": 1.5244805470905187e-31,
+          "exactWithinToleranceFraction": 1,
+          "cancellationLineMeanAbsoluteError": 1.3877787807814457e-16
+        },
+        {
+          "seed": 5,
+          "trainMeanSquaredError": 2.387249123107093e-31,
+          "evalMeanSquaredError": 1.607723519131256e-31,
+          "exactWithinToleranceFraction": 1,
+          "cancellationLineMeanAbsoluteError": 4.625929269271485e-18
+        },
+        {
+          "seed": 6,
+          "trainMeanSquaredError": 1.277490949693062e-31,
+          "evalMeanSquaredError": 1.25656229260465e-31,
+          "exactWithinToleranceFraction": 1,
+          "cancellationLineMeanAbsoluteError": 1.295260195396016e-16
+        },
+        {
+          "seed": 7,
+          "trainMeanSquaredError": 2.165920099322762e-31,
+          "evalMeanSquaredError": 1.8266375561432717e-31,
+          "exactWithinToleranceFraction": 1,
+          "cancellationLineMeanAbsoluteError": 8.326672684688674e-17
+        },
+        {
+          "seed": 8,
+          "trainMeanSquaredError": 2.0098847680854225e-31,
+          "evalMeanSquaredError": 1.8831315011786307e-31,
+          "exactWithinToleranceFraction": 1,
+          "cancellationLineMeanAbsoluteError": 0
+        }
+      ],
+      "meanTrainMeanSquaredError": 1.892290731388968e-31,
+      "stdevTrainMeanSquaredError": 3.9524645242786724e-32,
+      "meanEvalMeanSquaredError": 1.4861491913918117e-31,
+      "stdevEvalMeanSquaredError": 3.7086855137273513e-32,
+      "meanExactWithinToleranceFraction": 1,
+      "stdevExactWithinToleranceFraction": 0,
+      "meanCancellationLineMeanAbsoluteError": 7.806255641895632e-17,
+      "stdevCancellationLineMeanAbsoluteError": 6.689378039221747e-17,
+      "samplePredictions": [
+        {
+          "leftInput": -1,
+          "rightInput": -1,
+          "target": 0,
+          "meanPrediction": -5.551115123125783e-17,
+          "predictionStddev": 9.614813431917819e-17
+        },
+        {
+          "leftInput": 1,
+          "rightInput": -1,
+          "target": 2,
+          "meanPrediction": 1.9999999999999996,
+          "predictionStddev": 2.9373740229761033e-16
+        },
+        {
+          "leftInput": -1,
+          "rightInput": 1,
+          "target": -2,
+          "meanPrediction": -1.9999999999999996,
+          "predictionStddev": 1.9229626863835638e-16
+        },
+        {
+          "leftInput": 1,
+          "rightInput": 1,
+          "target": 0,
+          "meanPrediction": 2.7755575615628914e-17,
+          "predictionStddev": 1.642041997679149e-16
+        }
+      ]
+    },
+    "winner-take-all": {
+      "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/fold-training-winner-take-all.gg",
+      "topologyNodeCount": 5,
+      "topologyEdgeCount": 3,
+      "structuralBeta1": 1,
+      "branchCount": 2,
+      "parameterCount": 4,
+      "seedMetrics": [
+        {
+          "seed": 1,
+          "trainMeanSquaredError": 0.5830682438989556,
+          "evalMeanSquaredError": 0.4377921872462774,
+          "exactWithinToleranceFraction": 0.05555555555555555,
+          "cancellationLineMeanAbsoluteError": 0.8953191032407027
+        },
+        {
+          "seed": 2,
+          "trainMeanSquaredError": 0.5267029638560786,
+          "evalMeanSquaredError": 0.3895013270478665,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7816271459434182
+        },
+        {
+          "seed": 3,
+          "trainMeanSquaredError": 0.5221001992617795,
+          "evalMeanSquaredError": 0.3854550801275127,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7615968228385288
+        },
+        {
+          "seed": 4,
+          "trainMeanSquaredError": 0.5308225208488232,
+          "evalMeanSquaredError": 0.4081368377671626,
+          "exactWithinToleranceFraction": 0.027777777777777776,
+          "cancellationLineMeanAbsoluteError": 0.8680915249833198
+        },
+        {
+          "seed": 5,
+          "trainMeanSquaredError": 0.5332324460192146,
+          "evalMeanSquaredError": 0.3942688937023535,
+          "exactWithinToleranceFraction": 0.027777777777777776,
+          "cancellationLineMeanAbsoluteError": 0.7404262439931079
+        },
+        {
+          "seed": 6,
+          "trainMeanSquaredError": 0.5519342481102424,
+          "evalMeanSquaredError": 0.4115156893333547,
+          "exactWithinToleranceFraction": 0.08333333333333333,
+          "cancellationLineMeanAbsoluteError": 0.8324157930606305
+        },
+        {
+          "seed": 7,
+          "trainMeanSquaredError": 0.5406048545282712,
+          "evalMeanSquaredError": 0.42669239974688616,
+          "exactWithinToleranceFraction": 0.05555555555555555,
+          "cancellationLineMeanAbsoluteError": 0.9138482732362286
+        },
+        {
+          "seed": 8,
+          "trainMeanSquaredError": 0.5319956780421424,
+          "evalMeanSquaredError": 0.4119185901051647,
+          "exactWithinToleranceFraction": 0.05555555555555555,
+          "cancellationLineMeanAbsoluteError": 0.8793116346379365
+        }
+      ],
+      "meanTrainMeanSquaredError": 0.5400576443206885,
+      "stdevTrainMeanSquaredError": 0.01833353584859717,
+      "meanEvalMeanSquaredError": 0.40816012563457227,
+      "stdevEvalMeanSquaredError": 0.01696882010167281,
+      "meanExactWithinToleranceFraction": 0.03819444444444444,
+      "stdevExactWithinToleranceFraction": 0.027559909490256156,
+      "meanCancellationLineMeanAbsoluteError": 0.8340795677417342,
+      "stdevCancellationLineMeanAbsoluteError": 0.06133392031746063,
+      "samplePredictions": [
+        {
+          "leftInput": -1,
+          "rightInput": -1,
+          "target": 0,
+          "meanPrediction": -0.007377018833161053,
+          "predictionStddev": 1.2004499883483213
+        },
+        {
+          "leftInput": 1,
+          "rightInput": -1,
+          "target": 2,
+          "meanPrediction": 1.2295829353649779,
+          "predictionStddev": 0.15516257196252614
+        },
+        {
+          "leftInput": -1,
+          "rightInput": 1,
+          "target": -2,
+          "meanPrediction": -1.2148528725154775,
+          "predictionStddev": 0.12049433462878152
+        },
+        {
+          "leftInput": 1,
+          "rightInput": 1,
+          "target": 0,
+          "meanPrediction": 0.08796186344974231,
+          "predictionStddev": 0.9053998542438
+        }
+      ]
+    },
+    "early-stop": {
+      "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/fold-training-early-stop.gg",
+      "topologyNodeCount": 5,
+      "topologyEdgeCount": 3,
+      "structuralBeta1": 1,
+      "branchCount": 2,
+      "parameterCount": 4,
+      "seedMetrics": [
+        {
+          "seed": 1,
+          "trainMeanSquaredError": 1.0129231568470471,
+          "evalMeanSquaredError": 0.7410628001754908,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7961849377145188
+        },
+        {
+          "seed": 2,
+          "trainMeanSquaredError": 1.0178664693974446,
+          "evalMeanSquaredError": 0.7462732424674362,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7897270757411142
+        },
+        {
+          "seed": 3,
+          "trainMeanSquaredError": 1.0010946530737406,
+          "evalMeanSquaredError": 0.7299655019890225,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7747869061081615
+        },
+        {
+          "seed": 4,
+          "trainMeanSquaredError": 1.0013348182189488,
+          "evalMeanSquaredError": 0.7304048146643732,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7358304335511282
+        },
+        {
+          "seed": 5,
+          "trainMeanSquaredError": 1.013608372656072,
+          "evalMeanSquaredError": 0.7401920712316676,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.6767563925294492
+        },
+        {
+          "seed": 6,
+          "trainMeanSquaredError": 1.003269327583589,
+          "evalMeanSquaredError": 0.7315719900378486,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7923611884548539
+        },
+        {
+          "seed": 7,
+          "trainMeanSquaredError": 1.0004854975078938,
+          "evalMeanSquaredError": 0.729613300255217,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7589842846651939
+        },
+        {
+          "seed": 8,
+          "trainMeanSquaredError": 1.0052143596822862,
+          "evalMeanSquaredError": 0.7337783529291501,
+          "exactWithinToleranceFraction": 0,
+          "cancellationLineMeanAbsoluteError": 0.7853794620286582
+        }
+      ],
+      "meanTrainMeanSquaredError": 1.0069745818708777,
+      "stdevTrainMeanSquaredError": 0.0063574950096898074,
+      "meanEvalMeanSquaredError": 0.7353577592187757,
+      "stdevEvalMeanSquaredError": 0.005900204642651841,
+      "meanExactWithinToleranceFraction": 0,
+      "stdevExactWithinToleranceFraction": 0,
+      "meanCancellationLineMeanAbsoluteError": 0.7637513350991346,
+      "stdevCancellationLineMeanAbsoluteError": 0.03792291958255379,
+      "samplePredictions": [
+        {
+          "leftInput": -1,
+          "rightInput": -1,
+          "target": 0,
+          "meanPrediction": -1.015733596751078,
+          "predictionStddev": 0.06824953563248469
+        },
+        {
+          "leftInput": 1,
+          "rightInput": -1,
+          "target": 2,
+          "meanPrediction": 1.0209366301799478,
+          "predictionStddev": 0.09276462729773924
+        },
+        {
+          "leftInput": -1,
+          "rightInput": 1,
+          "target": -2,
+          "meanPrediction": -1.015733596751078,
+          "predictionStddev": 0.06824953563248469
+        },
+        {
+          "leftInput": 1,
+          "rightInput": 1,
+          "target": 0,
+          "meanPrediction": 1.0209366301799478,
+          "predictionStddev": 0.09276462729773924
+        }
+      ]
+    }
+  },
+  "rankingByEvalMeanSquaredError": [
+    "linear",
+    "winner-take-all",
+    "early-stop"
+  ],
+  "predictedRankingMatches": true
+}

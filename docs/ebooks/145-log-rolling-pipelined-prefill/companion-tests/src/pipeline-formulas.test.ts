@@ -461,3 +461,136 @@ describe('Turbulent Multiplexing (§7.2)', () => {
     expect(muxTotal).toBeLessThan(seqTotal);
   });
 });
+
+// ============================================================================
+// §7.1 Assumption Boundary Tests (A1/A2)
+// ============================================================================
+
+function modeledSerialStepDepth(items: number, stages: number): number {
+  return items * stages;
+}
+
+function modeledChunkedStepDepth(items: number, stages: number, chunkSize: number): number {
+  const chunks = Math.ceil(items / chunkSize);
+  return chunks + stages - 1;
+}
+
+function simulateSerialWallClock(
+  items: number,
+  stageServiceTimes: readonly number[],
+  interStageLatency: number,
+): number {
+  const stages = stageServiceTimes.length;
+  let total = 0;
+  for (let item = 0; item < items; item++) {
+    for (let stage = 0; stage < stages; stage++) {
+      total += stageServiceTimes[stage];
+      if (stage < stages - 1) {
+        total += interStageLatency;
+      }
+    }
+  }
+  return total;
+}
+
+function simulateChunkedPipelineWallClock(
+  items: number,
+  stageServiceTimes: readonly number[],
+  interStageLatency: number,
+  chunkSize: number,
+): number {
+  const stages = stageServiceTimes.length;
+  const chunks = Math.ceil(items / chunkSize);
+  const lastFinishByStage = Array<number>(stages).fill(0);
+
+  for (let chunk = 0; chunk < chunks; chunk++) {
+    let upstreamFinish = 0;
+    for (let stage = 0; stage < stages; stage++) {
+      const arrival =
+        stage === 0 ? 0 : upstreamFinish + interStageLatency;
+      const start = Math.max(arrival, lastFinishByStage[stage]);
+      const finish = start + stageServiceTimes[stage];
+      lastFinishByStage[stage] = finish;
+      upstreamFinish = finish;
+    }
+  }
+
+  return lastFinishByStage[stages - 1];
+}
+
+describe('Chunked prefill speedup assumption boundaries (§7.1 A1/A2)', () => {
+  it('A1/A2 hold: simulated wall-clock equals modeled step-depth identity (B=1)', () => {
+    const items = 32;
+    const stages = 5;
+    const chunkSize = 1;
+    const stageServiceTimes = Array<number>(stages).fill(1);
+    const interStageLatency = 0;
+
+    const modeledSerial = modeledSerialStepDepth(items, stages);
+    const modeledChunked = modeledChunkedStepDepth(items, stages, chunkSize);
+
+    const simulatedSerial = simulateSerialWallClock(
+      items,
+      stageServiceTimes,
+      interStageLatency,
+    );
+    const simulatedChunked = simulateChunkedPipelineWallClock(
+      items,
+      stageServiceTimes,
+      interStageLatency,
+      chunkSize,
+    );
+
+    expect(simulatedSerial).toBe(modeledSerial);
+    expect(simulatedChunked).toBe(modeledChunked);
+    expect(simulatedSerial / simulatedChunked).toBeCloseTo(
+      modeledSerial / modeledChunked,
+      12,
+    );
+  });
+
+  it('violating A1 (nonzero inter-stage latency) breaks the modeled speedup identity', () => {
+    const items = 64;
+    const stages = 8;
+    const chunkSize = 1;
+    const stageServiceTimes = Array<number>(stages).fill(1);
+    const interStageLatency = 2;
+
+    const modeledSpeedup =
+      modeledSerialStepDepth(items, stages) /
+      modeledChunkedStepDepth(items, stages, chunkSize);
+    const simulatedSpeedup =
+      simulateSerialWallClock(items, stageServiceTimes, interStageLatency) /
+      simulateChunkedPipelineWallClock(
+        items,
+        stageServiceTimes,
+        interStageLatency,
+        chunkSize,
+      );
+
+    expect(Math.abs(simulatedSpeedup - modeledSpeedup)).toBeGreaterThan(1.0);
+  });
+
+  it('violating A2 (heterogeneous stage service times) lowers realized speedup vs modeled speedup', () => {
+    const items = 48;
+    const chunkSize = 1;
+    const stageServiceTimes = [1, 4, 1, 4, 1, 4];
+    const stages = stageServiceTimes.length;
+    const interStageLatency = 0;
+
+    const modeledSpeedup =
+      modeledSerialStepDepth(items, stages) /
+      modeledChunkedStepDepth(items, stages, chunkSize);
+    const simulatedSpeedup =
+      simulateSerialWallClock(items, stageServiceTimes, interStageLatency) /
+      simulateChunkedPipelineWallClock(
+        items,
+        stageServiceTimes,
+        interStageLatency,
+        chunkSize,
+      );
+
+    expect(simulatedSpeedup).toBeLessThan(modeledSpeedup);
+    expect(modeledSpeedup - simulatedSpeedup).toBeGreaterThan(1.0);
+  });
+});

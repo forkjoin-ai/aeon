@@ -31,14 +31,23 @@ export {
 } from './TopologySampler';
 
 export {
+  adaptiveParallelismPolicy,
   beta2FromBandGap,
+  classifyPipelineRegime,
+  frontierFill,
   firstLawConserved,
+  pipelineOccupancy,
+  type AdaptiveParallelismPolicyResult,
+  type ParallelismAction,
+  type PipelineRegime,
   protocolDeficits,
   quantumDeficitIdentity,
   settlementDeficits,
   speculativeTreeExpectedAccepted,
   turbulentIdleFraction,
   worthingtonWhipSavings,
+  type FrontierFillResult,
+  type PipelineOccupancyResult,
   type ProtocolDeficitResult,
   type QuantumDeficitResult,
   type SettlementDeficitResult,

@@ -1,0 +1,49 @@
+{
+  "label": "quantum-recombination-ablation-v1",
+  "tolerance": 1e-10,
+  "strategies": {
+    "linear": {
+      "profile": {
+        "preservesKernelAgreement": true,
+        "preservesPartitionAdditivity": true,
+        "preservesOrderInvariance": true,
+        "preservesCancellation": true
+      },
+      "distances": {
+        "kernelAgreementDistance": 0,
+        "partitionAdditivityDistance": 0,
+        "orderInvarianceDistance": 0,
+        "cancellationMagnitude2": 0
+      }
+    },
+    "winner-take-all": {
+      "profile": {
+        "preservesKernelAgreement": false,
+        "preservesPartitionAdditivity": false,
+        "preservesOrderInvariance": false,
+        "preservesCancellation": false
+      },
+      "distances": {
+        "kernelAgreementDistance": 0.35355339059327356,
+        "partitionAdditivityDistance": 2,
+        "orderInvarianceDistance": 2,
+        "cancellationMagnitude2": 1
+      }
+    },
+    "early-stop": {
+      "profile": {
+        "preservesKernelAgreement": false,
+        "preservesPartitionAdditivity": false,
+        "preservesOrderInvariance": false,
+        "preservesCancellation": false
+      },
+      "distances": {
+        "kernelAgreementDistance": 0.35355339059327356,
+        "partitionAdditivityDistance": 2,
+        "orderInvarianceDistance": 2,
+        "cancellationMagnitude2": 1
+      }
+    }
+  },
+  "predictedLossMatrixMatches": true
+}
