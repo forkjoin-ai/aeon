@@ -29,6 +29,7 @@ This directory contains machine-checked formal artifacts used to mechanize the p
 - `lean/Lean/ForkRaceFoldTheorems/Wallace.lean`: constructive Lean theorems for the Wallace/crank metric on a three-layer frontier, including boundedness, complement, zero-fullness equivalence, and the symmetric diamond closed form.
 - `lean/Lean/ForkRaceFoldTheorems/Multiplexing.lean`: constructive Lean theorems for turbulent-multiplexing monotonicity under fixed useful work and legal overlap recovery.
 - `lean/Lean/ForkRaceFoldTheorems/MeasureQueueing.lean`: constructive Lean theorems for infinite weighted queue sums, countably supported stochastic queue laws via `PMF`, measure-theoretic `lintegral` conservation, and monotone truncation-to-limit lifting of queue customer-time balance.
+- `lean/Lean/ForkRaceFoldTheorems/QueueStability.lean`: constructive Lean theorems for the stable `M/M/1` stationary occupancy law, its finite first moment, and trajectory-level Cesaro balance for unbounded open-network sample paths.
 - `lean/Lean/ForkRaceFoldTheorems/Axioms.lean`: explicit-assumption theorem schemas for global claims, including convergence in the modeled finite class and stronger queue-limit shells that still require extra semantic/stability hypotheses.
 
 ## Run

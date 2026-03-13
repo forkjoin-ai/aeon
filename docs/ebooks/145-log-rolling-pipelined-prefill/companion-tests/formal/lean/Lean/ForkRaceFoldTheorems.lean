@@ -1,5 +1,6 @@
 import ForkRaceFoldTheorems.Claims
 import ForkRaceFoldTheorems.Axioms
 import ForkRaceFoldTheorems.MeasureQueueing
+import ForkRaceFoldTheorems.QueueStability
 import ForkRaceFoldTheorems.Multiplexing
 import ForkRaceFoldTheorems.Wallace

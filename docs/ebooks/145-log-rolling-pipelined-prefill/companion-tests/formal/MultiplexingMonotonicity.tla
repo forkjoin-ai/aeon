@@ -11,11 +11,17 @@ Init ==
   /\ busy \in BusyDomain
   /\ seqCap \in SequentialCapacityDomain
   /\ overlap \in OverlapDomain
+  /\ busy > 0
+  /\ seqCap >= busy
+  /\ overlap <= seqCap - busy
 
 Change ==
   /\ busy' \in BusyDomain
   /\ seqCap' \in SequentialCapacityDomain
   /\ overlap' \in OverlapDomain
+  /\ busy' > 0
+  /\ seqCap' >= busy'
+  /\ overlap' <= seqCap' - busy'
 
 Stutter == UNCHANGED vars
 

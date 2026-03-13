@@ -70,6 +70,10 @@ function validateLeanProject(): number {
     'Lean project must expose the MeasureQueueing module',
   );
   assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QueueStability'),
+    'Lean project must expose the QueueStability module',
+  );
+  assert(
     result.report.build.attempted === false,
     'Lean inspection preflight must not execute a build',
   );

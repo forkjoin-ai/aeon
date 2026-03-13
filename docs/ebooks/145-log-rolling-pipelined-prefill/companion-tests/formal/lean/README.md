@@ -4,7 +4,7 @@
 - Ledger: [../THEOREM_LEDGER.md](../THEOREM_LEDGER.md)
 - Source root: [Lean/README.md](./Lean/README.md)
 
-This directory contains a Lean 4 theorem package that encodes constructive and explicit-assumption theorems for core paper claims, including the algebraic boundary between linear aggregation and nonlinear selection in §6.12, the cancellation-target-family impossibility witness for nonlinear folds, and the queueing lift from finite traces to infinite sums and measure-theoretic limits.
+This directory contains a Lean 4 theorem package that encodes constructive and explicit-assumption theorems for core paper claims, including the algebraic boundary between linear aggregation and nonlinear selection in §6.12, the cancellation-target-family impossibility witness for nonlinear folds, and the queueing lift from finite traces to infinite sums, stable `M/M/1` stationarity, and measure-theoretic limits.
 
 The companion suite now exercises this package through `@affectively/aeon-logic`'s Lean sandbox for both inspection preflight and the actual mechanized build path.
 
@@ -15,6 +15,7 @@ The companion suite now exercises this package through `@affectively/aeon-logic`
 - `Lean/ForkRaceFoldTheorems/Multiplexing.lean`: constructive turbulent-multiplexing monotonicity proofs under fixed busy work and legal overlap recovery.
 - `Lean/ForkRaceFoldTheorems/Wallace.lean`: constructive Wallace/crank theorems for bounded three-layer frontiers and the symmetric diamond witness.
 - `Lean/ForkRaceFoldTheorems/MeasureQueueing.lean`: constructive queueing theorems for `tsum`, countably supported stochastic laws via `PMF`, `lintegral`, and monotone truncation-to-limit balance.
+- `Lean/ForkRaceFoldTheorems/QueueStability.lean`: constructive queue-family theorems for the stable `M/M/1` stationary law and trajectory-level Cesaro balance for unbounded open-network sample paths.
 - `Lean/ForkRaceFoldTheorems/Axioms.lean`: assumption-parameterized theorem schemas for global claims that still need extra semantic or stability hypotheses.
 
 ## Run
