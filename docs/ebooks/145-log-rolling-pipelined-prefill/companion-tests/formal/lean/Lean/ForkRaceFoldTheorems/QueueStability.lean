@@ -2,7 +2,7 @@ import Mathlib
 import ForkRaceFoldTheorems.MeasureQueueing
 
 open Filter MeasureTheory ProbabilityTheory
-open scoped ENNReal
+open scoped ENNReal Topology
 
 namespace ForkRaceFoldTheorems
 
@@ -17,8 +17,8 @@ theorem mm1StationaryPMF_apply
     (n : ℕ) :
     mm1StationaryPMF ρ hρ_nonneg hρ_lt_one n = ENNReal.ofReal (ρ ^ n * (1 - ρ)) := by
   have hSub : 1 - (1 - ρ) = ρ := by ring
-  simp [mm1StationaryPMF, ProbabilityTheory.geometricPMF, ProbabilityTheory.geometricPMFReal,
-    hSub, mul_comm, mul_left_comm, mul_assoc]
+  change ENNReal.ofReal ((1 - (1 - ρ)) ^ n * (1 - ρ)) = ENNReal.ofReal (ρ ^ n * (1 - ρ))
+  rw [hSub]
 
 theorem mm1StationaryPMF_toReal
     {ρ : ℝ}
@@ -27,8 +27,10 @@ theorem mm1StationaryPMF_toReal
     (n : ℕ) :
     (mm1StationaryPMF ρ hρ_nonneg hρ_lt_one n).toReal = ρ ^ n * (1 - ρ) := by
   rw [mm1StationaryPMF_apply hρ_nonneg hρ_lt_one n]
+  have hOneMinusRhoNonneg : 0 ≤ 1 - ρ := by
+    linarith
   have hMassNonneg : 0 ≤ ρ ^ n * (1 - ρ) := by
-    positivity
+    exact mul_nonneg (pow_nonneg hρ_nonneg _) hOneMinusRhoNonneg
   simp [hMassNonneg]
 
 theorem mm1_stationary_mean_queue_length
@@ -54,7 +56,6 @@ theorem mm1_stationary_mean_queue_length
           rw [tsum_coe_mul_geometric_of_norm_lt_one hNorm]
     _ = ρ / (1 - ρ) := by
           field_simp [sub_ne_zero.mpr (ne_of_lt hρ_lt_one)]
-          ring
 
 theorem mm1_stationary_lintegral_balance
     {ρ : ℝ}
@@ -75,11 +76,11 @@ structure OpenNetworkCesaroWitness where
   openAgeLimit : ℝ
   samplePathBalance : ∀ n, customerArea n = departedSojourn n + openAge n
   customerCesaroConverges :
-    Tendsto (fun n => customerArea n / (n + 1 : ℝ)) atTop (𝓝 customerLimit)
+    Tendsto (fun n => customerArea n / (n + 1 : ℝ)) atTop (nhds customerLimit)
   sojournCesaroConverges :
-    Tendsto (fun n => departedSojourn n / (n + 1 : ℝ)) atTop (𝓝 sojournLimit)
+    Tendsto (fun n => departedSojourn n / (n + 1 : ℝ)) atTop (nhds sojournLimit)
   openAgeCesaroConverges :
-    Tendsto (fun n => openAge n / (n + 1 : ℝ)) atTop (𝓝 openAgeLimit)
+    Tendsto (fun n => openAge n / (n + 1 : ℝ)) atTop (nhds openAgeLimit)
 
 theorem open_network_cesaro_balance
     (witness : OpenNetworkCesaroWitness) :
@@ -91,7 +92,7 @@ theorem open_network_cesaro_balance
     rw [witness.samplePathBalance n, add_div]
   have hBalanced :
       Tendsto (fun n => witness.customerArea n / (n + 1 : ℝ)) atTop
-        (𝓝 (witness.sojournLimit + witness.openAgeLimit)) := by
+        (nhds (witness.sojournLimit + witness.openAgeLimit)) := by
     exact (witness.sojournCesaroConverges.add witness.openAgeCesaroConverges).congr' hEventually.symm
   exact tendsto_nhds_unique witness.customerCesaroConverges hBalanced
 

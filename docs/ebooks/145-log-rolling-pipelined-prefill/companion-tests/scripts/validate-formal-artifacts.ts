@@ -70,6 +70,14 @@ function validateLeanProject(): number {
     'Lean project must expose the MeasureQueueing module',
   );
   assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureEntropy'),
+    'Lean project must expose the FailureEntropy module',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureFamilies'),
+    'Lean project must expose the FailureFamilies module',
+  );
+  assert(
     result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QueueStability'),
     'Lean project must expose the QueueStability module',
   );

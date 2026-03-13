@@ -1,5 +1,11 @@
+import {
+  bootstrapMeanConfidenceInterval,
+  mean,
+  type ConfidenceInterval,
+} from './statistics';
+
 export interface ToyAttentionAblationConfig {
-  readonly label: 'toy-attention-fold-ablation-v1';
+  readonly label: 'toy-attention-fold-ablation-v2';
   readonly queries: readonly number[];
   readonly keys: readonly number[];
   readonly values: readonly (readonly number[])[];
@@ -15,8 +21,10 @@ interface StrategyOutput {
 
 export interface StrategyMetrics {
   readonly meanSquaredError: number;
+  readonly meanSquaredErrorCi95: ConfidenceInterval;
   readonly maxAbsoluteError: number;
   readonly exactWithinToleranceFraction: number;
+  readonly exactWithinToleranceFractionCi95: ConfidenceInterval;
 }
 
 export interface SamplePrediction {
@@ -88,7 +96,7 @@ const strategies: readonly StrategyOutput[] = [
 
 export function makeDefaultToyAttentionAblationConfig(): ToyAttentionAblationConfig {
   return {
-    label: 'toy-attention-fold-ablation-v1',
+    label: 'toy-attention-fold-ablation-v2',
     queries: Array.from({ length: 81 }, (_, index) => -2 + (4 * index) / 80),
     keys: [-1.5, 0, 1.5],
     values: [
@@ -108,6 +116,8 @@ function strategyMetrics(
   let componentCount = 0;
   let maxAbsoluteError = 0;
   let exactWithinToleranceCount = 0;
+  const sampleMeanSquaredErrors: number[] = [];
+  const exactIndicators: number[] = [];
 
   for (const query of config.queries) {
     const teacher = linearPrediction(query, config);
@@ -123,16 +133,36 @@ function strategyMetrics(
     }
 
     const sampleMeanSquaredError = teacher.length === 0 ? 0 : sampleSquaredErrorSum / teacher.length;
+    sampleMeanSquaredErrors.push(sampleMeanSquaredError);
     if (sampleMeanSquaredError <= config.exactSampleMseTolerance) {
       exactWithinToleranceCount++;
+      exactIndicators.push(1);
+    } else {
+      exactIndicators.push(0);
     }
   }
 
   return {
     meanSquaredError: componentCount === 0 ? 0 : squaredErrorSum / componentCount,
+    meanSquaredErrorCi95: bootstrapMeanConfidenceInterval(sampleMeanSquaredErrors, {
+      seed:
+        strategy.name === 'linear'
+          ? 0x11111111
+          : strategy.name === 'winner-take-all'
+            ? 0x22222222
+            : 0x33333333,
+    }),
     maxAbsoluteError,
     exactWithinToleranceFraction:
       config.queries.length === 0 ? 0 : exactWithinToleranceCount / config.queries.length,
+    exactWithinToleranceFractionCi95: bootstrapMeanConfidenceInterval(exactIndicators, {
+      seed:
+        strategy.name === 'linear'
+          ? 0x44444444
+          : strategy.name === 'winner-take-all'
+            ? 0x55555555
+            : 0x66666666,
+    }),
   };
 }
 
@@ -190,6 +220,10 @@ function formatVector(values: readonly number[]): string {
   return `[${values.map((value) => value.toFixed(3)).join(', ')}]`;
 }
 
+function formatInterval(interval: ConfidenceInterval): string {
+  return `[${interval.low.toFixed(3)}, ${interval.high.toFixed(3)}]`;
+}
+
 export function renderToyAttentionFoldAblationMarkdown(
   report: ToyAttentionFoldAblationReport,
 ): string {
@@ -205,13 +239,13 @@ export function renderToyAttentionFoldAblationMarkdown(
   lines.push('');
   lines.push('## Metrics');
   lines.push('');
-  lines.push('| Strategy | Mean squared error | Max absolute error | Exact-within-tolerance fraction |');
-  lines.push('|---|---:|---:|---:|');
+  lines.push('| Strategy | Mean squared error | MSE 95% CI | Max absolute error | Exact-within-tolerance fraction | Exact 95% CI |');
+  lines.push('|---|---:|---:|---:|---:|---:|');
 
   for (const strategyName of report.rankingByMeanSquaredError) {
     const metrics = report.strategies[strategyName];
     lines.push(
-      `| \`${strategyName}\` | ${metrics.meanSquaredError.toFixed(3)} | ${metrics.maxAbsoluteError.toFixed(3)} | ${metrics.exactWithinToleranceFraction.toFixed(3)} |`,
+      `| \`${strategyName}\` | ${metrics.meanSquaredError.toFixed(3)} | ${formatInterval(metrics.meanSquaredErrorCi95)} | ${metrics.maxAbsoluteError.toFixed(3)} | ${metrics.exactWithinToleranceFraction.toFixed(3)} | ${formatInterval(metrics.exactWithinToleranceFractionCi95)} |`,
     );
   }
 

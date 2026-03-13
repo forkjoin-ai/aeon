@@ -21,6 +21,7 @@ function main(): void {
   const result = runLeanSandbox({
     path: leanDir,
     build: true,
+    buildTargets: ['ForkRaceFoldTheorems'],
   });
 
   for (const logLine of result.logs) {

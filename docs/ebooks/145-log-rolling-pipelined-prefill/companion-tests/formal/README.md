@@ -18,6 +18,9 @@ This directory contains machine-checked formal artifacts used to mechanize the p
 - `Section7Formulas.tla` / `.cfg`: §7 formulas (Worthington Whip, Speculative Tree, turbulent idle fraction sample, and the frontier-fill / occupancy-deficit complement that reduces to the same idle fraction in the canonical pipeline case).
 - `WallaceMetric.tla` / `.cfg`: Wallace metric (`crank`) boundedness/complement on a bounded three-layer frontier, plus the symmetric diamond closed form `2(k-1)/(3k)` and the zero-at-unit-width witness.
 - `MultiplexingMonotonicity.tla` / `.cfg`: bounded turbulent-multiplexing monotonicity witness showing fixed useful work plus legal overlap recovery cannot increase the Wallace metric and strictly lowers it when overlap is recovered.
+- `FailureEntropy.tla` / `.cfg`: bounded witness for structured failure as live-frontier entropy reduction, including the single-survivor/failure necessity law and the coupled-repair reversal case.
+- `StagedExpansion.tla` / `.cfg`: bounded staged-expansion witness showing that, under a positive topology-deficit budget, spending equal added frontier on underfilled shoulders beats naive peak widening in frontier fill and Wallace.
+- `WarmupEfficiency.tla` / `.cfg`: bounded warm-up efficiency witness showing exactly when a weighted Wallace reduction is worth an added Buley cost under fixed useful work and legal recovered overlap.
 - `WhipCrossover.tla` / `.cfg`: §7.3 cross-shard correction crossover characterization (`T(S)=ceil(P/S)+(N-1)+C*S`) with finite optimum and strict-over-sharding boundary checks.
 - `QuantumDeficit.tla` / `.cfg`: §6.12 speedup = topological deficit identity (Grover-scale sample).
 - `BeautyOptimality.tla` / `.cfg`: §6.12 Bu beauty-optimality scaffold (definition, latency/waste monotonicity, Pareto/composition invariants).
@@ -26,8 +29,11 @@ This directory contains machine-checked formal artifacts used to mechanize the p
 - `SettlementDeficit.tla` / `.cfg`: §6.12 evidence-table settlement deficit (`Δβ = 2` for T+2 sequential baseline).
 - `SchedulerBound.tla` / `.cfg`: conditional scheduler-overhead bound used in §11 performance wording (additive decomposition, bounded overhead, handler-independence under explicit assumptions).
 - `lean/Lean/ForkRaceFoldTheorems/Claims.lean`: constructive Lean theorems for quantitative identities, including finite weighted queueing expectation balance, finite-prefix truncation balance, and the linear-additive vs nonlinear-selection correspondence boundary used in §6.12, including the cancellation-target-family impossibility witness for nonlinear folds.
+- `lean/Lean/ForkRaceFoldTheorems/FailureEntropy.lean`: constructive Lean theorems for structured failure as live-frontier entropy reduction, including one-survivor/failure necessity and coupled-repair debt monotonicity.
 - `lean/Lean/ForkRaceFoldTheorems/Wallace.lean`: constructive Lean theorems for the Wallace/crank metric on a three-layer frontier, including boundedness, complement, zero-fullness equivalence, and the symmetric diamond closed form.
 - `lean/Lean/ForkRaceFoldTheorems/Multiplexing.lean`: constructive Lean theorems for turbulent-multiplexing monotonicity under fixed useful work and legal overlap recovery.
+- `lean/Lean/ForkRaceFoldTheorems/StagedExpansion.lean`: constructive Lean theorems for staged-expansion dominance over naive peak widening under the same positive deficit-supported budget.
+- `lean/Lean/ForkRaceFoldTheorems/WarmupEfficiency.lean`: constructive Lean theorems for the exact warm-up tradeoff threshold between weighted Wallace reduction and added Buley cost.
 - `lean/Lean/ForkRaceFoldTheorems/MeasureQueueing.lean`: constructive Lean theorems for infinite weighted queue sums, countably supported stochastic queue laws via `PMF`, measure-theoretic `lintegral` conservation, and monotone truncation-to-limit lifting of queue customer-time balance.
 - `lean/Lean/ForkRaceFoldTheorems/QueueStability.lean`: constructive Lean theorems for the stable `M/M/1` stationary occupancy law, its finite first moment, and trajectory-level Cesaro balance for unbounded open-network sample paths.
 - `lean/Lean/ForkRaceFoldTheorems/Axioms.lean`: explicit-assumption theorem schemas for global claims, including convergence in the modeled finite class and stronger queue-limit shells that still require extra semantic/stability hypotheses.
