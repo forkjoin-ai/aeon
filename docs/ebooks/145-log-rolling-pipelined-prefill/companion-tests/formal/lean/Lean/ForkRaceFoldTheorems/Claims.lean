@@ -200,7 +200,7 @@ theorem linear_fold_order_invariant_on_cancellation_witness :
 theorem linear_fold_preserves_cancellation_target_family :
     CancellationTargetFamily linearFoldInt := by
   intro value
-  simp [CancellationTargetFamily, linearFoldInt]
+  simpa [linearFoldInt] using Int.add_right_neg value
 
 theorem winner_selection_partition_counterexample :
     winnerByMagnitudeFold (winnerByMagnitudeFold 1 2) 3 ≠

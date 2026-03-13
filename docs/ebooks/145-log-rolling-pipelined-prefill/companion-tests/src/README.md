@@ -18,6 +18,8 @@ Vitest suites that provide executable claim coverage for the manuscript.
 - `quantum-correspondence-boundary.test.ts`: finite path-sum linear-fold equivalence checks, partition/permutation invariants, and nonlinear winner/early-stop counterexamples that bound the quantum correspondence claim.
 - `quantum-recombination-ablation.test.ts`: same-path-family ablation harness showing which invariants survive when linear recombination is replaced by winner-take-all or early-stop selection.
 - `toy-attention-fold-ablation.test.ts`: fixed-parameter toy attention ablation showing the behavioral cost of swapping only the fold rule while holding keys, values, scores, and query grid constant.
+- `gnosis-fold-training-benchmark.ts` / `.test.ts`: wrapper plus tests for the seeded parameter-matched Gnosis training benchmark built from three `.gg` modules that differ only in `FOLD` strategy.
+- `ch17-correspondence-boundary-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the artifact-generated Chapter 17 correspondence-boundary chart.
 - `deficit-evidence.test.ts`: protocol/settlement/healthcare deficit evidence checks.
 - `map-reduce-readiness.test.ts`: §6.14 readiness diagnostic equations and screening-boundary counterexamples.
 - `map-reduce-readiness.ts`: shared §6.14 readiness/simulator math used by tests and Gate 4 artifacts.

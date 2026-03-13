@@ -108,6 +108,7 @@ interface QuantumRecombinationAblationReport {
 }
 
 interface ToyAttentionFoldAblationReport {
+  readonly label: string;
   readonly strategies: {
     readonly linear: {
       readonly meanSquaredError: number;
@@ -119,6 +120,27 @@ interface ToyAttentionFoldAblationReport {
     readonly 'early-stop': {
       readonly meanSquaredError: number;
       readonly exactWithinToleranceFraction: number;
+    };
+  };
+}
+
+interface GnosisFoldTrainingBenchmarkReport {
+  readonly label: string;
+  readonly strategies: {
+    readonly linear: {
+      readonly meanEvalMeanSquaredError: number;
+      readonly meanExactWithinToleranceFraction: number;
+      readonly meanCancellationLineMeanAbsoluteError: number;
+    };
+    readonly 'winner-take-all': {
+      readonly meanEvalMeanSquaredError: number;
+      readonly meanExactWithinToleranceFraction: number;
+      readonly meanCancellationLineMeanAbsoluteError: number;
+    };
+    readonly 'early-stop': {
+      readonly meanEvalMeanSquaredError: number;
+      readonly meanExactWithinToleranceFraction: number;
+      readonly meanCancellationLineMeanAbsoluteError: number;
     };
   };
 }
@@ -169,6 +191,9 @@ describe('Manuscript artifact consistency', () => {
     );
     const toyAttentionAblation = loadJson<ToyAttentionFoldAblationReport>(
       join(ARTIFACTS_DIR, 'toy-attention-fold-ablation.json'),
+    );
+    const gnosisTrainingBenchmark = loadJson<GnosisFoldTrainingBenchmarkReport>(
+      join(ARTIFACTS_DIR, 'gnosis-fold-training-benchmark.json'),
     );
 
     const gate1SpeedupRange = `${min(gate1.cells.map((cell) => cell.speedupMedian)).toFixed(3)}x-${max(
@@ -299,6 +324,41 @@ describe('Manuscript artifact consistency', () => {
       manuscript,
       toyAttentionAblation.strategies['early-stop'].exactWithinToleranceFraction.toFixed(3),
     );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies.linear.meanEvalMeanSquaredError.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['winner-take-all'].meanEvalMeanSquaredError.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['early-stop'].meanEvalMeanSquaredError.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['winner-take-all'].meanExactWithinToleranceFraction.toFixed(
+        3,
+      ),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['early-stop'].meanExactWithinToleranceFraction.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['winner-take-all'].meanCancellationLineMeanAbsoluteError.toFixed(
+        3,
+      ),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['early-stop'].meanCancellationLineMeanAbsoluteError.toFixed(
+        3,
+      ),
+    );
+    mustContain(manuscript, 'ch17-correspondence-boundary-figure.svg');
 
     // Guardrail text for §7 step-count claims: keep A1/A2 assumptions explicit.
     mustContain(manuscript, 'per-chunk stage service times are homogeneous across stages');

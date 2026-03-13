@@ -4,7 +4,7 @@
 
 Modules:
 
-- `Claims.lean`: explicit-assumption theorems with constructive proofs for core algebraic/topological identities (including Whip cross-shard crossover properties, weighted queueing expectation balance, finite-prefix truncation balance, and the linear-vs-nonlinear fold boundary in §6.12).
+- `Claims.lean`: explicit-assumption theorems with constructive proofs for core algebraic/topological identities (including Whip cross-shard crossover properties, weighted queueing expectation balance, finite-prefix truncation balance, the linear-vs-nonlinear fold boundary in §6.12, and the cancellation-target-family impossibility witness for nonlinear folds).
 - `Multiplexing.lean`: constructive turbulent-multiplexing monotonicity theorems for bounded recovered-overlap models.
 - `Wallace.lean`: constructive Wallace/crank theorems for bounded three-layer frontiers, including complement, boundedness, and the symmetric diamond closed form.
 - `MeasureQueueing.lean`: constructive infinite-support queueing theorems over `tsum`, countably supported stochastic laws via `PMF`, and `lintegral`, including monotone truncation-to-limit conservation.

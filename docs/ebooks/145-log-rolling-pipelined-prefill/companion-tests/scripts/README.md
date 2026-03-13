@@ -21,3 +21,5 @@ Utility scripts used by the companion suite.
 - `gate5-bio-effect-size.ts`: biological effect-size evidence runner for §14.1, evaluates predeclared comparative biological pairs with uncertainty propagation + pooled bootstrap-CI criteria and writes explicit PASS/DENY JSON/Markdown artifacts.
 - `quantum-recombination-ablation.ts`: deterministic §6.12 ablation runner, holds the path family fixed, swaps only the fold rule, and writes JSON/Markdown artifacts for the resulting invariant-loss matrix.
 - `toy-attention-fold-ablation.ts`: deterministic toy-attention ablation runner, holds keys/values/score function/query grid fixed, swaps only the fold rule, and writes JSON/Markdown behavioral-degradation artifacts.
+- `gnosis-fold-training-benchmark.ts`: seeded Gnosis training-benchmark runner, reads three parameter-matched `.gg` modules and writes JSON/Markdown artifacts for the learned fold boundary.
+- `ch17-correspondence-boundary-figure.ts`: artifact assembler that reads the quantum, toy-attention, and Gnosis benchmark reports and writes manuscript-ready JSON/Markdown/SVG figure outputs.

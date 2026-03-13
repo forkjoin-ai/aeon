@@ -24,6 +24,11 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `quantum-recombination-ablation.md`: human-readable §6.12 ablation summary with the invariant matrix and witness distances.
 - `toy-attention-fold-ablation.json`: machine-readable toy-attention ablation report for the behavioral effect of swapping only the fold rule while keeping parameters and queries fixed.
 - `toy-attention-fold-ablation.md`: human-readable toy-attention ablation summary with MSE/exact-reconstruction metrics and representative predictions.
+- `gnosis-fold-training-benchmark.json`: machine-readable seeded Gnosis training benchmark report for three parameter-matched `.gg` modules that differ only in fold strategy.
+- `gnosis-fold-training-benchmark.md`: human-readable seeded Gnosis training benchmark summary with eval-MSE, exact-rate, and cancellation-line error metrics.
+- `ch17-correspondence-boundary-figure.json`: machine-readable manifest for the Chapter 17 correspondence-boundary figure.
+- `ch17-correspondence-boundary-figure.md`: human-readable summary of the figure sources and aggregated metrics.
+- `ch17-correspondence-boundary-figure.svg`: manuscript-ready figure assembled from the quantum ablation, toy-attention ablation, and seeded Gnosis training benchmark artifacts.
 
 ## Gate 1 Snapshot
 
@@ -74,3 +79,19 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `linear`: mean squared error `0.000`, exact-within-tolerance fraction `1.000`
 - `winner-take-all`: mean squared error `0.163`, exact-within-tolerance fraction `0.185`
 - `early-stop`: mean squared error `1.071`, exact-within-tolerance fraction `0.074`
+
+## Gnosis Training Snapshot
+
+- Protocol label: `gnosis-fold-training-benchmark-v1`
+- Predicted ranking recovered: `yes`
+- Shared parameter count: `4`
+- `linear`: eval mean squared error `0.000`, exact-within-tolerance fraction `1.000`, cancellation-line abs error `0.000`
+- `winner-take-all`: eval mean squared error `0.408`, exact-within-tolerance fraction `0.038`, cancellation-line abs error `0.834`
+- `early-stop`: eval mean squared error `0.735`, exact-within-tolerance fraction `0.000`, cancellation-line abs error `0.764`
+
+## Chapter 17 Figure Snapshot
+
+- Protocol label: `ch17-correspondence-boundary-figure-v1`
+- Sources: `quantum-recombination-ablation-v1`, `toy-attention-fold-ablation-v1`, `gnosis-fold-training-benchmark-v1`
+- Output surface: JSON + Markdown + SVG
+- Learned ranking in figure: `linear < winner-take-all < early-stop`

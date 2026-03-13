@@ -22,6 +22,8 @@ bun run test:gate4
 bun run test:gate5
 bun run test:quantum-ablation
 bun run test:toy-attention-ablation
+bun run test:gnosis-fold-training
+bun run test:ch17-figure
 bun run test:formal:parser
 bun run test:formal
 ```
@@ -40,6 +42,8 @@ bun run test:formal
 | `quantum-correspondence-boundary.test.ts` | §6.12 | Finite-kernel linear path-sum equivalence checks, partition/permutation invariants, and explicit nonlinear winner/early-stop counterexamples that bound the correspondence claim |
 | `quantum-recombination-ablation.test.ts` | §6.12 | Same-path-family ablation harness: swap only the fold rule and predict the resulting loss of kernel agreement, partition additivity, order invariance, and cancellation |
 | `toy-attention-fold-ablation.test.ts` + `scripts/toy-attention-fold-ablation.ts` | §1.7, §6.12 | Fixed-parameter toy attention ablation: hold keys, values, score function, and query grid constant; swap only the fold rule; measure the resulting output degradation in a reproducible artifact |
+| `gnosis-fold-training-benchmark.test.ts` + `scripts/gnosis-fold-training-benchmark.ts` | §1.7, §6.12 | Seeded parameter-matched Gnosis training benchmark: keep topology, parameter count, and data fixed across three `.gg` modules; swap only the `FOLD` strategy; measure learned cancellation/recombination failure floors |
+| `ch17-correspondence-boundary-figure.test.ts` + `scripts/ch17-correspondence-boundary-figure.ts` | §1.7, §6.12 | Auto-generated Chapter 17 figure surface built from the quantum ablation, toy-attention ablation, and seeded Gnosis training benchmark artifacts |
 | `deficit-evidence.test.ts` | §6.12 evidence table, §8.3 | Protocol/settlement/healthcare deficits and entropy-vent trend checks |
 | `map-reduce-readiness.test.ts` | §6.14 heuristic | Executable checks for `Q_mr`, `O_beta`, `R_qr` bounds/monotonicity, necessity of nonzero topological opportunity in the migration simulator, independent rank correlation, and non-automatic-quantum-advantage counterexamples |
 | `gate1-wallclock.test.ts` + `scripts/gate1-wallclock-matrix.ts` | §14.1 evidence-bounded wall-clock claim | Live distributed wall-clock matrix (loopback + external-endpoint modes), including single-host and six-distinct-host non-loopback artifacts, with p50/p95 summaries, bootstrap CIs, and explicit pass/fail criteria |
@@ -50,6 +54,8 @@ bun run test:formal
 | `gate5-bio-effect-size.test.ts` + `scripts/gate5-bio-effect-size.ts` | §14.1 evidence-bounded biological mapping | Predeclared comparative biological effect-size harness (saltatory conduction, photosynthesis step-vs-system efficiency, Okazaki chunking) with Monte Carlo uncertainty, pooled bootstrap CIs, and explicit PASS/DENY artifacts |
 | `scripts/quantum-recombination-ablation.ts` + `artifacts/quantum-recombination-ablation.{json,md}` | §6.12 | Reproducible invariant-loss matrix for same-path-family fold ablations; predicts exactly which path-sum invariants survive under linear recombination and fail under nonlinear selection |
 | `scripts/toy-attention-fold-ablation.ts` + `artifacts/toy-attention-fold-ablation.{json,md}` | §1.7, §6.12 | Reproducible behavioral ablation for a toy attention model; predicts the teacher-reconstruction error introduced by replacing linear fold with nonlinear selection at fixed parameters |
+| `scripts/gnosis-fold-training-benchmark.ts` + `artifacts/gnosis-fold-training-benchmark.{json,md}` | §1.7, §6.12 | Reproducible seeded Gnosis training benchmark using three parameter-matched `.gg` modules that differ only in fold strategy |
+| `scripts/ch17-correspondence-boundary-figure.ts` + `artifacts/ch17-correspondence-boundary-figure.{json,md,svg}` | §1.7, §6.12 | Auto-generated manuscript figure combining the invariant-loss matrix, toy-attention error chart, and seeded Gnosis training benchmark |
 | `physics-hierarchy.test.ts` | §6.11 | Executable hierarchy checks for path-integral/race/fold mappings and energy partitions (model scope) |
 | `emergent-connections.test.ts` | Chapter 23 | Executable analog checks for nine emergent correspondences (model scope) |
 | `thermodynamics.test.ts` | §6 Thermodynamics | First Law accounting, Carnot/Shannon bounds, ground-state overhead |
@@ -77,6 +83,8 @@ bun test:gate4         # §14.1 out-of-sample R_qr evidence + artifact generatio
 bun test:gate5         # §14.1 biological effect-size evidence + artifact generation
 bun test:quantum-ablation # §6.12 same-path-family fold-ablation artifact generation
 bun test:toy-attention-ablation # §1.7, §6.12 fixed-parameter toy-attention ablation artifact generation
+bun test:gnosis-fold-training # §1.7, §6.12 seeded Gnosis training benchmark artifact generation
+bun test:ch17-figure   # §1.7, §6.12 artifact-generated manuscript figure
 bun test:queueing      # §5
 bun test:formal:parser # aeon-logic parser preflight for formal artifacts
 bun test:formal:lean   # Lean theorem build
