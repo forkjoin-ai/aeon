@@ -41,9 +41,7 @@ theorem multiplexing_wallace_numerator_drop_equals_overlap
   omega
 
 theorem multiplexing_fill_monotone
-    {busyWork sequentialCapacity recoveredOverlap : Nat}
-    (hBusyFits : busyWork <= sequentialCapacity)
-    (hRecoveredLegal : recoveredOverlap <= sequentialCapacity - busyWork) :
+    {busyWork sequentialCapacity recoveredOverlap : Nat} :
     busyWork * multiplexedCapacity sequentialCapacity recoveredOverlap <=
       busyWork * sequentialCapacity := by
   have hMuxLeSeq : multiplexedCapacity sequentialCapacity recoveredOverlap <= sequentialCapacity := by
@@ -53,7 +51,6 @@ theorem multiplexing_fill_monotone
 
 theorem multiplexing_wallace_ratio_monotone
     {busyWork sequentialCapacity recoveredOverlap : Nat}
-    (hBusyPositive : 0 < busyWork)
     (hBusyFits : busyWork <= sequentialCapacity)
     (hRecoveredLegal : recoveredOverlap <= sequentialCapacity - busyWork) :
     multiplexedWallaceNumerator busyWork sequentialCapacity recoveredOverlap * sequentialCapacity <=
@@ -75,9 +72,9 @@ theorem multiplexing_wallace_ratio_monotone
         seqWall - muxWall = recoveredOverlap := by
       unfold seqWall muxWall
       exact multiplexing_wallace_numerator_drop_equals_overlap hBusyFits hRecoveredLegal
-    exact (Nat.sub_eq_iff_eq_add hSeqWallGeMux).1 hDrop |> by
-      intro h
-      simpa [Nat.add_comm] using h
+    have hEqAdd : seqWall = recoveredOverlap + muxWall :=
+      (Nat.sub_eq_iff_eq_add hSeqWallGeMux).1 hDrop
+    simpa [Nat.add_comm] using hEqAdd
   have hMuxWallLeCap : muxWall <= muxCap := by
     unfold muxWall muxCap multiplexedWallaceNumerator
     exact Nat.sub_le _ _
@@ -117,9 +114,9 @@ theorem multiplexing_wallace_ratio_strict
         seqWall - muxWall = recoveredOverlap := by
       unfold seqWall muxWall
       exact multiplexing_wallace_numerator_drop_equals_overlap hBusyFits hRecoveredLegal
-    exact (Nat.sub_eq_iff_eq_add hSeqWallGeMux).1 hDrop |> by
-      intro h
-      simpa [Nat.add_comm] using h
+    have hEqAdd : seqWall = recoveredOverlap + muxWall :=
+      (Nat.sub_eq_iff_eq_add hSeqWallGeMux).1 hDrop
+    simpa [Nat.add_comm] using hEqAdd
   have hMuxBusy : busyWork <= muxCap := by
     unfold muxCap
     exact multiplexed_capacity_ge_busy hBusyPositive hBusyFits hRecoveredLegal
