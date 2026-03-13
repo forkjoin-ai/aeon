@@ -1,0 +1,143 @@
+{
+  "protocol": {
+    "id": "gate5-bio-effect-size-v1",
+    "inclusionRules": [
+      "Use only predeclared biological condition pairs with quantitative ranges tied to cited literature sources.",
+      "Compute multiplicative effect size as ratio = numerator / denominator for each pair.",
+      "Use uncertainty propagation by Monte Carlo range sampling plus bootstrap pooled CI."
+    ],
+    "scoringRules": [
+      "Primary pair CI-low ratio threshold",
+      "Primary pair pass-rate threshold",
+      "Pooled log-ratio CI-low threshold"
+    ]
+  },
+  "config": {
+    "seed": 321023,
+    "drawsPerPair": 12000,
+    "bootstrapResamples": 3500,
+    "thresholds": {
+      "minPairCount": 3,
+      "minPairRatioLowerCi": 1.2,
+      "minPrimaryPairPassRate": 1,
+      "pooledLogRatioLowerCi": 0.6931471805599453
+    }
+  },
+  "pairs": [
+    {
+      "id": "saltatory_velocity",
+      "domain": "Neural conduction",
+      "numeratorLabel": "myelinated conduction velocity",
+      "denominatorLabel": "unmyelinated conduction velocity",
+      "unit": "m/s",
+      "source": "Conduction-velocity ranges from cited neurophysiology literature.",
+      "citationIds": [
+        32,
+        46
+      ],
+      "primary": true,
+      "medianRatio": 79.49371354359806,
+      "meanLogRatio": 4.441758409069085,
+      "ratioCi95": {
+        "low": 45.79469020258639,
+        "high": 192.46108712920986
+      },
+      "pass": true
+    },
+    {
+      "id": "photosynthesis_step_vs_system",
+      "domain": "Photosynthesis efficiency scale contrast",
+      "numeratorLabel": "exciton transfer efficiency (step-level)",
+      "denominatorLabel": "whole-plant photosynthetic yield",
+      "unit": "ratio",
+      "source": "Step-level and system-level efficiency ranges from cited literature.",
+      "citationIds": [
+        6,
+        44
+      ],
+      "primary": true,
+      "medianRatio": 21.52368981193996,
+      "meanLogRatio": 3.090493590899362,
+      "ratioCi95": {
+        "low": 16.3754644292347,
+        "high": 31.590516761814623
+      },
+      "pass": true
+    },
+    {
+      "id": "okazaki_chunking",
+      "domain": "Replication chunk size",
+      "numeratorLabel": "prokaryotic Okazaki fragment length",
+      "denominatorLabel": "eukaryotic Okazaki fragment length",
+      "unit": "nt",
+      "source": "Okazaki-fragment length ranges from cited molecular biology literature.",
+      "citationIds": [
+        45
+      ],
+      "primary": true,
+      "medianRatio": 10.060703065602162,
+      "meanLogRatio": 2.306657338166928,
+      "ratioCi95": {
+        "low": 5.828970147694516,
+        "high": 17.056283630585046
+      },
+      "pass": true
+    }
+  ],
+  "aggregate": {
+    "pairCount": 3,
+    "primaryPairCount": 3,
+    "medianPairRatio": 21.52368981193996,
+    "minPrimaryPairRatioCiLow": 5.828970147694516,
+    "pooledLogRatio": 3.279636446045125,
+    "pooledLogRatioCi95": {
+      "low": 2.288740581369481,
+      "high": 4.359972141948745
+    },
+    "primaryPassRate": 1
+  },
+  "gate": {
+    "pass": true,
+    "criteria": [
+      {
+        "id": "minimum_pair_count",
+        "description": "Comparative pair count meets minimum evidence floor.",
+        "threshold": ">= 3",
+        "observed": 3,
+        "pass": true
+      },
+      {
+        "id": "primary_pair_ratio_ci_low",
+        "description": "Every primary biological pair has a ratio CI low above the minimum.",
+        "threshold": ">= 1.200",
+        "observed": 5.828970147694516,
+        "pass": true
+      },
+      {
+        "id": "primary_pair_pass_rate",
+        "description": "Primary pair pass-rate satisfies predeclared requirement.",
+        "threshold": ">= 1.000",
+        "observed": 1,
+        "pass": true
+      },
+      {
+        "id": "pooled_log_ratio_ci_low",
+        "description": "Pooled effect (log ratio) CI low clears the minimum magnitude threshold.",
+        "threshold": ">= 0.693",
+        "observed": 3.279636446045125,
+        "ci95": {
+          "low": 2.288740581369481,
+          "high": 4.359972141948745
+        },
+        "pass": true
+      }
+    ],
+    "passedCriterionIds": [
+      "minimum_pair_count",
+      "primary_pair_ratio_ci_low",
+      "primary_pair_pass_rate",
+      "pooled_log_ratio_ci_low"
+    ],
+    "failedCriterionIds": []
+  }
+}

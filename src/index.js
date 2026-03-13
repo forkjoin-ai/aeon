@@ -50,6 +50,8 @@ export * from './presence';
 export * from './crypto';
 // Flow module (fork/race/fold protocol primitive)
 export * from './flow';
+// Topology module (Betti numbers, topological deficit diagnostic)
+export * from './topology';
 // Transport module (every wire format that matters)
 export * from './transport';
 // Federation module (federated inference across mesh)

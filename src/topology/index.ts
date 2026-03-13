@@ -31,14 +31,23 @@ export {
 } from './TopologySampler';
 
 export {
+  adaptiveParallelismPolicy,
   beta2FromBandGap,
+  classifyPipelineRegime,
+  frontierFill,
   firstLawConserved,
+  pipelineOccupancy,
+  type AdaptiveParallelismPolicyResult,
+  type ParallelismAction,
+  type PipelineRegime,
   protocolDeficits,
   quantumDeficitIdentity,
   settlementDeficits,
   speculativeTreeExpectedAccepted,
   turbulentIdleFraction,
   worthingtonWhipSavings,
+  type FrontierFillResult,
+  type PipelineOccupancyResult,
   type ProtocolDeficitResult,
   type QuantumDeficitResult,
   type SettlementDeficitResult,
@@ -46,3 +55,10 @@ export {
   type TurbulentIdleResult,
   type WorthingtonWhipResult,
 } from './formal-claims';
+
+export {
+  GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES,
+  getGnosisImpossibleSystemTopology,
+  type GnosisImpossibleSystemId,
+  type GnosisImpossibleSystemTopology,
+} from './gnosis-impossible-systems';

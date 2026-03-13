@@ -1,0 +1,122 @@
+{
+  "label": "ch17-correspondence-boundary-figure-v2",
+  "sources": {
+    "quantumLabel": "quantum-recombination-ablation-v1",
+    "toyAttentionLabel": "toy-attention-fold-ablation-v2",
+    "gnosisTrainingLabel": "gnosis-fold-training-benchmark-v2",
+    "gnosisMiniMoeLabel": "gnosis-moe-routing-benchmark-v1"
+  },
+  "quantum": {
+    "matrix": {
+      "linear": {
+        "kernelAgreement": true,
+        "partitionAdditivity": true,
+        "orderInvariance": true,
+        "cancellation": true
+      },
+      "winner-take-all": {
+        "kernelAgreement": false,
+        "partitionAdditivity": false,
+        "orderInvariance": false,
+        "cancellation": false
+      },
+      "early-stop": {
+        "kernelAgreement": false,
+        "partitionAdditivity": false,
+        "orderInvariance": false,
+        "cancellation": false
+      }
+    },
+    "winnerTakeAllKernelDistance": 0.35355339059327356,
+    "winnerTakeAllPartitionDistance": 2,
+    "winnerTakeAllCancellationMagnitude2": 1
+  },
+  "toyAttention": {
+    "mse": {
+      "linear": 0,
+      "winner-take-all": 0.16337889613066797,
+      "early-stop": 1.0711659087798262
+    },
+    "mseCi95": {
+      "linear": {
+        "low": 0,
+        "high": 0
+      },
+      "winner-take-all": {
+        "low": 0.12039405597662745,
+        "high": 0.21076480084184548
+      },
+      "early-stop": {
+        "low": 0.8577442025061894,
+        "high": 1.2875604858495577
+      }
+    },
+    "exactFraction": {
+      "linear": 1,
+      "winner-take-all": 0.18518518518518517,
+      "early-stop": 0.07407407407407407
+    }
+  },
+  "gnosisTraining": {
+    "evalMse": {
+      "linear": 1.4861491913918117e-31,
+      "winner-take-all": 0.40816012563457227,
+      "early-stop": 0.7353577592187757
+    },
+    "evalMseCi95": {
+      "linear": {
+        "low": 1.2026930958441938e-31,
+        "high": 1.7084737293470133e-31
+      },
+      "winner-take-all": {
+        "low": 0.39634978081744715,
+        "high": 0.42118916818394425
+      },
+      "early-stop": {
+        "low": 0.7316245588665171,
+        "high": 0.7395655914971261
+      }
+    },
+    "exactFraction": {
+      "linear": 1,
+      "winner-take-all": 0.03819444444444444,
+      "early-stop": 0
+    },
+    "cancellationLineAbsError": {
+      "linear": 7.806255641895632e-17,
+      "winner-take-all": 0.8340795677417342,
+      "early-stop": 0.7637513350991346
+    }
+  },
+  "gnosisMiniMoe": {
+    "evalMse": {
+      "linear": 0.001088424843788911,
+      "winner-take-all": 0.32829864375807255,
+      "early-stop": 0.44941348271231757
+    },
+    "evalMseCi95": {
+      "linear": {
+        "low": 0.0010130568414064576,
+        "high": 0.0011576553820188441
+      },
+      "winner-take-all": {
+        "low": 0.2669569776117178,
+        "high": 0.3886631750941748
+      },
+      "early-stop": {
+        "low": 0.44358760426726607,
+        "high": 0.4565378831962563
+      }
+    },
+    "exactFraction": {
+      "linear": 0.9775000000000004,
+      "winner-take-all": 0.12583333333333332,
+      "early-stop": 0.08
+    },
+    "dualActiveAbsError": {
+      "linear": 0.026961831795223073,
+      "winner-take-all": 0.4016755882837042,
+      "early-stop": 0.4738198482364829
+    }
+  }
+}

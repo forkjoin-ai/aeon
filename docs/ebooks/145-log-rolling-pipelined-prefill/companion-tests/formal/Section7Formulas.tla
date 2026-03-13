@@ -42,6 +42,10 @@ SpeculativeTreeDen == (alphaQ - alphaP) * Pow(alphaQ, k - 1)
 
 TurbulentIdleNum == n * (n - 1)
 TurbulentIdleDen == (c + n - 1) * n
+FrontierFillNum == c * n
+FrontierFillDen == (c + n - 1) * n
+OccupancyDeficitNum == FrontierFillDen - FrontierFillNum
+OccupancyDeficitDen == FrontierFillDen
 
 InvWellFormed ==
   /\ c > 0
@@ -63,5 +67,23 @@ InvTurbulentIdleBounds ==
   /\ TurbulentIdleNum >= 0
   /\ TurbulentIdleDen > 0
   /\ TurbulentIdleNum <= TurbulentIdleDen
+
+InvFrontierFillBounds ==
+  /\ FrontierFillNum > 0
+  /\ FrontierFillDen > 0
+  /\ FrontierFillNum <= FrontierFillDen
+
+InvOccupancyDeficitBounds ==
+  /\ OccupancyDeficitNum >= 0
+  /\ OccupancyDeficitDen > 0
+  /\ OccupancyDeficitNum <= OccupancyDeficitDen
+
+InvOccupancyDeficitEqualsTurbulentIdle ==
+  /\ OccupancyDeficitNum = TurbulentIdleNum
+  /\ OccupancyDeficitDen = TurbulentIdleDen
+
+InvOccupancyComplement ==
+  /\ FrontierFillDen = OccupancyDeficitDen
+  /\ FrontierFillNum + OccupancyDeficitNum = FrontierFillDen
 
 =============================================================================

@@ -7,11 +7,13 @@ import {
   parseTlaModule,
   parseTlcConfig,
   renderTlaModule,
+  runLeanSandbox,
   serializeTlcConfig,
 } from '@affectively/aeon-logic';
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const formalDir = resolve(currentDir, '../formal');
+const leanDir = resolve(formalDir, 'lean');
 
 describe('Formal parser compatibility (aeon-logic)', () => {
   it('every .tla artifact round-trips through our parser', () => {
@@ -73,5 +75,27 @@ describe('Formal parser compatibility (aeon-logic)', () => {
     for (const configName of configs) {
       expect(modules.has(configName)).toBe(true);
     }
+  });
+
+  it('inspects the Lean theorem project through aeon-logic', () => {
+    const result = runLeanSandbox({
+      path: leanDir,
+      build: false,
+    });
+
+    expect(result.report.mode).toBe('lean-sandbox');
+    expect(result.report.project.lakefile).not.toBeNull();
+    expect(result.report.project.toolchain).not.toBeNull();
+    expect(result.report.project.moduleCount).toBeGreaterThan(0);
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems');
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureComposition');
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureEntropy');
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureFamilies');
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureTrilemma');
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureUniversality');
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.JacksonQueueing');
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.MeasureQueueing');
+    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.QueueStability');
+    expect(result.report.build.attempted).toBe(false);
   });
 });

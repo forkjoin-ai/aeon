@@ -1,0 +1,669 @@
+{
+  "config": {
+    "trialsPerCell": 8,
+    "maxAttemptsPerRequest": 5,
+    "requestTimeoutMs": 10000,
+    "bootstrapResamples": 2000,
+    "seed": 12648430,
+    "workloads": [
+      {
+        "name": "prompt24-n4-b6",
+        "tokens": 24,
+        "nodes": 4,
+        "chunkSize": 6,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      {
+        "name": "prompt36-n6-b9",
+        "tokens": 36,
+        "nodes": 6,
+        "chunkSize": 9,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      }
+    ],
+    "networkConditions": [
+      {
+        "name": "rtt1-loss0",
+        "rttMs": 1,
+        "jitterMs": 0.2,
+        "lossRate": 0,
+        "primary": false
+      },
+      {
+        "name": "rtt3-loss0",
+        "rttMs": 3,
+        "jitterMs": 0.3,
+        "lossRate": 0,
+        "primary": true
+      },
+      {
+        "name": "rtt3-loss2pct",
+        "rttMs": 3,
+        "jitterMs": 0.3,
+        "lossRate": 0.02,
+        "primary": true
+      },
+      {
+        "name": "rtt7-loss0",
+        "rttMs": 7,
+        "jitterMs": 0.6,
+        "lossRate": 0,
+        "primary": true
+      },
+      {
+        "name": "rtt7-loss2pct",
+        "rttMs": 7,
+        "jitterMs": 0.6,
+        "lossRate": 0.02,
+        "primary": true
+      }
+    ]
+  },
+  "execution": {
+    "label": "loopback-default",
+    "mode": "embedded-stage-servers",
+    "listenHost": "127.0.0.1",
+    "advertiseHost": "127.0.0.1",
+    "endpointPoolSize": 0,
+    "endpointHosts": [],
+    "distinctEndpointHostCount": 0
+  },
+  "cells": [
+    {
+      "cellId": "prompt24-n4-b6__rtt1-loss0",
+      "workload": {
+        "name": "prompt24-n4-b6",
+        "tokens": 24,
+        "nodes": 4,
+        "chunkSize": 6,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt1-loss0",
+        "rttMs": 1,
+        "jitterMs": 0.2,
+        "lossRate": 0,
+        "primary": false
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 812.2798545000003,
+        "p95Ms": 902.3154544999995,
+        "p50Ci": {
+          "low": 776.277292,
+          "high": 864.5405419999997
+        },
+        "p95Ci": {
+          "low": 817.2000000000003,
+          "high": 922.6557919999996
+        }
+      },
+      "chunked": {
+        "p50Ms": 55.84818750000022,
+        "p95Ms": 77.86076884999996,
+        "p50Ci": {
+          "low": 50.308250000000044,
+          "high": 77.49695800000018
+        },
+        "p95Ci": {
+          "low": 66.99145855000006,
+          "high": 78.05666699999983
+        }
+      },
+      "speedupMedian": 14.692425117672094,
+      "speedupMedianCi": {
+        "low": 11.137724997313192,
+        "high": 16.76092638881296
+      },
+      "improvementMedianMs": 765.1084795000004,
+      "improvementMedianMsCi": {
+        "low": 715.774625,
+        "high": 808.8560419999994
+      },
+      "sequentialAvgRetriesPerTrial": 0,
+      "chunkedAvgRetriesPerTrial": 0,
+      "passed": true
+    },
+    {
+      "cellId": "prompt24-n4-b6__rtt3-loss0",
+      "workload": {
+        "name": "prompt24-n4-b6",
+        "tokens": 24,
+        "nodes": 4,
+        "chunkSize": 6,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt3-loss0",
+        "rttMs": 3,
+        "jitterMs": 0.3,
+        "lossRate": 0,
+        "primary": true
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 832.0491874999998,
+        "p95Ms": 1162.7244710500001,
+        "p50Ci": {
+          "low": 793.8921500000009,
+          "high": 1098.7053749999995
+        },
+        "p95Ci": {
+          "low": 836.4471670000003,
+          "high": 1197.1962920000005
+        }
+      },
+      "chunked": {
+        "p50Ms": 72.43058349999956,
+        "p95Ms": 126.56518180000063,
+        "p50Ci": {
+          "low": 52.11295799999971,
+          "high": 83.43229200000133
+        },
+        "p95Ci": {
+          "low": 76.53206074999989,
+          "high": 149.7905840000003
+        }
+      },
+      "speedupMedian": 14.921571555671996,
+      "speedupMedianCi": {
+        "low": 9.006336934864377,
+        "high": 17.60143946877696
+      },
+      "improvementMedianMs": 762.3063129999991,
+      "improvementMedianMsCi": {
+        "low": 686.656583,
+        "high": 1039.9545419999995
+      },
+      "sequentialAvgRetriesPerTrial": 0,
+      "chunkedAvgRetriesPerTrial": 0,
+      "passed": true
+    },
+    {
+      "cellId": "prompt24-n4-b6__rtt3-loss2pct",
+      "workload": {
+        "name": "prompt24-n4-b6",
+        "tokens": 24,
+        "nodes": 4,
+        "chunkSize": 6,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt3-loss2pct",
+        "rttMs": 3,
+        "jitterMs": 0.3,
+        "lossRate": 0.02,
+        "primary": true
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 734.4806460000018,
+        "p95Ms": 1116.5526018499986,
+        "p50Ci": {
+          "low": 646.6087499999994,
+          "high": 829.5044227374967
+        },
+        "p95Ci": {
+          "low": 767.5256313499999,
+          "high": 1256.681999999997
+        }
+      },
+      "chunked": {
+        "p50Ms": 50.41485400000056,
+        "p95Ms": 75.68323354999976,
+        "p50Ci": {
+          "low": 44.94262499999968,
+          "high": 67.45018800000071
+        },
+        "p95Ci": {
+          "low": 54.24703989999979,
+          "high": 77.10254200000054
+        }
+      },
+      "speedupMedian": 13.380667073913049,
+      "speedupMedianCi": {
+        "low": 11.146785230256357,
+        "high": 17.003901285249956
+      },
+      "improvementMedianMs": 689.1316875000011,
+      "improvementMedianMsCi": {
+        "low": 588.8109159999985,
+        "high": 779.2097490000015
+      },
+      "sequentialAvgRetriesPerTrial": 2.375,
+      "chunkedAvgRetriesPerTrial": 0.25,
+      "passed": true
+    },
+    {
+      "cellId": "prompt24-n4-b6__rtt7-loss0",
+      "workload": {
+        "name": "prompt24-n4-b6",
+        "tokens": 24,
+        "nodes": 4,
+        "chunkSize": 6,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt7-loss0",
+        "rttMs": 7,
+        "jitterMs": 0.6,
+        "lossRate": 0,
+        "primary": true
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 1133.325646000003,
+        "p95Ms": 1207.40985845,
+        "p50Ci": {
+          "low": 1086.2071665000003,
+          "high": 1186.5144169999985
+        },
+        "p95Ci": {
+          "low": 1143.4963476000032,
+          "high": 1218.661250000001
+        }
+      },
+      "chunked": {
+        "p50Ms": 82.86552049999955,
+        "p95Ms": 93.26316874999593,
+        "p50Ci": {
+          "low": 79.41525000000183,
+          "high": 88.94887499999459
+        },
+        "p95Ci": {
+          "low": 84.03733300000022,
+          "high": 95.58624999999665
+        }
+      },
+      "speedupMedian": 13.612113835892666,
+      "speedupMedianCi": {
+        "low": 12.630792598558141,
+        "high": 14.700304416435012
+      },
+      "improvementMedianMs": 1041.0580835000073,
+      "improvementMedianMsCi": {
+        "low": 990.0655840000036,
+        "high": 1089.655667000001
+      },
+      "sequentialAvgRetriesPerTrial": 0,
+      "chunkedAvgRetriesPerTrial": 0,
+      "passed": true
+    },
+    {
+      "cellId": "prompt24-n4-b6__rtt7-loss2pct",
+      "workload": {
+        "name": "prompt24-n4-b6",
+        "tokens": 24,
+        "nodes": 4,
+        "chunkSize": 6,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt7-loss2pct",
+        "rttMs": 7,
+        "jitterMs": 0.6,
+        "lossRate": 0.02,
+        "primary": true
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 1150.8953540000002,
+        "p95Ms": 1259.1297459500015,
+        "p50Ci": {
+          "low": 1109.534249999997,
+          "high": 1216.6645419999986
+        },
+        "p95Ci": {
+          "low": 1179.4650687499982,
+          "high": 1281.9956250000032
+        }
+      },
+      "chunked": {
+        "p50Ms": 90.42220799999996,
+        "p95Ms": 102.20641929999911,
+        "p50Ci": {
+          "low": 83.08366599999863,
+          "high": 98.38341699999728
+        },
+        "p95Ci": {
+          "low": 91.71704100000352,
+          "high": 104.26495900000009
+        }
+      },
+      "speedupMedian": 12.642022790725147,
+      "speedupMedianCi": {
+        "low": 12.097362037660531,
+        "high": 14.981839566627377
+      },
+      "improvementMedianMs": 1062.2647284999985,
+      "improvementMedianMsCi": {
+        "low": 1027.5690830000021,
+        "high": 1118.2811250000013
+      },
+      "sequentialAvgRetriesPerTrial": 1.75,
+      "chunkedAvgRetriesPerTrial": 0.75,
+      "passed": true
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt1-loss0",
+      "workload": {
+        "name": "prompt36-n6-b9",
+        "tokens": 36,
+        "nodes": 6,
+        "chunkSize": 9,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt1-loss0",
+        "rttMs": 1,
+        "jitterMs": 0.2,
+        "lossRate": 0,
+        "primary": false
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 1357.0817704999972,
+        "p95Ms": 1449.1283454000027,
+        "p50Ci": {
+          "low": 1318.570458999995,
+          "high": 1409.3591250000027
+        },
+        "p95Ci": {
+          "low": 1373.071008100002,
+          "high": 1470.5425410000025
+        }
+      },
+      "chunked": {
+        "p50Ms": 54.57572900000014,
+        "p95Ms": 70.43754364999549,
+        "p50Ci": {
+          "low": 52.92281300000104,
+          "high": 64.5410419999971
+        },
+        "p95Ci": {
+          "low": 54.93287500000588,
+          "high": 73.61258299999463
+        }
+      },
+      "speedupMedian": 24.910470292815965,
+      "speedupMedianCi": {
+        "low": 21.93370742615803,
+        "high": 25.56343551066517
+      },
+      "improvementMedianMs": 1304.1589574999962,
+      "improvementMedianMsCi": {
+        "low": 1266.036,
+        "high": 1335.746542000008
+      },
+      "sequentialAvgRetriesPerTrial": 0,
+      "chunkedAvgRetriesPerTrial": 0,
+      "passed": true
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt3-loss0",
+      "workload": {
+        "name": "prompt36-n6-b9",
+        "tokens": 36,
+        "nodes": 6,
+        "chunkSize": 9,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt3-loss0",
+        "rttMs": 3,
+        "jitterMs": 0.3,
+        "lossRate": 0,
+        "primary": true
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 1335.518207999994,
+        "p95Ms": 1417.5110420000062,
+        "p50Ci": {
+          "low": 1290.5279169999994,
+          "high": 1386.6330625000046
+        },
+        "p95Ci": {
+          "low": 1341.1036659999954,
+          "high": 1431.7140420000069
+        }
+      },
+      "chunked": {
+        "p50Ms": 55.603916500000196,
+        "p95Ms": 58.12615635000074,
+        "p50Ci": {
+          "low": 52.343041000000085,
+          "high": 57.52883300000394
+        },
+        "p95Ci": {
+          "low": 56.321191336249576,
+          "high": 58.447791999999026
+        }
+      },
+      "speedupMedian": 24.628634048484162,
+      "speedupMedianCi": {
+        "low": 23.33073811066305,
+        "high": 25.251794435970567
+      },
+      "improvementMedianMs": 1279.5739164999977,
+      "improvementMedianMsCi": {
+        "low": 1240.204248999995,
+        "high": 1334.8113340000054
+      },
+      "sequentialAvgRetriesPerTrial": 0,
+      "chunkedAvgRetriesPerTrial": 0,
+      "passed": true
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt3-loss2pct",
+      "workload": {
+        "name": "prompt36-n6-b9",
+        "tokens": 36,
+        "nodes": 6,
+        "chunkSize": 9,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt3-loss2pct",
+        "rttMs": 3,
+        "jitterMs": 0.3,
+        "lossRate": 0.02,
+        "primary": true
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 1263.1642290000018,
+        "p95Ms": 1324.518272699997,
+        "p50Ci": {
+          "low": 1244.8432080000057,
+          "high": 1315.1781250000058
+        },
+        "p95Ci": {
+          "low": 1294.7464392500035,
+          "high": 1329.5475829999923
+        }
+      },
+      "chunked": {
+        "p50Ms": 54.999312500003725,
+        "p95Ms": 78.76888750000361,
+        "p50Ci": {
+          "low": 49.3561045000024,
+          "high": 65.21199999999953
+        },
+        "p95Ci": {
+          "low": 58.4346169000004,
+          "high": 86.06875000000582
+        }
+      },
+      "speedupMedian": 22.57706008376942,
+      "speedupMedianCi": {
+        "low": 19.267248880574382,
+        "high": 25.279682994682524
+      },
+      "improvementMedianMs": 1208.8820625000008,
+      "improvementMedianMsCi": {
+        "low": 1191.243834000008,
+        "high": 1269.2694579999952
+      },
+      "sequentialAvgRetriesPerTrial": 3,
+      "chunkedAvgRetriesPerTrial": 0.75,
+      "passed": true
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt7-loss0",
+      "workload": {
+        "name": "prompt36-n6-b9",
+        "tokens": 36,
+        "nodes": 6,
+        "chunkSize": 9,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt7-loss0",
+        "rttMs": 7,
+        "jitterMs": 0.6,
+        "lossRate": 0,
+        "primary": true
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 4163.339729000007,
+        "p95Ms": 4885.224829399993,
+        "p50Ci": {
+          "low": 3236.979625000007,
+          "high": 4789.090209000002
+        },
+        "p95Ci": {
+          "low": 4319.674208000011,
+          "high": 4936.989624999987
+        }
+      },
+      "chunked": {
+        "p50Ms": 146.46802050000406,
+        "p95Ms": 399.08380220000384,
+        "p50Ci": {
+          "low": 112.0468339999934,
+          "high": 265.26654199999757
+        },
+        "p95Ci": {
+          "low": 164.2713330000115,
+          "high": 471.13925000000745
+        }
+      },
+      "speedupMedian": 27.222591015313288,
+      "speedupMedianCi": {
+        "low": 15.105581049871109,
+        "high": 30.772129331206383
+      },
+      "improvementMedianMs": 3966.3741040000095,
+      "improvementMedianMsCi": {
+        "low": 3116.5847080000094,
+        "high": 4362.855083999981
+      },
+      "sequentialAvgRetriesPerTrial": 0,
+      "chunkedAvgRetriesPerTrial": 0,
+      "passed": true
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt7-loss2pct",
+      "workload": {
+        "name": "prompt36-n6-b9",
+        "tokens": 36,
+        "nodes": 6,
+        "chunkSize": 9,
+        "serviceMsPerToken": 0.15,
+        "payloadBytesPerToken": 96
+      },
+      "network": {
+        "name": "rtt7-loss2pct",
+        "rttMs": 7,
+        "jitterMs": 0.6,
+        "lossRate": 0.02,
+        "primary": true
+      },
+      "pairedTrials": 8,
+      "failedTrials": 0,
+      "sequential": {
+        "p50Ms": 2564.4162294999987,
+        "p95Ms": 3366.7595584499963,
+        "p50Ci": {
+          "low": 2425.2709580000082,
+          "high": 2774.809541999988
+        },
+        "p95Ci": {
+          "low": 2585.1784083500143,
+          "high": 3685.5018750000017
+        }
+      },
+      "chunked": {
+        "p50Ms": 108.98433300000033,
+        "p95Ms": 167.37731920000584,
+        "p50Ci": {
+          "low": 101.09112499997718,
+          "high": 134.68933399999514
+        },
+        "p95Ci": {
+          "low": 120.2018543599943,
+          "high": 184.97854200001166
+        }
+      },
+      "speedupMedian": 23.118903230286293,
+      "speedupMedianCi": {
+        "low": 19.184772270712994,
+        "high": 23.768684514202032
+      },
+      "improvementMedianMs": 2442.7385835000023,
+      "improvementMedianMsCi": {
+        "low": 2298.854500000016,
+        "high": 2673.718417000011
+      },
+      "sequentialAvgRetriesPerTrial": 3.75,
+      "chunkedAvgRetriesPerTrial": 0.625,
+      "passed": true
+    }
+  ],
+  "gate": {
+    "primaryCells": [
+      "prompt24-n4-b6__rtt3-loss0",
+      "prompt24-n4-b6__rtt3-loss2pct",
+      "prompt24-n4-b6__rtt7-loss0",
+      "prompt24-n4-b6__rtt7-loss2pct",
+      "prompt36-n6-b9__rtt3-loss0",
+      "prompt36-n6-b9__rtt3-loss2pct",
+      "prompt36-n6-b9__rtt7-loss0",
+      "prompt36-n6-b9__rtt7-loss2pct"
+    ],
+    "passedPrimaryCells": [
+      "prompt24-n4-b6__rtt3-loss0",
+      "prompt24-n4-b6__rtt3-loss2pct",
+      "prompt24-n4-b6__rtt7-loss0",
+      "prompt24-n4-b6__rtt7-loss2pct",
+      "prompt36-n6-b9__rtt3-loss0",
+      "prompt36-n6-b9__rtt3-loss2pct",
+      "prompt36-n6-b9__rtt7-loss0",
+      "prompt36-n6-b9__rtt7-loss2pct"
+    ],
+    "failedPrimaryCells": [],
+    "pass": true
+  }
+}

@@ -134,5 +134,10 @@ export declare class AeonFlowProtocol {
     private requireStream;
     private sendFrame;
     private concatenateResults;
+    /**
+     * Attempt to upgrade to WASM codec without delaying protocol startup.
+     * JS codec remains the correctness path if WASM is unavailable.
+     */
+    private upgradeCodecInBackground;
 }
 export {};

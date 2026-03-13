@@ -1,0 +1,481 @@
+{
+  "label": "gnosis-moe-routing-benchmark-v1",
+  "config": {
+    "seedCount": 12,
+    "epochs": 1400,
+    "learningRate": 0.025,
+    "exactPredictionTolerance": 0.08,
+    "dualActiveThreshold": 0.4,
+    "trainSampleCount": 169,
+    "evalSampleCount": 100,
+    "targetFamily": "quadrant-l1-routing"
+  },
+  "topology": {
+    "nodeCount": 8,
+    "edgeCount": 4,
+    "structuralBeta1": 3,
+    "expertCount": 4,
+    "parameterCount": 16
+  },
+  "strategies": {
+    "linear": {
+      "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moe-routing-linear.gg",
+      "topologyNodeCount": 8,
+      "topologyEdgeCount": 4,
+      "structuralBeta1": 3,
+      "expertCount": 4,
+      "parameterCount": 16,
+      "seedMetrics": [
+        {
+          "seed": 1,
+          "trainMeanSquaredError": 0.002195212080935987,
+          "evalMeanSquaredError": 0.0008544400761024988,
+          "exactWithinToleranceFraction": 0.99,
+          "dualActiveRegionMeanAbsoluteError": 0.025408593648810436
+        },
+        {
+          "seed": 2,
+          "trainMeanSquaredError": 0.002655929930557613,
+          "evalMeanSquaredError": 0.001130513494313891,
+          "exactWithinToleranceFraction": 0.96,
+          "dualActiveRegionMeanAbsoluteError": 0.02637157156796983
+        },
+        {
+          "seed": 3,
+          "trainMeanSquaredError": 0.0028520925878129638,
+          "evalMeanSquaredError": 0.001262772919176783,
+          "exactWithinToleranceFraction": 0.96,
+          "dualActiveRegionMeanAbsoluteError": 0.02738971623849995
+        },
+        {
+          "seed": 4,
+          "trainMeanSquaredError": 0.0025237853718950358,
+          "evalMeanSquaredError": 0.0010717850531420023,
+          "exactWithinToleranceFraction": 1,
+          "dualActiveRegionMeanAbsoluteError": 0.02719249088864179
+        },
+        {
+          "seed": 5,
+          "trainMeanSquaredError": 0.0028233554042731415,
+          "evalMeanSquaredError": 0.0012839659718052552,
+          "exactWithinToleranceFraction": 1,
+          "dualActiveRegionMeanAbsoluteError": 0.027460520472746004
+        },
+        {
+          "seed": 6,
+          "trainMeanSquaredError": 0.0027328369378347224,
+          "evalMeanSquaredError": 0.0011994241767093847,
+          "exactWithinToleranceFraction": 0.98,
+          "dualActiveRegionMeanAbsoluteError": 0.02644793407199038
+        },
+        {
+          "seed": 7,
+          "trainMeanSquaredError": 0.002552723025418454,
+          "evalMeanSquaredError": 0.0011087819573991624,
+          "exactWithinToleranceFraction": 1,
+          "dualActiveRegionMeanAbsoluteError": 0.027871815638432898
+        },
+        {
+          "seed": 8,
+          "trainMeanSquaredError": 0.00221902381082933,
+          "evalMeanSquaredError": 0.0008814515276131723,
+          "exactWithinToleranceFraction": 0.98,
+          "dualActiveRegionMeanAbsoluteError": 0.026784530001564628
+        },
+        {
+          "seed": 9,
+          "trainMeanSquaredError": 0.0024554638024156567,
+          "evalMeanSquaredError": 0.0010134893362301058,
+          "exactWithinToleranceFraction": 0.96,
+          "dualActiveRegionMeanAbsoluteError": 0.02696857718911068
+        },
+        {
+          "seed": 10,
+          "trainMeanSquaredError": 0.002492316667614673,
+          "evalMeanSquaredError": 0.0010279073024751474,
+          "exactWithinToleranceFraction": 0.98,
+          "dualActiveRegionMeanAbsoluteError": 0.026295889066349026
+        },
+        {
+          "seed": 11,
+          "trainMeanSquaredError": 0.0024663477751632207,
+          "evalMeanSquaredError": 0.0010441045866657092,
+          "exactWithinToleranceFraction": 0.96,
+          "dualActiveRegionMeanAbsoluteError": 0.02806412097161157
+        },
+        {
+          "seed": 12,
+          "trainMeanSquaredError": 0.0027064132216920367,
+          "evalMeanSquaredError": 0.00118246172383382,
+          "exactWithinToleranceFraction": 0.96,
+          "dualActiveRegionMeanAbsoluteError": 0.027286221786949633
+        }
+      ],
+      "meanTrainMeanSquaredError": 0.002556291718036903,
+      "stdevTrainMeanSquaredError": 0.00020207262579044542,
+      "meanEvalMeanSquaredError": 0.001088424843788911,
+      "evalMeanSquaredErrorCi95": {
+        "low": 0.0010130568414064576,
+        "high": 0.0011576553820188441
+      },
+      "stdevEvalMeanSquaredError": 0.00012945041955459555,
+      "meanExactWithinToleranceFraction": 0.9775000000000004,
+      "exactWithinToleranceFractionCi95": {
+        "low": 0.9683333333333334,
+        "high": 0.9874999999999999
+      },
+      "stdevExactWithinToleranceFraction": 0.016393596310755012,
+      "meanDualActiveRegionMeanAbsoluteError": 0.026961831795223073,
+      "dualActiveRegionMeanAbsoluteErrorCi95": {
+        "low": 0.026553656118350755,
+        "high": 0.027350056420122948
+      },
+      "stdevDualActiveRegionMeanAbsoluteError": 0.0007149200358017183,
+      "samplePredictions": [
+        {
+          "leftInput": -1.2,
+          "rightInput": -1.2,
+          "target": 2.4,
+          "meanPrediction": 2.4216115429305916,
+          "predictionStddev": 0.007667526744488774
+        },
+        {
+          "leftInput": -1.2,
+          "rightInput": 1.2,
+          "target": 2.4,
+          "meanPrediction": 2.422861348192359,
+          "predictionStddev": 0.009851810339760519
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": -1.2,
+          "target": 2.4,
+          "meanPrediction": 2.421881346248531,
+          "predictionStddev": 0.008599766169353873
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": 1.2,
+          "target": 2.4,
+          "meanPrediction": 2.423131151510299,
+          "predictionStddev": 0.006999482532450321
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": 0,
+          "target": 1.2,
+          "meanPrediction": 1.314647301855715,
+          "predictionStddev": 0.016068885965020777
+        }
+      ]
+    },
+    "winner-take-all": {
+      "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moe-routing-winner-take-all.gg",
+      "topologyNodeCount": 8,
+      "topologyEdgeCount": 4,
+      "structuralBeta1": 3,
+      "expertCount": 4,
+      "parameterCount": 16,
+      "seedMetrics": [
+        {
+          "seed": 1,
+          "trainMeanSquaredError": 0.3771765495105009,
+          "evalMeanSquaredError": 0.38201583159708824,
+          "exactWithinToleranceFraction": 0.18,
+          "dualActiveRegionMeanAbsoluteError": 0.4187649319815886
+        },
+        {
+          "seed": 2,
+          "trainMeanSquaredError": 0.446378516919039,
+          "evalMeanSquaredError": 0.4406865724310953,
+          "exactWithinToleranceFraction": 0.08,
+          "dualActiveRegionMeanAbsoluteError": 0.48165873411010796
+        },
+        {
+          "seed": 3,
+          "trainMeanSquaredError": 0.2295727813205648,
+          "evalMeanSquaredError": 0.22509235837764455,
+          "exactWithinToleranceFraction": 0.12,
+          "dualActiveRegionMeanAbsoluteError": 0.3502103122228822
+        },
+        {
+          "seed": 4,
+          "trainMeanSquaredError": 0.45096384616037577,
+          "evalMeanSquaredError": 0.46320248307047857,
+          "exactWithinToleranceFraction": 0.04,
+          "dualActiveRegionMeanAbsoluteError": 0.4556364324189741
+        },
+        {
+          "seed": 5,
+          "trainMeanSquaredError": 0.3776237058976599,
+          "evalMeanSquaredError": 0.3776848987311112,
+          "exactWithinToleranceFraction": 0.16,
+          "dualActiveRegionMeanAbsoluteError": 0.43115155133827826
+        },
+        {
+          "seed": 6,
+          "trainMeanSquaredError": 0.4466223192734113,
+          "evalMeanSquaredError": 0.44440444030462606,
+          "exactWithinToleranceFraction": 0.08,
+          "dualActiveRegionMeanAbsoluteError": 0.4765185332797285
+        },
+        {
+          "seed": 7,
+          "trainMeanSquaredError": 0.37660070683117436,
+          "evalMeanSquaredError": 0.375545006867674,
+          "exactWithinToleranceFraction": 0.18,
+          "dualActiveRegionMeanAbsoluteError": 0.43016115729663335
+        },
+        {
+          "seed": 8,
+          "trainMeanSquaredError": 0.22308515928689032,
+          "evalMeanSquaredError": 0.22280539552975834,
+          "exactWithinToleranceFraction": 0.2,
+          "dualActiveRegionMeanAbsoluteError": 0.32499999999999996
+        },
+        {
+          "seed": 9,
+          "trainMeanSquaredError": 0.1894147178652004,
+          "evalMeanSquaredError": 0.18767430243840788,
+          "exactWithinToleranceFraction": 0.1,
+          "dualActiveRegionMeanAbsoluteError": 0.31913183402227896
+        },
+        {
+          "seed": 10,
+          "trainMeanSquaredError": 0.19017139985394602,
+          "evalMeanSquaredError": 0.1874666214865702,
+          "exactWithinToleranceFraction": 0.08,
+          "dualActiveRegionMeanAbsoluteError": 0.3269142073362783
+        },
+        {
+          "seed": 11,
+          "trainMeanSquaredError": 0.45394674385953454,
+          "evalMeanSquaredError": 0.4387358155602994,
+          "exactWithinToleranceFraction": 0.14,
+          "dualActiveRegionMeanAbsoluteError": 0.5012234327951003
+        },
+        {
+          "seed": 12,
+          "trainMeanSquaredError": 0.192544199049434,
+          "evalMeanSquaredError": 0.1942699987021164,
+          "exactWithinToleranceFraction": 0.15,
+          "dualActiveRegionMeanAbsoluteError": 0.30373593260260023
+        }
+      ],
+      "meanTrainMeanSquaredError": 0.32950838715231096,
+      "stdevTrainMeanSquaredError": 0.1093651785736536,
+      "meanEvalMeanSquaredError": 0.32829864375807255,
+      "evalMeanSquaredErrorCi95": {
+        "low": 0.2669569776117178,
+        "high": 0.3886631750941748
+      },
+      "stdevEvalMeanSquaredError": 0.10932241264744373,
+      "meanExactWithinToleranceFraction": 0.12583333333333332,
+      "exactWithinToleranceFractionCi95": {
+        "low": 0.09833333333333334,
+        "high": 0.15083333333333335
+      },
+      "stdevExactWithinToleranceFraction": 0.048037890137774465,
+      "meanDualActiveRegionMeanAbsoluteError": 0.4016755882837042,
+      "dualActiveRegionMeanAbsoluteErrorCi95": {
+        "low": 0.36317788781356886,
+        "high": 0.4406060660669381
+      },
+      "stdevDualActiveRegionMeanAbsoluteError": 0.0691106322433879,
+      "samplePredictions": [
+        {
+          "leftInput": -1.2,
+          "rightInput": -1.2,
+          "target": 2.4,
+          "meanPrediction": 1.7607527044221543,
+          "predictionStddev": 0.2375471824151351
+        },
+        {
+          "leftInput": -1.2,
+          "rightInput": 1.2,
+          "target": 2.4,
+          "meanPrediction": 1.8057290800260797,
+          "predictionStddev": 0.2114354147854318
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": -1.2,
+          "target": 2.4,
+          "meanPrediction": 1.7837086814574201,
+          "predictionStddev": 0.2173792052555197
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": 1.2,
+          "target": 2.4,
+          "meanPrediction": 1.817013277641714,
+          "predictionStddev": 0.20368258046439747
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": 0,
+          "target": 1.2,
+          "meanPrediction": 1.472102727474064,
+          "predictionStddev": 0.4528397862864415
+        }
+      ]
+    },
+    "early-stop": {
+      "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moe-routing-early-stop.gg",
+      "topologyNodeCount": 8,
+      "topologyEdgeCount": 4,
+      "structuralBeta1": 3,
+      "expertCount": 4,
+      "parameterCount": 16,
+      "seedMetrics": [
+        {
+          "seed": 1,
+          "trainMeanSquaredError": 0.4468506036993425,
+          "evalMeanSquaredError": 0.4550610449363896,
+          "exactWithinToleranceFraction": 0.04,
+          "dualActiveRegionMeanAbsoluteError": 0.46122138784585803
+        },
+        {
+          "seed": 2,
+          "trainMeanSquaredError": 0.4463785166775377,
+          "evalMeanSquaredError": 0.44068657286823365,
+          "exactWithinToleranceFraction": 0.08,
+          "dualActiveRegionMeanAbsoluteError": 0.4816587327781662
+        },
+        {
+          "seed": 3,
+          "trainMeanSquaredError": 0.44745761037313714,
+          "evalMeanSquaredError": 0.44295611497438125,
+          "exactWithinToleranceFraction": 0.1,
+          "dualActiveRegionMeanAbsoluteError": 0.48046296720571957
+        },
+        {
+          "seed": 4,
+          "trainMeanSquaredError": 0.44940005757403706,
+          "evalMeanSquaredError": 0.46146133707764664,
+          "exactWithinToleranceFraction": 0.02,
+          "dualActiveRegionMeanAbsoluteError": 0.4560919920009586
+        },
+        {
+          "seed": 5,
+          "trainMeanSquaredError": 0.44794476295131347,
+          "evalMeanSquaredError": 0.44142665472816683,
+          "exactWithinToleranceFraction": 0.12,
+          "dualActiveRegionMeanAbsoluteError": 0.48366640348034934
+        },
+        {
+          "seed": 6,
+          "trainMeanSquaredError": 0.44662231954135556,
+          "evalMeanSquaredError": 0.44440443970553495,
+          "exactWithinToleranceFraction": 0.08,
+          "dualActiveRegionMeanAbsoluteError": 0.4765185348203443
+        },
+        {
+          "seed": 7,
+          "trainMeanSquaredError": 0.44629956510051877,
+          "evalMeanSquaredError": 0.4438133406262503,
+          "exactWithinToleranceFraction": 0.08,
+          "dualActiveRegionMeanAbsoluteError": 0.4766972390467999
+        },
+        {
+          "seed": 8,
+          "trainMeanSquaredError": 0.44770656869495357,
+          "evalMeanSquaredError": 0.4432363469565195,
+          "exactWithinToleranceFraction": 0.1,
+          "dualActiveRegionMeanAbsoluteError": 0.4805416768122599
+        },
+        {
+          "seed": 9,
+          "trainMeanSquaredError": 0.44736426515008954,
+          "evalMeanSquaredError": 0.4561073909962948,
+          "exactWithinToleranceFraction": 0.04,
+          "dualActiveRegionMeanAbsoluteError": 0.4604786730574733
+        },
+        {
+          "seed": 10,
+          "trainMeanSquaredError": 0.4499840002739652,
+          "evalMeanSquaredError": 0.4435174078047154,
+          "exactWithinToleranceFraction": 0.12,
+          "dualActiveRegionMeanAbsoluteError": 0.4844122021041111
+        },
+        {
+          "seed": 11,
+          "trainMeanSquaredError": 0.4539467598408611,
+          "evalMeanSquaredError": 0.438735785473325,
+          "exactWithinToleranceFraction": 0.14,
+          "dualActiveRegionMeanAbsoluteError": 0.501223527343564
+        },
+        {
+          "seed": 12,
+          "trainMeanSquaredError": 0.45952202682453464,
+          "evalMeanSquaredError": 0.4815553564003527,
+          "exactWithinToleranceFraction": 0.04,
+          "dualActiveRegionMeanAbsoluteError": 0.442864842342191
+        }
+      ],
+      "meanTrainMeanSquaredError": 0.4491230880584705,
+      "stdevTrainMeanSquaredError": 0.0037462075521616793,
+      "meanEvalMeanSquaredError": 0.44941348271231757,
+      "evalMeanSquaredErrorCi95": {
+        "low": 0.44358760426726607,
+        "high": 0.4565378831962563
+      },
+      "stdevEvalMeanSquaredError": 0.011832110997796477,
+      "meanExactWithinToleranceFraction": 0.08,
+      "exactWithinToleranceFractionCi95": {
+        "low": 0.06,
+        "high": 0.10000000000000003
+      },
+      "stdevExactWithinToleranceFraction": 0.03651483716701107,
+      "meanDualActiveRegionMeanAbsoluteError": 0.4738198482364829,
+      "dualActiveRegionMeanAbsoluteErrorCi95": {
+        "low": 0.4654647642046545,
+        "high": 0.48185190055239846
+      },
+      "stdevDualActiveRegionMeanAbsoluteError": 0.015098664627151336,
+      "samplePredictions": [
+        {
+          "leftInput": -1.2,
+          "rightInput": -1.2,
+          "target": 2.4,
+          "meanPrediction": 1.6083322111786673,
+          "predictionStddev": 0.06321430445406585
+        },
+        {
+          "leftInput": -1.2,
+          "rightInput": 1.2,
+          "target": 2.4,
+          "meanPrediction": 1.6083322111786673,
+          "predictionStddev": 0.06321430445406585
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": -1.2,
+          "target": 2.4,
+          "meanPrediction": 1.6201542136184754,
+          "predictionStddev": 0.07399983786873458
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": 1.2,
+          "target": 2.4,
+          "meanPrediction": 1.6201542136184754,
+          "predictionStddev": 0.07399983786873458
+        },
+        {
+          "leftInput": 1.2,
+          "rightInput": 0,
+          "target": 1.2,
+          "meanPrediction": 1.6201542136184754,
+          "predictionStddev": 0.07399983786873458
+        }
+      ]
+    }
+  },
+  "rankingByEvalMeanSquaredError": [
+    "linear",
+    "winner-take-all",
+    "early-stop"
+  ],
+  "predictedRankingMatches": true
+}

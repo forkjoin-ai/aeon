@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  adaptiveParallelismPolicy,
   TopologyAnalyzer,
   beta2FromBandGap,
+  classifyPipelineRegime,
+  frontierFill,
   firstLawConserved,
+  pipelineOccupancy,
   protocolDeficits,
   quantumDeficitIdentity,
   settlementDeficits,
@@ -22,6 +26,76 @@ describe('Topology formal claim helpers', () => {
 
     const turbulent = turbulentIdleFraction(4, 4);
     expect(turbulent.idleFraction).toBeCloseTo(3 / 7, 10);
+  });
+
+  it('computes frontier fill and matches pipeline occupancy deficit to idle fraction', () => {
+    const frontier = frontierFill([1, 2, 1]);
+    expect(frontier.frontierArea).toBe(4);
+    expect(frontier.peakFrontier).toBe(2);
+    expect(frontier.frontierFill).toBeCloseTo(2 / 3, 10);
+    expect(frontier.wallaceNumber).toBeCloseTo(1 / 3, 10);
+    expect(frontier.wally).toBeCloseTo(1 / 3, 10);
+    expect(frontier.frontierDeficit).toBeCloseTo(1 / 3, 10);
+
+    const occupancy = pipelineOccupancy(4, 4);
+    const turbulent = turbulentIdleFraction(4, 4);
+
+    expect(occupancy.frontierFill).toBeCloseTo(4 / 7, 10);
+    expect(occupancy.occupancyDeficit).toBeCloseTo(3 / 7, 10);
+    expect(occupancy.occupancyDeficit).toBeCloseTo(turbulent.idleFraction, 10);
+  });
+
+  it('classifies pipeline regimes at the paper thresholds', () => {
+    expect(classifyPipelineRegime(2, 10)).toBe('laminar');
+    expect(classifyPipelineRegime(2, 4)).toBe('transitional');
+    expect(classifyPipelineRegime(4, 2)).toBe('turbulent');
+  });
+
+  it('recommends adaptive control actions from topology and occupancy signals', () => {
+    expect(
+      adaptiveParallelismPolicy({
+        intrinsicBeta1: 6,
+        actualBeta1: 2,
+        stageCount: 2,
+        chunkCount: 20,
+      }).action,
+    ).toBe('expand');
+
+    expect(
+      adaptiveParallelismPolicy({
+        intrinsicBeta1: 6,
+        actualBeta1: 2,
+        stageCount: 4,
+        chunkCount: 1,
+      }).action,
+    ).toBe('staggered-expand');
+
+    expect(
+      adaptiveParallelismPolicy({
+        intrinsicBeta1: 3,
+        actualBeta1: 5,
+        stageCount: 4,
+        chunkCount: 1,
+      }).action,
+    ).toBe('constrain');
+
+    expect(
+      adaptiveParallelismPolicy({
+        intrinsicBeta1: 3,
+        actualBeta1: 3,
+        stageCount: 4,
+        chunkCount: 2,
+      }).action,
+    ).toBe('multiplex');
+
+    expect(
+      adaptiveParallelismPolicy({
+        intrinsicBeta1: 3,
+        actualBeta1: 3,
+        stageCount: 2,
+        chunkCount: 10,
+      }).action,
+    ).toBe('hold');
   });
 
   it('encodes THM-Q-DEFICIT identity', () => {

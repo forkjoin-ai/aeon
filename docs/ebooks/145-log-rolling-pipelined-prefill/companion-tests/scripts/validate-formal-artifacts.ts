@@ -6,12 +6,14 @@ import {
   parseTlaModule,
   parseTlcConfig,
   renderTlaModule,
+  runLeanSandbox,
   serializeTlcConfig,
 } from '@affectively/aeon-logic';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptDir, '..');
 const formalDir = join(rootDir, 'formal');
+const leanDir = join(formalDir, 'lean');
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {
@@ -50,6 +52,59 @@ function validateCfgFile(filename: string): void {
   );
 }
 
+function validateLeanProject(): number {
+  const result = runLeanSandbox({
+    path: leanDir,
+    build: false,
+  });
+
+  assert(result.report.project.lakefile !== null, 'Lean project must define a Lake configuration');
+  assert(result.report.project.toolchain !== null, 'Lean project must define a lean-toolchain');
+  assert(result.report.project.moduleCount > 0, 'Lean project must contain at least one module');
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems'),
+    'Lean project must expose the ForkRaceFoldTheorems entrypoint',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.MeasureQueueing'),
+    'Lean project must expose the MeasureQueueing module',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureComposition'),
+    'Lean project must expose the FailureComposition module',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureUniversality'),
+    'Lean project must expose the FailureUniversality module',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureEntropy'),
+    'Lean project must expose the FailureEntropy module',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureFamilies'),
+    'Lean project must expose the FailureFamilies module',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureTrilemma'),
+    'Lean project must expose the FailureTrilemma module',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QueueStability'),
+    'Lean project must expose the QueueStability module',
+  );
+  assert(
+    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.JacksonQueueing'),
+    'Lean project must expose the JacksonQueueing module',
+  );
+  assert(
+    result.report.build.attempted === false,
+    'Lean inspection preflight must not execute a build',
+  );
+
+  return result.report.project.moduleCount;
+}
+
 function main(): void {
   const files = readdirSync(formalDir).filter((entry) => !entry.startsWith('.'));
   const allTlaFiles = files.filter((entry) => extname(entry) === '.tla');
@@ -75,9 +130,10 @@ function main(): void {
   for (const filename of cfgFiles) {
     validateCfgFile(filename);
   }
+  const leanModuleCount = validateLeanProject();
 
   process.stdout.write(
-    `aeon-logic parser validation passed (${tlaFiles.length} TLA modules, ${cfgFiles.length} CFG files)\n`,
+    `aeon-logic formal validation passed (${tlaFiles.length} TLA modules, ${cfgFiles.length} CFG files, ${leanModuleCount} Lean modules)\n`,
   );
 }
 
