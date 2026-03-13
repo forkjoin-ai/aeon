@@ -1,6 +1,6 @@
 # Gnosis Fold Training Benchmark
 
-- Label: `gnosis-fold-training-benchmark-v1`
+- Label: `gnosis-fold-training-benchmark-v2`
 - Target family: `left-minus-right`
 - Seeds: `8`
 - Epochs: `720`
@@ -13,11 +13,11 @@
 
 ## Aggregated Metrics
 
-| Strategy | Mean eval MSE | Eval MSE σ | Exact-within-tolerance | Cancellation-line abs error |
-|---|---:|---:|---:|---:|
-| `linear` | 0.000 | 0.000 | 1.000 | 0.000 |
-| `winner-take-all` | 0.408 | 0.017 | 0.038 | 0.834 |
-| `early-stop` | 0.735 | 0.006 | 0.000 | 0.764 |
+| Strategy | Mean eval MSE | Eval MSE 95% CI | Eval MSE σ | Exact-within-tolerance | Exact 95% CI | Cancellation-line abs error | Cancellation 95% CI |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `linear` | 0.000 | [0.000, 0.000] | 0.000 | 1.000 | [1.000, 1.000] | 0.000 | [0.000, 0.000] |
+| `winner-take-all` | 0.408 | [0.396, 0.421] | 0.017 | 0.038 | [0.021, 0.056] | 0.834 | [0.792, 0.876] |
+| `early-stop` | 0.735 | [0.732, 0.740] | 0.006 | 0.000 | [0.000, 0.000] | 0.764 | [0.737, 0.786] |
 
 ## Sample Predictions
 

@@ -21,6 +21,7 @@ This directory contains machine-checked formal artifacts used to mechanize the p
 - `FailureEntropy.tla` / `.cfg`: bounded witness for structured failure as live-frontier entropy reduction, including the single-survivor/failure necessity law and the coupled-repair reversal case.
 - `StagedExpansion.tla` / `.cfg`: bounded staged-expansion witness showing that, under a positive topology-deficit budget, spending equal added frontier on underfilled shoulders beats naive peak widening in frontier fill and Wallace.
 - `WarmupEfficiency.tla` / `.cfg`: bounded warm-up efficiency witness showing exactly when a weighted Wallace reduction is worth an added Buley cost under fixed useful work and legal recovered overlap.
+- `DynamicWarmupEfficiency.tla` / `.cfg`: dynamic entropy-creep/active-cooling witness showing bounded overlap and eventual return to laminar flow once the warm-up burden threshold becomes reachable and cooling can clear the boundary layer.
 - `WhipCrossover.tla` / `.cfg`: §7.3 cross-shard correction crossover characterization (`T(S)=ceil(P/S)+(N-1)+C*S`) with finite optimum and strict-over-sharding boundary checks.
 - `QuantumDeficit.tla` / `.cfg`: §6.12 speedup = topological deficit identity (Grover-scale sample).
 - `BeautyOptimality.tla` / `.cfg`: §6.12 Bu beauty-optimality scaffold (definition, latency/waste monotonicity, Pareto/composition invariants).

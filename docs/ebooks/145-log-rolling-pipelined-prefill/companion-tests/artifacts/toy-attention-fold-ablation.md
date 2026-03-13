@@ -1,6 +1,6 @@
 # Toy Attention Fold Ablation
 
-- Label: `toy-attention-fold-ablation-v1`
+- Label: `toy-attention-fold-ablation-v2`
 - Queries: `81`
 - Paths: `3`
 - Output dimension: `2`
@@ -9,11 +9,11 @@
 
 ## Metrics
 
-| Strategy | Mean squared error | Max absolute error | Exact-within-tolerance fraction |
-|---|---:|---:|---:|
-| `linear` | 0.000 | 0.000 | 1.000 |
-| `winner-take-all` | 0.163 | 1.081 | 0.185 |
-| `early-stop` | 1.071 | 2.034 | 0.074 |
+| Strategy | Mean squared error | MSE 95% CI | Max absolute error | Exact-within-tolerance fraction | Exact 95% CI |
+|---|---:|---:|---:|---:|---:|
+| `linear` | 0.000 | [0.000, 0.000] | 0.000 | 1.000 | [1.000, 1.000] |
+| `winner-take-all` | 0.163 | [0.120, 0.211] | 1.081 | 0.185 | [0.111, 0.272] |
+| `early-stop` | 1.071 | [0.858, 1.288] | 2.034 | 0.074 | [0.025, 0.136] |
 
 ## Sample Predictions
 

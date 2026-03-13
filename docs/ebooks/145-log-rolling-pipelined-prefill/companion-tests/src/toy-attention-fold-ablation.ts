@@ -1,6 +1,5 @@
 import {
   bootstrapMeanConfidenceInterval,
-  mean,
   type ConfidenceInterval,
 } from './statistics';
 

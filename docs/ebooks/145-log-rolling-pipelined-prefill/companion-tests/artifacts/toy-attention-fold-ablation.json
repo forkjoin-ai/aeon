@@ -1,5 +1,5 @@
 {
-  "label": "toy-attention-fold-ablation-v1",
+  "label": "toy-attention-fold-ablation-v2",
   "config": {
     "queryCount": 81,
     "pathCount": 3,
@@ -9,18 +9,42 @@
   "strategies": {
     "linear": {
       "meanSquaredError": 0,
+      "meanSquaredErrorCi95": {
+        "low": 0,
+        "high": 0
+      },
       "maxAbsoluteError": 0,
-      "exactWithinToleranceFraction": 1
+      "exactWithinToleranceFraction": 1,
+      "exactWithinToleranceFractionCi95": {
+        "low": 1,
+        "high": 1
+      }
     },
     "winner-take-all": {
       "meanSquaredError": 0.16337889613066797,
+      "meanSquaredErrorCi95": {
+        "low": 0.12039405597662745,
+        "high": 0.21076480084184548
+      },
       "maxAbsoluteError": 1.0807264616124395,
-      "exactWithinToleranceFraction": 0.18518518518518517
+      "exactWithinToleranceFraction": 0.18518518518518517,
+      "exactWithinToleranceFractionCi95": {
+        "low": 0.1111111111111111,
+        "high": 0.2716049382716049
+      }
     },
     "early-stop": {
       "meanSquaredError": 1.0711659087798262,
+      "meanSquaredErrorCi95": {
+        "low": 0.8577442025061894,
+        "high": 1.2875604858495577
+      },
       "maxAbsoluteError": 2.033544768741956,
-      "exactWithinToleranceFraction": 0.07407407407407407
+      "exactWithinToleranceFraction": 0.07407407407407407,
+      "exactWithinToleranceFractionCi95": {
+        "low": 0.024691358024691357,
+        "high": 0.13580246913580246
+      }
     }
   },
   "rankingByMeanSquaredError": [

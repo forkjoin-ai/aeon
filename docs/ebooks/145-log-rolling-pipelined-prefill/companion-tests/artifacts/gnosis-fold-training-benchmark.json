@@ -1,5 +1,5 @@
 {
-  "label": "gnosis-fold-training-benchmark-v1",
+  "label": "gnosis-fold-training-benchmark-v2",
   "config": {
     "seedCount": 8,
     "epochs": 720,
@@ -85,10 +85,22 @@
       "meanTrainMeanSquaredError": 1.892290731388968e-31,
       "stdevTrainMeanSquaredError": 3.9524645242786724e-32,
       "meanEvalMeanSquaredError": 1.4861491913918117e-31,
+      "evalMeanSquaredErrorCi95": {
+        "low": 1.2026930958441938e-31,
+        "high": 1.7084737293470133e-31
+      },
       "stdevEvalMeanSquaredError": 3.7086855137273513e-32,
       "meanExactWithinToleranceFraction": 1,
+      "exactWithinToleranceFractionCi95": {
+        "low": 1,
+        "high": 1
+      },
       "stdevExactWithinToleranceFraction": 0,
       "meanCancellationLineMeanAbsoluteError": 7.806255641895632e-17,
+      "cancellationLineMeanAbsoluteErrorCi95": {
+        "low": 3.2959746043559335e-17,
+        "high": 1.249000902703301e-16
+      },
       "stdevCancellationLineMeanAbsoluteError": 6.689378039221747e-17,
       "samplePredictions": [
         {
@@ -189,10 +201,22 @@
       "meanTrainMeanSquaredError": 0.5400576443206885,
       "stdevTrainMeanSquaredError": 0.01833353584859717,
       "meanEvalMeanSquaredError": 0.40816012563457227,
+      "evalMeanSquaredErrorCi95": {
+        "low": 0.39634978081744715,
+        "high": 0.42118916818394425
+      },
       "stdevEvalMeanSquaredError": 0.01696882010167281,
       "meanExactWithinToleranceFraction": 0.03819444444444444,
+      "exactWithinToleranceFractionCi95": {
+        "low": 0.020833333333333332,
+        "high": 0.055555555555555566
+      },
       "stdevExactWithinToleranceFraction": 0.027559909490256156,
       "meanCancellationLineMeanAbsoluteError": 0.8340795677417342,
+      "cancellationLineMeanAbsoluteErrorCi95": {
+        "low": 0.7919216464082801,
+        "high": 0.8757756340384814
+      },
       "stdevCancellationLineMeanAbsoluteError": 0.06133392031746063,
       "samplePredictions": [
         {
@@ -293,10 +317,22 @@
       "meanTrainMeanSquaredError": 1.0069745818708777,
       "stdevTrainMeanSquaredError": 0.0063574950096898074,
       "meanEvalMeanSquaredError": 0.7353577592187757,
+      "evalMeanSquaredErrorCi95": {
+        "low": 0.7316245588665171,
+        "high": 0.7395655914971261
+      },
       "stdevEvalMeanSquaredError": 0.005900204642651841,
       "meanExactWithinToleranceFraction": 0,
+      "exactWithinToleranceFractionCi95": {
+        "low": 0,
+        "high": 0
+      },
       "stdevExactWithinToleranceFraction": 0,
       "meanCancellationLineMeanAbsoluteError": 0.7637513350991346,
+      "cancellationLineMeanAbsoluteErrorCi95": {
+        "low": 0.7365300846677336,
+        "high": 0.7862972421312457
+      },
       "stdevCancellationLineMeanAbsoluteError": 0.03792291958255379,
       "samplePredictions": [
         {

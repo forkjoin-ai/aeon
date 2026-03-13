@@ -184,6 +184,12 @@ def OrderInvariant (fold2 : Int -> Int -> Int) : Prop :=
 def CancellationTargetFamily (fold2 : Int -> Int -> Int) : Prop :=
   ∀ value, fold2 value (-value) = 0
 
+def AdditiveFold (fold2 : Int -> Int -> Int) : Prop :=
+  ∀ first second, fold2 first second = linearFoldInt first second
+
+def CancellationDifferenceFamily (fold2 : Int -> Int -> Int) : Prop :=
+  ∀ value mirror, fold2 value (-mirror) = value - mirror
+
 theorem linear_fold_partition_additivity {a b c : Int} :
     linearFoldInt (linearFoldInt a b) c = linearFoldInt a (linearFoldInt b c) := by
   simp [linearFoldInt, Int.add_assoc]
@@ -201,6 +207,30 @@ theorem linear_fold_preserves_cancellation_target_family :
     CancellationTargetFamily linearFoldInt := by
   intro value
   simpa [linearFoldInt] using Int.add_right_neg value
+
+theorem additive_fold_iff_cancellation_difference_family
+    {fold2 : Int -> Int -> Int} :
+    AdditiveFold fold2 ↔ CancellationDifferenceFamily fold2 := by
+  constructor
+  · intro hAdditive
+    intro value mirror
+    rw [hAdditive value (-mirror)]
+    simp [linearFoldInt, sub_eq_add_neg]
+  · intro hDifference
+    intro first second
+    have hWitness := hDifference first (-second)
+    simpa [sub_eq_add_neg, linearFoldInt] using hWitness
+
+theorem nonadditive_fold_misses_cancellation_difference_family
+    {fold2 : Int -> Int -> Int}
+    (hNonAdditive : ¬ AdditiveFold fold2) :
+    ∃ value mirror, fold2 value (-mirror) ≠ value - mirror := by
+  by_contra hNoWitness
+  apply hNonAdditive
+  rw [additive_fold_iff_cancellation_difference_family]
+  intro value mirror
+  by_contra hCounterexample
+  exact hNoWitness ⟨value, mirror, hCounterexample⟩
 
 theorem winner_selection_partition_counterexample :
     winnerByMagnitudeFold (winnerByMagnitudeFold 1 2) 3 ≠

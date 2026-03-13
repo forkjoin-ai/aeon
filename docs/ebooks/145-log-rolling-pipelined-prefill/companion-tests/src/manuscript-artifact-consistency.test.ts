@@ -112,13 +112,16 @@ interface ToyAttentionFoldAblationReport {
   readonly strategies: {
     readonly linear: {
       readonly meanSquaredError: number;
+      readonly meanSquaredErrorCi95: Interval;
     };
     readonly 'winner-take-all': {
       readonly meanSquaredError: number;
+      readonly meanSquaredErrorCi95: Interval;
       readonly exactWithinToleranceFraction: number;
     };
     readonly 'early-stop': {
       readonly meanSquaredError: number;
+      readonly meanSquaredErrorCi95: Interval;
       readonly exactWithinToleranceFraction: number;
     };
   };
@@ -129,18 +132,42 @@ interface GnosisFoldTrainingBenchmarkReport {
   readonly strategies: {
     readonly linear: {
       readonly meanEvalMeanSquaredError: number;
+      readonly evalMeanSquaredErrorCi95: Interval;
       readonly meanExactWithinToleranceFraction: number;
       readonly meanCancellationLineMeanAbsoluteError: number;
     };
     readonly 'winner-take-all': {
       readonly meanEvalMeanSquaredError: number;
+      readonly evalMeanSquaredErrorCi95: Interval;
       readonly meanExactWithinToleranceFraction: number;
       readonly meanCancellationLineMeanAbsoluteError: number;
     };
     readonly 'early-stop': {
       readonly meanEvalMeanSquaredError: number;
+      readonly evalMeanSquaredErrorCi95: Interval;
       readonly meanExactWithinToleranceFraction: number;
       readonly meanCancellationLineMeanAbsoluteError: number;
+    };
+  };
+}
+
+interface GnosisMiniMoeRoutingBenchmarkReport {
+  readonly label: string;
+  readonly strategies: {
+    readonly linear: {
+      readonly meanEvalMeanSquaredError: number;
+      readonly evalMeanSquaredErrorCi95: Interval;
+      readonly meanDualActiveRegionMeanAbsoluteError: number;
+    };
+    readonly 'winner-take-all': {
+      readonly meanEvalMeanSquaredError: number;
+      readonly evalMeanSquaredErrorCi95: Interval;
+      readonly meanDualActiveRegionMeanAbsoluteError: number;
+    };
+    readonly 'early-stop': {
+      readonly meanEvalMeanSquaredError: number;
+      readonly evalMeanSquaredErrorCi95: Interval;
+      readonly meanDualActiveRegionMeanAbsoluteError: number;
     };
   };
 }
@@ -194,6 +221,9 @@ describe('Manuscript artifact consistency', () => {
     );
     const gnosisTrainingBenchmark = loadJson<GnosisFoldTrainingBenchmarkReport>(
       join(ARTIFACTS_DIR, 'gnosis-fold-training-benchmark.json'),
+    );
+    const gnosisMiniMoeBenchmark = loadJson<GnosisMiniMoeRoutingBenchmarkReport>(
+      join(ARTIFACTS_DIR, 'gnosis-moe-routing-benchmark.json'),
     );
 
     const gate1SpeedupRange = `${min(gate1.cells.map((cell) => cell.speedupMedian)).toFixed(3)}x-${max(
@@ -314,7 +344,23 @@ describe('Manuscript artifact consistency', () => {
     );
     mustContain(
       manuscript,
+      toyAttentionAblation.strategies['winner-take-all'].meanSquaredErrorCi95.low.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      toyAttentionAblation.strategies['winner-take-all'].meanSquaredErrorCi95.high.toFixed(3),
+    );
+    mustContain(
+      manuscript,
       toyAttentionAblation.strategies['early-stop'].meanSquaredError.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      toyAttentionAblation.strategies['early-stop'].meanSquaredErrorCi95.low.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      toyAttentionAblation.strategies['early-stop'].meanSquaredErrorCi95.high.toFixed(3),
     );
     mustContain(
       manuscript,
@@ -334,7 +380,23 @@ describe('Manuscript artifact consistency', () => {
     );
     mustContain(
       manuscript,
+      gnosisTrainingBenchmark.strategies['winner-take-all'].evalMeanSquaredErrorCi95.low.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['winner-take-all'].evalMeanSquaredErrorCi95.high.toFixed(3),
+    );
+    mustContain(
+      manuscript,
       gnosisTrainingBenchmark.strategies['early-stop'].meanEvalMeanSquaredError.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['early-stop'].evalMeanSquaredErrorCi95.low.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisTrainingBenchmark.strategies['early-stop'].evalMeanSquaredErrorCi95.high.toFixed(3),
     );
     mustContain(
       manuscript,
@@ -355,6 +417,46 @@ describe('Manuscript artifact consistency', () => {
     mustContain(
       manuscript,
       gnosisTrainingBenchmark.strategies['early-stop'].meanCancellationLineMeanAbsoluteError.toFixed(
+        3,
+      ),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies.linear.meanEvalMeanSquaredError.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies['winner-take-all'].meanEvalMeanSquaredError.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies['winner-take-all'].evalMeanSquaredErrorCi95.low.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies['winner-take-all'].evalMeanSquaredErrorCi95.high.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies['early-stop'].meanEvalMeanSquaredError.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies['early-stop'].evalMeanSquaredErrorCi95.low.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies['early-stop'].evalMeanSquaredErrorCi95.high.toFixed(3),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies['winner-take-all'].meanDualActiveRegionMeanAbsoluteError.toFixed(
+        3,
+      ),
+    );
+    mustContain(
+      manuscript,
+      gnosisMiniMoeBenchmark.strategies['early-stop'].meanDualActiveRegionMeanAbsoluteError.toFixed(
         3,
       ),
     );

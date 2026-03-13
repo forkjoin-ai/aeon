@@ -19,6 +19,7 @@ describe('Gnosis fold training benchmark (§1.7, §6.12)', () => {
     ]);
 
     expect(report.strategies.linear.meanEvalMeanSquaredError).toBeLessThan(1e-6);
+    expect(report.strategies.linear.evalMeanSquaredErrorCi95.high).toBeLessThan(1e-5);
     expect(report.strategies.linear.meanExactWithinToleranceFraction).toBe(1);
     expect(report.strategies['winner-take-all'].meanEvalMeanSquaredError).toBeGreaterThan(0.3);
     expect(report.strategies['early-stop'].meanEvalMeanSquaredError).toBeGreaterThan(
@@ -39,6 +40,7 @@ describe('Gnosis fold training benchmark (§1.7, §6.12)', () => {
 
     expect(markdown).toContain('# Gnosis Fold Training Benchmark');
     expect(markdown).toContain('## Aggregated Metrics');
+    expect(markdown).toContain('Eval MSE 95% CI');
     expect(markdown).toContain('winner-take-all');
     expect(markdown).toContain('Cancellation-line abs error');
     expect(markdown).toContain('## Sample Predictions');

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import {
   buildCh17CorrespondenceBoundaryFigureReport,
+  type GnosisMiniMoeRoutingBenchmarkFigureInput,
   renderCh17CorrespondenceBoundaryFigureMarkdown,
   renderCh17CorrespondenceBoundaryFigureSvg,
   type GnosisFoldTrainingBenchmarkFigureInput,
@@ -87,11 +88,15 @@ async function main(): Promise<void> {
   const gnosisTraining = loadJson<GnosisFoldTrainingBenchmarkFigureInput>(
     resolve(artifactsDir, 'gnosis-fold-training-benchmark.json'),
   );
+  const gnosisMiniMoe = loadJson<GnosisMiniMoeRoutingBenchmarkFigureInput>(
+    resolve(artifactsDir, 'gnosis-moe-routing-benchmark.json'),
+  );
 
   const report = buildCh17CorrespondenceBoundaryFigureReport(
     quantum,
     toyAttention,
     gnosisTraining,
+    gnosisMiniMoe,
   );
 
   mkdirSync(dirname(options.jsonPath), { recursive: true });
@@ -113,6 +118,9 @@ async function main(): Promise<void> {
   process.stdout.write(
     `- learned ranking: linear=${report.gnosisTraining.evalMse.linear.toFixed(3)}, winner=${report.gnosisTraining.evalMse['winner-take-all'].toFixed(3)}, early=${report.gnosisTraining.evalMse['early-stop'].toFixed(3)}\n`,
   );
+  process.stdout.write(
+    `- mini-moe ranking: linear=${report.gnosisMiniMoe.evalMse.linear.toFixed(3)}, winner=${report.gnosisMiniMoe.evalMse['winner-take-all'].toFixed(3)}, early=${report.gnosisMiniMoe.evalMse['early-stop'].toFixed(3)}\n`,
+  );
 
   if (
     options.assertSurface &&
@@ -120,7 +128,10 @@ async function main(): Promise<void> {
       report.quantum.matrix.linear.kernelAgreement &&
       report.gnosisTraining.evalMse.linear < report.gnosisTraining.evalMse['winner-take-all'] &&
       report.gnosisTraining.evalMse['winner-take-all'] <
-        report.gnosisTraining.evalMse['early-stop']
+        report.gnosisTraining.evalMse['early-stop'] &&
+      report.gnosisMiniMoe.evalMse.linear < report.gnosisMiniMoe.evalMse['winner-take-all'] &&
+      report.gnosisMiniMoe.evalMse['winner-take-all'] <
+        report.gnosisMiniMoe.evalMse['early-stop']
     )
   ) {
     process.exitCode = 1;

@@ -97,16 +97,34 @@ theorem jacksonProductMeasure_apply_singleton
     (hρ_nonneg : ∀ i, 0 ≤ ρ i)
     (hρ_lt_one : ∀ i, ρ i < 1)
     (state : ι → ℕ) :
-    jacksonProductMeasure ρ hρ_nonneg hρ_lt_one {state} =
+    (jacksonProductMeasure ρ hρ_nonneg hρ_lt_one).toMeasure {state} =
       ∏ i, ENNReal.ofReal ((ρ i) ^ (state i) * (1 - ρ i)) := by
-  change (jacksonProductMeasure ρ hρ_nonneg hρ_lt_one).toMeasure {state} =
-    ∏ i, ENNReal.ofReal ((ρ i) ^ (state i) * (1 - ρ i))
-  simpa [jacksonProductMeasure, mm1StationaryPMF_apply] using
-    (Measure.pi_singleton
-      (μ := fun i =>
-        (((⟨(mm1StationaryPMF (ρ i) (hρ_nonneg i) (hρ_lt_one i)).toMeasure, inferInstance⟩ :
-          ProbabilityMeasure ℕ) : Measure ℕ)))
-      state)
+  have hSingleton :
+      Measure.pi
+          (fun i =>
+            (((⟨(mm1StationaryPMF (ρ i) (hρ_nonneg i) (hρ_lt_one i)).toMeasure, inferInstance⟩ :
+              ProbabilityMeasure ℕ) : Measure ℕ))) {state} =
+        ∏ i,
+          (((⟨(mm1StationaryPMF (ρ i) (hρ_nonneg i) (hρ_lt_one i)).toMeasure, inferInstance⟩ :
+            ProbabilityMeasure ℕ) : Measure ℕ) {state i}) := by
+    exact
+      (Measure.pi_singleton
+        (μ := fun i =>
+          (((⟨(mm1StationaryPMF (ρ i) (hρ_nonneg i) (hρ_lt_one i)).toMeasure, inferInstance⟩ :
+            ProbabilityMeasure ℕ) : Measure ℕ)))
+        state)
+  calc
+    (jacksonProductMeasure ρ hρ_nonneg hρ_lt_one).toMeasure {state}
+      = Measure.pi
+          (fun i =>
+            (((⟨(mm1StationaryPMF (ρ i) (hρ_nonneg i) (hρ_lt_one i)).toMeasure, inferInstance⟩ :
+              ProbabilityMeasure ℕ) : Measure ℕ))) {state} := by
+          simp [jacksonProductMeasure]
+    _ = ∏ i,
+          (((⟨(mm1StationaryPMF (ρ i) (hρ_nonneg i) (hρ_lt_one i)).toMeasure, inferInstance⟩ :
+            ProbabilityMeasure ℕ) : Measure ℕ) {state i}) := hSingleton
+    _ = ∏ i, ENNReal.ofReal ((ρ i) ^ (state i) * (1 - ρ i)) := by
+          simp [PMF.toMeasure_apply_singleton, mm1StationaryPMF_apply]
 
 theorem jackson_product_mean_total_occupancy
     {ρ : ι → ℝ}

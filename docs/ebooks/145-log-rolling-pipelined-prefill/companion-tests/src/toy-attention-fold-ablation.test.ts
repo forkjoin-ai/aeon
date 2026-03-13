@@ -20,6 +20,7 @@ describe('Toy attention fold ablation (§1.7, §6.12)', () => {
     const report = runToyAttentionFoldAblation();
 
     expect(report.strategies.linear.meanSquaredError).toBeCloseTo(0, 12);
+    expect(report.strategies.linear.meanSquaredErrorCi95.high).toBeLessThan(1e-9);
     expect(report.strategies.linear.exactWithinToleranceFraction).toBe(1);
 
     expect(report.strategies['winner-take-all'].meanSquaredError).toBeGreaterThan(0.1);
@@ -35,6 +36,7 @@ describe('Toy attention fold ablation (§1.7, §6.12)', () => {
 
     expect(markdown).toContain('# Toy Attention Fold Ablation');
     expect(markdown).toContain('## Metrics');
+    expect(markdown).toContain('MSE 95% CI');
     expect(markdown).toContain('winner-take-all');
     expect(markdown).toContain('## Sample Predictions');
   });
