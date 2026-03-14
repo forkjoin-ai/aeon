@@ -12,11 +12,14 @@ deterministic collapse still pays the existing `n - 1` failure-tax floor. Every 
 deterministic collapse of the same finite frontier cardinality therefore pays at least the
 corresponding finite Landauer heat budget. On the binary surface the Bernoulli entropy/heat
 law is also closed: the failure-tax floor bounds every binary Shannon erasure budget and
-matches it exactly at the fair fork witness. The measurable side is still partial, but the
-file now also exposes a countable-support entropy shell: arbitrary PMFs carry an `ENNReal`
-Shannon entropy written as a `tsum`, recovered as a supremum of finite truncations and, on
-countable measurable types, as a counting-measure `lintegral`; on finite supports this shell
-reduces to the earlier real-valued finite entropy.
+matches it exactly at the fair fork witness. The measurable side now has both
+a countable-support entropy shell (arbitrary PMFs carry an `ENNReal` Shannon entropy written
+as a `tsum`, recovered as a supremum of finite truncations and, on countable measurable types,
+as a counting-measure `lintegral`; on finite supports this shell reduces to the earlier
+real-valued finite entropy) and measurable erasure theorems: the `ENNReal` entropy of any
+finite-type PMF is bounded by the frontier entropy and by the failure tax, the Landauer heat
+of that entropy is bounded by the failure-tax heat budget, and the Landauer heat of any
+finite-type PMF's entropy is bounded by the Landauer heat of any achievable collapse cost.
 -/
 noncomputable def equiprobableFrontierEntropyBits (liveBranches : Nat) : ℝ :=
   Real.logb 2 liveBranches
@@ -672,6 +675,77 @@ theorem achievable_collapse_finite_entropy_landauer_heat_le_total_cost
       (achievable_collapse_finite_entropy_bits_le_total_cost branchLaw hCard hAchievable)
       hCoeff
   simpa [landauerHeatLowerBound, coeff, mul_assoc, mul_left_comm, mul_comm] using hCost
+
+/--
+Measurable erasure inequality: the countable-support Shannon entropy (in bits, as ENNReal)
+of any finite-type PMF is bounded above by the equiprobable frontier entropy.
+This lifts `finite_branch_entropy_bits_le_frontier_entropy_bits` through the
+`countable_branch_entropy_bitsENN_eq_finite` collapse.
+-/
+theorem countable_branch_entropy_bitsENN_le_frontier_entropy_bits
+    {α : Type*} [Fintype α] [Nonempty α]
+    (branchLaw : PMF α) :
+    countableBranchEntropyBitsENN branchLaw ≤
+      ENNReal.ofReal (equiprobableFrontierEntropyBits (Fintype.card α)) := by
+  rw [countable_branch_entropy_bitsENN_eq_finite]
+  exact ENNReal.ofReal_le_ofReal
+    (finite_branch_entropy_bits_le_frontier_entropy_bits branchLaw)
+
+/--
+Measurable erasure inequality: the countable-support Shannon entropy (in bits, as ENNReal)
+of any finite-type PMF is bounded above by the deterministic-collapse failure tax.
+This composes `countable_branch_entropy_bitsENN_le_frontier_entropy_bits` with
+`frontier_entropy_bits_le_failure_tax`.
+-/
+theorem countable_branch_entropy_bitsENN_le_failure_tax
+    {α : Type*} [Fintype α] [Nonempty α]
+    (branchLaw : PMF α) :
+    countableBranchEntropyBitsENN branchLaw ≤
+      ENNReal.ofReal (deterministicCollapseFailureTax (Fintype.card α)) := by
+  rw [countable_branch_entropy_bitsENN_eq_finite]
+  exact ENNReal.ofReal_le_ofReal
+    (finite_branch_entropy_bits_le_failure_tax branchLaw)
+
+/--
+Measurable Landauer heat inequality: for any finite-type PMF, the Landauer heat of
+the countable-support Shannon entropy is bounded above by the failure-tax heat budget.
+This is the ENNReal lift of `finite_landauer_heat_le_failure_tax_budget`.
+-/
+theorem countable_landauer_heat_le_failure_tax_budget
+    {α : Type*} [Fintype α] [Nonempty α]
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature)
+    (branchLaw : PMF α) :
+    ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature
+        (finiteBranchEntropyBits branchLaw)) ≤
+      ENNReal.ofReal (failureTaxHeatBudget boltzmannConstant temperature (Fintype.card α)) :=
+  ENNReal.ofReal_le_ofReal
+    (finite_landauer_heat_le_failure_tax_budget hBoltzmannNonneg hTemperatureNonneg branchLaw)
+
+/--
+Measurable collapse-cost comparison: for any finite-type PMF whose support cardinality
+matches a live frontier, and any achievable deterministic collapse of that frontier,
+the Landauer heat of the PMF's entropy is bounded above by the Landauer heat of
+the collapse cost. This is the ENNReal lift of
+`achievable_collapse_finite_entropy_landauer_heat_le_total_cost`.
+-/
+theorem countable_collapse_landauer_heat_le_total_cost
+    {α : Type*} [Fintype α] [Nonempty α]
+    (branchLaw : PMF α)
+    {start : List BranchSnapshot}
+    {cost : Nat}
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature)
+    (hCard : Fintype.card α = liveBranchCount start)
+    (hAchievable : CollapseCostAchievableFrom start cost) :
+    ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature
+        (finiteBranchEntropyBits branchLaw)) ≤
+      ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature cost) :=
+  ENNReal.ofReal_le_ofReal
+    (achievable_collapse_finite_entropy_landauer_heat_le_total_cost
+      branchLaw hBoltzmannNonneg hTemperatureNonneg hCard hAchievable)
 
 /--
 Frontier entropy equals failure tax if and only if liveBranches ≤ 2.
