@@ -53,8 +53,32 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `adaptive-supremum-witness.md`: human-readable summary of the concrete two-node adaptive ceiling/drift witness.
 - `adaptive-supremum-family-sweep.json`: machine-readable raw-parameter sweep over bounded two-node adaptive rerouting cases that all satisfy the same ceiling/drift closure.
 - `adaptive-supremum-family-sweep.md`: human-readable summary table for the adaptive raw-parameter family sweep.
+- `sleep-debt-bounded-witness.json`: machine-readable bounded sleep-debt witness report for full recovery, partial recovery, residual debt, next-cycle capacity, and intrusion-threshold scenarios.
+- `sleep-debt-bounded-witness.md`: human-readable bounded sleep-debt summary with theorem references for the three canonical recovery/debt scenarios.
+- `sleep-debt-schedule-threshold-witness.json`: machine-readable coarse schedule-threshold witness report for subcritical, critical, and supercritical repeated-cycle schedules.
+- `sleep-debt-schedule-threshold-witness.md`: human-readable coarse threshold summary with theorem references for the repeated-cycle schedule boundary.
+- `sleep-debt-weighted-threshold-witness.json`: machine-readable weighted schedule-threshold witness report for the integerized `20.2 h` critical wake boundary.
+- `sleep-debt-weighted-threshold-witness.md`: human-readable weighted threshold summary with theorem references for the literature-side repeated-cycle boundary.
 - `ch17-replication-pack.json`: machine-readable replication manifest for the current Chapter 17 evidence bundle, including file sizes, SHA-256 digests, and the root rerun command.
 - `ch17-replication-pack.md`: human-readable replication manifest with the same bundle inventory and hashes.
+- `ch17-gate1-wallclock-figure.json`: machine-readable manifest for the Chapter 17 Gate 1 wall-clock figure.
+- `ch17-gate1-wallclock-figure.md`: human-readable summary of the six-host Gate 1 figure source and aggregated wall-clock metrics.
+- `ch17-gate1-wallclock-figure.svg`: manuscript-ready figure pairing the six-host Gate 1 p50 latency dumbbell with the speedup confidence-interval panel.
+- `ch17-gate2-protocol-corpus-figure.json`: machine-readable manifest for the Chapter 17 Gate 2 protocol-corpus figure.
+- `ch17-gate2-protocol-corpus-figure.md`: human-readable summary of the Gate 2 figure source and aggregated framing/latency metrics.
+- `ch17-gate2-protocol-corpus-figure.svg`: manuscript-ready figure showing the Gate 2 framing and latency-gain surfaces across the environment matrix.
+- `ch17-gate3-compression-corpus-figure.json`: machine-readable manifest for the Chapter 17 Gate 3 compression-corpus figure.
+- `ch17-gate3-compression-corpus-figure.md`: human-readable summary of the Gate 3 figure source and aggregated compression-gain metrics.
+- `ch17-gate3-compression-corpus-figure.svg`: manuscript-ready figure showing the Gate 3 gain-vs-best-fixed and gain-vs-heuristic surfaces across the corpus families.
+- `ch17-gate4-rqr-holdout-figure.json`: machine-readable manifest for the Chapter 17 Gate 4 `R_qr` holdout figure.
+- `ch17-gate4-rqr-holdout-figure.md`: human-readable summary of the Gate 4 figure source and aggregated predictive-screening metrics.
+- `ch17-gate4-rqr-holdout-figure.svg`: manuscript-ready figure showing holdout decile calibration and interval-backed screening criteria for `R_qr`.
+- `ch17-gate5-bio-effect-size-figure.json`: machine-readable manifest for the Chapter 17 Gate 5 biological effect-size figure.
+- `ch17-gate5-bio-effect-size-figure.md`: human-readable summary of the Gate 5 figure source and aggregated pairwise and pooled effect-size metrics.
+- `ch17-gate5-bio-effect-size-figure.svg`: manuscript-ready figure showing the biological pair ratios and pooled geometric summary on a shared log scale.
+- `ch17-inverted-scaling-reynolds-figure.json`: machine-readable manifest for the Chapter 17 inverted-scaling and Reynolds-regime figure.
+- `ch17-inverted-scaling-reynolds-figure.md`: human-readable summary of the theory figure formulas, stage families, and scenario overlays.
+- `ch17-inverted-scaling-reynolds-figure.svg`: manuscript-ready theory figure pairing the workload-speedup curves with the laminar/transitional/turbulent Reynolds regime map.
 - `ch17-correspondence-boundary-figure.json`: machine-readable manifest for the Chapter 17 correspondence-boundary figure.
 - `ch17-correspondence-boundary-figure.md`: human-readable summary of the figure sources and aggregated metrics.
 - `ch17-correspondence-boundary-figure.svg`: manuscript-ready figure assembled from the quantum ablation, toy-attention interval chart, seeded Gnosis cancellation benchmark, and seeded Gnosis mini-MoE routing benchmark artifacts.
@@ -67,6 +91,9 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `ch17-moa-topology-figure.json`: machine-readable manifest for the GG-backed sparse-vs-dense `StructuredMoA` topology figure.
 - `ch17-moa-topology-figure.md`: human-readable summary of the routed sparse blocks/heads and dense baseline topology sources.
 - `ch17-moa-topology-figure.svg`: manuscript-ready topology figure assembled directly from the sparse `StructuredMoA` GG benchmark surface.
+- `ch17-moa-whip-curvature-figure.json`: machine-readable manifest for the curved wraparound `StructuredMoA` companion figure derived from the topology surface.
+- `ch17-moa-whip-curvature-figure.md`: human-readable summary of the same routed blocks/heads rendered as a curved whip enclosure view.
+- `ch17-moa-whip-curvature-figure.svg`: companion-ready curved topology figure showing the wraparound inner and outer Worthington whips around the routed blocks.
 - `ch17-external-replication.json`: machine-readable outside-rerun report covering the end-to-end command plan and manifest/hash verification.
 - `ch17-external-replication.md`: human-readable outside-rerun summary for the same report.
 
@@ -204,6 +231,66 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - Wide-workload accuracy gap: `0.0025`
 - Interpretation: the figure packages the sweep speedup, the closing eval-MSE gap, the sparsity-ablation frontier, and the GG topology identity into one manuscript-ready surface
 
+## Chapter 17 Gate 1 Figure Snapshot
+
+- Protocol label: `ch17-gate1-wallclock-figure-v1`
+- Source: `workers-dev-external-multihost6-distinct`
+- Output surface: JSON + Markdown + SVG
+- Primary cells passed: `8/8`
+- Speedup range: `11.785x` to `21.620x`
+- Minimum CI lows: `11.365x` and `3,560.98 ms`
+- Interpretation: the figure keeps the strongest deployment-style wall-clock claim visible as both absolute latency separation and interval-backed speedup, rather than collapsing the result into a single headline ratio
+
+## Chapter 17 Gate 2 Figure Snapshot
+
+- Protocol label: `ch17-gate2-protocol-corpus-figure-v1`
+- Source: `gate2-protocol-corpus-v1`
+- Output surface: JSON + Markdown + SVG
+- Primary cells passed: `6/6`
+- Framing gain range: `72.252%` to `72.252%`
+- Minimum CI lows: `72.190%`, `20.240 ms`, and `19.994 ms`
+- Interpretation: the figure separates the almost flat framing advantage from the worsening median and p95 completion gains, so the transport result reads as a corpus trend rather than a single benchmark number
+
+## Chapter 17 Gate 3 Figure Snapshot
+
+- Protocol label: `ch17-gate3-compression-corpus-figure-v1`
+- Source: `gate3-compression-corpus-v1`
+- Output surface: JSON + Markdown + SVG
+- Primary cells passed: `4/4`
+- Gain vs best fixed range: `0.0010%` to `0.833%`
+- Gain vs heuristic range: `0.7766%` to `46.37%`
+- Minimum primary-cell CI lows: `0.0009%` and `0.386%`
+- Interpretation: the figure makes the manuscript's honest compression claim visible by separating the tiny but positive primary-family gains over the best fixed codec from the much larger gains over the heuristic baseline, while leaving the non-primary homogeneous-text control visible
+
+## Chapter 17 Gate 4 Figure Snapshot
+
+- Protocol label: `ch17-gate4-rqr-holdout-figure-v1`
+- Source: `gate4-rqr-out-of-sample-v1`
+- Output surface: JSON + Markdown + SVG
+- Criteria passed: `5/5`
+- Quartile delta: `12.77%` (95% CI `10.01%` to `15.33%`)
+- Monotonicity: `1/3` allowed violations
+- Interpretation: the figure keeps the `R_qr` validation publication-ready by showing the holdout decile calibration curve and the interval-backed screening criteria side by side, so the predictive claim stays visibly bounded to the tested simulator family
+
+## Chapter 17 Gate 5 Figure Snapshot
+
+- Protocol label: `ch17-gate5-bio-effect-size-figure-v1`
+- Source: `gate5-bio-effect-size-v1`
+- Output surface: JSON + Markdown + SVG
+- Primary pairs passed: `3/3`
+- Minimum primary-pair CI low: `5.829x`
+- Pooled geometric ratio: `26.57x` (95% CI `9.863x` to `78.26x`)
+- Interpretation: the figure turns the biological analogy section into a reviewable log-scale effect-size map, keeping both pairwise spread and pooled magnitude visible instead of hiding them inside prose examples
+
+## Chapter 17 Inverted-Scaling / Reynolds Figure Snapshot
+
+- Protocol label: `ch17-inverted-scaling-reynolds-figure-v1`
+- Output surface: JSON + Markdown + SVG
+- Stage families: `2`, `4`, `8`, `10`
+- Maximum overlaid table speedup: `266.667x`
+- Transport Reynolds shift: `15.833` (`HTTP/1.1`) to `0.371` (`Aeon Flow`)
+- Interpretation: the figure keeps the analytic core of Chapter 17 visible as formulas rather than metaphor alone, showing both the workload-driven speedup growth and the regime shift from turbulent to transitional when chunk capacity widens
+
 ## Chapter 17 MoA Topology Figure Snapshot
 
 - Protocol label: `ch17-moa-topology-figure-v1`
@@ -213,6 +300,17 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - Sparse routed blocks: `2/4`
 - Sparse routed heads per live block: `2/4`
 - Interpretation: the figure isolates the executable sparse topology itself, showing the selected blocks, selected heads, and the matched dense rotated baseline without folding the result into benchmark metrics
+
+## Chapter 17 MoA Whip Curvature Figure Snapshot
+
+- Protocol label: `ch17-moa-whip-curvature-figure-v1`
+- Source topology report: `ch17-moa-topology-figure-v1`
+- Sparse GG primitive: `StructuredMoA`
+- Output surface: JSON + Markdown + SVG
+- Curvature labels: `curved whip envelope`, `inner whip`, `outer whip snap`
+- Sparse routed blocks: `2/4`
+- Sparse routed heads per live block: `2/4`
+- Interpretation: the supplemental view keeps the same sparse `StructuredMoA` topology but bends the routed paths into a wraparound enclosure so the inner and outer Worthington whips read as curved geometry rather than a straight collapse
 
 ## Adaptive Witness Snapshot
 
@@ -239,6 +337,33 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - Minimum drift gap: `0.026`
 - Tightest case: `tight-right-slack-2x2`
 - Interpretation: the bounded two-node adaptive closure is exercised as a raw-parameter family, not just as one manuscript witness tuple
+
+## Sleep-Debt Snapshot
+
+- Protocol label: `sleep-debt-bounded-witness-v1`
+- Scenario count: `3`
+- Full recovery restores baseline: `yes`
+- Partial recovery leaves positive debt: `yes`
+- Chronic truncation enables intrusion: `yes`
+- Interpretation: this is a bounded executable witness for the sleep-debt recovery geometry, not a human-subject dataset; it only claims residual debt, reduced next-cycle capacity, and threshold intrusion reachability inside the bounded model
+
+## Sleep-Debt Threshold Snapshot
+
+- Protocol label: `sleep-debt-schedule-threshold-witness-v1`
+- Scenario count: `3`
+- Subcritical schedule stays zero: `yes`
+- Critical schedule stays zero: `yes`
+- Supercritical schedule grows linearly: `yes`
+- Interpretation: this is the coarse repeated-cycle threshold witness for the literature-side bifurcation story, not the full McCauley ODE system
+
+## Sleep-Debt Weighted Threshold Snapshot
+
+- Protocol label: `sleep-debt-weighted-threshold-witness-v1`
+- Calibrated critical wake boundary: `20.2 h`
+- Subcritical schedule stays zero: `yes`
+- Critical schedule stays zero: `yes`
+- Supercritical schedule grows linearly: `yes`
+- Interpretation: this is an integerized weighted bridge to the literature-side `20.2 h` boundary, not the full McCauley ODE system
 
 ## Formal Witness Snapshot
 

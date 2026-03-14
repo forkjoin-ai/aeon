@@ -1,0 +1,68 @@
+{
+  "label": "sleep-debt-weighted-threshold-witness-v1",
+  "parameters": {
+    "cycleLengthTenths": 240,
+    "wakeBurdenRate": 19,
+    "recoveryRate": 101,
+    "criticalWakeTenths": 202,
+    "criticalWakeHours": 20.2
+  },
+  "aggregate": {
+    "literatureBoundaryMatchesTwentyPointTwoHours": true,
+    "subcriticalStaysZero": true,
+    "criticalStaysZero": true,
+    "supercriticalGrowsLinearly": true
+  },
+  "scenarios": [
+    {
+      "id": "weighted-subcritical-18h",
+      "description": "A schedule below the calibrated 20.2-hour critical wake boundary has nonpositive weighted surplus, so repeated cycles stay debt-free.",
+      "scheduledWakeTenths": 180,
+      "scheduledWakeHours": 18,
+      "sleepQuotaTenths": 60,
+      "cycleCount": 4,
+      "thresholdLhs": 21600,
+      "thresholdRhs": 24240,
+      "weightedSurplusPerCycle": 0,
+      "debtAfterCycles": 0,
+      "theoremRefs": [
+        "SleepDebtWeightedSchedule.weighted_surplus_eq_zero_of_not_crossed",
+        "SleepDebtWeightedSchedule.iterated_debt_eq_zero_of_not_crossed"
+      ]
+    },
+    {
+      "id": "weighted-critical-20_2h",
+      "description": "The integerized weighted bridge matches the literature critical wake boundary exactly at 20.2 hours, so the boundary case still stays debt-free.",
+      "scheduledWakeTenths": 202,
+      "scheduledWakeHours": 20.2,
+      "sleepQuotaTenths": 38,
+      "cycleCount": 4,
+      "thresholdLhs": 24240,
+      "thresholdRhs": 24240,
+      "weightedSurplusPerCycle": 0,
+      "debtAfterCycles": 0,
+      "theoremRefs": [
+        "SleepDebtWeightedSchedule.literature_boundary_tenths_closed_form",
+        "SleepDebtWeightedSchedule.iterated_debt_eq_zero_of_not_crossed"
+      ]
+    },
+    {
+      "id": "weighted-supercritical-21h",
+      "description": "A schedule above the calibrated 20.2-hour critical wake boundary has positive weighted surplus, so repeated cycles accumulate debt linearly.",
+      "scheduledWakeTenths": 210,
+      "scheduledWakeHours": 21,
+      "sleepQuotaTenths": 30,
+      "cycleCount": 4,
+      "thresholdLhs": 25200,
+      "thresholdRhs": 24240,
+      "weightedSurplusPerCycle": 960,
+      "debtAfterCycles": 3840,
+      "theoremRefs": [
+        "SleepDebtWeightedSchedule.literature_boundary_crossed_at_twentyone_hours",
+        "SleepDebtWeightedSchedule.iterated_debt_eq_cycle_count_mul_gap_of_crossed",
+        "SleepDebtWeightedSchedule.iterated_debt_positive_above_threshold",
+        "SleepDebtWeightedSchedule.iterated_debt_strictly_increases_above_threshold"
+      ]
+    }
+  ]
+}

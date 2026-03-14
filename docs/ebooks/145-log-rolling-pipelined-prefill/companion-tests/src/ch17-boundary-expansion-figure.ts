@@ -390,11 +390,16 @@ function renderNearControlPanel(
     );
   }
 
+  const noteBoxX = chartRight - 264;
+  const noteBoxY = y + 16;
   svg.push(
-    `<text x="${chartRight - 180}" y="${y + 34}" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="${affineColor}">affine parity ${nearControl.affine.lastParityRegimeValue?.toFixed(2) ?? 'none'} → split ${nearControl.affine.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'}</text>`,
+    `<rect x="${noteBoxX}" y="${noteBoxY}" width="256" height="52" rx="12" fill="#fffdf8" stroke="#d6d3d1" opacity="0.96"/>`,
   );
   svg.push(
-    `<text x="${chartRight - 180}" y="${y + 54}" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="${routedColor}">routed parity ${nearControl.routed.lastParityRegimeValue?.toFixed(2) ?? 'none'} → split ${nearControl.routed.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'}</text>`,
+    `<text x="${noteBoxX + 14}" y="${noteBoxY + 22}" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="${affineColor}">affine parity ${nearControl.affine.lastParityRegimeValue?.toFixed(2) ?? 'none'} → split ${nearControl.affine.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'}</text>`,
+  );
+  svg.push(
+    `<text x="${noteBoxX + 14}" y="${noteBoxY + 40}" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="${routedColor}">routed parity ${nearControl.routed.lastParityRegimeValue?.toFixed(2) ?? 'none'} → split ${nearControl.routed.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'}</text>`,
   );
 }
 

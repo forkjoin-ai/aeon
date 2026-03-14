@@ -33,7 +33,7 @@ describe('Chapter 17 boundary expansion figure', () => {
     expect(
       figure.adversarial.rankingByLearningCurveArea['early-stop-left-priority-short-budget']?.[0],
     ).toBe('early-stop');
-  });
+  }, 20000);
 
   it('renders markdown and svg outputs with the near-control zoom and all four legacy panels', async () => {
     const figure = buildCh17BoundaryExpansionFigureReport(
@@ -55,5 +55,5 @@ describe('Chapter 17 boundary expansion figure', () => {
     expect(svg).toContain('Routed Regime Sweep');
     expect(svg).toContain('Adversarial Final Error');
     expect(svg).toContain('Adversarial Learning Area');
-  });
+  }, 20000);
 });

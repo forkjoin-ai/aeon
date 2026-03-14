@@ -8,9 +8,9 @@
       "command": "bun install --frozen-lockfile",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 28849,
-      "stdoutTail": "bun install v1.3.10 (30e609e0)\n\n4 packages installed [28.61s]",
-      "stderrTail": "[0.78ms] \".env.local\"\nResolving dependencies\nResolved, downloaded and extracted [10]\n\n$ husky || true",
+      "durationMs": 27223,
+      "stdoutTail": "bun install v1.3.10 (30e609e0)\n\n4 packages installed [27.00s]",
+      "stderrTail": "[0.49ms] \".env.local\"\n\n$ husky || true",
       "skipped": false
     },
     {
@@ -19,7 +19,7 @@
       "command": "bun run build",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 2581,
+      "durationMs": 3080,
       "stdoutTail": "",
       "stderrTail": "$ tsc",
       "skipped": false
@@ -30,9 +30,9 @@
       "command": "bun run test:fold-training",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 325,
+      "durationMs": 358,
       "stdoutTail": "\n  PASS  ./fold-training-linear.gg  (nodes=5 edges=3 states=5 b1=1)\n  PASS  ./fold-training-winner-take-all.gg  (nodes=5 edges=3 states=5 b1=1)\n  PASS  ./fold-training-early-stop.gg  (nodes=5 edges=3 states=5 b1=1)\n\n  PASS  test-topology  (nodes=12 edges=5 states=7 b1=0)\n\n  4/4 passed  3ms",
-      "stderrTail": "(pass) gnosis fold training benchmark > ships a .test.gg suite for the three benchmark modules [4.01ms]\n(pass) gnosis fold training benchmark > points at the checked-in topology modules [0.03ms]\n(pass) gnosis fold training benchmark > renders a markdown report with learned intervals [42.13ms]\n\n 4 pass\n 0 fail\n 21 expect() calls\nRan 4 tests across 1 file. [147.00ms]",
+      "stderrTail": "(pass) gnosis fold training benchmark > ships a .test.gg suite for the three benchmark modules [4.18ms]\n(pass) gnosis fold training benchmark > points at the checked-in topology modules [0.02ms]\n(pass) gnosis fold training benchmark > renders a markdown report with learned intervals [47.03ms]\n\n 4 pass\n 0 fail\n 21 expect() calls\nRan 4 tests across 1 file. [152.00ms]",
       "skipped": false
     },
     {
@@ -41,9 +41,9 @@
       "command": "bun run test:negative-controls",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 149,
+      "durationMs": 151,
       "stdoutTail": "bun test v1.3.10 (30e609e0)",
-      "stderrTail": "src/benchmarks/negative-controls-benchmark.test.ts:\n(pass) gnosis negative controls benchmark > shows parity on one-path control tasks where additive recombination is unnecessary [63.20ms]\n(pass) gnosis negative controls benchmark > renders a markdown report with both control tasks [49.69ms]\n\n 2 pass\n 0 fail\n 12 expect() calls\nRan 2 tests across 1 file. [135.00ms]",
+      "stderrTail": "src/benchmarks/negative-controls-benchmark.test.ts:\n(pass) gnosis negative controls benchmark > shows parity on one-path control tasks where additive recombination is unnecessary [69.29ms]\n(pass) gnosis negative controls benchmark > renders a markdown report with both control tasks [45.59ms]\n\n 2 pass\n 0 fail\n 12 expect() calls\nRan 2 tests across 1 file. [137.00ms]",
       "skipped": false
     },
     {
@@ -52,9 +52,9 @@
       "command": "bun run test:near-control-sweep",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 3166,
+      "durationMs": 3188,
       "stdoutTail": "bun test v1.3.10 (30e609e0)",
-      "stderrTail": "src/benchmarks/near-control-sweep-benchmark.test.ts:\n(pass) gnosis near-control sweep > shows parity persisting near the control end before linear separation appears [1589.66ms]\n(pass) gnosis near-control sweep > renders a markdown report for the near-control zoom [1536.34ms]\n\n 2 pass\n 0 fail\n 16 expect() calls\nRan 2 tests across 1 file. [3.15s]",
+      "stderrTail": "src/benchmarks/near-control-sweep-benchmark.test.ts:\n(pass) gnosis near-control sweep > shows parity persisting near the control end before linear separation appears [1547.22ms]\n(pass) gnosis near-control sweep > renders a markdown report for the near-control zoom [1602.24ms]\n\n 2 pass\n 0 fail\n 16 expect() calls\nRan 2 tests across 1 file. [3.17s]",
       "skipped": false
     },
     {
@@ -63,9 +63,9 @@
       "command": "bun run test:regime-sweep",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 1524,
+      "durationMs": 1644,
       "stdoutTail": "bun test v1.3.10 (30e609e0)",
-      "stderrTail": "src/benchmarks/regime-sweep-benchmark.test.ts:\n(pass) gnosis fold boundary regime sweep > maps the parity-to-separation transition in both affine and routed families [743.66ms]\n(pass) gnosis fold boundary regime sweep > renders a markdown report with both regime families [743.06ms]\n\n 2 pass\n 0 fail\n 17 expect() calls\nRan 2 tests across 1 file. [1.51s]",
+      "stderrTail": "src/benchmarks/regime-sweep-benchmark.test.ts:\n(pass) gnosis fold boundary regime sweep > maps the parity-to-separation transition in both affine and routed families [814.21ms]\n(pass) gnosis fold boundary regime sweep > renders a markdown report with both regime families [773.91ms]\n\n 2 pass\n 0 fail\n 17 expect() calls\nRan 2 tests across 1 file. [1.62s]",
       "skipped": false
     },
     {
@@ -74,9 +74,9 @@
       "command": "bun run test:adversarial-controls",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 238,
+      "durationMs": 253,
       "stdoutTail": "bun test v1.3.10 (30e609e0)",
-      "stderrTail": "src/benchmarks/adversarial-controls-benchmark.test.ts:\n(pass) gnosis adversarial controls benchmark > recovers winner-aligned and early-stop-aligned control behavior [109.17ms]\n(pass) gnosis adversarial controls benchmark > renders a markdown report with all adversarial tasks [93.15ms]\n\n 2 pass\n 0 fail\n 16 expect() calls\nRan 2 tests across 1 file. [224.00ms]",
+      "stderrTail": "src/benchmarks/adversarial-controls-benchmark.test.ts:\n(pass) gnosis adversarial controls benchmark > recovers winner-aligned and early-stop-aligned control behavior [114.07ms]\n(pass) gnosis adversarial controls benchmark > renders a markdown report with all adversarial tasks [98.82ms]\n\n 2 pass\n 0 fail\n 16 expect() calls\nRan 2 tests across 1 file. [238.00ms]",
       "skipped": false
     },
     {
@@ -85,9 +85,20 @@
       "command": "bun run test:mini-moe-routing",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 3001,
+      "durationMs": 3159,
       "stdoutTail": "\n  PASS  ./moe-routing-linear.gg  (nodes=8 edges=4 states=8 b1=3)\n  PASS  ./moe-routing-winner-take-all.gg  (nodes=8 edges=4 states=8 b1=3)\n  PASS  ./moe-routing-early-stop.gg  (nodes=8 edges=4 states=8 b1=3)\n\n  PASS  test-topology  (nodes=4 edges=1 states=4 b1=0)\n\n  4/4 passed  4ms",
-      "stderrTail": "(pass) gnosis mini-moe routing benchmark > ships a .test.gg suite for the routed expert modules [3.32ms]\n(pass) gnosis mini-moe routing benchmark > points at the checked-in routed expert topology modules [0.03ms]\n(pass) gnosis mini-moe routing benchmark > renders a markdown report with uncertainty intervals and routed metrics [1387.49ms]\n\n 4 pass\n 0 fail\n 21 expect() calls\nRan 4 tests across 1 file. [2.80s]",
+      "stderrTail": "(pass) gnosis mini-moe routing benchmark > ships a .test.gg suite for the routed expert modules [3.28ms]\n(pass) gnosis mini-moe routing benchmark > points at the checked-in routed expert topology modules [0.05ms]\n(pass) gnosis mini-moe routing benchmark > renders a markdown report with uncertainty intervals and routed metrics [1460.63ms]\n\n 4 pass\n 0 fail\n 21 expect() calls\nRan 4 tests across 1 file. [2.95s]",
+      "skipped": false
+    },
+    {
+      "label": "Test Gnosis MoA transformer evidence",
+      "cwd": "/Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests",
+      "command": "bun run test:gnosis-moa-transformer-evidence",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 6126,
+      "stdoutTail": "markdown: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/gnosis-moa-transformer-evidence-benchmark.md\n- scale compact: speedup=4.84x, moa-mse=0.0829, regular-mse=0.0023, moa-heads=4.0, regular-heads=16.0\n- scale baseline: speedup=3.41x, moa-mse=0.0666, regular-mse=0.0005, moa-heads=4.0, regular-heads=16.0\n- scale wide: speedup=3.44x, moa-mse=0.0033, regular-mse=0.0008, moa-heads=4.0, regular-heads=16.0\n- ablation full-moa: eval-mse=0.0014, exact=0.9225, speedup=2.86x\n- ablation no-outer-sparsity: eval-mse=0.0003, exact=1.0000, speedup=1.89x\n- ablation no-inner-sparsity: eval-mse=0.0009, exact=0.9900, speedup=2.09x\n- ablation under-routed: eval-mse=0.2233, exact=0.1900, speedup=5.65x",
+      "stderrTail": "$ bun ./scripts/gnosis-moa-transformer-evidence-benchmark.ts --assert",
       "skipped": false
     },
     {
@@ -96,7 +107,7 @@
       "command": "bun run test:formal:witnesses",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 6174,
+      "durationMs": 3930,
       "stdoutTail": "formal-witness-catalog: READY\njson: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/formal-witness-catalog.json\nmarkdown: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/formal-witness-catalog.md\nwitnesses: 7",
       "stderrTail": "$ bun ./scripts/formal-witness-catalog.ts --assert",
       "skipped": false
@@ -107,9 +118,20 @@
       "command": "bun run test:formal:adaptive-witnesses",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 25294,
+      "durationMs": 35037,
       "stdoutTail": "formal-adaptive-witness-catalog: READY\njson: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/formal-adaptive-witness-catalog.json\nmarkdown: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/formal-adaptive-witness-catalog.md\nwitnesses: 1",
       "stderrTail": "$ bun ./scripts/formal-adaptive-witness-catalog.ts --assert",
+      "skipped": false
+    },
+    {
+      "label": "Verify Gnosis theorem workspace",
+      "cwd": "/Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests",
+      "command": "bun run test:formal:gnosis",
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 2856,
+      "stdoutTail": "Build completed successfully (3152 jobs).",
+      "stderrTail": "$ cd ../../../../../gnosis && lake build GnosisProofs",
       "skipped": false
     },
     {
@@ -118,9 +140,9 @@
       "command": "bun run test:ch17-reproduction-surface",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 58026,
-      "stdoutTail": " ✓ src/ch17-boundary-expansion-figure.test.ts (2 tests) 9223ms\n   ✓ Chapter 17 boundary expansion figure > combines the near-control, regime-sweep, and adversarial artifacts into one report 5608ms\n   ✓ Chapter 17 boundary expansion figure > renders markdown and svg outputs with the near-control zoom and all four legacy panels 3614ms\n\n Test Files  17 passed (17)\n      Tests  39 passed (39)\n   Start at  18:23:25\n   Duration  10.07s (transform 733ms, setup 0ms, collect 1.91s, tests 35.66s, environment 4ms, prepare 1.30s)",
-      "stderrTail": "$ bun ./scripts/gnosis-moe-routing-benchmark.ts --assert\n$ bun ./scripts/formal-witness-catalog.ts --assert\n$ bun ./scripts/formal-adaptive-witness-catalog.ts --assert\n$ bun ./scripts/adaptive-supremum-witness.ts --assert\n$ bun ./scripts/adaptive-supremum-family-sweep.ts --assert\n$ bun ./scripts/ch17-correspondence-boundary-figure.ts --assert\n$ bun ./scripts/ch17-boundary-expansion-figure.ts --assert\n$ bun ./scripts/ch17-replication-pack.ts --assert",
+      "durationMs": 59081,
+      "stdoutTail": " ✓ src/ch17-moa-transformer-figure.test.ts (2 tests) 14114ms\n   ✓ Chapter 17 MoA transformer figure > builds a figure report from the GG-backed MoA evidence artifact surface 8820ms\n   ✓ Chapter 17 MoA transformer figure > renders markdown and svg outputs with sweep, frontier, and GG identity panels 5294ms\n\n Test Files  30 passed (30)\n      Tests  68 passed (68)\n   Start at  11:51:51\n   Duration  16.06s (transform 1.32s, setup 0ms, collect 3.36s, tests 52.69s, environment 4ms, prepare 2.10s)",
+      "stderrTail": "$ bun ./scripts/ch17-gate5-bio-effect-size-figure.ts --assert\n$ bun ./scripts/ch17-inverted-scaling-reynolds-figure.ts --assert\n$ bun ./scripts/ch17-correspondence-boundary-figure.ts --assert\n$ bun ./scripts/ch17-boundary-expansion-figure.ts --assert\n$ bun ./scripts/ch17-moa-topology-figure.ts --assert\n$ bun ./scripts/ch17-moa-whip-curvature-figure.ts --assert\n$ bun ./scripts/ch17-moa-transformer-figure.ts --assert\n$ bun ./scripts/ch17-replication-pack.ts --assert",
       "skipped": false
     },
     {
@@ -129,27 +151,27 @@
       "command": "bun run test:ch17-replication-pack",
       "ok": true,
       "exitCode": 0,
-      "durationMs": 34,
-      "stdoutTail": "ch17-replication-pack: READY\njson: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-replication-pack.json\nmarkdown: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-replication-pack.md\nentries: 34",
+      "durationMs": 33,
+      "stdoutTail": "ch17-replication-pack: READY\njson: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-replication-pack.json\nmarkdown: /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-replication-pack.md\nentries: 65",
       "stderrTail": "$ bun ./scripts/ch17-replication-pack.ts --assert",
       "skipped": false
     }
   ],
-  "totalDurationMs": 129361,
+  "totalDurationMs": 146119,
   "slowestStepLabel": "Run Chapter 17 reproduction surface",
-  "slowestStepDurationMs": 58026,
+  "slowestStepDurationMs": 59081,
   "manifestStable": true,
   "hashChecks": [
     {
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md",
-      "expectedSha256": "016a316ff9dd690a2ba79db64ae1d984a13db3912824ce28a23bb24dc4b00418",
-      "actualSha256": "016a316ff9dd690a2ba79db64ae1d984a13db3912824ce28a23bb24dc4b00418",
+      "expectedSha256": "26dcf1dad6f09e86e8308ea06924e4c1050adc59b4142da73bec77ff1edd76b2",
+      "actualSha256": "26dcf1dad6f09e86e8308ea06924e4c1050adc59b4142da73bec77ff1edd76b2",
       "matches": true
     },
     {
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md",
-      "expectedSha256": "98d1c31eaaf2e6319de02d200485c0fb1aad594bf9278f0f3bbd750368bbeaea",
-      "actualSha256": "98d1c31eaaf2e6319de02d200485c0fb1aad594bf9278f0f3bbd750368bbeaea",
+      "expectedSha256": "031b559cef069241c59df30e8c403e4565785dae82a55d067a172d93b6bf31c9",
+      "actualSha256": "031b559cef069241c59df30e8c403e4565785dae82a55d067a172d93b6bf31c9",
       "matches": true
     },
     {
@@ -207,6 +229,12 @@
       "matches": true
     },
     {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/gnosis-moa-transformer-evidence-benchmark.json",
+      "expectedSha256": "d121f9f43d40823596ee1d3a87226e58afaee289db6d8f1b9de5df8dccea7e9c",
+      "actualSha256": "d121f9f43d40823596ee1d3a87226e58afaee289db6d8f1b9de5df8dccea7e9c",
+      "matches": true
+    },
+    {
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/formal-witness-catalog.json",
       "expectedSha256": "bed334cb6a13a0d27a9831f93b45a3d97299eee9d744bf4c9f0c5808fe093c2f",
       "actualSha256": "bed334cb6a13a0d27a9831f93b45a3d97299eee9d744bf4c9f0c5808fe093c2f",
@@ -231,6 +259,54 @@
       "matches": true
     },
     {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/sleep-debt-bounded-witness.json",
+      "expectedSha256": "46b46a5b2a798df4a7109ea78785f6fb39b7c71c27887c0f9ca8d8ff0897bd53",
+      "actualSha256": "46b46a5b2a798df4a7109ea78785f6fb39b7c71c27887c0f9ca8d8ff0897bd53",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/sleep-debt-schedule-threshold-witness.json",
+      "expectedSha256": "5189585fbb7ef29164d545e69b0a0bb709f2df32505f52e1fe2fefbac71b31ab",
+      "actualSha256": "5189585fbb7ef29164d545e69b0a0bb709f2df32505f52e1fe2fefbac71b31ab",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate1-wallclock-figure.svg",
+      "expectedSha256": "a40d28f819dd2462beb6df9ef71f84623fc5499d85299500235b28a170220b63",
+      "actualSha256": "a40d28f819dd2462beb6df9ef71f84623fc5499d85299500235b28a170220b63",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate2-protocol-corpus-figure.svg",
+      "expectedSha256": "9638c1fef5af41ac261a2b4af2b3d8d6c55574e6cc44151e541c27a42518e704",
+      "actualSha256": "9638c1fef5af41ac261a2b4af2b3d8d6c55574e6cc44151e541c27a42518e704",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate3-compression-corpus-figure.svg",
+      "expectedSha256": "16f4e241c428be1e7e96b1efdbd071a3edd4121565f25ddba99d120cb1cf8e48",
+      "actualSha256": "16f4e241c428be1e7e96b1efdbd071a3edd4121565f25ddba99d120cb1cf8e48",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate4-rqr-holdout-figure.svg",
+      "expectedSha256": "9b61524aac933b3ca0defd6d9f11b1dac0c9220fb4c494357b32ac86b20432e4",
+      "actualSha256": "9b61524aac933b3ca0defd6d9f11b1dac0c9220fb4c494357b32ac86b20432e4",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate5-bio-effect-size-figure.svg",
+      "expectedSha256": "350c74fbd9162d7d5133adf96b0b87da251925e7d5fb858e6d8df3f7c6bfa438",
+      "actualSha256": "350c74fbd9162d7d5133adf96b0b87da251925e7d5fb858e6d8df3f7c6bfa438",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.svg",
+      "expectedSha256": "624144e98f4f7e15ad92b89c5ae96486332672d0413060f8298216040c2eb24d",
+      "actualSha256": "624144e98f4f7e15ad92b89c5ae96486332672d0413060f8298216040c2eb24d",
+      "matches": true
+    },
+    {
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-correspondence-boundary-figure.svg",
       "expectedSha256": "360d4b9a0db0d9a6da13874703e0007f1412a984d90b248b679b42bfe1d4a679",
       "actualSha256": "360d4b9a0db0d9a6da13874703e0007f1412a984d90b248b679b42bfe1d4a679",
@@ -243,9 +319,63 @@
       "matches": true
     },
     {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-topology-figure.svg",
+      "expectedSha256": "d9033c38a8095627efda0778ea66fad777f308df54534822ee06ac35cef07b54",
+      "actualSha256": "d9033c38a8095627efda0778ea66fad777f308df54534822ee06ac35cef07b54",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-whip-curvature-figure.svg",
+      "expectedSha256": "e509b9a6d770ce29f3a8c11db8ac162057102d85249a479be2a64f51bd2e7fe0",
+      "actualSha256": "e509b9a6d770ce29f3a8c11db8ac162057102d85249a479be2a64f51bd2e7fe0",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-transformer-figure.svg",
+      "expectedSha256": "666c8c6f756ffce018e772857db57f3b6a00a54ac48826eb350ad7317219f658",
+      "actualSha256": "666c8c6f756ffce018e772857db57f3b6a00a54ac48826eb350ad7317219f658",
+      "matches": true
+    },
+    {
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-replication-pack.ts",
       "expectedSha256": "6f4a7adaa41f29430d08851aab7410fc63abe51502cc6b153734a45513030e58",
       "actualSha256": "6f4a7adaa41f29430d08851aab7410fc63abe51502cc6b153734a45513030e58",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate1-wallclock-figure.ts",
+      "expectedSha256": "75e564d4428a0e14dce5802041d9de61d42bdb5c3f5c63f269c8ea1755c91705",
+      "actualSha256": "75e564d4428a0e14dce5802041d9de61d42bdb5c3f5c63f269c8ea1755c91705",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate2-protocol-corpus-figure.ts",
+      "expectedSha256": "e01efaab280da2538f178616e1651bafedc6586ccc7e30c821cd97eeba49e780",
+      "actualSha256": "e01efaab280da2538f178616e1651bafedc6586ccc7e30c821cd97eeba49e780",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate3-compression-corpus-figure.ts",
+      "expectedSha256": "01539f7d52da32903ea1f03cab0fce0fa278fc44a38c020d361605b7b7957e61",
+      "actualSha256": "01539f7d52da32903ea1f03cab0fce0fa278fc44a38c020d361605b7b7957e61",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate4-rqr-holdout-figure.ts",
+      "expectedSha256": "7fa9def59f1ca2fedcce690ebe33fa5ef2a5c696270fc3c29f1423bb6ba8b514",
+      "actualSha256": "7fa9def59f1ca2fedcce690ebe33fa5ef2a5c696270fc3c29f1423bb6ba8b514",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate5-bio-effect-size-figure.ts",
+      "expectedSha256": "1b171b270a75d414ea3ae96913f5f228cd04386e30066b0d14d5e9859b88c4ea",
+      "actualSha256": "1b171b270a75d414ea3ae96913f5f228cd04386e30066b0d14d5e9859b88c4ea",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-inverted-scaling-reynolds-figure.ts",
+      "expectedSha256": "0135cd5970361bc99a74646d84506b2009d70a2a7daf14eda332c21bab5e1fee",
+      "actualSha256": "0135cd5970361bc99a74646d84506b2009d70a2a7daf14eda332c21bab5e1fee",
       "matches": true
     },
     {
@@ -273,6 +403,12 @@
       "matches": true
     },
     {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gnosis-moa-transformer-evidence-benchmark.ts",
+      "expectedSha256": "53f7820db5f78b2570844a1fd8cb2f9ca553436683dfd5aa12e5a9b1273cf4e8",
+      "actualSha256": "53f7820db5f78b2570844a1fd8cb2f9ca553436683dfd5aa12e5a9b1273cf4e8",
+      "matches": true
+    },
+    {
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/formal-witness-catalog.ts",
       "expectedSha256": "d323f121a5d082d8afc2c2193bea1ab5ff7283d52b8dc82b0fc821f075522b02",
       "actualSha256": "d323f121a5d082d8afc2c2193bea1ab5ff7283d52b8dc82b0fc821f075522b02",
@@ -297,9 +433,39 @@
       "matches": true
     },
     {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/sleep-debt-bounded-witness.ts",
+      "expectedSha256": "304e812f4fb9648c07bcc5078d61202e3df4881e0f108d486bd8c77d981c59a6",
+      "actualSha256": "304e812f4fb9648c07bcc5078d61202e3df4881e0f108d486bd8c77d981c59a6",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/sleep-debt-schedule-threshold-witness.ts",
+      "expectedSha256": "7b354ca7670b94f6c93c2cb71f416b0033028e2d4f64857d48163785404097b7",
+      "actualSha256": "7b354ca7670b94f6c93c2cb71f416b0033028e2d4f64857d48163785404097b7",
+      "matches": true
+    },
+    {
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-boundary-expansion-figure.ts",
       "expectedSha256": "ff2e2671e2ad1cbc6b327b18dfca5cee52f5f08e929c0d798bef14dc4c3a932f",
       "actualSha256": "ff2e2671e2ad1cbc6b327b18dfca5cee52f5f08e929c0d798bef14dc4c3a932f",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-topology-figure.ts",
+      "expectedSha256": "ffba9267b833a329981ddbdcf8da08e3a3d939756394b5f8de91aa5a26c57bd3",
+      "actualSha256": "ffba9267b833a329981ddbdcf8da08e3a3d939756394b5f8de91aa5a26c57bd3",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-whip-curvature-figure.ts",
+      "expectedSha256": "07e71ba5e3267d73ecf0dd230d713cb057788cde6b8d2d054e878d4e2b44d77c",
+      "actualSha256": "07e71ba5e3267d73ecf0dd230d713cb057788cde6b8d2d054e878d4e2b44d77c",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-transformer-figure.ts",
+      "expectedSha256": "cebeb2a7fac4458a6b216b4114970f719b3139853259fdd29132315e4f63cb29",
+      "actualSha256": "cebeb2a7fac4458a6b216b4114970f719b3139853259fdd29132315e4f63cb29",
       "matches": true
     },
     {
@@ -328,8 +494,38 @@
     },
     {
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md",
-      "expectedSha256": "dfcea5330c993eb9bf595da040bdad9618f1b03f558af04ae1934f153bdb658d",
-      "actualSha256": "dfcea5330c993eb9bf595da040bdad9618f1b03f558af04ae1934f153bdb658d",
+      "expectedSha256": "34e68aa7879df0a77692717eda9ffb5e3f99b85c98b898d9fbdbe9ba9c3c9480",
+      "actualSha256": "34e68aa7879df0a77692717eda9ffb5e3f99b85c98b898d9fbdbe9ba9c3c9480",
+      "matches": true
+    },
+    {
+      "path": "open-source/gnosis/GnosisProofs.lean",
+      "expectedSha256": "26449307d4054b231df16b0347b4cd2f8243653aa0cdc0c2beba7630453cbe43",
+      "actualSha256": "26449307d4054b231df16b0347b4cd2f8243653aa0cdc0c2beba7630453cbe43",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebt.tla",
+      "expectedSha256": "e99b5ea2e86101aa515b081686c02b79bf08b6c54f2748c5673732a97f177088",
+      "actualSha256": "e99b5ea2e86101aa515b081686c02b79bf08b6c54f2748c5673732a97f177088",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebtScheduleThreshold.tla",
+      "expectedSha256": "ac8a4a88565fafabe5480fcb4a26e8a0f7c7048943c576799b853c96cb65ee78",
+      "actualSha256": "ac8a4a88565fafabe5480fcb4a26e8a0f7c7048943c576799b853c96cb65ee78",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebt.lean",
+      "expectedSha256": "10e47394008e685ab791418b22ffea542188a6d2ddca0afb26e7231136506afb",
+      "actualSha256": "10e47394008e685ab791418b22ffea542188a6d2ddca0afb26e7231136506afb",
+      "matches": true
+    },
+    {
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtSchedule.lean",
+      "expectedSha256": "bcb9db064bdf32d84dcd6b49b29c9aad65fdbbdaa76a16b88b0e751354f7d74a",
+      "actualSha256": "bcb9db064bdf32d84dcd6b49b29c9aad65fdbbdaa76a16b88b0e751354f7d74a",
       "matches": true
     },
     {
@@ -342,6 +538,18 @@
       "path": "open-source/gnosis/examples/benchmarks/moe-routing.test.gg",
       "expectedSha256": "282621a787b783cfde5dceaba5cad909de0824ac9f5989b51a50a13e88671a2d",
       "actualSha256": "282621a787b783cfde5dceaba5cad909de0824ac9f5989b51a50a13e88671a2d",
+      "matches": true
+    },
+    {
+      "path": "open-source/gnosis/examples/benchmarks/moa-transformer.test.gg",
+      "expectedSha256": "afbf38a2956103adf958d9dc231ee164777713a303db2b0475e843c2fad4a13e",
+      "actualSha256": "afbf38a2956103adf958d9dc231ee164777713a303db2b0475e843c2fad4a13e",
+      "matches": true
+    },
+    {
+      "path": "open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
+      "expectedSha256": "8509bfd80a9f4358f90eb7fcd341b741e21774b1835bf59410f276ab43b41940",
+      "actualSha256": "8509bfd80a9f4358f90eb7fcd341b741e21774b1835bf59410f276ab43b41940",
       "matches": true
     }
   ],

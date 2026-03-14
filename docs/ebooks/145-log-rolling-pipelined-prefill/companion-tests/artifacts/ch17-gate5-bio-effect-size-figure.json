@@ -1,0 +1,66 @@
+{
+  "label": "ch17-gate5-bio-effect-size-figure-v1",
+  "sourceLabel": "gate5-bio-effect-size-v1",
+  "pairCount": 3,
+  "primaryPairCount": 3,
+  "primaryPairsPassed": 3,
+  "criteriaPassed": 4,
+  "criteriaTotal": 4,
+  "medianPairRatio": 21.52368981193996,
+  "minPrimaryPairRatioCiLow": 5.828970147694516,
+  "pairThresholdRatio": 1.2,
+  "pooledRatio": 26.566112728671822,
+  "pooledRatioCi95": {
+    "low": 9.862508828889183,
+    "high": 78.2549543621887
+  },
+  "pooledThresholdRatio": 2,
+  "ratioRange": {
+    "low": 1.2,
+    "high": 192.46108712920986
+  },
+  "pairs": [
+    {
+      "id": "saltatory_velocity",
+      "domain": "Neural conduction",
+      "numeratorLabel": "myelinated conduction velocity",
+      "denominatorLabel": "unmyelinated conduction velocity",
+      "unit": "m/s",
+      "primary": true,
+      "medianRatio": 79.49371354359806,
+      "ratioCi95": {
+        "low": 45.79469020258639,
+        "high": 192.46108712920986
+      },
+      "pass": true
+    },
+    {
+      "id": "photosynthesis_step_vs_system",
+      "domain": "Photosynthesis efficiency scale contrast",
+      "numeratorLabel": "exciton transfer efficiency (step-level)",
+      "denominatorLabel": "whole-plant photosynthetic yield",
+      "unit": "ratio",
+      "primary": true,
+      "medianRatio": 21.52368981193996,
+      "ratioCi95": {
+        "low": 16.3754644292347,
+        "high": 31.590516761814623
+      },
+      "pass": true
+    },
+    {
+      "id": "okazaki_chunking",
+      "domain": "Replication chunk size",
+      "numeratorLabel": "prokaryotic Okazaki fragment length",
+      "denominatorLabel": "eukaryotic Okazaki fragment length",
+      "unit": "nt",
+      "primary": true,
+      "medianRatio": 10.060703065602162,
+      "ratioCi95": {
+        "low": 5.828970147694516,
+        "high": 17.056283630585046
+      },
+      "pass": true
+    }
+  ]
+}

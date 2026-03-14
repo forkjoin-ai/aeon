@@ -10,8 +10,13 @@ describe('Chapter 17 external replication', () => {
     const report = runCh17ExternalReplication({ executeCommands: false });
 
     expect(report.label).toBe('ch17-external-replication-v1');
-    expect(report.steps).toHaveLength(13);
+    expect(report.steps).toHaveLength(14);
     expect(report.steps.every((step) => step.skipped)).toBe(true);
+    expect(
+      report.steps.some(
+        (step) => step.label === 'Verify Gnosis theorem workspace'
+      )
+    ).toBe(true);
     expect(report.totalDurationMs).toBe(0);
     expect(report.slowestStepLabel).toBe('n/a');
     expect(report.slowestStepDurationMs).toBe(0);
@@ -28,5 +33,6 @@ describe('Chapter 17 external replication', () => {
     expect(markdown).toContain('Approx runtime');
     expect(markdown).toContain('## Steps');
     expect(markdown).toContain('## Hash Checks');
+    expect(markdown).toContain('Verify Gnosis theorem workspace');
   });
 });

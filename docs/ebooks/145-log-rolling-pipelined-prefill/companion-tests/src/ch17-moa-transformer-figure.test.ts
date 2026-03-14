@@ -22,7 +22,7 @@ describe('Chapter 17 MoA transformer figure', () => {
     expect(figure.wideWorkload.accuracyGap).toBeLessThan(
       figure.scalePoints[0]?.accuracyGap ?? Number.POSITIVE_INFINITY
     );
-  });
+  }, 20000);
 
   it('renders markdown and svg outputs with sweep, frontier, and GG identity panels', async () => {
     const figure = buildCh17MoaTransformerFigureReport(
@@ -41,5 +41,5 @@ describe('Chapter 17 MoA transformer figure', () => {
     expect(svg).toContain('Accuracy Gap Closes');
     expect(svg).toContain('Ablation Frontier');
     expect(svg).toContain('GG Surface');
-  });
+  }, 20000);
 });

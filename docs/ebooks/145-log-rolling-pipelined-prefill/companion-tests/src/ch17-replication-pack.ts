@@ -111,6 +111,51 @@ const replicationPaths = [
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/adaptive-supremum-family-sweep.json',
   ],
   [
+    'Sleep-debt witness artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/sleep-debt-bounded-witness.json',
+  ],
+  [
+    'Sleep-debt schedule-threshold artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/sleep-debt-schedule-threshold-witness.json',
+  ],
+  [
+    'Sleep-debt weighted-threshold artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/sleep-debt-weighted-threshold-witness.json',
+  ],
+  [
+    'Gate 1 figure artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate1-wallclock-figure.svg',
+  ],
+  [
+    'Gate 2 figure artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate2-protocol-corpus-figure.svg',
+  ],
+  [
+    'Gate 3 figure artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate3-compression-corpus-figure.svg',
+  ],
+  [
+    'Gate 4 figure artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate4-rqr-holdout-figure.svg',
+  ],
+  [
+    'Gate 5 figure artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate5-bio-effect-size-figure.svg',
+  ],
+  [
+    'Inverted-scaling figure artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.svg',
+  ],
+  [
     'Figure artifact',
     'artifact',
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-correspondence-boundary-figure.svg',
@@ -126,6 +171,11 @@ const replicationPaths = [
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-topology-figure.svg',
   ],
   [
+    'MoA whip-curvature figure artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-whip-curvature-figure.svg',
+  ],
+  [
     'MoA figure artifact',
     'artifact',
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-transformer-figure.svg',
@@ -134,6 +184,36 @@ const replicationPaths = [
     'Replication-pack script',
     'script',
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-replication-pack.ts',
+  ],
+  [
+    'Gate 1 figure script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate1-wallclock-figure.ts',
+  ],
+  [
+    'Gate 2 figure script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate2-protocol-corpus-figure.ts',
+  ],
+  [
+    'Gate 3 figure script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate3-compression-corpus-figure.ts',
+  ],
+  [
+    'Gate 4 figure script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate4-rqr-holdout-figure.ts',
+  ],
+  [
+    'Gate 5 figure script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate5-bio-effect-size-figure.ts',
+  ],
+  [
+    'Inverted-scaling figure script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-inverted-scaling-reynolds-figure.ts',
   ],
   [
     'Negative-controls script',
@@ -181,6 +261,21 @@ const replicationPaths = [
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/adaptive-supremum-family-sweep.ts',
   ],
   [
+    'Sleep-debt witness script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/sleep-debt-bounded-witness.ts',
+  ],
+  [
+    'Sleep-debt schedule-threshold script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/sleep-debt-schedule-threshold-witness.ts',
+  ],
+  [
+    'Sleep-debt weighted-threshold script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/sleep-debt-weighted-threshold-witness.ts',
+  ],
+  [
     'Expansion figure script',
     'script',
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-boundary-expansion-figure.ts',
@@ -189,6 +284,11 @@ const replicationPaths = [
     'MoA topology figure script',
     'script',
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-topology-figure.ts',
+  ],
+  [
+    'MoA whip-curvature figure script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-whip-curvature-figure.ts',
   ],
   [
     'MoA figure script',
@@ -219,6 +319,41 @@ const replicationPaths = [
     'Theorem ledger',
     'formal',
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md',
+  ],
+  [
+    'Gnosis theorem workspace',
+    'formal',
+    'open-source/gnosis/GnosisProofs.lean',
+  ],
+  [
+    'Sleep-debt TLA+ model',
+    'formal',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebt.tla',
+  ],
+  [
+    'Sleep-debt schedule-threshold TLA+ model',
+    'formal',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebtScheduleThreshold.tla',
+  ],
+  [
+    'Sleep-debt weighted-threshold TLA+ model',
+    'formal',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebtWeightedThreshold.tla',
+  ],
+  [
+    'Sleep-debt Lean theorem surface',
+    'formal',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebt.lean',
+  ],
+  [
+    'Sleep-debt schedule-threshold Lean theorem surface',
+    'formal',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtSchedule.lean',
+  ],
+  [
+    'Sleep-debt weighted-threshold Lean theorem surface',
+    'formal',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtWeightedSchedule.lean',
   ],
   [
     'Affine benchmark topology suite',
@@ -294,7 +429,7 @@ export function renderCh17ReplicationPackMarkdown(
   }
   lines.push('');
   lines.push(
-    'Interpretation: this pack fingerprints the concrete files needed to reproduce the current Chapter 17 evidence surface, including the generated artifacts, the formal theorem package, the benchmark topology suites, and the CI entrypoint.'
+    'Interpretation: this pack fingerprints the concrete files needed to reproduce the current Chapter 17 evidence surface, including the generated artifacts, the in-tree formal theorem package, the shared Gnosis theorem workspace, the benchmark topology suites, and the CI entrypoint.'
   );
   lines.push('');
   return `${lines.join('\n')}\n`;

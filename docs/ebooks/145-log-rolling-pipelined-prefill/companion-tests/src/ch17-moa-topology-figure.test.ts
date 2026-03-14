@@ -56,7 +56,8 @@ describe('Chapter 17 MoA topology figure', () => {
     expect(svg).toContain('Sparse StructuredMoA');
     expect(svg).toContain('Dense rotated baseline');
     expect(svg).toContain('outer router');
-    expect(svg).toContain('h.rot');
+    expect(svg).toContain('<tspan');
+    expect(svg).toContain('head');
     expect(svg).toContain('h1');
     expect(svg).toContain('outer whip');
   });

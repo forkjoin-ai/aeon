@@ -207,6 +207,37 @@ function label(
   );
 }
 
+function multilineLabel(
+  svg: string[],
+  x: number,
+  y: number,
+  lines: readonly string[],
+  options: {
+    readonly size?: number;
+    readonly weight?: number;
+    readonly color?: string;
+    readonly anchor?: 'start' | 'middle' | 'end';
+    readonly lineHeight?: number;
+  } = {}
+): void {
+  const lineHeight = options.lineHeight ?? Math.round((options.size ?? 12) * 1.2);
+  const tspans = lines
+    .map((line, index) => {
+      const dy = index === 0 ? '0' : String(lineHeight);
+      return `<tspan x="${x}" dy="${dy}">${escapeXml(line)}</tspan>`;
+    })
+    .join('');
+  svg.push(
+    `<text x="${x}" y="${y}" text-anchor="${
+      options.anchor ?? 'middle'
+    }" font-family="Georgia, Times New Roman, serif" font-size="${
+      options.size ?? 12
+    }" font-weight="${options.weight ?? 400}" fill="${
+      options.color ?? '#334155'
+    }">${tspans}</text>`
+  );
+}
+
 function arrow(
   svg: string[],
   x1: number,
@@ -248,10 +279,16 @@ function drawBlock(
   const topNodeY = block.y + 66;
   const topLeftX = block.x + 36;
   const topRightX = block.x + block.width - 36;
-  circle(svg, topLeftX, topNodeY, 12, '#fffdf8', '#334155');
-  circle(svg, topRightX, topNodeY, 12, '#fffdf8', '#c2410c');
-  label(svg, topLeftX, topNodeY + 33, 'h.rot', { size: 13 });
-  label(svg, topRightX, topNodeY + 33, 'h.sel', { size: 13 });
+  circle(svg, topLeftX, topNodeY, 13, '#fffdf8', '#334155');
+  circle(svg, topRightX, topNodeY, 13, '#fffdf8', '#c2410c');
+  multilineLabel(svg, topLeftX, topNodeY + 28, ['head', 'rot'], {
+    size: 11,
+    lineHeight: 12,
+  });
+  multilineLabel(svg, topRightX, topNodeY + 28, ['head', 'sel'], {
+    size: 11,
+    lineHeight: 12,
+  });
   arrow(svg, topLeftX + 12, topNodeY, topRightX - 12, topNodeY, '#64748b');
 
   const headY = block.y + 132;
@@ -273,7 +310,7 @@ function drawBlock(
       !headActive
     );
     label(svg, headX, headY + 5, headLabel, {
-      size: 12,
+      size: 13,
       weight: 700,
       color: headActive ? '#065f46' : '#64748b',
     });
@@ -298,13 +335,10 @@ function drawBlock(
   }
 
   circle(svg, whipX, whipY, 16, '#fff7ed', '#c2410c', !block.active);
-  label(svg, whipX, whipY + 38, 'whip', {
-    size: 13,
+  multilineLabel(svg, whipX, whipY + 34, ['inner', 'whip'], {
+    size: 11,
+    lineHeight: 12,
     color: '#7c2d12',
-  });
-  label(svg, whipX, whipY + 59, 'out', {
-    size: 12,
-    color: '#475569',
   });
 
   return {

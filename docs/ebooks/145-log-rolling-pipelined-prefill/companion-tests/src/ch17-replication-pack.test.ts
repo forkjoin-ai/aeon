@@ -30,7 +30,71 @@ describe('Chapter 17 replication pack', () => {
     ).toBe(true);
     expect(
       report.entries.some((entry) =>
+        entry.path.endsWith('sleep-debt-bounded-witness.json')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('sleep-debt-schedule-threshold-witness.json')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('sleep-debt-weighted-threshold-witness.json')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) => entry.path.endsWith('SleepDebt.tla'))
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('SleepDebtScheduleThreshold.tla')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('SleepDebtWeightedThreshold.tla')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) => entry.path.endsWith('SleepDebt.lean'))
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('SleepDebtSchedule.lean')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('SleepDebtWeightedSchedule.lean')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) => entry.path.endsWith('GnosisProofs.lean'))
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('ch17-gate1-wallclock-figure.svg')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('ch17-gate5-bio-effect-size-figure.svg')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('ch17-inverted-scaling-reynolds-figure.svg')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
         entry.path.endsWith('ch17-moa-topology-figure.svg')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
+        entry.path.endsWith('ch17-moa-whip-curvature-figure.svg')
       )
     ).toBe(true);
     expect(
@@ -56,7 +120,21 @@ describe('Chapter 17 replication pack', () => {
     expect(markdown).toContain(
       'gnosis-moa-transformer-evidence-benchmark.json'
     );
+    expect(markdown).toContain('sleep-debt-bounded-witness.json');
+    expect(markdown).toContain('sleep-debt-schedule-threshold-witness.json');
+    expect(markdown).toContain('sleep-debt-weighted-threshold-witness.json');
+    expect(markdown).toContain('SleepDebt.tla');
+    expect(markdown).toContain('SleepDebtScheduleThreshold.tla');
+    expect(markdown).toContain('SleepDebtWeightedThreshold.tla');
+    expect(markdown).toContain('SleepDebt.lean');
+    expect(markdown).toContain('SleepDebtSchedule.lean');
+    expect(markdown).toContain('SleepDebtWeightedSchedule.lean');
+    expect(markdown).toContain('GnosisProofs.lean');
+    expect(markdown).toContain('ch17-gate1-wallclock-figure.svg');
+    expect(markdown).toContain('ch17-gate5-bio-effect-size-figure.svg');
+    expect(markdown).toContain('ch17-inverted-scaling-reynolds-figure.svg');
     expect(markdown).toContain('ch17-moa-topology-figure.svg');
+    expect(markdown).toContain('ch17-moa-whip-curvature-figure.svg');
     expect(markdown).toContain('ch17-moa-transformer-figure.svg');
     expect(markdown).toContain('SHA-256');
   });

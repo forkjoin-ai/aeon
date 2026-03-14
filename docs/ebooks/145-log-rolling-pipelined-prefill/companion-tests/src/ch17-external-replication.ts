@@ -51,7 +51,10 @@ const moduleDir = dirname(fileURLToPath(import.meta.url));
 const companionRoot = resolve(moduleDir, '..');
 const repoRoot = resolve(companionRoot, '../../../../../..');
 const gnosisRoot = resolve(repoRoot, 'open-source/gnosis');
-const manifestPath = resolve(companionRoot, 'artifacts/ch17-replication-pack.json');
+const manifestPath = resolve(
+  companionRoot,
+  'artifacts/ch17-replication-pack.json'
+);
 
 const commandPlan = [
   {
@@ -60,29 +63,66 @@ const commandPlan = [
     command: 'bun install --frozen-lockfile',
   },
   { label: 'Build Gnosis', cwd: gnosisRoot, command: 'bun run build' },
-  { label: 'Test Gnosis fold training', cwd: gnosisRoot, command: 'bun run test:fold-training' },
-  { label: 'Test Gnosis negative controls', cwd: gnosisRoot, command: 'bun run test:negative-controls' },
-  { label: 'Test Gnosis near-control sweep', cwd: gnosisRoot, command: 'bun run test:near-control-sweep' },
-  { label: 'Test Gnosis regime sweep', cwd: gnosisRoot, command: 'bun run test:regime-sweep' },
-  { label: 'Test Gnosis adversarial controls', cwd: gnosisRoot, command: 'bun run test:adversarial-controls' },
-  { label: 'Test Gnosis mini-MoE routing', cwd: gnosisRoot, command: 'bun run test:mini-moe-routing' },
+  {
+    label: 'Test Gnosis fold training',
+    cwd: gnosisRoot,
+    command: 'bun run test:fold-training',
+  },
+  {
+    label: 'Test Gnosis negative controls',
+    cwd: gnosisRoot,
+    command: 'bun run test:negative-controls',
+  },
+  {
+    label: 'Test Gnosis near-control sweep',
+    cwd: gnosisRoot,
+    command: 'bun run test:near-control-sweep',
+  },
+  {
+    label: 'Test Gnosis regime sweep',
+    cwd: gnosisRoot,
+    command: 'bun run test:regime-sweep',
+  },
+  {
+    label: 'Test Gnosis adversarial controls',
+    cwd: gnosisRoot,
+    command: 'bun run test:adversarial-controls',
+  },
+  {
+    label: 'Test Gnosis mini-MoE routing',
+    cwd: gnosisRoot,
+    command: 'bun run test:mini-moe-routing',
+  },
   {
     label: 'Test Gnosis MoA transformer evidence',
     cwd: companionRoot,
     command: 'bun run test:gnosis-moa-transformer-evidence',
   },
-  { label: 'Export formal witness catalog', cwd: companionRoot, command: 'bun run test:formal:witnesses' },
+  {
+    label: 'Export formal witness catalog',
+    cwd: companionRoot,
+    command: 'bun run test:formal:witnesses',
+  },
   {
     label: 'Export formal adaptive witness catalog',
     cwd: companionRoot,
     command: 'bun run test:formal:adaptive-witnesses',
   },
   {
+    label: 'Verify Gnosis theorem workspace',
+    cwd: companionRoot,
+    command: 'bun run test:formal:gnosis',
+  },
+  {
     label: 'Run Chapter 17 reproduction surface',
     cwd: companionRoot,
     command: 'bun run test:ch17-reproduction-surface',
   },
-  { label: 'Refresh replication manifest', cwd: companionRoot, command: 'bun run test:ch17-replication-pack' },
+  {
+    label: 'Refresh replication manifest',
+    cwd: companionRoot,
+    command: 'bun run test:ch17-replication-pack',
+  },
 ] as const;
 
 function tail(text: string, lineCount = 8): string {
@@ -95,7 +135,7 @@ function hashFile(path: string): string {
 
 function executeStep(
   step: (typeof commandPlan)[number],
-  executeCommands: boolean,
+  executeCommands: boolean
 ): ExternalReplicationStep {
   if (!executeCommands) {
     return {
@@ -112,10 +152,14 @@ function executeStep(
   }
 
   const start = Date.now();
-  const result = spawnSync('bun', step.command.replace(/^bun /, '').split(' '), {
-    cwd: step.cwd,
-    encoding: 'utf8',
-  });
+  const result = spawnSync(
+    'bun',
+    step.command.replace(/^bun /, '').split(' '),
+    {
+      cwd: step.cwd,
+      encoding: 'utf8',
+    }
+  );
 
   return {
     label: step.label,
@@ -130,7 +174,9 @@ function executeStep(
   };
 }
 
-function verifyManifestHashes(entries: readonly ReplicationManifestEntry[]): ExternalReplicationHashCheck[] {
+function verifyManifestHashes(
+  entries: readonly ReplicationManifestEntry[]
+): ExternalReplicationHashCheck[] {
   return entries.map((entry) => {
     const absolutePath = resolve(repoRoot, entry.path);
     const actualSha256 = hashFile(absolutePath);
@@ -144,7 +190,7 @@ function verifyManifestHashes(entries: readonly ReplicationManifestEntry[]): Ext
 }
 
 export function runCh17ExternalReplication(
-  options: ExternalReplicationOptions = {},
+  options: ExternalReplicationOptions = {}
 ): Ch17ExternalReplicationReport {
   const executeCommands = options.executeCommands ?? true;
   const steps: ExternalReplicationStep[] = [];
@@ -164,13 +210,19 @@ export function runCh17ExternalReplication(
   const hashChecks = verifyManifestHashes(manifest.entries);
   const allHashesMatch = hashChecks.every((entry) => entry.matches);
   const manifestStable =
-    JSON.stringify(manifest.entries) === JSON.stringify(recomputedManifest.entries);
+    JSON.stringify(manifest.entries) ===
+    JSON.stringify(recomputedManifest.entries);
   const executedSteps = steps.filter((step) => !step.skipped);
-  const totalDurationMs = executedSteps.reduce((sum, step) => sum + step.durationMs, 0);
+  const totalDurationMs = executedSteps.reduce(
+    (sum, step) => sum + step.durationMs,
+    0
+  );
   const slowestStep = executedSteps.reduce<ExternalReplicationStep | null>(
     (currentSlowest, step) =>
-      currentSlowest === null || step.durationMs > currentSlowest.durationMs ? step : currentSlowest,
-    null,
+      currentSlowest === null || step.durationMs > currentSlowest.durationMs
+        ? step
+        : currentSlowest,
+    null
   );
 
   return {
@@ -189,7 +241,7 @@ export function runCh17ExternalReplication(
 }
 
 export function renderCh17ExternalReplicationMarkdown(
-  report: Ch17ExternalReplicationReport,
+  report: Ch17ExternalReplicationReport
 ): string {
   const lines: string[] = [];
   lines.push('# Chapter 17 External Replication');
@@ -197,9 +249,11 @@ export function renderCh17ExternalReplicationMarkdown(
   lines.push(`- Label: \`${report.label}\``);
   lines.push(`- Root command: \`${report.rootCommand}\``);
   lines.push(`- Total duration ms: \`${report.totalDurationMs}\``);
-  lines.push(`- Approx runtime: \`${(report.totalDurationMs / 1000).toFixed(3)} s\``);
   lines.push(
-    `- Slowest step: \`${report.slowestStepLabel}\` (\`${report.slowestStepDurationMs} ms\`)`,
+    `- Approx runtime: \`${(report.totalDurationMs / 1000).toFixed(3)} s\``
+  );
+  lines.push(
+    `- Slowest step: \`${report.slowestStepLabel}\` (\`${report.slowestStepDurationMs} ms\`)`
   );
   lines.push(`- Manifest stable: \`${report.manifestStable ? 'yes' : 'no'}\``);
   lines.push(`- All hashes match: \`${report.allHashesMatch ? 'yes' : 'no'}\``);
@@ -211,7 +265,9 @@ export function renderCh17ExternalReplicationMarkdown(
   lines.push('| --- | --- | ---: | --- |');
   for (const step of report.steps) {
     lines.push(
-      `| ${step.label} | \`${step.skipped ? 'skipped' : step.ok ? 'ok' : `exit ${step.exitCode}`}\` | ${step.durationMs} | \`${step.command}\` |`,
+      `| ${step.label} | \`${
+        step.skipped ? 'skipped' : step.ok ? 'ok' : `exit ${step.exitCode}`
+      }\` | ${step.durationMs} | \`${step.command}\` |`
     );
   }
   lines.push('');
@@ -221,12 +277,14 @@ export function renderCh17ExternalReplicationMarkdown(
   lines.push('| --- | --- | --- |');
   for (const check of report.hashChecks) {
     lines.push(
-      `| \`${check.path}\` | \`${check.matches ? 'yes' : 'no'}\` | \`${check.actualSha256}\` |`,
+      `| \`${check.path}\` | \`${check.matches ? 'yes' : 'no'}\` | \`${
+        check.actualSha256
+      }\` |`
     );
   }
   lines.push('');
   lines.push(
-    'Interpretation: this report is the outside-rerun summary for the checked Chapter 17 evidence bundle only. It executes the Gnosis and Chapter 17 artifact/witness/manuscript reproduction surface, does not rebuild the TeX/PDF layer, and then independently recomputes the replication-pack hashes to verify that the checked-in evidence bundle still matches the files on disk.',
+    'Interpretation: this report is the outside-rerun summary for the checked Chapter 17 evidence bundle only. It executes the Gnosis build/benchmarks, the shared Gnosis theorem workspace, and the Chapter 17 artifact/witness/manuscript reproduction surface, does not rebuild the TeX/PDF layer, and then independently recomputes the replication-pack hashes to verify that the checked-in evidence bundle still matches the files on disk.'
   );
   lines.push('');
   return `${lines.join('\n')}\n`;

@@ -70,6 +70,33 @@ function baseName(path: string): string {
   return segments[segments.length - 1] ?? path;
 }
 
+function multilineText(
+  svg: string[],
+  x: number,
+  y: number,
+  lines: readonly string[],
+  options: {
+    readonly anchor?: 'start' | 'middle' | 'end';
+    readonly size?: number;
+    readonly color?: string;
+    readonly weight?: number;
+    readonly lineHeight?: number;
+  } = {},
+): void {
+  const lineHeight = options.lineHeight ?? Math.round((options.size ?? 13) * 1.2);
+  const tspans = lines
+    .map((line, index) => {
+      const dy = index === 0 ? '0' : String(lineHeight);
+      return `<tspan x="${x}" dy="${dy}">${escapeXml(line)}</tspan>`;
+    })
+    .join('');
+  svg.push(
+    `<text x="${x}" y="${y}" text-anchor="${options.anchor ?? 'middle'}" font-family="Georgia, Times New Roman, serif" font-size="${
+      options.size ?? 13
+    }" font-weight="${options.weight ?? 400}" fill="${options.color ?? '#0f172a'}">${tspans}</text>`,
+  );
+}
+
 export function buildCh17MoaTransformerFigureReport(
   evidence: GnosisMoaTransformerEvidenceReport
 ): Ch17MoaTransformerFigureReport {
@@ -364,16 +391,62 @@ export function renderCh17MoaTransformerFigureSvg(
       plotLeft + ((point.speedup - speedupMin) / speedupRange) * plotWidth;
     const y = plotTop + (1 - point.exactFraction) * plotHeight;
     const radius = 16 + point.computeAdjustedExactFraction * 48;
+    const labelLayouts: Record<
+      string,
+      {
+        readonly dx: number;
+        readonly dy: number;
+        readonly anchor: 'start' | 'middle' | 'end';
+        readonly lines: readonly string[];
+      }
+    > = {
+      'no-outer-sparsity': {
+        dx: -52,
+        dy: -20,
+        anchor: 'end',
+        lines: ['no outer', 'sparsity'],
+      },
+      'no-inner-sparsity': {
+        dx: 52,
+        dy: -20,
+        anchor: 'start',
+        lines: ['no inner', 'sparsity'],
+      },
+      'full-moa': {
+        dx: 0,
+        dy: 8,
+        anchor: 'middle',
+        lines: ['full-moa'],
+      },
+      'under-routed': {
+        dx: 0,
+        dy: 6,
+        anchor: 'middle',
+        lines: ['under-routed'],
+      },
+    };
+    const labelLayout = labelLayouts[point.id] ?? {
+      dx: 0,
+      dy: 6,
+      anchor: 'middle' as const,
+      lines: [point.id],
+    };
+    const labelX = x + labelLayout.dx;
+    const labelY = y + labelLayout.dy;
     svg.push(
       `<circle cx="${x}" cy="${y}" r="${radius}" fill="#0f766e" fill-opacity="0.20" stroke="#0f766e" stroke-width="2"/>`
     );
-    svg.push(
-      `<text x="${x}" y="${
-        y + 5
-      }" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" fill="#0f172a">${escapeXml(
-        point.id
-      )}</text>`
-    );
+    if (labelLayout.dx !== 0 || labelLayout.dy < 0) {
+      const leaderTargetY = y - Math.min(radius * 0.45, 14);
+      svg.push(
+        `<line x1="${x}" y1="${leaderTargetY}" x2="${labelX}" y2="${labelY - 6}" stroke="#64748b" stroke-width="1.5" opacity="0.75"/>`,
+      );
+    }
+    multilineText(svg, labelX, labelY, labelLayout.lines, {
+      anchor: labelLayout.anchor,
+      size: 13,
+      lineHeight: 14,
+    });
   }
 
   svg.push(

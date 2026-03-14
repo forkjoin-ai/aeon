@@ -12,11 +12,26 @@
     "dualActiveThreshold": 0.4,
     "frameStageCount": 4,
     "samplePoints": [
-      [-1.2, -1.2],
-      [-1.2, 1.2],
-      [1.2, -1.2],
-      [1.2, 1.2],
-      [1.2, 0]
+      [
+        -1.2,
+        -1.2
+      ],
+      [
+        -1.2,
+        1.2
+      ],
+      [
+        1.2,
+        -1.2
+      ],
+      [
+        1.2,
+        1.2
+      ],
+      [
+        1.2,
+        0
+      ]
     ]
   },
   "scales": [
@@ -31,8 +46,8 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-regular.gg",
           "meanEvalMeanSquaredError": 0.0023344693630454015,
           "meanExactWithinToleranceFraction": 0.890625,
-          "meanEvalWallTimeMs": 3.9013227499999914,
-          "meanEvalSamplesPerSecond": 7432.914400561438,
+          "meanEvalWallTimeMs": 2.6771040000000035,
+          "meanEvalSamplesPerSecond": 9416.580615272867,
           "meanActiveBlockCount": 4,
           "meanActiveHeadCount": 16,
           "meanFrameCount": 64,
@@ -42,15 +57,15 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
           "meanEvalMeanSquaredError": 0.08289821805505497,
           "meanExactWithinToleranceFraction": 0.25,
-          "meanEvalWallTimeMs": 0.5561042500000042,
-          "meanEvalSamplesPerSecond": 30190.77066545301,
+          "meanEvalWallTimeMs": 0.6160414999999944,
+          "meanEvalSamplesPerSecond": 28952.975071389126,
           "meanActiveBlockCount": 2,
           "meanActiveHeadCount": 4,
           "meanFrameCount": 16,
           "computeAdjustedExactFraction": 0.0625
         }
       },
-      "moaEvalWallTimeSpeedupVsRegular": 7.015452138695149,
+      "moaEvalWallTimeSpeedupVsRegular": 4.345655284587204,
       "moaHeadReductionFactor": 4,
       "moaFrameReductionFactor": 4,
       "rawAccuracyCompetitive": false,
@@ -67,8 +82,8 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-regular.gg",
           "meanEvalMeanSquaredError": 0.0004518524719732068,
           "meanExactWithinToleranceFraction": 1,
-          "meanEvalWallTimeMs": 2.448041750000016,
-          "meanEvalSamplesPerSecond": 11610.727337660224,
+          "meanEvalWallTimeMs": 1.9634792499999918,
+          "meanEvalSamplesPerSecond": 13625.050533925903,
           "meanActiveBlockCount": 4,
           "meanActiveHeadCount": 16,
           "meanFrameCount": 64,
@@ -78,15 +93,15 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
           "meanEvalMeanSquaredError": 0.06662966987090403,
           "meanExactWithinToleranceFraction": 0.44999999999999996,
-          "meanEvalWallTimeMs": 0.5497814999999946,
-          "meanEvalSamplesPerSecond": 45506.11976741605,
+          "meanEvalWallTimeMs": 0.5481565000000188,
+          "meanEvalSamplesPerSecond": 45666.871602932326,
           "meanActiveBlockCount": 2,
           "meanActiveHeadCount": 4,
           "meanFrameCount": 16,
           "computeAdjustedExactFraction": 0.11249999999999999
         }
       },
-      "moaEvalWallTimeSpeedupVsRegular": 4.452753957708726,
+      "moaEvalWallTimeSpeedupVsRegular": 3.5819683794681345,
       "moaHeadReductionFactor": 4,
       "moaFrameReductionFactor": 4,
       "rawAccuracyCompetitive": false,
@@ -103,8 +118,8 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-regular.gg",
           "meanEvalMeanSquaredError": 0.0008010879770465443,
           "meanExactWithinToleranceFraction": 1,
-          "meanEvalWallTimeMs": 3.325750249999885,
-          "meanEvalSamplesPerSecond": 14801.574511507955,
+          "meanEvalWallTimeMs": 3.026833499999981,
+          "meanEvalSamplesPerSecond": 16212.522274270044,
           "meanActiveBlockCount": 4,
           "meanActiveHeadCount": 16,
           "meanFrameCount": 64,
@@ -114,15 +129,15 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
           "meanEvalMeanSquaredError": 0.0033379704003022857,
           "meanExactWithinToleranceFraction": 0.8010204081632653,
-          "meanEvalWallTimeMs": 1.3009997500000168,
-          "meanEvalSamplesPerSecond": 43433.55434626714,
+          "meanEvalWallTimeMs": 0.8763335000000154,
+          "meanEvalSamplesPerSecond": 56266.390262754685,
           "meanActiveBlockCount": 2,
           "meanActiveHeadCount": 4,
           "meanFrameCount": 16,
           "computeAdjustedExactFraction": 0.2002551020408163
         }
       },
-      "moaEvalWallTimeSpeedupVsRegular": 2.556303527344907,
+      "moaEvalWallTimeSpeedupVsRegular": 3.4539744286848872,
       "moaHeadReductionFactor": 4,
       "moaFrameReductionFactor": 4,
       "rawAccuracyCompetitive": false,
@@ -141,8 +156,8 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-regular.gg",
           "meanEvalMeanSquaredError": 0.00004601587754538137,
           "meanExactWithinToleranceFraction": 1,
-          "meanEvalWallTimeMs": 8.266166500000054,
-          "meanEvalSamplesPerSecond": 12146.335466980721,
+          "meanEvalWallTimeMs": 6.2331872500000145,
+          "meanEvalSamplesPerSecond": 16108.227836465205,
           "meanActiveBlockCount": 4,
           "meanActiveHeadCount": 16,
           "meanFrameCount": 64,
@@ -152,15 +167,15 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
           "meanEvalMeanSquaredError": 0.001389220125021179,
           "meanExactWithinToleranceFraction": 0.9225,
-          "meanEvalWallTimeMs": 2.2592812500001855,
-          "meanEvalSamplesPerSecond": 45710.849462326325,
+          "meanEvalWallTimeMs": 1.6731874999999832,
+          "meanEvalSamplesPerSecond": 59791.216440555465,
           "meanActiveBlockCount": 2,
           "meanActiveHeadCount": 4,
           "meanFrameCount": 16,
           "computeAdjustedExactFraction": 0.230625
         }
       },
-      "moaEvalWallTimeSpeedupVsRegular": 3.658759395272003,
+      "moaEvalWallTimeSpeedupVsRegular": 3.7253369691084095,
       "rawAccuracyCompetitive": false,
       "moaUsesLessCompute": true
     },
@@ -175,8 +190,8 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-regular.gg",
           "meanEvalMeanSquaredError": 0.00004601587754538137,
           "meanExactWithinToleranceFraction": 1,
-          "meanEvalWallTimeMs": 7.5861147500000925,
-          "meanEvalSamplesPerSecond": 13606.593103255862,
+          "meanEvalWallTimeMs": 6.307177249999768,
+          "meanEvalSamplesPerSecond": 15995.347138094383,
           "meanActiveBlockCount": 4,
           "meanActiveHeadCount": 16,
           "meanFrameCount": 64,
@@ -186,15 +201,15 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
           "meanEvalMeanSquaredError": 0.00025679431098197023,
           "meanExactWithinToleranceFraction": 1,
-          "meanEvalWallTimeMs": 3.464864499999976,
-          "meanEvalSamplesPerSecond": 29570.416790503805,
+          "meanEvalWallTimeMs": 3.183072750000065,
+          "meanEvalSamplesPerSecond": 31430.891190960483,
           "meanActiveBlockCount": 4,
           "meanActiveHeadCount": 8,
           "meanFrameCount": 32,
           "computeAdjustedExactFraction": 0.125
         }
       },
-      "moaEvalWallTimeSpeedupVsRegular": 2.18944052501913,
+      "moaEvalWallTimeSpeedupVsRegular": 1.9814744259299883,
       "rawAccuracyCompetitive": true,
       "moaUsesLessCompute": true
     },
@@ -209,8 +224,8 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-regular.gg",
           "meanEvalMeanSquaredError": 0.00004601587754538137,
           "meanExactWithinToleranceFraction": 1,
-          "meanEvalWallTimeMs": 6.175531500000034,
-          "meanEvalSamplesPerSecond": 16609.363527914225,
+          "meanEvalWallTimeMs": 5.880427250000025,
+          "meanEvalSamplesPerSecond": 17121.610846466916,
           "meanActiveBlockCount": 4,
           "meanActiveHeadCount": 16,
           "meanFrameCount": 64,
@@ -220,15 +235,15 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
           "meanEvalMeanSquaredError": 0.000874465144769568,
           "meanExactWithinToleranceFraction": 0.99,
-          "meanEvalWallTimeMs": 3.147239749999926,
-          "meanEvalSamplesPerSecond": 31993.88153083018,
+          "meanEvalWallTimeMs": 3.018551749999915,
+          "meanEvalSamplesPerSecond": 33395.88537934429,
           "meanActiveBlockCount": 2,
           "meanActiveHeadCount": 8,
           "meanFrameCount": 32,
           "computeAdjustedExactFraction": 0.12375
         }
       },
-      "moaEvalWallTimeSpeedupVsRegular": 1.9622056120764804,
+      "moaEvalWallTimeSpeedupVsRegular": 1.948095556089171,
       "rawAccuracyCompetitive": true,
       "moaUsesLessCompute": true
     },
@@ -243,8 +258,8 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-regular.gg",
           "meanEvalMeanSquaredError": 0.00004601587754538137,
           "meanExactWithinToleranceFraction": 1,
-          "meanEvalWallTimeMs": 5.442666250000002,
-          "meanEvalSamplesPerSecond": 18384.63544765425,
+          "meanEvalWallTimeMs": 5.443812750000006,
+          "meanEvalSamplesPerSecond": 18374.00289003572,
           "meanActiveBlockCount": 4,
           "meanActiveHeadCount": 16,
           "meanFrameCount": 64,
@@ -254,15 +269,15 @@
           "topologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
           "meanEvalMeanSquaredError": 0.22329852374928322,
           "meanExactWithinToleranceFraction": 0.19,
-          "meanEvalWallTimeMs": 0.8535102500002267,
-          "meanEvalSamplesPerSecond": 117176.20355117971,
+          "meanEvalWallTimeMs": 0.8693854999999076,
+          "meanEvalSamplesPerSecond": 115050.17177340713,
           "meanActiveBlockCount": 1,
           "meanActiveHeadCount": 2,
           "meanFrameCount": 8,
           "computeAdjustedExactFraction": 0.095
         }
       },
-      "moaEvalWallTimeSpeedupVsRegular": 6.376802446131791,
+      "moaEvalWallTimeSpeedupVsRegular": 6.261678794965623,
       "rawAccuracyCompetitive": false,
       "moaUsesLessCompute": true
     }

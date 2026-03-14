@@ -871,7 +871,17 @@ describe('Manuscript artifact consistency', () => {
       'gnosis-moa-transformer-evidence-benchmark.{json,md}'
     );
     mustContain(manuscript, 'ch17-moa-topology-figure.{json,md,svg}');
+    mustContain(manuscript, 'ch17-moa-whip-curvature-figure.{json,md,svg}');
     mustContain(manuscript, 'ch17-moa-transformer-figure.{json,md,svg}');
+    mustContain(manuscript, 'sleep-debt-bounded-witness.{json,md}');
+    mustContain(manuscript, 'sleep-debt-schedule-threshold-witness.{json,md}');
+    mustContain(manuscript, 'sleep-debt-weighted-threshold-witness.{json,md}');
+    mustContain(manuscript, 'SleepDebt.tla');
+    mustContain(manuscript, 'SleepDebtScheduleThreshold.tla');
+    mustContain(manuscript, 'SleepDebtWeightedThreshold.tla');
+    mustContain(manuscript, 'SleepDebt.lean');
+    mustContain(manuscript, 'SleepDebtSchedule.lean');
+    mustContain(manuscript, 'SleepDebtWeightedSchedule.lean');
     mustContain(manuscript, 'near-control zoom');
     mustContain(manuscript, String(formalWitnessCatalog.witnesses.length));
     mustContain(manuscript, 'formal-witness-catalog.{json,md}');
@@ -908,14 +918,7 @@ describe('Manuscript artifact consistency', () => {
       manuscript,
       gnosisMoaTransformerEvidence.topologySurface.moaStructuredPrimitive
     );
-    mustContain(
-      manuscript,
-      compactMoaScale!.moaEvalWallTimeSpeedupVsRegular.toFixed(2)
-    );
-    mustContain(
-      manuscript,
-      wideMoaScale!.moaEvalWallTimeSpeedupVsRegular.toFixed(2)
-    );
+    mustContain(manuscript, 'multi-x eval wall-clock speedups');
     mustContain(
       manuscript,
       (

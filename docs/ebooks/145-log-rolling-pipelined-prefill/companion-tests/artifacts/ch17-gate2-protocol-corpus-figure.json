@@ -1,0 +1,212 @@
+{
+  "label": "ch17-gate2-protocol-corpus-figure-v1",
+  "sourceLabel": "gate2-protocol-corpus-v1",
+  "corpus": {
+    "siteCount": 144,
+    "totalResources": 12371,
+    "medianResourcesPerSite": 73
+  },
+  "primaryPassed": 6,
+  "primaryTotal": 6,
+  "framingGainRangePct": {
+    "low": 72.25171515554133,
+    "high": 72.25171515554133
+  },
+  "completionMedianGainRangeMs": {
+    "low": 23.470470596673906,
+    "high": 192.0124693562102
+  },
+  "completionP95GainRangeMs": {
+    "low": 23.610012015225266,
+    "high": 254.51470610167235
+  },
+  "minPrimaryFramingCiLowPct": 72.18981282743775,
+  "minPrimaryCompletionMedianCiLowMs": 20.24026406653695,
+  "minPrimaryCompletionP95CiLowMs": 19.993947275127084,
+  "cells": [
+    {
+      "cellId": "rtt4-bw120-loss0",
+      "environmentLabel": "RTT 4 ms • BW 120 Mbps • loss 0%",
+      "primary": false,
+      "rttMs": 4,
+      "bandwidthMbps": 120,
+      "lossRate": 0,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.1946683199008,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 23.470470596673906,
+      "completionMedianGainMsCi": {
+        "low": 19.317888614472622,
+        "high": 26.068444664506842
+      },
+      "completionP95GainMs": 23.610012015225266,
+      "completionP95GainMsCi": {
+        "low": 19.52606099923213,
+        "high": 25.996320182777254
+      }
+    },
+    {
+      "cellId": "rtt12-bw80-loss0",
+      "environmentLabel": "RTT 12 ms • BW 80 Mbps • loss 0%",
+      "primary": true,
+      "rttMs": 12,
+      "bandwidthMbps": 80,
+      "lossRate": 0,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.19465716757308,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 23.618683545026244,
+      "completionMedianGainMsCi": {
+        "low": 20.24026406653695,
+        "high": 26.464984061683197
+      },
+      "completionP95GainMs": 23.792106205263337,
+      "completionP95GainMsCi": {
+        "low": 19.993947275127084,
+        "high": 25.98356732895195
+      }
+    },
+    {
+      "cellId": "rtt24-bw40-loss0.2pct",
+      "environmentLabel": "RTT 24 ms • BW 40 Mbps • loss 0.2%",
+      "primary": true,
+      "rttMs": 24,
+      "bandwidthMbps": 40,
+      "lossRate": 0.002,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.18981282743775,
+        "high": 72.33058146645442
+      },
+      "completionMedianGainMs": 25.07154629228387,
+      "completionMedianGainMsCi": {
+        "low": 21.373820812988924,
+        "high": 27.33975941242943
+      },
+      "completionP95GainMs": 24.78900077386311,
+      "completionP95GainMsCi": {
+        "low": 21.56460195217219,
+        "high": 28.010133093080185
+      }
+    },
+    {
+      "cellId": "rtt35-bw28-loss0.5pct",
+      "environmentLabel": "RTT 35 ms • BW 28 Mbps • loss 0.5%",
+      "primary": true,
+      "rttMs": 35,
+      "bandwidthMbps": 28,
+      "lossRate": 0.005,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.1946683199008,
+        "high": 72.3347234817295
+      },
+      "completionMedianGainMs": 28.240254781109115,
+      "completionMedianGainMsCi": {
+        "low": 25.463718158902566,
+        "high": 30.626082790410166
+      },
+      "completionP95GainMs": 29.122878062706377,
+      "completionP95GainMsCi": {
+        "low": 25.90789868232597,
+        "high": 31.359601216495548
+      }
+    },
+    {
+      "cellId": "rtt48-bw18-loss1pct",
+      "environmentLabel": "RTT 48 ms • BW 18 Mbps • loss 1%",
+      "primary": true,
+      "rttMs": 48,
+      "bandwidthMbps": 18,
+      "lossRate": 0.01,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.19504968042935,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 37.87865315525505,
+      "completionMedianGainMsCi": {
+        "low": 34.327145556263076,
+        "high": 42.562264225216495
+      },
+      "completionP95GainMs": 40.793433875341634,
+      "completionP95GainMsCi": {
+        "low": 36.43693752366562,
+        "high": 47.38734601846045
+      }
+    },
+    {
+      "cellId": "rtt75-bw10-loss1.5pct",
+      "environmentLabel": "RTT 75 ms • BW 10 Mbps • loss 1.5%",
+      "primary": true,
+      "rttMs": 75,
+      "bandwidthMbps": 10,
+      "lossRate": 0.015,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.1946683199008,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 60.355124691906894,
+      "completionMedianGainMsCi": {
+        "low": 54.83340908484206,
+        "high": 66.96778057898882
+      },
+      "completionP95GainMs": 71.12945481094812,
+      "completionP95GainMsCi": {
+        "low": 63.87783756146018,
+        "high": 78.48592000071585
+      }
+    },
+    {
+      "cellId": "rtt110-bw7-loss2pct",
+      "environmentLabel": "RTT 110 ms • BW 7 Mbps • loss 2%",
+      "primary": true,
+      "rttMs": 110,
+      "bandwidthMbps": 7,
+      "lossRate": 0.02,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.1946683199008,
+        "high": 72.3347234817295
+      },
+      "completionMedianGainMs": 92.39255619772393,
+      "completionMedianGainMsCi": {
+        "low": 83.37851987241902,
+        "high": 104.42619521173037
+      },
+      "completionP95GainMs": 110.5002382097864,
+      "completionP95GainMsCi": {
+        "low": 98.22322737802915,
+        "high": 126.00597468954038
+      }
+    },
+    {
+      "cellId": "rtt150-bw4-loss3pct",
+      "environmentLabel": "RTT 150 ms • BW 4 Mbps • loss 3%",
+      "primary": false,
+      "rttMs": 150,
+      "bandwidthMbps": 4,
+      "lossRate": 0.03,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.19222093113598,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 192.0124693562102,
+      "completionMedianGainMsCi": {
+        "low": 172.43254870038072,
+        "high": 230.960666150615
+      },
+      "completionP95GainMs": 254.51470610167235,
+      "completionP95GainMsCi": {
+        "low": 214.96085103870814,
+        "high": 277.32229145041674
+      }
+    }
+  ]
+}
