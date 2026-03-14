@@ -1555,6 +1555,32 @@ In `open-source/aeon-forge`, this deploy-control-plane surface is exercised by e
 
 The engine includes a wire format bridge to the Aeon Flow protocol. The same 10-byte frame header (§8.2) encodes `WorkFrame<T>` objects for network transmission. Frames encoded by Aeon Pipelines transcode into frames in Aeon Flow, and vice versa. The computation topology is independent of the transport topology.
 
+### 12.4 Frame-Native Execution Path
+
+The `Stream<T>` abstraction used in sections 12.1--12.3 provides rich semantics -- seven-state bitmask FSM, `AbortController`-based cancellation, lazy allocation, batch timestamps -- but each stream carries a fixed per-unit cost: one object allocation, one `AbortController`, one event listener registration, two state transitions with timestamp captures, and a `Promise` constructor wrapping the user's work function. For orchestration-dominated workloads (where user work resolves in $<$10 µs), this overhead is measurable.
+
+The Aeon Flow protocol's self-describing frame design (§8.2) provides an alternative: since every frame carries its own identity (`streamId` + `sequence`) and topology semantics (the `flags` byte encodes FORK, RACE, FOLD, VENT, FIN as a bitfield), the DAG structure is *implicit in the wire format*. No separate `Stream` object is needed to track which path a result belongs to or what operation produced it.
+
+This observation motivates a **frame-native executor** that bypasses `Stream` allocation entirely:
+
+- **`frameRace(workFns)`**: direct `Promise.race` on raw work functions. No `AbortController`, no state machine, no wrapping. Winner identified by index.
+- **`frameFold(workFns, merge)`**: direct `Promise.allSettled` on raw work functions. Results collected into a flat array and merged. No `Map<StreamId, T>` allocation, no `Set<StreamId>` for vented tracking.
+- **`frameWallington(chunks, stages)`**: flat pre-allocated result grid indexed by `[stage * chunkCount + chunk]`. Single-item ticks skip `Promise.all` entirely (direct `await`). Multi-item ticks fire all independent work concurrently via `Promise.all` on raw stage calls.
+
+The frame-native path produces identical results to the `Stream`-based path. It is used automatically when the GG runtime (§11) is available, and is also exported directly for callers who need minimum-overhead orchestration without `Stream` lifecycle semantics.
+
+| Operation | Stream-based | Frame-native | Speedup |
+|-----------|-------------|--------------|---------|
+| `fold(10)` | 17.1 µs | **3.8 µs** | **4.5x** |
+| `race(10)` | 21.5 µs | **4.6 µs** | **4.7x** |
+| `worthingtonWhip(4, 3, 50)` | 22.6 µs | **16.7 µs** | **1.4x** |
+| `wallingtonRotation(3, 10)` | 18.0 µs | 20.4 µs | ~1x |
+| `wallingtonRotation(5, 100)` | 154.7 µs | 191.9 µs | ~1x |
+
+The fold and race speedups are substantial (4--5x) because per-stream overhead dominates when work functions resolve immediately. The Wallington rotation shows parity because the `Promise.all`-per-tick scheduling cost dominates over per-item allocation savings when stage functions are trivially fast ($<$1 µs). For workloads with real I/O latency (network, disk, inference), the tick-parallel topology provides wall-clock speedup proportional to the parallelism degree at each tick, which the sequential `Stream`-based path cannot exploit.
+
+The frame-native path demonstrates that the protocol's self-describing design is not merely a transport optimization -- it is an *execution model*. The 10-byte header already encodes the DAG semantics that the `Stream` state machine tracks at higher cost. When the topology is known (fork $\rightarrow$ race, fork $\rightarrow$ fold, tick-parallel Wallington), the frame protocol's identity model (`streamId` + `sequence`) is sufficient to route results without per-unit lifecycle management.
+
 ## 13. Validation
 
 The claims are backed by executable tests across five primary, project-authored evidence suites:
