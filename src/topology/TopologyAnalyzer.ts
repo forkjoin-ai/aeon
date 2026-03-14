@@ -137,7 +137,7 @@ export class TopologyAnalyzer {
   /**
    * Quick deficit check — just the number, in Bules.
    * Returns Δβ = intrinsicBeta1 - actualBeta1.
-   * 0 Bules = optimal. >0 Bules = wasted parallelism.
+   * 0 Bules = topology-matched. >0 Bules = wasted parallelism.
    * Negative means the system has MORE parallelism than needed (over-forking).
    */
   static deficit(graph: ComputationGraph, intrinsicBeta1: number): number {
@@ -521,11 +521,11 @@ function computeDeficit(betti: BettiNumbers, intrinsicBeta1: number): DeficitRep
 
   let assessment: string;
   if (deficit === 0) {
-    assessment = 'Optimal: 0 Bules — implementation topology matches problem topology';
+    assessment = 'Topology-matched: 0 Bules — implementation topology matches problem topology';
   } else if (deficit < 0) {
     assessment = `Over-forked: ${-deficit} excess parallel paths beyond the problem's intrinsic β₁* = ${intrinsicBeta1}`;
   } else if (utilization >= 0.8) {
-    assessment = `Near-optimal: ${deficit} Bule${deficit !== 1 ? 's' : ''} of waste — ${(utilization * 100).toFixed(0)}% of natural parallelism utilized`;
+    assessment = `Near-matched: ${deficit} Bule${deficit !== 1 ? 's' : ''} of waste — ${(utilization * 100).toFixed(0)}% of natural parallelism utilized`;
   } else if (utilization >= 0.5) {
     assessment = `Underutilized: ${deficit} Bule${deficit !== 1 ? 's' : ''} of waste — ${(utilization * 100).toFixed(0)}% of natural parallelism utilized`;
   } else if (betti.beta1 === 0) {

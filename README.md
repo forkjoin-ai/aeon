@@ -8,7 +8,7 @@ The fair brag is not that this repo solves every distributed-systems problem. It
 
 - Aeon Flow gives you one compact frame format that can ride UDP, WebSocket, WebTransport, IPC, or anything else that can move bytes.
 - The library surface is broad: sync coordination, conflict handling, offline queues, compression, persistence, crypto, topology tools, and transport helpers all live in one package.
-- The repo has real supporting material around it: docs, a manuscript, companion tests, protocol shootouts, and small tooling packages instead of a single README making promises by itself.
+- The repo has real supporting material around it: docs, a manuscript, companion tests, protocol shootouts, and small tooling packages instead of a single README making promises by itself, including the current Chapter 17 formal boundary for bounded coupled-manifold handoff across app boundaries.
 - There is room to grow with it. The main package exports focused subpaths like `flow`, `offline`, `compression`, `versioning`, `distributed`, `persistence`, `crypto`, and `topology`.
 
 ## Aeon Flow At A Glance
@@ -143,7 +143,7 @@ migrationEngine.registerMigration({
 - [docs/ebooks/README.md](./docs/ebooks/README.md): ebook index
 - [docs/ebooks/145-log-rolling-pipelined-prefill/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/README.md): main book/manuscript hub
 - [docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md](./docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md): manuscript source
-- [docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md): reproducibility companion
+- [docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md): reproducibility companion, including the bounded affine queue-family `continuousHarris` witness surface and the bounded inter-app handoff theorem
 - [ROADMAP.md](./ROADMAP.md): near-term direction
 
 ## Why This README Is Grounded

@@ -9,6 +9,16 @@ This is the short, tool-based list of what still remains before the Chapter 17 f
 
 ## Right Now
 
+- [ ] Mechanize `THM-RECURSIVE-COARSENING-SYNTHESIS` so Betti synthesizes quotient witnesses and aggregate coarse nodes from verified subgraphs.
+  Tool surfaces: [ch17-arxiv-manuscript.md](./ch17-arxiv-manuscript.md), [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), [companion-tests/formal/README.md](./companion-tests/formal/README.md), [companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/InterferenceCoarsening.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/InterferenceCoarsening.lean), [`open-source/gnosis/GnosisProofs.lean`](../../../../gnosis/GnosisProofs.lean), [`open-source/gnosis/src/betty/stability.ts`](../../../../gnosis/src/betty/stability.ts), [`open-source/gnosis/src/betty/lean.ts`](../../../../gnosis/src/betty/lean.ts)
+  Current floor: `THM-RENORMALIZATION-COARSENING` already closes the manual many-to-one witness and one-node measurable renormalization surface, but the quotient operator and aggregate coarse node still have to be hand-constructed.
+  Next useful move: extend the Betti-to-Lean bridge from manually supplied `ManyToOneGraphQuotient` data to syntax-derived fibers, aggregate-node emission, and recursive drift-certificate discharge.
+
+- [ ] Synthesize measurable small sets, minorization data, and non-queue kernels from `.gg` syntax instead of stopping at the bounded affine queue-family `continuousHarris` witness.
+  Tool surfaces: [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), [companion-tests/formal/README.md](./companion-tests/formal/README.md), [companion-tests/formal/lean/README.md](./companion-tests/formal/lean/README.md), [`open-source/gnosis/GnosisProofs.lean`](../../../../gnosis/GnosisProofs.lean), [`open-source/gnosis/src/betty/stability.ts`](../../../../gnosis/src/betty/stability.ts), [`open-source/gnosis/src/betty/lean.ts`](../../../../gnosis/src/betty/lean.ts)
+  Current floor: Betti can already emit bounded affine `*_measurable_observable`, `*_measurable_observable_drift`, and `*_measurable_continuous_harris_certified` queue theorems when syntax supplies `observable_kind`, `observable`, `observable_scale`, `observable_offset`, and `drift_gap` with `0 < driftGap <= observableScale`.
+  Next useful move: lower richer continuous `.gg` observables into measurable kernels that carry compiler-synthesized small-set and minorization witnesses rather than queue-family hardwiring.
+
 - [ ] Tighten the Jackson envelope ladder from the current residual-certified convergence scaffold to a sharper closed-form local certificate.
   Tool surfaces: [JacksonQueueing.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/JacksonQueueing.lean)
   Current floor: the package already has the generic finite-step family `throughputEnvelopeApprox n`, with `n = 0` the global envelope, `n = 1` the nodewise `localThroughputEnvelope`, `n = 2` the deeper `secondOrderThroughputEnvelope`, the descending-ladder theorem `throughputEnvelopeApprox_succ_le`, the scalar residual/error certificates, the lower-side residual certificate, the formal lower/upper bracket `(trafficApprox lowerStep).toReal ≤ α_spec ≤ throughputEnvelopeApprox upperStep`, and now the routing-shaped node-local residual ladder `throughputResidualApprox n`.
@@ -20,6 +30,11 @@ This is the short, tool-based list of what still remains before the Chapter 17 f
   Next useful move: derive still-richer decomposition identities directly from arbitrary chosen Lyapunov expressions, beyond the current built-in minimum-slack/score/service-slack/routing-pressure families.
 
 ## Next After That
+
+- [ ] Close the sleep-debt homology as a bounded theorem-and-data package before moving it into the manuscript.
+  Tool surfaces: [ch17-sleep-debt-homology-note.md](./ch17-sleep-debt-homology-note.md), [ch17-sleep-debt-calibration-sources.md](./ch17-sleep-debt-calibration-sources.md), [ch17-sleep-debt-state-space-bridge.md](./ch17-sleep-debt-state-space-bridge.md), [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), [companion-tests/formal/SleepDebt.tla](./companion-tests/formal/SleepDebt.tla), [companion-tests/formal/SleepDebtScheduleThreshold.tla](./companion-tests/formal/SleepDebtScheduleThreshold.tla), [companion-tests/formal/SleepDebtWeightedThreshold.tla](./companion-tests/formal/SleepDebtWeightedThreshold.tla), [companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebt.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebt.lean), [companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtSchedule.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtSchedule.lean), [companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtWeightedSchedule.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtWeightedSchedule.lean), [companion-tests/artifacts/sleep-debt-bounded-witness.md](./companion-tests/artifacts/sleep-debt-bounded-witness.md), [companion-tests/artifacts/sleep-debt-schedule-threshold-witness.md](./companion-tests/artifacts/sleep-debt-schedule-threshold-witness.md), [companion-tests/artifacts/sleep-debt-weighted-threshold-witness.md](./companion-tests/artifacts/sleep-debt-weighted-threshold-witness.md)
+  Current floor: the bounded abstract recovery package already exists and is mechanized as `THM-SLEEP-DEBT`, the coarse repeated-cycle threshold analog is mechanized as `THM-SLEEP-SCHEDULE-THRESHOLD`, and the integerized `20.2 h` bridge is mechanized as `THM-SLEEP-WEIGHTED-THRESHOLD`; the remaining gap is biological calibration and external empirical support rather than the absence of any executable witness.
+  Closure condition: upgrade the bounded abstract witness into a bounded biological correspondence with calibrated observables, matching constructive theorems, and a reproducible external dataset for residual debt, capacity loss, and intrusion-style local venting under truncated recovery.
 
 - [ ] Extend beyond bounded exact multiclass/open-network witnesses.
   Tool surfaces: [QueueingProbabilisticNetworkKernel.tla](./companion-tests/formal/QueueingProbabilisticNetworkKernel.tla), [QueueingProbabilisticLargeNetworkKernel.tla](./companion-tests/formal/QueueingProbabilisticLargeNetworkKernel.tla), [JacksonQueueing.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/JacksonQueueing.lean)
@@ -39,6 +54,8 @@ This is the short, tool-based list of what still remains before the Chapter 17 f
 
 ## Closed So Far
 
+- [x] Bounded inter-app coupled-manifold tethering (`THM-GNOSIS-COUPLED`) in the shared `GnosisProofs.lean` workspace.
+- [x] Reviewer/manuscript/formal-doc alignment for the current cross-app stability boundary and its split rerun path (`bun run test:formal:lean` for the in-tree Lean package, `bun run test:formal:gnosis` for the compiler-side Gnosis proofs).
 - [x] Jackson raw-data spectral/constructive witness transfer from the global max-external/max-incoming envelope.
 - [x] Jackson finite-step ladder `throughputEnvelopeApprox n`.
 - [x] Jackson descending-ladder monotonicity `throughputEnvelopeApprox (n + 1) ≤ throughputEnvelopeApprox n`.

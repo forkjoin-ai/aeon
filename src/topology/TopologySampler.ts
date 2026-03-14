@@ -239,9 +239,9 @@ export class TopologySampler {
 
     let assessment: string;
     if (meanUtilization >= 0.95) {
-      assessment = `Optimal topology: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}`;
+      assessment = `Topology-matched: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}`;
     } else if (meanUtilization >= 0.7) {
-      assessment = `Near-optimal: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}. Peak β₁ = ${peakBeta1} shows the system CAN reach higher parallelism`;
+      assessment = `Near-matched: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}. Peak β₁ = ${peakBeta1} shows the system CAN reach higher parallelism`;
     } else if (meanUtilization >= 0.3) {
       assessment = `Underutilized: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}. The system is forcing a β₁* = ${this.config.intrinsicBeta1} problem through a β₁ ≈ ${meanBeta1.toFixed(1)} pipe`;
     } else {
