@@ -13,11 +13,11 @@ import {
 const moduleDir = dirname(fileURLToPath(import.meta.url));
 const sparseTopologyPath = resolve(
   moduleDir,
-  '../../../../../../gnosis/examples/benchmarks/moa-transformer-moa.gg',
+  '../../../../../../gnosis/examples/benchmarks/moa-transformer-moa.gg'
 );
 const denseTopologyPath = resolve(
   moduleDir,
-  '../../../../../../gnosis/examples/benchmarks/moa-transformer-regular.gg',
+  '../../../../../../gnosis/examples/benchmarks/moa-transformer-regular.gg'
 );
 
 describe('Chapter 17 MoA topology figure', () => {
@@ -25,7 +25,7 @@ describe('Chapter 17 MoA topology figure', () => {
     const report = buildCh17MoaTopologyFigureReport(
       readFileSync(sparseTopologyPath, 'utf8'),
       sparseTopologyPath,
-      denseTopologyPath,
+      denseTopologyPath
     );
 
     expect(report.label).toBe('ch17-moa-topology-figure-v1');
@@ -42,7 +42,7 @@ describe('Chapter 17 MoA topology figure', () => {
     const report = buildCh17MoaTopologyFigureReport(
       readFileSync(sparseTopologyPath, 'utf8'),
       sparseTopologyPath,
-      denseTopologyPath,
+      denseTopologyPath
     );
 
     const markdown = renderCh17MoaTopologyFigureMarkdown(report);

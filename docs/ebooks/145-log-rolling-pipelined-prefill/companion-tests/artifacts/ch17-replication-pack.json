@@ -6,15 +6,15 @@
       "label": "Manuscript draft",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md",
-      "sizeBytes": 211191,
-      "sha256": "05278c981db3762dfbfd5eee0b72ed81f2634b7303f751e38eb9c51aa9c2209b"
+      "sizeBytes": 212277,
+      "sha256": "46e4c140442ef48e46850875bb153f7d3bcf855ebcee9b29b25558139393d24b"
     },
     {
       "label": "Companion README",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md",
-      "sizeBytes": 27984,
-      "sha256": "0fbb6337457164276164bd6e4d93c41df5755f1c803eb912d89a9896b086b4d6"
+      "sizeBytes": 28782,
+      "sha256": "46d3864d0c85f3a1a9e2c8d0fcc8a5f20fa2522c355c9821e578500016cd9ec2"
     },
     {
       "label": "Evidence workflow",
@@ -129,6 +129,13 @@
       "sha256": "030f732ce53d1598c69b9228fd57145c1ad672f15892df68d44dd37a88ce67f2"
     },
     {
+      "label": "MoA topology figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-topology-figure.svg",
+      "sizeBytes": 34214,
+      "sha256": "d9033c38a8095627efda0778ea66fad777f308df54534822ee06ac35cef07b54"
+    },
+    {
       "label": "MoA figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-transformer-figure.svg",
@@ -213,6 +220,13 @@
       "sha256": "ff2e2671e2ad1cbc6b327b18dfca5cee52f5f08e929c0d798bef14dc4c3a932f"
     },
     {
+      "label": "MoA topology figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-topology-figure.ts",
+      "sizeBytes": 3877,
+      "sha256": "ffba9267b833a329981ddbdcf8da08e3a3d939756394b5f8de91aa5a26c57bd3"
+    },
+    {
       "label": "MoA figure script",
       "category": "script",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-transformer-figure.ts",
@@ -251,8 +265,8 @@
       "label": "Theorem ledger",
       "category": "formal",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md",
-      "sizeBytes": 71585,
-      "sha256": "a39331a5a75587ab1de16186e7f219051941b085935fe96eff2365b5a4f62cb6"
+      "sizeBytes": 73424,
+      "sha256": "f890eb5d54ed19f36256a443999f4009a576ec7e39e888deb6549c8efe5f8b61"
     },
     {
       "label": "Affine benchmark topology suite",
@@ -283,7 +297,7 @@
       "sha256": "8509bfd80a9f4358f90eb7fcd341b741e21774b1835bf59410f276ab43b41940"
     }
   ],
-  "entryCount": 40,
-  "artifactCount": 16,
+  "entryCount": 42,
+  "artifactCount": 17,
   "complete": true
 }

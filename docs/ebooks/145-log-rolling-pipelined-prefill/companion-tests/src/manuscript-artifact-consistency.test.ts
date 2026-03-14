@@ -870,6 +870,7 @@ describe('Manuscript artifact consistency', () => {
       manuscript,
       'gnosis-moa-transformer-evidence-benchmark.{json,md}'
     );
+    mustContain(manuscript, 'ch17-moa-topology-figure.{json,md,svg}');
     mustContain(manuscript, 'ch17-moa-transformer-figure.{json,md,svg}');
     mustContain(manuscript, 'near-control zoom');
     mustContain(manuscript, String(formalWitnessCatalog.witnesses.length));

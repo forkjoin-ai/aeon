@@ -72,7 +72,10 @@ function escapeXml(value: string): string {
     .replaceAll("'", '&apos;');
 }
 
-function parsePositiveInt(rawValue: string | undefined, fallback: number): number {
+function parsePositiveInt(
+  rawValue: string | undefined,
+  fallback: number
+): number {
   const parsed = Number(rawValue);
   if (!Number.isFinite(parsed) || parsed <= 0) {
     return fallback;
@@ -88,7 +91,7 @@ function parseProperties(propertiesRaw: string): Record<string, string> {
 
   const properties: Record<string, string> = {};
   const pairs = propertiesRaw.match(
-    /(\w+)\s*:\s*('[^']*'|"[^"]*"|\[[^\]]*\]|[^,]+)/g,
+    /(\w+)\s*:\s*('[^']*'|"[^"]*"|\[[^\]]*\]|[^,]+)/g
   );
   if (!pairs) {
     return properties;
@@ -129,12 +132,12 @@ function parseStructuredMoaConfig(source: string): StructuredMoaFigureConfig {
   const blocks = parsePositiveInt(properties.blocks, 4);
   const activeBlocks = Math.min(
     blocks,
-    parsePositiveInt(properties.activeBlocks ?? properties.active_blocks, 2),
+    parsePositiveInt(properties.activeBlocks ?? properties.active_blocks, 2)
   );
   const heads = parsePositiveInt(properties.heads, 4);
   const activeHeads = Math.min(
     heads,
-    parsePositiveInt(properties.activeHeads ?? properties.active_heads, 2),
+    parsePositiveInt(properties.activeHeads ?? properties.active_heads, 2)
   );
 
   return {
@@ -148,9 +151,19 @@ function parseStructuredMoaConfig(source: string): StructuredMoaFigureConfig {
   };
 }
 
-function circle(svg: string[], x: number, y: number, radius: number, fill: string, stroke: string, dashed = false): void {
+function circle(
+  svg: string[],
+  x: number,
+  y: number,
+  radius: number,
+  fill: string,
+  stroke: string,
+  dashed = false
+): void {
   svg.push(
-    `<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"${dashed ? ' stroke-dasharray="7 6"' : ''}/>`
+    `<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"${
+      dashed ? ' stroke-dasharray="7 6"' : ''
+    }/>`
   );
 }
 
@@ -162,10 +175,12 @@ function rect(
   height: number,
   fill: string,
   stroke: string,
-  dashed = false,
+  dashed = false
 ): void {
   svg.push(
-    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="16" ry="16" fill="${fill}" stroke="${stroke}" stroke-width="2"${dashed ? ' stroke-dasharray="8 7"' : ''}/>`
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="16" ry="16" fill="${fill}" stroke="${stroke}" stroke-width="2"${
+      dashed ? ' stroke-dasharray="8 7"' : ''
+    }/>`
   );
 }
 
@@ -179,10 +194,16 @@ function label(
     readonly weight?: number;
     readonly color?: string;
     readonly anchor?: 'start' | 'middle' | 'end';
-  } = {},
+  } = {}
 ): void {
   svg.push(
-    `<text x="${x}" y="${y}" text-anchor="${options.anchor ?? 'middle'}" font-family="Georgia, Times New Roman, serif" font-size="${options.size ?? 15}" font-weight="${options.weight ?? 400}" fill="${options.color ?? '#334155'}">${escapeXml(text)}</text>`,
+    `<text x="${x}" y="${y}" text-anchor="${
+      options.anchor ?? 'middle'
+    }" font-family="Georgia, Times New Roman, serif" font-size="${
+      options.size ?? 15
+    }" font-weight="${options.weight ?? 400}" fill="${
+      options.color ?? '#334155'
+    }">${escapeXml(text)}</text>`
   );
 }
 
@@ -193,17 +214,31 @@ function arrow(
   x2: number,
   y2: number,
   color: string,
-  dashed = false,
+  dashed = false
 ): void {
   svg.push(
-    `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2.5"${dashed ? ' stroke-dasharray="8 7"' : ''} marker-end="url(#arrow-${dashed ? 'suppressed' : 'active'})"/>`,
+    `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2.5"${
+      dashed ? ' stroke-dasharray="8 7"' : ''
+    } marker-end="url(#arrow-${dashed ? 'suppressed' : 'active'})"/>`
   );
 }
 
-function drawBlock(svg: string[], block: BlockLayout): { readonly outputX: number; readonly outputY: number } {
+function drawBlock(
+  svg: string[],
+  block: BlockLayout
+): { readonly outputX: number; readonly outputY: number } {
   const activeStroke = block.active ? '#0f766e' : '#94a3b8';
   const activeFill = block.active ? '#fcfffe' : '#f8fafc';
-  rect(svg, block.x, block.y, block.width, block.height, activeFill, activeStroke, !block.active);
+  rect(
+    svg,
+    block.x,
+    block.y,
+    block.width,
+    block.height,
+    activeFill,
+    activeStroke,
+    !block.active
+  );
   label(svg, block.x + block.width / 2, block.y + 28, block.label, {
     size: 18,
     weight: 700,
@@ -235,15 +270,31 @@ function drawBlock(svg: string[], block: BlockLayout): { readonly outputX: numbe
       13,
       headActive ? '#dcfce7' : '#f8fafc',
       headActive ? '#0f766e' : '#94a3b8',
-      !headActive,
+      !headActive
     );
     label(svg, headX, headY + 5, headLabel, {
       size: 12,
       weight: 700,
       color: headActive ? '#065f46' : '#64748b',
     });
-    arrow(svg, topRightX, topNodeY + 12, headX, headY - 13, headActive ? '#0f766e' : '#94a3b8', !headActive);
-    arrow(svg, headX, headY + 13, whipX, whipY - 14, headActive ? '#0f766e' : '#94a3b8', !headActive);
+    arrow(
+      svg,
+      topRightX,
+      topNodeY + 12,
+      headX,
+      headY - 13,
+      headActive ? '#0f766e' : '#94a3b8',
+      !headActive
+    );
+    arrow(
+      svg,
+      headX,
+      headY + 13,
+      whipX,
+      whipY - 14,
+      headActive ? '#0f766e' : '#94a3b8',
+      !headActive
+    );
   }
 
   circle(svg, whipX, whipY, 16, '#fff7ed', '#c2410c', !block.active);
@@ -262,7 +313,11 @@ function drawBlock(svg: string[], block: BlockLayout): { readonly outputX: numbe
   };
 }
 
-function drawPanel(svg: string[], report: Ch17MoaTopologyFigureReport, panel: PanelLayout): void {
+function drawPanel(
+  svg: string[],
+  report: Ch17MoaTopologyFigureReport,
+  panel: PanelLayout
+): void {
   rect(svg, panel.x, panel.y, panel.width, panel.height, '#fffdf8', '#d6d3c7');
   label(svg, panel.x + 28, panel.y + 36, panel.title, {
     anchor: 'start',
@@ -300,12 +355,23 @@ function drawPanel(svg: string[], report: Ch17MoaTopologyFigureReport, panel: Pa
     color: '#7c2d12',
   });
   arrow(svg, centerX, inputY + 15, centerX, outerRotationY - 16, '#64748b');
-  arrow(svg, centerX, outerRotationY + 16, centerX, outerRouterY - 16, '#2563eb');
+  arrow(
+    svg,
+    centerX,
+    outerRotationY + 16,
+    centerX,
+    outerRouterY - 16,
+    '#2563eb'
+  );
 
   const blockLabels = report.denseBaseline.blockLabels;
   const activeBlocks = panel.activeBlocks;
   const activeHeads = panel.activeHeads;
-  const blockOutputs: { readonly outputX: number; readonly outputY: number; readonly active: boolean }[] = [];
+  const blockOutputs: {
+    readonly outputX: number;
+    readonly outputY: number;
+    readonly active: boolean;
+  }[] = [];
 
   // Each block box renders the inner head rotation/router, labeled heads, and inner whip.
   for (let blockIndex = 0; blockIndex < report.blocks; blockIndex++) {
@@ -328,7 +394,7 @@ function drawPanel(svg: string[], report: Ch17MoaTopologyFigureReport, panel: Pa
       x + blockWidth / 2,
       blockY,
       blockActive ? '#0f766e' : '#94a3b8',
-      panel.showSuppressed && !blockActive,
+      panel.showSuppressed && !blockActive
     );
     blockOutputs.push({
       outputX: block.outputX,
@@ -350,7 +416,7 @@ function drawPanel(svg: string[], report: Ch17MoaTopologyFigureReport, panel: Pa
       centerX,
       outerWhipY - 18,
       output.active ? '#0f766e' : '#94a3b8',
-      panel.showSuppressed && !output.active,
+      panel.showSuppressed && !output.active
     );
   }
   circle(svg, centerX, outputY, 15, '#fffdf8', '#334155');
@@ -361,11 +427,17 @@ function drawPanel(svg: string[], report: Ch17MoaTopologyFigureReport, panel: Pa
 export function buildCh17MoaTopologyFigureReport(
   sparseTopologySource: string,
   sparseTopologyPath: string,
-  denseTopologyPath: string,
+  denseTopologyPath: string
 ): Ch17MoaTopologyFigureReport {
   const config = parseStructuredMoaConfig(sparseTopologySource);
-  const blockLabels = Array.from({ length: config.blocks }, (_, index) => `blk ${alphabeticLabel(index)}`);
-  const headLabels = Array.from({ length: config.heads }, (_, index) => `h${index + 1}`);
+  const blockLabels = Array.from(
+    { length: config.blocks },
+    (_, index) => `blk ${alphabeticLabel(index)}`
+  );
+  const headLabels = Array.from(
+    { length: config.heads },
+    (_, index) => `h${index + 1}`
+  );
 
   return {
     label: 'ch17-moa-topology-figure-v1',
@@ -395,7 +467,9 @@ export function buildCh17MoaTopologyFigureReport(
   };
 }
 
-export function renderCh17MoaTopologyFigureMarkdown(report: Ch17MoaTopologyFigureReport): string {
+export function renderCh17MoaTopologyFigureMarkdown(
+  report: Ch17MoaTopologyFigureReport
+): string {
   const lines: string[] = [];
   lines.push('# Chapter 17 MoA Topology Figure');
   lines.push('');
@@ -403,24 +477,38 @@ export function renderCh17MoaTopologyFigureMarkdown(report: Ch17MoaTopologyFigur
   lines.push(`- Primitive: \`${report.primitive}\``);
   lines.push(`- Sparse GG topology: \`${report.sparseTopologyPath}\``);
   lines.push(`- Dense GG topology: \`${report.denseTopologyPath}\``);
-  lines.push(`- Outer Wallington stages/chunks: \`${report.stages}\` / \`${report.chunks}\``);
-  lines.push(`- Sparse block activity: \`${report.activeBlocks}/${report.blocks}\``);
   lines.push(
-    `- Sparse head activity per live block: \`${report.activeHeadsPerLiveBlock}/${report.headsPerBlock}\``,
+    `- Outer Wallington stages/chunks: \`${report.stages}\` / \`${report.chunks}\``
+  );
+  lines.push(
+    `- Sparse block activity: \`${report.activeBlocks}/${report.blocks}\``
+  );
+  lines.push(
+    `- Sparse head activity per live block: \`${report.activeHeadsPerLiveBlock}/${report.headsPerBlock}\``
   );
   lines.push('');
   lines.push('## Sparse StructuredMoA');
   lines.push('');
   lines.push(
-    `- Live blocks: \`${report.sparseExample.activeBlockLabels.join(', ')}\`; suppressed blocks: \`${report.sparseExample.suppressedBlockLabels.join(', ')}\``,
+    `- Live blocks: \`${report.sparseExample.activeBlockLabels.join(
+      ', '
+    )}\`; suppressed blocks: \`${report.sparseExample.suppressedBlockLabels.join(
+      ', '
+    )}\``
   );
   lines.push(
-    `- Live heads: \`${report.sparseExample.activeHeadLabels.join(', ')}\`; suppressed heads: \`${report.sparseExample.suppressedHeadLabels.join(', ')}\``,
+    `- Live heads: \`${report.sparseExample.activeHeadLabels.join(
+      ', '
+    )}\`; suppressed heads: \`${report.sparseExample.suppressedHeadLabels.join(
+      ', '
+    )}\``
   );
   lines.push('');
   lines.push('## Dense rotated baseline');
   lines.push('');
-  lines.push(`- Live blocks: \`${report.denseBaseline.blockLabels.join(', ')}\``);
+  lines.push(
+    `- Live blocks: \`${report.denseBaseline.blockLabels.join(', ')}\``
+  );
   lines.push(`- Live heads: \`${report.denseBaseline.headLabels.join(', ')}\``);
   lines.push('');
   lines.push('## Legend');
@@ -429,29 +517,35 @@ export function renderCh17MoaTopologyFigureMarkdown(report: Ch17MoaTopologyFigur
   lines.push(`- Suppressed: ${report.legend.suppressed}`);
   lines.push('');
   lines.push(
-    'Interpretation: this figure isolates the executable topology itself rather than the benchmark metrics. The sparse panel shows one `2-of-4` router realization of `StructuredMoA`, with `2-of-4` heads live inside each selected block; the dense panel shows the matched `4-of-4` baseline with the same Wallington outer/inner rotations and Worthington inner/outer whips but no suppression.',
+    'Interpretation: this figure isolates the executable topology itself rather than the benchmark metrics. The sparse panel shows one `2-of-4` router realization of `StructuredMoA`, with `2-of-4` heads live inside each selected block; the dense panel shows the matched `4-of-4` baseline with the same Wallington outer/inner rotations and Worthington inner/outer whips but no suppression.'
   );
   lines.push('');
   return `${lines.join('\n')}\n`;
 }
 
-export function renderCh17MoaTopologyFigureSvg(report: Ch17MoaTopologyFigureReport): string {
+export function renderCh17MoaTopologyFigureSvg(
+  report: Ch17MoaTopologyFigureReport
+): string {
   const width = 1400;
   const height = 980;
   const sparseSubtitle = `${report.activeBlocks}/${report.blocks} blocks live, ${report.activeHeadsPerLiveBlock}/${report.headsPerBlock} heads per live block`;
   const denseSubtitle = `${report.blocks}/${report.blocks} blocks live, ${report.headsPerBlock}/${report.headsPerBlock} heads per block`;
   const svg: string[] = [];
   svg.push(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`,
-  );
-  svg.push('<title id="title">Chapter 17 StructuredMoA topology figure</title>');
-  svg.push(
-    '<desc id="desc">Artifact-generated topology figure showing the sparse StructuredMoA realization against the dense rotated baseline with labeled head rotation, head router, heads, and inner/outer whips.</desc>',
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`
   );
   svg.push(
-    '<defs><marker id="arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/></marker><marker id="arrow-suppressed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>',
+    '<title id="title">Chapter 17 StructuredMoA topology figure</title>'
   );
-  svg.push('<rect x="0" y="0" width="1400" height="980" fill="#f7f4ea" rx="24" ry="24"/>');
+  svg.push(
+    '<desc id="desc">Artifact-generated topology figure showing the sparse StructuredMoA realization against the dense rotated baseline with labeled head rotation, head router, heads, and inner/outer whips.</desc>'
+  );
+  svg.push(
+    '<defs><marker id="arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/></marker><marker id="arrow-suppressed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>'
+  );
+  svg.push(
+    '<rect x="0" y="0" width="1400" height="980" fill="#f7f4ea" rx="24" ry="24"/>'
+  );
   label(svg, 700, 66, 'StructuredMoA Topology', {
     size: 34,
     weight: 700,
@@ -465,7 +559,7 @@ export function renderCh17MoaTopologyFigureSvg(report: Ch17MoaTopologyFigureRepo
     {
       size: 16,
       color: '#475569',
-    },
+    }
   );
 
   drawPanel(svg, report, {

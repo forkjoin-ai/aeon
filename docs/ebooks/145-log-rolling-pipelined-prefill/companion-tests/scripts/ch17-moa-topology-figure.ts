@@ -17,9 +17,18 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/ch17-moa-topology-figure.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/ch17-moa-topology-figure.md');
-  const defaultSvgPath = resolve(moduleDir, '../artifacts/ch17-moa-topology-figure.svg');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-moa-topology-figure.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-moa-topology-figure.md'
+  );
+  const defaultSvgPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-moa-topology-figure.svg'
+  );
 
   let assertSurface = false;
   let jsonPath = defaultJsonPath;
@@ -72,32 +81,44 @@ async function main(): Promise<void> {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const sparseTopologyPath = resolve(
     moduleDir,
-    '../../../../../../gnosis/examples/benchmarks/moa-transformer-moa.gg',
+    '../../../../../../gnosis/examples/benchmarks/moa-transformer-moa.gg'
   );
   const denseTopologyPath = resolve(
     moduleDir,
-    '../../../../../../gnosis/examples/benchmarks/moa-transformer-regular.gg',
+    '../../../../../../gnosis/examples/benchmarks/moa-transformer-regular.gg'
   );
   const report = buildCh17MoaTopologyFigureReport(
     readFileSync(sparseTopologyPath, 'utf8'),
     sparseTopologyPath,
-    denseTopologyPath,
+    denseTopologyPath
   );
 
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  writeFileSync(options.markdownPath, renderCh17MoaTopologyFigureMarkdown(report), 'utf8');
-  writeFileSync(options.svgPath, renderCh17MoaTopologyFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
+  writeFileSync(
+    options.markdownPath,
+    renderCh17MoaTopologyFigureMarkdown(report),
+    'utf8'
+  );
+  writeFileSync(
+    options.svgPath,
+    renderCh17MoaTopologyFigureSvg(report),
+    'utf8'
+  );
 
   process.stdout.write(`ch17-moa-topology-figure: ${report.label}\n`);
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
-    `- primitive: ${report.primitive}, sparse=${report.activeBlocks}/${report.blocks} blocks, heads=${report.activeHeadsPerLiveBlock}/${report.headsPerBlock}\n`,
+    `- primitive: ${report.primitive}, sparse=${report.activeBlocks}/${report.blocks} blocks, heads=${report.activeHeadsPerLiveBlock}/${report.headsPerBlock}\n`
   );
 
   if (
@@ -116,6 +137,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

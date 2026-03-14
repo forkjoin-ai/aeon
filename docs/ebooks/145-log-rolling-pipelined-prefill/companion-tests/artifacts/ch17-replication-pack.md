@@ -2,14 +2,14 @@
 
 - Label: `ch17-replication-pack-v1`
 - Root command: `cd open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests && bun run test:ch17-external-replication`
-- Entries: `40`
-- Artifact entries: `16`
+- Entries: `42`
+- Artifact entries: `17`
 - Complete: `yes`
 
 | Label | Category | Path | Bytes | SHA-256 |
 | --- | --- | --- | ---: | --- |
-| Manuscript draft | `document` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md` | 211191 | `05278c981db3762dfbfd5eee0b72ed81f2634b7303f751e38eb9c51aa9c2209b` |
-| Companion README | `document` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md` | 27984 | `0fbb6337457164276164bd6e4d93c41df5755f1c803eb912d89a9896b086b4d6` |
+| Manuscript draft | `document` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md` | 212277 | `46e4c140442ef48e46850875bb153f7d3bcf855ebcee9b29b25558139393d24b` |
+| Companion README | `document` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md` | 28782 | `46d3864d0c85f3a1a9e2c8d0fcc8a5f20fa2522c355c9821e578500016cd9ec2` |
 | Evidence workflow | `workflow` | `.github/workflows/ch17-evidence.yml` | 1945 | `737235df866defea29f4440f1cd5bcd6a065c776b51846472090ae21b653019f` |
 | Quantum ablation artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/quantum-recombination-ablation.json` | 1396 | `6920d51512b943fc9a5e1aa1292dcce92ef1a30f83be89392f929e2e8b336181` |
 | Toy attention artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/toy-attention-fold-ablation.json` | 2152 | `589310d63767500cc0cde8d707da02889173f9943b220c886d8ae40ab92ae8d3` |
@@ -26,6 +26,7 @@
 | Adaptive supremum family-sweep artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/adaptive-supremum-family-sweep.json` | 7656 | `d39d0c1e2199a12c84fc23a3c9a9742943f4a5958cbd569adb17300f2e80e961` |
 | Figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-correspondence-boundary-figure.svg` | 14208 | `360d4b9a0db0d9a6da13874703e0007f1412a984d90b248b679b42bfe1d4a679` |
 | Expansion figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-boundary-expansion-figure.svg` | 17842 | `030f732ce53d1598c69b9228fd57145c1ad672f15892df68d44dd37a88ce67f2` |
+| MoA topology figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-topology-figure.svg` | 34214 | `d9033c38a8095627efda0778ea66fad777f308df54534822ee06ac35cef07b54` |
 | MoA figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-transformer-figure.svg` | 6962 | `63be40143fdebdd90773740052f46aaf8b868a5292d647ff7361c1f5e16ff9c7` |
 | Replication-pack script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-replication-pack.ts` | 2404 | `6f4a7adaa41f29430d08851aab7410fc63abe51502cc6b153734a45513030e58` |
 | Negative-controls script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gnosis-negative-controls-benchmark.ts` | 2735 | `db7d2326aece58a6ddb0444d6551d02e64eb1e88a57a705cefdc48a34ea62fe8` |
@@ -38,12 +39,13 @@
 | Adaptive supremum witness script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/adaptive-supremum-witness.ts` | 2892 | `9f109f175040fca9eebb8495c4074e7d0d7050509b81b8985d5902ba41cab239` |
 | Adaptive supremum family-sweep script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/adaptive-supremum-family-sweep.ts` | 2850 | `e5d04297716175f59321fca1ec9fa60c30bb3ab27180f3865a90ef31032bbd07` |
 | Expansion figure script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-boundary-expansion-figure.ts` | 4625 | `ff2e2671e2ad1cbc6b327b18dfca5cee52f5f08e929c0d798bef14dc4c3a932f` |
+| MoA topology figure script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-topology-figure.ts` | 3877 | `ffba9267b833a329981ddbdcf8da08e3a3d939756394b5f8de91aa5a26c57bd3` |
 | MoA figure script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-transformer-figure.ts` | 4091 | `cebeb2a7fac4458a6b216b4114970f719b3139853259fdd29132315e4f63cb29` |
 | External replication script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-external-replication.ts` | 2279 | `7bb8fb22fce5b3754a0021a356baec0416a81a240d1bc936d45e59dc81ebf690` |
 | Lean claims | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/Claims.lean` | 15006 | `6c426f5736691e81f4d199321d7d86b04240f45b9391cfe447c06763b441f3b1` |
 | Lean witness catalog | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/Witnesses.lean` | 4748 | `3a10680a28eaab8ae9cba391848341bb1c167c41d9267a25ba65e26e9637f7d1` |
 | Lean adaptive witness catalog | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/AdaptiveWitnesses.lean` | 4125 | `6eafe2bb1078c82152b3c5010832eb20ba45de8522050c59a2eb586ad63668aa` |
-| Theorem ledger | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md` | 71585 | `a39331a5a75587ab1de16186e7f219051941b085935fe96eff2365b5a4f62cb6` |
+| Theorem ledger | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md` | 73424 | `f890eb5d54ed19f36256a443999f4009a576ec7e39e888deb6549c8efe5f8b61` |
 | Affine benchmark topology suite | `topology` | `open-source/gnosis/examples/benchmarks/fold-training.test.gg` | 773 | `cd0734e4dc96534ed442a0a38456af68005aeb72c40f853438eda8d21d93e43b` |
 | Routed benchmark topology suite | `topology` | `open-source/gnosis/examples/benchmarks/moe-routing.test.gg` | 472 | `282621a787b783cfde5dceaba5cad909de0824ac9f5989b51a50a13e88671a2d` |
 | MoA benchmark topology suite | `topology` | `open-source/gnosis/examples/benchmarks/moa-transformer.test.gg` | 375 | `afbf38a2956103adf958d9dc231ee164777713a303db2b0475e843c2fad4a13e` |

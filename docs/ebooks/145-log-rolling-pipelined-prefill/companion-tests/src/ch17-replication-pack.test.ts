@@ -30,6 +30,11 @@ describe('Chapter 17 replication pack', () => {
     ).toBe(true);
     expect(
       report.entries.some((entry) =>
+        entry.path.endsWith('ch17-moa-topology-figure.svg')
+      )
+    ).toBe(true);
+    expect(
+      report.entries.some((entry) =>
         entry.path.endsWith('ch17-moa-transformer-figure.svg')
       )
     ).toBe(true);
@@ -51,6 +56,7 @@ describe('Chapter 17 replication pack', () => {
     expect(markdown).toContain(
       'gnosis-moa-transformer-evidence-benchmark.json'
     );
+    expect(markdown).toContain('ch17-moa-topology-figure.svg');
     expect(markdown).toContain('ch17-moa-transformer-figure.svg');
     expect(markdown).toContain('SHA-256');
   });
