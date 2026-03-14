@@ -10,6 +10,8 @@ import ForkRaceFoldTheorems.FailurePareto
 import ForkRaceFoldTheorems.FailureTrilemma
 import ForkRaceFoldTheorems.FailureUniversality
 import ForkRaceFoldTheorems.InterferenceCoarsening
+import ForkRaceFoldTheorems.LandauerBuley
+import ForkRaceFoldTheorems.LandauerBeautyBridge
 import ForkRaceFoldTheorems.QuorumAsyncNetwork
 import ForkRaceFoldTheorems.QuorumConsistency
 import ForkRaceFoldTheorems.QuorumLinearizability
@@ -26,6 +28,9 @@ import ForkRaceFoldTheorems.QueueStability
 import ForkRaceFoldTheorems.StateDependentQueueFamilies
 import ForkRaceFoldTheorems.Multiplexing
 import ForkRaceFoldTheorems.StagedExpansion
+import ForkRaceFoldTheorems.SleepDebt
+import ForkRaceFoldTheorems.SleepDebtSchedule
+import ForkRaceFoldTheorems.SleepDebtWeightedSchedule
 import ForkRaceFoldTheorems.WarmupEfficiency
 import ForkRaceFoldTheorems.WarmupController
 import ForkRaceFoldTheorems.Wallace

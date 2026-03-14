@@ -30,6 +30,13 @@ theorem c1_c4_imply_safety_and_liveness (model : C1C4Model) :
       (model.safetyFromC1C2C3 hC1 hC2 hC3)
       (model.livenessFromC4 hC4)
 
+/--
+Paper Classification: Paper-ready as stated
+
+Queue containment is trivially transparent: when the supplied `β₁=0` queue law
+holds, the framework recovers that one-path boundary, and when `β₁>0` the
+framework exposes an additional topology-control witness. No changes needed.
+-/
 structure QueueContainmentAssumptions where
   beta1 : Nat
   occupancy : Nat
@@ -49,6 +56,19 @@ theorem queueing_strict_extension_at_positive_beta (assumptions : QueueContainme
   intro hPositive
   exact assumptions.topologyControlAtPositiveBeta hPositive
 
+/--
+Paper Classification: Conditional (standard measure-theoretic regularity)
+
+The queue limit schema lifts finite-truncation conservation to the unbounded
+limit under standard regularity conditions:
+  - truncationsExhaustSupport — DCT/MCT exhaustion
+  - monotoneSupportApproximation — monotone approximation
+  - measurableCustomerTime / measurableSojournTime — measurability
+  - integrableDominatingEnvelope — dominated convergence envelope
+
+Paper states as: "Under standard regularity (measurability, dominated envelope,
+support exhaustion), the finite-truncation conservation law lifts to the limit."
+-/
 structure QueueLimitAssumptions where
   finiteTruncationsBalanced : Nat -> Prop
   truncationsExhaustSupport : Prop
@@ -971,6 +991,21 @@ theorem AdaptiveCeilingDriftSynthesis.ceilingDriftBound
 
 end AdaptiveExpectedLyapunov
 
+/--
+Paper Classification: Mostly constructive (7/10 discharged)
+
+State-dependent queue stability schema. Of 10 total conditions:
+  - 7 automatically discharged: irreducible (from bridge witness),
+    fosterLyapunovDrift (from drift bound), petiteSet (from finite small set),
+    positiveRecurrent (derived), stationaryLawExists (derived),
+    queueBalance (derived), terminalBalance (derived with vanishing open age)
+  - 3 user-supplied: explicit routing bridge, Lyapunov drift bound,
+    and finite small set
+
+Paper states as: "Given explicit routing bridge, Lyapunov drift bound, and
+finite small set, the framework derives positive recurrence, stationary law
+existence, and queue balance."
+-/
 structure StateDependentQueueStabilityAssumptions (Ω : Type*) [MeasurableSpace Ω] where
   law : MeasureQueueLaw Ω
   stationaryMeasure : Measure Ω
@@ -1165,6 +1200,21 @@ theorem state_dependent_queue_terminal_balance_schema
     hDrift
     hPetite
 
+/--
+Paper Classification: Constructive synthesis
+
+Adaptive supremum schema synthesizes drift witnesses automatically from raw
+ceiling domination data. Five synthesis routes are supported:
+  1. Minimum slack — `ofMinimumSlack`: bottleneck node identity
+  2. Normalized scores — `ofNormalizedScoreSlack`: nonneg score family normalized
+  3. Positive-part scores — `ofPositivePartScoreSlack`: clip then normalize
+  4. Selected slack — `ofSelectedSlack`: one-hot selector decomposition
+  5. Weighted slack — `ofNormalizedWeightedSlack`: weighted slack with
+     pointwise node slack bounds
+
+Paper states as: "Under adaptive ceiling domination, the drift witness is
+synthesized automatically via one of five constructive routes."
+-/
 structure AdaptiveSupremumStabilityAssumptions
     (ι Ω : Type*)
     [Fintype ι]
@@ -1339,6 +1389,18 @@ theorem adaptive_queue_terminal_balance_from_supremum_schema
     hIrreducible
     hPetite
 
+/--
+Paper Classification: Partially constructive
+
+`local_node_decomposition` (Claims.lean) discharges node classification
+constructively: every finite DAG node classifies into {fork, join, chain}.
+Remaining: full edge-coverage decomposition and encoding function existence
+are assumption-parameterized.
+
+Paper states as: "Every finite DAG node classifies into {fork, join, chain}
+(constructive). Under (B1) decomposition existence, (B2) soundness/completeness,
+(B3) encoding function existence, the full decomposition is expressible."
+-/
 structure DagExpressibilityAssumptions where
   finiteDag : Prop
   decompositionExists : Prop
@@ -1383,6 +1445,22 @@ theorem parser_closure_theorem (assumptions : ParserClosureAssumptions) :
   intro hGrammar hPairs hTotal hRoundTrip
   exact And.intro hGrammar (And.intro hPairs (And.intro hTotal hRoundTrip))
 
+/--
+Paper Classification: Conditional (7 physics axioms)
+
+The convergence schema claims fork/race/fold is the unique attractor in a modeled
+finite class. The 7 explicit assumptions are:
+  (A1) conservesEnergy — energy conservation
+  (A2) irreversibleTime — time irreversibility / second law
+  (A3) nonzeroGroundOverhead — non-zero ground-state overhead
+  (A4) finiteStateModel — finite-state model scope
+  (A5) throughputSelectionPressure — throughput selection pressure
+  (A6) forkRaceFoldAttractor — fork/race/fold is an attractor
+  (A7) noAlternativeInModelClass — uniqueness in model class
+
+Paper states as: "In any finite-state system satisfying (A1)-(A7), fork/race/fold
+is the unique throughput-optimal attractor."
+-/
 structure ConvergenceAssumptions where
   conservesEnergy : Prop
   irreversibleTime : Prop
