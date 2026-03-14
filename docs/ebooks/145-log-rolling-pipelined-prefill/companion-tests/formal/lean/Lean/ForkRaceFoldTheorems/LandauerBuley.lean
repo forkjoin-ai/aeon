@@ -16,10 +16,17 @@ matches it exactly at the fair fork witness. The measurable side now has both
 a countable-support entropy shell (arbitrary PMFs carry an `ENNReal` Shannon entropy written
 as a `tsum`, recovered as a supremum of finite truncations and, on countable measurable types,
 as a counting-measure `lintegral`; on finite supports this shell reduces to the earlier
-real-valued finite entropy) and measurable erasure theorems: the `ENNReal` entropy of any
+real-valued finite entropy), a parallel countable-support heat shell obtained by direct
+`ENNReal` scaling of the entropy-in-nats surface (again recovered as a supremum of finite
+truncations and, on countable measurable types, as a counting-measure `lintegral`; on finite
+supports this shell reduces to the earlier real-valued finite heat), an observable pushforward
+shell letting arbitrary source branch laws talk to finite/countable measurable observables
+through coarse-grained PMFs on the observable codomain, and measurable erasure theorems: the
+`ENNReal` entropy of any
 finite-type PMF is bounded by the frontier entropy and by the failure tax, the Landauer heat
 of that entropy is bounded by the failure-tax heat budget, and the Landauer heat of any
 finite-type PMF's entropy is bounded by the Landauer heat of any achievable collapse cost.
+The sharp finite heat equality story is also closed and lifts through the `ENNReal` shell.
 -/
 noncomputable def equiprobableFrontierEntropyBits (liveBranches : Nat) : ℝ :=
   Real.logb 2 liveBranches
@@ -71,6 +78,57 @@ noncomputable def failureTaxHeatBudget
     (liveBranches : Nat) : ℝ :=
   landauerHeatLowerBound boltzmannConstant temperature
     (deterministicCollapseFailureTax liveBranches)
+
+noncomputable def truncatedLandauerHeatLowerBoundENN
+    (boltzmannConstant temperature : ℝ)
+    {α : Type*}
+    (branchLaw : PMF α)
+    (support : Finset α) : ℝ≥0∞ :=
+  ENNReal.ofReal (boltzmannConstant * temperature) *
+    truncatedBranchEntropyNatsENN branchLaw support
+
+noncomputable def countableLandauerHeatLowerBoundENN
+    (boltzmannConstant temperature : ℝ)
+    {α : Type*}
+    (branchLaw : PMF α) : ℝ≥0∞ :=
+  ENNReal.ofReal (boltzmannConstant * temperature) *
+    countableBranchEntropyNatsENN branchLaw
+
+noncomputable def observedTruncatedBranchEntropyNatsENN
+    {α β : Type*}
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (support : Finset β) : ℝ≥0∞ :=
+  truncatedBranchEntropyNatsENN (branchLaw.map observable) support
+
+noncomputable def observedBranchEntropyNatsENN
+    {α β : Type*}
+    (branchLaw : PMF α)
+    (observable : α → β) : ℝ≥0∞ :=
+  countableBranchEntropyNatsENN (branchLaw.map observable)
+
+noncomputable def observedBranchEntropyBitsENN
+    {α β : Type*}
+    (branchLaw : PMF α)
+    (observable : α → β) : ℝ≥0∞ :=
+  countableBranchEntropyBitsENN (branchLaw.map observable)
+
+noncomputable def observedTruncatedLandauerHeatLowerBoundENN
+    (boltzmannConstant temperature : ℝ)
+    {α β : Type*}
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (support : Finset β) : ℝ≥0∞ :=
+  truncatedLandauerHeatLowerBoundENN boltzmannConstant temperature
+    (branchLaw.map observable) support
+
+noncomputable def observedLandauerHeatLowerBoundENN
+    (boltzmannConstant temperature : ℝ)
+    {α β : Type*}
+    (branchLaw : PMF α)
+    (observable : α → β) : ℝ≥0∞ :=
+  countableLandauerHeatLowerBoundENN boltzmannConstant temperature
+    (branchLaw.map observable)
 
 theorem uniform_branch_self_information_bits_eq_frontier_entropy_bits
     {liveBranches : Nat}
@@ -312,6 +370,22 @@ private theorem branch_entropy_term_nonneg
     exact ENNReal.toReal_mono ENNReal.one_ne_top (branchLaw.coe_le_one a)
   exact Real.negMulLog_nonneg ENNReal.toReal_nonneg hLeOne
 
+theorem finite_branch_entropy_nats_nonneg
+    {α : Type*} [Fintype α]
+    (branchLaw : PMF α) :
+    0 ≤ finiteBranchEntropyNats branchLaw := by
+  unfold finiteBranchEntropyNats
+  exact Finset.sum_nonneg fun a _ => branch_entropy_term_nonneg branchLaw a
+
+theorem finite_branch_entropy_bits_nonneg
+    {α : Type*} [Fintype α]
+    (branchLaw : PMF α) :
+    0 ≤ finiteBranchEntropyBits branchLaw := by
+  have hLogTwoPos : 0 < Real.log 2 := by
+    exact Real.log_pos (by norm_num)
+  unfold finiteBranchEntropyBits
+  exact div_nonneg (finite_branch_entropy_nats_nonneg branchLaw) (le_of_lt hLogTwoPos)
+
 theorem truncated_branch_entropy_natsENN_le_countable
     {α : Type*}
     (branchLaw : PMF α)
@@ -361,6 +435,148 @@ theorem countable_branch_entropy_bitsENN_eq_finite
     exact Real.log_pos (by norm_num)
   unfold countableBranchEntropyBitsENN finiteBranchEntropyBits
   rw [countable_branch_entropy_natsENN_eq_finite, ENNReal.ofReal_div_of_pos hLogTwoPos]
+
+theorem countable_branch_entropy_bitsENN_eq_frontier_entropy_bits_iff
+    {α : Type*} [Fintype α] [Nonempty α]
+    (branchLaw : PMF α) :
+    countableBranchEntropyBitsENN branchLaw =
+        ENNReal.ofReal (equiprobableFrontierEntropyBits (Fintype.card α)) ↔
+      branchLaw = PMF.uniformOfFintype α := by
+  have hFrontierNonneg : 0 ≤ equiprobableFrontierEntropyBits (Fintype.card α) := by
+    rw [← (finite_branch_entropy_bits_eq_frontier_entropy_bits_iff
+      (branchLaw := PMF.uniformOfFintype α)).2 rfl]
+    exact finite_branch_entropy_bits_nonneg (PMF.uniformOfFintype α)
+  rw [countable_branch_entropy_bitsENN_eq_finite,
+    ENNReal.ofReal_eq_ofReal_iff
+      (finite_branch_entropy_bits_nonneg branchLaw)
+      hFrontierNonneg]
+  exact finite_branch_entropy_bits_eq_frontier_entropy_bits_iff branchLaw
+
+theorem truncated_landauer_heat_lower_boundENN_le_countable
+    {α : Type*}
+    (boltzmannConstant temperature : ℝ)
+    (branchLaw : PMF α)
+    (support : Finset α) :
+    truncatedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw support ≤
+      countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw := by
+  unfold truncatedLandauerHeatLowerBoundENN countableLandauerHeatLowerBoundENN
+  gcongr
+  exact truncated_branch_entropy_natsENN_le_countable branchLaw support
+
+theorem countable_landauer_heat_lower_boundENN_eq_iSup_truncated
+    {α : Type*}
+    (boltzmannConstant temperature : ℝ)
+    (branchLaw : PMF α) :
+    countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw =
+      ⨆ support : Finset α,
+        truncatedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw support := by
+  unfold countableLandauerHeatLowerBoundENN truncatedLandauerHeatLowerBoundENN
+  rw [countable_branch_entropy_natsENN_eq_iSup_truncated, ENNReal.mul_iSup]
+
+theorem countable_landauer_heat_lower_boundENN_eq_count_lintegral
+    {α : Type*} [MeasurableSpace α] [Countable α] [MeasurableSingletonClass α]
+    (boltzmannConstant temperature : ℝ)
+    (branchLaw : PMF α) :
+    countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw =
+      ∫⁻ a, ENNReal.ofReal (boltzmannConstant * temperature) *
+        ENNReal.ofReal (Real.negMulLog (branchLaw a).toReal) ∂
+          (MeasureTheory.Measure.count : MeasureTheory.Measure α) := by
+  unfold countableLandauerHeatLowerBoundENN
+  rw [countable_branch_entropy_natsENN_eq_count_lintegral]
+  symm
+  exact MeasureTheory.lintegral_const_mul'
+    (μ := (MeasureTheory.Measure.count : MeasureTheory.Measure α))
+    (r := ENNReal.ofReal (boltzmannConstant * temperature))
+    (f := fun a : α => ENNReal.ofReal (Real.negMulLog (branchLaw a).toReal))
+    ENNReal.ofReal_ne_top
+
+theorem countable_landauer_heat_lower_boundENN_eq_count_lintegral_of_nonneg
+    {α : Type*} [MeasurableSpace α] [Countable α] [MeasurableSingletonClass α]
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature)
+    (branchLaw : PMF α) :
+    countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw =
+      ∫⁻ a, ENNReal.ofReal
+        ((boltzmannConstant * temperature) * Real.negMulLog (branchLaw a).toReal) ∂
+          (MeasureTheory.Measure.count : MeasureTheory.Measure α) := by
+  have hCoeff : 0 ≤ boltzmannConstant * temperature := by
+    positivity
+  calc
+    countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw =
+      ∫⁻ a, ENNReal.ofReal (boltzmannConstant * temperature) *
+        ENNReal.ofReal (Real.negMulLog (branchLaw a).toReal) ∂
+          (MeasureTheory.Measure.count : MeasureTheory.Measure α) :=
+        countable_landauer_heat_lower_boundENN_eq_count_lintegral
+          boltzmannConstant temperature branchLaw
+    _ =
+      ∫⁻ a, ENNReal.ofReal
+        ((boltzmannConstant * temperature) * Real.negMulLog (branchLaw a).toReal) ∂
+          (MeasureTheory.Measure.count : MeasureTheory.Measure α) := by
+        refine MeasureTheory.lintegral_congr_ae ?_
+        filter_upwards with a
+        rw [← ENNReal.ofReal_mul hCoeff]
+
+theorem observed_branch_mass_eq_fiber_measure
+    {α β : Type*} [MeasurableSpace α] [MeasurableSpace β] [MeasurableSingletonClass β]
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (hObservable : Measurable observable)
+    (b : β) :
+    (branchLaw.map observable) b =
+      branchLaw.toMeasure (observable ⁻¹' ({b} : Set β)) := by
+  rw [← PMF.toMeasure_apply_singleton
+    (branchLaw.map observable) b (MeasurableSet.singleton b)]
+  exact PMF.toMeasure_map_apply observable branchLaw ({b} : Set β)
+    hObservable (MeasurableSet.singleton b)
+
+theorem observed_branch_entropy_natsENN_eq_iSup_truncated
+    {α β : Type*}
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedBranchEntropyNatsENN branchLaw observable =
+      ⨆ support : Finset β,
+        observedTruncatedBranchEntropyNatsENN branchLaw observable support := by
+  unfold observedBranchEntropyNatsENN observedTruncatedBranchEntropyNatsENN
+  exact countable_branch_entropy_natsENN_eq_iSup_truncated
+    (branchLaw := branchLaw.map observable)
+
+theorem observed_branch_entropy_natsENN_eq_count_lintegral
+    {α β : Type*} [MeasurableSpace β] [Countable β] [MeasurableSingletonClass β]
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedBranchEntropyNatsENN branchLaw observable =
+      ∫⁻ b, ENNReal.ofReal (Real.negMulLog ((branchLaw.map observable) b).toReal) ∂
+        (MeasureTheory.Measure.count : MeasureTheory.Measure β) := by
+  unfold observedBranchEntropyNatsENN
+  exact countable_branch_entropy_natsENN_eq_count_lintegral
+    (branchLaw := branchLaw.map observable)
+
+theorem observed_landauer_heat_lower_boundENN_eq_iSup_truncated
+    {α β : Type*}
+    (boltzmannConstant temperature : ℝ)
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable =
+      ⨆ support : Finset β,
+        observedTruncatedLandauerHeatLowerBoundENN boltzmannConstant temperature
+          branchLaw observable support := by
+  unfold observedLandauerHeatLowerBoundENN observedTruncatedLandauerHeatLowerBoundENN
+  exact countable_landauer_heat_lower_boundENN_eq_iSup_truncated
+    boltzmannConstant temperature (branchLaw := branchLaw.map observable)
+
+theorem observed_landauer_heat_lower_boundENN_eq_count_lintegral
+    {α β : Type*} [MeasurableSpace β] [Countable β] [MeasurableSingletonClass β]
+    (boltzmannConstant temperature : ℝ)
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable =
+      ∫⁻ b, ENNReal.ofReal (boltzmannConstant * temperature) *
+        ENNReal.ofReal (Real.negMulLog ((branchLaw.map observable) b).toReal) ∂
+          (MeasureTheory.Measure.count : MeasureTheory.Measure β) := by
+  unfold observedLandauerHeatLowerBoundENN
+  exact countable_landauer_heat_lower_boundENN_eq_count_lintegral
+    boltzmannConstant temperature (branchLaw := branchLaw.map observable)
 
 private theorem nat_le_two_pow_pred {liveBranches : Nat}
     (hLive : 0 < liveBranches) :
@@ -507,6 +723,19 @@ theorem finite_branch_entropy_bits_eq_failure_tax_iff
               (liveBranches := Fintype.card α)
               (Fintype.card_pos_iff.mpr inferInstance)).2 hCard
 
+theorem countable_branch_entropy_bitsENN_eq_failure_tax_iff
+    {α : Type*} [Fintype α] [Nonempty α]
+    (branchLaw : PMF α) :
+    countableBranchEntropyBitsENN branchLaw =
+        ENNReal.ofReal (deterministicCollapseFailureTax (Fintype.card α)) ↔
+      branchLaw = PMF.uniformOfFintype α ∧
+        (Fintype.card α = 1 ∨ Fintype.card α = 2) := by
+  rw [countable_branch_entropy_bitsENN_eq_finite,
+    ENNReal.ofReal_eq_ofReal_iff
+      (finite_branch_entropy_bits_nonneg branchLaw)
+      (by positivity)]
+  exact finite_branch_entropy_bits_eq_failure_tax_iff branchLaw
+
 theorem achievable_collapse_entropy_bits_le_total_cost
     {start : List BranchSnapshot}
     {cost : Nat}
@@ -598,6 +827,50 @@ theorem finite_landauer_heat_le_failure_tax_budget
       hCoeff
   simpa [landauerHeatLowerBound, failureTaxHeatBudget, coeff, mul_assoc, mul_left_comm, mul_comm]
     using hBits
+
+theorem finite_landauer_heat_eq_failure_tax_budget_iff
+    {α : Type*} [Fintype α] [Nonempty α]
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannPos : 0 < boltzmannConstant)
+    (hTemperaturePos : 0 < temperature)
+    (branchLaw : PMF α) :
+    landauerHeatLowerBound boltzmannConstant temperature
+        (finiteBranchEntropyBits branchLaw) =
+      failureTaxHeatBudget boltzmannConstant temperature (Fintype.card α) ↔
+        branchLaw = PMF.uniformOfFintype α ∧
+          (Fintype.card α = 1 ∨ Fintype.card α = 2) := by
+  let coeff : ℝ := boltzmannConstant * temperature * Real.log 2
+  have hCoeffPos : 0 < coeff := by
+    unfold coeff
+    positivity
+  have hCoeffNe : coeff ≠ 0 := ne_of_gt hCoeffPos
+  constructor
+  · intro h
+    have hBits :
+        finiteBranchEntropyBits branchLaw =
+          deterministicCollapseFailureTax (Fintype.card α) := by
+      have hHeat :
+          coeff * finiteBranchEntropyBits branchLaw =
+            coeff * deterministicCollapseFailureTax (Fintype.card α) := by
+        simpa [coeff, landauerHeatLowerBound, failureTaxHeatBudget,
+          mul_assoc, mul_left_comm, mul_comm] using h
+      have hInv :
+          (coeff * finiteBranchEntropyBits branchLaw) * coeff⁻¹ =
+            (coeff * deterministicCollapseFailureTax (Fintype.card α)) * coeff⁻¹ := by
+        exact congrArg (fun x : ℝ => x * coeff⁻¹) hHeat
+      simpa [hCoeffNe, mul_assoc, mul_left_comm, mul_comm] using hInv
+    exact (finite_branch_entropy_bits_eq_failure_tax_iff branchLaw).1 hBits
+  · intro h
+    have hBits :
+        finiteBranchEntropyBits branchLaw =
+          deterministicCollapseFailureTax (Fintype.card α) :=
+      (finite_branch_entropy_bits_eq_failure_tax_iff branchLaw).2 h
+    have hMul :
+        finiteBranchEntropyBits branchLaw * coeff =
+          deterministicCollapseFailureTax (Fintype.card α) * coeff := by
+      exact congrArg (fun x : ℝ => x * coeff) hBits
+    simpa [coeff, landauerHeatLowerBound, failureTaxHeatBudget,
+      mul_assoc, mul_left_comm, mul_comm] using hMul
 
 theorem binary_landauer_heat_eq_failure_tax_budget_iff
     {boltzmannConstant temperature branchProbability : ℝ}
@@ -709,25 +982,86 @@ theorem countable_branch_entropy_bitsENN_le_failure_tax
 /--
 Measurable Landauer heat inequality: for any finite-type PMF, the Landauer heat of
 the countable-support Shannon entropy is bounded above by the failure-tax heat budget.
-This is the ENNReal lift of `finite_landauer_heat_le_failure_tax_budget`.
+This is expressed directly through `countableLandauerHeatLowerBoundENN`, which reduces
+on finite types to the earlier real-valued finite heat and then lifts
+`finite_landauer_heat_le_failure_tax_budget`.
 -/
+theorem countable_landauer_heat_lower_boundENN_eq_finite
+    {α : Type*} [Fintype α]
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature)
+    (branchLaw : PMF α) :
+    countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw =
+      ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature
+        (finiteBranchEntropyBits branchLaw)) := by
+  have hCoeff : 0 ≤ boltzmannConstant * temperature := by
+    positivity
+  have hLogTwoNe : Real.log 2 ≠ 0 := by
+    exact ne_of_gt (Real.log_pos (by norm_num))
+  unfold countableLandauerHeatLowerBoundENN
+  rw [countable_branch_entropy_natsENN_eq_finite]
+  calc
+    ENNReal.ofReal (boltzmannConstant * temperature) *
+        ENNReal.ofReal (finiteBranchEntropyNats branchLaw) =
+      ENNReal.ofReal
+        ((boltzmannConstant * temperature) *
+          finiteBranchEntropyNats branchLaw) := by
+        rw [← ENNReal.ofReal_mul hCoeff]
+    _ =
+      ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature
+        (finiteBranchEntropyBits branchLaw)) := by
+        congr 1
+        unfold landauerHeatLowerBound finiteBranchEntropyBits
+        field_simp [hLogTwoNe]
+
 theorem countable_landauer_heat_le_failure_tax_budget
     {α : Type*} [Fintype α] [Nonempty α]
     {boltzmannConstant temperature : ℝ}
     (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
     (hTemperatureNonneg : 0 ≤ temperature)
     (branchLaw : PMF α) :
-    ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature
-        (finiteBranchEntropyBits branchLaw)) ≤
+    countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw ≤
       ENNReal.ofReal (failureTaxHeatBudget boltzmannConstant temperature (Fintype.card α)) :=
-  ENNReal.ofReal_le_ofReal
+by
+  rw [countable_landauer_heat_lower_boundENN_eq_finite hBoltzmannNonneg hTemperatureNonneg]
+  exact ENNReal.ofReal_le_ofReal
     (finite_landauer_heat_le_failure_tax_budget hBoltzmannNonneg hTemperatureNonneg branchLaw)
+
+theorem countable_landauer_heat_eq_failure_tax_budget_iff
+    {α : Type*} [Fintype α] [Nonempty α]
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannPos : 0 < boltzmannConstant)
+    (hTemperaturePos : 0 < temperature)
+    (branchLaw : PMF α) :
+    countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw =
+      ENNReal.ofReal (failureTaxHeatBudget boltzmannConstant temperature (Fintype.card α)) ↔
+        branchLaw = PMF.uniformOfFintype α ∧
+          (Fintype.card α = 1 ∨ Fintype.card α = 2) := by
+  rw [countable_landauer_heat_lower_boundENN_eq_finite
+    (le_of_lt hBoltzmannPos)
+    (le_of_lt hTemperaturePos)]
+  have hCoeffNonneg : 0 ≤ boltzmannConstant * temperature * Real.log 2 := by
+    positivity
+  have hHeatNonneg :
+      0 ≤ landauerHeatLowerBound boltzmannConstant temperature
+        (finiteBranchEntropyBits branchLaw) := by
+    unfold landauerHeatLowerBound
+    exact mul_nonneg hCoeffNonneg (finite_branch_entropy_bits_nonneg branchLaw)
+  have hBudgetNonneg :
+      0 ≤ failureTaxHeatBudget boltzmannConstant temperature (Fintype.card α) := by
+    unfold failureTaxHeatBudget landauerHeatLowerBound
+    positivity
+  rw [ENNReal.ofReal_eq_ofReal_iff hHeatNonneg hBudgetNonneg]
+  exact finite_landauer_heat_eq_failure_tax_budget_iff
+    hBoltzmannPos hTemperaturePos branchLaw
 
 /--
 Measurable collapse-cost comparison: for any finite-type PMF whose support cardinality
 matches a live frontier, and any achievable deterministic collapse of that frontier,
 the Landauer heat of the PMF's entropy is bounded above by the Landauer heat of
-the collapse cost. This is the ENNReal lift of
+the collapse cost. This is expressed through `countableLandauerHeatLowerBoundENN`,
+which reduces to the earlier real-valued finite heat and then lifts
 `achievable_collapse_finite_entropy_landauer_heat_le_total_cost`.
 -/
 theorem countable_collapse_landauer_heat_le_total_cost
@@ -740,12 +1074,115 @@ theorem countable_collapse_landauer_heat_le_total_cost
     (hTemperatureNonneg : 0 ≤ temperature)
     (hCard : Fintype.card α = liveBranchCount start)
     (hAchievable : CollapseCostAchievableFrom start cost) :
-    ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature
-        (finiteBranchEntropyBits branchLaw)) ≤
+    countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw ≤
       ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature cost) :=
-  ENNReal.ofReal_le_ofReal
+by
+  rw [countable_landauer_heat_lower_boundENN_eq_finite hBoltzmannNonneg hTemperatureNonneg]
+  exact ENNReal.ofReal_le_ofReal
     (achievable_collapse_finite_entropy_landauer_heat_le_total_cost
       branchLaw hBoltzmannNonneg hTemperatureNonneg hCard hAchievable)
+
+theorem observed_branch_entropy_bitsENN_eq_finite
+    {α β : Type*} [Fintype β]
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedBranchEntropyBitsENN branchLaw observable =
+      ENNReal.ofReal (finiteBranchEntropyBits (branchLaw.map observable)) := by
+  unfold observedBranchEntropyBitsENN
+  exact countable_branch_entropy_bitsENN_eq_finite
+    (branchLaw := branchLaw.map observable)
+
+theorem observed_branch_entropy_bitsENN_le_frontier_entropy_bits
+    {α β : Type*} [Fintype β] [Nonempty β]
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedBranchEntropyBitsENN branchLaw observable ≤
+      ENNReal.ofReal (equiprobableFrontierEntropyBits (Fintype.card β)) := by
+  unfold observedBranchEntropyBitsENN
+  exact countable_branch_entropy_bitsENN_le_frontier_entropy_bits
+    (branchLaw := branchLaw.map observable)
+
+theorem observed_branch_entropy_bitsENN_le_failure_tax
+    {α β : Type*} [Fintype β] [Nonempty β]
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedBranchEntropyBitsENN branchLaw observable ≤
+      ENNReal.ofReal (deterministicCollapseFailureTax (Fintype.card β)) := by
+  unfold observedBranchEntropyBitsENN
+  exact countable_branch_entropy_bitsENN_le_failure_tax
+    (branchLaw := branchLaw.map observable)
+
+theorem observed_branch_entropy_bitsENN_eq_failure_tax_iff
+    {α β : Type*} [Fintype β] [Nonempty β]
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedBranchEntropyBitsENN branchLaw observable =
+        ENNReal.ofReal (deterministicCollapseFailureTax (Fintype.card β)) ↔
+      branchLaw.map observable = PMF.uniformOfFintype β ∧
+        (Fintype.card β = 1 ∨ Fintype.card β = 2) := by
+  unfold observedBranchEntropyBitsENN
+  exact countable_branch_entropy_bitsENN_eq_failure_tax_iff
+    (branchLaw := branchLaw.map observable)
+
+theorem observed_landauer_heat_lower_boundENN_eq_finite
+    {α β : Type*} [Fintype β]
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature)
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable =
+      ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature
+        (finiteBranchEntropyBits (branchLaw.map observable))) := by
+  unfold observedLandauerHeatLowerBoundENN
+  exact countable_landauer_heat_lower_boundENN_eq_finite
+    hBoltzmannNonneg hTemperatureNonneg (branchLaw := branchLaw.map observable)
+
+theorem observed_landauer_heat_le_failure_tax_budget
+    {α β : Type*} [Fintype β] [Nonempty β]
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature)
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable ≤
+      ENNReal.ofReal (failureTaxHeatBudget boltzmannConstant temperature (Fintype.card β)) := by
+  unfold observedLandauerHeatLowerBoundENN
+  exact countable_landauer_heat_le_failure_tax_budget
+    hBoltzmannNonneg hTemperatureNonneg (branchLaw := branchLaw.map observable)
+
+theorem observed_landauer_heat_eq_failure_tax_budget_iff
+    {α β : Type*} [Fintype β] [Nonempty β]
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannPos : 0 < boltzmannConstant)
+    (hTemperaturePos : 0 < temperature)
+    (branchLaw : PMF α)
+    (observable : α → β) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable =
+      ENNReal.ofReal (failureTaxHeatBudget boltzmannConstant temperature (Fintype.card β)) ↔
+        branchLaw.map observable = PMF.uniformOfFintype β ∧
+          (Fintype.card β = 1 ∨ Fintype.card β = 2) := by
+  unfold observedLandauerHeatLowerBoundENN
+  exact countable_landauer_heat_eq_failure_tax_budget_iff
+    hBoltzmannPos hTemperaturePos (branchLaw := branchLaw.map observable)
+
+theorem observed_collapse_landauer_heat_le_total_cost
+    {α β : Type*} [Fintype β] [Nonempty β]
+    (branchLaw : PMF α)
+    (observable : α → β)
+    {start : List BranchSnapshot}
+    {cost : Nat}
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature)
+    (hCard : Fintype.card β = liveBranchCount start)
+    (hAchievable : CollapseCostAchievableFrom start cost) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable ≤
+      ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature cost) := by
+  unfold observedLandauerHeatLowerBoundENN
+  exact countable_collapse_landauer_heat_le_total_cost
+    (branchLaw := branchLaw.map observable)
+    hBoltzmannNonneg hTemperatureNonneg hCard hAchievable
 
 /--
 Frontier entropy equals failure tax if and only if liveBranches ≤ 2.
