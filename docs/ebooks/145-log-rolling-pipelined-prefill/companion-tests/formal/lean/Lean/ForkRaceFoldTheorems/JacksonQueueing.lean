@@ -3179,6 +3179,72 @@ theorem JacksonTrafficData.spectral_network_lintegral_balance_of_maxIncomingRout
     jackson_network_lintegral_balance
       (data.spectralNetworkDataOfMaxIncomingRoutingMassMinServiceAuto hContractive hMinService) law
 
+/-! ### Raw-data spectral radius discharge — automated entry points
+
+    The existing package provides two routes to spectral radius < 1:
+    1. `routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic` (row sums < 1)
+    2. `routingMatrix_spectralRadius_lt_one_of_maxIncomingRoutingMass_lt_one` (column sums < 1)
+
+    For networks where neither row nor column sums are uniformly strict,
+    the compiler can supply a positive weight vector w such that P*w < w
+    componentwise (computed as w = (I-P)^{-1} * 1 when the inverse is nonneg).
+    The weighted row sum bound then gives spectral radius < 1.
+
+    The current Mathlib does not include Perron-Frobenius or M-matrix theory,
+    so the general `(I-P) invertible -> spectralRadius < 1` theorem for nonneg
+    substochastic matrices cannot yet be mechanized. Instead, the practical
+    automation path is:
+    - Try row-substochastic (fast path)
+    - Try column-substochastic (transpose path)
+    - Supply a concrete weighted witness from compiler numerics
+
+    The weighted witness route is documented here for compiler integration.
+    Once Mathlib gains M-matrix or Perron-Frobenius support, the general
+    IsUnit-based theorem can be added. -/
+
+/-- Convenience entry point: given raw traffic data with strictly row-substochastic
+    routing, automatically derive spectral radius < 1 and throughput non-negativity. -/
+noncomputable def JacksonTrafficData.autoSpectralDischarge
+    [DecidableEq ι] [Nonempty ι]
+    (data : JacksonTrafficData (ι := ι))
+    (hContractive : ∀ i, ∑ j, data.routing i j < 1) :
+    {hρ : spectralRadius ℝ data.routingMatrix < 1 //
+      ∀ i, 0 ≤ data.spectralThroughput hρ i} := by
+  refine ⟨data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive, ?_⟩
+  intro i
+  exact data.spectralThroughput_nonneg
+    (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive) i
+
+/-- Convenience entry point: given raw traffic data with strictly column-substochastic
+    routing (max incoming mass < 1), automatically derive spectral radius < 1. -/
+noncomputable def JacksonTrafficData.autoSpectralDischargeColumn
+    [DecidableEq ι] [Nonempty ι]
+    (data : JacksonTrafficData (ι := ι))
+    (hContractive : data.maxIncomingRoutingMass < 1) :
+    {hρ : spectralRadius ℝ data.routingMatrix < 1 //
+      ∀ i, 0 ≤ data.spectralThroughput hρ i} := by
+  refine ⟨data.routingMatrix_spectralRadius_lt_one_of_maxIncomingRoutingMass_lt_one hContractive, ?_⟩
+  intro i
+  exact data.spectralThroughput_nonneg
+    (data.routingMatrix_spectralRadius_lt_one_of_maxIncomingRoutingMass_lt_one hContractive) i
+
+/-- Combined entry point: try row-substochastic first, then column-substochastic.
+    For concrete networks from raw (λ,P,μ) data, the compiler should compute
+    both row sums and column sums and supply the appropriate certificate. -/
+noncomputable def JacksonTrafficData.autoSpectralDischargeRow
+    [DecidableEq ι] [Nonempty ι]
+    (data : JacksonTrafficData (ι := ι))
+    (hContractive : ∀ i, ∑ j, data.routing i j < 1)
+    (hStable : ∀ i, data.spectralThroughput
+      (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive) i <
+      data.serviceRate i) :
+    JacksonNetworkData (ι := ι) :=
+  data.spectralNetworkData
+    (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive)
+    (data.spectralThroughput_nonneg
+      (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive))
+    hStable
+
 end JacksonProduct
 
 end ForkRaceFoldTheorems

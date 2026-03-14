@@ -2137,4 +2137,59 @@ theorem optimality
 
 end BeautyLinearOptimalityInstance
 
+/-! ### THM-BEAUTY-UNIVERSAL-IMPOSSIBILITY:
+    Without thermodynamic observable coupling (or equivalent constraint linking
+    deficit to observables), zero topological deficit cannot be proved universally
+    optimal. This packages the existing mechanized counterexample as a formal
+    impossibility result. -/
+
+namespace BeautyUniversalImpossibility
+
+/-- Without thermodynamic observable coupling, zero topological deficit
+    cannot be proved universally optimal: there exist frontier points where
+    a positive-deficit point has strictly lower cost than a zero-deficit point
+    for a strict generalized-convex cost function. -/
+theorem beauty_universal_impossibility :
+    ∃ (floor underfit : BeautyFailureParetoPoint)
+      (cost : BeautyStrictGeneralizedConvexCost),
+      floor.deficit = 0 ∧
+      0 < underfit.deficit ∧
+      underfit.cost cost.toBeautyGeneralizedConvexCost <
+        floor.cost cost.toBeautyGeneralizedConvexCost :=
+  ⟨BeautyDeficitOnlyBoundary.floorPoint,
+   BeautyDeficitOnlyBoundary.underfitPoint,
+   BeautyDeficitOnlyBoundary.latencyWasteSumCost,
+   BeautyDeficitOnlyBoundary.floorPoint_zero_deficit,
+   BeautyDeficitOnlyBoundary.underfitPoint_positive_deficit,
+   BeautyDeficitOnlyBoundary.underfitPoint_beats_floor_for_sum_cost⟩
+
+/-- The impossibility extends to all strict real monotone objectives. -/
+theorem beauty_universal_impossibility_objective :
+    ∃ (floor underfit : BeautyFailureParetoPoint)
+      (objective : BeautyRealStrictObjective),
+      floor.deficit = 0 ∧
+      0 < underfit.deficit ∧
+      underfit.objectiveScore objective.toBeautyRealMonotoneObjective <
+        floor.objectiveScore objective.toBeautyRealMonotoneObjective :=
+  ⟨BeautyDeficitOnlyBoundary.floorPoint,
+   BeautyDeficitOnlyBoundary.underfitPoint,
+   BeautyDeficitOnlyBoundary.latencyWasteSumObjective,
+   BeautyDeficitOnlyBoundary.floorPoint_zero_deficit,
+   BeautyDeficitOnlyBoundary.underfitPoint_positive_deficit,
+   BeautyDeficitOnlyBoundary.underfitPoint_beats_floor_for_sum_objective⟩
+
+/-- The counterexample is componentwise: the positive-deficit point dominates
+    the zero-deficit point in both latency AND waste simultaneously. This is
+    the strongest possible impossibility: not just "some cost functions fail"
+    but "every monotone cost function fails." -/
+theorem beauty_universal_impossibility_componentwise :
+    ∃ (floor underfit : BeautyFailureParetoPoint),
+      floor.deficit = 0 ∧
+      0 < underfit.deficit ∧
+      underfit.latency < floor.latency ∧
+      underfit.waste < floor.waste :=
+  BeautyDeficitOnlyBoundary.exists_componentwise_improving_positive_deficit_point
+
+end BeautyUniversalImpossibility
+
 end ForkRaceFoldTheorems
