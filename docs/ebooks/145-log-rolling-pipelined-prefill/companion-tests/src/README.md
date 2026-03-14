@@ -35,6 +35,7 @@ Vitest suites that provide executable claim coverage for the manuscript.
 - `ch17-correspondence-boundary-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the four-panel artifact-generated Chapter 17 correspondence-boundary chart.
 - `ch17-boundary-expansion-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the near-control/regime/adversarial expansion chart.
 - `ch17-moa-transformer-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sweep/ablation chart.
+- `ch17-moa-topology-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sparse-vs-dense topology chart.
 - `ch17-external-replication.ts` / `.test.ts`: outside-rerun executor and tests that verify the command plan plus manifest/hash stability checks.
 - `deficit-evidence.test.ts`: protocol/settlement/healthcare deficit evidence checks.
 - `map-reduce-readiness.test.ts`: §6.14 readiness diagnostic equations and screening-boundary counterexamples.

@@ -46,6 +46,7 @@ bun run test:adaptive-supremum-family-sweep
 bun run test:ch17-figure
 bun run test:ch17-boundary-expansion-figure
 bun run test:ch17-moa-figure
+bun run test:ch17-moa-topology-figure
 bun run test:ch17-replication-pack
 bun run test:ch17-reproduction-surface
 bun run test:ch17-external-replication
@@ -83,6 +84,7 @@ bun run test:formal
 | `ch17-correspondence-boundary-figure.test.ts` + `scripts/ch17-correspondence-boundary-figure.ts` | §1.7, §6.12 | Auto-generated Chapter 17 figure surface built from the quantum ablation, toy-attention bootstrap intervals, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark |
 | `ch17-boundary-expansion-figure.test.ts` + `scripts/ch17-boundary-expansion-figure.ts` | §1.7, §6.12 | Auto-generated companion figure surface built from the near-control zoom, regime sweep, adversarial controls, and Lean-exported witness catalog so the expanded evidence boundary is visible as a single artifact |
 | `ch17-moa-transformer-figure.test.ts` + `scripts/ch17-moa-transformer-figure.ts` | §6.11, §1.7 | Auto-generated figure surface for the GG-backed `StructuredMoA` sweep/ablation result, showing speedup, closing eval-MSE gap, and sparsity-ablation frontier in one chart |
+| `ch17-moa-topology-figure.ts` / `.test.ts` | §6.11, §1.7 | Figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sparse-vs-dense topology diagram, exposing the routed blocks, live heads, and matched dense baseline as a manuscript artifact |
 | `ch17-external-replication.test.ts` + `scripts/ch17-external-replication.ts` | Chapter 17 outside rerun | Executes the full outside-rerun command chain, verifies the refreshed replication manifest, and confirms that the checked-in evidence bundle hashes still match the files on disk |
 | `deficit-evidence.test.ts` | §6.12 evidence table, §8.3 | Protocol/settlement/healthcare deficits and entropy-vent trend checks |
 | `map-reduce-readiness.test.ts` | §6.14 heuristic | Executable checks for `Q_mr`, `O_beta`, `R_qr` bounds/monotonicity, necessity of nonzero topological opportunity in the migration simulator, independent rank correlation, and non-automatic-quantum-advantage counterexamples |
@@ -111,6 +113,7 @@ bun run test:formal
 | `scripts/ch17-correspondence-boundary-figure.ts` + `artifacts/ch17-correspondence-boundary-figure.{json,md,svg}` | §1.7, §6.12 | Auto-generated manuscript figure combining the invariant-loss matrix, toy-attention interval chart, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark |
 | `scripts/ch17-boundary-expansion-figure.ts` + `artifacts/ch17-boundary-expansion-figure.{json,md,svg}` | §1.7, §6.12 | Auto-generated expansion figure combining the near-control zoom, regime sweep, adversarial controls, and Lean-originated witness bridge into one manuscript-ready surface |
 | `scripts/ch17-moa-transformer-figure.ts` + `artifacts/ch17-moa-transformer-figure.{json,md,svg}` | §6.11, §1.7 | Auto-generated manuscript figure for the GG-backed `StructuredMoA` sparse transformer result, combining scale sweep, accuracy-gap closure, and ablation frontier in one artifact |
+| `scripts/ch17-moa-topology-figure.ts` + `artifacts/ch17-moa-topology-figure.{json,md,svg}` | §6.11, §1.7 | Auto-generated topology figure for the sparse `StructuredMoA` GG surface, showing the 2-of-4 block routing, the 2-of-4 head routing inside each live block, and the dense rotated baseline in one artifact |
 | `scripts/ch17-external-replication.ts` + `artifacts/ch17-external-replication.{json,md}` | Chapter 17 outside rerun | Runs the full outside-rerun command surface and verifies that the refreshed replication-pack hashes still match the evidence bundle on disk |
 | `physics-hierarchy.test.ts` | §6.11 | Executable hierarchy checks for path-integral/race/fold mappings and energy partitions (model scope) |
 | `emergent-connections.test.ts` | Chapter 23 | Executable analog checks for nine emergent correspondences (model scope) |
@@ -155,6 +158,7 @@ bun test:adaptive-supremum-family-sweep # §5 raw-parameter family sweep for the
 bun test:ch17-figure   # §1.7, §6.12 artifact-generated manuscript figure
 bun test:ch17-boundary-expansion-figure # §1.7, §6.12 artifact-generated expanded boundary figure
 bun test:ch17-moa-figure # §6.11, §1.7 artifact-generated StructuredMoA figure
+bun test:ch17-moa-topology-figure # §6.11, §1.7 artifact-generated StructuredMoA topology diagram
 bun test:ch17-replication-pack # Chapter 17 bundle hash manifest + rerun command
 bun test:ch17-reproduction-surface # artifact/witness/manuscript reproduction surface without the separate full Lean gate
 bun test:ch17-external-replication # one-command outside rerun + manifest/hash verification

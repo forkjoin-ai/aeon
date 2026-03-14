@@ -64,6 +64,9 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `ch17-moa-transformer-figure.json`: machine-readable manifest for the GG-backed sparse-vs-dense MoA transformer figure.
 - `ch17-moa-transformer-figure.md`: human-readable summary of the scale-sweep, ablation-frontier, and GG-surface figure sources.
 - `ch17-moa-transformer-figure.svg`: manuscript-ready figure assembled from the GG-backed `StructuredMoA` evidence report.
+- `ch17-moa-topology-figure.json`: machine-readable manifest for the GG-backed sparse-vs-dense `StructuredMoA` topology figure.
+- `ch17-moa-topology-figure.md`: human-readable summary of the routed sparse blocks/heads and dense baseline topology sources.
+- `ch17-moa-topology-figure.svg`: manuscript-ready topology figure assembled directly from the sparse `StructuredMoA` GG benchmark surface.
 - `ch17-external-replication.json`: machine-readable outside-rerun report covering the end-to-end command plan and manifest/hash verification.
 - `ch17-external-replication.md`: human-readable outside-rerun summary for the same report.
 
@@ -200,6 +203,16 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - Speedup range: `2.56x` to `7.02x`
 - Wide-workload accuracy gap: `0.0025`
 - Interpretation: the figure packages the sweep speedup, the closing eval-MSE gap, the sparsity-ablation frontier, and the GG topology identity into one manuscript-ready surface
+
+## Chapter 17 MoA Topology Figure Snapshot
+
+- Protocol label: `ch17-moa-topology-figure-v1`
+- Source: `open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg`
+- Sparse GG primitive: `StructuredMoA`
+- Output surface: JSON + Markdown + SVG
+- Sparse routed blocks: `2/4`
+- Sparse routed heads per live block: `2/4`
+- Interpretation: the figure isolates the executable sparse topology itself, showing the selected blocks, selected heads, and the matched dense rotated baseline without folding the result into benchmark metrics
 
 ## Adaptive Witness Snapshot
 
