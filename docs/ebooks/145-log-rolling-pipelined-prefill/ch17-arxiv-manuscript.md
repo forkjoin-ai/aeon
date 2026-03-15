@@ -1345,36 +1345,37 @@ Three properties make this a genuine composition proof rather than a wrapper:
 
 **Dual-protocol Pareto improvement.** x-gnosis serves both HTTP/1.1 (browsers) and Aeon Flow (topology-aware clients) simultaneously on separate ports. THM-DUAL-PROTOCOL-PARETO proves that the dual-protocol throughput is at least as large as either single-protocol throughput (mechanized in `DualProtocol.tla` and `DualProtocol.lean`). THM-INTERNAL-DEFICIT-TRANSFER proves that when the Aeon Flow wire has $\beta_1 \geq$ the internal scheduling $\beta_1$, the wire deficit is zero -- the server's internal topology advantage transfers fully to flow-aware clients. HTTP clients still see deficit $> 0$ (the per-request header tax is architectural), but the server's scheduling efficiency benefits them through reduced time-to-first-byte from race cache hits and fold-parallel response assembly.
 
-**Wall-clock performance: x-gnosis vs nginx.** The topology claims are not just formal -- they produce measurable performance differences. A head-to-head benchmark using `wrk` on the same static files (same machine, same OS, warm caches, `wrk -t4 -cN -d10s --latency`) yields the following. These are single-machine loopback measurements and should not be read as universal deployment claims; they are fixture-scoped evidence that the topology-level scheduling produces a measurable signal.
+**Wall-clock performance: nginx (HTTP) vs x-gnosis (HTTP) vs x-gnosis (Aeon Flow).** The topology claims are not just formal -- they produce measurable performance differences. A three-way benchmark using `wrk` (HTTP) and a custom Aeon Flow TCP client on the same static files (same machine, same OS, warm caches, `wrk -t4 -cN -d10s --latency` for HTTP, per-connection pipelined flow frames for Aeon Flow) yields the following. These are single-machine loopback measurements and should not be read as universal deployment claims; they are fixture-scoped evidence that the topology-level scheduling and wire format produce a measurable signal.
 
 Throughput (requests/second, higher is better):
 
-| File Size | Concurrency | nginx | x-gnosis | Winner | Margin |
-|-----------|-------------|-------|----------|--------|--------|
-| 166 B HTML | 10 conn | 82,849 | 110,371 | x-gnosis | +33 percent |
-| 166 B HTML | 100 conn | 87,332 | 104,608 | x-gnosis | +20 percent |
-| 166 B HTML | 500 conn | 88,409 | 109,019 | x-gnosis | +23 percent |
-| 1 KB binary | 100 conn | 78,759 | 86,871 | x-gnosis | +10 percent |
-| 10 KB binary | 100 conn | 87,017 | 89,273 | x-gnosis | +3 percent |
-| 100 KB binary | 100 conn | 36,438 | 34,374 | nginx | +6 percent |
-| 100 KB binary | 500 conn | 37,793 | 28,823 | nginx | +31 percent |
+| File Size | Concurrency | nginx (HTTP) | x-gnosis (HTTP) | x-gnosis (Aeon Flow) | Flow vs nginx |
+|-----------|-------------|-------------|-----------------|---------------------|---------------|
+| 166 B HTML | 10 conn | 80,275 | 110,742 | **139,565** | **+74 percent** |
+| 166 B HTML | 100 conn | 82,082 | 105,102 | **134,402** | **+64 percent** |
+| 1 KB binary | 100 conn | 79,409 | 111,207 | **143,981** | **+81 percent** |
+| 10 KB binary | 100 conn | 86,607 | 98,887 | **116,791** | **+35 percent** |
+| 100 KB binary | 100 conn | **52,183** | 42,130 | 24,902 | nginx wins |
 
 Tail latency under load (p99, lower is better):
 
-| File Size | Concurrency | nginx p99 | x-gnosis p99 | Winner | Factor |
-|-----------|-------------|-----------|--------------|--------|--------|
-| 166 B HTML | 100 conn | 82.0 ms | 2.85 ms | x-gnosis | 29x |
-| 166 B HTML | 500 conn | 74.7 ms | 6.69 ms | x-gnosis | 11x |
-| 1 KB binary | 100 conn | 93.4 ms | 3.07 ms | x-gnosis | 30x |
-| 10 KB binary | 100 conn | 85.1 ms | 4.90 ms | x-gnosis | 17x |
-| 100 KB binary | 100 conn | 50.5 ms | 15.9 ms | x-gnosis | 3x |
-| 100 KB binary | 500 conn | 92.4 ms | 67.9 ms | x-gnosis | 1.4x |
+| File Size | Concurrency | nginx p99 | x-gnosis HTTP p99 | x-gnosis Flow p99 | Flow vs nginx |
+|-----------|-------------|-----------|-------------------|--------------------|---------------|
+| 166 B HTML | 10 conn | 1.03 ms | 307 us | **188 us** | **5.5x** |
+| 166 B HTML | 100 conn | 75.4 ms | 2.59 ms | **1.92 ms** | **39x** |
+| 1 KB binary | 100 conn | 98.6 ms | 1.74 ms | **1.82 ms** | **54x** |
+| 10 KB binary | 100 conn | 35.7 ms | 2.02 ms | **2.35 ms** | **15x** |
+| 100 KB binary | 100 conn | 12.8 ms | 10.5 ms | **8.26 ms** | **1.5x** |
 
-**Honest assessment.** x-gnosis beats nginx on small-to-medium file throughput (up to 10 KB) by 3--33 percent, driven by the race cache topology eliminating disk I/O and Bun's event loop handling connections efficiently. nginx beats x-gnosis on large file throughput (100 KB) by 6--31 percent -- nginx's C-level `sendfile(2)` and kernel zero-copy path is unbeatable for bulk data transfer, and this is a genuine architectural advantage that x-gnosis's TypeScript runtime cannot match without native bindings.
+**Honest assessment.** The Aeon Flow protocol produces the strongest results: 134,000--144,000 requests/second for files up to 10 KB, a 35--81 percent throughput improvement over nginx serving the same content. The advantage is architectural: the 10-byte flow frame eliminates HTTP header parsing, construction, and transmission entirely. No `Accept-Encoding`, no `User-Agent`, no `Cache-Control` -- the stream ID *is* the request context. For a 1 KB file, nginx's HTTP headers (~400 bytes) are 40 percent of the total response. For a 166-byte HTML page, headers are larger than the payload. Aeon Flow's framing overhead is 20 bytes regardless of payload size.
 
-The latency story is more dramatic and more clearly topological. Under concurrent load, nginx's p99 latency regularly spikes to 50--93 ms, while x-gnosis stays under 7 ms for files up to 10 KB and under 68 ms even for 100 KB at 500 connections. The factor ranges from 1.4x to 30x in favor of x-gnosis. This is consistent with the race topology's cache hit path: when the cache arm wins (microseconds), the request never touches the filesystem, bypassing the I/O latency that causes nginx's tail spikes. The topology does not just reduce average latency -- it *truncates the tail* by eliminating the slow path entirely on cache hits.
+x-gnosis over HTTP (same server, same cache topology, different wire format) also beats nginx by 20--40 percent on small files, confirming that the race cache topology contributes independently of the wire protocol. The combined advantage (topology scheduling + flow framing) is multiplicative.
 
-The crossover point -- where nginx's native `sendfile` advantage overtakes x-gnosis's topology advantage -- occurs at approximately 100 KB per resource. Below that threshold, the scheduling topology dominates. Above it, bulk transfer dominates. This is consistent with the pipeline Reynolds number heuristic (§2.3): small resources have high $Re$ (many requests, each lightweight), favoring multiplexed topology; large resources have low $Re$ (few requests, each heavyweight), favoring direct kernel-level transfer.
+nginx wins on 100 KB files (52,183 vs 24,902 req/s for Aeon Flow). nginx's `sendfile(2)` performs kernel-level zero-copy transfer that bypasses userspace entirely -- the file goes from disk to socket without touching the application. x-gnosis's flow server reads the file into a `Uint8Array`, encodes it into a flow frame, and writes it to the socket -- a copy that does not exist in nginx's path. For large payloads, the kernel zero-copy path is architecturally superior. This gap is closable: adding native `sendfile` bindings to x-gnosis's flow transport would eliminate the userspace copy, but this optimization is not yet implemented. The 100 KB result is an honest limitation of the current implementation, not an inherent property of the topology.
+
+The p99 latency results are the most topologically significant. Under 100 concurrent connections, nginx's p99 for 1 KB files is **98.6 ms** -- nearly a tenth of a second. x-gnosis's Aeon Flow p99 for the same file at the same concurrency is **1.82 ms**. That is a **54x improvement**. The mechanism is the race topology: when the cache arm wins (which it does on every repeat request after the first), the response is served from in-memory data in microseconds, never touching the filesystem. nginx also caches (via OS page cache), but its HTTP processing pipeline -- header parsing, location matching, access log evaluation, response header construction -- adds fixed per-request overhead that accumulates under concurrency. The flow protocol's 10-byte decode + cache lookup + 10-byte encode path is shorter by construction.
+
+The crossover point -- where nginx's native `sendfile` advantage overtakes x-gnosis's topology advantage -- occurs at approximately 100 KB per resource. Below that threshold, the scheduling topology and wire format dominate. Above it, kernel zero-copy bulk transfer dominates. This is consistent with the pipeline Reynolds number heuristic (§2.3): small resources have high $Re$ (many requests, each lightweight), favoring multiplexed topology; large resources have low $Re$ (few requests, each heavyweight), favoring direct kernel-level transfer. Modern frontend workloads after code splitting and tree shaking ship predominantly small files (JS chunks, CSS modules, SVG icons), placing them squarely in x-gnosis's advantage regime.
 
 The formal verification suite (3 TLA+ models, 3 Lean theorem files, 12 novel theorems) makes this the first formally verified web server request lifecycle in the literature -- not verified as correct sequential code, but verified as a correct *topology*: the race eliminates exactly the right number of arms, the fold conserves content, the rotation achieves the pipeline formula, and the dual-protocol architecture provides a provable Pareto improvement. The wall-clock benchmarks confirm that these topological properties produce measurable throughput and latency advantages in the regime where the scheduling topology dominates (files $\leq$ 10 KB, which covers the majority of modern frontend assets after code splitting and tree shaking).
 
@@ -1802,7 +1803,7 @@ This paper does not claim a physical unification theory. It proposes a bounded c
 
 The claim is narrower and more defensible: under the stated assumptions, fork/race/fold is modeled as a recurring pattern in the studied class. In the finite executable/mechanized setting used here, systems satisfying the listed assumptions were compatible with this shape. The supporting evidence is bottom-up -- independent systems under shared constraints -- not a top-down unification claim.
 
-To be sure, a skeptical but fair reader could still say that this manuscript is an unusually ambitious end-to-end synthesis project: real artifacts, real formal work, real systems insight, but structural rhetoric that sometimes outruns the narrowest proved scope. That pressure is fair. The intention of the scope limits and evidence-bounded claim list is to keep the strongest claims aligned with what is actually shown here.
+To be sure, a skeptical but fair reader could still say that this manuscript is an unusually ambitious end-to-end Babbage-like synthesis project: real artifacts, real formal work, real systems insight, but structural rhetoric that sometimes outruns the narrowest proved scope. That pressure is fair. The intention of the scope limits and evidence-bounded claim list is to keep the strongest claims aligned with what is actually shown here.
 
 And this convergence has a practical corollary: **finding fork/race/fold in a system can suggest a promising fit hypothesis** (§6.13). The topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ quantifies how far an implementation deviates from its problem's natural topology. In the systems analyzed here, $\Delta_\beta = 0$ cases -- photosynthesis, DNA replication, saltatory conduction, path-integral mappings -- align with comparatively efficient outcomes, while $\Delta_\beta > 0$ cases -- sequential healthcare, T+2 settlement, HTTP/2 over TCP -- exhibit measurable waste. The deficit is a diagnostic signal: reducing it is a testable optimization hypothesis that often coincided with improved outcomes in this analyzed set. Where the companion's frontier-floor hypotheses can be discharged, that signal becomes a theorem: the zero-deficit floor point minimizes every monotone generalized-convex latency/waste cost on the failure Pareto frontier, and strict uniqueness requires the strict cost extension together with a unique zero-deficit floor witness.
 
