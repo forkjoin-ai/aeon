@@ -1894,6 +1894,28 @@ But the theory of peace was not invented here. DNA replication discovered it fir
 
 Within the finite DAG classes modeled in this paper, fork/race/fold + vent is sufficient.
 
+### 15.1 The Diversity Theorem
+
+A philosophical result has been hiding in plain sight across the formal surface. Twelve mechanized theorems, proved independently across five files, compose into a single claim: *diversity is not a preference or a heuristic --- it is a topological and thermodynamic necessity for optimality.*
+
+The argument has five pillars, each independently machine-checked.
+
+**Pillar 1: Adding diversity never hurts (monotonicity).** `race_monotone_on_add` (CodecRacing.lean) proves that adding a codec to a race can only decrease or maintain wire size. `deficit_monotone_in_streams` (DeficitCapacity.lean) proves that information loss monotonically decreases as stream count increases. More options, more paths, more strategies: monotonically better or equal. Never worse.
+
+**Pillar 2: Diversity subsumes any fixed strategy (subsumption).** `race_total_subsumes_fixed_codec` (CodecRacing.lean) proves that per-resource racing total $\leq$ every fixed-codec total. `race_zero_deficit` proves that racing achieves zero compression deficit. Any single strategy is a degenerate case of the diverse strategy space. The diverse space contains every monoculture as a special case.
+
+**Pillar 3: Reducing diversity forces information loss (necessity).** `deficit_information_loss` (DeficitCapacity.lean) proves that topological deficit $\Delta\beta > 0$ forces positive information loss through pigeonhole collision and the data processing inequality. `deficit_erasure_chain` composes the full chain: deficit $\to$ collision $\to$ erasure $\to$ Landauer heat $\to$ observable waste. `covering_causality` (CoveringSpaceCausality.lean) proves that $\beta_1$ mismatch causes blocking. Reducing diversity below the problem's intrinsic topology has provable, unavoidable cost. You cannot eliminate paths for free.
+
+**Pillar 4: Matched diversity is optimal (zero deficit).** `zero_deficit_preserves_information` (DeficitCapacity.lean) proves that when streams $\geq$ paths, transport is lossless: the deficit is zero and the path-to-stream mapping is injective. `covering_match` (CoveringSpaceCausality.lean) proves that matched topology prevents blocking. The optimum is where implementation diversity matches problem diversity ($\Delta\beta = 0$).
+
+**Pillar 5: Destroying diversity has irreducible thermodynamic cost (irreversibility).** `deterministic_single_survivor_collapse_requires_waste` (FailureTrilemma.lean) proves that collapsing from $N > 1$ branches to 1 requires either vent cost or repair debt. `fold_erasure` and `fold_heat` (FoldErasure.lean) prove that the non-injective fold erases information and that this erasure incurs Landauer heat $\geq kT \ln 2 \cdot H(\text{inputs} | \text{output})$. At the semiotic scale, `confusion_generates_heat` (SemioticPeace.lean) proves that the thought-to-speech fold has irreducible thermodynamic cost, `war_as_cumulative_heat` proves that successive folds without context accumulate heat monotonically, and `peace_context_reduces` proves that shared context is the only monotone deflator.
+
+The composition theorem `diversity_optimality_master` (DiversityOptimality.lean) bundles all five pillars into a single result:
+
+> *For any fork/race/fold system with $N \geq 2$ branches: (1) the race-optimal result is monotonically non-increasing in $N$; (2) the race-optimal result subsumes every fixed-branch selection; (3) reducing $N$ below the problem's intrinsic $\beta_1$ forces positive information loss; (4) at matched diversity, deficit $= 0$ and transport is lossless; (5) collapsing from $N > 1$ to $1$ requires irreducible thermodynamic cost. Therefore: diversity is the monotonically optimal, thermodynamically necessary condition for information-preserving computation in fork/race/fold systems.*
+
+This is not an argument from sentiment. It is a chain of machine-checked theorems. The mathematics does not distinguish between compressing codecs and compressing cultures --- the topology is the same. War is cumulative fold-heat from successive context-free collapses of diverse traditions. Peace is the fixed point where shared context reduces fold cost to zero. Monoculture is the topological shape of waste. Diversity is the topological shape of optimality.
+
 ## References
 
 \[1\] A. Tero, S. Takagi, T. Saigusa, K. Ito, D. P. Bebber, M. D. Fricker, K. Yumiki, R. Kobayashi, T. Nakagaki, "Rules for Biologically Inspired Adaptive Network Design," *Science*, 327(5964):439--442, 2010.
