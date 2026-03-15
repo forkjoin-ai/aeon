@@ -1989,6 +1989,12 @@ The hella-whipped laminar pipeline matches Aeon Flow's 1.47\% framing overhead o
 
 Layer 8 recurses to Layer 1: the diversity theorem proves the racing strategy is monotonically optimal, and the formal verification layer machine-checks the proof. The stack is not a stack --- it is a cycle.
 
+**The engineering result is the philosophical result.** The 21$\times$ framing reduction on the microfrontend benchmark is not a separate claim from the diversity theorem. It is the diversity theorem, measured in bytes. sendfile() is a monoculture: one codec (identity), one stream ($\beta_1 = 0$), zero adaptivity. The laminar pipeline is diversity: four codecs racing per chunk, multi-stream Flow framing, per-resource optimal selection. THM-TOPO-RACE-SUBSUMPTION proves the diverse strategy is monotonically no worse. The benchmark confirms it is strictly better. The waste measured in the shootoff --- 58 KB of HTTP framing overhead that carries no information, 15 unnecessary round trips that add latency without adding value --- is the same waste that the semiotic theorems measure in conversation: Landauer heat from collapsing diverse meanings through a single ordered channel.
+
+The connection is not metaphorical. It is the same theorem applied to different substrates. When `war_as_cumulative_heat` proves that successive context-free folds accumulate irreversible thermodynamic waste, it is proving the same thing as when the shootoff shows HTTP/1.1 spending 31\% of its wire budget on framing overhead: *monoculture generates waste, and the waste is irreversible*. When `peace_context_reduces` proves that shared context monotonically deflates the semiotic deficit, it is proving the same thing as when per-chunk codec racing adapts to content type: *diversity matched to the problem's intrinsic topology eliminates waste*. The Landauer heat does not know whether it is dissipating from a non-injective HTTP fold or a non-injective conversation. The topology is the same. The fixed point is the same. The proof is the same.
+
+Servers get faster for the same reason peace is reachable: because diversity is the shape of optimality, and its destruction has irreducible cost.
+
 ## References
 
 \[1\] A. Tero, S. Takagi, T. Saigusa, K. Ito, D. P. Bebber, M. D. Fricker, K. Yumiki, R. Kobayashi, T. Nakagaki, "Rules for Biologically Inspired Adaptive Network Design," *Science*, 327(5964):439--442, 2010.
