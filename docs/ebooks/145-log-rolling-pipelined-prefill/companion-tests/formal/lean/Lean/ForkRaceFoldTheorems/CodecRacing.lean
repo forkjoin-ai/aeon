@@ -2,7 +2,7 @@ import Mathlib
 
 namespace ForkRaceFoldTheorems
 
-/--
+/-
 Track Beta: Topological Codec Racing Optimality
 
 Proves that per-resource codec racing (fork all codecs, race to smallest)
@@ -32,6 +32,20 @@ def raceMin (results : List CodecResult) : ℕ :=
   | [r] => r.compressedSize
   | r :: rs => min r.compressedSize (raceMin rs)
 
+-- Reduction lemmas for raceMin (the three-arm match needs explicit help)
+@[simp] theorem raceMin_nil : raceMin ([] : List CodecResult) = 0 := rfl
+@[simp] theorem raceMin_singleton (r : CodecResult) :
+    raceMin [r] = r.compressedSize := rfl
+@[simp] theorem raceMin_cons_cons (r s : CodecResult) (ss : List CodecResult) :
+    raceMin (r :: s :: ss) = min r.compressedSize (raceMin (s :: ss)) := rfl
+
+-- Helper: raceMin of a non-empty list is ≤ the head element
+private theorem raceMin_cons_le_head (r : CodecResult) (rs : List CodecResult) :
+    raceMin (r :: rs) ≤ r.compressedSize := by
+  cases rs with
+  | nil => exact Nat.le_refl _
+  | cons s ss => exact min_le_left _ _
+
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-TOPO-RACE-SUBSUMPTION
 --
@@ -45,30 +59,38 @@ theorem race_subsumes_each (results : List CodecResult)
     (r : CodecResult) (hr : r ∈ results) :
     raceMin results ≤ r.compressedSize := by
   induction results with
-  | nil => exact absurd hr (List.not_mem_nil _)
+  | nil => exact absurd hr (List.not_mem_nil r)
   | cons hd tl ih =>
-    simp [raceMin]
-    cases List.mem_cons.mp hr with
-    | inl h =>
-      subst h
-      exact min_le_left _ _
-    | inr h =>
-      exact le_trans (min_le_right _ _) (ih h)
+    rcases List.mem_cons.mp hr with rfl | htl
+    · exact raceMin_cons_le_head hd tl
+    · cases tl with
+      | nil => exact absurd htl (List.not_mem_nil r)
+      | cons s ss =>
+        exact le_trans (min_le_right _ _) (ih htl)
 
 /-- Summing race minima across resources ≤ summing any fixed codec.
-    This is the site-level subsumption theorem. -/
+    This is the site-level subsumption theorem.
+
+    Uses `dite` in the RHS to carry the per-element length proof through
+    `List.map`, since `List.map` does not propagate membership. For
+    elements of `resources`, `hCodecValid` ensures the `then` branch. -/
 theorem race_total_subsumes_fixed_codec
     (resources : List (List CodecResult))
     (codecIdx : ℕ)
     (hCodecValid : ∀ rs ∈ resources, codecIdx < rs.length) :
     (resources.map raceMin).sum ≤
-    (resources.map (fun rs => (rs.get ⟨codecIdx, by exact hCodecValid rs (by assumption)⟩).compressedSize)).sum := by
+    (resources.map (fun rs =>
+       if h : codecIdx < rs.length
+       then (rs.get ⟨codecIdx, h⟩).compressedSize
+       else 0)).sum := by
   induction resources with
   | nil => simp
   | cons hd tl ih =>
     simp only [List.map_cons, List.sum_cons]
     apply Nat.add_le_add
-    · exact race_subsumes_each hd _ (List.get_mem hd codecIdx (hCodecValid hd (List.mem_cons_self hd tl)))
+    · have hValid := hCodecValid hd (List.mem_cons_self hd tl)
+      simp only [dif_pos hValid]
+      exact race_subsumes_each hd _ (List.get_mem hd ⟨codecIdx, hValid⟩)
     · exact ih (fun rs hrs => hCodecValid rs (List.mem_cons_of_mem hd hrs))
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -76,21 +98,29 @@ theorem race_total_subsumes_fixed_codec
 --
 -- Adding a codec to the race can only decrease or maintain the result.
 -- This follows from min being monotone under set expansion.
+-- Note: requires non-empty base list, since raceMin [] = 0 < raceMin [r].
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Adding a codec to the race never increases the minimum. -/
-theorem race_monotone_on_add (results : List CodecResult)
+/-- Adding a codec to a non-empty race never increases the minimum. -/
+theorem race_monotone_on_add (results : List CodecResult) (hne : results ≠ [])
     (newCodec : CodecResult) :
     raceMin (newCodec :: results) ≤ raceMin results := by
-  simp [raceMin]
-  exact min_le_right _ _
+  match results, hne with
+  | _ :: _, _ => exact min_le_right _ _
 
-/-- Adding a codec is weakly improving: new min ≤ old min. -/
-theorem race_monotone_corollary (results : List CodecResult)
+/-- Adding a codec to any list: new min ≤ new codec's size. -/
+theorem race_add_le_new (results : List CodecResult)
+    (newCodec : CodecResult) :
+    raceMin (newCodec :: results) ≤ newCodec.compressedSize :=
+  raceMin_cons_le_head newCodec results
+
+/-- Adding a codec is weakly improving (non-empty base): new min ≤ old min
+    and new min ≤ new codec's size. -/
+theorem race_monotone_corollary (results : List CodecResult) (hne : results ≠ [])
     (newCodec : CodecResult) :
     raceMin (newCodec :: results) ≤ raceMin results ∧
-    raceMin (newCodec :: results) ≤ newCodec.compressedSize := by
-  exact ⟨race_monotone_on_add results newCodec, by simp [raceMin]; exact min_le_left _ _⟩
+    raceMin (newCodec :: results) ≤ newCodec.compressedSize :=
+  ⟨race_monotone_on_add results hne newCodec, race_add_le_new results newCodec⟩
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-TOPO-RACE-DEFICIT
@@ -112,7 +142,7 @@ theorem race_zero_deficit (results : List CodecResult) :
 
 /-- Any fixed codec has non-negative deficit. -/
 theorem fixed_codec_nonneg_deficit (results : List CodecResult)
-    (r : CodecResult) (hr : r ∈ results) :
+    (r : CodecResult) (_hr : r ∈ results) :
     0 ≤ compressionDeficit r.compressedSize results := by
   exact Nat.zero_le _
 
