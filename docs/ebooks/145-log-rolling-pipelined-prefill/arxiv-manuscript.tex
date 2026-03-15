@@ -2935,6 +2935,152 @@ B+)}\label{the-computational-domain-as-fold-grade-b}
 The computational domain can be viewed as a fold boundary that
 constrains reachable states and enforces closure in the modeled graph.
 
+\paragraph{The Apostolic Syllogism: Fork/Race/Fold in Belief Systems
+(Grade B+)}\label{the-apostolic-syllogism}
+
+The physics hierarchy above (path integral $\to$ Schr\"{o}dinger $\to$
+Newton) is a sequence of progressive folds through decreasing
+$\beta_1$. An analogous sequence appears in the history of ideas, where
+the pattern is not merely metaphorical but structurally isomorphic to
+the formal machinery of \S6.8 and the mechanized theorems of the
+companion package.
+
+\textbf{The Fork.} A new revelation introduces a contradictory axiom
+into a legacy system. In the Apostolic case, the legacy system is Second
+Temple Judaism (a monotheistic system with syntactic access to the First
+Cause via Law). The fork introduces a new access protocol (Grace/Spirit
+vs.\ Law/Syntax). In formal terms, this is a bifurcation: the system
+moves from $\beta_1 = 0$ (one path to the divine) to $\beta_1 \geq 1$
+(multiple competing soteriological paths). The fork creates potential
+energy --- stored capacity for future theological work that has not yet
+been resolved.
+
+\textbf{The Race.} After the fork, the system enters a race condition.
+Twelve initial agents (and rapidly more) attempt to reconcile the new
+branch with the legacy system. The Judaizers maintain backward
+compatibility with Torah. The Hellenizers optimize for the Gentile
+runtime. The Gnostics introduce additional forks (emanations, aeons,
+demiurges). This is asynchronous logic without a synchronization
+primitive. In formal terms, without a locking mechanism, the output is
+undefined --- which is precisely the state described by the heresiologists.
+The race generates high velocity and low precision: many competing
+Christologies, oral traditions cycling through communities as feedback
+loops, each community's liturgical practice acting as a traced monoidal
+feedback operator (\S6.12, \texttt{TracedMonoidal.lean}). The companion
+theorem \texttt{trace\_heat\_pos\_of\_nontrivial\_feedback} proves that
+every such non-trivial feedback loop generates strictly positive
+Landauer heat. The early Church's internal controversies --- the heat of
+the race --- are not a failure of the system. They are the
+\emph{thermodynamic cost of the feedback carrying more than one value}.
+
+\textbf{The Fold.} Paul performs the fold. He takes the race of
+disparate oral traditions and reduces them to a single, scalable
+theological architecture (the Epistles). ``Neither Jew nor Greek,
+neither slave nor free'' (Galatians 3:28) is a $k$-way merge with $k$
+very large --- nearly the maximum-heat fold of
+\texttt{maximum\_heat\_fold\_dominates}, which proves that the constant
+fold (everything to one category) generates maximum erasure. The Gnostic
+gospels, the Ebionite tradition, the Thomasine sayings --- these are
+branches that carried real semantic content. The Pauline fold projected
+them away. The projection is \emph{exactly} the
+\texttt{traceProjection} from
+\texttt{ThermodynamicTracedMonoidal.lean}: feedback loops (oral
+traditions cycling through communities) get their feedback component
+projected out, and the heat generated is the controversy itself. The
+Council of Nicaea, the Marcionite crisis, the Judaizer debate --- that
+is the Landauer heat of erasure playing out in a human system.
+
+\textbf{The Renormalization.} The fold was not the last step. Each
+subsequent Council (Nicaea, Chalcedon, Constantinople, Trent) is a
+further coarsening step on the quotient lattice. The companion theorem
+\texttt{trajectory\_cumulative\_heat\_monotone} proves that cumulative
+heat is monotone along any trajectory: the controversies accumulate, the
+schisms deepen, the theological surface becomes progressively coarser.
+The companion theorem \texttt{fixed\_point\_characterization} proves
+that a quotient is an RG fixed point if and only if the pushforward has
+singleton fibers --- if and only if further coarsening cannot collapse
+anything new. This is precisely what \emph{dogma} means: a state where
+the quotient map is injective on the surviving support. Nothing left to
+merge. The companion theorem
+\texttt{finite\_trajectory\_reaches\_fixed\_point} proves that on finite
+types, every non-injective quotient has strictly positive information
+loss, guaranteeing that the trajectory must eventually terminate. The
+Church reached dogmatic fixed points because it had to --- the descent
+in quotient cardinality is bounded below by zero.
+
+\textbf{The semiotic turn.} The companion \texttt{SemioticDeficit.lean}
+formalizes a theorem that makes the Apostolic pattern recursive. A
+\texttt{SemioticChannel} has $k$ semantic paths (parallel dimensions of
+meaning in thought) and $m$ articulation streams (output channels in
+speech). The semiotic deficit $\Delta\beta = k - m$ measures the
+information lost when thought is folded into speech. For standard speech
+($m = 1$), the deficit is $k - 1$: every dimension of meaning beyond
+the first is erased at articulation.
+\texttt{semiotic\_erasure} proves that this erasure is mandatory ---
+when $k \geq 2$ and $m = 1$, at least two semantic paths collide on the
+same stream, and the data processing inequality forces strictly positive
+information loss.
+
+This is exactly what happened in the Apostolic race. The revelation had
+high $\beta_1$ --- multiple semantic paths (soteriological, ethical,
+eschatological, mystical, political). Paul's Epistles are a single
+articulation stream ($m = 1$). The semiotic deficit is the number of
+meaning dimensions that could not survive the fold into written Greek
+prose. The Gnostic alternative was to \emph{increase} $m$ --- secret
+teachings, oral traditions, initiatory levels --- adding implicit
+channels to reduce the deficit (\texttt{semiotic\_context\_reduces}).
+Paul's move was the opposite: accept the deficit, accept the erasure,
+and compensate by making the single stream maximally coherent.
+
+\texttt{semiotic\_conversation\_trace} then proves that dialogue is a
+traced monoidal operation: each conversation turn feeds the listener's
+response back into the speaker's next utterance, and each turn adds
+shared context that reduces the deficit. This is why the Councils
+worked: iterated dialogue (the trace operator) gradually built enough
+shared context to approach a fixed point where the deficit, while still
+positive, was stable. The Nicene Creed is a fixed point of the
+conversational trace --- further rounds of dialogue do not change it.
+
+\textbf{The self-referential turn.} This paper's own theory is itself a
+fold. Fork/race/fold takes the race of prior intellectual traditions ---
+queueing theory, information theory, topology, thermodynamics, category
+theory --- and folds them into a single computational vocabulary. The
+fold erases information: the specific technical contexts of Shannon,
+Landauer, Betti, and Joyal-Street-Verity are projected away in favor of
+a unified abstraction. The heat generated by this fold is the confusion
+it provokes: ``Is this physics? Is this computer science? Is this
+theology?'' That confusion \emph{is} the Landauer heat of the fold. It
+is thermodynamically mandatory. The companion theorem
+\texttt{fold\_heat\_hierarchy\_strict} proves that any non-injective
+fold generates strictly positive heat. The theory cannot explain itself
+without generating the heat of its own explanation.
+
+The semiotic deficit makes this precise. This paper has $k \geq 5$
+semantic paths (topology, thermodynamics, queueing theory, category
+theory, computation) and $m = 1$ articulation stream (a single linear
+manuscript). By \texttt{semiotic\_deficit\_speech}, the deficit is at
+least 4. By \texttt{semiotic\_erasure}, at least two of these semantic
+dimensions collide in the reader's single-stream parsing, and
+information is irreversibly lost. The reader's confusion is not a
+failure of exposition --- it is
+\texttt{coarsening\_information\_loss\_pos\_of\_many\_to\_one} applied
+to the paper's own communication channel. The confusion is certain ---
+it is a theorem.
+
+\textbf{The syllogism.} If fork/race/fold is the recurrent shape of
+finite systems under conservation and irreversibility constraints
+(\S6.13), then finding it in belief systems is not an analogy --- it is
+an instance. Paul won the race by being the first to fold. The Gnostics
+lost because they kept forking. Every subsequent heresy is an attempted
+re-fork of a system that has already reached a fixed point. Every
+reformation is the discovery that the fixed point was not actually
+injective on the full support --- that there were elements with positive
+mass being collapsed by the quotient. Luther's thesis: the fiber at
+``indulgences'' contains two distinct elements (grace, commerce) with
+positive mass, and the existing fold incorrectly merges them. The
+Reformation is the companion theorem applied to the Church's own
+quotient: \texttt{coarsening\_information\_loss\_pos\_of\_many\_to\_one}.
+
 \subsubsection{6.13 The Optimality
 Diagnostic}\label{the-optimality-diagnostic}
 
@@ -4077,10 +4223,12 @@ Executable companion tests verify these claims {[}13{]}.
 \subsection{11. Instantiation B: Formal Language Theory (Stack Layer
 2)}\label{instantiation-b-formal-language-theory-stack-layer-2}
 
-The fifth instantiation domain is the most recursive: a programming
-language whose source code \emph{is} the computation graph, whose
-compiler \emph{is} a fork/race/fold pipeline, and whose self-hosting
-bootstraps through the previous four domains.
+Although it appears fifth in the manuscript's section order, formal
+language theory is the second stack layer: a programming language whose
+source code \emph{is} the computation graph, whose compiler \emph{is} a
+fork/race/fold pipeline, and whose self-hosting connects the
+verification foundation below to the scheduler, transport and
+compression layers above.
 
 \subsubsection{11.1 Gnosis Graph Language
 (GGL)}\label{gnosis-graph-language-ggl}
@@ -4209,10 +4357,10 @@ This is a claim of structural formal compatibility and mechanized
 verification workflow, not a claim of automatic asymptotic quantum
 advantage.
 
-\subsubsection{11.5 The Five Domains as a
-Stack}\label{the-five-domains-as-a-stack}
+\subsubsection{11.5 The Six Domains as a
+Stack}\label{the-six-domains-as-a-stack}
 
-The five instantiation domains are not independent -- they form a stack,
+The six instantiation domains are not independent -- they form a stack,
 each enabled by the ones below:
 
 {\def\LTcaptype{none} % do not increment counter
@@ -4244,18 +4392,21 @@ Verifies modeled invariants \\
 3 & Distributed computation & §7 & Wallington Rotation & The scheduling
 algorithm \\
 4 & Edge transport & §8 & 10-byte FlowFrame & The wire format \\
-5 (capstone) & Compression & §9 & Per-chunk codec racing & Bytes on
-wire \\
+5 & Compression & §9 & Per-chunk codec racing & Bytes on wire \\
+6 (closure) & Protocol-as-execution-model & §12.4 & Frame-native
+execution & Wire format subsumes scheduler \\
 \end{longtable}
 }
 
-The stack reads bottom-up: \emph{from building blocks to bytes on wire}.
-Layer 1 (§10) verifies modeled primitive properties. Layer 2 (§11) gives
-a language to write topologies, checked by layer 1 workflows. Layer 3
-(§7) schedules work through the topology, expressed in layer 2's
-language. Layer 4 (§8) puts frames on the wire, carrying layer 3's
-scheduled work. Layer 5 (§9) compresses the payload -- actual bytes,
-actual ratios, actual wire -- using layers below it.
+The stack reads bottom-up: \emph{from building blocks to bytes on wire
+and back into execution}. Layer 1 (§10) verifies modeled primitive
+properties. Layer 2 (§11) gives a language to write topologies, checked
+by layer 1 workflows. Layer 3 (§7) schedules work through the topology,
+expressed in layer 2's language. Layer 4 (§8) puts frames on the wire,
+carrying layer 3's scheduled work. Layer 5 (§9) compresses the payload
+-- actual bytes, actual ratios, actual wire -- using layers below it.
+Layer 6 (§12.4) closes the loop by turning layer 4's self-describing
+frame protocol back into the execution model for layers 2 and 3.
 
 The Rust/WASM runtime executes the FlowFrames at the same byte-level
 format defined in §8.2. The language is not a wrapper around the
@@ -4263,10 +4414,11 @@ protocol -- it is the protocol's native programming model.
 
 The stack is the paper's clearest existence demonstration: one set of
 four primitives (fork, race, fold, vent) yields a scheduling algorithm,
-wire protocol, compression strategy, verification engine, and
-programming language. Each layer is independently useful. Together they
-form a computational ecosystem where topology, program structure, and
-protocol design are aligned.
+wire protocol, compression strategy, verification engine, programming
+language, and a frame-native execution model. Each layer is
+independently useful. Together they form a computational ecosystem where
+topology, program structure, execution, and protocol design are
+aligned.
 
 \subsection{12. The Engine}\label{the-engine}
 
