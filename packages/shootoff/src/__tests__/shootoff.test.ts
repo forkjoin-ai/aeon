@@ -30,6 +30,7 @@ import { serveAeonFlow, aeonFlowRoundTrips } from '../protocols/aeon-flow';
 import { serveAeonFluxHttp, serveAeonFluxFlow, aeonFluxHttpRoundTrips, aeonFluxFlowRoundTrips } from '../protocols/aeon-flux';
 import { serveXGnosis, xGnosisRoundTrips } from '../protocols/x-gnosis';
 import { serveXGnosisTopo, xGnosisTopoRoundTrips } from '../protocols/x-gnosis-topo';
+import { serveHellaWhipped, hellaWhippedRoundTrips } from '../protocols/hella-whipped';
 import type { SiteManifest, SiteResult, Protocol, CompressionAlgo, ComparisonRow } from '../types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -59,6 +60,8 @@ function runSite(
         return serveXGnosis(resource, compression, site.resources.length);
       case 'x-gnosis-topo':
         return serveXGnosisTopo(resource, compression, site.resources.length);
+      case 'hella-whipped':
+        return serveHellaWhipped(resource, compression, site.resources.length);
     }
   });
 
@@ -103,6 +106,10 @@ function runSite(
     case 'x-gnosis-topo':
       roundTrips = xGnosisTopoRoundTrips(site.resources.length);
       maxConcurrentStreams = 6;
+      break;
+    case 'hella-whipped':
+      roundTrips = hellaWhippedRoundTrips(site.resources.length);
+      maxConcurrentStreams = 256;
       break;
   }
 
@@ -176,6 +183,7 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
       row.protocol === 'aeon-flux-flow' ? 'Aeon-Flux/Flow' :
       row.protocol === 'x-gnosis-topo' ? 'x-gnosis/topo' :
       row.protocol === 'x-gnosis' ? 'x-gnosis' :
+      row.protocol === 'hella-whipped' ? 'hella-whipped' :
       row.protocol === 'http3' ? 'HTTP/3' :
       row.protocol === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
     console.log(
@@ -200,8 +208,8 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
 // Original Protocol Tests (HTTP/1.1, HTTP/2, Aeon Flow)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const protocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow', 'x-gnosis', 'x-gnosis-topo'];
-const allProtocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow', 'x-gnosis', 'x-gnosis-topo', 'aeon-flux-http', 'aeon-flux-flow'];
+const protocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow', 'x-gnosis', 'x-gnosis-topo', 'hella-whipped'];
+const allProtocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow', 'x-gnosis', 'x-gnosis-topo', 'hella-whipped', 'aeon-flux-http', 'aeon-flux-flow'];
 const compressions: CompressionAlgo[] = ['none', 'gzip', 'brotli', 'topo-pure', 'topo-full'];
 
 describe('Protocol Shootoff', () => {
@@ -319,15 +327,16 @@ describe('Protocol Shootoff', () => {
   // ═══════════════════════════════════════════════════════════════════════════
 
   describe('Full matrix comparison', () => {
-    it('Big Content: HTTP vs Aeon vs x-gnosis vs x-gnosis/topo vs Aeon-Flux (brotli)', () => {
+    it('Big Content: HTTP vs Aeon vs x-gnosis vs x-gnosis/topo vs hella-whipped vs Aeon-Flux (brotli)', () => {
       const results: SiteResult[] = [
-        // Original site through 6 protocols
+        // Original site through 7 protocols
         runSite(bigContentSite, 'http1', 'brotli'),
         runSite(bigContentSite, 'http2', 'brotli'),
         runSite(bigContentSite, 'http3', 'brotli'),
         runSite(bigContentSite, 'aeon-flow', 'brotli'),
         runSite(bigContentSite, 'x-gnosis', 'brotli'),
         runSite(bigContentSite, 'x-gnosis-topo', 'brotli'), // topo-race ignores the algo param
+        runSite(bigContentSite, 'hella-whipped', 'topo-full'), // per-chunk codec racing
         // Flux site through 2 transports
         runSite(bigContentFluxSite, 'aeon-flux-http', 'brotli'),
         runSite(bigContentFluxSite, 'aeon-flux-flow', 'brotli'),
@@ -358,7 +367,7 @@ describe('Protocol Shootoff', () => {
       expect(fluxFlow.roundTrips).toBeLessThanOrEqual(http1.roundTrips);
     });
 
-    it('Microfrontend: HTTP vs Aeon vs x-gnosis vs x-gnosis/topo vs Aeon-Flux (brotli)', () => {
+    it('Microfrontend: HTTP vs Aeon vs x-gnosis vs x-gnosis/topo vs hella-whipped vs Aeon-Flux (brotli)', () => {
       const results: SiteResult[] = [
         runSite(microfrontendSite, 'http1', 'brotli'),
         runSite(microfrontendSite, 'http2', 'brotli'),
@@ -366,6 +375,7 @@ describe('Protocol Shootoff', () => {
         runSite(microfrontendSite, 'aeon-flow', 'brotli'),
         runSite(microfrontendSite, 'x-gnosis', 'brotli'),
         runSite(microfrontendSite, 'x-gnosis-topo', 'brotli'),
+        runSite(microfrontendSite, 'hella-whipped', 'topo-full'),
         runSite(microfrontendFluxSite, 'aeon-flux-http', 'brotli'),
         runSite(microfrontendFluxSite, 'aeon-flux-flow', 'brotli'),
       ];
