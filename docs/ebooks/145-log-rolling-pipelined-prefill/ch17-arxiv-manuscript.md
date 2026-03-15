@@ -1959,25 +1959,33 @@ The theorem has an immediate engineering consequence: the **laminar pipeline** (
 
 The following table reports modeled wire-byte shootoff results across four site archetypes. "sendfile()" is raw kernel DMA. "nginx" uses HTTP/1.1 with per-resource compression. "x-gnosis" uses topology-scheduled HTTP/1.1 with per-resource compression. "hella-whipped" uses the laminar pipeline: per-chunk codec racing with 10-byte Flow framing.
 
-+---------------------+--------+--------+---------+--------+---------+
-| Protocol            |Compress|  Raw   |  Wire   |Overhead|vs sendfile|
-+=====================+========+========+=========+========+=========+
-| **Big Content (12 resources, 1.91 MB raw)**                        |
-+---------------------+--------+--------+---------+--------+---------+
-| sendfile()          | none   | 1.91 MB| 1.91 MB |   0 B  | baseline|
-| nginx               | brotli | 1.91 MB| 589 KB  | 7.6 KB |  -69.9% |
-| x-gnosis            | brotli | 1.91 MB| 586 KB  | 4.8 KB |  -70.0% |
-| **hella-whipped**   |topo-full|1.91 MB| **587 KB**|**370 B**|**-70.0%**|
-+---------------------+--------+--------+---------+--------+---------+
-| **Microfrontend (95 resources, 1.05 MB raw)**                      |
-+---------------------+--------+--------+---------+--------+---------+
-| sendfile()          | none   | 1.05 MB| 1.05 MB |   0 B  | baseline|
-| nginx               | brotli | 1.05 MB| 76.4 KB |  54 KB |  -92.9% |
-| x-gnosis            | brotli | 1.05 MB| 56.3 KB |  34 KB |  -94.8% |
-| **hella-whipped**   |topo-full|1.05 MB|**23.7 KB**|**850 B**|**-97.8%**|
-+---------------------+--------+--------+---------+--------+---------+
+The following table reports the canonical shootoff results from the full 9-protocol $\times$ 5-compression matrix (`packages/shootoff`, 97/97 tests passing). All measurements are modeled wire-byte accounting on deterministic synthetic payloads matching real-world compressibility.
 
-The laminar pipeline strictly dominates sendfile() in all tested site types. On the microfrontend stress test --- 95 small resources where HTTP framing overhead dominates --- hella-whipped achieves 97.8\% wire savings vs sendfile and 3.5\% framing overhead, compared to nginx's 70.6\% framing overhead. The 10-byte Flow frame replaces $\sim$650 bytes of HTTP request+response headers per resource, and per-chunk codec racing automatically selects identity for incompressible content (images, fonts) and brotli for text.
++---------------------+--------+--------+---------+--------+------+--------+---------+
+| Protocol            |Compress|  Raw   |  Wire   |Overhead|Ovhd %| RTTs   | Encode  |
++=====================+========+========+=========+========+======+========+=========+
+| **Big Content (Whip Worthington, 12 resources, 2.22 MB raw)**                       |
++---------------------+--------+--------+---------+--------+------+--------+---------+
+| HTTP/1.1            | brotli | 2.22 MB| 913 KB  | 8.2 KB | 0.89%|  3     |  3.2 ms |
+| HTTP/2              | brotli | 2.22 MB| 907 KB  | 1.6 KB | 0.18%|  2     |  3.4 ms |
+| HTTP/3              | brotli | 2.22 MB| 906 KB  | 906 B  | 0.10%|  1     |  3.4 ms |
+| Aeon Flow           | brotli | 2.22 MB| 905 KB  | 276 B  | 0.03%|  1     |  3.8 ms |
+| x-gnosis            | brotli | 2.22 MB| 909 KB  | 4.4 KB | 0.48%|  3     |  2.9 ms |
+| **hella-whipped**   |topo-full|2.22 MB|**911 KB**|**576 B**|**0.06%**|**1**| 45.9 ms |
+| Aeon-Flux/Flow      | brotli | 987 KB | 306 B   | 20 B   | 6.54%|  1     |  5.4 ms |
++---------------------+--------+--------+---------+--------+------+--------+---------+
+| **Microfrontend (Wally Wallington, 95 resources, 618 KB raw)**                      |
++---------------------+--------+--------+---------+--------+------+--------+---------+
+| HTTP/1.1            | brotli | 618 KB | 187 KB  | 58 KB  |31.00%| 16     |  2.7 ms |
+| HTTP/2              | brotli | 618 KB | 137 KB  | 8.0 KB | 5.80%|  2     |  2.9 ms |
+| HTTP/3              | brotli | 618 KB | 135 KB  | 5.9 KB | 4.36%|  1     |  2.9 ms |
+| Aeon Flow           | brotli | 618 KB | 131 KB  | 1.9 KB | 1.47%|  1     |  3.0 ms |
+| x-gnosis            | brotli | 618 KB | 160 KB  | 31 KB  |19.36%| 11     |  2.8 ms |
+| **hella-whipped**   |topo-full|618 KB |**132 KB**|**1.9 KB**|**1.47%**|**1**| 13.6 ms |
+| Aeon-Flux/Flow      | brotli | 169 KB | 306 B   | 20 B   | 6.54%|  1     |  0.9 ms |
++---------------------+--------+--------+---------+--------+------+--------+---------+
+
+The hella-whipped laminar pipeline matches Aeon Flow's 1.47\% framing overhead on the microfrontend while adding per-chunk codec racing. The encode cost (13.6 ms vs 3.0 ms) reflects racing four codecs per chunk; in the native Rust kernel (`send_laminar_flow`), this cost is further reduced and pipelined against I/O via double-buffering. On big content, framing overhead drops from HTTP/1.1's 0.89\% to 0.06\% --- the 10-byte Flow frame is 14$\times$ smaller than HTTP response headers. On the microfrontend stress test, HTTP/1.1's 31\% framing overhead collapses to 1.47\%: a 21$\times$ reduction. Per-chunk codec racing automatically selects identity for incompressible content (images, fonts) and brotli for text, with no manual configuration.
 
 Layer 8 recurses to Layer 1: the diversity theorem proves the racing strategy is monotonically optimal, and the formal verification layer machine-checks the proof. The stack is not a stack --- it is a cycle.
 
