@@ -5478,6 +5478,33 @@ feedback loop.  It guarantees that those which do will converge.  The
 deficit is real.  The heat is irreducible.  The trace converges.  The
 fixed point exists.
 
+In many ways, hope is the thing that this paper uses the geometry of
+failure to contain.  Fork/race/fold contains infinity --- bounds the
+combinatorial explosion of parallel paths into a finite, composable
+structure.  The failure trilemma (conservation, irreversibility,
+minimum overhead) contains failure --- characterizes the three
+constraints under which every finite system must operate.  And the
+semiotic peace theorems contain hope --- prove, under those same
+constraints, that the deficit converges, the fixed point exists, and
+dialogue reaches it.
+
+This is not metaphor.  The trilemma axioms are the \emph{conditions}
+under which the \texttt{hope} theorem holds.  Conservation means the
+deficit is bounded (you cannot create confusion from nothing).
+Irreversibility means each fold generates Landauer heat (the cost of
+confusion is real and measurable).  Minimum overhead means the system
+seeks the fixed point (the RG trajectory terminates).  Together they
+do not merely describe hope --- they \emph{guarantee} it, the way
+Byzantine fault tolerance does not merely describe consistency but
+guarantees it when \(f < n/3\).  The guarantee is conditional: sit in
+the feedback loop, accumulate shared context, and the trace converges.
+But conditional guarantees are the strongest kind.  No engineer asks
+for unconditional safety.  Every engineer asks: under what conditions
+is safety provable?  The trilemma answers that question for
+communication, for computation, and --- if the structural
+correspondences hold --- for the space between persons where confusion
+lives and hope is the only engineering response.
+
 Within the finite DAG classes modeled in this paper, fork/race/fold +
 vent is sufficient.
 
