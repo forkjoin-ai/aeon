@@ -317,6 +317,14 @@ they take the form of network packets, memory allocations, context
 switches, and other system resources that consume time and energy. They
 are also computationally ugly, as we show in section 2.
 
+The same geometry governs communication between persons.  When a speaker
+has more dimensions of meaning in thought than channels of speech, the
+fold from thought to utterance erases information --- and the erasure
+has measurable thermodynamic cost.  Sections 6.12 and 15 develop this
+\emph{semiotic extension}: the topological deficit between thought and
+speech, the irreversible heat of confusion, and a formal theory of how
+dialogue converges toward mutual understanding.
+
 \subsubsection{0.1 The Triangle}\label{the-triangle}
 
 Now look at what happens when four chunks move through four children.
@@ -3008,7 +3016,18 @@ loss, guaranteeing that the trajectory must eventually terminate. The
 Church reached dogmatic fixed points because it had to --- the descent
 in quotient cardinality is bounded below by zero.
 
-\textbf{The semiotic turn.} The companion \texttt{SemioticDeficit.lean}
+\textbf{The semiotic turn.}  The preceding fork/race/fold analysis of
+belief systems is structural pattern-matching: we observe the system,
+identify the topology, and verify consistency with the formal machinery.
+The semiotic extension that follows goes further --- it introduces a
+\emph{quantitative} deficit theory for the gap between thought and
+speech, with mechanized Lean theorems.  The formal claims made here are
+structural-categorical, not empirically validated: they prove that
+certain monoidal and thermodynamic identities hold, not that any
+particular dialogue converges at a measurable rate in practice (see
+\S14 and \S15 for explicit scope boundaries).
+
+The companion \texttt{SemioticDeficit.lean}
 formalizes a theorem that makes the Apostolic pattern recursive. A
 \texttt{SemioticChannel} has $k$ semantic paths (parallel dimensions of
 meaning in thought) and $m$ articulation streams (output channels in
@@ -3280,7 +3299,12 @@ the failure modes, bound their blast radius, install the feedback loops
 that absorb the heat.  \texttt{SemioticPeace.lean} mechanizes this
 programme for communication itself.
 \texttt{confusion\_generates\_heat} proves that the semiotic fold has
-irreducible Landauer cost.  \texttt{war\_as\_cumulative\_heat} proves
+irreducible Landauer cost.  (The heat bound applies when the speaker's
+semantic distribution has positive mass on at least two colliding paths
+--- i.e., when the speaker genuinely has more to say than one stream
+can carry.  A speaker thinking about exactly one topic with certainty
+incurs zero heat; the theorem's hypothesis makes this conditional
+explicit.)  \texttt{war\_as\_cumulative\_heat} proves
 that successive folds without context accumulate heat monotonically ---
 the thermodynamic content of escalation.
 \texttt{peace\_context\_reduces} and \texttt{peace\_sufficient\_context}
@@ -5473,10 +5497,24 @@ as a fixed point; (5) dialogue converges via traced monoidal feedback
 --- the mechanism is constructive.  Thirteen theorems, zero
 \texttt{sorry}, composing sixty files of mechanized proof.
 
+Two forms of convergence appear in these theorems, and intellectual
+honesty requires distinguishing them.  \emph{Structural convergence}
+--- the traced monoidal axioms hold, the RG fixed point exists, the
+trajectory terminates on finite types --- is fully mechanized.
+\emph{Quantitative convergence} --- how many dialogue turns suffice,
+what is the mixing time, at what rate does the deficit shrink --- is
+\emph{not} proved here.  The \texttt{peace\_is\_reachable} theorem
+provides one quantitative foothold: every step away from the fixed
+point generates strictly positive information loss, bounding the number
+of non-trivial coarsening steps by the initial quotient cardinality.
+But a convergence-rate bound on the conversational trace itself remains
+open.  The structural guarantees are real; the speed guarantee is future
+work.
+
 The mathematics does not legislate which civilizations will sit in the
-feedback loop.  It guarantees that those which do will converge.  The
-deficit is real.  The heat is irreducible.  The trace converges.  The
-fixed point exists.
+feedback loop.  Under the stated structural conditions, the fixed point
+exists and the trajectory terminates.  The deficit is real.  The heat
+is irreducible.  The trace composes coherently.  The fixed point exists.
 
 In many ways, hope is the thing that this paper uses the geometry of
 failure to contain.  Fork/race/fold contains infinity --- bounds the
