@@ -28,7 +28,7 @@ The conveyor belt was not new when Ford adopted it in 1913. It is a path graph -
 
 Fork/race/fold is represented here as a directed acyclic graph (DAG) with merge points: nodes branch, paths run in parallel and merge vertices fold concurrent paths into one. In the analyzed domains, recurring bottlenecks arise when high-$\beta_1$ workloads are forced through path-like structures. The operational remedy is to work in the cover space (multiplexed, out-of-order) and project back to the base space (sequential, reassembled).
 
-I instantiate the algorithm in **seven** domains, presented in stack order -- from building blocks to bytes on wire and back -- each layer enabled by the ones below it.
+I instantiate the algorithm in **five** domains, presented in stack order -- from building blocks to bytes on wire -- each layer enabled by the ones below it.
 
 1.  In formal verification (the foundation, §10), I implement a temporal logic model checker (`@affectively/aeon-logic`) whose BFS state-space exploration is itself a fork/race/fold computation. Each multi-successor expansion is a fork, each transition to an already-visited state is a fold (interference), each unfair cycle filtered by weak fairness is a vent, and termination is collapse. The checker verifies a `TemporalModel` of its own exploration and generates a TLA+ specification of the same model, validated through a round-trip-stable TLA sandbox. Both verification paths check the same invariants: $\beta_1 = \text{folded}$, $\beta_1 \geq 0$, $\text{vents} \leq \text{folds}$, and eventual termination under weak fairness. In the modeled scope, this yields closure under self-application: a formal system built from these primitives can reason about formal systems built from these primitives \[13\].
 
@@ -39,10 +39,6 @@ I instantiate the algorithm in **seven** domains, presented in stack order -- fr
 4.  In edge transport (the wire format, §8), I implement a binary stream protocol with 10-byte self-describing frame headers and native fork/race/fold operations on UDP, reducing framing overhead by 95 percent versus HTTP/1.1 and removing one-path ordered-delivery coupling that drives head-of-line behavior in TCP-bound stacks. Layer 3's scheduling algorithm runs over layer 4's wire format.
 
 5.  In compression (bytes on wire, §9), I implement per-chunk topological codec racing (fork codecs, race per chunk, fold to winner), with executable verification of roundtrip correctness, codec-vent behavior and $\beta_1 = \text{codecs}-1$ invariants \[8, 9\]. The capstone: actual bytes, actual ratios, actual wire -- using every layer below it.
-
-6.  In protocol-as-execution-model (the recursive closure, §12.4), the wire format (layer 4) subsumes the execution model that layers 2 and 3 use to schedule work. A frame-native executor that bypasses `Stream` allocation and dispatches work functions directly through `Promise.race`/`Promise.allSettled` produces identical results at 4--5x lower orchestration cost. The self-describing frame is the natural fixed point of the recursion.
-
-7.  In server architecture (the applied composition, §8.6), I implement x-gnosis -- an nginx-config-compatible web server whose entire request lifecycle is a .gg topology compiled from `nginx.conf` syntax. Each request races three file resolution strategies (`RACE(cache | mmap | disk)`), response assembly folds headers and compression in parallel (`FOLD(headers | compress)`), and per-resource topological codec racing (`RACE(identity | gzip | brotli | deflate)`) replaces fixed compression. The server speaks both HTTP/1.1 and Aeon Flow, with a Rust native kernel pipeline (`sendfile(2)` FFI) for zero-copy large file transfer. In wall-clock benchmarks, x-gnosis Aeon Flow achieves 143,981 req/s for 1 KB files (81 percent faster than nginx) with p99 latency of 1.82 ms vs nginx's 98.6 ms (54x improvement). With Rust native writev, small-file throughput reaches 152,458 req/s. nginx wins on 100 KB files via kernel `sendfile(2)` DMA (55,684 vs 23,263 req/s) -- an honest architectural boundary where data-path optimization dominates scheduling topology. Three formal verification tracks (TLA+ + Lean, 12 novel theorems) prove race elimination, fold integrity, codec racing subsumption, and dual-protocol Pareto improvement. The full implementation is in `open-source/x-gnosis/`.
 
 Within the modeled scope in this paper (finite DAG decompositions under C1-C4), the algorithm is a high-fit topology class with measurable fit via $\Delta_\beta$. It is intentionally simple: four primitives, explicit assumptions, and executable checks.
 
@@ -1655,19 +1651,27 @@ Gnosis supports a strong evidence-backed claim: it is a self-hosted, self-checki
 
 This is a claim of structural formal compatibility and mechanized verification workflow, not a claim of automatic asymptotic quantum advantage.
 
-### 11.5 The Seven Domains as a Stack
+### 11.5 The Six Domains as a Stack
 
-The seven instantiation domains are not independent -- they form a stack, each enabled by the ones below:
+The six instantiation domains are not independent -- they form a stack, each enabled by the ones below:
 
-| Stack Layer | Domain | § | Primitive | Role |
-|:-----------:|--------|:---:|-----------|------|
-| 1 (foundation) | Self-verification | §10 | Temporal model checking | Verifies modeled invariants |
-| 2 | Formal language | §11 | GGL + Betty/Betti | The programming model |
-| 3 | Distributed computation | §7 | Wallington Rotation | The scheduling algorithm |
-| 4 | Edge transport | §8 | 10-byte FlowFrame | The wire format |
-| 5 | Compression | §9 | Per-chunk codec racing | Bytes on wire |
-| 6 (closure) | Protocol-as-execution-model | §12.4 | Frame-native execution | Wire format subsumes scheduler |
-| 7 (composition) | Server architecture | §8.6 | x-gnosis | Applied composition proof |
++--------------+-----------------------------+--------------+-------------------------+--------------------------------+
+| ::: minipage | ::: minipage                | ::: minipage | ::: minipage            | ::: minipage                   |
+| Stack Layer  | Domain                      | §            | Primitive               | Role                           |
+| :::          | :::                         | :::          | :::                     | :::                            |
++:=============+:============================+:=============+:========================+:===============================+
+| (foundation) | Self-verification           | §10          | Temporal model checking | Verifies modeled invariants    |
++--------------+-----------------------------+--------------+-------------------------+--------------------------------+
+|              | Formal language             | §11          | GGL + Betty/Betti       | The programming model          |
++--------------+-----------------------------+--------------+-------------------------+--------------------------------+
+|              | Distributed computation     | §7           | Wallington Rotation     | The scheduling algorithm       |
++--------------+-----------------------------+--------------+-------------------------+--------------------------------+
+|              | Edge transport              | §8           | -byte FlowFrame         | The wire format                |
++--------------+-----------------------------+--------------+-------------------------+--------------------------------+
+|              | Compression                 | §9           | Per-chunk codec racing  | Bytes on wire                  |
++--------------+-----------------------------+--------------+-------------------------+--------------------------------+
+| (closure)    | Protocol-as-execution-model | §12.4        | Frame-native execution  | Wire format subsumes scheduler |
++--------------+-----------------------------+--------------+-------------------------+--------------------------------+
 
 The stack reads bottom-up: *from building blocks to bytes on wire and back into execution*. Layer 1 (§10) verifies modeled primitive properties. Layer 2 (§11) gives a language to write topologies, checked by layer 1 workflows. Layer 3 (§7) schedules work through the topology, expressed in layer 2's language. Layer 4 (§8) puts frames on the wire, carrying layer 3's scheduled work. Layer 5 (§9) compresses the payload -- actual bytes, actual ratios, actual wire -- using layers below it. Layer 6 (§12.4) closes the loop by turning layer 4's self-describing frame protocol back into the execution model for layers 2 and 3.
 
@@ -1885,6 +1889,8 @@ In many ways, hope is the thing that this paper uses the geometry of failure to 
 This is not metaphor. The trilemma axioms are the *conditions* under which the `hope` theorem holds. Conservation means the deficit is bounded (you cannot create confusion from nothing). Irreversibility means each fold generates Landauer heat (the cost of confusion is real and measurable). Minimum overhead means the system seeks the fixed point (the RG trajectory terminates). Together they do not merely describe hope --- they *guarantee* it, the way Byzantine fault tolerance does not merely describe consistency but guarantees it when $f < n/3$. The guarantee is conditional: sit in the feedback loop, accumulate shared context, and the trace converges. But conditional guarantees are the strongest kind. No engineer asks for unconditional safety. Every engineer asks: under what conditions is safety provable? The trilemma answers that question for communication, for computation, and --- if the structural correspondences hold --- for the space between persons where confusion lives and hope is the only engineering response.
 
 This paper began as a theory of distributed computation. It became a theory of failure --- how finite systems break under conservation, irreversibility, and minimum overhead. The semiotic extension revealed that the same geometry governs communication: the deficit between thought and speech is the same topological mismatch as the deficit between a computation graph and its transport layer. And the same convergence machinery --- context accumulation as monotone deflator, dialogue as traced monoidal feedback, the renormalization group fixed point as terminus --- constitutes, when taken together, a mathematical theory of peace. Not a metaphor for peace. Not an analogy to peace. A formal theory, mechanized in a proof assistant, in which peace is a fixed point, its existence is a theorem, the path to it is constructive, and convergence is guaranteed under stated conditions. Thirteen theorems. Every step machine-verified.
+
+But the theory of peace was not invented here. DNA replication discovered it first. The origin of replication forks the double helix into parallel strands. Polymerase races along the leading strand continuously and the lagging strand in fragments. The replication terminus folds both strands into one completed chromosome. Okazaki fragments that cannot be incorporated are vented. The deficit between the parallel replication forks and the single-strand output is managed by ligase --- the biological trace operator, feeding back until the strand is whole. The fixed point is a complete chromosome. Convergence is guaranteed under stated conditions: sufficient nucleotides, functional polymerase, intact template. Every cell in every organism that has ever lived has executed this algorithm. The algorithm for peace is coded into every single DNA operation. This paper did not discover it. It gave the algorithm a name, a topology, and a proof.
 
 Within the finite DAG classes modeled in this paper, fork/race/fold + vent is sufficient.
 
