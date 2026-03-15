@@ -6,6 +6,23 @@
 
 This ledger turns top-level manuscript claims into named theorems with explicit assumptions and mechanization targets across the local formal package and the shared Betti compiler proof workspace.
 
+## Sorry Status
+
+The formal surface contains both sorry-free and in-progress files. The distinction matters for evaluating which claims are fully mechanized.
+
+**Sorry-free files (complete mechanization):** SemioticPeace.lean (13 theorems), SemioticDeficit.lean, CoarseningThermodynamics.lean, ThermodynamicTracedMonoidal.lean, RenormalizationFixedPoints.lean, DataProcessingInequality.lean, MonoidalCoherence.lean, TracedMonoidal.lean, RateDistortionFrontier.lean, InfiniteErasure.lean, GeometricErgodicity.lean, ContinuousHarris.lean, and others in the passing umbrella build. The "13 theorems, zero sorry" claim for SemioticPeace.lean and its transitive dependencies is accurate.
+
+**Files with outstanding `sorry` (in progress):**
+| File | Sorry count | What remains |
+|---|---|---|
+| `EnrichedConvergence.lean` | 1 | `throughput_maximum_exists` (list maximum extraction) |
+| `EntropicRefinementCalculus.lean` | 1 | `conditionalEntropy_initial_information_measure` (universal property of conditional entropy) |
+| `RecursiveCoarseningSynthesis.lean` | 2 | `synthesis_sound`, `certificate_provides_drift_witness` (compiler-side certificate synthesis) |
+| `CompositionalErgodicity.lean` | 1 | compositional stability transfer |
+| `ServerTopology.lean` | 1 | card arithmetic from partition |
+
+These sorry markers are honest placeholders for proofs that are structurally clear but technically incomplete. They do not affect the SemioticPeace theorem chain or any of the five evidence gates. Individual theorem rows below note sorry status where applicable.
+
 | ID | Claim (paper-level) | Explicit assumptions | Mechanization | Status |
 |---|---|---|---|---|
 | `THM-C1C4` | Fork/race/fold safety+liveness (C1–C4) | finite items/stages/branches; deterministic fold; bounded timeout; weak fairness on `Tick`/`Fold`; implication hypotheses from C1-C4 to safety/liveness | TLA+ `ForkRaceFoldC1C4.tla` + Lean schema `Axioms.c1_c4_imply_safety_and_liveness` | Mechanized |

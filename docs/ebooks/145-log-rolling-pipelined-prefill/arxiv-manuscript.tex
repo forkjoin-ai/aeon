@@ -3391,9 +3391,14 @@ frontier point. The stronger claim that zero deficit is the universal
 floor with no additional witness conditions remains open.
 
 The \(\beta_1^*\) term is model-estimated rather than uniquely
-observer-independent in open systems. Reported deficits should therefore
-be interpreted with explicit modeling assumptions and uncertainty
-intervals where available.
+observer-independent in open systems.  Different dependency-graph models
+may yield different \(\beta_1^*\) values for the same system, and
+therefore different \(\Delta_\beta\) measurements.  Reported deficits
+should therefore be interpreted as relative to a specified modeled
+dependency graph, with explicit modeling assumptions and uncertainty
+intervals where available.  Diagnostic claims based on \(\Delta_\beta\)
+are claims within a model, not observer-independent physical
+measurements.
 
 \textbf{Topological deficit as a candidate diagnostic for real-world
 waste.}
@@ -5215,6 +5220,18 @@ of richer adaptive Lyapunov decompositions beyond the built-in
 minimum-slack/selector/weighted/service-slack/routing-pressure forms,
 and positive-recurrence proofs for unbounded open stochastic networks.
 
+\textbf{Semiotic and peace-theoretic scope.}  The semiotic extension
+(\S6.12, \S15) and the peace/war/hope theorems (SemioticPeace.lean) are
+formal-structural results: they prove categorical coherence,
+thermodynamic monotonicity, and fixed-point existence within the
+monoidal framework.  They are \emph{not} validated by any of the five
+evidence gates below.  The biological correspondences (\S1) and physical
+structural mappings (\S5, \S6.12) are likewise post-hoc structural
+pattern-matching --- we observe a system, fit fork/race/fold, and verify
+consistency --- rather than predictive science.  No prediction about a
+novel system has been made and tested.  Falsifiable predictions from the
+topological framework are explicitly future work.
+
 \subsubsection{14.1 Evidence-Bounded
 Claims}\label{evidence-bounded-claims}
 
@@ -5337,12 +5354,16 @@ computational abstraction, with literal quantum examples in
 photosynthetic transfer. The Feynman path integral can be mapped to
 fork/race/fold in that abstraction: paths branch, phases evolve,
 amplitudes recombine by interference, and non-classical contributions
-cancel (§6.12). The recombination mechanism differs (linear amplitude
+cancel (\S6.12). The recombination mechanism differs (linear amplitude
 summation in physics vs nonlinear selection/merge in computation), and
 the companion tests make that boundary explicit: exact agreement in a
 finite linear path-sum model, plus explicit counterexamples for
-nonlinear winner/early-stop folds {[}9, 13{]}. This is therefore a
-structural mapping, not an identity claim. Fluid dynamics provides
+nonlinear winner/early-stop folds {[}9, 13{]}.  The winner-take-all and
+early-stop failures are genuine disconfirming evidence for universality
+of the mapping --- the correspondence is operationally exact only for
+linear full-aggregation folds and breaks for the nonlinear folds that
+dominate practical computation.  This is therefore a structural mapping
+with an explicit, tested boundary, not an identity claim. Fluid dynamics provides
 scaling intuition through the pipeline Reynolds number, and
 thermodynamics provides a conservation accounting lens (\(V = W + Q\))
 for modeled computational work/vent partitioning.
@@ -5473,6 +5494,14 @@ rate exceeds the dialogue rate on a channel with positive semiotic
 deficit.
 
 But the same machinery that predicts war prescribes its containment.
+Dialogue does not \emph{reverse} accumulated heat --- the second law
+forbids that, and \texttt{war\_as\_cumulative\_heat} proves it.  What
+dialogue does is reduce the \emph{rate} of new heat generation: each
+conversation turn adds shared context, shrinking the deficit, so each
+subsequent fold erases less.  The deficit converges to zero (no new
+heat), but past heat is irreversible.  This is arguably a stronger
+claim than reversal: you cannot undo damage, but you can stop making
+more.
 A system architect who proves Byzantine fault tolerance uses the
 identical pattern: characterize the failure modes, bound the blast
 radius, install feedback loops that absorb the heat.  The companion
@@ -5556,6 +5585,10 @@ theory of peace.  Not a metaphor for peace.  Not an analogy to peace.
 A formal theory, mechanized in a proof assistant, in which peace is a
 fixed point, its existence is a theorem, the path to it is
 constructive, and convergence is guaranteed under stated conditions.
+The logical chain is: \texttt{peace\_fixed\_point} proves the RG fixed
+point exists (zero heat, zero information loss); it \emph{is} the
+zero-deficit witness required by the universal floor theorem; therefore
+the floor theorem applies non-vacuously.
 Thirteen theorems.  Every step machine-verified.
 
 But the theory of peace was not invented here.  DNA replication
