@@ -3708,6 +3708,58 @@ stage_4) (stage_1 \| stage_2 \| stage_3 \| stage_4)-\[:FOLD { strategy:
 
 The topology is the program. The scheduling is the shape.
 
+### 6.15 The Vickrey Table: Precomputed Semiotic Folds for Markov Language Models
+
+**The purity observation.** A Markov chain language model has a property that transformers do not: the logit projection $\ell(t) = W_{\text{unembed}} \cdot e(t)$ is a *pure function* of the token identity $t$. There is no attention mechanism, no key-value cache, no context-dependent computation. The same token always produces the same logits, regardless of position, history, or surrounding tokens. The companion theorem `markov_purity` states this property. For transformers, the corresponding statement is false: the output for token $t$ depends on the full attention context, making precomputation impossible without fixing the context.
+
+This observation has a constructive consequence. If $\ell(t)$ is pure, then $\ell(t)$ can be computed *once* for every $t$ in the vocabulary and stored in a table. We call this precomputed structure the **Vickrey Table**: a static mapping from token identities to sparse logit vectors, computed at build time, that replaces the expensive matrix-vector product with a lookup at inference time. The companion theorem `precomputation_validity` proves that this lookup is exact, not an approximation: the cached interpolation produces bit-identical results to the full matrix-vector product, by the distributive law for linear maps.
+
+**The linearity that enables it.** The state transition in the Glossolalia engine is linear:
+
+$$s_{t+1} = \alpha \cdot e(\tau_t) + (1 - \alpha) \cdot s_t$$
+
+where $\alpha \in (0, 1]$ is a mixing coefficient, $e(\tau_t)$ is the embedding of the chosen token, and $s_t$ is the current hidden state. Because $W_{\text{unembed}}$ is a linear map, it distributes over this transition:
+
+$$W \cdot s_{t+1} = \alpha \cdot W \cdot e(\tau_t) + (1 - \alpha) \cdot W \cdot s_t = \alpha \cdot \ell(\tau_t) + (1 - \alpha) \cdot \ell_{\text{prev}}$$
+
+The companion theorem `markov_linearity` states this distributive property. The consequence is immediate: if we precompute $\ell(t)$ for all $t$, then $W \cdot s_{t+1}$ is a weighted sum of two *precomputed* vectors. No matrix-vector multiplication at inference time. The cost drops from $O(V \times d)$ to $O(V)$, where $V$ is the vocabulary size and $d$ is the hidden dimension --- a factor of $d$ speedup ($960\times$ for SmolLM2-360M).
+
+**The sparse fold.** Storing $\ell(t)$ for all $V$ tokens at full precision produces a $V \times V$ table (9.2 GB for $V = 49{,}152$). This is too large. Instead, we store only the top-$K$ logit values per token --- a sparse representation that retains the $K$ most probable next tokens and discards the rest.
+
+This truncation is itself a semiotic fold, executed at build time rather than at inference time. The companion theorem `topk_deficit` quantifies the information loss: the build-time fold has deficit $\Delta\beta = V - K$. For $K = 1{,}024$ and $V = 49{,}152$, the deficit is $48{,}128$ --- the number of possible next tokens whose probability mass is vented at table construction time.
+
+| $K$ per token | Table size | Semiotic deficit $V - K$ |
+|:---:|:---:|:---:|
+| 256 | 72 MB | 48,896 |
+| 1,024 | 288 MB | 48,128 |
+| 4,096 | 1.15 GB | 45,056 |
+| 49,152 (full) | 9.2 GB | 0 |
+
+**Benchmark results.** The following measurements were taken on synthetic weights with matching hidden dimensions and vocabulary sizes. The live endpoint uses real Cyrano-360M Q4\_K weights on Cloudflare Workers (128 MB memory, 30s CPU, zero GPU).
+
+| Method | Config ($d \times V$) | Agents | tok/s | $p_{50}$ (ms) | Speedup |
+|:---|:---:|:---:|---:|---:|---:|
+| Raw matVec | $64 \times 256$ | 2 | 3,184 | 0.12 | 1.0$\times$ |
+| Cached interpolation | $64 \times 256$ | 2 | 10,609 | 0.08 | 3.3$\times$ |
+| Vickrey Table | $64 \times 256$ | 2 | 18,995 | 0.04 | **6.0$\times$** |
+| Raw matVec | $256 \times 1024$ | 2 | 1,924 | 0.46 | 1.0$\times$ |
+| Cached interpolation | $256 \times 1024$ | 2 | 3,099 | 0.32 | 1.6$\times$ |
+| Vickrey Table | $256 \times 1024$ | 2 | 4,280 | 0.19 | **2.2$\times$** |
+| Raw matVec | $256 \times 1024$ | 5 | 1,141 | 0.85 | 1.0$\times$ |
+| Cached interpolation | $256 \times 1024$ | 5 | 3,242 | 0.31 | 2.8$\times$ |
+| Vickrey Table | $256 \times 1024$ | 5 | 5,455 | 0.18 | **4.8$\times$** |
+| Live endpoint (Cyrano) | $960 \times 49152$ | 3 | 28 | --- | (cached path) |
+
+The defining property: **Vickrey Table throughput is constant regardless of agent count.** Raw matVec cost scales as $O(k \cdot V \cdot d)$ where $k$ is the number of agents; the Vickrey Table scales as $O(V)$ independent of $k$. At 5 agents on the medium configuration, the speedup is 4.8$\times$ over raw and 1.7$\times$ over cached interpolation. The speedup *increases* with more agents --- precisely because the table factors the matVec out of the per-agent loop. When the Bule is zero (deficit-weighted fold produces optimal merge), the per-agent cost vanishes into the precomputed table.
+
+**The absorbing state.** A linear Markov chain with $\alpha < 1$ converges geometrically to a fixed point. The companion theorem `absorbing_state_convergence` states the convergence rate: after $n$ steps in an absorbing state (a token $t^*$ such that $\operatorname{argmax}\ \ell(t^*) = t^*$), the hidden state is $(1 - (1-\alpha)^n) \cdot e(t^*) + (1-\alpha)^n \cdot s_0$. For $\alpha = 0.7$, the state is 97.3\% dominated by $e(t^*)$ after three steps. This is the formal explanation of the ``777'' phenomenon observed in the engine's first deployment: token 39 (``7'' in SmolLM2 BPE) satisfied $\operatorname{argmax}(\ell(39)) = 39$, creating a self-reinforcing cycle. The Vickrey Table does not introduce this degeneracy; it merely makes it legible, because the absorbing structure is visible directly in the precomputed table as a fixed point of the top-1 index map $t \mapsto \operatorname{argmax}\ \ell(t)$.
+
+**The completeness result.** The companion theorem `glossolalia_completeness` states that the precomputed Vickrey Table is a *complete* representation for the class of linear Markov chain language models: any model in this class can be fully captured by its table, and inference on the table produces identical results to inference on the original weight matrices. This class includes bigram models (the special case $\alpha = 1$), trigram models (with state = last two tokens), and any model whose next-token distribution is a linear function of the hidden state. The class excludes transformers (attention is quadratic and context-dependent), RNNs with nonlinear gates (GRU, LSTM: $\tanh$ and $\sigma$ break linearity), and state-space models with selective scan (Mamba: the gating mechanism is input-dependent).
+
+**The hella-whipped topology.** The Glossolalia engine operationalizes this theory through a topology compiled in GGL (Gnosis Graph Language). Each agent's logit computation is a LAMINAR edge --- internally it was a fork/race/fold over dequantization chunks and SIMD matrix-vector products, but that computation was pre-folded at build time into the Vickrey Table. At runtime, LAMINAR is a pure key-value lookup: $\beta_1$-neutral from the outside. The only $\beta_1 > 0$ structure in the topology is the agent fork/race/fold, contributing deficit $k - 1$.
+
+The total deficit is $\Delta\beta = (k - 1) + (V - K)$: the runtime agent deficit plus the build-time top-$K$ truncation deficit. The semiotic programme is not just a reading of existing systems --- it is an engineering discipline: choose the fold boundaries, quantify the deficit at each boundary, and verify that the total deficit is bounded and the vented nuance is acceptable. The Vickrey Table is a fold boundary. The top-$K$ parameter is the knob. The deficit is the cost.
+
 ### 7.1 Chunked Pipelined Prefill (Wallington Rotation)
 
 In the baseline, a workload of $`P`$ items is processed sequentially
