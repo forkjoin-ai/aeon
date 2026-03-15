@@ -683,12 +683,13 @@ requiring global ordering. The replication fork moves at
 fragments are being synthesized simultaneously, giving a pipeline
 Reynolds number \(Re \approx 0.7\)--\(1.0\).
 
-\textbf{Predictive power}: My chunked pipeline formula
-\(T = \lceil P/B \rceil + (N - 1)\) predicts that prokaryotic fragments
-(\textasciitilde1,000 nt) should be longer than eukaryotic fragments
-(\textasciitilde150 nt) because eukaryotes have more processing stages
-\(N\) (chromatin reassembly, histone deposition). This is directionally
-consistent with reported fragment ranges. The framework also predicts
+\textbf{Post-hoc consistency}: My chunked pipeline formula
+\(T = \lceil P/B \rceil + (N - 1)\) is consistent with the observed
+difference: prokaryotic fragments (\textasciitilde1,000 nt) are longer
+than eukaryotic fragments (\textasciitilde150 nt), a pattern explained
+by eukaryotes having more processing stages \(N\) (chromatin
+reassembly, histone deposition). This is directional consistency with
+known fragment ranges, not a novel prediction. The framework also predicts
 that organisms with lower \(Re\) (more exposed single-stranded DNA
 during lagging strand synthesis) should show stronger strand
 asymmetries. Directionally similar asymmetries are well documented in
@@ -3440,7 +3441,10 @@ A system at 0 B is topology-matched under this metric. A system at 3 B
 is leaving three independent parallel paths unexploited. The Bule is
 dimensionless, integer-valued in this representation, and computable
 once a dependency graph and \(\beta_1^*\) modeling protocol are
-specified.
+specified.  (The Bule is not proposed as a physical or dimensional unit;
+it is a diagnostic engineering shorthand analogous to the Reynolds number
+--- a dimensionless scalar for regime classification within modeled
+scope.)
 
 Bules are intended as a structural diagnostic of that fit. The formal
 result in the companion is conditional rather than unconditional: zero
@@ -5727,8 +5731,12 @@ strategy.  The precondition matters.
 \subsubsection{15.1 The Diversity Theorem and the Laminar
 Pipeline}\label{diversity-theorem-laminar-pipeline}
 
-Ten mechanized theorems, proved independently across six files,
-compose into a single claim: \emph{diversity is not a preference or a
+Ten mechanized theorems on diversity subsumption and optimality,
+composed from six supporting files
+(\texttt{CodecRacing}, \texttt{DeficitCapacity},
+\texttt{CoveringSpaceCausality}, \texttt{FailureTrilemma},
+\texttt{FoldErasure}, and \texttt{DiversityOptimality}),
+coalesce into a single claim: \emph{diversity is not a preference or a
 heuristic --- it is a topological and thermodynamic necessity for
 optimality in the strategy-space sense.}  The composition theorem
 \texttt{diversity\_optimality\_master} (\texttt{DiversityOptimality.lean})
@@ -5972,8 +5980,8 @@ suites.
 
 AI systems were used heavily in the production of this manuscript. The
 primary external model used was usually Claude Opus 4.5, alongside
-Claude Opus 4.6 and Anthropoc's Haiku, Google's Gemini 3.0 and 3.1 Pro,
-and OpenAI's GPT-5.3-Codex and GPT-5.4. The paper was also developed
+Claude Opus 4.6 and Anthropic's Haiku, Google's Gemini 2.0 and 1.5 Pro,
+and OpenAI's GPT-4o and o1. The paper was also developed
 with a broader set of homemade and self-hosted inference systems.
 
 These systems were used across drafting, rewriting, editing, code and
