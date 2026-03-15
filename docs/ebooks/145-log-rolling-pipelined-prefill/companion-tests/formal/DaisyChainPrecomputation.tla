@@ -1,19 +1,19 @@
----------------------------- MODULE MarkovPrecomputation ----------------------------
+---------------------------- MODULE DaisyChainPrecomputation ----------------------------
 EXTENDS Naturals, Integers, FiniteSets, Sequences
 
-\* Track Pi-b: Markov Precomputation Theory (The Vickrey Table)
+\* Track Pi-b: Daisy Chain Theory (The Vickrey Table)
 \*
-\* Extends semiotic deficit theory to Markov chain language models.
+\* Extends semiotic deficit theory to Daisy Chain language models.
 \* When the token-to-logit projection is a pure function (no attention),
 \* the entire logit table can be precomputed at build time.
 \* Inference reduces to table lookup + linear interpolation.
 \*
-\* THM-MARKOV-PURITY:              projection is pure function of token
-\* THM-MARKOV-LINEARITY:           matVec distributes over linear transition
+\* THM-DAISY-PURITY:              projection is pure function of token
+\* THM-DAISY-LINEARITY:           matVec distributes over linear transition
 \* THM-PRECOMPUTATION-VALIDITY:    cached interpolation = full matVec (exact)
 \* THM-TOPK-DEFICIT:               sparse top-K has deficit vocabSize - K
 \* THM-ABSORBING-STATE:            linear chains converge to fixed points
-\* THM-GLOSSOLALIA-COMPLETENESS:   Vickrey Table is universal for linear Markov
+\* THM-GLOSSOLALIA-COMPLETENESS:   Vickrey Table is universal for Daisy Chain
 
 CONSTANTS VocabSize, HiddenDim, TopK, Alpha, NumAgents
 
@@ -35,7 +35,7 @@ vars == <<checked, purityOk, linearityOk, validityOk,
 \*   Geometric convergence rate = (1 - alpha)
 
 \* ═══════════════════════════════════════════════════════════════════════
-\* THM-MARKOV-PURITY
+\* THM-DAISY-PURITY
 \*
 \* The logit projection W * embedding[t] is a pure function of t.
 \* For any token t, the output is deterministic and independent of:
@@ -58,7 +58,7 @@ MarkovPurityHolds ==
   VocabSize >= 2 /\ HiddenDim >= 1
 
 \* ═══════════════════════════════════════════════════════════════════════
-\* THM-MARKOV-LINEARITY
+\* THM-DAISY-LINEARITY
 \*
 \* Matrix-vector multiplication distributes over the linear transition:
 \*   W * (alpha * e[t] + (1-alpha) * s) = alpha * (W*e[t]) + (1-alpha) * (W*s)
@@ -86,7 +86,7 @@ MarkovLinearityHolds ==
 \*                             + (1-alpha) * prev_logits
 \*
 \* This equals the full matVec: logits = W * state
-\* by THM-MARKOV-LINEARITY. Zero approximation error.
+\* by THM-DAISY-LINEARITY. Zero approximation error.
 \*
 \* Cost analysis:
 \*   Full matVec:  O(vocabSize * hiddenDim)  per token per agent
@@ -135,7 +135,7 @@ CombinedDeficitHolds ==
 \* ═══════════════════════════════════════════════════════════════════════
 \* THM-ABSORBING-STATE
 \*
-\* A linear Markov chain with alpha < 1 converges to a fixed point.
+\* A linear Daisy Chain with alpha < 1 converges to a fixed point.
 \* After n steps in absorbing state t:
 \*   state_n = (1 - (1-alpha)^n) * e[t] + (1-alpha)^n * s_0
 \*
@@ -172,7 +172,7 @@ AbsorbingStateHolds ==
 \* THM-GLOSSOLALIA-COMPLETENESS
 \*
 \* The precomputed Vickrey Table is a COMPLETE representation for the class
-\* of linear Markov chain language models. Any model in this class
+\* of linear Daisy Chain language models. Any model in this class
 \* can be fully captured by its Vickrey Table, and inference on the table
 \* produces identical results to inference on the original matrices.
 \*
@@ -189,7 +189,7 @@ AbsorbingStateHolds ==
 
 GlossolaliaCompletenessHolds ==
   \* The Vickrey Table represents ALL information in the weight matrices
-  \* that is relevant to inference (for linear Markov chains).
+  \* that is relevant to inference (for Daisy Chains).
   \* Build-time table + runtime interpolation = exact weight matrix inference.
   PrecomputationValidityHolds
 

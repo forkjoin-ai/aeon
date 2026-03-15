@@ -4,15 +4,15 @@ import ForkRaceFoldTheorems.SemioticDeficit
 namespace ForkRaceFoldTheorems
 
 /--
-Track Pi-b: Markov Precomputation Theory (The Vickrey Table)
+Track Pi-b: Daisy Chain Theory (The Vickrey Table)
 
-Extends semiotic deficit theory to Markov chain language models.
+Extends semiotic deficit theory to Daisy Chain language models.
 The central result: when the token-to-logit projection is a pure function
 (no attention dynamics, no context dependence), the entire logit table
 can be precomputed. Inference reduces to table lookup + linear interpolation.
 
 This is not possible for transformers because attention is quadratic
-and context-dependent. Markov chains are memoryless — the projection
+and context-dependent. Daisy Chains are memoryless and linear — the projection
 `W_unembed * embedding[tokenId]` depends only on the token, not history.
 
 The mapping to semiotic deficit theory:
@@ -27,10 +27,10 @@ Builds on:
 
 -- ─── Linear projection model ────────────────────────────────────────
 
-/-- A Markov projection: maps tokens to logit vectors via a fixed matrix.
+/-- A Daisy Chain projection: maps tokens to logit vectors via a fixed matrix.
     Unlike transformers, there is no attention and no context dependence.
     The projection is a pure function of the token ID. -/
-structure MarkovProjection where
+structure DaisyChainProjection where
   /-- Vocabulary size (number of tokens) -/
   vocabSize : ℕ
   /-- Hidden dimension (embedding size) -/
@@ -44,7 +44,7 @@ structure MarkovProjection where
     state_{t+1} = α * embedding[token_t] + (1-α) * state_t
     This is the Markov property: next state depends only on current state
     and the chosen token, not on any previous history. -/
-structure LinearTransition where
+structure DaisyChainTransition where
   /-- Mixing coefficient for new token embedding (0 < α ≤ 1) -/
   alpha : ℚ
   /-- α is positive -/
@@ -52,7 +52,7 @@ structure LinearTransition where
   /-- α is at most 1 -/
   hAlphaLeOne : alpha ≤ 1
 
--- ─── THM-MARKOV-PURITY ──────────────────────────────────────────────
+-- ─── THM-DAISY-PURITY ──────────────────────────────────────────────
 --
 -- The logit projection is a pure function of the token ID.
 -- For any token t, logits(t) = W * embedding[t] is deterministic
@@ -60,14 +60,14 @@ structure LinearTransition where
 -- precomputation — a property transformers do not have.
 -- ═════════════════════════════════════════════════════════════════════
 
-/-- For a Markov projection, the logit output for a given token is
+/-- For a Daisy Chain projection, the logit output for a given token is
     always the same regardless of when or how it is computed.
     This is the purity property that enables the Vickrey Table.
 
     In contrast, a transformer's output for token t depends on the
     full attention context (all previous tokens), making precomputation
     impossible without fixing the context. -/
-theorem markov_purity (proj : MarkovProjection) (tokenId : Fin proj.vocabSize) :
+theorem daisy_chain_purity (proj : DaisyChainProjection) (tokenId : Fin proj.vocabSize) :
     -- The projection is deterministic: same token always produces same logits.
     -- Formalized as: for any two invocations with the same token, output matches.
     -- (This is trivially true for pure functions, but the point is that
@@ -75,7 +75,7 @@ theorem markov_purity (proj : MarkovProjection) (tokenId : Fin proj.vocabSize) :
     True := by
   trivial
 
--- ─── THM-MARKOV-LINEARITY ───────────────────────────────────────────
+-- ─── THM-DAISY-LINEARITY ───────────────────────────────────────────
 --
 -- Matrix-vector multiplication distributes over the linear transition.
 -- W * (α*e[t] + (1-α)*s) = α*(W*e[t]) + (1-α)*(W*s)
@@ -92,7 +92,7 @@ theorem markov_purity (proj : MarkovProjection) (tokenId : Fin proj.vocabSize) :
 
     No matVec at inference time. The build-time computation is amortized
     over all future inference calls. -/
-theorem markov_linearity (trans : LinearTransition) :
+theorem daisy_chain_linearity (trans : DaisyChainTransition) :
     -- For any linear map W and vectors e, s:
     -- W(α*e + (1-α)*s) = α*(W*e) + (1-α)*(W*s)
     -- This is the distributive law for linear maps.
@@ -112,8 +112,8 @@ theorem markov_linearity (trans : LinearTransition) :
     logits = W * (α * e[t] + (1-α) * s)
     by linearity of W.
 
-    Proof: direct application of markov_linearity. -/
-theorem precomputation_validity (proj : MarkovProjection) (trans : LinearTransition) :
+    Proof: direct application of daisy_chain_linearity. -/
+theorem precomputation_validity (proj : DaisyChainProjection) (trans : DaisyChainTransition) :
     -- cached interpolation = full matVec (zero error)
     True := by
   trivial
@@ -129,13 +129,13 @@ theorem precomputation_validity (proj : MarkovProjection) (trans : LinearTransit
     This connects the Vickrey Table design choice to the theory:
     choosing K is choosing how much nuance to preserve.
     Larger K = lower deficit = more nuance = larger table. -/
-theorem topk_deficit (proj : MarkovProjection) (k : ℕ) (hK : 0 < k) (hKLeV : k ≤ proj.vocabSize) :
+theorem topk_deficit (proj : DaisyChainProjection) (k : ℕ) (hK : 0 < k) (hKLeV : k ≤ proj.vocabSize) :
     -- The deficit of the sparse representation
     (proj.vocabSize : ℤ) - (k : ℤ) ≥ 0 := by
   omega
 
 /-- When K = vocabSize, the deficit is zero (full table, no information loss). -/
-theorem topk_full_table (proj : MarkovProjection) :
+theorem topk_full_table (proj : DaisyChainProjection) :
     (proj.vocabSize : ℤ) - (proj.vocabSize : ℤ) = 0 := by
   omega
 
@@ -143,7 +143,7 @@ theorem topk_full_table (proj : MarkovProjection) :
     MOA pipeline. For k agents on the sparse table, the total deficit
     is at most (k-1) + (vocabSize - K), but the MOA deficit dominates
     when K is large relative to vocabSize. -/
-theorem topk_moa_deficit_bound (proj : MarkovProjection)
+theorem topk_moa_deficit_bound (proj : DaisyChainProjection)
     (numAgents : ℕ) (hAgents : 2 ≤ numAgents) (k : ℕ) (hK : 0 < k) :
     -- MOA deficit: numAgents - 1
     -- Top-K deficit: vocabSize - k
@@ -154,7 +154,7 @@ theorem topk_moa_deficit_bound (proj : MarkovProjection)
 
 -- ─── THM-ABSORBING-STATE ────────────────────────────────────────────
 --
--- A linear Markov chain with mixing coefficient α < 1 converges
+-- A linear Daisy Chain with mixing coefficient α < 1 converges
 -- to a fixed point. If argmax(W * e[t]) = t for some token t,
 -- that token is an absorbing state: once predicted, it repeats forever.
 -- This is the "777" phenomenon.
@@ -170,7 +170,7 @@ theorem topk_moa_deficit_bound (proj : MarkovProjection)
 
     Breaking absorbing states requires nonlinear transitions
     (attention, MLP) or stochastic perturbation (temperature). -/
-theorem absorbing_state_convergence (trans : LinearTransition)
+theorem absorbing_state_convergence (trans : DaisyChainTransition)
     (hAlphaLt : trans.alpha < 1) :
     -- (1-α)^n → 0 as n → ∞, so the state converges to the absorbing token
     -- This is why "777" repeats: once token 39 is chosen, its embedding
@@ -181,20 +181,20 @@ theorem absorbing_state_convergence (trans : LinearTransition)
 -- ─── THM-GLOSSOLALIA-COMPLETENESS ───────────────────────────────────
 --
 -- The Glossolalia engine (precomputed Vickrey Table + fork/race/fold)
--- is complete: it can represent any Markov chain language model
+-- is complete: it can represent any Daisy Chain language model
 -- with linear transitions. The Vickrey Table is the universal
 -- representation for this class of models.
 -- ═════════════════════════════════════════════════════════════════════
 
-/-- Any Markov projection with linear transition can be fully
+/-- Any Daisy Chain projection with linear transition can be fully
     represented by a precomputed logit table. The table is the
     canonical form: it eliminates all matrix multiplication at
     inference time while preserving exact semantics.
 
     This does NOT hold for transformers (attention is not precomputable)
     or RNNs with nonlinear gates (state transitions are not linear). -/
-theorem glossolalia_completeness (proj : MarkovProjection) (trans : LinearTransition) :
-    -- For the class of linear Markov chains:
+theorem glossolalia_completeness (proj : DaisyChainProjection) (trans : DaisyChainTransition) :
+    -- For the class of Daisy Chains:
     -- precomputed table ≅ weight matrices (isomorphic representations)
     -- with the table being strictly more efficient at inference time
     True := by
@@ -209,8 +209,8 @@ theorem glossolalia_completeness (proj : MarkovProjection) (trans : LinearTransi
     4. Top-K is a semiotic fold (deficit = vocabSize - K)
     5. Absorbing states converge geometrically
     6. The table is a complete representation -/
-theorem markov_precomputation_theory (proj : MarkovProjection)
-    (trans : LinearTransition) (hAlphaLt : trans.alpha < 1)
+theorem markov_precomputation_theory (proj : DaisyChainProjection)
+    (trans : DaisyChainTransition) (hAlphaLt : trans.alpha < 1)
     (k : ℕ) (hK : 0 < k) (hKLeV : k ≤ proj.vocabSize) :
     -- Top-K deficit is non-negative
     (proj.vocabSize : ℤ) - (k : ℤ) ≥ 0 ∧
