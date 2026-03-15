@@ -40,3 +40,6 @@ import ForkRaceFoldTheorems.CoarseningThermodynamics
 import ForkRaceFoldTheorems.EntropicRefinementCalculus
 import ForkRaceFoldTheorems.RateDistortionFrontier
 import ForkRaceFoldTheorems.EnrichedConvergence
+import ForkRaceFoldTheorems.RenormalizationFixedPoints
+import ForkRaceFoldTheorems.ThermodynamicTracedMonoidal
+import ForkRaceFoldTheorems.FoldHeatHierarchy
