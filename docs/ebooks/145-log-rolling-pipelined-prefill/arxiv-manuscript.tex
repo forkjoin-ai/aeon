@@ -131,7 +131,8 @@ select earliest valid progress, \texttt{fold} results through
 deterministic reconciliation, and \texttt{vent} paths whose continued
 existence would destabilize the whole. The central claim of this
 manuscript is that failure in such systems can be modeled not only as a
-binary event but also as a \textbf{topological coordinate}.
+binary event but also as a \textbf{topological coordinate}, within the
+modeled finite-DAG scope under stated assumptions.
 
 In this framing, failure is not merely the opposite of success; it marks
 where topology, coordination, and reconciliation no longer return the
@@ -5582,14 +5583,28 @@ convergence machinery --- context accumulation as monotone deflator,
 dialogue as traced monoidal feedback, the renormalization group fixed
 point as terminus --- constitutes, when taken together, a mathematical
 theory of peace.  Not a metaphor for peace.  Not an analogy to peace.
-A formal theory, mechanized in a proof assistant, in which peace is a
-fixed point, its existence is a theorem, the path to it is
-constructive, and convergence is guaranteed under stated conditions.
+A formal theory of a \emph{model} of peace, mechanized in a proof
+assistant, in which peace is a fixed point, its existence is a theorem,
+the path to it is constructive, and convergence is guaranteed under
+stated conditions.
 The logical chain is: \texttt{peace\_fixed\_point} proves the RG fixed
 point exists (zero heat, zero information loss); it \emph{is} the
 zero-deficit witness required by the universal floor theorem; therefore
 the floor theorem applies non-vacuously.
 Thirteen theorems.  Every step machine-verified.
+
+\textbf{Scope.}  The semiotic theorems formalize a \emph{model} of
+communication: finite semantic paths collapsing through bounded
+articulation channels, represented as \texttt{SemioticChannel} structures
+over \texttt{Fin n} types.  They do not formalize communication itself.
+The topological space of ``thought'' is the finite-dimensional semantic
+path space of the model; $\beta_1(\text{thought})$ is the first Betti
+number of that modeled path complex; two communication acts are ``paths''
+vs ``cycles'' by their edge structure in the modeled DAG.  The structural
+correspondence between the model and human communication is a hypothesis
+grounded in the formal results, not a proof about human behavior.  The
+theorems bound what the model predicts; empirical validation of the
+correspondence is future work.
 
 But the theory of peace was not invented here.  DNA replication
 discovered it first.  The origin of replication forks the double helix
@@ -5627,6 +5642,19 @@ traced monoidal feedback operator, complete chromosome as fixed point.}
 
 Within the finite DAG classes modeled in this paper, fork/race/fold +
 vent is sufficient.
+
+\textbf{When forking is net negative.}  The framework applies to DAGs
+where fork/race/fold coordination cost is sub-linear in the work saved
+by parallelism.  When coordination overhead exceeds the parallelism
+benefit --- very small payloads where fork/fold bookkeeping dominates,
+very fast sequential paths where the critical section is shorter than
+the fork latency, or contention-bound systems where cache coherence
+traffic or lock contention scales super-linearly with $\beta_1$ ---
+the optimal topology is $\beta_1 = 0$: a simple sequential path.  The
+diversity theorem does not claim that high $\beta_1$ is universally
+beneficial.  It claims that \emph{given} a problem whose intrinsic
+$\beta_1^* > 0$, the diverse strategy subsumes the monoculture
+strategy.  The precondition matters.
 
 \subsection{References}\label{references}
 
