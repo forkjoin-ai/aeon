@@ -59,12 +59,12 @@ theorem race_subsumes_each (results : List CodecResult)
     (r : CodecResult) (hr : r ∈ results) :
     raceMin results ≤ r.compressedSize := by
   induction results with
-  | nil => exact absurd hr (List.not_mem_nil r)
+  | nil => nomatch hr
   | cons hd tl ih =>
     rcases List.mem_cons.mp hr with rfl | htl
-    · exact raceMin_cons_le_head hd tl
+    · exact raceMin_cons_le_head _ _
     · cases tl with
-      | nil => exact absurd htl (List.not_mem_nil r)
+      | nil => nomatch htl
       | cons s ss =>
         exact le_trans (min_le_right _ _) (ih htl)
 
@@ -88,10 +88,10 @@ theorem race_total_subsumes_fixed_codec
   | cons hd tl ih =>
     simp only [List.map_cons, List.sum_cons]
     apply Nat.add_le_add
-    · have hValid := hCodecValid hd (List.mem_cons_self hd tl)
+    · have hValid := hCodecValid hd (List.mem_cons_self _ _)
       simp only [dif_pos hValid]
-      exact race_subsumes_each hd _ (List.get_mem hd ⟨codecIdx, hValid⟩)
-    · exact ih (fun rs hrs => hCodecValid rs (List.mem_cons_of_mem hd hrs))
+      exact race_subsumes_each hd _ (List.get_mem _ ⟨codecIdx, hValid⟩)
+    · exact ih (fun rs hrs => hCodecValid rs (List.mem_cons_of_mem _ hrs))
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-TOPO-RACE-MONOTONE

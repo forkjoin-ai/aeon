@@ -165,39 +165,25 @@ theorem pipeline_mixing_bound
 /-- Pipeline certificate: given two per-stage rate certificates, construct
     a pipeline-level rate certificate for the sequential composition.
 
-    The composite rate is r₁ · r₂, the composite bound is M₁ · M₂. -/
+    The composite rate is r₁ · r₂, the composite bound is M₁ · M₂.
+    We use ε₁ = 1 - r₁·r₂ and ε₂ = 1 as the certificate epsilons,
+    which gives contractionRate = 1 - ε₁·ε₂ = r₁·r₂ as desired. -/
 noncomputable def pipelineCertificate
     (r₁ r₂ : GeometricErgodicityRate) :
     GeometricErgodicityRate :=
+  -- The composite rate is r₁·r₂ ∈ (0,1).
+  -- Choose ε₁ = 1 - r₁·r₂ (in (0,1)) and ε₂ = 1.
+  -- Then rate = 1 - ε₁·ε₂ = 1 - (1 - r₁·r₂) = r₁·r₂. ✓
   mkGeometricErgodicityRate
-    r₁.stepEpsilon  -- use stage 1's step epsilon
-    r₂.stepEpsilon  -- use stage 2's step epsilon as small-set epsilon
-    (r₁.initialBound * r₂.initialBound)  -- composite initial bound
-    r₁.hStepPos
-    r₂.hStepPos
+    (1 - r₁.contractionRate * r₂.contractionRate)  -- step epsilon
+    1                                                 -- small-set epsilon
+    (r₁.initialBound * r₂.initialBound)             -- composite bound
+    (by linarith [sequential_ergodicity r₁ r₂])     -- ε₁ > 0
+    one_pos                                           -- ε₂ > 0
     (mul_pos r₁.hInitialBoundPos r₂.hInitialBoundPos)
-    (by
-      -- Need: r₁.stepEpsilon * r₂.stepEpsilon < 1
-      -- This follows from both being in (0, 1] with product < 1
-      have h₁ := r₁.hRateFormula  -- r₁ = 1 - ε₁·ε₁'
-      have h₂ := r₂.hRateFormula  -- r₂ = 1 - ε₂·ε₂'
-      -- The step epsilons are bounded above by 1 (since r > 0 means 1 - ε·ε' > 0)
-      have hε₁lt : r₁.stepEpsilon * r₁.smallSetEpsilon < 1 := by linarith [r₁.hRatePos]
-      have hε₂lt : r₂.stepEpsilon * r₂.smallSetEpsilon < 1 := by linarith [r₂.hRatePos]
-      calc r₁.stepEpsilon * r₂.stepEpsilon
-          ≤ r₁.stepEpsilon * 1 := by
-            apply mul_le_mul_of_nonneg_left
-            · exact le_of_lt (lt_of_lt_of_le r₂.hStepPos
-                (by linarith [mul_pos r₂.hStepPos r₂.hSmallSetPos] : r₂.stepEpsilon ≤ 1 / r₂.smallSetEpsilon).le)
-            · exact le_of_lt r₁.hStepPos
-          _ = r₁.stepEpsilon := mul_one _
-          _ < 1 / r₁.smallSetEpsilon := by
-              rw [div_lt_iff₀ r₁.hSmallSetPos]
-              exact hε₁lt
-          _ ≤ 1 := by
-              rw [div_le_one r₁.hSmallSetPos]
-              exact le_of_lt (lt_of_lt_of_le r₁.hSmallSetPos (by linarith [hε₁lt]))
-      sorry)
+    (by -- ε₁ · ε₂ = (1 - r₁·r₂) · 1 < 1 since r₁·r₂ > 0
+      simp only [mul_one]
+      linarith [sequential_rate_positive r₁ r₂])
 
 /-- Pipeline certificate validity: the pipeline certificate has a sub-unit rate. -/
 theorem pipeline_certificate_valid

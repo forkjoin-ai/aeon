@@ -70,7 +70,23 @@ theorem race_elimination_vent_count
         · rw [result.hLosersVented i h] at hi; exact RaceArmState.noConfusion hi)
     | completed => left; exact hi
     | vented => right; exact hi
-  sorry -- card arithmetic from partition + card_completed = 1
+  -- The two filter sets are disjoint (no arm is both completed and vented)
+  have hDisjoint : Disjoint
+      (Finset.univ.filter (fun i => result.arms i = .completed))
+      (Finset.univ.filter (fun i => result.arms i = .vented)) := by
+    rw [Finset.disjoint_filter]
+    intro i _ hc hv
+    rw [hc] at hv
+    exact RaceArmState.noConfusion hv
+  -- card(completed ∪ vented) = card(completed) + card(vented)
+  have hCardUnion := Finset.card_union_of_disjoint hDisjoint
+  -- univ = completed ∪ vented (from hPartition)
+  rw [hPartition] at hTotal
+  -- card(completed) = 1 (from race_elimination_exactly_one_winner)
+  have hCard1 := race_elimination_exactly_one_winner hn result
+  -- n = 1 + card(vented), so card(vented) = n - 1
+  rw [hCardUnion] at hTotal
+  omega
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-SERVER-FOLD-INTEGRITY

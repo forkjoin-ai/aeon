@@ -111,7 +111,24 @@ theorem drift_conservation
     (data : RawGraphData α β) :
     ∑ c ∈ data.coarseNodes, coarseDrift data c =
     ∑ a ∈ data.fineNodes, (data.arrivalRate a - data.serviceRate a) := by
-  sorry
+  -- Expand definitions
+  simp only [coarseDrift, aggregateArrival, aggregateService]
+  -- Push the subtraction through the sum
+  simp only [Finset.sum_sub_distrib]
+  -- Both sides are ∑ over fineNodes, partitioned by quotientMap image
+  -- Use Finset.sum_biUnion to rearrange: ∑_{c ∈ image} ∑_{a | φ(a)=c} = ∑_{a ∈ fineNodes}
+  rw [← Finset.sum_biUnion (f := fun c => data.fineNodes.filter (fun a => data.quotientMap a = c))
+    (by intro c _ d _ hcd
+        rw [Finset.disjoint_filter]
+        intro a _ hac had
+        exact hcd (hac ▸ had))]
+  congr 1
+  -- The biUnion of fibers over the image equals fineNodes
+  ext a
+  simp only [Finset.mem_biUnion, Finset.mem_filter, RawGraphData.coarseNodes, Finset.mem_image]
+  constructor
+  · rintro ⟨_, ⟨b, hb, rfl⟩, ha, _⟩; exact ha
+  · intro ha; exact ⟨data.quotientMap a, ⟨a, ha, rfl⟩, ha, rfl⟩
 
 -- ─── THM-RECURSIVE-COARSENING-SYNTHESIS: Stability transfer ────────────
 
@@ -123,7 +140,20 @@ theorem fine_stability_implies_coarse_stability
     (hFineStable : ∀ a ∈ data.fineNodes, data.arrivalRate a < data.serviceRate a)
     (c : β) (hc : c ∈ data.coarseNodes) :
     coarseDrift data c < 0 := by
-  sorry
+  -- coarseDrift = aggregateArrival - aggregateService
+  unfold coarseDrift aggregateArrival aggregateService
+  -- Need: ∑ arrival < ∑ service for the fiber over c
+  -- Equivalently: ∑ (arrival - service) < 0
+  rw [sub_neg]
+  -- The fiber over c is non-empty (since c ∈ coarseNodes = image)
+  rw [RawGraphData.coarseNodes, Finset.mem_image] at hc
+  obtain ⟨a₀, ha₀mem, ha₀eq⟩ := hc
+  -- Apply Finset.sum_lt_sum: each term has arrival ≤ service, at least one strict
+  apply Finset.sum_lt_sum
+  · intro a ha
+    simp [Finset.mem_filter] at ha
+    exact le_of_lt (hFineStable a ha.1)
+  · exact ⟨a₀, by simp [Finset.mem_filter, ha₀mem, ha₀eq], hFineStable a₀ ha₀mem⟩
 
 -- ─── Quotient refinement ───────────────────────────────────────────────
 

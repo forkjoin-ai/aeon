@@ -101,7 +101,29 @@ theorem throughput_maximum_exists (skeletons : List MonoidalSkeleton)
     (hne : skeletons ≠ []) :
     ∃ s, s ∈ skeletons ∧ ∀ t, t ∈ skeletons → t.throughputScore ≤ s.throughputScore := by
   -- A finite non-empty list of reals has a maximum element.
-  sorry
+  induction skeletons with
+  | nil => exact absurd rfl hne
+  | cons hd tl ih =>
+    by_cases htl : tl = []
+    · -- Singleton list: hd is trivially the max
+      exact ⟨hd, List.mem_cons_self _ _, fun t ht => by
+        rw [htl] at ht
+        simp [List.mem_cons, List.mem_nil_iff] at ht
+        rw [ht]⟩
+    · -- Non-empty tail: get the tail maximum and compare
+      obtain ⟨sMax, hsMax_mem, hsMax_max⟩ := ih htl
+      by_cases hle : hd.throughputScore ≤ sMax.throughputScore
+      · -- Tail max wins
+        exact ⟨sMax, List.mem_cons_of_mem _ hsMax_mem, fun t ht => by
+          cases List.mem_cons.mp ht with
+          | inl h => rw [h]; exact hle
+          | inr h => exact hsMax_max t h⟩
+      · -- hd wins
+        push_neg at hle
+        exact ⟨hd, List.mem_cons_self _ _, fun t ht => by
+          cases List.mem_cons.mp ht with
+          | inl h => rw [h]
+          | inr h => exact le_of_lt (lt_of_le_of_lt (hsMax_max t h) hle)⟩
 
 /-! ### 5. throughput_maximum_unique_score -/
 
