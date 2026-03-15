@@ -132,7 +132,12 @@ deterministic reconciliation, and \texttt{vent} paths whose continued
 existence would destabilize the whole. The central claim of this
 manuscript is that failure in such systems can be modeled not only as a
 binary event but also as a \textbf{topological coordinate}, within the
-modeled finite-DAG scope under stated assumptions.
+modeled finite-DAG scope under stated assumptions. By ``topological
+coordinate'' I mean the pair $(\beta_1, \Delta_\beta)$: the first Betti
+number of the computation graph (counting independent parallel paths)
+and the topological deficit (the gap between the problem's intrinsic
+$\beta_1^*$ and the implementation's actual $\beta_1$). These are
+defined formally in \S2.
 
 In this framing, failure is not merely the opposite of success; it marks
 where topology, coordination, and reconciliation no longer return the
@@ -189,11 +194,14 @@ while \(\Delta_\beta > 0\) co-occurs with measurable waste (healthcare
 delays, settlement lockup, protocol-level blocking) {[}9, 16, 17{]}. I
 define the \textbf{Bule} (1 B = 1 unit of \(\Delta_\beta\)) as a
 shorthand engineering unit for that deficit. The formal companion now
-proves a conditional universal-floor theorem on explicitly witnessed
-failure Pareto frontiers: if a zero-deficit floor point is supplied
-together with latency/waste lower bounds, it minimizes every monotone
-generalized-convex cost, and strict uniqueness requires the strict cost
-extension plus uniqueness of that zero-deficit floor witness.
+mechanizes a conditional universal-floor theorem on explicitly witnessed
+failure Pareto frontiers: given a supplied zero-deficit floor point
+together with latency/waste lower bounds, the theorem shows it minimizes
+every monotone generalized-convex cost; strict uniqueness additionally
+requires the strict cost extension plus uniqueness of the supplied
+zero-deficit floor witness. The theorem does not generate or discover
+the floor point; the witness must be supplied and its existence is a
+precondition, not a conclusion.
 
 These cross-domain correspondences are exemplar-based and correlational;
 they are not presented as a systematic causal survey or universal proof.
@@ -1988,9 +1996,18 @@ Structural}\label{the-quantum-vocabulary-is-structural}
 
 The following correspondences are heuristic structural mappings between
 quantum-mechanical operations and computational operations, with
-photosynthetic antenna complexes (§1.5) as the closest literal quantum
-case discussed here. In §6.12, I show that the Feynman path integral
+photosynthetic antenna complexes (\S1.5) as the closest literal quantum
+case discussed here. In \S6.12, I show that the Feynman path integral
 admits a fork/race/fold interpretation within this abstraction.
+
+\textbf{Boundary.} The quantum vocabulary applies exactly to linear
+full-aggregation folds (sum over all paths with equal weight).  For
+nonlinear selection folds (winner-take-all) and early-stop folds
+--- which dominate practical computation --- the correspondence breaks:
+companion tests include explicit counterexamples \cite{9, 13}.  The
+sections that follow use quantum language as structural vocabulary for
+linear-fold cases; formal equivalence does not extend to nonlinear
+folds.
 
 \textbf{Relation to prior formalisms.} The concurrent-computation
 literature offers several models with overlapping expressiveness. Petri
@@ -2135,7 +2152,7 @@ The \texttt{measure()} operation returns a snapshot: stream states,
 intermediate results, timing. Monitoring dashboards, progress bars,
 debugging -- all measurement, all non-destructive.
 
-\subsection{6. The Thermodynamics of
+\subsection{6. A Thermodynamic Accounting Model for
 Fork/Race/Fold}\label{the-thermodynamics-of-forkracefold}
 
 The topology (§3) classifies the \emph{shape} of computation. The
@@ -2143,7 +2160,11 @@ queueing containment (§4) situates it within existing theory. The
 quantum vocabulary (§5) names its operations. This section introduces a
 thermodynamic accounting analogy: fork/race/fold is modeled as an
 engine-like process whose primitives admit conservation-style
-bookkeeping within the scope of this manuscript.
+bookkeeping within the scope of this manuscript. The analogy is
+structural, not physical: we do not claim that computational forks
+generate literal potential energy or that computational vents dissipate
+literal heat. The mapping is a vocabulary for organizing the cost
+analysis, not an assertion of physical identity.
 
 \subsubsection{6.1 The Energy Dictionary}\label{the-energy-dictionary}
 
@@ -2413,7 +2434,11 @@ The energy framing highlights that convolutional neural networks and
 transformers can be represented as fork/race/fold graphs at useful
 levels of abstraction.
 
-\textbf{Multi-head attention admits a fork/race/fold reading.} The input
+\textbf{Multi-head attention admits a fork/race/fold reading.} The
+following is a structural homology: at inference time, for a fixed
+trained model, the topology of attention matches fork/race/fold. This
+is a post-hoc description, not a prediction of how training structures
+the model.  The input
 splits into \(N\) heads (each with its own \(Q\), \(K\), \(V\)
 projections). This is fork: \(\beta_1 = N - 1\). All heads compute
 attention over the same sequence simultaneously -- race. Concatenation
@@ -3129,8 +3154,8 @@ shared context provides enough implicit channels to match the thought
 topology, communication becomes lossless. The deficit reaches zero. No
 erasure, no heat, no confusion.
 
-War is what happens when the Landauer heat of a fold is discharged
-violently rather than thermally. The fold erases someone's
+Within the model: war is what happens when the Landauer heat of a fold
+is discharged violently rather than thermally. The fold erases someone's
 positive-mass semantic path --- their lived understanding of the
 sacred, the just, the true --- and the heat of that erasure has to go
 somewhere. A Council is a slow thermal dissipation: centuries of
@@ -3138,6 +3163,12 @@ argument, letters, creeds, the patient accumulation of shared context
 through the conversational trace. A crusade is an adiabatic shock: the
 same heat, discharged in a single catastrophic pulse, because someone
 decided that conversation was too expensive.
+
+(These are interpretations of the formal model applied to historical
+events, not conclusions of the theorems themselves. The theorems prove
+properties of finite semiotic channels over \texttt{Fin n} types; the
+application to human history is a hypothesis about structural
+correspondence.)
 
 But \texttt{trajectory\_cumulative\_heat\_monotone} proves that the heat
 only accumulates. Violence does not reduce the deficit. It adds a new
@@ -3785,7 +3816,11 @@ mock network communication, as noted in §13). Chunk size
 \(B = P / \lceil P/B \rceil\) with \(B\) chosen to maximize throughput
 per the formula. These are \emph{theoretical best-case} speedups for the
 scheduling topology; real-world figures would be reduced by network RTT,
-uneven stage latencies, and queuing at node boundaries. The 267x figure
+uneven stage latencies, and queuing at node boundaries. As a sensitivity
+heuristic: if inter-node RTT is $\tau$ and per-step compute time is $c$,
+the effective speedup degrades by factor $c / (c + \tau)$ per pipeline
+stage. For $\tau = c$ (network cost equals compute cost), speedups halve.
+The 267x figure
 for 500 tokens / 8 nodes uses \(B = 500\) (one chunk), giving
 \(T_{\text{chunked}} = 1 + 7 + 7 = 15\) steps.
 
@@ -5556,7 +5591,10 @@ point generates strictly positive information loss, bounding the number
 of non-trivial coarsening steps by the initial quotient cardinality.
 But a convergence-rate bound on the conversational trace itself remains
 open.  The structural guarantees are real; the speed guarantee is future
-work.
+work.  Without a convergence rate, the fixed-point guarantee is
+existential: peace is reachable but may require more dialogue turns than
+any practical system can sustain. Bounding the rate is the most
+important open problem in this line of work.
 
 The mathematics does not legislate which civilizations will sit in the
 feedback loop.  Under the stated structural conditions, the fixed point
