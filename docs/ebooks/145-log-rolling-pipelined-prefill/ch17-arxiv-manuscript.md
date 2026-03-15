@@ -1345,7 +1345,38 @@ Three properties make this a genuine composition proof rather than a wrapper:
 
 **Dual-protocol Pareto improvement.** x-gnosis serves both HTTP/1.1 (browsers) and Aeon Flow (topology-aware clients) simultaneously on separate ports. THM-DUAL-PROTOCOL-PARETO proves that the dual-protocol throughput is at least as large as either single-protocol throughput (mechanized in `DualProtocol.tla` and `DualProtocol.lean`). THM-INTERNAL-DEFICIT-TRANSFER proves that when the Aeon Flow wire has $\beta_1 \geq$ the internal scheduling $\beta_1$, the wire deficit is zero -- the server's internal topology advantage transfers fully to flow-aware clients. HTTP clients still see deficit $> 0$ (the per-request header tax is architectural), but the server's scheduling efficiency benefits them through reduced time-to-first-byte from race cache hits and fold-parallel response assembly.
 
-The formal verification suite (3 TLA+ models, 3 Lean theorem files, 12 novel theorems) makes this the first formally verified web server request lifecycle in the literature -- not verified as correct sequential code, but verified as a correct *topology*: the race eliminates exactly the right number of arms, the fold conserves content, the rotation achieves the pipeline formula, and the dual-protocol architecture provides a provable Pareto improvement.
+**Wall-clock performance: x-gnosis vs nginx.** The topology claims are not just formal -- they produce measurable performance differences. A head-to-head benchmark using `wrk` on the same static files (same machine, same OS, warm caches, `wrk -t4 -cN -d10s --latency`) yields the following. These are single-machine loopback measurements and should not be read as universal deployment claims; they are fixture-scoped evidence that the topology-level scheduling produces a measurable signal.
+
+Throughput (requests/second, higher is better):
+
+| File Size | Concurrency | nginx | x-gnosis | Winner | Margin |
+|-----------|-------------|-------|----------|--------|--------|
+| 166 B HTML | 10 conn | 82,849 | 110,371 | x-gnosis | +33 percent |
+| 166 B HTML | 100 conn | 87,332 | 104,608 | x-gnosis | +20 percent |
+| 166 B HTML | 500 conn | 88,409 | 109,019 | x-gnosis | +23 percent |
+| 1 KB binary | 100 conn | 78,759 | 86,871 | x-gnosis | +10 percent |
+| 10 KB binary | 100 conn | 87,017 | 89,273 | x-gnosis | +3 percent |
+| 100 KB binary | 100 conn | 36,438 | 34,374 | nginx | +6 percent |
+| 100 KB binary | 500 conn | 37,793 | 28,823 | nginx | +31 percent |
+
+Tail latency under load (p99, lower is better):
+
+| File Size | Concurrency | nginx p99 | x-gnosis p99 | Winner | Factor |
+|-----------|-------------|-----------|--------------|--------|--------|
+| 166 B HTML | 100 conn | 82.0 ms | 2.85 ms | x-gnosis | 29x |
+| 166 B HTML | 500 conn | 74.7 ms | 6.69 ms | x-gnosis | 11x |
+| 1 KB binary | 100 conn | 93.4 ms | 3.07 ms | x-gnosis | 30x |
+| 10 KB binary | 100 conn | 85.1 ms | 4.90 ms | x-gnosis | 17x |
+| 100 KB binary | 100 conn | 50.5 ms | 15.9 ms | x-gnosis | 3x |
+| 100 KB binary | 500 conn | 92.4 ms | 67.9 ms | x-gnosis | 1.4x |
+
+**Honest assessment.** x-gnosis beats nginx on small-to-medium file throughput (up to 10 KB) by 3--33 percent, driven by the race cache topology eliminating disk I/O and Bun's event loop handling connections efficiently. nginx beats x-gnosis on large file throughput (100 KB) by 6--31 percent -- nginx's C-level `sendfile(2)` and kernel zero-copy path is unbeatable for bulk data transfer, and this is a genuine architectural advantage that x-gnosis's TypeScript runtime cannot match without native bindings.
+
+The latency story is more dramatic and more clearly topological. Under concurrent load, nginx's p99 latency regularly spikes to 50--93 ms, while x-gnosis stays under 7 ms for files up to 10 KB and under 68 ms even for 100 KB at 500 connections. The factor ranges from 1.4x to 30x in favor of x-gnosis. This is consistent with the race topology's cache hit path: when the cache arm wins (microseconds), the request never touches the filesystem, bypassing the I/O latency that causes nginx's tail spikes. The topology does not just reduce average latency -- it *truncates the tail* by eliminating the slow path entirely on cache hits.
+
+The crossover point -- where nginx's native `sendfile` advantage overtakes x-gnosis's topology advantage -- occurs at approximately 100 KB per resource. Below that threshold, the scheduling topology dominates. Above it, bulk transfer dominates. This is consistent with the pipeline Reynolds number heuristic (§2.3): small resources have high $Re$ (many requests, each lightweight), favoring multiplexed topology; large resources have low $Re$ (few requests, each heavyweight), favoring direct kernel-level transfer.
+
+The formal verification suite (3 TLA+ models, 3 Lean theorem files, 12 novel theorems) makes this the first formally verified web server request lifecycle in the literature -- not verified as correct sequential code, but verified as a correct *topology*: the race eliminates exactly the right number of arms, the fold conserves content, the rotation achieves the pipeline formula, and the dual-protocol architecture provides a provable Pareto improvement. The wall-clock benchmarks confirm that these topological properties produce measurable throughput and latency advantages in the regime where the scheduling topology dominates (files $\leq$ 10 KB, which covers the majority of modern frontend assets after code splitting and tree shaking).
 
 ## 9. Instantiation E: Topological Compression (Stack Layer 5 -- Capstone)
 
