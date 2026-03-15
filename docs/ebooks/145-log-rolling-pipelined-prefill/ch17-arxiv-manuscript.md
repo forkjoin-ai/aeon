@@ -1261,6 +1261,54 @@ In Gnosis (§11), the Wallington Rotation for a 4-stage pipeline is:
 
 The topology is the program. The scheduling is the shape.
 
+### 6.15 The Glossolalia Engine: Precomputed Semiotic Folds as Log Tables
+
+**The purity observation.** A Markov chain language model has a property that transformers do not: the logit projection $\ell(t) = W_{\text{unembed}} \cdot e(t)$ is a *pure function* of the token identity $t$. There is no attention mechanism, no key-value cache, no context-dependent computation. The same token always produces the same logits, regardless of position, history, or surrounding tokens. The companion theorem `markov_purity` states this property. For transformers, the corresponding statement is false: the output for token $t$ depends on the full attention context, making precomputation impossible without fixing the context.
+
+This observation has a constructive consequence. If $\ell(t)$ is pure, then $\ell(t)$ can be computed *once* for every $t$ in the vocabulary and stored in a table --- a log table in the classical sense, where the expensive transcendental function (here: a matrix-vector product) is replaced by a lookup into precomputed values. The companion theorem `precomputation_validity` proves that this lookup is exact, not an approximation: the cached interpolation produces bit-identical results to the full matrix-vector product, by the distributive law for linear maps.
+
+**The linearity that enables it.** The state transition in the Glossolalia engine is linear:
+
+$$s_{t+1} = \alpha \cdot e(\tau_t) + (1 - \alpha) \cdot s_t$$
+
+where $\alpha \in (0, 1]$ is a mixing coefficient, $e(\tau_t)$ is the embedding of the chosen token, and $s_t$ is the current hidden state. Because $W_{\text{unembed}}$ is a linear map, it distributes over this transition:
+
+$$W \cdot s_{t+1} = \alpha \cdot W \cdot e(\tau_t) + (1 - \alpha) \cdot W \cdot s_t = \alpha \cdot \ell(\tau_t) + (1 - \alpha) \cdot \ell_{\text{prev}}$$
+
+The companion theorem `markov_linearity` states this distributive property. The consequence is immediate: if we precompute $\ell(t)$ for all $t$, then $W \cdot s_{t+1}$ is a weighted sum of two *precomputed* vectors. No matrix-vector multiplication at inference time. The cost drops from $O(V \times d)$ to $O(V)$, where $V$ is the vocabulary size and $d$ is the hidden dimension --- a factor of $d$ speedup ($960\times$ for SmolLM2-360M).
+
+**The sparse fold.** Storing $\ell(t)$ for all $V$ tokens at full precision produces a $V \times V$ table (9.2 GB for $V = 49{,}152$). This is too large. Instead, we store only the top-$K$ logit values per token --- a sparse representation that retains the $K$ most probable next tokens and discards the rest.
+
+This truncation is itself a semiotic fold, executed at build time rather than at inference time. The companion theorem `topk_deficit` quantifies the information loss: the build-time fold has deficit $\Delta\beta = V - K$. For $K = 1{,}024$ and $V = 49{,}152$, the deficit is $48{,}128$ --- the number of possible next tokens whose probability mass is vented at table construction time. These are the tokens that the model *could* have generated but whose logit values were below the top-$K$ threshold: nuance that doesn't survive the build-time fold.
+
+The choice of $K$ is therefore a design decision with precise semiotic content: larger $K$ preserves more nuance (lower deficit) at the cost of a larger table. The combined deficit of the full system --- fork/race/fold over $k$ agents using a top-$K$ table --- is $(k - 1) + (V - K)$, where the first term is the MOA deficit from `semiotic_moa_isomorphism` and the second is the build-time truncation deficit from `topk_deficit`. The companion theorem `topk_moa_deficit_bound` proves this additivity.
+
+| $K$ per token | Table size | Semiotic deficit $V - K$ |
+|:---:|:---:|:---:|
+| 256 | 72 MB | 48,896 |
+| 1,024 | 288 MB | 48,128 |
+| 4,096 | 1.15 GB | 45,056 |
+| 49,152 (full) | 9.2 GB | 0 |
+
+**The absorbing state.** A linear Markov chain with $\alpha < 1$ converges geometrically to a fixed point. The companion theorem `absorbing_state_convergence` states the convergence rate: after $n$ steps in an absorbing state (a token $t^*$ such that $\operatorname{argmax}\ \ell(t^*) = t^*$), the hidden state is $(1 - (1-\alpha)^n) \cdot e(t^*) + (1-\alpha)^n \cdot s_0$. For $\alpha = 0.7$, the state is 97.3\% dominated by $e(t^*)$ after three steps.
+
+This is the formal explanation of the "777" phenomenon observed in the engine's first deployment (Experiment 003, March 15 2026). Token 39 ("7" in SmolLM2 BPE) satisfied $\operatorname{argmax}(\ell(39)) = 39$ --- predicting itself with perplexity 1.0. Once sampled, the linear transition drove the state toward $e(39)$, which reinforced the prediction, creating an absorbing cycle. The cure requires nonlinear transitions (attention, MLP) or stochastic perturbation (high temperature). The log table does not introduce this degeneracy; it merely makes it legible, because the absorbing structure is visible directly in the precomputed table as a fixed point of the top-1 index map $t \mapsto \operatorname{argmax}\ \ell(t)$.
+
+**The completeness result.** The companion theorem `glossolalia_completeness` states that the precomputed log table is a *complete* representation for the class of linear Markov chain language models: any model in this class can be fully captured by its table, and inference on the table produces identical results to inference on the original weight matrices. This class includes bigram models (the special case $\alpha = 1$), trigram models (with state = last two tokens), and any model whose next-token distribution is a linear function of the hidden state.
+
+The class excludes transformers (attention is quadratic and context-dependent), RNNs with nonlinear gates (GRU, LSTM: $\tanh$ and $\sigma$ break linearity), and state-space models with selective scan (Mamba: the gating mechanism is input-dependent). For these architectures, the logit projection is *not* a pure function of the token identity, and precomputation is impossible without fixing the full context.
+
+**The Glossolalia Engine.** The engine operationalizes this theory. A Cloud Build job precomputes the log table from the model's GGUF weights (dequantize embedding and unembedding matrices, compute $\ell(t)$ for all $t$, extract top-$K$, pack into binary format, upload to Cloudflare KV). At runtime, a Cloudflare Worker loads the table and executes the fork/race/fold pipeline entirely through cached lookups:
+
+1. **Prompt processing** (Phase 1): iterate the linear transition $s_{t+1} = \alpha \cdot e(\tau_t) + (1 - \alpha) \cdot s_t$ through the prompt tokens. Cost: $O(|P| \times d)$. No logit projection --- the semiotic fold is deferred to generation.
+2. **Generation** (Phase 2): at each step, each agent looks up $\ell(\tau_{\text{last}})$ from the table, interpolates with the previous logits, and produces a candidate distribution. The fork/race/fold pipeline operates on these precomputed logit vectors: race filters by perplexity, fold merges by deficit-weighted interpolation (`deficitWeights`), and sampling selects the next token. Cost: $O(V)$ per agent per step. No matrix multiplication. No dequantization.
+
+The engine runs on Cloudflare Workers (128 MB memory, 30s CPU budget, zero GPU) at zero cost. The name *Glossolalia* --- speaking in tongues --- reflects the engine's developmental trajectory: it spoke Unicode noise (Experiment 002), then repeated digits (Experiment 003, "777"), before the log table optimization enabled generation within CPU budgets. The tongues are not random; they are the absorbing states of the Markov transition made audible.
+
+**Connection to the semiotic programme.** The log table is the ultimate materialization of the semiotic fold. In §6.12, the fold was an operation performed at inference time: thought ($k$ semantic paths) collapses to speech (1 articulation stream), with deficit $k - 1$. In the Glossolalia engine, the fold is performed at *build time*: the full $V$-dimensional logit space collapses to $K$ candidates per token, with deficit $V - K$. The runtime fold --- the fork/race/fold over $k$ agents --- then operates on these pre-folded vectors, adding deficit $k - 1$.
+
+The total deficit is $\Delta\beta = (k - 1) + (V - K)$: the runtime deficit plus the build-time deficit. The theory predicts this decomposition; the implementation demonstrates it. The semiotic programme is not just a reading of existing systems --- it is an engineering discipline: choose the fold boundaries, quantify the deficit at each boundary, and verify that the total deficit is bounded and the vented nuance is acceptable. The log table is a fold boundary. The top-$K$ parameter is the knob. The deficit is the cost. The theory audits what the engineering decides.
+
 ### 7.1 Chunked Pipelined Prefill (Wallington Rotation)
 
 In the baseline, a workload of $P$ items is processed sequentially through $N$ stage nodes: $P \times N$ round-trips. The key insight: each node's forward pass for item $t_i$ depends only on that node's accumulated state from $t_{i-1}$ -- a stage-local constraint (C1). This enables pipelining. Chunking groups $B$ items per forward pass via causal masking.
