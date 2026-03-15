@@ -1269,6 +1269,97 @@ private theorem countable_entropy_natsENN_eq_restricted
   exact ENNReal.ofReal_sum_of_nonneg
     (fun x _ => branch_entropy_term_nonneg branchLaw ↑x)
 
+private theorem countable_entropy_natsENN_eq_sum_of_support_finset
+    {α : Type*}
+    (branchLaw : PMF α)
+    (s : Finset α)
+    (hSupport : ∀ a, a ∉ s → branchLaw a = 0) :
+    countableBranchEntropyNatsENN branchLaw =
+      ENNReal.ofReal (∑ a ∈ s, Real.negMulLog (branchLaw a).toReal) := by
+  unfold countableBranchEntropyNatsENN
+  rw [tsum_eq_sum (fun a ha => negMulLog_zero_of_pmf_zero branchLaw (hSupport a ha))]
+  symm
+  exact ENNReal.ofReal_sum_of_nonneg
+    (fun a ha => branch_entropy_term_nonneg branchLaw a)
+
+private theorem negMulLog_add_le_of_nonneg
+    {x y : ℝ}
+    (hx : 0 ≤ x)
+    (hy : 0 ≤ y) :
+    Real.negMulLog (x + y) ≤ Real.negMulLog x + Real.negMulLog y := by
+  by_cases hxy : x + y = 0
+  · have hx0 : x = 0 := by linarith
+    have hy0 : y = 0 := by linarith
+    simp [hx0, hy0]
+  · have hxyPos : 0 < x + y := by
+      exact lt_of_le_of_ne (add_nonneg hx hy) (Ne.symm hxy)
+    have hDivXNonneg : 0 ≤ x / (x + y) := by positivity
+    have hDivYNonneg : 0 ≤ y / (x + y) := by positivity
+    have hDivXLeOne : x / (x + y) ≤ 1 := by
+      rw [div_le_iff₀ hxyPos]
+      linarith
+    have hDivYLeOne : y / (x + y) ≤ 1 := by
+      rw [div_le_iff₀ hxyPos]
+      linarith
+    have hTailNonneg :
+        0 ≤ (x + y) *
+          (Real.negMulLog (x / (x + y)) + Real.negMulLog (y / (x + y))) := by
+      have hInside :
+          0 ≤ Real.negMulLog (x / (x + y)) + Real.negMulLog (y / (x + y)) := by
+        exact add_nonneg
+          (Real.negMulLog_nonneg hDivXNonneg hDivXLeOne)
+          (Real.negMulLog_nonneg hDivYNonneg hDivYLeOne)
+      exact mul_nonneg (le_of_lt hxyPos) hInside
+    have hxMul : x = (x + y) * (x / (x + y)) := by
+      field_simp [hxy]
+    have hyMul : y = (x + y) * (y / (x + y)) := by
+      field_simp [hxy]
+    have hDivSum : x / (x + y) + y / (x + y) = 1 := by
+      field_simp [hxy]
+    have hxEq :
+        Real.negMulLog x =
+          x / (x + y) * Real.negMulLog (x + y) +
+            (x + y) * Real.negMulLog (x / (x + y)) := by
+      simpa [hxMul.symm] using
+        (Real.negMulLog_mul (x + y) (x / (x + y)))
+    have hyEq :
+        Real.negMulLog y =
+          y / (x + y) * Real.negMulLog (x + y) +
+            (x + y) * Real.negMulLog (y / (x + y)) := by
+      simpa [hyMul.symm] using
+        (Real.negMulLog_mul (x + y) (y / (x + y)))
+    have hEq :
+        Real.negMulLog x + Real.negMulLog y =
+          Real.negMulLog (x + y) +
+            (x + y) *
+              (Real.negMulLog (x / (x + y)) + Real.negMulLog (y / (x + y))) := by
+      rw [hxEq, hyEq]
+      calc
+        (x / (x + y) * Real.negMulLog (x + y) + (x + y) * Real.negMulLog (x / (x + y))) +
+            (y / (x + y) * Real.negMulLog (x + y) + (x + y) * Real.negMulLog (y / (x + y))) =
+            (x / (x + y) + y / (x + y)) * Real.negMulLog (x + y) +
+              ((x + y) * Real.negMulLog (x / (x + y)) +
+                (x + y) * Real.negMulLog (y / (x + y))) := by
+              ring
+        _ = Real.negMulLog (x + y) +
+              (x + y) *
+                (Real.negMulLog (x / (x + y)) + Real.negMulLog (y / (x + y))) := by
+              rw [hDivSum, one_mul]
+              ring
+    rw [hEq]
+    linarith
+
+private theorem negMulLog_sum_le_sum_negMulLog
+    {ι : Type*}
+    (s : Finset ι)
+    (f : ι → ℝ)
+    (hf : ∀ i ∈ s, 0 ≤ f i) :
+    Real.negMulLog (∑ i ∈ s, f i) ≤ ∑ i ∈ s, Real.negMulLog (f i) := by
+  exact Finset.le_sum_of_subadditive_on_pred Real.negMulLog (fun x : ℝ => 0 ≤ x)
+    (by simp)
+    (fun x y hx hy => negMulLog_add_le_of_nonneg hx hy)
+    (fun x y hx hy => add_nonneg hx hy) _ hf
+
 /--
 Effective-support entropy bound (nats): for any PMF whose support is contained in a
 Finset `s`, the countable-support Shannon entropy in nats is bounded by `log(s.card)`.
@@ -1421,5 +1512,167 @@ theorem effective_support_collapse_landauer_heat_le_total_cost
     hBoltzmannNonneg hTemperatureNonneg
     (by simp only [Fintype.card_coe]; exact hCard) hAchievable
   exact ENNReal.ofReal_le_ofReal hBound
+
+theorem effective_support_observed_entropy_natsENN_le_source
+    {α β : Type*} [DecidableEq β]
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (s : Finset α)
+    (hSupport : ∀ a, a ∉ s → branchLaw a = 0) :
+    observedBranchEntropyNatsENN branchLaw observable ≤
+      countableBranchEntropyNatsENN branchLaw := by
+  classical
+  let t : Finset β := s.image observable
+  have hObservedSupport : ∀ b, b ∉ t → (branchLaw.map observable) b = 0 := by
+    intro b hb
+    rw [PMF.map_apply, tsum_eq_sum (s := s) (fun a ha => by simp [hSupport a ha])]
+    refine Finset.sum_eq_zero ?_
+    intro a ha
+    have hneq : b ≠ observable a := by
+      intro hab
+      apply hb
+      simpa [t, hab] using Finset.mem_image_of_mem observable ha
+    simp [hneq]
+  have hObservedSum :
+      observedBranchEntropyNatsENN branchLaw observable =
+        ENNReal.ofReal (∑ b ∈ t, Real.negMulLog ((branchLaw.map observable) b).toReal) := by
+    unfold observedBranchEntropyNatsENN
+    exact countable_entropy_natsENN_eq_sum_of_support_finset
+      (branchLaw := branchLaw.map observable) t hObservedSupport
+  have hMapApplyReal :
+      ∀ b ∈ t, ((branchLaw.map observable) b).toReal =
+        ∑ a ∈ s with observable a = b, (branchLaw a).toReal := by
+    intro b hb
+    rw [PMF.map_apply, tsum_eq_sum (s := s) (fun a ha => by simp [hSupport a ha])]
+    rw [ENNReal.toReal_sum]
+    · rw [Finset.sum_filter]
+      refine Finset.sum_congr rfl ?_
+      intro a ha
+      by_cases hab : observable a = b
+      · have hba : b = observable a := hab.symm
+        rw [if_pos hba, if_pos hab]
+      · have hba : b ≠ observable a := by simpa [eq_comm] using hab
+        rw [if_neg hba, if_neg hab]
+        simp
+    · intro a ha
+      by_cases hab : b = observable a <;> simp [hab, branchLaw.apply_ne_top a]
+  have hFiberwise :
+      ∑ b ∈ t, ∑ a ∈ s with observable a = b, Real.negMulLog (branchLaw a).toReal =
+        ∑ a ∈ s, Real.negMulLog (branchLaw a).toReal := by
+    simpa [t] using
+      (Finset.sum_fiberwise_of_maps_to
+        (s := s)
+        (t := t)
+        (g := observable)
+        (h := fun a ha => by simpa [t] using Finset.mem_image_of_mem observable ha)
+        (f := fun a : α => Real.negMulLog (branchLaw a).toReal))
+  have hRealBound :
+      ∑ b ∈ t, Real.negMulLog ((branchLaw.map observable) b).toReal ≤
+        ∑ a ∈ s, Real.negMulLog (branchLaw a).toReal := by
+    calc
+      ∑ b ∈ t, Real.negMulLog ((branchLaw.map observable) b).toReal ≤
+          ∑ b ∈ t, ∑ a ∈ s with observable a = b, Real.negMulLog (branchLaw a).toReal := by
+            refine Finset.sum_le_sum ?_
+            intro b hb
+            rw [hMapApplyReal b hb]
+            exact negMulLog_sum_le_sum_negMulLog
+              (s := s.filter fun a => observable a = b)
+              (f := fun a => (branchLaw a).toReal)
+              (hf := fun a ha => ENNReal.toReal_nonneg)
+      _ = ∑ a ∈ s, Real.negMulLog (branchLaw a).toReal := hFiberwise
+  rw [hObservedSum, countable_entropy_natsENN_eq_sum_of_support_finset branchLaw s hSupport]
+  exact ENNReal.ofReal_le_ofReal hRealBound
+
+theorem effective_support_observed_entropy_bitsENN_le_source
+    {α β : Type*} [DecidableEq β]
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (s : Finset α)
+    (hSupport : ∀ a, a ∉ s → branchLaw a = 0) :
+    observedBranchEntropyBitsENN branchLaw observable ≤
+      countableBranchEntropyBitsENN branchLaw := by
+  simpa [observedBranchEntropyBitsENN, countableBranchEntropyBitsENN] using
+    ENNReal.div_le_div_right
+      (effective_support_observed_entropy_natsENN_le_source branchLaw observable s hSupport)
+      (ENNReal.ofReal (Real.log 2))
+
+theorem effective_support_observed_entropy_bitsENN_le_frontier_entropy_bits
+    {α β : Type*} [DecidableEq β]
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (s : Finset α)
+    (hSupport : ∀ a, a ∉ s → branchLaw a = 0)
+    (hNonempty : s.Nonempty) :
+    observedBranchEntropyBitsENN branchLaw observable ≤
+      ENNReal.ofReal (equiprobableFrontierEntropyBits s.card) := by
+  exact le_trans
+    (effective_support_observed_entropy_bitsENN_le_source branchLaw observable s hSupport)
+    (effective_support_entropy_bitsENN_le_frontier_entropy_bits branchLaw s hSupport hNonempty)
+
+theorem effective_support_observed_entropy_bitsENN_le_failure_tax
+    {α β : Type*} [DecidableEq β]
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (s : Finset α)
+    (hSupport : ∀ a, a ∉ s → branchLaw a = 0)
+    (hNonempty : s.Nonempty) :
+    observedBranchEntropyBitsENN branchLaw observable ≤
+      ENNReal.ofReal (deterministicCollapseFailureTax s.card) := by
+  exact le_trans
+    (effective_support_observed_entropy_bitsENN_le_source branchLaw observable s hSupport)
+    (effective_support_entropy_bitsENN_le_failure_tax branchLaw s hSupport hNonempty)
+
+theorem effective_support_observed_landauer_heat_le_source
+    {α β : Type*} [DecidableEq β]
+    (boltzmannConstant temperature : ℝ)
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (s : Finset α)
+    (hSupport : ∀ a, a ∉ s → branchLaw a = 0) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable ≤
+      countableLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw := by
+  unfold observedLandauerHeatLowerBoundENN countableLandauerHeatLowerBoundENN
+  exact mul_le_mul' le_rfl
+    (effective_support_observed_entropy_natsENN_le_source branchLaw observable s hSupport)
+
+theorem effective_support_observed_landauer_heat_le_failure_tax_budget
+    {α β : Type*} [DecidableEq β]
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (s : Finset α)
+    (hSupport : ∀ a, a ∉ s → branchLaw a = 0)
+    (hNonempty : s.Nonempty)
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable ≤
+      ENNReal.ofReal (failureTaxHeatBudget boltzmannConstant temperature s.card) := by
+  exact le_trans
+    (effective_support_observed_landauer_heat_le_source
+      boltzmannConstant temperature branchLaw observable s hSupport)
+    (effective_support_landauer_heat_le_failure_tax_budget
+      branchLaw s hSupport hNonempty hBoltzmannNonneg hTemperatureNonneg)
+
+theorem effective_support_observed_collapse_landauer_heat_le_total_cost
+    {α β : Type*} [DecidableEq β]
+    (branchLaw : PMF α)
+    (observable : α → β)
+    (s : Finset α)
+    (hSupport : ∀ a, a ∉ s → branchLaw a = 0)
+    (hNonempty : s.Nonempty)
+    {start : List BranchSnapshot}
+    {cost : Nat}
+    {boltzmannConstant temperature : ℝ}
+    (hBoltzmannNonneg : 0 ≤ boltzmannConstant)
+    (hTemperatureNonneg : 0 ≤ temperature)
+    (hCard : s.card = liveBranchCount start)
+    (hAchievable : CollapseCostAchievableFrom start cost) :
+    observedLandauerHeatLowerBoundENN boltzmannConstant temperature branchLaw observable ≤
+      ENNReal.ofReal (landauerHeatLowerBound boltzmannConstant temperature cost) := by
+  exact le_trans
+    (effective_support_observed_landauer_heat_le_source
+      boltzmannConstant temperature branchLaw observable s hSupport)
+    (effective_support_collapse_landauer_heat_le_total_cost
+      branchLaw s hSupport hNonempty hBoltzmannNonneg hTemperatureNonneg hCard hAchievable)
 
 end ForkRaceFoldTheorems

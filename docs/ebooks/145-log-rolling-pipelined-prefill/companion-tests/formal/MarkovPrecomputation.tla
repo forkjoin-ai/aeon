@@ -1,7 +1,7 @@
 ---------------------------- MODULE MarkovPrecomputation ----------------------------
 EXTENDS Naturals, Integers, FiniteSets, Sequences
 
-\* Track Pi-b: Markov Precomputation Theory (The Log Table)
+\* Track Pi-b: Markov Precomputation Theory (The Vickrey Table)
 \*
 \* Extends semiotic deficit theory to Markov chain language models.
 \* When the token-to-logit projection is a pure function (no attention),
@@ -13,7 +13,7 @@ EXTENDS Naturals, Integers, FiniteSets, Sequences
 \* THM-PRECOMPUTATION-VALIDITY:    cached interpolation = full matVec (exact)
 \* THM-TOPK-DEFICIT:               sparse top-K has deficit vocabSize - K
 \* THM-ABSORBING-STATE:            linear chains converge to fixed points
-\* THM-GLOSSOLALIA-COMPLETENESS:   log table is universal for linear Markov
+\* THM-GLOSSOLALIA-COMPLETENESS:   Vickrey Table is universal for linear Markov
 
 CONSTANTS VocabSize, HiddenDim, TopK, Alpha, NumAgents
 
@@ -79,7 +79,7 @@ MarkovLinearityHolds ==
 \* ═══════════════════════════════════════════════════════════════════════
 \* THM-PRECOMPUTATION-VALIDITY
 \*
-\* The precomputed log table produces EXACT results.
+\* The precomputed Vickrey Table produces EXACT results.
 \*
 \* At build time:   table[t] = W * embedding[t]     for all t in vocab
 \* At runtime:      logits   = alpha * table[last_token]
@@ -171,9 +171,9 @@ AbsorbingStateHolds ==
 \* ═══════════════════════════════════════════════════════════════════════
 \* THM-GLOSSOLALIA-COMPLETENESS
 \*
-\* The precomputed log table is a COMPLETE representation for the class
+\* The precomputed Vickrey Table is a COMPLETE representation for the class
 \* of linear Markov chain language models. Any model in this class
-\* can be fully captured by its log table, and inference on the table
+\* can be fully captured by its Vickrey Table, and inference on the table
 \* produces identical results to inference on the original matrices.
 \*
 \* This does NOT hold for:
@@ -188,7 +188,7 @@ AbsorbingStateHolds ==
 \* ═══════════════════════════════════════════════════════════════════════
 
 GlossolaliaCompletenessHolds ==
-  \* The log table represents ALL information in the weight matrices
+  \* The Vickrey Table represents ALL information in the weight matrices
   \* that is relevant to inference (for linear Markov chains).
   \* Build-time table + runtime interpolation = exact weight matrix inference.
   PrecomputationValidityHolds

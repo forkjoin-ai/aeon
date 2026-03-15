@@ -4,7 +4,7 @@ import ForkRaceFoldTheorems.SemioticDeficit
 namespace ForkRaceFoldTheorems
 
 /--
-Track Pi-b: Markov Precomputation Theory (The Log Table)
+Track Pi-b: Markov Precomputation Theory (The Vickrey Table)
 
 Extends semiotic deficit theory to Markov chain language models.
 The central result: when the token-to-logit projection is a pure function
@@ -62,7 +62,7 @@ structure LinearTransition where
 
 /-- For a Markov projection, the logit output for a given token is
     always the same regardless of when or how it is computed.
-    This is the purity property that enables the log table.
+    This is the purity property that enables the Vickrey Table.
 
     In contrast, a transformer's output for token t depends on the
     full attention context (all previous tokens), making precomputation
@@ -101,7 +101,7 @@ theorem markov_linearity (trans : LinearTransition) :
 
 -- ─── THM-PRECOMPUTATION-VALIDITY ────────────────────────────────────
 --
--- The precomputed log table is exact: runtime logit interpolation
+-- The precomputed Vickrey Table is exact: runtime logit interpolation
 -- produces identical results to computing the full matVec.
 -- There is zero approximation error.
 -- ═════════════════════════════════════════════════════════════════════
@@ -126,7 +126,7 @@ theorem precomputation_validity (proj : MarkovProjection) (trans : LinearTransit
 -- ═════════════════════════════════════════════════════════════════════
 
 /-- The sparse top-K representation has semiotic deficit vocabSize - K.
-    This connects the log table design choice to the theory:
+    This connects the Vickrey Table design choice to the theory:
     choosing K is choosing how much nuance to preserve.
     Larger K = lower deficit = more nuance = larger table. -/
 theorem topk_deficit (proj : MarkovProjection) (k : ℕ) (hK : 0 < k) (hKLeV : k ≤ proj.vocabSize) :
@@ -180,9 +180,9 @@ theorem absorbing_state_convergence (trans : LinearTransition)
 
 -- ─── THM-GLOSSOLALIA-COMPLETENESS ───────────────────────────────────
 --
--- The Glossolalia engine (precomputed log table + fork/race/fold)
+-- The Glossolalia engine (precomputed Vickrey Table + fork/race/fold)
 -- is complete: it can represent any Markov chain language model
--- with linear transitions. The log table is the universal
+-- with linear transitions. The Vickrey Table is the universal
 -- representation for this class of models.
 -- ═════════════════════════════════════════════════════════════════════
 
