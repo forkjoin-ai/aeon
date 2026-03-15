@@ -63,7 +63,13 @@ theorem race_total_subsumes_fixed_codec
     (hCodecValid : ∀ rs ∈ resources, codecIdx < rs.length) :
     (resources.map raceMin).sum ≤
     (resources.map (fun rs => (rs.get ⟨codecIdx, by exact hCodecValid rs (by assumption)⟩).compressedSize)).sum := by
-  sorry -- follows from race_subsumes_each applied per-resource
+  induction resources with
+  | nil => simp
+  | cons hd tl ih =>
+    simp only [List.map_cons, List.sum_cons]
+    apply Nat.add_le_add
+    · exact race_subsumes_each hd _ (List.get_mem hd codecIdx (hCodecValid hd (List.mem_cons_self hd tl)))
+    · exact ih (fun rs hrs => hCodecValid rs (List.mem_cons_of_mem hd hrs))
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-TOPO-RACE-MONOTONE
