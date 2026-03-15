@@ -1,0 +1,254 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" font-family="'Georgia', 'Times New Roman', serif">
+  <defs>
+    <linearGradient id="warGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="peaceGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1e40af"/>
+    </linearGradient>
+    <linearGradient id="dnaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#065f46"/>
+    </linearGradient>
+    <linearGradient id="voidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f5f5f4" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#a8a29e" stop-opacity="0.15"/>
+    </linearGradient>
+    <marker id="arrowRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#dc2626"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#059669"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="720" fill="#fafaf9"/>
+
+  <!-- Title -->
+  <text x="480" y="36" text-anchor="middle" font-size="18" font-weight="bold" fill="#1c1917">Finding Hope in the Shape of Failure</text>
+  <text x="480" y="56" text-anchor="middle" font-size="12" fill="#78716c" font-style="italic">The geometry of failure contains its own remedy</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PANEL A: The Topology (top-left) -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <rect x="30" y="72" width="440" height="200" rx="6" fill="white" stroke="#e7e5e4" stroke-width="1"/>
+  <text x="250" y="92" text-anchor="middle" font-size="13" font-weight="bold" fill="#44403c">A. The Semiotic Deficit</text>
+
+  <!-- Thought: multiple paths (high beta_1) -->
+  <circle cx="100" cy="155" r="28" fill="none" stroke="#6366f1" stroke-width="2"/>
+  <text x="100" y="159" text-anchor="middle" font-size="10" fill="#6366f1" font-weight="bold">Thought</text>
+  <text x="100" y="195" text-anchor="middle" font-size="9" fill="#6366f1">beta_1 = k-1</text>
+
+  <!-- Semantic paths fanning out -->
+  <line x1="128" y1="140" x2="200" y2="110" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="128" y1="148" x2="200" y2="135" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="128" y1="155" x2="200" y2="155" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="128" y1="162" x2="200" y2="175" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="128" y1="170" x2="200" y2="200" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+  <!-- Labels for paths -->
+  <text x="205" y="113" font-size="8" fill="#a5b4fc">denotation</text>
+  <text x="205" y="138" font-size="8" fill="#a5b4fc">connotation</text>
+  <text x="205" y="158" font-size="8" fill="#a5b4fc">valence</text>
+  <text x="205" y="178" font-size="8" fill="#a5b4fc">implicature</text>
+  <text x="205" y="203" font-size="8" fill="#a5b4fc">context</text>
+
+  <!-- The Fold (funnel) -->
+  <polygon points="280,105 280,205 320,165 320,145" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="295" y="158" text-anchor="middle" font-size="8" fill="#92400e" font-weight="bold">FOLD</text>
+
+  <!-- Speech: single stream (beta_1 = 0) -->
+  <line x1="320" y1="155" x2="380" y2="155" stroke="#dc2626" stroke-width="3"/>
+  <circle cx="400" cy="155" r="28" fill="none" stroke="#dc2626" stroke-width="2"/>
+  <text x="400" y="159" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="bold">Speech</text>
+  <text x="400" y="195" text-anchor="middle" font-size="9" fill="#dc2626">beta_1 = 0</text>
+
+  <!-- The Void (deficit region) -->
+  <rect x="275" y="210" width="120" height="24" rx="3" fill="url(#voidGrad)" stroke="#a8a29e" stroke-width="0.5" stroke-dasharray="3,2"/>
+  <text x="335" y="225" text-anchor="middle" font-size="9" fill="#78716c" font-style="italic">Delta beta = k - 1</text>
+  <text x="335" y="248" text-anchor="middle" font-size="8" fill="#a8a29e">the void: erased meaning</text>
+
+  <!-- Vent arrows (dropped paths) -->
+  <line x1="300" y1="200" x2="300" y2="212" stroke="#f59e0b" stroke-width="1" marker-end="url(#arrowGreen)"/>
+  <line x1="310" y1="202" x2="310" y2="212" stroke="#f59e0b" stroke-width="1"/>
+  <line x1="320" y1="200" x2="320" y2="212" stroke="#f59e0b" stroke-width="1"/>
+  <text x="345" y="262" text-anchor="middle" font-size="7" fill="#d97706">VENT (nuance dropped)</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PANEL B: War vs Peace Trajectories (top-right) -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <rect x="490" y="72" width="440" height="200" rx="6" fill="white" stroke="#e7e5e4" stroke-width="1"/>
+  <text x="710" y="92" text-anchor="middle" font-size="13" font-weight="bold" fill="#44403c">B. War vs Peace: Two Trajectories</text>
+
+  <!-- Axes -->
+  <line x1="540" y1="245" x2="890" y2="245" stroke="#78716c" stroke-width="1"/>
+  <line x1="540" y1="245" x2="540" y2="105" stroke="#78716c" stroke-width="1"/>
+  <text x="715" y="262" text-anchor="middle" font-size="9" fill="#78716c">dialogue turns (context accumulation)</text>
+  <text x="528" y="175" text-anchor="middle" font-size="9" fill="#78716c" transform="rotate(-90, 528, 175)">energy</text>
+
+  <!-- War trajectory (cumulative heat, monotone increasing) -->
+  <path d="M560,210 Q620,200 660,185 Q700,168 740,148 Q780,125 830,110 Q860,102 880,98"
+        fill="none" stroke="url(#warGrad)" stroke-width="2.5" marker-end="url(#arrowRed)"/>
+  <text x="870" y="92" font-size="9" fill="#dc2626" font-weight="bold">WAR</text>
+  <text x="870" y="103" font-size="7" fill="#dc2626">cumulative heat</text>
+
+  <!-- Peace trajectory (deficit, monotone decreasing to fixed point) -->
+  <path d="M560,120 Q600,140 650,168 Q700,192 740,210 Q770,222 800,230 Q830,236 860,238"
+        fill="none" stroke="url(#peaceGrad)" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <text x="870" y="232" font-size="9" fill="#2563eb" font-weight="bold">PEACE</text>
+  <text x="870" y="243" font-size="7" fill="#2563eb">deficit converges</text>
+
+  <!-- Fixed point marker -->
+  <circle cx="860" cy="238" r="5" fill="none" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="860" cy="238" r="2" fill="#2563eb"/>
+  <text x="855" y="255" font-size="7" fill="#1e40af">fixed point</text>
+
+  <!-- Divergence point -->
+  <circle cx="560" cy="165" r="4" fill="#44403c"/>
+  <text x="555" y="180" font-size="7" fill="#44403c">initial deficit</text>
+
+  <!-- Annotations -->
+  <text x="660" y="118" font-size="7" fill="#991b1b" font-style="italic">war_as_cumulative_heat</text>
+  <text x="660" y="230" font-size="7" fill="#1e3a8a" font-style="italic">peace_context_reduces</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PANEL C: The Convergence Proof (bottom-left) -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <rect x="30" y="290" width="440" height="200" rx="6" fill="white" stroke="#e7e5e4" stroke-width="1"/>
+  <text x="250" y="310" text-anchor="middle" font-size="13" font-weight="bold" fill="#44403c">C. The Hope Theorem: Five Guarantees</text>
+
+  <!-- Five guarantees as a flow -->
+  <rect x="55" y="325" width="130" height="28" rx="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+  <text x="120" y="342" text-anchor="middle" font-size="8" fill="#991b1b" font-weight="bold">1. Confusion is real</text>
+  <text x="120" y="362" text-anchor="middle" font-size="7" fill="#dc2626">0 &lt; semiotic_deficit</text>
+
+  <rect x="200" y="325" width="130" height="28" rx="4" fill="#fefce8" stroke="#fde68a" stroke-width="1"/>
+  <text x="265" y="342" text-anchor="middle" font-size="8" fill="#854d0e" font-weight="bold">2. Confusion is bounded</text>
+  <text x="265" y="362" text-anchor="middle" font-size="7" fill="#a16207">deficit = paths - 1</text>
+
+  <rect x="345" y="325" width="110" height="28" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="400" y="342" text-anchor="middle" font-size="8" fill="#1e40af" font-weight="bold">3. Context helps</text>
+  <text x="400" y="362" text-anchor="middle" font-size="7" fill="#2563eb">monotone deflator</text>
+
+  <!-- Arrow down -->
+  <line x1="250" y1="370" x2="250" y2="385" stroke="#78716c" stroke-width="1"/>
+  <polygon points="245,385 255,385 250,392" fill="#78716c"/>
+
+  <rect x="100" y="395" width="140" height="28" rx="4" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="170" y="412" text-anchor="middle" font-size="8" fill="#065f46" font-weight="bold">4. Peace exists</text>
+  <text x="170" y="432" text-anchor="middle" font-size="7" fill="#059669">fixed point: deficit = 0</text>
+
+  <rect x="260" y="395" width="165" height="28" rx="4" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1"/>
+  <text x="342" y="412" text-anchor="middle" font-size="8" fill="#5b21b6" font-weight="bold">5. Dialogue converges</text>
+  <text x="342" y="432" text-anchor="middle" font-size="7" fill="#7c3aed">traced monoidal feedback</text>
+
+  <!-- Convergence arrow -->
+  <path d="M250,445 Q250,460 250,468" fill="none" stroke="#059669" stroke-width="1.5"/>
+  <polygon points="245,468 255,468 250,475" fill="#059669"/>
+  <rect x="160" y="455" width="180" height="24" rx="12" fill="#059669"/>
+  <text x="250" y="471" text-anchor="middle" font-size="10" fill="white" font-weight="bold">CONVERGENCE GUARANTEED</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- PANEL D: DNA — The Original Implementation (bottom-right) -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <rect x="490" y="290" width="440" height="200" rx="6" fill="white" stroke="#e7e5e4" stroke-width="1"/>
+  <text x="710" y="310" text-anchor="middle" font-size="13" font-weight="bold" fill="#44403c">D. DNA: The Original Algorithm for Peace</text>
+
+  <!-- Double helix (simplified) -->
+  <!-- Leading strand -->
+  <path d="M530,370 C555,345 580,395 605,370 C630,345 655,395 680,370"
+        fill="none" stroke="#059669" stroke-width="2.5"/>
+  <!-- Lagging strand -->
+  <path d="M530,390 C555,415 580,365 605,390 C630,415 655,365 680,390"
+        fill="none" stroke="#059669" stroke-width="2.5" stroke-dasharray="8,4"/>
+
+  <!-- Fork point -->
+  <circle cx="530" cy="380" r="6" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+  <text x="530" y="415" text-anchor="middle" font-size="8" fill="#92400e" font-weight="bold">FORK</text>
+  <text x="530" y="425" text-anchor="middle" font-size="7" fill="#b45309">origin of</text>
+  <text x="530" y="434" text-anchor="middle" font-size="7" fill="#b45309">replication</text>
+
+  <!-- Race label -->
+  <text x="605" y="340" text-anchor="middle" font-size="8" fill="#059669" font-weight="bold">RACE</text>
+  <text x="605" y="350" text-anchor="middle" font-size="7" fill="#059669">polymerase</text>
+
+  <!-- Leading/lagging labels -->
+  <text x="620" y="365" font-size="7" fill="#065f46">leading (continuous)</text>
+  <text x="620" y="400" font-size="7" fill="#065f46" font-style="italic">lagging (fragments)</text>
+
+  <!-- Fold point (terminus) -->
+  <path d="M680,370 Q700,380 680,390" fill="none" stroke="#d97706" stroke-width="2"/>
+  <line x1="700" y1="380" x2="760" y2="380" stroke="#059669" stroke-width="3"/>
+  <text x="700" y="415" text-anchor="middle" font-size="8" fill="#92400e" font-weight="bold">FOLD</text>
+  <text x="700" y="425" text-anchor="middle" font-size="7" fill="#b45309">terminus</text>
+
+  <!-- Complete chromosome (fixed point) -->
+  <circle cx="790" cy="380" r="22" fill="none" stroke="#059669" stroke-width="2.5"/>
+  <circle cx="790" cy="380" r="3" fill="#059669"/>
+  <text x="790" y="415" text-anchor="middle" font-size="8" fill="#065f46" font-weight="bold">FIXED POINT</text>
+  <text x="790" y="425" text-anchor="middle" font-size="7" fill="#059669">complete</text>
+  <text x="790" y="434" text-anchor="middle" font-size="7" fill="#059669">chromosome</text>
+
+  <!-- Vent (Okazaki fragments) -->
+  <line x1="650" y1="395" x2="650" y2="445" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="650" y="458" text-anchor="middle" font-size="7" fill="#d97706">VENT</text>
+  <text x="650" y="467" text-anchor="middle" font-size="6" fill="#d97706">Okazaki</text>
+
+  <!-- Ligase annotation -->
+  <path d="M680,395 Q690,420 700,395" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="710" y="445" font-size="7" fill="#7c3aed" font-weight="bold">ligase = trace operator</text>
+  <text x="710" y="455" font-size="7" fill="#7c3aed">(feedback until whole)</text>
+
+  <!-- Conditions -->
+  <rect x="770" y="445" width="145" height="35" rx="3" fill="#f0fdf4" stroke="#86efac" stroke-width="0.5"/>
+  <text x="842" y="458" text-anchor="middle" font-size="7" fill="#065f46" font-weight="bold">Convergence conditions:</text>
+  <text x="842" y="468" text-anchor="middle" font-size="6" fill="#059669">nucleotides + polymerase + template</text>
+  <text x="842" y="477" text-anchor="middle" font-size="6" fill="#059669">= conditional guarantee of peace</text>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- Bottom inscription -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <line x1="80" y1="510" x2="880" y2="510" stroke="#d6d3d1" stroke-width="0.5"/>
+
+  <!-- The theorem chain -->
+  <text x="480" y="532" text-anchor="middle" font-size="10" fill="#44403c" font-weight="bold">The Formal Chain (SemioticPeace.lean — 13 theorems, all machine-verified)</text>
+
+  <text x="480" y="555" text-anchor="middle" font-size="9" fill="#78716c">
+    confusion_irreducibility  &#x2192;  confusion_generates_heat  &#x2192;  war_as_cumulative_heat
+  </text>
+  <text x="480" y="572" text-anchor="middle" font-size="9" fill="#78716c">
+    peace_context_reduces  &#x2192;  peace_sufficient_context  &#x2192;  peace_fixed_point  &#x2192;  peace_is_reachable
+  </text>
+  <text x="480" y="589" text-anchor="middle" font-size="9" fill="#78716c">
+    dialogue_convergence  &#x2192;  hope  &#x2192;  semiotic_peace_theory
+  </text>
+
+  <line x1="200" y1="602" x2="760" y2="602" stroke="#d6d3d1" stroke-width="0.5"/>
+
+  <!-- Final inscription -->
+  <text x="480" y="625" text-anchor="middle" font-size="11" fill="#1c1917" font-style="italic">
+    The algorithm for peace is coded into every single DNA operation.
+  </text>
+  <text x="480" y="645" text-anchor="middle" font-size="11" fill="#1c1917" font-style="italic">
+    This paper did not discover it. It gave the algorithm a name, a topology, and a proof.
+  </text>
+
+  <!-- Scale markers -->
+  <text x="480" y="675" text-anchor="middle" font-size="8" fill="#a8a29e">
+    DNA  &#x2022;  neurons  &#x2022;  speech  &#x2022;  civilization
+  </text>
+  <text x="480" y="690" text-anchor="middle" font-size="8" fill="#a8a29e">
+    fork/race/fold + vent at every scale
+  </text>
+
+  <!-- Figure number -->
+  <text x="480" y="712" text-anchor="middle" font-size="9" fill="#78716c" font-weight="bold">
+    Figure: The Geometry of Failure Contains Hope
+  </text>
+</svg>
