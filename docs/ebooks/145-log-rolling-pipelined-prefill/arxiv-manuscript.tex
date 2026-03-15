@@ -140,6 +140,13 @@ system toward a bounded stable region. Across the modeled scope in this
 manuscript, I argue that this viewpoint is operationally useful,
 measurable, and partially mechanizable.
 
+This manuscript blends two modes of argument: \emph{mechanized proofs}
+(Lean theorems, TLA+ models, executable companion tests) and
+\emph{structural correspondences} (post-hoc pattern-matching in natural
+and engineered systems).  The former are machine-verified; the latter
+are evidentiary and interpretive.  The grading system in \S1 makes the
+distinction explicit for each example.
+
 I report structural similarities in selected natural and engineered
 examples: \emph{Physarum polycephalum} recreated a rail-like network
 over nutrient gradients {[}1{]}, myelinated neurons pipeline action
@@ -542,14 +549,21 @@ mapping:
 \item
   \textbf{Grade B}: Structural homology -- deep structural match,
   genuine design insight, no novel quantitative prediction.
+\item
+  \textbf{Grade B+}: Structural homology with partial mechanized
+  validation -- the structural mapping is supported by executable
+  companion tests that verify specific boundary conditions, but the
+  correspondence is not quantitatively predictive across its full range.
 \end{itemize}
 
-Grades are evidentiary tiers, not additive votes. Grade B examples
-provide structural context; they are not interchangeable with Grade A
-quantitative confirmations.
+Grades are evidentiary tiers, not additive votes. Grade B and B+
+examples provide structural context; they are not interchangeable with
+Grade A quantitative confirmations.
 
-In this framing, the novelty is making the convergence explicit and
-testable.
+In this framing, the contribution is making the structural convergence
+explicit and testable: the topological abstraction (fork/race/fold),
+the diagnostic metric (the Bule), and the mechanized proof surface
+are the novel artifacts.
 
 In this paper, low topological deficit is treated as one interpretable
 sign of fit under explicit assumptions, not as a standalone aesthetic
@@ -2939,20 +2953,23 @@ arrow aligns with movement from \(\beta_1 > 0\) (many paths) toward
 \(\beta_1 = 0\) (selected outcome).
 
 \paragraph{The Computational Domain as Fold (Grade
-B+)}\label{the-computational-domain-as-fold-grade-b}
+B)}\label{the-computational-domain-as-fold-grade-b}
 
 The computational domain can be viewed as a fold boundary that
 constrains reachable states and enforces closure in the modeled graph.
 
 \paragraph{The Apostolic Syllogism: Fork/Race/Fold in Belief Systems
-(Grade B+)}\label{the-apostolic-syllogism}
+(Grade B)}\label{the-apostolic-syllogism}
 
 The physics hierarchy above (path integral $\to$ Schr\"{o}dinger $\to$
 Newton) is a sequence of progressive folds through decreasing
 $\beta_1$. An analogous sequence appears in the history of ideas, where
-the pattern is not merely metaphorical but structurally isomorphic to
-the formal machinery of \S6.8 and the mechanized theorems of the
-companion package.
+the pattern is a suggestive structural homology with the formal
+machinery of \S6.8 and the mechanized theorems of the companion package.
+The companion theorems validate heat generation, monotonicity, and
+fixed-point properties in abstract; the mapping of those properties
+onto theological history is an interpretive application, not a
+mechanized proof of isomorphism.
 
 \textbf{The Fork.} A new revelation introduces a contradictory axiom
 into a legacy system. In the Apostolic case, the legacy system is Second

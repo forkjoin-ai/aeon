@@ -27,7 +27,8 @@ Key results:
 3. Non-negativity: H(X | f(X)) ≥ 0 (data processing inequality)
 4. Monotonicity: if q₁ factors through q₂, then loss(q₁) ≤ loss(q₂)
 5. Heat naturality: Landauer heat inherits composition and monotonicity
-6. Universal property: conditional entropy is initial among information measures (sorry)
+6. Universal property: conditional entropy is initial among information measures
+   (conditional on entropy-domination hypotheses; unconditional version is open)
 -/
 
 /-! ### 1. Quotient Refinement Morphism -/
