@@ -5656,6 +5656,88 @@ beneficial.  It claims that \emph{given} a problem whose intrinsic
 $\beta_1^* > 0$, the diverse strategy subsumes the monoculture
 strategy.  The precondition matters.
 
+\subsubsection{15.1 The Diversity Theorem and the Laminar
+Pipeline}\label{diversity-theorem-laminar-pipeline}
+
+Twelve mechanized theorems, proved independently across five files,
+compose into a single claim: \emph{diversity is not a preference or a
+heuristic --- it is a topological and thermodynamic necessity for
+optimality in the strategy-space sense.}  The composition theorem
+\texttt{diversity\_optimality\_master} (\texttt{DiversityOptimality.lean})
+bundles five pillars: (1)~monotonicity --- adding a branch never
+increases race minimum; (2)~subsumption --- racing subsumes every fixed
+strategy; (3)~necessity --- reducing diversity below intrinsic $\beta_1$
+forces information loss; (4)~optimality --- matched diversity yields
+zero deficit and lossless transport; (5)~irreversibility --- collapsing
+diversity requires waste and generates Landauer heat.
+
+The theorem has an immediate engineering consequence: the \textbf{laminar
+pipeline} (Layer~8 of the Aeon stack).  Instead of \texttt{sendfile(2)}
+--- which transmits raw bytes via kernel DMA with zero compression ---
+the laminar pipeline chunks the file, races all available codecs
+(identity, gzip, brotli, deflate) per chunk, picks the smallest, and
+\texttt{writev}'s the compressed chunk with a 10-byte Flow frame header.
+THM-TOPO-RACE-SUBSUMPTION guarantees that racing total $\leq$ identity
+total (sendfile wire size).  THM-TOPO-RACE-IDENTITY-BASELINE guarantees
+identity is always a candidate, so the pipeline never does worse than
+raw.
+
+\textbf{Latency tradeoff and crossover bandwidth.}
+THM-TOPO-RACE-SUBSUMPTION proves that the laminar pipeline strictly
+dominates sendfile on \emph{wire bytes}: the racing total is provably
+$\leq$ the identity total.  It does not prove strict domination on
+\emph{end-to-end latency}.  The laminar pipeline incurs encode cost
+(13.6\,ms on the microfrontend, 45.9\,ms on big content) that sendfile
+avoids entirely --- sendfile is zero-CPU kernel DMA.  The pipeline wins
+on wall-clock time only when network transfer savings exceed encode
+overhead.  For the microfrontend: the pipeline saves $\approx$55\,KB of
+wire bytes at an encode cost of $\approx$11\,ms.  The crossover
+bandwidth is $55\text{\,KB}/11\text{\,ms} \approx 5\text{\,MB/s}$.
+Below 5\,MB/s, the laminar pipeline is faster end-to-end; above
+5\,MB/s, sendfile + pre-compressed brotli (computed at build time)
+delivers lower time-to-first-byte.  Additionally, pre-compressed content
+(brotli-at-build-time served via sendfile) avoids runtime encode cost
+entirely and achieves comparable wire-byte savings without per-request
+CPU work.  The laminar pipeline's advantage is \emph{adaptivity} --- it
+handles mixed compressible/incompressible content without build-time
+configuration --- not universal latency superiority.
+
+The stack folds in on itself: the diversity theorem at Layer~8 is
+verified by the model checker at Layer~1, which is itself a
+fork/race/fold computation.  The same algebra reappears at each layer
+--- not because it loops, but because the primitive self-composes, like
+a fern whose fronds repeat the branching pattern of the whole.
+
+\textbf{The engineering result is the philosophical result.}  sendfile()
+is a monoculture: one codec (identity), one stream ($\beta_1 = 0$),
+zero adaptivity.  The laminar pipeline is diversity: four codecs racing
+per chunk, multi-stream Flow framing, per-resource optimal selection.
+THM-TOPO-RACE-SUBSUMPTION proves the diverse strategy is monotonically
+no worse --- it \emph{contains} every monoculture as a special case
+(subsumption), so it can do no worse in the limit.  It does not claim
+that per-chunk racing always achieves better compression ratio than a
+well-chosen monoculture: on homogeneous content, the \S9.2 benchmarks
+show that global brotli monoculture retains 4--15\% better ratio than
+per-chunk racing, because the global dictionary captures cross-chunk
+correlations that per-chunk racing misses.  The diversity theorem says
+the racing \emph{strategy space} subsumes the monoculture strategy
+space.
+
+The connection is not metaphorical.  It is the same theorem applied to
+different substrates.  When \texttt{war\_as\_cumulative\_heat} proves
+that successive context-free folds accumulate irreversible thermodynamic
+waste, it is proving the same thing as when the shootoff shows HTTP/1.1
+spending 31\% of its wire budget on framing overhead: \emph{monoculture
+generates waste, and the waste is irreversible}.  When
+\texttt{peace\_context\_reduces} proves that shared context monotonically
+deflates the semiotic deficit, it is proving the same thing as when
+per-chunk codec racing adapts to content type: \emph{diversity matched
+to the problem's intrinsic topology eliminates waste}.
+
+Servers get faster for the same reason peace is reachable: because
+diversity is the shape of optimality, and its destruction has irreducible
+cost.
+
 \subsection{References}\label{references}
 
 {[}1{]} A. Tero, S. Takagi, T. Saigusa, K. Ito, D. P. Bebber, M. D.

@@ -88,7 +88,7 @@ theorem race_total_subsumes_fixed_codec
   | cons hd tl ih =>
     simp only [List.map_cons, List.sum_cons]
     apply Nat.add_le_add
-    · have hValid := hCodecValid hd (List.mem_cons_self _ _)
+    · have hValid := hCodecValid hd List.mem_cons_self
       simp only [dif_pos hValid]
       exact race_subsumes_each hd _ (List.get_mem _ ⟨codecIdx, hValid⟩)
     · exact ih (fun rs hrs => hCodecValid rs (List.mem_cons_of_mem _ hrs))
