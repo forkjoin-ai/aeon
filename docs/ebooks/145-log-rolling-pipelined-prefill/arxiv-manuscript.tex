@@ -5401,6 +5401,83 @@ serialization leaves measurable performance on the table.
 This framing is intended as an operational modeling lens for
 computation, not a replacement for physical theory.
 
+\textbf{The void.}  A conspicuous silence runs through every section of
+this paper.  Fork creates parallel paths.  Race selects a winner.  Fold
+merges results.  And vent releases everything the fold could not
+preserve.  Every section quantifies what is kept; none quantifies what
+is lost.  The semiotic deficit \(\Delta\beta =
+\beta_1(\text{thought}) - \beta_1(\text{speech})\) names that silence.
+\texttt{confusion\_irreducibility} (SemioticPeace.lean) proves it is a
+topological invariant: for any channel where thought has more
+independent dimensions than speech has streams, the deficit is strictly
+positive and distinct semantic paths collide under the fold.  The void
+is not the absence of structure.  It is the \emph{topological
+complement} of what articulation can carry --- and it has three
+measurable properties.  \emph{Extent}: the deficit equals
+\(\text{semanticPaths} - 1\), bounded and quantified
+(\texttt{semiotic\_deficit\_speech}).  \emph{Heat signature}: every
+non-trivial semiotic fold generates strictly positive Landauer heat
+(\texttt{confusion\_generates\_heat}).  \emph{Reducibility}: shared
+context monotonically deflates the deficit
+(\texttt{peace\_context\_reduces}), and sufficient context eliminates it
+entirely (\texttt{peace\_sufficient\_context}).
+
+The void is therefore not a counsel of despair.  It is an engineering
+surface.  The same four operations that structure computation ---
+fork, race, fold, vent --- structure the deficit between persons.
+Fork: thought generates parallel semantic paths.  Race: candidate
+phrasings compete.  Fold: speech collapses them to one stream.  Vent:
+nuance that cannot survive the fold is dropped.  The companion tests
+mechanize every link: \texttt{semiotic\_erasure} proves the pigeonhole
+collision, \texttt{semiotic\_vent\_nuance} proves the dropped paths
+equal the deficit, and \texttt{semiotic\_moa\_isomorphism} proves that a
+Mixture of Agents ensemble has exactly the same deficit structure as
+thought-to-speech --- the loss in committee summarization is the same
+loss in conversation.
+
+\textbf{A theory of war --- and its containment.}  The theory of
+failure developed in this paper is, at the semiotic scale, a theory of
+war.  \texttt{war\_as\_cumulative\_heat} proves that successive
+communication failures through a channel with positive deficit
+accumulate Landauer heat monotonically.
+\texttt{war\_three\_stage\_monotone} extends this to three-stage
+escalation: misunderstanding \(\to\) misinterpretation \(\to\)
+escalation, each stage adding heat that the second law forbids
+reversing.  This is not a prediction of which wars will happen.  It is
+a bound on when the conditions for war are present: whenever the fold
+rate exceeds the dialogue rate on a channel with positive semiotic
+deficit.
+
+But the same machinery that predicts war prescribes its containment.
+A system architect who proves Byzantine fault tolerance uses the
+identical pattern: characterize the failure modes, bound the blast
+radius, install feedback loops that absorb the heat.  The companion
+theorems do this for communication itself.
+\texttt{peace\_context\_reduces} proves shared context is a monotone
+deflator.  \texttt{peace\_sufficient\_context} proves sufficient
+context eliminates the deficit.  \texttt{peace\_fixed\_point} proves
+the renormalization group terminus exists: zero further heat, zero
+further information loss.  \texttt{peace\_is\_reachable} proves that
+every step away from the fixed point makes strictly positive progress
+toward it.  And \texttt{dialogue\_convergence} proves that iterated
+conversation composes coherently via the Joyal-Street-Verity trace
+axioms --- the feedback loop of speak, hear, adjust, speak again.
+
+\textbf{Hope.}  The master theorem \texttt{hope} (SemioticPeace.lean)
+bundles five guarantees: (1) the deficit is strictly positive ---
+confusion is real; (2) the deficit equals
+\(\text{semanticPaths} - 1\) --- confusion is bounded, not infinite;
+(3) context monotonically reduces it --- every shared concept helps;
+(4) sufficient context eliminates it --- mutual understanding exists
+as a fixed point; (5) dialogue converges via traced monoidal feedback
+--- the mechanism is constructive.  Thirteen theorems, zero
+\texttt{sorry}, composing sixty files of mechanized proof.
+
+The mathematics does not legislate which civilizations will sit in the
+feedback loop.  It guarantees that those which do will converge.  The
+deficit is real.  The heat is irreducible.  The trace converges.  The
+fixed point exists.
+
 Within the finite DAG classes modeled in this paper, fork/race/fold +
 vent is sufficient.
 
