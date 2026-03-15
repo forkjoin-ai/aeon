@@ -170,8 +170,9 @@ partially ordered work into concurrent stage-local tracks with
 controlled reconciliation, and I show through constructive local
 decomposition, assumption-parameterized global schemas, and executable
 verification that four primitives -- fork, race, fold, vent -- are
-sufficient for the finite DAG classes used in this paper's
-implementation scope under explicit decomposition assumptions. I also
+sufficient for the finite directed-acyclic-graph (DAG) classes
+satisfying conditions C1--C4 (causality, branch isolation, deterministic
+fold, bounded termination) used in this paper's implementation scope. I also
 describe a topological reading of the algorithm: fork increases the
 first Betti number \(\beta_1\) (creating independent parallel paths),
 race traverses homotopy-equivalent paths simultaneously, fold projects
@@ -194,7 +195,7 @@ while \(\Delta_\beta > 0\) co-occurs with measurable waste (healthcare
 delays, settlement lockup, protocol-level blocking) {[}9, 16, 17{]}. I
 define the \textbf{Bule} (1 B = 1 unit of \(\Delta_\beta\)) as a
 shorthand engineering unit for that deficit. The formal companion now
-mechanizes a conditional universal-floor theorem on explicitly witnessed
+mechanizes a conditional optimality-verification theorem on explicitly witnessed
 failure Pareto frontiers: given a supplied zero-deficit floor point
 together with latency/waste lower bounds, the theorem shows it minimizes
 every monotone generalized-convex cost; strict uniqueness additionally
@@ -256,9 +257,11 @@ the ones below it.
   round-trip-stable TLA sandbox. Both verification paths check the same
   invariants: \(\beta_1 = \text{folded}\), \(\beta_1 \geq 0\),
   \(\text{vents} \leq \text{folds}\), and eventual termination under
-  weak fairness. In the modeled scope, this yields closure under
-  self-application: a formal system built from these primitives can
-  reason about formal systems built from these primitives {[}13{]}.
+  weak fairness. In the finite-model verification scope used here,
+  this provides evidence of closure under self-application: the
+  checker, itself a fork/race/fold computation, successfully verifies
+  models of fork/race/fold computations. This is finite-state
+  evidence, not a universal metatheoretic closure proof {[}13{]}.
 \item
   In formal language theory (the programming model, §11), I implement
   Gnosis {[}15{]} -- a programming language that unifies source code and
@@ -275,14 +278,17 @@ the ones below it.
   to \(O(\lceil P/B \rceil + N - 1)\), yielding modeled step-count
   speedups of 3.1x--267x in the listed scenarios under explicit
   idealized assumptions (uniform stage service time, zero inter-node
-  communication cost). The Wallington Rotation, expressed in layer 2's
+  communication cost; speedups halve when network cost equals compute
+  cost --- see \S7 sensitivity analysis). The Wallington Rotation, expressed in layer 2's
   language, verified by layer 1's checker.
 \item
   In edge transport (the wire format, §8), I implement a binary stream
   protocol with 10-byte self-describing frame headers and native
-  fork/race/fold operations on UDP, reducing framing overhead by 95
-  percent versus HTTP/1.1 and removing one-path ordered-delivery
-  coupling that drives head-of-line behavior in TCP-bound stacks. Layer
+  fork/race/fold operations on UDP, reducing framing overhead from
+  HTTP/1.1's 31\% to 1.5\% on a 95-resource microfrontend benchmark
+  (a 21$\times$ reduction) and multiplexing concurrent streams over a
+  single connection to reduce forced serialization from TCP's
+  ordered-delivery model. Layer
   3's scheduling algorithm runs over layer 4's wire format.
 \item
   In compression (bytes on wire, §9), I implement per-chunk topological
@@ -3364,19 +3370,25 @@ convergence guarantee --- the deficit is positive but bounded, context
 reduces it monotonically, sufficient context eliminates it, and the
 traced monoidal feedback of dialogue composes coherently.  The
 mathematics does not legislate which civilizations will sit in the loop.
-It guarantees that those which do will converge.  That is the
-conclusion bait of \S\ref{conclusion}: the same theory that predicts
-war prescribes its containment, and the prescription is constructive.
+Within the formal model (finite semiotic channels over \texttt{Fin n}
+types), the mathematics ensures structural convergence for systems that
+remain in the feedback loop.  Whether human agents will sustain dialogue
+long enough, and at what rate convergence occurs, are open questions
+outside the formal scope (\S14).  The prescription is constructive in
+model-space; its human instantiation is contingent.
 
 \subsubsection{6.13 The Optimality
 Diagnostic}\label{the-optimality-diagnostic}
 
 If fork/race/fold is a recurrent shape in finite systems that satisfy
 this paper's conservation, irreversibility and minimum-overhead
-assumptions, then finding this shape is evidence consistent with
-near-optimal topological fit under those assumptions. Not finding it --
-where the problem's intrinsic topology demands it -- is a diagnostic for
-waste.
+assumptions, then finding this shape is a \emph{correlation heuristic}:
+in the analyzed domains, systems exhibiting the shape show measurably
+lower waste.  Not finding it --- where the problem's modeled intrinsic
+topology demands parallelism --- is a diagnostic signal for potentially
+unexploited concurrency.  This is evidence-based screening, not a proof
+of optimality: the diagnostic identifies candidates for investigation,
+not verdicts.
 
 Measuring waste in computational systems requires specifying a modeled
 structure for both the problem and the implementation. The topological
@@ -5576,8 +5588,9 @@ confusion is real; (2) the deficit equals
 (3) context monotonically reduces it --- every shared concept helps;
 (4) sufficient context eliminates it --- mutual understanding exists
 as a fixed point; (5) dialogue converges via traced monoidal feedback
---- the mechanism is constructive.  Thirteen theorems, zero
-\texttt{sorry}, composing sixty files of mechanized proof.
+--- the mechanism is constructive.  Sixteen theorems in
+\texttt{SemioticPeace.lean} alone, zero \texttt{sorry}, composing
+seventy-four files of mechanized proof.
 
 Two forms of convergence appear in these theorems, and intellectual
 honesty requires distinguishing them.  \emph{Structural convergence}
@@ -5646,7 +5659,7 @@ The logical chain is: \texttt{peace\_fixed\_point} proves the RG fixed
 point exists (zero heat, zero information loss); it \emph{is} the
 zero-deficit witness required by the universal floor theorem; therefore
 the floor theorem applies non-vacuously.
-Thirteen theorems.  Every step machine-verified.
+Sixteen theorems.  Every step machine-verified.
 
 \textbf{Scope.}  The semiotic theorems formalize a \emph{model} of
 communication: finite semantic paths collapsing through bounded
@@ -5714,7 +5727,7 @@ strategy.  The precondition matters.
 \subsubsection{15.1 The Diversity Theorem and the Laminar
 Pipeline}\label{diversity-theorem-laminar-pipeline}
 
-Twelve mechanized theorems, proved independently across five files,
+Ten mechanized theorems, proved independently across six files,
 compose into a single claim: \emph{diversity is not a preference or a
 heuristic --- it is a topological and thermodynamic necessity for
 optimality in the strategy-space sense.}  The composition theorem
