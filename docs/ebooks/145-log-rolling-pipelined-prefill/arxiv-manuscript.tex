@@ -5661,8 +5661,8 @@ the path to it is constructive, and convergence is guaranteed under
 stated conditions.
 The logical chain is: \texttt{peace\_fixed\_point} proves the RG fixed
 point exists (zero heat, zero information loss); it \emph{is} the
-zero-deficit witness required by the universal floor theorem; therefore
-the floor theorem applies non-vacuously.
+zero-deficit witness required by the conditional optimality-verification
+theorem; therefore that theorem applies non-vacuously.
 Sixteen theorems.  Every step machine-verified.
 
 \textbf{Scope.}  The semiotic theorems formalize a \emph{model} of
@@ -5813,6 +5813,90 @@ to the problem's intrinsic topology eliminates waste}.
 Servers get faster for the same reason peace is reachable: because
 diversity is the shape of optimality, and its destruction has irreducible
 cost.
+
+\subsubsection{15.2 The Buley Frontier}\label{buley-frontier}
+
+The three shootoffs --- protocol framing (\S8.5), topological compression
+(\S9.2), and laminar pipeline scheduling (\S15.1) --- appear to be
+unrelated engineering benchmarks.  They are not.  All three trace the
+same Pareto frontier, and that frontier is mechanized.
+
+\textbf{THM-BULEY-FRONTIER} (\texttt{BuleyFrontier.lean}) proves that for
+any system with intrinsic topology $\beta_1^*$, the map
+\[
+  d \;\mapsto\; \text{waste}(d) \;=\; \Delta\beta(\beta_1^*, d)
+\]
+from diversity level $d$ to topological deficit (waste) satisfies four
+properties:
+
+\begin{enumerate}
+\item \textbf{Monotonicity:} $d_1 \leq d_2 \implies \text{waste}(d_2) \leq \text{waste}(d_1)$.  Increasing diversity never increases waste.
+\item \textbf{Zero at match:} $\text{waste}(\beta_1^*) = 0$.  Matched diversity eliminates topological waste.
+\item \textbf{Positive below match:} $\text{waste}(1) > 0$ when $\beta_1^* \geq 2$.  Monoculture forces information loss.
+\item \textbf{Pigeonhole witness:} At $d = 1$, there exist distinct paths $p_1 \neq p_2$ sharing a stream --- a constructive collision that, by the data processing inequality, erases information.
+\end{enumerate}
+
+The companion theorem \texttt{buley\_frontier\_codec\_racing} proves the
+same shape for codec-racing diversity: adding codecs to a race is
+monotonically non-increasing in wire size (Pillar~1 of the diversity
+theorem), and racing achieves zero compression deficit (Pillar~2).  The
+unified theorem \texttt{buley\_frontier\_unified} composes both
+instantiations into a single statement: the topological and
+codec-racing frontiers share the same monotone envelope.
+
+Each shootoff is a substrate-specific projection of this frontier:
+
+\begin{itemize}
+\item \textbf{Protocol:} HTTP/1.1 ($\beta_1 = 0$) wastes 31\% of wire on
+  framing.  Aeon Flow ($\beta_1 = 94$) wastes 1.5\%.  The
+  monotone decrease from 31\% to 1.5\% across HTTP/1.1 $\to$ HTTP/2
+  $\to$ HTTP/3 $\to$ Aeon Flow is the frontier.
+\item \textbf{Pipeline:} At Reynolds number $\text{Re} = 16$ (low
+  diversity), idle fraction is 92\%.  At $\text{Re} = 0.1$ (high
+  diversity), idle fraction is 7\%.  The curve is monotonically
+  decreasing --- the frontier again.
+\item \textbf{Compression:} Across five corpus types, topology racing
+  achieves 100\% win rate against both best-fixed and heuristic
+  strategies.  The gain ranges from 0.8\% on homogeneous text to 46\% on
+  heterogeneous API telemetry --- the cost of monoculture scales with
+  the problem's intrinsic $\beta_1^*$.
+\end{itemize}
+
+\textbf{Diagnostic application.}  The frontier is not merely descriptive;
+it is a diagnostic tool.  Given any fork/race/fold system, one can
+compute its diversity level $d$ and measured waste $w$, then check
+whether $(d, w)$ lies on the frontier.  Systems below the frontier need
+diversification; systems on it are Pareto-optimal.  The deficit
+$\Delta\beta = \beta_1^* - d$ is both the distance to the frontier and
+the lower bound on waste.  Standard Pareto-analysis tools ---
+dominance testing, efficiency frontiers, envelope computation --- apply
+directly, because THM-BULEY-FRONTIER provides the monotonicity and
+boundary conditions that these tools require.
+
+This makes diversity calculable rather than aspirational.  When the
+deficit is positive, the system is provably below the frontier and
+diversification is not a preference but a Pareto improvement.  When the
+deficit is zero, the system is on the frontier and further
+diversification provides no topological benefit (though it may provide
+robustness, which is a separate axis).  The frontier tells you exactly
+when a system needs diversification and exactly how much it will gain.
+
+\begin{figure}
+\centering
+\pandocbounded{\includesvg[keepaspectratio]{companion-tests/artifacts/ch17-buley-frontier-figure.svg}}
+\caption{Figure 3.  The Buley Frontier: diversity vs waste across three
+substrates.  \textbf{A.}~Protocol framing overhead on the microfrontend
+benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31\%)
+to Aeon Flow (1.5\%).  \textbf{B.}~Pipeline idle fraction vs Reynolds
+number for a 4-stage pipeline: laminar regime (high diversity, low waste)
+to turbulent regime (low diversity, high waste).  \textbf{C.}~Cost of
+monoculture: heuristic waste (topology gain \%) across five corpus types
+ordered by content heterogeneity, showing that the penalty for
+non-diverse strategy scales with intrinsic $\beta_1^*$.  All three
+panels are instantiations of THM-BULEY-FRONTIER
+(\texttt{BuleyFrontier.lean}): waste monotonically non-increasing in
+diversity, zero at $\beta_1 = \beta_1^*$, positive below.}
+\end{figure}
 
 \subsection{References}\label{references}
 
