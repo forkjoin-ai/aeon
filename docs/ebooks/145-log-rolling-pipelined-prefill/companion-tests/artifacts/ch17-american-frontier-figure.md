@@ -1,4 +1,4 @@
-# Buley Frontier: Diversity vs Waste
+# American Frontier: Diversity vs Waste
 
 The Pareto frontier of diversity vs waste across three substrates.
 
@@ -41,7 +41,7 @@ Site: Microfrontend (95 resources), β₁* = 94
 | polyglot-bundle | 26.65% | 100% |
 | api-telemetry | 46.37% | 100% |
 
-## Frontier Properties (mechanized in BuleyFrontier.lean)
+## Frontier Properties (mechanized in AmericanFrontier.lean)
 
 - Monotone: true
 - Zero at match: true

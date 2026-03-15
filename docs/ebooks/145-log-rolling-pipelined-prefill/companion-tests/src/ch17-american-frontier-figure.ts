@@ -1,11 +1,11 @@
 /**
- * ch17-buley-frontier-figure.ts
+ * ch17-american-frontier-figure.ts
  *
- * Generates the Buley Frontier figure: a three-panel visualization showing
+ * Generates the American Frontier figure: a three-panel visualization showing
  * that diversity-vs-waste traces the same monotone Pareto frontier across
  * three substrates (protocol framing, pipeline scheduling, compression strategy).
  *
- * The Buley Frontier: waste is monotonically non-increasing in diversity,
+ * The American Frontier: waste is monotonically non-increasing in diversity,
  * reaching zero at matched diversity (β₁ = β₁*). Every shootoff in the paper
  * is an instantiation of this single curve on a different substrate.
  */
@@ -34,8 +34,8 @@ export interface CompressionCorpusPoint {
   readonly winRate: number;
 }
 
-export interface BuleyFrontierReport {
-  readonly label: 'ch17-buley-frontier-figure-v1';
+export interface AmericanFrontierReport {
+  readonly label: 'ch17-american-frontier-figure-v1';
 
   readonly protocol: {
     readonly siteName: string;
@@ -54,7 +54,7 @@ export interface BuleyFrontierReport {
     readonly points: readonly CompressionCorpusPoint[];
   };
 
-  /** Buley frontier properties (from the Lean theorem). */
+  /** American Frontier properties (from the Lean theorem). */
   readonly frontierProperties: {
     readonly monotone: boolean;
     readonly zeroAtMatch: boolean;
@@ -65,7 +65,7 @@ export interface BuleyFrontierReport {
 
 // ─── Data builder ────────────────────────────────────────────────────
 
-export function buildBuleyFrontierReport(): BuleyFrontierReport {
+export function buildAmericanFrontierReport(): AmericanFrontierReport {
   // Protocol shootoff data (microfrontend, 95 resources, ~1.8 MB)
   const protocolPoints: ProtocolPoint[] = [
     {
@@ -157,7 +157,7 @@ export function buildBuleyFrontierReport(): BuleyFrontierReport {
   ];
 
   return {
-    label: 'ch17-buley-frontier-figure-v1',
+    label: 'ch17-american-frontier-figure-v1',
 
     protocol: {
       siteName: 'Microfrontend (95 resources)',
@@ -187,11 +187,11 @@ export function buildBuleyFrontierReport(): BuleyFrontierReport {
 
 // ─── Markdown renderer ───────────────────────────────────────────────
 
-export function renderBuleyFrontierMarkdown(
-  report: BuleyFrontierReport,
+export function renderAmericanFrontierMarkdown(
+  report: AmericanFrontierReport,
 ): string {
   const lines: string[] = [];
-  lines.push('# Buley Frontier: Diversity vs Waste\n');
+  lines.push('# American Frontier: Diversity vs Waste\n');
   lines.push(
     'The Pareto frontier of diversity vs waste across three substrates.\n',
   );
@@ -226,7 +226,7 @@ export function renderBuleyFrontierMarkdown(
   }
 
   lines.push(
-    '\n## Frontier Properties (mechanized in BuleyFrontier.lean)\n',
+    '\n## Frontier Properties (mechanized in AmericanFrontier.lean)\n',
   );
   const fp = report.frontierProperties;
   lines.push(`- Monotone: ${fp.monotone}`);
@@ -279,7 +279,7 @@ function panelX(panelIdx: number): number {
   return 20 + panelIdx * (PANEL_W + GAP);
 }
 
-function renderProtocolPanel(report: BuleyFrontierReport): string {
+function renderProtocolPanel(report: AmericanFrontierReport): string {
   const ox = panelX(0);
   const oy = 40;
   const points = report.protocol.points;
@@ -352,7 +352,7 @@ function renderProtocolPanel(report: BuleyFrontierReport): string {
   return lines.join('\n');
 }
 
-function renderPipelinePanel(report: BuleyFrontierReport): string {
+function renderPipelinePanel(report: AmericanFrontierReport): string {
   const ox = panelX(1);
   const oy = 40;
   const points = report.pipeline.points;
@@ -451,7 +451,7 @@ function renderPipelinePanel(report: BuleyFrontierReport): string {
   return lines.join('\n');
 }
 
-function renderCompressionPanel(report: BuleyFrontierReport): string {
+function renderCompressionPanel(report: AmericanFrontierReport): string {
   const ox = panelX(2);
   const oy = 40;
   const points = report.compression.points;
@@ -532,8 +532,8 @@ function renderCompressionPanel(report: BuleyFrontierReport): string {
   return lines.join('\n');
 }
 
-export function renderBuleyFrontierSvg(
-  report: BuleyFrontierReport,
+export function renderAmericanFrontierSvg(
+  report: AmericanFrontierReport,
 ): string {
   const parts: string[] = [];
 
@@ -555,7 +555,7 @@ export function renderBuleyFrontierSvg(
 
   // Supertitle
   parts.push(
-    `<text x="${TOTAL_W / 2}" y="${26}" text-anchor="middle" font-size="16" font-weight="700" fill="${TEXT}">The Buley Frontier: Diversity vs Waste Across Three Substrates</text>`,
+    `<text x="${TOTAL_W / 2}" y="${26}" text-anchor="middle" font-size="16" font-weight="700" fill="${TEXT}">The American Frontier: Diversity vs Waste Across Three Substrates</text>`,
   );
 
   // Three panels
@@ -565,7 +565,7 @@ export function renderBuleyFrontierSvg(
 
   // Footer annotation
   parts.push(
-    `<text x="${TOTAL_W / 2}" y="${TOTAL_H - 8}" text-anchor="middle" font-size="10" fill="${LIGHT_TEXT}">THM-BULEY-FRONTIER (BuleyFrontier.lean): waste monotonically non-increasing in diversity, zero at β₁ = β₁*, positive below — mechanized in Lean 4</text>`,
+    `<text x="${TOTAL_W / 2}" y="${TOTAL_H - 8}" text-anchor="middle" font-size="10" fill="${LIGHT_TEXT}">THM-AMERICAN-FRONTIER (AmericanFrontier.lean): waste monotonically non-increasing in diversity, zero at β₁ = β₁*, positive below — mechanized in Lean 4</text>`,
   );
 
   parts.push('</svg>');

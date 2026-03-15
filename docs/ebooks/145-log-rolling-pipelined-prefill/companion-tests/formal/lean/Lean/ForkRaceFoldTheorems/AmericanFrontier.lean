@@ -5,7 +5,7 @@ import ForkRaceFoldTheorems.DeficitCapacity
 namespace ForkRaceFoldTheorems
 
 /-!
-# The Buley Frontier
+# The American Frontier
 
 The Pareto frontier of diversity vs waste across all fork/race/fold substrates.
 
@@ -37,10 +37,10 @@ and `deficit_information_loss` into a single Pareto characterization.
 -/
 
 -- ═══════════════════════════════════════════════════════════════════════
--- THM-BULEY-FRONTIER: The Pareto Frontier of Diversity vs Waste
+-- THM-AMERICAN-FRONTIER: The Pareto Frontier of Diversity vs Waste
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- **THM-BULEY-FRONTIER**: The Pareto frontier of diversity vs waste.
+/-- **THM-AMERICAN-FRONTIER**: The Pareto frontier of diversity vs waste.
 
     For a system with β₁* ≥ 2 independent computation paths, the
     topological deficit function d ↦ Δβ(β₁*, d) is:
@@ -59,7 +59,7 @@ and `deficit_information_loss` into a single Pareto characterization.
     system, compute its diversity level d and waste w, then check whether
     (d, w) lies on the frontier. Systems below the frontier need
     diversification; systems on it are Pareto-optimal. -/
-theorem buley_frontier
+theorem american_frontier
     {pathCount : ℕ}
     (hPaths : 2 ≤ pathCount) :
     -- (1) Monotonicity: more streams → less deficit
@@ -93,7 +93,7 @@ theorem buley_frontier
 
     Diagnostic: if a system uses a fixed codec and incurs positive deficit,
     switching to racing moves it onto the frontier. -/
-theorem buley_frontier_codec_racing
+theorem american_frontier_codec_racing
     (results : List CodecResult) (hne : results ≠ []) :
     -- (1) Monotonicity: adding codecs never increases wire size
     (∀ newCodec : CodecResult,
@@ -121,7 +121,7 @@ theorem buley_frontier_codec_racing
     regardless of whether the "waste" is framing overhead, compression
     deficit, pipeline idle fraction, or semiotic deficit, the diagnostic
     is the same — compute Δβ, check the frontier, diversify if below. -/
-theorem buley_frontier_unified
+theorem american_frontier_unified
     {pathCount : ℕ}
     (hPaths : 2 ≤ pathCount)
     (results : List CodecResult) (hne : results ≠ []) :
@@ -134,8 +134,8 @@ theorem buley_frontier_unified
     (∀ newCodec : CodecResult,
       raceMin (newCodec :: results) ≤ raceMin results) ∧
     compressionDeficit (raceMin results) results = 0 := by
-  obtain ⟨h1, h2, h3, _⟩ := buley_frontier hPaths
-  obtain ⟨h4, h5, _⟩ := buley_frontier_codec_racing results hne
+  obtain ⟨h1, h2, h3, _⟩ := american_frontier hPaths
+  obtain ⟨h4, h5, _⟩ := american_frontier_codec_racing results hne
   exact ⟨h1, h2, h3, h4, h5⟩
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -148,7 +148,7 @@ theorem buley_frontier_unified
     Systems with Δβ > 0 are below the frontier and need diversification.
     The deficit itself quantifies how far below: it is both the distance
     to the frontier and the lower bound on waste. -/
-theorem buley_frontier_pareto_diagnostic
+theorem american_frontier_pareto_diagnostic
     {pathCount : ℕ}
     (hPaths : 2 ≤ pathCount) :
     -- Pareto-optimal: at matched diversity, deficit = 0
@@ -159,7 +159,7 @@ theorem buley_frontier_pareto_diagnostic
     -- monotonically approaches the frontier
     (∀ s1 s2 : ℕ, 1 ≤ s1 → s1 ≤ s2 →
       topologicalDeficit pathCount s2 ≤ topologicalDeficit pathCount s1) := by
-  obtain ⟨hMono, hZero, hPos, _⟩ := buley_frontier hPaths
+  obtain ⟨hMono, hZero, hPos, _⟩ := american_frontier hPaths
   exact ⟨hZero, hPos, hMono⟩
 
 end ForkRaceFoldTheorems

@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'bun:test';
 import {
-  buildBuleyFrontierReport,
-  renderBuleyFrontierMarkdown,
-  renderBuleyFrontierSvg,
-} from './ch17-buley-frontier-figure';
+  buildAmericanFrontierReport,
+  renderAmericanFrontierMarkdown,
+  renderAmericanFrontierSvg,
+} from './ch17-american-frontier-figure';
 
-describe('ch17-buley-frontier-figure', () => {
-  it('builds the Buley frontier report with correct structure', () => {
-    const report = buildBuleyFrontierReport();
-    expect(report.label).toBe('ch17-buley-frontier-figure-v1');
+describe('ch17-american-frontier-figure', () => {
+  it('builds the American Frontier report with correct structure', () => {
+    const report = buildAmericanFrontierReport();
+    expect(report.label).toBe('ch17-american-frontier-figure-v1');
 
     // Protocol panel: 4 protocols, monotonically decreasing overhead
     expect(report.protocol.points).toHaveLength(4);
@@ -38,8 +38,8 @@ describe('ch17-buley-frontier-figure', () => {
     expect(report.frontierProperties.pigeonholeWitness).toBe(true);
   });
 
-  it('protocol overhead is monotonically decreasing (Buley frontier shape)', () => {
-    const report = buildBuleyFrontierReport();
+  it('protocol overhead is monotonically decreasing (American Frontier shape)', () => {
+    const report = buildAmericanFrontierReport();
     const points = report.protocol.points;
 
     // HTTP/1.1 has highest overhead
@@ -57,9 +57,9 @@ describe('ch17-buley-frontier-figure', () => {
   });
 
   it('pipeline idle fraction increases with Reynolds number', () => {
-    const report = buildBuleyFrontierReport();
+    const report = buildAmericanFrontierReport();
     // Higher Re = less diversity relative to workload = more waste
-    // This is the Buley frontier: waste monotonically non-increasing in diversity
+    // This is the American Frontier: waste monotonically non-increasing in diversity
     const low = report.pipeline.points[0]; // Re = 0.1 (high diversity)
     const high =
       report.pipeline.points[report.pipeline.points.length - 1]; // Re = 16 (low diversity)
@@ -69,7 +69,7 @@ describe('ch17-buley-frontier-figure', () => {
   });
 
   it('compression topology always wins (100% win rate across corpora)', () => {
-    const report = buildBuleyFrontierReport();
+    const report = buildAmericanFrontierReport();
     // The diverse strategy (topology) subsumes every fixed strategy
     // Win rate = 1.0 is the frontier: racing achieves zero deficit
     for (const p of report.compression.points) {
@@ -79,7 +79,7 @@ describe('ch17-buley-frontier-figure', () => {
   });
 
   it('heterogeneous content benefits more from diversity', () => {
-    const report = buildBuleyFrontierReport();
+    const report = buildAmericanFrontierReport();
     const points = report.compression.points;
     // api-telemetry (most heterogeneous) has highest gain
     const apiGain = points.find(
@@ -93,27 +93,27 @@ describe('ch17-buley-frontier-figure', () => {
   });
 
   it('renders markdown output', () => {
-    const report = buildBuleyFrontierReport();
-    const md = renderBuleyFrontierMarkdown(report);
-    expect(md).toContain('Buley Frontier');
+    const report = buildAmericanFrontierReport();
+    const md = renderAmericanFrontierMarkdown(report);
+    expect(md).toContain('American Frontier');
     expect(md).toContain('Protocol Framing Overhead');
     expect(md).toContain('Pipeline Idle Fraction');
     expect(md).toContain('Compression Topology Gain');
-    expect(md).toContain('BuleyFrontier.lean');
+    expect(md).toContain('AmericanFrontier.lean');
     expect(md).toContain('31');
     expect(md).toContain('1.5');
   });
 
   it('renders SVG output with three panels', () => {
-    const report = buildBuleyFrontierReport();
-    const svg = renderBuleyFrontierSvg(report);
+    const report = buildAmericanFrontierReport();
+    const svg = renderAmericanFrontierSvg(report);
     expect(svg).toContain('<svg');
     expect(svg).toContain('</svg>');
-    expect(svg).toContain('Buley Frontier');
+    expect(svg).toContain('American Frontier');
     expect(svg).toContain('Protocol Framing Overhead');
     expect(svg).toContain('Pipeline Idle Fraction');
     expect(svg).toContain('Cost of Monoculture');
-    expect(svg).toContain('THM-BULEY-FRONTIER');
+    expect(svg).toContain('THM-AMERICAN-FRONTIER');
     // Three panels present
     expect(svg).toContain('A.');
     expect(svg).toContain('B.');

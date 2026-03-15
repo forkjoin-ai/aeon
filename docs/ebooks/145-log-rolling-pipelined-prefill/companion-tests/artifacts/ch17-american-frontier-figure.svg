@@ -3,7 +3,7 @@
 <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#0f766e"/></marker>
 </defs>
 <rect width="1240" height="380" rx="18" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-<text x="620" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">The Buley Frontier: Diversity vs Waste Across Three Substrates</text>
+<text x="620" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">The American Frontier: Diversity vs Waste Across Three Substrates</text>
 <rect x="20" y="40" width="380" height="320" rx="12" fill="#fafaf9" stroke="#e2e8f0" stroke-width="1"/>
 <text x="210" y="64" text-anchor="middle" font-size="13" font-weight="600" fill="#1e293b">A. Protocol Framing Overhead</text>
 <line x1="80" y1="290" x2="380" y2="290" stroke="#e2e8f0" stroke-width="0.5"/>
@@ -110,5 +110,5 @@
 <text x="1050" y="328" text-anchor="middle" font-size="11" fill="#1e293b">Content heterogeneity (β₁* →)</text>
 <line x1="900" y1="290" x2="1200" y2="290" stroke="#0f766e" stroke-width="1.5"/>
 <text x="1202" y="294" text-anchor="start" font-size="9" fill="#0f766e" font-weight="600">frontier</text>
-<text x="620" y="372" text-anchor="middle" font-size="10" fill="#475569">THM-BULEY-FRONTIER (BuleyFrontier.lean): waste monotonically non-increasing in diversity, zero at β₁ = β₁*, positive below — mechanized in Lean 4</text>
+<text x="620" y="372" text-anchor="middle" font-size="10" fill="#475569">THM-AMERICAN-FRONTIER (AmericanFrontier.lean): waste monotonically non-increasing in diversity, zero at β₁ = β₁*, positive below — mechanized in Lean 4</text>
 </svg>

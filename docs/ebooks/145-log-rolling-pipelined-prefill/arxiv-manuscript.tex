@@ -5814,14 +5814,14 @@ Servers get faster for the same reason peace is reachable: because
 diversity is the shape of optimality, and its destruction has irreducible
 cost.
 
-\subsubsection{15.2 The Buley Frontier}\label{buley-frontier}
+\subsubsection{15.2 The American Frontier}\label{american-frontier}
 
 The three shootoffs --- protocol framing (\S8.5), topological compression
 (\S9.2), and laminar pipeline scheduling (\S15.1) --- appear to be
 unrelated engineering benchmarks.  They are not.  All three trace the
 same Pareto frontier, and that frontier is mechanized.
 
-\textbf{THM-BULEY-FRONTIER} (\texttt{BuleyFrontier.lean}) proves that for
+\textbf{THM-AMERICAN-FRONTIER} (\texttt{AmericanFrontier.lean}) proves that for
 any system with intrinsic topology $\beta_1^*$, the map
 \[
   d \;\mapsto\; \text{waste}(d) \;=\; \Delta\beta(\beta_1^*, d)
@@ -5870,7 +5870,7 @@ diversification; systems on it are Pareto-optimal.  The deficit
 $\Delta\beta = \beta_1^* - d$ is both the distance to the frontier and
 the lower bound on waste.  Standard Pareto-analysis tools ---
 dominance testing, efficiency frontiers, envelope computation --- apply
-directly, because THM-BULEY-FRONTIER provides the monotonicity and
+directly, because THM-AMERICAN-FRONTIER provides the monotonicity and
 boundary conditions that these tools require.
 
 This makes diversity calculable rather than aspirational.  When the
@@ -5883,8 +5883,8 @@ when a system needs diversification and exactly how much it will gain.
 
 \begin{figure}
 \centering
-\pandocbounded{\includesvg[keepaspectratio]{companion-tests/artifacts/ch17-buley-frontier-figure.svg}}
-\caption{Figure 3.  The Buley Frontier: diversity vs waste across three
+\pandocbounded{\includesvg[keepaspectratio]{companion-tests/artifacts/ch17-american-frontier-figure.svg}}
+\caption{Figure 3.  The American Frontier: diversity vs waste across three
 substrates.  \textbf{A.}~Protocol framing overhead on the microfrontend
 benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31\%)
 to Aeon Flow (1.5\%).  \textbf{B.}~Pipeline idle fraction vs Reynolds
@@ -5893,8 +5893,8 @@ to turbulent regime (low diversity, high waste).  \textbf{C.}~Cost of
 monoculture: heuristic waste (topology gain \%) across five corpus types
 ordered by content heterogeneity, showing that the penalty for
 non-diverse strategy scales with intrinsic $\beta_1^*$.  All three
-panels are instantiations of THM-BULEY-FRONTIER
-(\texttt{BuleyFrontier.lean}): waste monotonically non-increasing in
+panels are instantiations of THM-AMERICAN-FRONTIER
+(\texttt{AmericanFrontier.lean}): waste monotonically non-increasing in
 diversity, zero at $\beta_1 = \beta_1^*$, positive below.}
 \end{figure}
 
