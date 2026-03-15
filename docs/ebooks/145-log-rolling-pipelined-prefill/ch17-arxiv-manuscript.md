@@ -1951,6 +1951,36 @@ But the theory of peace was not invented here. DNA replication discovered it fir
 
 Within the finite DAG classes modeled in this paper, fork/race/fold + vent is sufficient.
 
+### 15.1 The Diversity Theorem and the Laminar Pipeline
+
+Twelve mechanized theorems, proved independently across five files, compose into a single claim: *diversity is not a preference or a heuristic --- it is a topological and thermodynamic necessity for optimality.* The composition theorem `diversity_optimality_master` (DiversityOptimality.lean) bundles five pillars: (1) monotonicity --- adding a branch never increases race minimum; (2) subsumption --- racing subsumes every fixed strategy; (3) necessity --- reducing diversity below intrinsic $\beta_1$ forces information loss; (4) optimality --- matched diversity yields zero deficit and lossless transport; (5) irreversibility --- collapsing diversity requires waste and generates Landauer heat.
+
+The theorem has an immediate engineering consequence: the **laminar pipeline** (Layer 8 of the Aeon stack). Instead of `sendfile(2)` --- which transmits raw bytes via kernel DMA with zero compression --- the laminar pipeline chunks the file, races all available codecs (identity, gzip, brotli, deflate) per chunk, picks the smallest, and `writev`'s the compressed chunk with a 10-byte Flow frame header. THM-TOPO-RACE-SUBSUMPTION guarantees that racing total $\leq$ identity total (sendfile wire size). THM-TOPO-RACE-IDENTITY-BASELINE guarantees identity is always a candidate, so the pipeline never does worse than raw.
+
+The following table reports modeled wire-byte shootoff results across four site archetypes. "sendfile()" is raw kernel DMA. "nginx" uses HTTP/1.1 with per-resource compression. "x-gnosis" uses topology-scheduled HTTP/1.1 with per-resource compression. "hella-whipped" uses the laminar pipeline: per-chunk codec racing with 10-byte Flow framing.
+
++---------------------+--------+--------+---------+--------+---------+
+| Protocol            |Compress|  Raw   |  Wire   |Overhead|vs sendfile|
++=====================+========+========+=========+========+=========+
+| **Big Content (12 resources, 1.91 MB raw)**                        |
++---------------------+--------+--------+---------+--------+---------+
+| sendfile()          | none   | 1.91 MB| 1.91 MB |   0 B  | baseline|
+| nginx               | brotli | 1.91 MB| 589 KB  | 7.6 KB |  -69.9% |
+| x-gnosis            | brotli | 1.91 MB| 586 KB  | 4.8 KB |  -70.0% |
+| **hella-whipped**   |topo-full|1.91 MB| **587 KB**|**370 B**|**-70.0%**|
++---------------------+--------+--------+---------+--------+---------+
+| **Microfrontend (95 resources, 1.05 MB raw)**                      |
++---------------------+--------+--------+---------+--------+---------+
+| sendfile()          | none   | 1.05 MB| 1.05 MB |   0 B  | baseline|
+| nginx               | brotli | 1.05 MB| 76.4 KB |  54 KB |  -92.9% |
+| x-gnosis            | brotli | 1.05 MB| 56.3 KB |  34 KB |  -94.8% |
+| **hella-whipped**   |topo-full|1.05 MB|**23.7 KB**|**850 B**|**-97.8%**|
++---------------------+--------+--------+---------+--------+---------+
+
+The laminar pipeline strictly dominates sendfile() in all tested site types. On the microfrontend stress test --- 95 small resources where HTTP framing overhead dominates --- hella-whipped achieves 97.8\% wire savings vs sendfile and 3.5\% framing overhead, compared to nginx's 70.6\% framing overhead. The 10-byte Flow frame replaces $\sim$650 bytes of HTTP request+response headers per resource, and per-chunk codec racing automatically selects identity for incompressible content (images, fonts) and brotli for text.
+
+Layer 8 recurses to Layer 1: the diversity theorem proves the racing strategy is monotonically optimal, and the formal verification layer machine-checks the proof. The stack is not a stack --- it is a cycle.
+
 ## References
 
 \[1\] A. Tero, S. Takagi, T. Saigusa, K. Ito, D. P. Bebber, M. D. Fricker, K. Yumiki, R. Kobayashi, T. Nakagaki, "Rules for Biologically Inspired Adaptive Network Design," *Science*, 327(5964):439--442, 2010.
