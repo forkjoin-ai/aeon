@@ -1255,75 +1255,36 @@ So map/reduce can be interpreted as a **screening diagnostic**: it flags workloa
 
 The topological deficit is not just a theoretical quantity. The `@affectively/aeon` package [8] includes a `TopologyAnalyzer` that computes Betti numbers and Bules from a computation graph, and a `TopologySampler` that instruments a running system to measure deficit over time:
 
-<div class="Highlighting">
+```typescript
+import { TopologyAnalyzer, TopologySampler } from '@affectively/aeon';
 
-<span style="color: 0.00,0.50,0.00">**import**</span> {
-TopologyAnalyzer<span style="color: 0.40,0.40,0.40">,</span> TopologySampler } <span style="color: 0.00,0.50,0.00">**from**</span>
-<span style="color: 0.25,0.44,0.63">'@affectively/aeon'</span><span style="color: 0.40,0.40,0.40">;</span>
+// Static analysis: is this system wasting parallelism?
+const graph = TopologyAnalyzer.fromForkRaceFold({
+  forkWidth: 1,        // implementation: sequential
+  intrinsicBeta1: 7,   // problem: 8 independent codecs
+});
+const report = TopologyAnalyzer.analyze(graph);
+// → deficit: 7 Bules -- "Sequential bottleneck: 7 Bules of waste"
 
-<span style="color: 0.38,0.63,0.69">*// Static analysis: is this system
-wasting parallelism?*</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> graph
-<span style="color: 0.40,0.40,0.40">=</span>
-TopologyAnalyzer<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">fromForkRaceFold</span>({ forkWidth<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.63,0.44">1</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.38,0.63,0.69">*// implementation:
-sequential*</span> intrinsicBeta1<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.63,0.44">7</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.38,0.63,0.69">*// problem: 8 independent
-codecs*</span> })<span style="color: 0.40,0.40,0.40">;</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> report
-<span style="color: 0.40,0.40,0.40">=</span>
-TopologyAnalyzer<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">analyze</span>(graph)<span style="color: 0.40,0.40,0.40">;</span>
-<span style="color: 0.38,0.63,0.69">*// → deficit: 7 Bules --
-"Sequential bottleneck: 7 Bules of waste"*</span>
+// Fix: match the topology
+const fixed = TopologyAnalyzer.fromForkRaceFold({
+  forkWidth: 8,        // implementation: fork 8 codecs
+  intrinsicBeta1: 7,   // problem: 8 independent codecs
+});
+const fixedReport = TopologyAnalyzer.analyze(fixed);
+// → deficit: 0 Bules -- "Topology-matched: 0 Bules"
 
-<span style="color: 0.38,0.63,0.69">*// Fix: match the topology*</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> fixed
-<span style="color: 0.40,0.40,0.40">=</span>
-TopologyAnalyzer<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">fromForkRaceFold</span>({ forkWidth<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.63,0.44">8</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.38,0.63,0.69">*// implementation: fork 8
-codecs*</span> intrinsicBeta1<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.63,0.44">7</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.38,0.63,0.69">*// problem: 8 independent
-codecs*</span> })<span style="color: 0.40,0.40,0.40">;</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> fixedReport
-<span style="color: 0.40,0.40,0.40">=</span>
-TopologyAnalyzer<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">analyze</span>(fixed)<span style="color: 0.40,0.40,0.40">;</span>
-<span style="color: 0.38,0.63,0.69">*// → deficit: 0 Bules --
-"Topology-matched: 0 Bules"*</span>
-
-<span style="color: 0.38,0.63,0.69">*// Runtime sampling: how does the
-deficit evolve?*</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> sampler
-<span style="color: 0.40,0.40,0.40">=</span>
-<span style="color: 0.00,0.44,0.13">**new**</span>
-<span style="color: 0.02,0.16,0.49">TopologySampler</span>({
-intrinsicBeta1<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.63,0.44">7</span>
-})<span style="color: 0.40,0.40,0.40">;</span> sampler<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">fork</span>(<span style="color: 0.25,0.44,0.63">'chunk-1'</span><span style="color: 0.40,0.40,0.40">,</span> [<span style="color: 0.25,0.44,0.63">'raw'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'rle'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'delta'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'lz77'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'brotli'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'gzip'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'huffman'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'dict'</span>])<span style="color: 0.40,0.40,0.40">;</span>
-<span style="color: 0.38,0.63,0.69">*// → currentDeficit(): 0 Bules (all
-8 codecs racing)*</span> sampler<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">race</span>(<span style="color: 0.25,0.44,0.63">'chunk-1'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'brotli'</span>)<span style="color: 0.40,0.40,0.40">;</span>
-sampler<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">vent</span>(<span style="color: 0.25,0.44,0.63">'chunk-1'</span><span style="color: 0.40,0.40,0.40">,</span>
-<span style="color: 0.25,0.44,0.63">'raw'</span>)<span style="color: 0.40,0.40,0.40">;</span>
-<span style="color: 0.38,0.63,0.69">*// ... vent remaining losers
-...*</span> sampler<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">fold</span>(<span style="color: 0.25,0.44,0.63">'chunk-1'</span>)<span style="color: 0.40,0.40,0.40">;</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> samplerReport
-<span style="color: 0.40,0.40,0.40">=</span>
-sampler<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">report</span>()<span style="color: 0.40,0.40,0.40">;</span>
-<span style="color: 0.38,0.63,0.69">*// → peakBeta1: 7, efficiency:
-0.125 (1 race / 8 events)*</span>
-
-</div>
+// Runtime sampling: how does the deficit evolve?
+const sampler = new TopologySampler({ intrinsicBeta1: 7 });
+sampler.fork('chunk-1', ['raw', 'rle', 'delta', 'lz77', 'brotli', 'gzip', 'huffman', 'dict']);
+// → currentDeficit(): 0 Bules (all 8 codecs racing)
+sampler.race('chunk-1', 'brotli');
+sampler.vent('chunk-1', 'raw');
+// ... vent remaining losers
+sampler.fold('chunk-1');
+const samplerReport = sampler.report();
+// → peakBeta1: 7, efficiency: 0.125 (1 race / 8 events)
+```
 
 The `TopologyAnalyzer` computes $\beta_0$, $\beta_1$, $\beta_2$ and detects fork/join pairs from any directed graph. The `TopologySampler` records fork/race/vent/fold events at runtime and produces time-series utilization data. Both are validated by targeted tests covering sequential pipelines, fork/join graphs, void detection, deficit measurement, concurrent forks, vent ratios, and the real-world topologies from this section [8].
 
@@ -1335,11 +1296,15 @@ I implement fork/race/fold in a distributed computation engine with processing s
 
 In Gnosis (§11), the Wallington Rotation for a 4-stage pipeline is:
 
-<div class="Highlighting">
-
-(tokens: Source { data: 'workload' }) (stage_1: Node { id: '1' }) (stage_2: Node { id: '2' }) (stage_3: Node { id: '3' }) (stage_4: Node { id: '4' }) (tokens)-[:FORK]-\>(stage_1 \| stage_2 \| stage_3 \| stage_4) (stage_1 \| stage_2 \| stage_3 \| stage_4)-[:FOLD { strategy: 'merge-all' }]-\>(result)
-
-</div>
+```ggl
+(tokens: Source { data: 'workload' })
+(stage_1: Node { id: '1' })
+(stage_2: Node { id: '2' })
+(stage_3: Node { id: '3' })
+(stage_4: Node { id: '4' })
+(tokens)-[:FORK]->(stage_1 | stage_2 | stage_3 | stage_4)
+(stage_1 | stage_2 | stage_3 | stage_4)-[:FOLD { strategy: 'merge-all' }]->(result)
+```
 
 The topology is the program. The scheduling is the shape.
 
@@ -1386,11 +1351,14 @@ The patterns – fork, race, fold, vent – recur with the same primitive struct
 
 In Gnosis (§11), a multiplexed site load over Aeon Flow is:
 
-<div class="Highlighting">
-
-(html: Asset { type: 'text/html' }) (css: Asset { type: 'text/css' }) (js: Asset { type: 'application/javascript' }) (font: Asset { type: 'font/woff2' }) (site)-[:FORK]-\>(html \| css \| js \| font) (html \| css \| js \| font)-[:FOLD { strategy: 'merge-all' }]-\>(cached_site)
-
-</div>
+```ggl
+(html: Asset { type: 'text/html' })
+(css: Asset { type: 'text/css' })
+(js: Asset { type: 'application/javascript' })
+(font: Asset { type: 'font/woff2' })
+(site)-[:FORK]->(html | css | js | font)
+(html | css | js | font)-[:FOLD { strategy: 'merge-all' }]->(cached_site)
+```
 
 Four assets, one connection, one fold. The GGL program compiles directly to the FlowFrame binary format below.
 
@@ -1493,12 +1461,14 @@ The same fork/race/fold primitive applies to compression. **Topological compress
 
 In Gnosis (§11), the topological compressor is:
 
-<div class="Highlighting">
-
-(raw: Codec { type: 'raw' }) (rle: Codec { type: 'rle' }) (brotli: Codec { type: 'brotli' }) (gzip: Codec { type: 'gzip' }) (chunk)-[:FORK]-\>(raw \| rle \| brotli \| gzip) (raw \| rle \| brotli
-\| gzip)-[:RACE]-\>(smallest)
-
-</div>
+```ggl
+(raw: Codec { type: 'raw' })
+(rle: Codec { type: 'rle' })
+(brotli: Codec { type: 'brotli' })
+(gzip: Codec { type: 'gzip' })
+(chunk)-[:FORK]->(raw | rle | brotli | gzip)
+(raw | rle | brotli | gzip)-[:RACE]->(smallest)
+```
 
 Four lines. At this level of abstraction, the topology captures the compression strategy directly.
 
@@ -1650,11 +1620,10 @@ Although it appears fifth in the manuscript’s section order, formal language t
 
 Gnosis [15] is a programming language that dispenses with imperative control flow (`if`/`else`, `for`, `try`/`catch`) entirely. Programs are graphs – nodes define data and compute, edges define topological transitions. The syntax is Cypher-like:
 
-<div class="Highlighting">
-
-(input) -[:FORK]-\> (raw_codec \| brotli_codec) (raw_codec \| brotli_codec) -[:RACE]-\> (winner)
-
-</div>
+```ggl
+(input) -[:FORK]-> (raw_codec | brotli_codec)
+(raw_codec | brotli_codec) -[:RACE]-> (winner)
+```
 
 The language has exactly four edge types – `FORK`, `RACE`, `FOLD`, `VENT` – plus `PROCESS` for sequential steps and `INTERFERE` for constructive/destructive signal combination. There are no functions, only subgraphs. There are no variables, only nodes with typed properties. There are no loops, only topological cycles detected at compile time by $\beta_1$ analysis.
 
@@ -1674,23 +1643,26 @@ Betty parses the graph, computes $\beta_1$ at each edge, and translates the AST 
 
 The compilation pipeline is itself fork/race/fold:
 
-<div class="Highlighting">
-
-(source_code) -[:PROCESS]-\> (read_source) -[:FORK]-\> (parse_nodes
-\| parse_edges) -[:FOLD { strategy: 'merge-ast' }]-\> (ast)
--[:PROCESS]-\> (build_wasm_frames) -[:PROCESS]-\> (executable_binary)
-
-</div>
+```ggl
+(source_code) -[:PROCESS]-> (read_source)
+  -[:FORK]-> (parse_nodes | parse_edges)
+  -[:FOLD { strategy: 'merge-ast' }]-> (ast)
+  -[:PROCESS]-> (build_wasm_frames)
+  -[:PROCESS]-> (executable_binary)
+```
 
 ### 11.3 Transformers as GGL Programs
 
 A transformer written in Gnosis reveals the fork/race/fold structure claimed in §6.11:
 
-<div class="Highlighting">
-
-(input_sequence)-[:PROCESS]-\>(qkv_projection) (qkv_projection)-[:FORK]-\>(head_1 \| head_2 \| head_3 \| head_4) (head_1 \| head_2 \| head_3 \| head_4)-[:FOLD { strategy: 'concat' }]-\>(multi_head_out) (input_sequence \| multi_head_out)-[:INTERFERE { mode: 'constructive' }]-\>(residual_1) (residual_1)-[:PROCESS]-\>(ffn) (residual_1 \| ffn)-[:INTERFERE { mode: 'constructive' }]-\>(transformer_out)
-
-</div>
+```ggl
+(input_sequence)-[:PROCESS]->(qkv_projection)
+(qkv_projection)-[:FORK]->(head_1 | head_2 | head_3 | head_4)
+(head_1 | head_2 | head_3 | head_4)-[:FOLD { strategy: 'concat' }]->(multi_head_out)
+(input_sequence | multi_head_out)-[:INTERFERE { mode: 'constructive' }]->(residual_1)
+(residual_1)-[:PROCESS]->(ffn)
+(residual_1 | ffn)-[:INTERFERE { mode: 'constructive' }]->(transformer_out)
+```
 
 Multi-head attention is `FORK` → `FOLD`. Residual connections are `INTERFERE`. The topology is visible in the source code – not buried in matrix operations, not implicit in framework conventions, but *declared* as the program’s structure. The compiler computes $\beta_1 = 3$ at the fork point (four heads) and verifies it returns to zero at the fold.
 
@@ -1737,59 +1709,29 @@ turbulent multiplexing.
 - **`Superposition<T>`**: the builder – chainable
 fork/race/fold/vent/tunnel/interfere/entangle/measure/search operations.
 
-<div class="Highlighting">
+```typescript
+// Kids juggling balls
+const result = await Pipeline
+  .from([fetchFromA, fetchFromB, fetchFromC])
+  .race();
 
-<span style="color: 0.38,0.63,0.69">*// Kids juggling balls*</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> result
-<span style="color: 0.40,0.40,0.40">=</span>
-<span style="color: 0.00,0.44,0.13">**await**</span> Pipeline
-<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">from</span>([fetchFromA<span style="color: 0.40,0.40,0.40">,</span>
-fetchFromB<span style="color: 0.40,0.40,0.40">,</span> fetchFromC])
-<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">race</span>()<span style="color: 0.40,0.40,0.40">;</span>
+// People juggling the kids
+const diagnosis = await Pipeline
+  .from([bloodTest, mriScan, geneticScreen])
+  .vent(result => result.inconclusive)
+  .tunnel(result => result.conclusive)
+  .fold({ type: 'merge-all', merge: mergeFindings });
 
-<span style="color: 0.38,0.63,0.69">*// People juggling the kids*</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> diagnosis
-<span style="color: 0.40,0.40,0.40">=</span>
-<span style="color: 0.00,0.44,0.13">**await**</span> Pipeline
-<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">from</span>([bloodTest<span style="color: 0.40,0.40,0.40">,</span>
-mriScan<span style="color: 0.40,0.40,0.40">,</span> geneticScreen])
-<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">vent</span>(result
-<span style="color: 0.00,0.44,0.13">**=\>**</span>
-result<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.49,0.56,0.16">inconclusive</span>)
-<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">tunnel</span>(result
-<span style="color: 0.00,0.44,0.13">**=\>**</span>
-result<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.49,0.56,0.16">conclusive</span>)
-<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">fold</span>({
-type<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.44,0.63">'merge-all'</span><span style="color: 0.40,0.40,0.40">,</span>
-merge<span style="color: 0.40,0.40,0.40">:</span> mergeFindings<span style="color: 0.40,0.40,0.40">,</span> })<span style="color: 0.40,0.40,0.40">;</span>
-
-<span style="color: 0.38,0.63,0.69">*// Grover-style search over
-solution space*</span>
-<span style="color: 0.00,0.44,0.13">**const**</span> drug
-<span style="color: 0.40,0.40,0.40">=</span>
-<span style="color: 0.00,0.44,0.13">**await**</span>
-<span style="color: 0.00,0.44,0.13">**new**</span>
-<span style="color: 0.02,0.16,0.49">Pipeline</span>({
-capacity<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.63,0.44">64</span> })
-<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">fork</span>(candidates<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">map</span>(c
-<span style="color: 0.00,0.44,0.13">**=\>**</span> ()
-<span style="color: 0.00,0.44,0.13">**=\>**</span>
-<span style="color: 0.02,0.16,0.49">evaluate</span>(c)))
-<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.02,0.16,0.49">search</span>({
-width<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.63,0.44">32</span><span style="color: 0.40,0.40,0.40">,</span>
-oracle<span style="color: 0.40,0.40,0.40">:</span> compound
-<span style="color: 0.00,0.44,0.13">**=\>**</span>
-compound<span style="color: 0.40,0.40,0.40">.</span><span style="color: 0.49,0.56,0.16">efficacy</span><span style="color: 0.40,0.40,0.40">,</span> mutate<span style="color: 0.40,0.40,0.40">:</span> (compound<span style="color: 0.40,0.40,0.40">,</span> gen)
-<span style="color: 0.00,0.44,0.13">**=\>**</span>
-<span style="color: 0.02,0.16,0.49">perturb</span>(compound<span style="color: 0.40,0.40,0.40">,</span>
-gen)<span style="color: 0.40,0.40,0.40">,</span> convergenceThreshold<span style="color: 0.40,0.40,0.40">:</span>
-<span style="color: 0.25,0.63,0.44">0.01</span><span style="color: 0.40,0.40,0.40">,</span>
-})<span style="color: 0.40,0.40,0.40">;</span>
-
-</div>
+// Grover-style search over solution space
+const drug = await new Pipeline({ capacity: 64 })
+  .fork(candidates.map(c => () => evaluate(c)))
+  .search({
+    width: 32,
+    oracle: compound => compound.efficacy,
+    mutate: (compound, gen) => perturb(compound, gen),
+    convergenceThreshold: 0.01,
+  });
+```
 
 The `search()` operation is a classical heuristic inspired by Grover-style amplification patterns. In some landscapes it reduces empirical iteration counts versus naive sequential search, but this is not an asymptotic complexity claim.
 
