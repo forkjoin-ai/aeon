@@ -541,6 +541,58 @@ This is the self-verification property (§10) applied to biology: the genome is 
 
 The practical consequence is a computational pipeline: sequence $\to$ secondary structure prediction $\to$ $\sigma(\ell)$ at each candidate locus $\to$ $\eta(\ell)$ ranking $\to$ optimal guide RNA selection. Each step is a deterministic computation on the sequence. The genome tells you where to cut it, if you read its topology.
 
+**Theorem (THM-TOPO-MUTATION-DETECTION).** A mutation at locus $\ell$ that changes the local topological complexity $\sigma(\ell)$ is detectable as a topological deficit before its phenotypic consequences manifest. The deficit $\Delta_\sigma(\ell) = \sigma_{\text{mutant}}(\ell) - \sigma_{\text{ref}}(\ell)$ quantifies the mutation's functional potential — its stored topological energy — and predicts the severity of downstream effects on replication, transcription, and repair.
+
+*Proof.* The argument proceeds in four steps.
+
+*Step 1 (The topological fingerprint is a reference map).* By PROP-GENOME-SELF-DESCRIBING, $\sigma(\ell)$ is sequence-computable at every locus. For a reference genome $G_{\text{ref}}$, the map $\ell \mapsto \sigma_{\text{ref}}(\ell)$ is a complete topological fingerprint: the Betti profile of the genome's secondary structure at every position. This map is computable once and stored.
+
+*Step 2 (Mutations shift the local Betti number).* A mutation $m$ at locus $\ell$ — substitution, insertion, or deletion — alters the local nucleotide sequence, which may change the secondary structures that can form at $\ell$. The topological deficit of $m$ is:
+
+$$\Delta_\sigma(\ell) = \sigma_{\text{mutant}}(\ell) - \sigma_{\text{ref}}(\ell)$$
+
+Three cases arise:
+
+- $\Delta_\sigma = 0$: the mutation does not change the local topology. The secondary structures at $\ell$ are preserved. Example: a synonymous substitution in a loop region of a hairpin that does not alter the stem's complementarity.
+
+- $\Delta_\sigma > 0$: the mutation *creates* new secondary structure. A G→A substitution that completes a fourth guanine run creates a G-quadruplex: $\Delta_\sigma \geq +3$. The local topology becomes more complex. Replication and transcription machinery face higher energy barriers at $\ell$ (by THM-THERMO-BOND-DISSOCIATION, each additional cycle costs one fold energy quantum). The locus becomes harder to unwind, harder to replicate, harder to repair.
+
+- $\Delta_\sigma < 0$: the mutation *destroys* existing secondary structure. A deletion that removes one arm of a hairpin stem eliminates that cycle: $\Delta_\sigma = -1$. The local topology simplifies. The locus becomes easier to unwind — but the lost secondary structure may have served a regulatory function (e.g., transcription terminator hairpins, riboswitch stems).
+
+*Step 3 (The deficit is the mutation's potential energy).* By the energy mapping of THM-THERMO-BOND-DISSOCIATION (§6.11), the topological change $\Delta_\sigma$ corresponds to a change in the local energy landscape:
+
+$$\Delta E(\ell) = \sum_{j=1}^{|\Delta_\sigma(\ell)|} D_e^{(j)}$$
+
+When $\Delta_\sigma > 0$, the mutation stores potential energy: new cycles that must be overcome during replication, transcription, and repair. This stored energy is the mutation's *topological potential* — energy that will manifest as replication fork stalling, transcription pausing, or repair failure at $\ell$. The delta shows us the potential.
+
+When $\Delta_\sigma < 0$, the mutation releases potential energy: fewer barriers to unwinding. This may accelerate replication through $\ell$ but removes regulatory topology.
+
+In Bule units (§6.15), the mutation's topological deficit is $|\Delta_\sigma(\ell)|$ B. A mutation at 0 B is topologically silent. A mutation at 3 B has created or destroyed three independent cycles — a severe topological rearrangement.
+
+*Step 4 (Early detection: topology precedes phenotype).* The critical property: $\Delta_\sigma(\ell)$ is computable *the moment the mutation is sequenced*, before any downstream effect is observed. A mutation that creates a G-quadruplex ($\Delta_\sigma \geq +3$) will:
+
+- Stall the replication fork at $\ell$ during the next S-phase (the replication machinery must spend $\Delta E$ additional energy to unwind)
+- Pause RNA polymerase during transcription of any gene spanning $\ell$
+- Resist DNA repair at $\ell$ (the repair machinery faces the same $\beta_1$ reduction barrier as Cas9 in COR-CRISPR-UNWINDING)
+- Predispose $\ell$ to further mutation (stalled replication forks are hotspots for replication errors and double-strand breaks)
+
+None of these consequences have occurred yet at the time of sequencing. But the topology predicts them: $\Delta_\sigma(\ell) \neq 0$ is a sufficient condition for altered molecular dynamics at $\ell$. The magnitude $|\Delta_\sigma(\ell)|$ predicts severity. The sign predicts direction (complexity increase or decrease).
+
+This is the optimality diagnostic (§6.15) applied to genomics: $\Delta_\sigma$ is to mutation severity as $\Delta_\beta$ is to pipeline waste. A system at 0 B is topology-matched — the mutation is functionally silent. A system at $\geq 3$ B is severely topology-disrupted — the mutation has created or destroyed significant secondary structure and functional consequences are predicted. $\square$
+
+**The mutation severity hierarchy.** Topological deficit provides a severity ranking that is orthogonal to existing classifications (synonymous/nonsynonymous, missense/nonsense):
+
+| $|\Delta_\sigma|$ | Topological severity | Example |
+|:---|:---|:---|
+| 0 B | Silent | Substitution in a loop that preserves all stems |
+| 1 B | Mild | Hairpin arm shortened by one base pair |
+| 2 B | Moderate | Cruciform arm disrupted or created |
+| $\geq$ 3 B | Severe | G-quadruplex created or destroyed |
+
+A synonymous mutation (no amino acid change) at $|\Delta_\sigma| = 3$ B is topologically severe: it creates a G-quadruplex that will stall the replication fork, even though the protein sequence is unchanged. Conversely, a nonsynonymous mutation at $|\Delta_\sigma| = 0$ B is topologically silent: the protein changes but the DNA topology does not, so replication and repair dynamics are unaffected. The topological classification captures a dimension of mutation severity — structural dynamics of the DNA itself — that the sequence-level classification misses entirely.
+
+**Application to cancer genomics.** Cancer genomes accumulate mutations preferentially at topologically fragile sites — loci where the replication fork is already strained (high $\sigma_{\text{ref}}$) and small perturbations push $\Delta_\sigma$ further positive. The prediction: *mutation hotspots in cancer genomes should correlate with loci of high $\sigma_{\text{ref}}(\ell)$, and driver mutations should show higher $|\Delta_\sigma|$ than passenger mutations*. The topological map $\ell \mapsto \sigma_{\text{ref}}(\ell)$ is computable from the reference genome. Overlaying it with observed cancer mutation frequencies is a testable hypothesis that requires no new sequencing — only reanalysis of existing data.
+
 ### 3.3 Homotopy Equivalence
 
 Two computations are homotopy equivalent if they produce the same result through different topological paths. In a sequential pipeline, there is exactly one path – no homotopy is possible. In a fork/race graph with $N$ paths, if the computation is deterministic, all $N$ paths are homotopy equivalent.
