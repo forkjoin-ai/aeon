@@ -488,6 +488,41 @@ The mapping table makes the correspondence explicit:
 
 **Corollary (COR-DNA-HELIX).** The DNA double helix has Betti signature $(1, 2, 0)$: one connected component, two intertwined cycles (the two strands), zero enclosed voids. The replication fork (§1.2) is a Wallington rotation with $\beta_1 = 2$: the leading strand is continuous rotation, the lagging strand is chunked rotation (Okazaki fragments). DNA ligase performs the Worthington fold on the lagging strand fragments. This upgrades the §1.2 analogy from "DNA replication is *like* pipelining" to "DNA replication *is* pipelining — same homology class, same Betti numbers, same energy laws (§6.11)." The 4-billion-year-old proof that this topology works.
 
+**Corollary (COR-CRISPR-UNWINDING).** CRISPR-Cas9 gene editing is a local topological surgery on the DNA simplicial complex: a targeted reduction of $\beta_1$ at a specific locus, governed by the same filtration and energy laws that govern pipeline computation.
+
+*Proof.* The argument proceeds in five steps.
+
+*Step 1 (Baseline topology).* By COR-DNA-HELIX, the double helix at any locus $\ell$ has local Betti signature $\beta(\ell) = (1, 2, 0)$: one connected component, two strand cycles, zero voids. Secondary structures at $\ell$ — hairpin loops, G-quadruplexes, cruciforms — contribute additional independent cycles to the local simplicial complex. A hairpin (stem-loop) closes one extra cycle; a G-quadruplex stacks four guanine tetrads into a structure with $\beta_1 \geq 3$ additional independent loops. The local first Betti number at an arbitrary locus is therefore $\beta_1(\ell) = 2 + \sigma(\ell)$, where $\sigma(\ell) \geq 0$ counts secondary-structure cycles at $\ell$.
+
+*Step 2 (The R-loop as local $\beta_1$ reduction).* Cas9 binds the protospacer-adjacent motif (PAM), unwinds the double helix at $\ell$, and the 20-nt guide RNA (gRNA) displaces one DNA strand to form an R-loop — a three-stranded structure where the gRNA:DNA hybrid occupies the Watson-Crick position and the displaced strand is extruded as a single-stranded bubble. In the simplicial complex, this operation breaks one of the two strand cycles at $\ell$: the displaced strand no longer forms a closed cycle through the target region. The local Betti number drops: $\beta_1(\ell) \to 1 + \sigma(\ell)$. This is a local vent in the filtration language of §3.6: one cycle dies at time $t = t_{\text{Cas9}}$.
+
+*Step 3 (Energy cost via THM-THERMO-BOND-DISSOCIATION).* By THM-THERMO-BOND-DISSOCIATION (§6.11), each unit decrement of $\beta_1$ requires energy equal to the fold energy at the Worthington convergence vertex. The total energy cost of R-loop formation at locus $\ell$ is:
+
+$$E_{\text{unwind}}(\ell) = D_e^{\text{strand}} + \sum_{j=1}^{\sigma(\ell)} D_e^{(j)}$$
+
+where $D_e^{\text{strand}}$ is the dissociation energy for breaking the primary strand cycle and $D_e^{(j)}$ is the dissociation energy for each secondary-structure cycle that must be melted before the R-loop can form. The First Law (§6.10) guarantees $E_{\text{unwind}} = W_{\text{edit}} + Q_{\text{thermal}}$: the energy splits between useful editing work and thermal dissipation.
+
+*Step 4 (The filtration trajectory).* The complete CRISPR editing event traces a filtration on the local Betti numbers, exactly as §3.6 describes for pipeline computation:
+
+- $t = 0$: Target locus at rest. $\beta_1(\ell) = 2 + \sigma(\ell)$.
+- $t = t_{\text{PAM}}$: Cas9 recognizes PAM. No topological change yet — this is the fork decision point.
+- $t = t_{\text{R-loop}}$: Guide RNA displaces one strand. $\beta_1(\ell) \to 1 + \sigma(\ell)$. One cycle dies. Energy $D_e^{\text{strand}}$ consumed.
+- $t = t_{\text{melt}}$: Secondary structures at $\ell$ melt sequentially. $\beta_1(\ell) \to 1$. Energy $\sum D_e^{(j)}$ consumed.
+- $t = t_{\text{cut}}$: Cas9 nuclease domains (RuvC, HNH) cleave both strands. $\beta_1(\ell) \to 0$. The final cycle is broken. This is the whip snap — the Worthington convergence at the cut site.
+- $t = t_{\text{repair}}$: Cellular repair (NHEJ or HDR) re-forms the double helix, possibly with edits. $\beta_1(\ell) \to 2$. Two new cycles are born. The pipeline restarts.
+
+This is a complete fork/race/fold cycle: Cas9 forks the duplex into competing states (bound/unbound, R-loop/no-R-loop), the guide RNA races against the re-annealing kinetics of the displaced strand, and the nuclease domains fold the outcome to a single cut. Repair is the next fork.
+
+*Step 5 (Testable prediction).* The energy cost $E_{\text{unwind}}(\ell)$ is monotonically increasing in $\sigma(\ell)$: each additional secondary-structure cycle adds a strictly positive dissociation term. By the pipeline efficiency mapping (§6.15), editing efficiency $\eta(\ell)$ — the fraction of Cas9 binding events that produce a successful edit — is bounded by:
+
+$$\eta(\ell) \leq \frac{W_{\text{edit}}}{E_{\text{unwind}}(\ell)} = \frac{W_{\text{edit}}}{D_e^{\text{strand}} + \sum_{j=1}^{\sigma(\ell)} D_e^{(j)}}$$
+
+Since $W_{\text{edit}}$ (the minimum energy for a double-strand break) is constant across loci, $\eta(\ell)$ is monotonically *decreasing* in $\sigma(\ell)$. The prediction: *CRISPR editing efficiency at a given locus is inversely related to the local topological complexity of that locus*. Sites with G-quadruplexes ($\sigma \geq 3$), stable hairpins ($\sigma \geq 1$), or other secondary structures should show measurably lower editing efficiency than topologically simple sites ($\sigma = 0$), all else being equal.
+
+This is consistent with published observations: GC-rich regions (which form more stable secondary structures and G-quadruplexes) show reduced Cas9 editing efficiency [32], chromatin accessibility correlates with editing efficiency (closed chromatin raises effective $\sigma$), and R-loop formation is the rate-limiting step for Cas9 activity — exactly as the filtration predicts, since the R-loop step is where $\beta_1$ first decreases and the largest energy barrier is encountered. $\square$
+
+The implication for CRISPR design is direct: *compute $\sigma(\ell)$ for candidate target sites and rank by ascending topological complexity*. The site with the lowest $\beta_1(\ell) = 2 + \sigma(\ell)$ requires the least unwinding energy and should yield the highest editing efficiency. This is not a replacement for existing guide RNA scoring algorithms — it is a topological prior that those algorithms could incorporate. The Betti number at the target locus is a computable, sequence-derivable feature that captures the energetic cost of the topological surgery that CRISPR performs.
+
 ### 3.3 Homotopy Equivalence
 
 Two computations are homotopy equivalent if they produce the same result through different topological paths. In a sequential pipeline, there is exactly one path – no homotopy is possible. In a fork/race graph with $N$ paths, if the computation is deterministic, all $N$ paths are homotopy equivalent.
