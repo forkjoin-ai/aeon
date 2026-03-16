@@ -258,9 +258,9 @@ the ones below it.
   Programs are Cypher-like graphs with four edge types (FORK, RACE,
   FOLD, VENT). The compiler statically verifies \(\beta_1\) bounds,
   verified by layer 1. The self-hosted compiler (Betti) is itself a GGL
-  program:
-  \texttt{(source)~-\textasciigrave{}\textasciigrave{}{[}\textasciigrave{}\textasciigrave{}:FORK\textasciigrave{}\textasciigrave{}{]}\textasciigrave{}\textasciigrave{}-\textgreater{}~(parse\_nodes~~parse\_edges)~-\textasciigrave{}\textasciigrave{}{[}\textasciigrave{}\textasciigrave{}:FOLD\textasciigrave{}\textasciigrave{}{]}\textasciigrave{}\textasciigrave{}-\textgreater{}~(ast)},
-  establishing closure under construction.
+  program: (source) -{[}:FORK{]}-\textgreater{} (parse\_nodes
+  parse\_edges) -{[}:FOLD{]}-\textgreater{} (ast), establishing closure
+  under construction.
 \item
   In distributed staged computation (the scheduling algorithm, §7),
   chunked pipelined processing reduces sequential depth from \(O(PN)\)
@@ -5980,10 +5980,10 @@ verifies it returns to zero at the fold.
 Betti}\label{the-bootstrapping-path-betty-betti}
 
 The ultimate goal is self-hosting. Because a compiler is a pipeline --
-\texttt{(source)~-\textasciigrave{}\textasciigrave{}{[}\textasciigrave{}\textasciigrave{}:FORK\textasciigrave{}\textasciigrave{}{]}\textasciigrave{}\textasciigrave{}-\textgreater{}~(lexers)~-\textasciigrave{}\textasciigrave{}{[}\textasciigrave{}\textasciigrave{}:FOLD\textasciigrave{}\textasciigrave{}{]}\textasciigrave{}\textasciigrave{}-\textgreater{}~(AST)}
--- the TypeScript-based Betty compiler can be rewritten entirely in GGL.
-The self-hosted compiler is named \textbf{Betti} (the true topological
-spelling). The bootstrapping chain:
+(source) -{[}:FORK{]}-\textgreater{} (lexers)
+-{[}:FOLD{]}-\textgreater{} (AST) -- the TypeScript-based Betty compiler
+can be rewritten entirely in GGL. The self-hosted compiler is named
+\textbf{Betti} (the true topological spelling). The bootstrapping chain:
 
 \[
 \text{TypeScript (Betty)} \xrightarrow{\text{compiles}} \text{GGL (Betti)} \xrightarrow{\text{compiles}} \text{Everything else}

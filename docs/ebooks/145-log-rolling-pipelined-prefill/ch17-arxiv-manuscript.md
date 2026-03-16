@@ -37,7 +37,7 @@ I instantiate the algorithm in **five** domains, presented in stack order – fr
 
 1. In formal verification (the foundation, §10), I implement a temporal logic model checker (`@affectively/aeon-logic`) whose BFS state-space exploration is itself a fork/race/fold computation. Each multi-successor expansion is a fork, each transition to an already-visited state is a fold (interference), each unfair cycle filtered by weak fairness is a vent, and termination is collapse. The checker verifies a `TemporalModel` of its own exploration and generates a TLA+ specification of the same model, validated through a round-trip-stable TLA sandbox. Both verification paths check the same invariants: $\beta_1 = \text{folded}$, $\beta_1 \geq 0$, $\text{vents} \leq \text{folds}$, and eventual termination under weak fairness. In the modeled scope, this yields closure under self-application: a formal system built from these primitives can reason about formal systems built from these primitives [13].
 
-2. In formal language theory (the programming model, §11), I implement Gnosis [15] – a programming language that unifies source code and computation graph and whose compiler is a fork/race/fold pipeline. Programs are Cypher-like graphs with four edge types (FORK, RACE, FOLD, VENT). The compiler statically verifies $\beta_1$ bounds, verified by layer 1. The self-hosted compiler (Betti) is itself a GGL program: `(source) -``[``:FORK``]``-> (parse_nodes  parse_edges) -``[``:FOLD``]``-> (ast)`, establishing closure under construction.
+2. In formal language theory (the programming model, §11), I implement Gnosis [15] – a programming language that unifies source code and computation graph and whose compiler is a fork/race/fold pipeline. Programs are Cypher-like graphs with four edge types (FORK, RACE, FOLD, VENT). The compiler statically verifies $\beta_1$ bounds, verified by layer 1. The self-hosted compiler (Betti) is itself a GGL program: (source) -[:FORK]-> (parse_nodes parse_edges) -[:FOLD]-> (ast), establishing closure under construction.
 
 3. In distributed staged computation (the scheduling algorithm, §7), chunked pipelined processing reduces sequential depth from $O(PN)$ to $O(\lceil P/B \rceil + N - 1)$, yielding modeled step-count speedups of 3.1x–267x in the listed scenarios under explicit idealized assumptions (uniform stage service time, zero inter-node communication cost). The Wallington Rotation, expressed in layer 2’s language, verified by layer 1’s checker.
 
@@ -1996,7 +1996,7 @@ Multi-head attention is `FORK` → `FOLD`. Residual connections are `INTERFERE`.
 
 ### 11.4 The Bootstrapping Path: Betty → Betti
 
-The ultimate goal is self-hosting. Because a compiler is a pipeline – `(source) -``[``:FORK``]``-> (lexers) -``[``:FOLD``]``-> (AST)` – the TypeScript-based Betty compiler can be rewritten entirely in GGL. The self-hosted compiler is named **Betti** (the true topological spelling). The bootstrapping chain:
+The ultimate goal is self-hosting. Because a compiler is a pipeline – (source) -[:FORK]-> (lexers) -[:FOLD]-> (AST) – the TypeScript-based Betty compiler can be rewritten entirely in GGL. The self-hosted compiler is named **Betti** (the true topological spelling). The bootstrapping chain:
 
 $$
 \text{TypeScript (Betty)} \xrightarrow{\text{compiles}} \text{GGL (Betti)} \xrightarrow{\text{compiles}} \text{Everything else}
