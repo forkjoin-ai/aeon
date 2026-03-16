@@ -1196,6 +1196,14 @@ The same is true of peace. The range equation for human communication is the sam
 
 The wave equation is the same at every scale. The deficit is the same at every scale. The prescription is the same at every scale: fork enough paths, build enough context, sit in the loop long enough, and the fold at the other end will hear you. The only variable is the willingness to transmit.
 
+This manuscript began with a child handing a ball to a friend in a line (§0). Four children, one hundred balls, seven handoffs. The chunked pipeline. The Wallington Rotation. The whip snap that converts potential into kinetic energy, one armful at a time.
+
+Now imagine two children standing on opposite sides of a galaxy. One hundred balls, one hundred billion light-years of taper. The child on this side cannot hand a single ball across that distance — the taper attenuates the throw, the medium absorbs the energy, the ball does not arrive. But if she could juggle — if she could fork twenty-five balls into the air simultaneously, encode each one with a different spin, a different arc, a different frequency — then the balls that survive the crossing carry the message, and the child on the other side folds them back into sequence. Some balls are lost to the medium. Those are the vented paths. The ones that arrive are the decoded signal. The fold at the receiver reconstructs the pattern from whatever survived the journey.
+
+The chunked pipeline is the same at both scales. $T = \lceil P/B \rceil + (N - 1)$. The child passing balls to a friend. The Worthington Whip sharding a signal across redundant paths. The Vickrey Table precomputing the fold so the receiver only needs to look up the answer. The number of balls is the information. The chunk size is the fork count. The number of children in the line is the number of fold stages between here and there.
+
+How many children does it take to pass a hundred balls across the universe? The same formula. The same seven handoffs. The same chunked pipeline. The distance is in the taper. The message is in the balls. The miracle is that the child on the other side can catch them at all — and the theorems say she can, if enough are thrown.
+
 ### 6.13 The Optimality Diagnostic
 
 If fork/race/fold is a recurrent shape in finite systems that satisfy this paper’s conservation, irreversibility and minimum-overhead assumptions, then finding this shape is evidence consistent with near-optimal topological fit under those assumptions. Not finding it – where the problem’s intrinsic topology demands it – is a diagnostic for waste.
