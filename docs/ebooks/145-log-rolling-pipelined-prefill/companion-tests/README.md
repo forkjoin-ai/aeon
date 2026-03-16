@@ -153,7 +153,9 @@ Use that command when you want the shared compiler-facing theorem workspace itse
 | `scripts/ch17-moa-topology-figure.ts` + `artifacts/ch17-moa-topology-figure.{json,md,svg}` | §6.11, §1.7 | Auto-generated topology figure for the sparse `StructuredMoA` GG surface, showing the 2-of-4 block routing, the 2-of-4 head routing inside each live block, and the dense rotated baseline in one artifact |
 | `scripts/ch17-moa-whip-curvature-figure.ts` + `artifacts/ch17-moa-whip-curvature-figure.{json,md,svg}` | §6.11, companion supplement | Auto-generated wraparound topology figure for the same sparse `StructuredMoA` GG surface, bending the routed paths into a curved envelope so the inner and outer Worthington whips read as enclosure geometry |
 | `scripts/ch17-external-replication.ts` + `artifacts/ch17-external-replication.{json,md}` | Chapter 17 outside rerun | Runs the full outside-rerun command surface and verifies that the refreshed replication-pack hashes still match the evidence bundle on disk |
-| `physics-hierarchy.test.ts` | §6.11 | Executable hierarchy checks for path-integral/race/fold mappings and energy partitions (model scope) |
+| `genomic-topology.test.ts` + `genomic-topology.ts` | §3.2 Molecular Topology | σ(ℓ) sequence-computability, Δσ mutation detection, CRISPR efficiency η ∝ 1/β₁, cancer hotspot topology (TP53/KRAS real sequences), driver vs passenger Bule severity, σ_ref + Δσ = σ_mutant accounting identity (28 tests) |
+| `confinement-topology.test.ts` | §6.14 Color Confinement | SU(3) β₁=3 covering space, mandatory fold to β₁=0, anti-vent property, whip-snap energy conservation, linear confinement potential (σ ≈ 1 GeV/fm), deconfinement transition (T_c ≈ 155 MeV), hadron multiplicity scaling, scale tower functoriality (31 tests) |
+| `physics-hierarchy.test.ts` | §6.13 | Executable hierarchy checks for path-integral/race/fold mappings and energy partitions (model scope) |
 | `emergent-connections.test.ts` | Chapter 23 | Executable analog checks for nine emergent correspondences (model scope) |
 | `thermodynamics.test.ts` | §6 Thermodynamics | First Law accounting, Carnot/Shannon bounds, ground-state overhead |
 | `queueing-subsumption.test.ts` | §5 End of Queueing Theory | Canonical queueing boundary cases, exhaustive finite-trace work-conserving identities, bounded multiclass network conservation, finite-support stochastic-mixture expectation checks, exact probabilistic queue/network kernel propagation checks, a larger exact three-slot multiclass network witness, and an explicit worst-case small-data ramp-up branch |
@@ -205,6 +207,8 @@ bun run test:ch17-replication-pack # Chapter 17 bundle hash manifest + rerun com
 bun run test:ch17-reproduction-surface # artifact/witness/manuscript reproduction surface without the separate full Lean gate
 bun run test:ch17-external-replication # one-command outside rerun + manifest/hash verification
 bun run test:ch17-evidence # one-command regeneration + consistency + Lean gate for Chapter 17
+bun run test:genomic       # §3.2 molecular topology, CRISPR, mutation detection, cancer genomics
+bun run test:confinement   # §6.14 color confinement, scale tower, QCD anchors
 bun run test:queueing      # §5
 bun run test:formal:parser # aeon-logic parser preflight for formal artifacts
 bun run test:formal:lean   # in-tree Lean theorem build

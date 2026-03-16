@@ -97,7 +97,9 @@
     "test:compression": "vitest run -t 'Topological Compression'",
     "test:shootoff": "vitest run -t 'Shootoff'",
     "test:queueing": "vitest run -t 'Queueing Theory'",
-    "test:thermodynamics": "vitest run -t 'Thermodynamics'"
+    "test:thermodynamics": "vitest run -t 'Thermodynamics'",
+    "test:genomic": "vitest run src/genomic-topology.test.ts",
+    "test:confinement": "vitest run src/confinement-topology.test.ts"
   },
   "devDependencies": {
     "@affectively/aeon-logic": "file:../../../../../aeon-logic",
