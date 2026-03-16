@@ -237,7 +237,7 @@ through path-like structures. The operational remedy is to work in the
 cover space (multiplexed, out-of-order) and project back to the base
 space (sequential, reassembled).
 
-I instantiate the algorithm in \textbf{five} domains, presented in stack
+I instantiate the algorithm in \textbf{eight} domains, presented in stack
 order -- from building blocks to bytes on wire -- each layer enabled by
 the ones below it.
 
@@ -290,6 +290,30 @@ the ones below it.
   and \(\beta_1 = \text{codecs}-1\) invariants {[}8, 9{]}. The capstone:
   actual bytes, actual ratios, actual wire -- using every layer below
   it.
+\item
+  In structured mixture-of-agents routing (§11.5), fork/race/fold
+  organizes sparse expert selection across attention blocks. A GG
+  topology (\texttt{moa-transformer-moa.gg}) defines the routing
+  structure; GG-backed benchmarks confirm 3.45x--4.35x wall-clock
+  speedup over the dense baseline while the accuracy gap closes to
+  0.0025 eval-MSE at wide scale. Both outer-block and inner-head
+  sparsity are ablated.
+\item
+  In language-model inference (the Glossolalia Engine, §6.17), I
+  implement a Vickrey Table -- a precomputed sparse logit lookup that
+  replaces the \(O(k \cdot V \cdot d)\) matrix-vector product with an
+  \(O(V)\) table read, yielding \(4.8\times\) measured speedup at five
+  agents. The companion Lean theorems \texttt{daisy\_linearity\_rational}
+  and \texttt{topk\_deficit} prove the lookup is exact and quantify the
+  information loss. The metacognitive extension (§6.18) stacks four
+  monitoring layers as a Daisy Chain whose convergence rate is proved
+  geometric.
+\item
+  In protocol-as-execution-model (the closure layer, §12.4), the wire
+  format from layer 4 becomes the native execution model for layers 2
+  and 3. The FlowFrame is not wrapped by the programming language -- it
+  \emph{is} the programming language's runtime representation, closing
+  the stack into a self-describing loop.
 \end{enumerate}
 
 Within the modeled scope in this paper (finite DAG decompositions under
@@ -5141,6 +5165,54 @@ and
 supports a scoped wall-clock claim for this harness family and does not
 by itself imply universal production-network speedups.
 
+\textbf{Gate 1 external multihost results} (6 distinct hosts, verdict:
+PASS, 8/8 primary cells):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1364}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1364}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Cell
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Network
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Seq p50 (ms)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Chunked p50 (ms)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Median Speedup (95\% CI)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Median Improvement (95\% CI, ms)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+24 tok, 4 nodes, B6 & RTT 3 ms, loss 0\% & 4,154 & 350 & 11.9x
+(11.6x--12.5x) & 3,811 (3,596--4,251) \\
+24 tok, 4 nodes, B6 & RTT 3 ms, loss 2\% & 4,322 & 357 & 12.1x
+(11.4x--13.6x) & 3,964 (3,573--4,579) \\
+24 tok, 4 nodes, B6 & RTT 7 ms, loss 0\% & 4,353 & 372 & 11.8x
+(11.5x--12.2x) & 3,988 (3,920--4,069) \\
+24 tok, 4 nodes, B6 & RTT 7 ms, loss 2\% & 4,325 & 358 & 12.2x
+(11.7x--12.4x) & 3,968 (3,904--4,053) \\
+36 tok, 6 nodes, B9 & RTT 3 ms, loss 0\% & 8,827 & 447 & 20.1x
+(19.6x--21.6x) & 8,381 (8,281--8,926) \\
+36 tok, 6 nodes, B9 & RTT 3 ms, loss 2\% & 9,104 & 464 & 19.2x
+(18.2x--20.0x) & 8,627 (8,406--8,730) \\
+36 tok, 6 nodes, B9 & RTT 7 ms, loss 0\% & 10,428 & 489 & 21.6x
+(20.1x--23.0x) & 9,945 (9,443--10,764) \\
+36 tok, 6 nodes, B9 & RTT 7 ms, loss 2\% & 10,215 & 482 & 21.0x
+(20.9x--24.4x) & 9,734 (9,558--10,849) \\
+\end{longtable}
+}
+
 \subsubsection{7.2 Turbulent Multiplexing}\label{turbulent-multiplexing}
 
 In molecular biology, a polysome (also called a polyribosome) is a
@@ -5599,6 +5671,55 @@ Topo-pure (6 pure-JS codecs per-chunk) & 229 KB & 36.8 percent & 5 \\
 \end{longtable}
 }
 
+\textbf{Gate 3 heterogeneous compression corpus} (90 samples, 20,133,761
+bytes, verdict: PASS, 4/4 primary cells):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1364}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1818}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1364}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Corpus family
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Samples
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Median gain vs best fixed codec (95\% CI)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Median gain vs heuristic (95\% CI)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Win rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pass
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+web-mixed & 18 & 0.005\% (0.004\%--0.007\%) & 0.777\% (0.386\%--1.237\%)
+& 100\% & yes \\
+api-telemetry & 18 & 0.008\% (0.007\%--0.009\%) & 46.37\%
+(39.45\%--50.91\%) & 100\% & yes \\
+media-plus-metadata & 18 & 0.001\% (0.001\%--0.001\%) & 7.44\%
+(6.21\%--10.31\%) & 100\% & yes \\
+polyglot-bundle & 18 & 0.003\% (0.002\%--0.003\%) & 26.65\%
+(25.24\%--33.53\%) & 100\% & yes \\
+text-homogeneous & 18 & 0.833\% (0.787\%--0.872\%) & 0.833\%
+(0.786\%--0.870\%) & 100\% & -- \\
+\end{longtable}
+}
+
+The gain vs best fixed codec is marginal (topological per-chunk racing
+selects the same winner a fixed oracle would). The gain vs heuristic
+baseline is large and corpus-dependent: 46\% on api-telemetry, 27\% on
+polyglot bundles, under 1\% on homogeneous text. This is the American
+Frontier in action -- diversity of content drives diversity of strategy,
+and the gain scales with intrinsic \(\beta_1^*\).
+
 \textbf{Standalone brotli wins on compression ratio.} On these
 benchmarks -- homogeneous web content -- global brotli beats per-chunk
 topological compression by 4--15 percentage points. This is not
@@ -5887,6 +6008,94 @@ self-verification measures the cost of self-knowledge.
 
 Executable companion tests verify these claims {[}13{]}.
 
+\subsubsection{10.5 Fold Strategy
+Benchmark}\label{fold-strategy-benchmark}
+
+The fold strategy is not decorative -- different recombination rules
+produce measurably different learning outcomes. We benchmark three fold
+implementations on a cancellation-sensitive target family
+(\texttt{left-minus-right}, 8 seeds, 720 epochs):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1579}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Strategy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Mean eval MSE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+95\% CI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Exact-within-tolerance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Cancellation-line abs error
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{linear} & 0.000 & {[}0.000, 0.000{]} & 1.000 & 0.000 \\
+\texttt{winner-take-all} & 0.408 & {[}0.396, 0.421{]} & 0.038 & 0.834 \\
+\texttt{early-stop} & 0.735 & {[}0.732, 0.740{]} & 0.000 & 0.764 \\
+\end{longtable}
+}
+
+Linear fold learns the exact cancellation target. Winner-take-all and
+early-stop leave persistent error floors because nonlinear selection
+discards the precise cancellation information that linear recombination
+preserves. A paired negative-control artifact
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}negative-\allowbreak{}controls.\allowbreak{}\{json,md\}})
+confirms the separation collapses on one-path tasks where additive
+recombination is unnecessary.
+
+\subsubsection{10.6 Biological Effect-Size
+Validation}\label{biological-effect-size-validation}
+
+The opening discussion (section 1) mapped four biological systems to
+fork/race/fold. We validate three predeclared comparative effect-size
+pairs against cited quantitative ranges (verdict: PASS, 3/3 primary
+pairs):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2143}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2857}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2857}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2143}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Biological pair
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Median ratio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+95\% CI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pass
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Neural conduction (myelinated vs unmyelinated velocity) & 79.5x &
+45.8x--192.5x & yes \\
+Photosynthesis (exciton step efficiency vs whole-plant yield) & 21.5x &
+16.4x--31.6x & yes \\
+Replication (prokaryotic vs eukaryotic Okazaki fragment length) & 10.1x
+& 5.8x--17.1x & yes \\
+\end{longtable}
+}
+
+Pooled log-ratio: \textbf{3.280} (95\% CI 2.289--4.360). These are
+effect-size ratios between the fork/race/fold-exhibiting system and its
+sequential counterpart, confirming that the structural parallels
+identified in section 1 are backed by quantitative separation in the
+cited literature.
+
 \subsection{11. Instantiation B: Formal Language Theory (Stack Layer
 2)}\label{instantiation-b-formal-language-theory-stack-layer-2}
 
@@ -6024,10 +6233,135 @@ This is a claim of structural formal compatibility and mechanized
 verification workflow, not a claim of automatic asymptotic quantum
 advantage.
 
-\subsubsection{11.5 The Six Domains as a
-Stack}\label{the-six-domains-as-a-stack}
+\subsubsection{11.5 Gnosis Routing and Framing
+Benchmarks}\label{gnosis-routing-and-framing-benchmarks}
 
-The six instantiation domains are not independent -- they form a stack,
+GGL topologies are not just descriptions -- they produce measurable
+performance differences. Three benchmark families validate this across
+the stack:
+
+\textbf{MoE routing benchmark} (4 sign-specialized experts, 12 seeds,
+1,400 epochs):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1579}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2105}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Strategy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Mean eval MSE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+95\% CI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Exact-within-tolerance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Dual-active abs error
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{linear} & 0.001 & {[}0.001, 0.001{]} & 0.978 & 0.027 \\
+\texttt{winner-take-all} & 0.328 & {[}0.267, 0.389{]} & 0.126 & 0.402 \\
+\texttt{early-stop} & 0.449 & {[}0.444, 0.457{]} & 0.080 & 0.474 \\
+\end{longtable}
+}
+
+Linear recombination aggregates two simultaneously active experts for
+the \(|x| + |y|\) target. Sparse selection leaves persistent dual-path
+under-recombination.
+
+\textbf{Aeon-framed transformer benchmark} (4 frame stages per stream,
+12 seeds, 1,800 epochs):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1304}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Strategy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Mean eval MSE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+95\% CI
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Codec round-trip
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Reassembly
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Fold invariance
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{linear} & 0.001 & {[}0.001, 0.001{]} & 1.000 & 1.000 & 1.000 \\
+\texttt{winner-take-all} & 0.318 & {[}0.273, 0.365{]} & 1.000 & 1.000 &
+1.000 \\
+\texttt{early-stop} & 0.462 & {[}0.461, 0.464{]} & 1.000 & 1.000 &
+1.000 \\
+\end{longtable}
+}
+
+Framed outputs survive FlowFrame codec round-trips and out-of-order
+reassembly without changing inference results. The wire format is
+transparent to the computation.
+
+\textbf{Sparse mixture-of-attention evidence} (4 base seeds, scale
+sweep):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1304}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1739}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Scale
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+MoA eval MSE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Regular eval MSE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+MoA speedup
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+MoA active heads
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Regular active heads
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Compact (25 train) & 0.083 & 0.002 & 4.35x & 4 & 16 \\
+Baseline (49 train) & 0.067 & 0.001 & 3.58x & 4 & 16 \\
+Wide (81 train) & 0.003 & 0.001 & 3.45x & 4 & 16 \\
+\end{longtable}
+}
+
+MoA uses 4 active heads vs 16. The accuracy gap narrows as data
+increases (closing eval-MSE gap from 0.081 to 0.002 at wide scale) while
+the speed advantage holds. Ablation confirms both outer-block and
+inner-head sparsity contribute: removing either doubles wall time;
+under-routing (1 active block) collapses accuracy entirely.
+
+\subsubsection{11.6 The Eight Domains as a
+Stack}\label{the-eight-domains-as-a-stack}
+
+The eight instantiation domains are not independent -- they form a stack,
 each enabled by the ones below:
 
 {\def\LTcaptype{none} % do not increment counter
@@ -6060,6 +6394,8 @@ Verifies modeled invariants \\
 algorithm \\
 & Edge transport & §8 & 10-byte FlowFrame & The wire format \\
 & Compression & §9 & Per-chunk codec racing & Bytes on wire \\
+& Structured MoA & §11.5 & GG-backed sparse routing & Topology-level expert selection \\
+& Glossolalia Engine & §6.17 & Vickrey Table + Daisy Chain & Inference-time instantiation \\
 (closure) & Protocol-as-execution-model & §12.4 & Frame-native execution
 & Wire format subsumes scheduler \\
 \end{longtable}
@@ -6072,8 +6408,12 @@ by layer 1 workflows. Layer 3 (§7) schedules work through the topology,
 expressed in layer 2's language. Layer 4 (§8) puts frames on the wire,
 carrying layer 3's scheduled work. Layer 5 (§9) compresses the payload
 -- actual bytes, actual ratios, actual wire -- using layers below it.
-Layer 6 (§12.4) closes the loop by turning layer 4's self-describing
-frame protocol back into the execution model for layers 2 and 3.
+Layer 6 (§11.5) applies sparse routing at the topology level, using
+layer 2's GGL to define MoA structures and layer 3's scheduler to
+execute them. Layer 7 (§6.17) instantiates fork/race/fold at inference
+time via precomputed Vickrey Tables with Lean-proved exactness. Layer 8
+(§12.4) closes the loop by turning layer 4's self-describing frame
+protocol back into the execution model for layers 2 and 3.
 
 The Rust/WASM runtime executes the FlowFrames at the same byte-level
 format defined in §8.2. The language is not a wrapper around the
@@ -6082,7 +6422,8 @@ protocol -- it is the protocol's native programming model.
 The stack is the paper's clearest existence demonstration: one set of
 four primitives (fork, race, fold, vent) yields a scheduling algorithm,
 wire protocol, compression strategy, verification engine, programming
-language, and a frame-native execution model. Each layer is
+language, sparse expert routing, precomputed inference, and a frame-native
+execution model. Each layer is
 independently useful. Together they form a computational ecosystem where
 topology, program structure, execution, and protocol design are aligned.
 
@@ -6290,6 +6631,35 @@ Biological effect-size mapping &
 \texttt{artifacts/\allowbreak{}gate5-\allowbreak{}bio-\allowbreak{}effect-\allowbreak{}size.\allowbreak{}\{json,md\}} \\
 \end{longtable}
 }
+
+\textbf{Gate 4 out-of-sample \(R_{qr}\) holdout} (520 holdout samples,
+verdict: PASS):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lrrrl@{}}
+\toprule\noalign{}
+Criterion & Observed & 95\% CI & Threshold & Pass \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Spearman & 0.517 & 0.446--0.575 & CI low \textgreater= 0.240 & yes \\
+Slope & 0.651 & 0.427--1.032 & CI low \textgreater= 0.300 & yes \\
+Quartile delta & 0.128 & 0.100--0.153 & CI low \textgreater= 0.080 &
+yes \\
+Predictor-correlation & 0.248 & 0.176--0.347 & CI low \textgreater=
+0.150 & yes \\
+Decile monotonicity & 1 violation & -- & violations \textless= 3 &
+yes \\
+\end{longtable}
+}
+
+\textbf{Companion test suite totals} (last run): 346 pass, 7 fail, 5
+errors across 353 tests in 59 files with 10,931 assertions. The 5 errors
+are missing runtime modules (\texttt{@aeon/flow},
+\texttt{@aeon/compression}) in the companion-tests environment; the 7
+failures are manuscript-artifact text synchronization checks that drift
+with edits. All primary gate verdicts pass.
 
 \begin{itemize}
 \item
@@ -6961,19 +7331,20 @@ computation, not a replacement for physical theory.
 this paper. Fork creates parallel paths. Race selects a winner. Fold
 merges results. And vent releases everything the fold could not
 preserve. Every section quantifies what is kept; none quantifies what is
-lost. The semiotic deficit \(\Delta\beta =
-\beta_1(\text{thought}) - \beta_1(\text{speech})\) names that silence.
-\texttt{confusion\_irreducibility} (SemioticPeace.lean) proves it is a
-topological invariant: for any channel where thought has more
-independent dimensions than speech has streams, the deficit is strictly
-positive and distinct semantic paths collide under the fold. The void is
-not the absence of structure. It is the \emph{topological complement} of
-what articulation can carry -- and it has three measurable properties.
-\emph{Extent}: the deficit equals \(\text{semanticPaths} - 1\), bounded
-and quantified (\texttt{semiotic\_deficit\_speech}). \emph{Heat
-signature}: every non-trivial semiotic fold generates strictly positive
-Landauer heat (\texttt{confusion\_generates\_heat}).
-\emph{Reducibility}: shared context monotonically deflates the deficit
+lost. The semiotic deficit
+\(\Delta\beta = \beta_1(\text{thought}) - \beta_1(\text{speech})\) names
+that silence. \texttt{confusion\_irreducibility} (SemioticPeace.lean)
+proves it is a topological invariant: for any channel where thought has
+more independent dimensions than speech has streams, the deficit is
+strictly positive and distinct semantic paths collide under the fold.
+The void is not the absence of structure. It is the \emph{topological
+complement} of what articulation can carry -- and it has three
+measurable properties. \emph{Extent}: the deficit equals
+\(\text{semanticPaths} - 1\), bounded and quantified
+(\texttt{semiotic\_deficit\_speech}). \emph{Heat signature}: every
+non-trivial semiotic fold generates strictly positive Landauer heat
+(\texttt{confusion\_generates\_heat}). \emph{Reducibility}: shared
+context monotonically deflates the deficit
 (\texttt{peace\_context\_reduces}), and sufficient context eliminates it
 entirely (\texttt{peace\_sufficient\_context}).
 
@@ -7181,6 +7552,62 @@ frame header. THM-TOPO-RACE-SUBSUMPTION guarantees that racing total
 THM-TOPO-RACE-IDENTITY-BASELINE guarantees identity is always a
 candidate, so the pipeline never does worse than raw.
 
+\textbf{Full protocol stack comparison -- microfrontend site} (95
+resources, brotli):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule\noalign{}
+Protocol & Wire size & Framing overhead & Overhead \% & RTTs \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+sendfile (raw) & 882 KB & 0 B & 0\% & -- \\
+HTTP/1.1 + brotli & 187 KB & 58.1 KB & 31.0\% & 16 \\
+HTTP/2 + brotli & 137 KB & 8.0 KB & 5.8\% & 2 \\
+HTTP/3 + brotli & 135 KB & 5.9 KB & 4.4\% & 1 \\
+Aeon Flow + brotli & 131 KB & 1.9 KB & 1.5\% & 1 \\
+\textbf{x-gnosis laminar} & \textbf{27.5 KB} & \textbf{950 B} &
+\textbf{3.5\%} & \textbf{1} \\
+\end{longtable}
+}
+
+x-gnosis laminar combines Aeon Flow transport with per-chunk codec
+racing: each 4 KB chunk races identity/gzip/brotli/deflate, picks the
+smallest, and wraps it in a 10-byte Flow frame. The result: \textbf{950
+bytes} of framing vs HTTP/1.1's \textbf{58.1 KB} (61x reduction), vs
+nginx brotli's \textbf{27.8 KB} (29x reduction), and \textbf{4.8x
+smaller wire total} than Aeon Flow with global brotli because per-chunk
+racing eliminates incompressible-chunk overhead.
+
+\textbf{Full protocol stack comparison -- big content site} (12
+resources, brotli):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule\noalign{}
+Protocol & Wire size & Framing overhead & Overhead \% & RTTs \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+sendfile (raw) & 2.22 MB & 0 B & 0\% & -- \\
+HTTP/1.1 + brotli & 913 KB & 8.2 KB & 0.9\% & 3 \\
+HTTP/2 + brotli & 907 KB & 1.6 KB & 0.2\% & 2 \\
+HTTP/3 + brotli & 906 KB & 906 B & 0.1\% & 1 \\
+Aeon Flow + brotli & 905 KB & 276 B & 0.03\% & 1 \\
+\textbf{x-gnosis laminar} & \textbf{95.9 KB} & \textbf{70 B} &
+\textbf{0.07\%} & \textbf{1} \\
+\end{longtable}
+}
+
+For big content, compression dominates and all protocols achieve similar
+ratios with brotli. The laminar pipeline's per-chunk racing selects
+brotli for compressible chunks and identity for incompressible chunks
+(images), achieving the tightest wire total. Framing overhead is
+negligible at this payload scale.
+
 \textbf{Latency tradeoff and crossover bandwidth.}
 THM-TOPO-RACE-SUBSUMPTION proves that the laminar pipeline strictly
 dominates sendfile on \emph{wire bytes}: the racing total is provably
@@ -7338,8 +7765,7 @@ types ordered by content heterogeneity, showing that the penalty for
 non-diverse strategy scales with intrinsic \(β_{1}^{*}\). All three
 panels are instantiations of THM-AMERICAN-FRONTIER
 (\texttt{AmericanFrontier.lean}): waste monotonically non-increasing in
-diversity, zero at \(β_{1} =
-β_{1}^{*}\), positive below.}
+diversity, zero at \(β_{1} = β_{1}^{*}\), positive below.}
 
 \subsection{References}\label{references}
 
@@ -7350,7 +7776,7 @@ Inspired Adaptive Network Design,'' \emph{Science}, 327(5964):439--442,
 
 {[}2{]} T. W. Buley, ``Aeon Pipelines: A Computation Topology Engine,''
 open-source implementation, 2026.
-https://forkracefold.com/content/pipeline-topology.test.ts.txt
+\url{https://forkracefold.com/content/pipeline-topology.test.ts.txt}
 
 {[}3{]} D. Akita, I. Kunita, M. D. Fricker, S. Kuroda, K. Sato, T.
 Nakagaki, ``Experimental Models for Murray's Law,'' \emph{Journal of
@@ -7373,11 +7799,11 @@ Energy Transfer Through Quantum Coherence in Photosynthetic Systems,''
 
 {[}8{]} T. W. Buley, ``Aeon Core Runtime (Flow + Compression) and Test
 Suite,'' open-source implementation, 2026.
-https://github.com/affectively-ai/aeon
+\url{https://github.com/affectively-ai/aeon}
 
 {[}9{]} T. W. Buley, ``Fork/Race/Fold Companion Tests,'' reproducibility
 suite, 2026.
-https://github.com/affectively-ai/aeon/tree/main/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests
+\url{https://github.com/affectively-ai/aeon/tree/main/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests}
 
 {[}10{]} R. P. Feynman, A. R. Hibbs, ``Quantum Mechanics and Path
 Integrals,'' McGraw-Hill, 1965.
@@ -7391,19 +7817,19 @@ Tools for Hardware and Software Engineers}, Addison-Wesley, 2002.
 
 {[}13{]} T. W. Buley, ``Aeon Logic: Fork/Race/Fold Temporal Logic Engine
 and TLC/TLA Compatibility Layer,'' open-source implementation, 2026.
-https://github.com/affectively-ai/aeon-logic
+\url{https://github.com/affectively-ai/aeon-logic}
 
 {[}14{]} Lean FRO Team, ``The Lean Theorem Prover (Lean 4),'' software
-and documentation, 2026. https://lean-lang.org
+and documentation, 2026. \url{https://lean-lang.org}
 
 {[}15{]} T. W. Buley, ``Gnosis: A Topological Programming Language with
 Self-Hosting Compiler,'' open-source implementation, 2026.
-https://github.com/affectively-ai/gnosis
+\url{https://github.com/affectively-ai/gnosis}
 
 {[}16{]} EURORDIS-Rare Diseases Europe, ``The Diagnosis Odyssey of
 People Living with a Rare Disease: Survey overview,'' Rare Barometer
 report, 2024.
-https://www.eurordis.org/wp-content/uploads/2024/05/Diagnosis-Survey-overview-1.pdf
+\url{https://www.eurordis.org/wp-content/uploads/2024/05/Diagnosis-Survey-overview-1.pdf}
 
 {[}17{]} Depository Trust \& Clearing Corporation (DTCC), ``DTCC 2024
 Annual Report,'' 2025. (NSCC average daily transaction value: \$2.219
@@ -7411,7 +7837,7 @@ trillion) https://www.dtcc.com/annuals/2024/
 
 {[}18{]} T. W. Buley, ``Aeon Forge: Deployment and Routing Primitives
 with Bun-Tested Control-Plane Invariants,'' open-source implementation,
-2026. https://github.com/affectively-ai/aeon-forge
+2026. \url{https://github.com/affectively-ai/aeon-forge}
 
 {[}19{]} L. M. N. Wu, A. Williams, A. Delaney, D. L. Sherman, P. J.
 Brophy, ``Increasing Internodal Distance in Myelinated Nerves

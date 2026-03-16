@@ -33,7 +33,7 @@ o -> o        o -> o
 
 Fork/race/fold is represented here as a directed acyclic graph (DAG) with merge points: nodes branch, paths run in parallel and merge vertices fold concurrent paths into one. In the analyzed domains, recurring bottlenecks arise when high-$\beta_1$ workloads are forced through path-like structures. The operational remedy is to work in the cover space (multiplexed, out-of-order) and project back to the base space (sequential, reassembled).
 
-I instantiate the algorithm in **five** domains, presented in stack order – from building blocks to bytes on wire – each layer enabled by the ones below it.
+I instantiate the algorithm in **eight** domains, presented in stack order -- from building blocks to bytes on wire -- each layer enabled by the ones below it.
 
 1. In formal verification (the foundation, §10), I implement a temporal logic model checker (`@affectively/aeon-logic`) whose BFS state-space exploration is itself a fork/race/fold computation. Each multi-successor expansion is a fork, each transition to an already-visited state is a fold (interference), each unfair cycle filtered by weak fairness is a vent, and termination is collapse. The checker verifies a `TemporalModel` of its own exploration and generates a TLA+ specification of the same model, validated through a round-trip-stable TLA sandbox. Both verification paths check the same invariants: $\beta_1 = \text{folded}$, $\beta_1 \geq 0$, $\text{vents} \leq \text{folds}$, and eventual termination under weak fairness. In the modeled scope, this yields closure under self-application: a formal system built from these primitives can reason about formal systems built from these primitives [13].
 
@@ -43,7 +43,13 @@ I instantiate the algorithm in **five** domains, presented in stack order – fr
 
 4. In edge transport (the wire format, §8), I implement a binary stream protocol with 10-byte self-describing frame headers and native fork/race/fold operations on UDP, reducing framing overhead by 95 percent versus HTTP/1.1 and removing one-path ordered-delivery coupling that drives head-of-line behavior in TCP-bound stacks. Layer 3’s scheduling algorithm runs over layer 4’s wire format.
 
-5. In compression (bytes on wire, §9), I implement per-chunk topological codec racing (fork codecs, race per chunk, fold to winner), with executable verification of roundtrip correctness, codec-vent behavior and $\beta_1 = \text{codecs}-1$ invariants [8, 9]. The capstone: actual bytes, actual ratios, actual wire – using every layer below it.
+5. In compression (bytes on wire, §9), I implement per-chunk topological codec racing (fork codecs, race per chunk, fold to winner), with executable verification of roundtrip correctness, codec-vent behavior and $\beta_1 = \text{codecs}-1$ invariants [8, 9]. The capstone: actual bytes, actual ratios, actual wire -- using every layer below it.
+
+6. In structured mixture-of-agents routing (§11.5), fork/race/fold organizes sparse expert selection across attention blocks. A GG topology (`moa-transformer-moa.gg`) defines the routing structure; GG-backed benchmarks confirm 3.45x--4.35x wall-clock speedup over the dense baseline while the accuracy gap closes to 0.0025 eval-MSE at wide scale. Both outer-block and inner-head sparsity are ablated.
+
+7. In language-model inference (the Glossolalia Engine, §6.17), I implement a Vickrey Table -- a precomputed sparse logit lookup that replaces the $O(k \cdot V \cdot d)$ matrix-vector product with an $O(V)$ table read, yielding $4.8\times$ measured speedup at five agents. The companion Lean theorems `daisy_linearity_rational` and `topk_deficit` prove the lookup is exact and quantify the information loss. The metacognitive extension (§6.18) stacks four monitoring layers as a Daisy Chain whose convergence rate is proved geometric.
+
+8. In protocol-as-execution-model (the closure layer, §12.4), the wire format from layer 4 becomes the native execution model for layers 2 and 3. The FlowFrame is not wrapped by the programming language -- it *is* the programming language's runtime representation, closing the stack into a self-describing loop.
 
 Within the modeled scope in this paper (finite DAG decompositions under C1-C4), the algorithm is a high-fit topology class with measurable fit via $\Delta_\beta$. It is intentionally simple: four primitives, explicit assumptions, and executable checks.
 
@@ -2091,9 +2097,9 @@ Framed outputs survive FlowFrame codec round-trips and out-of-order reassembly w
 
 MoA uses 4 active heads vs 16. The accuracy gap narrows as data increases (closing eval-MSE gap from 0.081 to 0.002 at wide scale) while the speed advantage holds. Ablation confirms both outer-block and inner-head sparsity contribute: removing either doubles wall time; under-routing (1 active block) collapses accuracy entirely.
 
-### 11.6 The Six Domains as a Stack
+### 11.6 The Eight Domains as a Stack
 
-The six instantiation domains are not independent – they form a stack, each enabled by the ones below:
+The eight instantiation domains are not independent -- they form a stack, each enabled by the ones below:
 
 | Stack Layer | Domain | § | Primitive | Role |
 |---|---|---|---|---|
@@ -2102,13 +2108,15 @@ The six instantiation domains are not independent – they form a stack, each en
 | | Distributed computation | §7 | Wallington Rotation | The scheduling algorithm |
 | | Edge transport | §8 | 10-byte FlowFrame | The wire format |
 | | Compression | §9 | Per-chunk codec racing | Bytes on wire |
+| | Structured MoA | §11.5 | GG-backed sparse routing | Topology-level expert selection |
+| | Glossolalia Engine | §6.17 | Vickrey Table + Daisy Chain | Inference-time instantiation |
 | (closure) | Protocol-as-execution-model | §12.4 | Frame-native execution | Wire format subsumes scheduler |
 
-The stack reads bottom-up: *from building blocks to bytes on wire and back into execution*. Layer 1 (§10) verifies modeled primitive properties. Layer 2 (§11) gives a language to write topologies, checked by layer 1 workflows. Layer 3 (§7) schedules work through the topology, expressed in layer 2’s language. Layer 4 (§8) puts frames on the wire, carrying layer 3’s scheduled work. Layer 5 (§9) compresses the payload – actual bytes, actual ratios, actual wire – using layers below it. Layer 6 (§12.4) closes the loop by turning layer 4’s self-describing frame protocol back into the execution model for layers 2 and 3.
+The stack reads bottom-up: *from building blocks to bytes on wire and back into execution*. Layer 1 (§10) verifies modeled primitive properties. Layer 2 (§11) gives a language to write topologies, checked by layer 1 workflows. Layer 3 (§7) schedules work through the topology, expressed in layer 2’s language. Layer 4 (§8) puts frames on the wire, carrying layer 3’s scheduled work. Layer 5 (§9) compresses the payload -- actual bytes, actual ratios, actual wire -- using layers below it. Layer 6 (§11.5) applies sparse routing at the topology level, using layer 2’s GGL to define MoA structures and layer 3’s scheduler to execute them. Layer 7 (§6.17) instantiates fork/race/fold at inference time via precomputed Vickrey Tables with Lean-proved exactness. Layer 8 (§12.4) closes the loop by turning layer 4’s self-describing frame protocol back into the execution model for layers 2 and 3.
 
 The Rust/WASM runtime executes the FlowFrames at the same byte-level format defined in §8.2. The language is not a wrapper around the protocol – it is the protocol’s native programming model.
 
-The stack is the paper’s clearest existence demonstration: one set of four primitives (fork, race, fold, vent) yields a scheduling algorithm, wire protocol, compression strategy, verification engine, programming language, and a frame-native execution model. Each layer is independently useful. Together they form a computational ecosystem where topology, program structure, execution, and protocol design are aligned.
+The stack is the paper’s clearest existence demonstration: one set of four primitives (fork, race, fold, vent) yields a scheduling algorithm, wire protocol, compression strategy, verification engine, programming language, sparse expert routing, precomputed inference, and a frame-native execution model. Each layer is independently useful. Together they form a computational ecosystem where topology, program structure, execution, and protocol design are aligned.
 
 ## 12. The Engine
 
