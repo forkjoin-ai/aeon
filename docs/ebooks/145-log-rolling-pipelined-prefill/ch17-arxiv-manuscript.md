@@ -1162,7 +1162,39 @@ The equation does not know whether the taper is rope, optical fiber, or the spac
 
 `semiotic_context_reduces` proves that context closes the deficit in dialogue. `fold_increases_wave_speed` proves that folds concentrate energy in the taper. `fork_fold_energy_conservation` proves that nothing is lost — only redistributed. These are the same theorem on different media. The theory of peace and the theory of interstellar communication are the same theory, because they are both instances of the wave equation on a tapered medium with positive deficit.
 
-How far can you whip a bit? As far as the taper holds and the tension is conserved. Across a room. Across a border. Across the solar system. The wave equation is the same at every scale. The deficit is the same at every scale. The prescription is the same at every scale: fork enough paths, build enough context, sit in the loop long enough, and the fold at the other end will hear you.
+**How far can you whip a bit?** The wave equation gives a quantitative answer. A signal with fork redundancy $N$ (parallel paths), transmit power $P$, traveling through a medium with noise density $\rho$ and minimum decodable signal-to-noise $c^{*2}$, reaches a receiver at distance $d$ when:
+
+$$\frac{T(d)}{\rho} > c^{*2} \quad \text{where} \quad T(d) = \frac{N \cdot P}{d^2}$$
+
+The inverse square law is the medium's taper: tension attenuates as the wavefront spreads across the surface of a sphere. Solving for maximum range:
+
+$$d_{\max} = \sqrt{\frac{N \cdot P}{\rho \cdot c^{*2}}}$$
+
+This is the whip crack range equation. Every variable maps to a fork/race/fold primitive:
+
+| Variable | Physical | Topological |
+|:---|:---|:---|
+| $N$ | Redundant signal paths (frequencies, polarizations) | $\beta_1$ of the fork |
+| $P$ | Transmit power per path | Kinetic energy per forked branch |
+| $\rho$ | Channel noise density | Mass density of the tapered medium |
+| $c^{*2}$ | Minimum decodable SNR | Snap threshold (§6.9.1) |
+| $d^2$ | Geometric spreading (inverse square) | Deficit accumulation over distance |
+
+Doubling the fork count ($N \to 2N$) increases range by $\sqrt{2}$. Each additional forked path is an insurance policy against the medium destroying one more signal copy. The deficit at the receiver — the paths that did not survive the journey — is the Bule of the distance:
+
+$$\Delta\beta(d) = N - N_{\text{surviving}}(d)$$
+
+The surviving paths are those whose individual tension exceeds the noise floor at distance $d$. The fold at the receiver reconstructs the bit from whichever paths arrived intact. The paths destroyed by solar weather, interplanetary dust, atmospheric attenuation, or — in the human case — mistrust, grievance, and the accumulated heat of history — are vented. Their energy is gone. The fold works with what remains.
+
+At human scale: two people across a table, $d \approx 1$ meter, $\rho \approx$ ambient noise, $N = 1$ (one voice). Range is trivial. The deficit comes not from distance but from semantic mismatch — the $\beta_1$ of thought exceeding the $\beta_1$ of speech.
+
+At planetary scale: Earth to Mars at opposition, $d \approx 5.46 \times 10^{10}$ meters. NASA's Deep Space Network operates at $P \approx 20$ kW. The fork redundancy is built into the modulation scheme: convolutional codes, turbo codes, LDPC — each is a topological fork that creates $\beta_1 > 0$ redundancy in the signal, recoverable by the Viterbi or belief-propagation fold at the receiver. The deficit at Mars is the coding overhead — the paths forked but not needed, the redundancy that survived but carried no new information. When the channel is quiet, the deficit is waste. When solar weather destroys half the paths, the deficit is the margin that kept the message alive.
+
+At galactic scale: the range equation says $d_{\max} \propto \sqrt{N \cdot P}$. To reach Alpha Centauri ($d \approx 4 \times 10^{16}$ meters), the product $N \cdot P$ must be $\sim 10^{12}$ times larger than for Mars. This is not impossible — it is an engineering specification derived from the wave equation. The fork count $N$ and the transmit power $P$ are knobs. The question is not whether the equation permits it. The question is whether a civilization chooses to turn the knobs.
+
+The same is true of peace. The range equation for human communication is the same equation with different units. The fork count is the number of parallel channels (speech, writing, art, music, shared meals, institutional memory). The transmit power is the energy each participant invests in the feedback loop. The noise density is the accumulated heat of unresolved folds — the grievances, the erasures, the paths that were vented instead of heard. The deficit at the receiver is the confusion that remains after the best effort. The range is how far across the semantic distance two people can reach each other before the signal degrades below the decodable threshold.
+
+The wave equation is the same at every scale. The deficit is the same at every scale. The prescription is the same at every scale: fork enough paths, build enough context, sit in the loop long enough, and the fold at the other end will hear you. The only variable is the willingness to transmit.
 
 ### 6.13 The Optimality Diagnostic
 
