@@ -254,7 +254,7 @@ function drawCurvedBlock(
   const radius = 58;
 
   rect(svg, x, y, width, height, fill, stroke, dashed);
-  label(svg, x + width / 2, y + 28, block.label, {
+  label(svg, x + width / 2, y + 22, block.label, {
     size: 18,
     weight: 700,
     color: '#1f2937',
@@ -262,12 +262,12 @@ function drawCurvedBlock(
 
   circle(svg, innerRotation.x, innerRotation.y, 12, '#eff6ff', '#2563eb');
   circle(svg, innerRouter.x, innerRouter.y, 12, '#fff7ed', '#c2410c');
-  label(svg, innerRotation.x, innerRotation.y + 33, 'inner rot', {
-    size: 12,
+  label(svg, innerRotation.x, innerRotation.y + 35, 'inner rot', {
+    size: 11,
     color: '#1d4ed8',
   });
-  label(svg, innerRouter.x, innerRouter.y + 33, 'inner router', {
-    size: 12,
+  label(svg, innerRouter.x, innerRouter.y + 35, 'inner router', {
+    size: 11,
     color: '#7c2d12',
   });
   curve(
@@ -312,7 +312,14 @@ function drawCurvedBlock(
   }
 
   circle(svg, innerWhip.x, innerWhip.y, 16, '#fff7ed', '#c2410c', dashed);
-  label(svg, innerWhip.x, innerWhip.y + 40, report.curvatureView.innerEnvelopeLabel, {
+  // Offset "inner whip" label below the dashed block border to avoid overlap
+  const innerWhipLabelY = innerWhip.y + 46;
+  const innerWhipLabelWidth = estimateTextWidth(report.curvatureView.innerEnvelopeLabel, 12) + 12;
+  const innerWhipLabelHeight = 18;
+  svg.push(
+    `<rect x="${innerWhip.x - innerWhipLabelWidth / 2}" y="${innerWhipLabelY - innerWhipLabelHeight / 2 - 2}" width="${innerWhipLabelWidth}" height="${innerWhipLabelHeight}" fill="${fill}" rx="4" ry="4"/>`,
+  );
+  label(svg, innerWhip.x, innerWhipLabelY, report.curvatureView.innerEnvelopeLabel, {
     size: 12,
     color: '#7c2d12',
   });
@@ -476,6 +483,13 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
     color: '#1d4ed8',
   });
   circle(svg, outerRouter.x, outerRouter.y, 16, '#fff7ed', '#c2410c');
+  // Background rect behind "outer router" label to prevent overlap with connection lines
+  const outerRouterLabelY = outerRouter.y + 40;
+  const outerRouterLabelWidth = 96;
+  const outerRouterLabelHeight = 20;
+  svg.push(
+    `<rect x="${outerRouter.x - outerRouterLabelWidth / 2}" y="${outerRouterLabelY - outerRouterLabelHeight / 2 - 2}" width="${outerRouterLabelWidth}" height="${outerRouterLabelHeight}" fill="#fffdfa" rx="4" ry="4"/>`,
+  );
   label(svg, outerRouter.x, outerRouter.y + 40, 'outer router', {
     size: 13,
     color: '#7c2d12',

@@ -236,9 +236,9 @@ function renderForestPlot(
     `<text x="${x + 24}" y="${y + 56}" font-family="Georgia, serif" font-size="13" fill="#4b5563">Median ratio markers with 95% uncertainty intervals, plus the pooled geometric summary.</text>`,
   );
 
-  const innerX = x + 250;
+  const innerX = x + 270;
   const innerY = y + 92;
-  const innerWidth = width - 286;
+  const innerWidth = width - 306;
   const innerHeight = height - 148;
   const rowGap = innerHeight / report.pairs.length;
   const pooledRowY = innerY + innerHeight + 34;
@@ -277,7 +277,7 @@ function renderForestPlot(
       `<text x="${x + 24}" y="${cy - 10}" font-family="Georgia, serif" font-size="15" fill="#111827">${escapeXml(pair.domain)}</text>`,
     );
     svg.push(
-      `<text x="${x + 24}" y="${cy + 11}" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(labels.numerator)} / ${escapeXml(labels.denominator)}${pair.unit === 'ratio' ? '' : ` (${escapeXml(pair.unit)})`}</text>`,
+      `<text x="${x + 24}" y="${cy + 14}" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${escapeXml(labels.numerator)} / ${escapeXml(labels.denominator)}${pair.unit === 'ratio' ? '' : ` (${escapeXml(pair.unit)})`}</text>`,
     );
     svg.push(
       `<line x1="${lowX}" y1="${cy}" x2="${highX}" y2="${cy}" stroke="${pair.pass ? '#1d4ed8' : '#b91c1c'}" stroke-width="4" stroke-linecap="round"/>`,
@@ -291,9 +291,18 @@ function renderForestPlot(
     svg.push(
       `<rect x="${medianX - 6}" y="${cy - 6}" width="12" height="12" rx="2" fill="${pair.primary ? '#0f766e' : '#64748b'}" stroke="#eff6ff" stroke-width="2"/>`,
     );
-    svg.push(
-      `<text x="${x + width - 18}" y="${cy + 5}" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${formatRatio(pair.medianRatio)} (${formatRatio(pair.ratioCi95.low)} to ${formatRatio(pair.ratioCi95.high)})</text>`,
-    );
+    const labelText = `${formatRatio(pair.medianRatio)} (${formatRatio(pair.ratioCi95.low)} to ${formatRatio(pair.ratioCi95.high)})`;
+    const labelRightEdge = x + width - 18;
+    const labelFitsRight = highX + 10 + labelText.length * 7 < labelRightEdge;
+    if (labelFitsRight) {
+      svg.push(
+        `<text x="${highX + 10}" y="${cy - 14}" text-anchor="start" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${labelText}</text>`,
+      );
+    } else {
+      svg.push(
+        `<text x="${labelRightEdge}" y="${cy - 14}" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${labelText}</text>`,
+      );
+    }
   });
 
   const pooledLowX = ratioScale(report.pooledRatioCi95.low, plotRange, innerX, innerWidth);
@@ -317,7 +326,7 @@ function renderForestPlot(
     `<polygon points="${diamondPoints}" fill="#f59e0b" stroke="#78350f" stroke-width="2"/>`,
   );
   svg.push(
-    `<text x="${x + width - 18}" y="${pooledRowY + 5}" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${formatRatio(report.pooledRatio)} (${formatRatio(report.pooledRatioCi95.low)} to ${formatRatio(report.pooledRatioCi95.high)})</text>`,
+    `<text x="${x + width - 18}" y="${pooledRowY - 18}" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${formatRatio(report.pooledRatio)} (${formatRatio(report.pooledRatioCi95.low)} to ${formatRatio(report.pooledRatioCi95.high)})</text>`,
   );
 
   svg.push(

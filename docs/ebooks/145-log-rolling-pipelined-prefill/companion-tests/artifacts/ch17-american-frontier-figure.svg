@@ -1,114 +1,114 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 380" font-family="system-ui, -apple-system, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 410" font-family="system-ui, -apple-system, sans-serif">
 <defs>
 <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#0f766e"/></marker>
 </defs>
-<rect width="1240" height="380" rx="18" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+<rect width="1240" height="410" rx="18" fill="white" stroke="#e2e8f0" stroke-width="1"/>
 <text x="620" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1e293b">The American Frontier: Diversity vs Waste Across Three Substrates</text>
 <rect x="20" y="40" width="380" height="320" rx="12" fill="#fafaf9" stroke="#e2e8f0" stroke-width="1"/>
 <text x="210" y="64" text-anchor="middle" font-size="13" font-weight="600" fill="#1e293b">A. Protocol Framing Overhead</text>
-<line x1="80" y1="290" x2="380" y2="290" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="72" y="294" text-anchor="end" font-size="10" fill="#475569">0%</text>
-<line x1="80" y1="261.42857142857144" x2="380" y2="261.42857142857144" stroke="#e2e8f0" stroke-width="0.5"/>
-<line x1="80" y1="232.85714285714286" x2="380" y2="232.85714285714286" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="72" y="236.85714285714286" text-anchor="end" font-size="10" fill="#475569">10%</text>
-<line x1="80" y1="204.28571428571428" x2="380" y2="204.28571428571428" stroke="#e2e8f0" stroke-width="0.5"/>
-<line x1="80" y1="175.71428571428572" x2="380" y2="175.71428571428572" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="72" y="179.71428571428572" text-anchor="end" font-size="10" fill="#475569">20%</text>
-<line x1="80" y1="147.14285714285714" x2="380" y2="147.14285714285714" stroke="#e2e8f0" stroke-width="0.5"/>
-<line x1="80" y1="118.57142857142858" x2="380" y2="118.57142857142858" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="72" y="122.57142857142858" text-anchor="end" font-size="10" fill="#475569">30%</text>
+<line x1="80" y1="276" x2="380" y2="276" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="72" y="280" text-anchor="end" font-size="10" fill="#475569">0%</text>
+<line x1="80" y1="249.42857142857144" x2="380" y2="249.42857142857144" stroke="#e2e8f0" stroke-width="0.5"/>
+<line x1="80" y1="222.85714285714286" x2="380" y2="222.85714285714286" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="72" y="226.85714285714286" text-anchor="end" font-size="10" fill="#475569">10%</text>
+<line x1="80" y1="196.28571428571428" x2="380" y2="196.28571428571428" stroke="#e2e8f0" stroke-width="0.5"/>
+<line x1="80" y1="169.71428571428572" x2="380" y2="169.71428571428572" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="72" y="173.71428571428572" text-anchor="end" font-size="10" fill="#475569">20%</text>
+<line x1="80" y1="143.14285714285714" x2="380" y2="143.14285714285714" stroke="#e2e8f0" stroke-width="0.5"/>
+<line x1="80" y1="116.57142857142858" x2="380" y2="116.57142857142858" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="72" y="120.57142857142858" text-anchor="end" font-size="10" fill="#475569">30%</text>
 <line x1="80" y1="90" x2="380" y2="90" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="34" y="190" text-anchor="middle" font-size="11" fill="#1e293b" transform="rotate(-90,34,190)">Framing overhead %</text>
-<rect x="98.75" y="112.85714285714286" width="37.5" height="177.14285714285714" rx="3" fill="#c2410c" opacity="0.85"/>
-<text x="117.5" y="106.85714285714286" text-anchor="middle" font-size="10" font-weight="600" fill="#c2410c">31%</text>
-<text x="117.5" y="306" text-anchor="middle" font-size="10" fill="#1e293b">H1</text>
-<rect x="173.75" y="256.8571428571429" width="37.5" height="33.14285714285714" rx="3" fill="#d97706" opacity="0.85"/>
-<text x="192.5" y="250.8571428571429" text-anchor="middle" font-size="10" font-weight="600" fill="#d97706">5.8%</text>
-<text x="192.5" y="306" text-anchor="middle" font-size="10" fill="#1e293b">H2</text>
-<rect x="248.75" y="264.85714285714283" width="37.5" height="25.142857142857146" rx="3" fill="#ca8a04" opacity="0.85"/>
-<text x="267.5" y="258.85714285714283" text-anchor="middle" font-size="10" font-weight="600" fill="#ca8a04">4.4%</text>
-<text x="267.5" y="306" text-anchor="middle" font-size="10" fill="#1e293b">H3</text>
-<rect x="323.75" y="281.42857142857144" width="37.5" height="8.571428571428571" rx="3" fill="#0f766e" opacity="0.85"/>
-<text x="342.5" y="275.42857142857144" text-anchor="middle" font-size="10" font-weight="600" fill="#0f766e">1.5%</text>
-<text x="342.5" y="306" text-anchor="middle" font-size="10" fill="#1e293b">AF</text>
-<text x="230" y="328" text-anchor="middle" font-size="11" fill="#1e293b">Protocol (increasing diversity →)</text>
+<text x="34" y="183" text-anchor="middle" font-size="11" fill="#1e293b" transform="rotate(-90,34,183)">Framing overhead %</text>
+<rect x="98.75" y="111.25714285714287" width="37.5" height="164.74285714285713" rx="3" fill="#c2410c" opacity="0.85"/>
+<text x="117.5" y="105.25714285714287" text-anchor="middle" font-size="10" font-weight="600" fill="#c2410c">31%</text>
+<text x="117.5" y="292" text-anchor="middle" font-size="10" fill="#1e293b">H1</text>
+<rect x="173.75" y="245.17714285714285" width="37.5" height="30.822857142857142" rx="3" fill="#d97706" opacity="0.85"/>
+<text x="192.5" y="239.17714285714285" text-anchor="middle" font-size="10" font-weight="600" fill="#d97706">5.8%</text>
+<text x="192.5" y="292" text-anchor="middle" font-size="10" fill="#1e293b">H2</text>
+<rect x="248.75" y="252.61714285714285" width="37.5" height="23.382857142857144" rx="3" fill="#ca8a04" opacity="0.85"/>
+<text x="267.5" y="246.61714285714285" text-anchor="middle" font-size="10" font-weight="600" fill="#ca8a04">4.4%</text>
+<text x="267.5" y="292" text-anchor="middle" font-size="10" fill="#1e293b">H3</text>
+<rect x="323.75" y="268.0285714285714" width="37.5" height="7.9714285714285715" rx="3" fill="#0f766e" opacity="0.85"/>
+<text x="342.5" y="262.0285714285714" text-anchor="middle" font-size="10" font-weight="600" fill="#0f766e">1.5%</text>
+<text x="342.5" y="292" text-anchor="middle" font-size="10" fill="#1e293b">AF</text>
+<text x="230" y="314" text-anchor="middle" font-size="11" fill="#1e293b">Protocol (increasing diversity →)</text>
 <line x1="100" y1="105" x2="360" y2="145" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead)"/>
 <rect x="430" y="40" width="380" height="320" rx="12" fill="#fafaf9" stroke="#e2e8f0" stroke-width="1"/>
 <text x="620" y="64" text-anchor="middle" font-size="13" font-weight="600" fill="#1e293b">B. Pipeline Idle Fraction</text>
-<line x1="490" y1="290" x2="790" y2="290" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="482" y="294" text-anchor="end" font-size="10" fill="#475569">0%</text>
-<line x1="490" y1="250" x2="790" y2="250" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="482" y="254" text-anchor="end" font-size="10" fill="#475569">20%</text>
-<line x1="490" y1="210" x2="790" y2="210" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="482" y="214" text-anchor="end" font-size="10" fill="#475569">40%</text>
-<line x1="490" y1="170" x2="790" y2="170" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="482" y="174" text-anchor="end" font-size="10" fill="#475569">60%</text>
-<line x1="490" y1="130" x2="790" y2="130" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="482" y="134" text-anchor="end" font-size="10" fill="#475569">80%</text>
+<line x1="490" y1="276" x2="790" y2="276" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="482" y="280" text-anchor="end" font-size="10" fill="#475569">0%</text>
+<line x1="490" y1="238.8" x2="790" y2="238.8" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="482" y="242.8" text-anchor="end" font-size="10" fill="#475569">20%</text>
+<line x1="490" y1="201.6" x2="790" y2="201.6" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="482" y="205.6" text-anchor="end" font-size="10" fill="#475569">40%</text>
+<line x1="490" y1="164.4" x2="790" y2="164.4" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="482" y="168.4" text-anchor="end" font-size="10" fill="#475569">60%</text>
+<line x1="490" y1="127.19999999999999" x2="790" y2="127.19999999999999" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="482" y="131.2" text-anchor="end" font-size="10" fill="#475569">80%</text>
 <line x1="490" y1="90" x2="790" y2="90" stroke="#e2e8f0" stroke-width="0.5"/>
 <text x="482" y="94" text-anchor="end" font-size="10" fill="#475569">100%</text>
-<text x="444" y="190" text-anchor="middle" font-size="11" fill="#1e293b" transform="rotate(-90,444,190)">Idle fraction (waste)</text>
-<line x1="777.8758418487218" y1="290" x2="777.8758418487218" y2="295" stroke="#475569" stroke-width="0.5"/>
-<text x="777.8758418487218" y="306" text-anchor="middle" font-size="9" fill="#475569">0.1</text>
-<line x1="690.4295335413965" y1="290" x2="690.4295335413965" y2="295" stroke="#475569" stroke-width="0.5"/>
-<text x="690.4295335413965" y="306" text-anchor="middle" font-size="9" fill="#475569">0.5</text>
-<line x1="652.7684584633728" y1="290" x2="652.7684584633728" y2="295" stroke="#475569" stroke-width="0.5"/>
-<text x="652.7684584633728" y="306" text-anchor="middle" font-size="9" fill="#475569">1</text>
-<line x1="615.1073833853491" y1="290" x2="615.1073833853491" y2="295" stroke="#475569" stroke-width="0.5"/>
-<text x="615.1073833853491" y="306" text-anchor="middle" font-size="9" fill="#475569">2</text>
-<line x1="577.4463083073255" y1="290" x2="577.4463083073255" y2="295" stroke="#475569" stroke-width="0.5"/>
-<text x="577.4463083073255" y="306" text-anchor="middle" font-size="9" fill="#475569">4</text>
-<line x1="539.7852332293018" y1="290" x2="539.7852332293018" y2="295" stroke="#475569" stroke-width="0.5"/>
-<text x="539.7852332293018" y="306" text-anchor="middle" font-size="9" fill="#475569">8</text>
-<line x1="502.12415815127804" y1="290" x2="502.12415815127804" y2="295" stroke="#475569" stroke-width="0.5"/>
-<text x="502.12415815127804" y="306" text-anchor="middle" font-size="9" fill="#475569">16</text>
+<text x="444" y="183" text-anchor="middle" font-size="11" fill="#1e293b" transform="rotate(-90,444,183)">Idle fraction (waste)</text>
+<line x1="777.8758418487218" y1="276" x2="777.8758418487218" y2="281" stroke="#475569" stroke-width="0.5"/>
+<text x="777.8758418487218" y="292" text-anchor="middle" font-size="9" fill="#475569">0.1</text>
+<line x1="690.4295335413965" y1="276" x2="690.4295335413965" y2="281" stroke="#475569" stroke-width="0.5"/>
+<text x="690.4295335413965" y="292" text-anchor="middle" font-size="9" fill="#475569">0.5</text>
+<line x1="652.7684584633728" y1="276" x2="652.7684584633728" y2="281" stroke="#475569" stroke-width="0.5"/>
+<text x="652.7684584633728" y="292" text-anchor="middle" font-size="9" fill="#475569">1</text>
+<line x1="615.1073833853491" y1="276" x2="615.1073833853491" y2="281" stroke="#475569" stroke-width="0.5"/>
+<text x="615.1073833853491" y="292" text-anchor="middle" font-size="9" fill="#475569">2</text>
+<line x1="577.4463083073255" y1="276" x2="577.4463083073255" y2="281" stroke="#475569" stroke-width="0.5"/>
+<text x="577.4463083073255" y="292" text-anchor="middle" font-size="9" fill="#475569">4</text>
+<line x1="539.7852332293018" y1="276" x2="539.7852332293018" y2="281" stroke="#475569" stroke-width="0.5"/>
+<text x="539.7852332293018" y="292" text-anchor="middle" font-size="9" fill="#475569">8</text>
+<line x1="502.12415815127804" y1="276" x2="502.12415815127804" y2="281" stroke="#475569" stroke-width="0.5"/>
+<text x="502.12415815127804" y="292" text-anchor="middle" font-size="9" fill="#475569">16</text>
 <text x="640" y="328" text-anchor="middle" font-size="11" fill="#1e293b">← high diversity (low Re)     Re     low diversity (high Re) →</text>
-<path d="M777.8758418487218,276 L740.2147667706982,264 L718.1844501132103,253.2 L690.4295335413965,235.4 L672.1478373584512,221.2 L652.7684584633728,204.2 L630.7381418058849,184.2 L615.1073833853491,170 L577.4463083073255,140 L539.7852332293018,118.6 L502.12415815127804,105.39999999999998" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="777.8758418487218" cy="276" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="740.2147667706982" cy="264" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="718.1844501132103" cy="253.2" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="690.4295335413965" cy="235.4" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="672.1478373584512" cy="221.2" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="652.7684584633728" cy="204.2" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="630.7381418058849" cy="184.2" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="615.1073833853491" cy="170" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="577.4463083073255" cy="140" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="539.7852332293018" cy="118.6" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<circle cx="502.12415815127804" cy="105.39999999999998" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
-<text x="755.845525191234" y="280" text-anchor="middle" font-size="9" fill="#0f766e" font-style="italic">laminar</text>
+<path d="M777.8758418487218,262.98 L740.2147667706982,251.82 L718.1844501132103,241.776 L690.4295335413965,225.22199999999998 L672.1478373584512,212.01600000000002 L652.7684584633728,196.20600000000002 L630.7381418058849,177.606 L615.1073833853491,164.4 L577.4463083073255,136.5 L539.7852332293018,116.59800000000001 L502.12415815127804,104.322" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="777.8758418487218" cy="262.98" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="740.2147667706982" cy="251.82" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="718.1844501132103" cy="241.776" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="690.4295335413965" cy="225.22199999999998" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="672.1478373584512" cy="212.01600000000002" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="652.7684584633728" cy="196.20600000000002" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="630.7381418058849" cy="177.606" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="615.1073833853491" cy="164.4" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="577.4463083073255" cy="136.5" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="539.7852332293018" cy="116.59800000000001" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<circle cx="502.12415815127804" cy="104.322" r="3.5" fill="#2563eb" stroke="white" stroke-width="1"/>
+<text x="755.845525191234" y="266" text-anchor="middle" font-size="9" fill="#0f766e" font-style="italic">laminar</text>
 <text x="539.7852332293018" y="110" text-anchor="middle" font-size="9" fill="#c2410c" font-style="italic">turbulent</text>
 <rect x="840" y="40" width="380" height="320" rx="12" fill="#fafaf9" stroke="#e2e8f0" stroke-width="1"/>
 <text x="1030" y="64" text-anchor="middle" font-size="13" font-weight="600" fill="#1e293b">C. Compression: Cost of Monoculture</text>
-<line x1="900" y1="290" x2="1200" y2="290" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="892" y="294" text-anchor="end" font-size="10" fill="#475569">0%</text>
-<line x1="900" y1="250" x2="1200" y2="250" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="892" y="254" text-anchor="end" font-size="10" fill="#475569">10%</text>
-<line x1="900" y1="210" x2="1200" y2="210" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="892" y="214" text-anchor="end" font-size="10" fill="#475569">20%</text>
-<line x1="900" y1="170" x2="1200" y2="170" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="892" y="174" text-anchor="end" font-size="10" fill="#475569">30%</text>
-<line x1="900" y1="130" x2="1200" y2="130" stroke="#e2e8f0" stroke-width="0.5"/>
-<text x="892" y="134" text-anchor="end" font-size="10" fill="#475569">40%</text>
+<line x1="900" y1="276" x2="1200" y2="276" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="892" y="280" text-anchor="end" font-size="10" fill="#475569">0%</text>
+<line x1="900" y1="238.8" x2="1200" y2="238.8" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="892" y="242.8" text-anchor="end" font-size="10" fill="#475569">10%</text>
+<line x1="900" y1="201.6" x2="1200" y2="201.6" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="892" y="205.6" text-anchor="end" font-size="10" fill="#475569">20%</text>
+<line x1="900" y1="164.4" x2="1200" y2="164.4" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="892" y="168.4" text-anchor="end" font-size="10" fill="#475569">30%</text>
+<line x1="900" y1="127.19999999999999" x2="1200" y2="127.19999999999999" stroke="#e2e8f0" stroke-width="0.5"/>
+<text x="892" y="131.2" text-anchor="end" font-size="10" fill="#475569">40%</text>
 <line x1="900" y1="90" x2="1200" y2="90" stroke="#e2e8f0" stroke-width="0.5"/>
 <text x="892" y="94" text-anchor="end" font-size="10" fill="#475569">50%</text>
-<text x="854" y="190" text-anchor="middle" font-size="11" fill="#1e293b" transform="rotate(-90,854,190)">Heuristic waste (topology gain %)</text>
-<rect x="915" y="286.68" width="30" height="3.32" rx="3" fill="#64748b" opacity="0.85"/>
-<text x="930" y="280.68" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">0.8%</text>
-<text x="930" y="306" text-anchor="middle" font-size="9" fill="#1e293b">text</text>
-<rect x="975" y="286.88" width="30" height="3.12" rx="3" fill="#64748b" opacity="0.85"/>
-<text x="990" y="280.88" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">0.8%</text>
-<text x="990" y="306" text-anchor="middle" font-size="9" fill="#1e293b">web</text>
-<rect x="1035" y="260.24" width="30" height="29.76" rx="3" fill="#d97706" opacity="0.85"/>
-<text x="1050" y="254.24" text-anchor="middle" font-size="10" font-weight="600" fill="#d97706">7.4%</text>
-<text x="1050" y="306" text-anchor="middle" font-size="9" fill="#1e293b">media</text>
-<rect x="1095" y="183.40000000000003" width="30" height="106.59999999999998" rx="3" fill="#c2410c" opacity="0.85"/>
-<text x="1110" y="177.40000000000003" text-anchor="middle" font-size="10" font-weight="600" fill="#c2410c">26.6%</text>
-<text x="1110" y="306" text-anchor="middle" font-size="9" fill="#1e293b">polyglot</text>
-<rect x="1155" y="104.52000000000001" width="30" height="185.48" rx="3" fill="#c2410c" opacity="0.85"/>
-<text x="1170" y="98.52000000000001" text-anchor="middle" font-size="10" font-weight="600" fill="#c2410c">46.4%</text>
-<text x="1170" y="306" text-anchor="middle" font-size="9" fill="#1e293b">api</text>
-<text x="1050" y="328" text-anchor="middle" font-size="11" fill="#1e293b">Content heterogeneity (β₁* →)</text>
-<line x1="900" y1="290" x2="1200" y2="290" stroke="#0f766e" stroke-width="1.5"/>
-<text x="1202" y="294" text-anchor="start" font-size="9" fill="#0f766e" font-weight="600">frontier</text>
-<text x="620" y="372" text-anchor="middle" font-size="10" fill="#475569">THM-AMERICAN-FRONTIER (AmericanFrontier.lean): waste monotonically non-increasing in diversity, zero at β₁ = β₁*, positive below — mechanized in Lean 4</text>
+<text x="854" y="183" text-anchor="middle" font-size="11" fill="#1e293b" transform="rotate(-90,854,183)">Heuristic waste (topology gain %)</text>
+<rect x="915" y="272.9124" width="30" height="3.0876" rx="3" fill="#64748b" opacity="0.85"/>
+<text x="930" y="266.9124" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">0.8%</text>
+<text x="930" y="292" text-anchor="middle" font-size="9" fill="#1e293b">text</text>
+<rect x="975" y="273.0984" width="30" height="2.9016" rx="3" fill="#64748b" opacity="0.85"/>
+<text x="990" y="267.0984" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">0.8%</text>
+<text x="990" y="292" text-anchor="middle" font-size="9" fill="#1e293b">web</text>
+<rect x="1035" y="248.32319999999999" width="30" height="27.676800000000004" rx="3" fill="#d97706" opacity="0.85"/>
+<text x="1050" y="242.32319999999999" text-anchor="middle" font-size="10" font-weight="600" fill="#d97706">7.4%</text>
+<text x="1050" y="292" text-anchor="middle" font-size="9" fill="#1e293b">media</text>
+<rect x="1095" y="176.86200000000002" width="30" height="99.13799999999999" rx="3" fill="#c2410c" opacity="0.85"/>
+<text x="1110" y="170.86200000000002" text-anchor="middle" font-size="10" font-weight="600" fill="#c2410c">26.6%</text>
+<text x="1110" y="292" text-anchor="middle" font-size="9" fill="#1e293b">polyglot</text>
+<rect x="1155" y="103.5036" width="30" height="172.4964" rx="3" fill="#c2410c" opacity="0.85"/>
+<text x="1170" y="97.5036" text-anchor="middle" font-size="10" font-weight="600" fill="#c2410c">46.4%</text>
+<text x="1170" y="292" text-anchor="middle" font-size="9" fill="#1e293b">api</text>
+<text x="1050" y="314" text-anchor="middle" font-size="11" fill="#1e293b">Content heterogeneity (β₁* →)</text>
+<line x1="900" y1="276" x2="1200" y2="276" stroke="#0f766e" stroke-width="1.5"/>
+<text x="1202" y="280" text-anchor="start" font-size="9" fill="#0f766e" font-weight="600">frontier</text>
+<text x="620" y="402" text-anchor="middle" font-size="10" fill="#475569">THM-AMERICAN-FRONTIER (AmericanFrontier.lean): waste monotonically non-increasing in diversity, zero at β₁ = β₁*, positive below — mechanized in Lean 4</text>
 </svg>

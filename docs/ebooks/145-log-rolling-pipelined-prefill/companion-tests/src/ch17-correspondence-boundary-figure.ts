@@ -374,8 +374,9 @@ function renderMetricPanel(svg: string[], config: MetricPanelConfig): void {
     svg.push(
       `<line x1="${centerX - 10}" y1="${intervalLowY}" x2="${centerX + 10}" y2="${intervalLowY}" stroke="#111827" stroke-width="2"/>`,
     );
+    const labelAnchorY = Math.min(barY, intervalHighY);
     svg.push(
-      `<text x="${centerX}" y="${barY - 12}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#374151">${formatNumber(
+      `<text x="${centerX}" y="${labelAnchorY - 12}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#374151">${formatNumber(
         value,
       )}</text>`,
     );
@@ -484,7 +485,7 @@ export function renderCh17CorrespondenceBoundaryFigureSvg(
     width: 560,
     height: 390,
     title: 'Seeded Gnosis Cancellation Benchmark',
-    subtitle: 'Same 4-parameter topology; cancellation-sensitive left-minus-right learner',
+    subtitle: 'Same 4-parameter topology; cancel-sensitive L-minus-R learner',
     axisLabel: 'Eval MSE with seed bootstrap 95% CI',
     values: report.gnosisTraining.evalMse,
     intervals: report.gnosisTraining.evalMseCi95,
@@ -498,7 +499,7 @@ export function renderCh17CorrespondenceBoundaryFigureSvg(
     width: 560,
     height: 390,
     title: 'Seeded Gnosis Mini-MoE Routing Benchmark',
-    subtitle: 'Same 16-parameter routed-expert topology; two paths should contribute',
+    subtitle: 'Same 16-param routed-expert topology; two paths contribute',
     axisLabel: 'Eval MSE with seed bootstrap 95% CI',
     values: report.gnosisMiniMoe.evalMse,
     intervals: report.gnosisMiniMoe.evalMseCi95,

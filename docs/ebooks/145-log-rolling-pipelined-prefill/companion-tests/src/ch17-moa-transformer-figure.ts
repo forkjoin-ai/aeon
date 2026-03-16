@@ -364,9 +364,9 @@ export function renderCh17MoaTransformerFigureSvg(
     '<text x="72" y="534" font-family="Georgia, Times New Roman, serif" font-size="15" fill="#64748b">Speedup on x-axis, exact fraction on y-axis; bubble size tracks compute-adjusted exact</text>'
   );
 
-  const plotLeft = 92;
+  const plotLeft = 148;
   const plotTop = 568;
-  const plotWidth = 610;
+  const plotWidth = 554;
   const plotHeight = 210;
   const speedupMin = Math.min(
     ...report.ablationPoints.map((point) => point.speedup)
@@ -414,13 +414,13 @@ export function renderCh17MoaTransformerFigureSvg(
       },
       'full-moa': {
         dx: 0,
-        dy: 8,
+        dy: 34,
         anchor: 'middle',
         lines: ['full-moa'],
       },
       'under-routed': {
         dx: 0,
-        dy: 6,
+        dy: 34,
         anchor: 'middle',
         lines: ['under-routed'],
       },
@@ -442,6 +442,13 @@ export function renderCh17MoaTransformerFigureSvg(
         `<line x1="${x}" y1="${leaderTargetY}" x2="${labelX}" y2="${labelY - 6}" stroke="#64748b" stroke-width="1.5" opacity="0.75"/>`,
       );
     }
+    const labelTextWidth = Math.max(...labelLayout.lines.map((l) => l.length)) * 7.5;
+    const labelTextHeight = labelLayout.lines.length * 14;
+    const bgX = labelLayout.anchor === 'end' ? labelX - labelTextWidth - 4 : labelLayout.anchor === 'start' ? labelX - 4 : labelX - labelTextWidth / 2 - 4;
+    const bgY = labelY - 12;
+    svg.push(
+      `<rect x="${bgX}" y="${bgY}" width="${labelTextWidth + 8}" height="${labelTextHeight + 6}" rx="4" ry="4" fill="#fffdf8" fill-opacity="0.88"/>`,
+    );
     multilineText(svg, labelX, labelY, labelLayout.lines, {
       anchor: labelLayout.anchor,
       size: 13,

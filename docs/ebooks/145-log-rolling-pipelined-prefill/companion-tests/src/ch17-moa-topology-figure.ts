@@ -310,7 +310,7 @@ function drawBlock(
       !headActive
     );
     label(svg, headX, headY + 5, headLabel, {
-      size: 13,
+      size: 12,
       weight: 700,
       color: headActive ? '#065f46' : '#64748b',
     });
@@ -372,7 +372,7 @@ function drawPanel(
   const outerWhipY = panel.y + panel.height - 94;
   const outputY = panel.y + panel.height - 32;
   const blockY = panel.y + 310;
-  const blockWidth = 128;
+  const blockWidth = 148;
   const blockHeight = 240;
   const gap = (panel.width - blockWidth * report.blocks) / (report.blocks + 1);
 
@@ -384,6 +384,13 @@ function drawPanel(
     color: '#1d4ed8',
   });
   circle(svg, centerX, outerRouterY, 16, '#fff7ed', '#c2410c');
+  // Background rect behind "outer router" label to prevent overlap with connection lines
+  const outerRouterLabelY = outerRouterY + 40;
+  const outerRouterLabelWidth = 96;
+  const outerRouterLabelHeight = 20;
+  svg.push(
+    `<rect x="${centerX - outerRouterLabelWidth / 2}" y="${outerRouterLabelY - outerRouterLabelHeight / 2 - 2}" width="${outerRouterLabelWidth}" height="${outerRouterLabelHeight}" fill="#fffdf8" rx="4" ry="4"/>`
+  );
   label(svg, centerX, outerRouterY + 40, 'outer router', {
     size: 13,
     color: '#7c2d12',

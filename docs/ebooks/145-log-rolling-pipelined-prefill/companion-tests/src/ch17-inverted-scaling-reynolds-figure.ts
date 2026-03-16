@@ -377,17 +377,22 @@ function renderSpeedupPanel(
     );
   });
 
+  const leftPanelLabelOffsets: Record<string, { dx: number; dy: number }> = {
+    'table-500x8': { dx: 10, dy: -22 },
+  };
+
   report.scenarios
     .filter(isPlottedScenario)
     .forEach((scenario) => {
       const cx = logScale(scenario.workload, xRange, innerX, innerWidth);
       const cy = innerY + innerHeight - (scenario.speedup / yMax) * innerHeight;
       const color = stageColor(scenario.stageCount);
+      const offset = leftPanelLabelOffsets[scenario.id] ?? { dx: 10, dy: -10 };
       svg.push(
         `<circle cx="${cx}" cy="${cy}" r="6" fill="#ffffff" stroke="${color}" stroke-width="3"/>`,
       );
       svg.push(
-        `<text x="${cx + 10}" y="${cy - 10}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">${escapeXml(scenario.label)}</text>`,
+        `<text x="${cx + offset.dx}" y="${cy + offset.dy}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">${escapeXml(scenario.label)}</text>`,
       );
     });
 
@@ -485,15 +490,34 @@ function renderRegimePanel(
     );
   });
 
+  const rightPanelLabelOffsets: Record<string, { dx: number; dy: number }> = {
+    'table-14x2': { dx: 8, dy: 18 },
+    'table-100x4': { dx: 8, dy: -52 },
+    'table-500x8': { dx: 8, dy: -14 },
+    'table-100x10': { dx: -8, dy: -36 },
+    'aeon-flow-microfrontend': { dx: -8, dy: 16 },
+    'http1-microfrontend': { dx: 8, dy: -14 },
+  };
+
   report.scenarios.forEach((scenario) => {
     const cx = logScale(scenario.reynolds, xRange, innerX, innerWidth);
     const cy = innerY + innerHeight - scenario.idleFraction * innerHeight;
     const color = regimeColor(scenario.regime);
+    const offset = rightPanelLabelOffsets[scenario.id] ?? { dx: 8, dy: -8 };
+    const labelX = cx + offset.dx;
+    const labelY = cy + offset.dy;
+    const textAnchor = offset.dx < 0 ? 'end' : 'start';
+    const needsLeader = Math.abs(offset.dy) > 16;
+    if (needsLeader) {
+      svg.push(
+        `<line x1="${cx}" y1="${cy - 6}" x2="${labelX}" y2="${labelY + 4}" stroke="#9ca3af" stroke-width="0.75" stroke-dasharray="2,2"/>`,
+      );
+    }
     svg.push(
       `<circle cx="${cx}" cy="${cy}" r="5.5" fill="${color}" stroke="#ffffff" stroke-width="2"/>`,
     );
     svg.push(
-      `<text x="${cx + 8}" y="${cy - 8}" font-family="system-ui, sans-serif" font-size="10.5" fill="#374151">${escapeXml(scenario.label)}</text>`,
+      `<text x="${labelX}" y="${labelY}" text-anchor="${textAnchor}" font-family="system-ui, sans-serif" font-size="10.5" fill="#374151">${escapeXml(scenario.label)}</text>`,
     );
   });
 
