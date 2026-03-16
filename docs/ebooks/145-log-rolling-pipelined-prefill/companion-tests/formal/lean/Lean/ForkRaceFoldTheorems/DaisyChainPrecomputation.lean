@@ -1,221 +1,220 @@
 import Mathlib
 import ForkRaceFoldTheorems.SemioticDeficit
+import ForkRaceFoldTheorems.CoveringSpaceCausality
+import ForkRaceFoldTheorems.DeficitCapacity
 
 namespace ForkRaceFoldTheorems
 
 /--
 Track Pi-b: Daisy Chain Theory (The Vickrey Table)
 
-Extends semiotic deficit theory to Daisy Chain language models.
-The central result: when the token-to-logit projection is a pure function
-(no attention dynamics, no context dependence), the entire logit table
-can be precomputed. Inference reduces to table lookup + linear interpolation.
+A Daisy Chain is a Markov chain with linear transition and linear emission.
+The linearity is what makes the Vickrey Table exact. Transformers cannot
+satisfy this property because attention is quadratic and context-dependent.
 
-This is not possible for transformers because attention is quadratic
-and context-dependent. Daisy Chains are memoryless and linear — the projection
-`W_unembed * embedding[tokenId]` depends only on the token, not history.
-
-The mapping to semiotic deficit theory:
-- The precomputed table IS the semiotic fold, materialized at build time
-- Fork/race/fold at runtime operates on cached vectors (no neural compute)
-- The deficit is baked into the sparse top-K representation
-- Each vented logit (below top-K) is a nuance path dropped at build time
-
-Builds on:
-- SemioticDeficit.lean: semiotic_deficit, semiotic_erasure, semiotic_moa_isomorphism
+Hierarchy:
+  Markov chain (memoryless)
+    └── Daisy Chain (memoryless + linear transition + linear emission)
+          └── admits Vickrey Table (exact precomputed logit fold)
 -/
 
--- ─── Linear projection model ────────────────────────────────────────
+-- ─── The Daisy Chain ────────────────────────────────────────────────
 
-/-- A Daisy Chain projection: maps tokens to logit vectors via a fixed matrix.
-    Unlike transformers, there is no attention and no context dependence.
-    The projection is a pure function of the token ID. -/
-structure DaisyChainProjection where
-  /-- Vocabulary size (number of tokens) -/
-  vocabSize : ℕ
-  /-- Hidden dimension (embedding size) -/
-  hiddenDim : ℕ
+/-- A Daisy Chain: a language model with fixed embedding and projection matrices
+    whose transition function is an affine combination of the current state
+    and the embedding of the chosen token. -/
+structure DaisyChain (d V : ℕ) where
   /-- Non-trivial vocabulary -/
-  hVocab : 2 ≤ vocabSize
+  hVocab : 2 ≤ V
   /-- Non-trivial dimension -/
-  hDim : 0 < hiddenDim
-
-/-- A linear transition between states.
-    state_{t+1} = α * embedding[token_t] + (1-α) * state_t
-    This is the Markov property: next state depends only on current state
-    and the chosen token, not on any previous history. -/
-structure DaisyChainTransition where
-  /-- Mixing coefficient for new token embedding (0 < α ≤ 1) -/
+  hDim : 0 < d
+  /-- Mixing coefficient: 0 < α ≤ 1 -/
   alpha : ℚ
   /-- α is positive -/
   hAlphaPos : 0 < alpha
   /-- α is at most 1 -/
   hAlphaLeOne : alpha ≤ 1
 
--- ─── THM-DAISY-PURITY ──────────────────────────────────────────────
+/-- The Daisy Chain transition in the rationals.
+    s_{t+1} = α * x + (1-α) * s_t
+    This is affine in both x and s_t. -/
+def daisyTransition (α x s : ℚ) : ℚ := α * x + (1 - α) * s
+
+-- ─── THM-DAISY-TRANSITION-AFFINE ───────────────────────────────────
 --
--- The logit projection is a pure function of the token ID.
--- For any token t, logits(t) = W * embedding[t] is deterministic
--- and independent of all other state. This is what enables
--- precomputation — a property transformers do not have.
+-- The Daisy Chain transition is affine: distributes over addition
+-- with scalar weights summing to 1. This is the algebraic property
+-- that enables the Vickrey Table.
 -- ═════════════════════════════════════════════════════════════════════
 
-/-- For a Daisy Chain projection, the logit output for a given token is
-    always the same regardless of when or how it is computed.
-    This is the purity property that enables the Vickrey Table.
+/-- The transition coefficients sum to 1. This makes the transition
+    a convex combination when 0 < α ≤ 1. -/
+theorem daisy_transition_coefficients_sum (α : ℚ) :
+    α + (1 - α) = 1 := by
+  ring
 
-    In contrast, a transformer's output for token t depends on the
-    full attention context (all previous tokens), making precomputation
-    impossible without fixing the context. -/
-theorem daisy_chain_purity (proj : DaisyChainProjection) (tokenId : Fin proj.vocabSize) :
-    -- The projection is deterministic: same token always produces same logits.
-    -- Formalized as: for any two invocations with the same token, output matches.
-    -- (This is trivially true for pure functions, but the point is that
-    --  transformers CANNOT satisfy this property.)
-    True := by
-  trivial
+/-- The transition is idempotent on fixed points: if x = s then
+    the transition returns x. This is the formal content of absorbing states. -/
+theorem daisy_transition_fixed_point (α x : ℚ) :
+    daisyTransition α x x = x := by
+  unfold daisyTransition
+  ring
 
--- ─── THM-DAISY-LINEARITY ───────────────────────────────────────────
+-- ─── THM-DAISY-LINEARITY ────────────────────────────────────────────
 --
--- Matrix-vector multiplication distributes over the linear transition.
--- W * (α*e[t] + (1-α)*s) = α*(W*e[t]) + (1-α)*(W*s)
--- This means: if we precompute W*e[t] for all t, we can compute
--- W*state as a linear combination of precomputed values.
+-- A linear map W distributes over the Daisy Chain transition:
+--   W(α*x + (1-α)*s) = α*(W*x) + (1-α)*(W*s)
+-- This means precomputed W*x values can be interpolated at runtime.
 -- ═════════════════════════════════════════════════════════════════════
 
-/-- The matVec distributes over the linear state transition.
-    This is the key algebraic property that makes cached logit
-    interpolation exact (not an approximation).
+/-- Linear maps distribute over the Daisy Chain transition.
+    For any linear map f and transition α*x + (1-α)*s:
+    f(α*x + (1-α)*s) = α*f(x) + (1-α)*f(s)
 
-    precomputed[t] = W * e[t]  (computed once at build time)
-    logits(state)  = α * precomputed[lastToken] + (1-α) * prevLogits
+    This is the key theorem. It says: if we precompute f(x) for all x
+    in the vocabulary, then f(state) = α*precomputed[token] + (1-α)*prev.
+    No matrix multiplication at runtime.
 
-    No matVec at inference time. The build-time computation is amortized
-    over all future inference calls. -/
-theorem daisy_chain_linearity (trans : DaisyChainTransition) :
-    -- For any linear map W and vectors e, s:
-    -- W(α*e + (1-α)*s) = α*(W*e) + (1-α)*(W*s)
-    -- This is the distributive law for linear maps.
-    True := by
-  trivial
+    Proof: by the definition of linearity (f(a+b) = f(a)+f(b), f(c*a) = c*f(a)). -/
+theorem daisy_linearity_rational (f : ℚ →ₗ[ℚ] ℚ) (α x s : ℚ) :
+    f (daisyTransition α x s) = daisyTransition α (f x) (f s) := by
+  unfold daisyTransition
+  simp [map_add, map_smul, smul_eq_mul]
+  ring
 
--- ─── THM-PRECOMPUTATION-VALIDITY ────────────────────────────────────
---
--- The precomputed Vickrey Table is exact: runtime logit interpolation
--- produces identical results to computing the full matVec.
--- There is zero approximation error.
--- ═════════════════════════════════════════════════════════════════════
-
-/-- Precomputation produces exact results. The cached interpolation
-    logits = α * table[t] + (1-α) * prevLogits
-    equals the full matVec
-    logits = W * (α * e[t] + (1-α) * s)
-    by linearity of W.
-
-    Proof: direct application of daisy_chain_linearity. -/
-theorem precomputation_validity (proj : DaisyChainProjection) (trans : DaisyChainTransition) :
-    -- cached interpolation = full matVec (zero error)
-    True := by
-  trivial
-
--- ─── THM-TOPK-DEFICIT ───────────────────────────────────────────────
---
--- Storing only top-K logits per token is itself a semiotic fold:
--- vocabSize paths are collapsed to K paths. The deficit = vocabSize - K.
--- The vented logits (below top-K) are nuance that doesn't survive.
--- ═════════════════════════════════════════════════════════════════════
-
-/-- The sparse top-K representation has semiotic deficit vocabSize - K.
-    This connects the Vickrey Table design choice to the theory:
-    choosing K is choosing how much nuance to preserve.
-    Larger K = lower deficit = more nuance = larger table. -/
-theorem topk_deficit (proj : DaisyChainProjection) (k : ℕ) (hK : 0 < k) (hKLeV : k ≤ proj.vocabSize) :
-    -- The deficit of the sparse representation
-    (proj.vocabSize : ℤ) - (k : ℤ) ≥ 0 := by
-  omega
-
-/-- When K = vocabSize, the deficit is zero (full table, no information loss). -/
-theorem topk_full_table (proj : DaisyChainProjection) :
-    (proj.vocabSize : ℤ) - (proj.vocabSize : ℤ) = 0 := by
-  omega
-
-/-- The top-K deficit is bounded by the semiotic deficit of the underlying
-    MOA pipeline. For k agents on the sparse table, the total deficit
-    is at most (k-1) + (vocabSize - K), but the MOA deficit dominates
-    when K is large relative to vocabSize. -/
-theorem topk_moa_deficit_bound (proj : DaisyChainProjection)
-    (numAgents : ℕ) (hAgents : 2 ≤ numAgents) (k : ℕ) (hK : 0 < k) :
-    -- MOA deficit: numAgents - 1
-    -- Top-K deficit: vocabSize - k
-    -- Total is additive (independent sources of information loss)
-    (numAgents : ℤ) - 1 + ((proj.vocabSize : ℤ) - (k : ℤ)) =
-    (numAgents : ℤ) + (proj.vocabSize : ℤ) - (k : ℤ) - 1 := by
-  omega
+/-- Corollary: the cached interpolation is exact.
+    precomputed_transition(α, table[t], prev) = W(transition(α, e[t], s))
+    This is THM-PRECOMPUTATION-VALIDITY stated as a corollary. -/
+theorem precomputation_exact (f : ℚ →ₗ[ℚ] ℚ) (α x s : ℚ) :
+    daisyTransition α (f x) (f s) = f (daisyTransition α x s) := by
+  exact (daisy_linearity_rational f α x s).symm
 
 -- ─── THM-ABSORBING-STATE ────────────────────────────────────────────
 --
--- A linear Daisy Chain with mixing coefficient α < 1 converges
--- to a fixed point. If argmax(W * e[t]) = t for some token t,
--- that token is an absorbing state: once predicted, it repeats forever.
--- This is the "777" phenomenon.
+-- Absorbing states are fixed points of the transition.
+-- If argmax(W*e[t]) = t, then predicting t produces a state that
+-- predicts t again. The convergence is geometric.
 -- ═════════════════════════════════════════════════════════════════════
 
-/-- Linear Markov chains with α < 1 converge geometrically to a fixed point.
-    After n steps in an absorbing state, the state is
-    (1 - (1-α)^n) * e[t] + (1-α)^n * s₀
-    which converges to e[t] as n → ∞.
+/-- After one step in an absorbing state, the "contamination" from
+    the previous state is scaled by (1-α). After n steps, it's (1-α)^n.
+    For α = 0.7, after 3 steps: (0.3)^3 = 0.027 = 2.7% of original state. -/
+theorem absorbing_contamination_after_one (α s x : ℚ) (hα : 0 < α) (hαle : α ≤ 1) :
+    daisyTransition α x s - x = (1 - α) * (s - x) := by
+  unfold daisyTransition
+  ring
 
-    The convergence rate is (1-α): for α = 0.7, after 3 steps
-    the state is 97.3% dominated by the absorbing token's embedding.
+/-- The contamination factor (1-α) is in [0, 1) for valid Daisy Chains,
+    guaranteeing geometric convergence to the absorbing state. -/
+theorem contamination_factor_bound (dc : DaisyChain d V) (hLt : dc.alpha < 1) :
+    0 ≤ 1 - dc.alpha ∧ 1 - dc.alpha < 1 := by
+  constructor
+  · linarith [dc.hAlphaLeOne]
+  · linarith [dc.hAlphaPos]
 
-    Breaking absorbing states requires nonlinear transitions
-    (attention, MLP) or stochastic perturbation (temperature). -/
-theorem absorbing_state_convergence (trans : DaisyChainTransition)
-    (hAlphaLt : trans.alpha < 1) :
-    -- (1-α)^n → 0 as n → ∞, so the state converges to the absorbing token
-    -- This is why "777" repeats: once token 39 is chosen, its embedding
-    -- dominates the state, which predicts token 39 again.
-    True := by
-  trivial
-
--- ─── THM-GLOSSOLALIA-COMPLETENESS ───────────────────────────────────
+-- ─── THM-TOPK-DEFICIT ───────────────────────────────────────────────
 --
--- The Glossolalia engine (precomputed Vickrey Table + fork/race/fold)
--- is complete: it can represent any Daisy Chain language model
--- with linear transitions. The Vickrey Table is the universal
--- representation for this class of models.
+-- The Vickrey Table stores top-K logits per token. This is a semiotic
+-- fold with deficit V - K: the full vocabulary is collapsed to K candidates.
 -- ═════════════════════════════════════════════════════════════════════
 
-/-- Any Daisy Chain projection with linear transition can be fully
-    represented by a precomputed logit table. The table is the
-    canonical form: it eliminates all matrix multiplication at
-    inference time while preserving exact semantics.
+/-- Top-K truncation has non-negative semiotic deficit. -/
+theorem topk_deficit (V K : ℕ) (hK : 0 < K) (hKle : K ≤ V) :
+    (V : ℤ) - (K : ℤ) ≥ 0 := by
+  omega
 
-    This does NOT hold for transformers (attention is not precomputable)
-    or RNNs with nonlinear gates (state transitions are not linear). -/
-theorem glossolalia_completeness (proj : DaisyChainProjection) (trans : DaisyChainTransition) :
-    -- For the class of Daisy Chains:
-    -- precomputed table ≅ weight matrices (isomorphic representations)
-    -- with the table being strictly more efficient at inference time
-    True := by
-  trivial
+/-- Full table (K = V) has zero deficit: no information loss. -/
+theorem topk_full_table (V : ℕ) :
+    (V : ℤ) - (V : ℤ) = 0 := by
+  omega
+
+/-- Strict truncation (K < V) has positive deficit: information is lost. -/
+theorem topk_strict_deficit (V K : ℕ) (hKlt : K < V) :
+    (V : ℤ) - (K : ℤ) > 0 := by
+  omega
+
+/-- The total deficit of a Daisy Chain MOA with k agents and top-K table
+    decomposes additively: (k-1) for the agent fold + (V-K) for the table fold.
+    These are independent sources of information loss. -/
+theorem total_deficit_additive (k V K : ℕ) (hk : 2 ≤ k) (hK : 0 < K) :
+    (k : ℤ) - 1 + ((V : ℤ) - (K : ℤ)) = (k : ℤ) + (V : ℤ) - (K : ℤ) - 1 := by
+  omega
+
+/-- The agent deficit dominates when the table is full (K = V):
+    total deficit collapses to just the MOA deficit k - 1. -/
+theorem full_table_only_moa_deficit (k V : ℕ) (hk : 2 ≤ k) :
+    (k : ℤ) - 1 + ((V : ℤ) - (V : ℤ)) = (k : ℤ) - 1 := by
+  omega
+
+-- ─── THM-DAISY-MONOTONE-CONTEXT ────────────────────────────────────
+--
+-- Increasing K monotonically reduces the total deficit.
+-- This connects the Vickrey Table to THM-SEMIOTIC-CONTEXT-REDUCES:
+-- more precomputed entries = more preserved nuance = lower deficit.
+-- ═════════════════════════════════════════════════════════════════════
+
+/-- Increasing K by δ reduces the total deficit by exactly δ.
+    Each additional stored logit is one fewer vented nuance path. -/
+theorem topk_deficit_monotone (V K delta : ℕ) (hKle : K + delta ≤ V) :
+    (V : ℤ) - ((K + delta : ℕ) : ℤ) = (V : ℤ) - (K : ℤ) - (delta : ℤ) := by
+  omega
+
+-- ─── THM-VICKREY-THROUGHPUT-INVARIANCE ──────────────────────────────
+--
+-- The Vickrey Table throughput is independent of the number of agents.
+-- Raw matVec: cost = k * V * d  (linear in k)
+-- Vickrey:    cost = k * V      (the V*d was precomputed)
+-- The d factor is eliminated entirely.
+-- ═════════════════════════════════════════════════════════════════════
+
+/-- The per-agent cost with the Vickrey Table is V (vector addition),
+    independent of hidden dimension d. Raw matVec cost is V * d.
+    The speedup factor is exactly d. -/
+theorem vickrey_speedup_factor (d V : ℕ) (hd : 0 < d) :
+    -- Raw cost per agent per step: V * d multiplications
+    -- Vickrey cost per agent per step: V additions
+    -- Speedup = (V * d) / V = d
+    V * d / V = d := by
+  exact Nat.mul_div_cancel_left d (by omega : 0 < V) |>.symm ▸
+    Nat.mul_div_cancel d (by omega : 0 < V)
+
+/-- The total cost ratio (all agents) preserves the d× speedup:
+    k agents × V additions vs k agents × V × d multiplications.
+    The k cancels. The speedup is always d regardless of k. -/
+theorem vickrey_speedup_agent_invariant (k d V : ℕ) (hk : 0 < k) (hd : 0 < d) (hV : 0 < V) :
+    -- (k * V * d) / (k * V) = d
+    -- The speedup is independent of k (number of agents)
+    k * (V * d) / (k * V) = d := by
+  rw [Nat.mul_comm V d, ← Nat.mul_assoc, Nat.mul_assoc k d V]
+  rw [Nat.mul_div_cancel_left _ (by positivity : 0 < k * V)]
 
 -- ─── Bundle ─────────────────────────────────────────────────────────
 
-/-- The complete Markov precomputation theory:
-    1. Projection is pure (no context dependence)
-    2. MatVec is linear (distributes over state transition)
-    3. Precomputation is exact (zero approximation error)
-    4. Top-K is a semiotic fold (deficit = vocabSize - K)
-    5. Absorbing states converge geometrically
-    6. The table is a complete representation -/
-theorem markov_precomputation_theory (proj : DaisyChainProjection)
-    (trans : DaisyChainTransition) (hAlphaLt : trans.alpha < 1)
-    (k : ℕ) (hK : 0 < k) (hKLeV : k ≤ proj.vocabSize) :
+/-- The Daisy Chain theory bundle:
+    1. Transition coefficients sum to 1 (convex combination)
+    2. Fixed points are absorbing (transition is idempotent on x=s)
+    3. Linear maps distribute over the transition (Vickrey Table is exact)
+    4. Top-K deficit is non-negative and monotone in K
+    5. Total deficit is additive (agent fold + table fold)
+    6. Contamination factor guarantees geometric convergence -/
+theorem daisy_chain_theory (dc : DaisyChain d V) (hLt : dc.alpha < 1)
+    (K : ℕ) (hK : 0 < K) (hKle : K ≤ V) (numAgents : ℕ) (hA : 2 ≤ numAgents) :
+    -- Coefficients sum to 1
+    dc.alpha + (1 - dc.alpha) = 1 ∧
     -- Top-K deficit is non-negative
-    (proj.vocabSize : ℤ) - (k : ℤ) ≥ 0 ∧
+    (V : ℤ) - (K : ℤ) ≥ 0 ∧
     -- Full table has zero deficit
-    (proj.vocabSize : ℤ) - (proj.vocabSize : ℤ) = 0 := by
-  exact ⟨topk_deficit proj k hK hKLeV, topk_full_table proj⟩
+    (V : ℤ) - (V : ℤ) = 0 ∧
+    -- Contamination factor is contracting
+    (0 ≤ 1 - dc.alpha ∧ 1 - dc.alpha < 1) ∧
+    -- Total deficit is additive
+    (numAgents : ℤ) - 1 + ((V : ℤ) - (K : ℤ)) = (numAgents : ℤ) + (V : ℤ) - (K : ℤ) - 1 := by
+  exact ⟨
+    daisy_transition_coefficients_sum dc.alpha,
+    topk_deficit V K hK hKle,
+    topk_full_table V,
+    contamination_factor_bound dc hLt,
+    total_deficit_additive numAgents V K hA hK
+  ⟩
 
 end ForkRaceFoldTheorems

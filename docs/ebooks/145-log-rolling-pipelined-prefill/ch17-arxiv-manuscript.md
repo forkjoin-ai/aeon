@@ -176,46 +176,13 @@ https://www.youtube.com/watch?v=HyzT5b0tNtk
 
 The mapping to fork/race/fold is presented as an operational mechanism in this model:
 
-<table>
-<thead>
-<tr>
-<th style="text-align: left;"><div class="minipage">
-<p><em>Physarum</em> Behavior</p>
-</div></th>
-<th style="text-align: left;"><div class="minipage">
-<p>Fork/Race/Fold Operation</p>
-</div></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Exploratory tendril extension</td>
-<td style="text-align: left;"><strong>Fork</strong>: create <span
-class="math inline"><em>N</em></span> parallel paths from current position</td>
-</tr>
-<tr>
-<td style="text-align: left;">Cytoplasmic streaming through tubes</td>
-<td style="text-align: left;"><strong>Race</strong>: flow rate
-determines winner</td>
-</tr>
-<tr>
-<td style="text-align: left;">Tube reinforcement (positive
-feedback)</td>
-<td style="text-align: left;"><strong>Fold</strong>: high-flow paths
-become canonical</td>
-</tr>
-<tr>
-<td style="text-align: left;">Tube abandonment (starvation)</td>
-<td style="text-align: left;"><strong>Vent</strong>: low-flow paths
-released, descendants shed</td>
-</tr>
-<tr>
-<td style="text-align: left;">Shuttle streaming (oscillatory flow)</td>
-<td style="text-align: left;"><strong>Self-describing frames</strong>:
-bidirectional flow carries positional information</td>
-</tr>
-</tbody>
-</table>
+| *Physarum* Behavior | Fork/Race/Fold Operation |
+|---|---|
+| Exploratory tendril extension | **Fork**: create $N$ parallel paths from current position |
+| Cytoplasmic streaming through tubes | **Race**: flow rate determines winner |
+| Tube reinforcement (positive feedback) | **Fold**: high-flow paths become canonical |
+| Tube abandonment (starvation) | **Vent**: low-flow paths released, descendants shed |
+| Shuttle streaming (oscillatory flow) | **Self-describing frames**: bidirectional flow carries positional information |
 
 *Physarum*’s rail network shows that optimization can emerge without centralized cognition. Fork/race/fold does not require a neural substrate; it needs parallel paths, a selection signal and a way to prune. In this manuscript, that structure is instantiated in protoplasm, silicon and 10-byte frame transport.
 
@@ -828,9 +795,7 @@ This contrast is used as a heuristic: queueing theory emphasizes steady-state be
 
 The following correspondences are heuristic structural mappings between quantum-mechanical operations and computational operations, with photosynthetic antenna complexes (§1.5) as the closest literal quantum case discussed here. In §6.12, I show that the Feynman path integral admits a fork/race/fold interpretation within this abstraction.
 
-**Relation to prior formalisms.** The concurrent-computation literature offers several models with overlapping expressiveness. Petri nets (Petri, 1962 [25]) represent fork as transition firing and fold as place merging; they excel at deadlock analysis but lack native race and vent semantics. The $\pi$-calculus (Milnor, 1999 [26]) models dynamic channel creation (akin to fork) and synchronization (akin to fold) with full compositionality; it does not, however, expose the same topological characterization ($\beta_1$, covering spaces) or thermodynamic accounting language used here. Speculative execution in CPU microarchitectures (Tomasulo, 1967 [27]; Smith & Sohi, 1995
-[28]) implements fork (issue multiple paths), race (retire the correct
-path first), and vent (flush mispredicted paths) at the hardware level – the closest engineering analogue to fork/race/fold, discovered independently by processor designers optimizing instruction-level parallelism. Byzantine fault-tolerant consensus protocols (Castro & Liskov, 1999 [29]; Yin et al., 2019 [30]) implement quorum fold under adversarial conditions, with explicit vent of Byzantine-faulty replicas. Fork/race/fold does not replace these formalisms. Its distinct role here is to provide a common descriptive vocabulary and a set of diagnostics – $\beta_1$, $\Delta_\beta$, and a conservation-style accounting lens – for comparing them inside one framework.
+**Relation to prior formalisms.** The concurrent-computation literature offers several models with overlapping expressiveness. Petri nets (Petri, 1962 [25]) represent fork as transition firing and fold as place merging; they excel at deadlock analysis but lack native race and vent semantics. The $\pi$-calculus (Milnor, 1999 [26]) models dynamic channel creation (akin to fork) and synchronization (akin to fold) with full compositionality; it does not, however, expose the same topological characterization ($\beta_1$, covering spaces) or thermodynamic accounting language used here. Speculative execution in CPU microarchitectures (Tomasulo, 1967 [27]; Smith & Sohi, 1995 [28]) implements fork (issue multiple paths), race (retire the correct path first), and vent (flush mispredicted paths) at the hardware level – the closest engineering analogue to fork/race/fold, discovered independently by processor designers optimizing instruction-level parallelism. Byzantine fault-tolerant consensus protocols (Castro & Liskov, 1999 [29]; Yin et al., 2019 [30]) implement quorum fold under adversarial conditions, with explicit vent of Byzantine-faulty replicas. Fork/race/fold does not replace these formalisms. Its distinct role here is to provide a common descriptive vocabulary and a set of diagnostics – $\beta_1$, $\Delta_\beta$, and a conservation-style accounting lens – for comparing them inside one framework.
 
 <table>
 <thead>

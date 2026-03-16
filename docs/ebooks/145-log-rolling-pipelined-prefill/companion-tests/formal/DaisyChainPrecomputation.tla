@@ -51,7 +51,7 @@ vars == <<checked, purityOk, linearityOk, validityOk,
 \* Consequence: logits(t) can be computed ONCE and cached forever.
 \* ═══════════════════════════════════════════════════════════════════════
 
-MarkovPurityHolds ==
+DaisyPurityHolds ==
   \* For all tokens t1, t2: same token => same logits
   \* This is trivially true for pure functions
   \* (formalized as: the projection has no hidden state)
@@ -71,10 +71,11 @@ MarkovPurityHolds ==
 \* can be factored out of the trace loop.
 \* ═══════════════════════════════════════════════════════════════════════
 
-MarkovLinearityHolds ==
+DaisyLinearityHolds ==
   \* Distributive law: W(alpha*a + beta*b) = alpha*(W*a) + beta*(W*b)
   \* This holds for ALL linear maps (matrices), no special structure needed.
-  Alpha > 0 /\ Alpha <= 1
+  \* Alpha is represented as integer tenths (7 = 0.7) for TLC compatibility.
+  Alpha > 0 /\ Alpha <= 10
 
 \* ═══════════════════════════════════════════════════════════════════════
 \* THM-PRECOMPUTATION-VALIDITY
@@ -97,7 +98,7 @@ MarkovLinearityHolds ==
 PrecomputationValidityHolds ==
   \* By linearity, cached interpolation = full matVec
   \* Error = 0 for all tokens, all states, all sequence lengths
-  MarkovPurityHolds /\ MarkovLinearityHolds
+  DaisyPurityHolds /\ DaisyLinearityHolds
 
 \* ═══════════════════════════════════════════════════════════════════════
 \* THM-TOPK-DEFICIT
@@ -158,13 +159,13 @@ CombinedDeficitHolds ==
 
 \* Convergence factor after n steps: (1 - alpha)^n
 \* For alpha in (0,1), this converges to 0 geometrically
-ConvergenceFactor(n) == IF Alpha > 0 /\ Alpha < 1
+ConvergenceFactor(n) == IF Alpha > 0 /\ Alpha < 10
                         THEN (1 - Alpha)  \* each step multiplies by this
                         ELSE 0
 
 AbsorbingStateHolds ==
-  (Alpha > 0 /\ Alpha < 1) =>
-    /\ ConvergenceFactor(1) < 1                  \* strictly contracting
+  (Alpha > 0 /\ Alpha < 10) =>
+    /\ ConvergenceFactor(1) < 10                  \* strictly contracting
     /\ ConvergenceFactor(1) >= 0                  \* non-negative factor
     \* The state approaches the absorbing token's embedding geometrically
 
@@ -205,8 +206,8 @@ Init ==
 
 CheckAll ==
   /\ ~checked
-  /\ purityOk' = MarkovPurityHolds
-  /\ linearityOk' = MarkovLinearityHolds
+  /\ purityOk' = DaisyPurityHolds
+  /\ linearityOk' = DaisyLinearityHolds
   /\ validityOk' = PrecomputationValidityHolds
   /\ topkOk' = TopKDeficitHolds /\ CombinedDeficitHolds
   /\ absorbingOk' = AbsorbingStateHolds

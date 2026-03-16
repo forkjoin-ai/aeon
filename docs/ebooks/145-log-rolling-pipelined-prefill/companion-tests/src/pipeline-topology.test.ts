@@ -208,9 +208,9 @@ describe('Pipeline Topology', () => {
     /**
      * Re = N / C (items / pipeline capacity)
      *
-     * Re < 0.3:  Laminar — sequential suffices
-     * 0.3–0.7:   Transitional — pipeline starts to help
-     * Re > 0.7:  Turbulent — full multiplexing needed
+     * Re < 1/3:  Laminar — merge-all fold safe (async BFT regime)
+     * 1/3–2/3:   Transitional — quorum fold required (sync BFT regime)
+     * Re > 2/3:  Turbulent — fold requires synchrony (ReynoldsBFT.lean)
      */
 
     function reynoldsNumber(N: number, C: number): number {
@@ -218,16 +218,16 @@ describe('Pipeline Topology', () => {
     }
 
     function regime(Re: number): 'laminar' | 'transitional' | 'turbulent' {
-      if (Re < 0.3) return 'laminar';
-      if (Re <= 0.7) return 'transitional';
+      if (Re < 1/3) return 'laminar';
+      if (Re <= 2/3) return 'transitional';
       return 'turbulent';
     }
 
-    it('single request is laminar (Re < 0.3)', () => {
+    it('single request is laminar (Re < 1/3)', () => {
       expect(regime(reynoldsNumber(1, 6))).toBe('laminar');
     });
 
-    it('moderate load is transitional (0.3 ≤ Re ≤ 0.7)', () => {
+    it('moderate load is transitional (1/3 ≤ Re ≤ 2/3)', () => {
       expect(regime(reynoldsNumber(3, 6))).toBe('transitional');
     });
 

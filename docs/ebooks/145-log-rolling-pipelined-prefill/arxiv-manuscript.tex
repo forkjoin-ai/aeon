@@ -131,13 +131,7 @@ select earliest valid progress, \texttt{fold} results through
 deterministic reconciliation, and \texttt{vent} paths whose continued
 existence would destabilize the whole. The central claim of this
 manuscript is that failure in such systems can be modeled not only as a
-binary event but also as a \textbf{topological coordinate}, within the
-modeled finite-DAG scope under stated assumptions. By ``topological
-coordinate'' I mean the pair $(\beta_1, \Delta_\beta)$: the first Betti
-number of the computation graph (counting independent parallel paths)
-and the topological deficit (the gap between the problem's intrinsic
-$\beta_1^*$ and the implementation's actual $\beta_1$). These are
-defined formally in \S2.
+binary event but also as a \textbf{topological coordinate}, within the modeled finite-DAG scope under stated assumptions. By ``topological coordinate'' I mean the pair $(\beta_1, \Delta_\beta)$: the first Betti number of the computation graph (counting independent parallel paths) and the topological deficit (the gap between the problem's intrinsic $\beta_1^*$ and the implementation's actual $\beta_1$). These are defined formally in \S2.
 
 In this framing, failure is not merely the opposite of success; it marks
 where topology, coordination, and reconciliation no longer return the
@@ -145,12 +139,7 @@ system toward a bounded stable region. Across the modeled scope in this
 manuscript, I argue that this viewpoint is operationally useful,
 measurable, and partially mechanizable.
 
-This manuscript blends two modes of argument: \emph{mechanized proofs}
-(Lean theorems, TLA+ models, executable companion tests) and
-\emph{structural correspondences} (post-hoc pattern-matching in natural
-and engineered systems).  The former are machine-verified; the latter
-are evidentiary and interpretive.  The grading system in \S1 makes the
-distinction explicit for each example.
+This manuscript blends two modes of argument: \emph{mechanized proofs} (Lean theorems, TLA+ models, executable companion tests) and \emph{structural correspondences} (post-hoc pattern-matching in natural and engineered systems).  The former are machine-verified; the latter are evidentiary and interpretive.  The grading system in \S1 makes the distinction explicit for each example.
 
 I report structural similarities in selected natural and engineered
 examples: \emph{Physarum polycephalum} recreated a rail-like network
@@ -170,9 +159,7 @@ partially ordered work into concurrent stage-local tracks with
 controlled reconciliation, and I show through constructive local
 decomposition, assumption-parameterized global schemas, and executable
 verification that four primitives -- fork, race, fold, vent -- are
-sufficient for the finite directed-acyclic-graph (DAG) classes
-satisfying conditions C1--C4 (causality, branch isolation, deterministic
-fold, bounded termination) used in this paper's implementation scope. I also
+sufficient for the finite directed-acyclic-graph (DAG) classes satisfying conditions C1--C4 (causality, branch isolation, deterministic fold, bounded termination) used in this paper's implementation scope. I also
 describe a topological reading of the algorithm: fork increases the
 first Betti number \(\beta_1\) (creating independent parallel paths),
 race traverses homotopy-equivalent paths simultaneously, fold projects
@@ -195,14 +182,7 @@ while \(\Delta_\beta > 0\) co-occurs with measurable waste (healthcare
 delays, settlement lockup, protocol-level blocking) {[}9, 16, 17{]}. I
 define the \textbf{Bule} (1 B = 1 unit of \(\Delta_\beta\)) as a
 shorthand engineering unit for that deficit. The formal companion now
-mechanizes a conditional optimality-verification theorem on explicitly witnessed
-failure Pareto frontiers: given a supplied zero-deficit floor point
-together with latency/waste lower bounds, the theorem shows it minimizes
-every monotone generalized-convex cost; strict uniqueness additionally
-requires the strict cost extension plus uniqueness of the supplied
-zero-deficit floor witness. The theorem does not generate or discover
-the floor point; the witness must be supplied and its existence is a
-precondition, not a conclusion.
+mechanizes a conditional optimality-verification theorem on explicitly witnessed failure Pareto frontiers: given a supplied zero-deficit floor point together with latency/waste lower bounds, the theorem shows it minimizes every monotone generalized-convex cost; strict uniqueness additionally requires the strict cost extension plus uniqueness of the supplied zero-deficit floor witness. The theorem does not generate or discover the floor point; the witness must be supplied and its existence is a precondition, not a conclusion.
 
 These cross-domain correspondences are exemplar-based and correlational;
 they are not presented as a systematic causal survey or universal proof.
@@ -257,11 +237,7 @@ the ones below it.
   round-trip-stable TLA sandbox. Both verification paths check the same
   invariants: \(\beta_1 = \text{folded}\), \(\beta_1 \geq 0\),
   \(\text{vents} \leq \text{folds}\), and eventual termination under
-  weak fairness. In the finite-model verification scope used here,
-  this provides evidence of closure under self-application: the
-  checker, itself a fork/race/fold computation, successfully verifies
-  models of fork/race/fold computations. This is finite-state
-  evidence, not a universal metatheoretic closure proof {[}13{]}.
+  weak fairness. In the finite-model verification scope used here, this provides evidence of closure under self-application: the checker, itself a fork/race/fold computation, successfully verifies models of fork/race/fold computations. This is finite-state evidence, not a universal metatheoretic closure proof {[}13{]}.
 \item
   In formal language theory (the programming model, §11), I implement
   Gnosis {[}15{]} -- a programming language that unifies source code and
@@ -277,19 +253,12 @@ the ones below it.
   chunked pipelined processing reduces sequential depth from \(O(PN)\)
   to \(O(\lceil P/B \rceil + N - 1)\), yielding modeled step-count
   speedups of 3.1x--267x in the listed scenarios under explicit
-  idealized assumptions (uniform stage service time, zero inter-node
-  communication cost; speedups halve when network cost equals compute
-  cost --- see \S7 sensitivity analysis). The Wallington Rotation, expressed in layer 2's
+  idealized assumptions (uniform stage service time, zero inter-node communication cost; speedups halve when network cost equals compute cost --- see \S7 sensitivity analysis). The Wallington Rotation, expressed in layer 2's
   language, verified by layer 1's checker.
 \item
   In edge transport (the wire format, §8), I implement a binary stream
   protocol with 10-byte self-describing frame headers and native
-  fork/race/fold operations on UDP, reducing framing overhead from
-  HTTP/1.1's 31\% to 1.5\% on a 95-resource microfrontend benchmark
-  (a 21$\times$ reduction) and multiplexing concurrent streams over a
-  single connection to reduce forced serialization from TCP's
-  ordered-delivery model. Layer
-  3's scheduling algorithm runs over layer 4's wire format.
+  fork/race/fold operations on UDP, reducing framing overhead from HTTP/1.1's 31\% to 1.5\% on a 95-resource microfrontend benchmark (a 21$\times$ reduction) and multiplexing concurrent streams over a single connection to reduce forced serialization from TCP's ordered-delivery model. Layer 3's scheduling algorithm runs over layer 4's wire format.
 \item
   In compression (bytes on wire, §9), I implement per-chunk topological
   codec racing (fork codecs, race per chunk, fold to winner), with
@@ -564,20 +533,12 @@ mapping:
   \textbf{Grade B}: Structural homology -- deep structural match,
   genuine design insight, no novel quantitative prediction.
 \item
-  \textbf{Grade B+}: Structural homology with partial mechanized
-  validation -- the structural mapping is supported by executable
-  companion tests that verify specific boundary conditions, but the
-  correspondence is not quantitatively predictive across its full range.
+  \textbf{Grade B+}: Structural homology with partial mechanized validation -- the structural mapping is supported by executable companion tests that verify specific boundary conditions, but the correspondence is not quantitatively predictive across its full range.
 \end{itemize}
 
-Grades are evidentiary tiers, not additive votes. Grade B and B+
-examples provide structural context; they are not interchangeable with
-Grade A quantitative confirmations.
+Grades are evidentiary tiers, not additive votes. Grade B and B+ examples provide structural context; they are not interchangeable with Grade A quantitative confirmations.
 
-In this framing, the contribution is making the structural convergence
-explicit and testable: the topological abstraction (fork/race/fold),
-the diagnostic metric (the Bule), and the mechanized proof surface
-are the novel artifacts.
+In this framing, the contribution is making the structural convergence explicit and testable: the topological abstraction (fork/race/fold), the diagnostic metric (the Bule), and the mechanized proof surface are the novel artifacts.
 
 In this paper, low topological deficit is treated as one interpretable
 sign of fit under explicit assumptions, not as a standalone aesthetic
@@ -683,13 +644,7 @@ requiring global ordering. The replication fork moves at
 fragments are being synthesized simultaneously, giving a pipeline
 Reynolds number \(Re \approx 0.7\)--\(1.0\).
 
-\textbf{Post-hoc consistency}: My chunked pipeline formula
-\(T = \lceil P/B \rceil + (N - 1)\) is consistent with the observed
-difference: prokaryotic fragments (\textasciitilde1,000 nt) are longer
-than eukaryotic fragments (\textasciitilde150 nt), a pattern explained
-by eukaryotes having more processing stages \(N\) (chromatin
-reassembly, histone deposition). This is directional consistency with
-known fragment ranges, not a novel prediction. The framework also predicts
+\textbf{Post-hoc consistency}: My chunked pipeline formula \(T = \lceil P/B \rceil + (N - 1)\) is consistent with the observed difference: prokaryotic fragments (\textasciitilde1,000 nt) are longer than eukaryotic fragments (\textasciitilde150 nt), a pattern explained by eukaryotes having more processing stages \(N\) (chromatin reassembly, histone deposition). This is directional consistency with known fragment ranges, not a novel prediction. The framework also predicts
 that organisms with lower \(Re\) (more exposed single-stranded DNA
 during lagging strand synthesis) should show stronger strand
 asymmetries. Directionally similar asymmetries are well documented in
@@ -1044,22 +999,13 @@ I define:
 
 \[Re = N / C\]
 
-This is the ratio of stages to chunks -- the density of the pipeline.
-Low \(Re\) (\(< 0.3\)): laminar regime, steady-state, high utilization.
-Transitional \(Re\) (\(0.3\)--\(0.7\)): idle-slot recovery is
-profitable. High \(Re\) (\(> 0.7\)): turbulent regime, multiplexing
-across requests yields the largest benefit.
+This is the ratio of stages to chunks -- the density of the pipeline. The idle fraction of stages at any step is $\max(0, 1 - 1/Re)$. This fraction maps directly to the ``faulty fraction'' $f/n$ in Byzantine fault tolerance, yielding theorem-backed regime thresholds:
 
-The Reynolds-number mapping is an explicit analogy. In fluid dynamics,
-\(Re = \rho v D / \mu\) predicts transition from laminar to turbulent
-flow: inertial forces (numerator) versus viscous forces (denominator).
-In computation, the correspondence used here is: stages \(N\) as
-inertial pressure (more stages = more work in flight), and chunks \(C\)
-as viscous pressure (larger chunks = more resistance to context
-switching). Low \(Re\) (large chunks, few stages) is laminar-like; high
-\(Re\) (small chunks, many stages) is turbulent-like. The transition
-occurs when ramp-up/ramp-down idle cost exceeds multiplexing recovery
-benefit.
+Low $Re$ ($< 1/3$): idle fraction $< 1/3$, the async BFT regime. Merge-all fold is safe --- any simple reconciliation works. Transitional $Re$ ($1/3$--$2/3$): idle fraction between $1/3$ and $1/2$, the sync BFT regime. Quorum or majority fold required --- simple merge loses integrity. High $Re$ ($> 2/3$): idle fraction exceeds $1/2$, beyond majority threshold. Fold requires synchrony assumptions or external ordering.
+
+These thresholds are not heuristic. They derive from the BFT impossibility results of Castro--Liskov \cite{29} and the $f < n/3$ bound for asynchronous consensus: when the fraction of non-contributing pipeline stages exceeds $1/3$, a simple fold cannot distinguish correct results from idle/stale ones without quorum intersection guarantees (\texttt{ReynoldsBFT.lean}). The connection is: \emph{a pipeline stage that is idle during a fold step is operationally equivalent to a Byzantine replica that fails to vote.} The quorum intersection theorem (\texttt{write\_read\_quorums\_intersect}) ensures fold correctness when $2f < n$; the pipeline version requires $2 \cdot \text{idleStages} < N$, which is $Re < 2$.
+
+The Reynolds-number mapping is an explicit analogy. In fluid dynamics, $Re = \rho v D / \mu$ predicts transition from laminar to turbulent flow: inertial forces (numerator) versus viscous forces (denominator). In computation, the correspondence used here is: stages $N$ as inertial pressure (more stages = more work in flight), and chunks $C$ as viscous pressure (larger chunks = more resistance to context switching). Low $Re$ (large chunks, few stages) is laminar-like; high $Re$ (small chunks, many stages) is turbulent-like. The BFT correspondence upgrades this from analogy to theorem: the transition thresholds are the consensus impossibility boundaries.
 
 \subsubsection{2.4 Four Primitives}\label{four-primitives}
 
@@ -1884,8 +1830,8 @@ Fork/Race/Fold
 paths in system) \\
 Utilization \(\rho = \lambda / \mu\) & \(Re = N / C\) (stages /
 chunks) \\
-\(\rho < 1\) for stability & Heuristic bands in this manuscript:
-\(Re < 0.3\) laminar-like; \(Re > 0.7\) turbulent-like \\
+\(\rho < 1\) for stability & BFT-derived thresholds:
+$Re < 1/3$ merge-all safe; $Re > 2/3$ sync required \\
 M/M/1, M/M/c, M/G/1 variants & Laminar, transitional, turbulent
 regimes \\
 Arrival rate \(\lambda\) & Fork rate \\
@@ -1986,17 +1932,9 @@ steady-state behavior?}
 Fork/race/fold asks: \emph{what topology should the system have at each
 decision point?}
 
-The Reynolds number \(Re\) provides a runtime heuristic for this
-question. In the benchmarked regime bands used here: \(Re < 0.3\)
-suggests sequential sufficiency, \(0.3 < Re < 0.7\) suggests
-multiplexing opportunity, and \(Re > 0.7\) suggests widening fork
-degree. The topology is not fixed; it is adapted from the same
-measurement that drives scheduling.
+The Reynolds number $Re$ provides a theorem-backed regime classifier for this question (see \S2.3 and \texttt{ReynoldsBFT.lean}): $Re < 1/3$ implies merge-all fold is safe (async BFT regime, idle fraction $< 1/3$), $1/3 \leq Re < 2/3$ requires quorum or majority fold (sync BFT regime), and $Re \geq 2/3$ requires synchrony assumptions or external ordering. The topology is not fixed; it is adapted from the same measurement that drives scheduling.
 
-This contrast is used as a heuristic: queueing theory emphasizes
-steady-state behavior for fixed topologies, while fork/race/fold
-emphasizes topology-adaptation decisions under the assumptions used
-here.
+This contrast bridges two literatures: queueing theory emphasizes steady-state behavior for fixed topologies, while fork/race/fold emphasizes topology-adaptation decisions --- and the BFT correspondence gives the adaptation exact thresholds rather than heuristic bands.
 
 \subsection{5. The Quantum Vocabulary Is
 Structural}\label{the-quantum-vocabulary-is-structural}
@@ -2007,14 +1945,7 @@ photosynthetic antenna complexes (\S1.5) as the closest literal quantum
 case discussed here. In \S6.12, I show that the Feynman path integral
 admits a fork/race/fold interpretation within this abstraction.
 
-\textbf{Boundary.} The quantum vocabulary applies exactly to linear
-full-aggregation folds (sum over all paths with equal weight).  For
-nonlinear selection folds (winner-take-all) and early-stop folds
---- which dominate practical computation --- the correspondence breaks:
-companion tests include explicit counterexamples \cite{9, 13}.  The
-sections that follow use quantum language as structural vocabulary for
-linear-fold cases; formal equivalence does not extend to nonlinear
-folds.
+\textbf{Boundary.} The quantum vocabulary applies exactly to linear full-aggregation folds (sum over all paths with equal weight).  For nonlinear selection folds (winner-take-all) and early-stop folds --- which dominate practical computation --- the correspondence breaks: companion tests include explicit counterexamples \cite{9, 13}.  The sections that follow use quantum language as structural vocabulary for linear-fold cases; formal equivalence does not extend to nonlinear folds.
 
 \textbf{Relation to prior formalisms.} The concurrent-computation
 literature offers several models with overlapping expressiveness. Petri
@@ -2167,11 +2098,7 @@ queueing containment (§4) situates it within existing theory. The
 quantum vocabulary (§5) names its operations. This section introduces a
 thermodynamic accounting analogy: fork/race/fold is modeled as an
 engine-like process whose primitives admit conservation-style
-bookkeeping within the scope of this manuscript. The analogy is
-structural, not physical: we do not claim that computational forks
-generate literal potential energy or that computational vents dissipate
-literal heat. The mapping is a vocabulary for organizing the cost
-analysis, not an assertion of physical identity.
+bookkeeping within the scope of this manuscript. The analogy is structural, not physical: we do not claim that computational forks generate literal potential energy or that computational vents dissipate literal heat. The mapping is a vocabulary for organizing the cost analysis, not an assertion of physical identity.
 
 \subsubsection{6.1 The Energy Dictionary}\label{the-energy-dictionary}
 
@@ -2441,11 +2368,7 @@ The energy framing highlights that convolutional neural networks and
 transformers can be represented as fork/race/fold graphs at useful
 levels of abstraction.
 
-\textbf{Multi-head attention admits a fork/race/fold reading.} The
-following is a structural homology: at inference time, for a fixed
-trained model, the topology of attention matches fork/race/fold. This
-is a post-hoc description, not a prediction of how training structures
-the model.  The input
+\textbf{Multi-head attention admits a fork/race/fold reading.} The following is a structural homology: at inference time, for a fixed trained model, the topology of attention matches fork/race/fold. This is a post-hoc description, not a prediction of how training structures the model.  The input
 splits into \(N\) heads (each with its own \(Q\), \(K\), \(V\)
 projections). This is fork: \(\beta_1 = N - 1\). All heads compute
 attention over the same sequence simultaneously -- race. Concatenation
@@ -2996,12 +2919,7 @@ constrains reachable states and enforces closure in the modeled graph.
 The physics hierarchy above (path integral $\to$ Schr\"{o}dinger $\to$
 Newton) is a sequence of progressive folds through decreasing
 $\beta_1$. An analogous sequence appears in the history of ideas, where
-the pattern is a suggestive structural homology with the formal
-machinery of \S6.8 and the mechanized theorems of the companion package.
-The companion theorems validate heat generation, monotonicity, and
-fixed-point properties in abstract; the mapping of those properties
-onto theological history is an interpretive application, not a
-mechanized proof of isomorphism.
+the pattern is a suggestive structural homology with the formal machinery of \S6.8 and the mechanized theorems of the companion package. The companion theorems validate heat generation, monotonicity, and fixed-point properties in abstract; the mapping of those properties onto theological history is an interpretive application, not a mechanized proof of isomorphism.
 
 \textbf{The Fork.} A new revelation introduces a contradictory axiom
 into a legacy system. In the Apostolic case, the legacy system is Second
@@ -3171,11 +3089,7 @@ through the conversational trace. A crusade is an adiabatic shock: the
 same heat, discharged in a single catastrophic pulse, because someone
 decided that conversation was too expensive.
 
-(These are interpretations of the formal model applied to historical
-events, not conclusions of the theorems themselves. The theorems prove
-properties of finite semiotic channels over \texttt{Fin n} types; the
-application to human history is a hypothesis about structural
-correspondence.)
+(These are interpretations of the formal model applied to historical events, not conclusions of the theorems themselves. The theorems prove properties of finite semiotic channels over \texttt{Fin n} types; the application to human history is a hypothesis about structural correspondence.)
 
 But \texttt{trajectory\_cumulative\_heat\_monotone} proves that the heat
 only accumulates. Violence does not reduce the deficit. It adds a new
@@ -3371,25 +3285,14 @@ convergence guarantee --- the deficit is positive but bounded, context
 reduces it monotonically, sufficient context eliminates it, and the
 traced monoidal feedback of dialogue composes coherently.  The
 mathematics does not legislate which civilizations will sit in the loop.
-Within the formal model (finite semiotic channels over \texttt{Fin n}
-types), the mathematics ensures structural convergence for systems that
-remain in the feedback loop.  Whether human agents will sustain dialogue
-long enough, and at what rate convergence occurs, are open questions
-outside the formal scope (\S14).  The prescription is constructive in
-model-space; its human instantiation is contingent.
+Within the formal model (finite semiotic channels over \texttt{Fin n} types), the mathematics ensures structural convergence for systems that remain in the feedback loop.  Whether human agents will sustain dialogue long enough, and at what rate convergence occurs, are open questions outside the formal scope (\S14).  The prescription is constructive in model-space; its human instantiation is contingent.
 
 \subsubsection{6.13 The Optimality
 Diagnostic}\label{the-optimality-diagnostic}
 
 If fork/race/fold is a recurrent shape in finite systems that satisfy
 this paper's conservation, irreversibility and minimum-overhead
-assumptions, then finding this shape is a \emph{correlation heuristic}:
-in the analyzed domains, systems exhibiting the shape show measurably
-lower waste.  Not finding it --- where the problem's modeled intrinsic
-topology demands parallelism --- is a diagnostic signal for potentially
-unexploited concurrency.  This is evidence-based screening, not a proof
-of optimality: the diagnostic identifies candidates for investigation,
-not verdicts.
+assumptions, then finding this shape is a \emph{correlation heuristic}: in the analyzed domains, systems exhibiting the shape show measurably lower waste.  Not finding it --- where the problem's modeled intrinsic topology demands parallelism --- is a diagnostic signal for potentially unexploited concurrency.  This is evidence-based screening, not a proof of optimality: the diagnostic identifies candidates for investigation, not verdicts.
 
 Measuring waste in computational systems requires specifying a modeled
 structure for both the problem and the implementation. The topological
@@ -3441,10 +3344,7 @@ A system at 0 B is topology-matched under this metric. A system at 3 B
 is leaving three independent parallel paths unexploited. The Bule is
 dimensionless, integer-valued in this representation, and computable
 once a dependency graph and \(\beta_1^*\) modeling protocol are
-specified.  (The Bule is not proposed as a physical or dimensional unit;
-it is a diagnostic engineering shorthand analogous to the Reynolds number
---- a dimensionless scalar for regime classification within modeled
-scope.)
+specified.  (The Bule is not proposed as a physical or dimensional unit; it is a diagnostic engineering shorthand analogous to the Reynolds number --- a dimensionless scalar for regime classification within modeled scope.)
 
 Bules are intended as a structural diagnostic of that fit. The formal
 result in the companion is conditional rather than unconditional: zero
@@ -3456,14 +3356,7 @@ frontier point. The stronger claim that zero deficit is the universal
 floor with no additional witness conditions remains open.
 
 The \(\beta_1^*\) term is model-estimated rather than uniquely
-observer-independent in open systems.  Different dependency-graph models
-may yield different \(\beta_1^*\) values for the same system, and
-therefore different \(\Delta_\beta\) measurements.  Reported deficits
-should therefore be interpreted as relative to a specified modeled
-dependency graph, with explicit modeling assumptions and uncertainty
-intervals where available.  Diagnostic claims based on \(\Delta_\beta\)
-are claims within a model, not observer-independent physical
-measurements.
+observer-independent in open systems.  Different dependency-graph models may yield different \(\beta_1^*\) values for the same system, and therefore different \(\Delta_\beta\) measurements.  Reported deficits should therefore be interpreted as relative to a specified modeled dependency graph, with explicit modeling assumptions and uncertainty intervals where available.  Diagnostic claims based on \(\Delta_\beta\) are claims within a model, not observer-independent physical measurements.
 
 \textbf{Topological deficit as a candidate diagnostic for real-world
 waste.}
@@ -3832,13 +3725,7 @@ mock network communication, as noted in §13). Chunk size
 \(B = P / \lceil P/B \rceil\) with \(B\) chosen to maximize throughput
 per the formula. These are \emph{theoretical best-case} speedups for the
 scheduling topology; real-world figures would be reduced by network RTT,
-uneven stage latencies, and queuing at node boundaries. As a sensitivity
-heuristic: if inter-node RTT is $\tau$ and per-step compute time is $c$,
-the effective speedup degrades by factor $c / (c + \tau)$ per pipeline
-stage. For $\tau = c$ (network cost equals compute cost), speedups halve.
-The 267x figure
-for 500 tokens / 8 nodes uses \(B = 500\) (one chunk), giving
-\(T_{\text{chunked}} = 1 + 7 + 7 = 15\) steps.
+uneven stage latencies, and queuing at node boundaries. As a sensitivity heuristic: if inter-node RTT is $\tau$ and per-step compute time is $c$, the effective speedup degrades by factor $c / (c + \tau)$ per pipeline stage. For $\tau = c$ (network cost equals compute cost), speedups halve. The 267x figure for 500 tokens / 8 nodes uses \(B = 500\) (one chunk), giving \(T_{\text{chunked}} = 1 + 7 + 7 = 15\) steps.
 
 \textbf{Wall-clock matrix evidence (fixture-scoped).} A live distributed
 wall-clock matrix is provided via
@@ -5289,17 +5176,7 @@ of richer adaptive Lyapunov decompositions beyond the built-in
 minimum-slack/selector/weighted/service-slack/routing-pressure forms,
 and positive-recurrence proofs for unbounded open stochastic networks.
 
-\textbf{Semiotic and peace-theoretic scope.}  The semiotic extension
-(\S6.12, \S15) and the peace/war/hope theorems (SemioticPeace.lean) are
-formal-structural results: they prove categorical coherence,
-thermodynamic monotonicity, and fixed-point existence within the
-monoidal framework.  They are \emph{not} validated by any of the five
-evidence gates below.  The biological correspondences (\S1) and physical
-structural mappings (\S5, \S6.12) are likewise post-hoc structural
-pattern-matching --- we observe a system, fit fork/race/fold, and verify
-consistency --- rather than predictive science.  No prediction about a
-novel system has been made and tested.  Falsifiable predictions from the
-topological framework are explicitly future work.
+\textbf{Semiotic and peace-theoretic scope.}  The semiotic extension (\S6.12, \S15) and the peace/war/hope theorems (SemioticPeace.lean) are formal-structural results: they prove categorical coherence, thermodynamic monotonicity, and fixed-point existence within the monoidal framework.  They are \emph{not} validated by any of the five evidence gates below.  The biological correspondences (\S1) and physical structural mappings (\S5, \S6.12) are likewise post-hoc structural pattern-matching --- we observe a system, fit fork/race/fold, and verify consistency --- rather than predictive science.  No prediction about a novel system has been made and tested.  Falsifiable predictions from the topological framework are explicitly future work.
 
 \subsubsection{14.1 Evidence-Bounded
 Claims}\label{evidence-bounded-claims}
@@ -5427,12 +5304,7 @@ cancel (\S6.12). The recombination mechanism differs (linear amplitude
 summation in physics vs nonlinear selection/merge in computation), and
 the companion tests make that boundary explicit: exact agreement in a
 finite linear path-sum model, plus explicit counterexamples for
-nonlinear winner/early-stop folds {[}9, 13{]}.  The winner-take-all and
-early-stop failures are genuine disconfirming evidence for universality
-of the mapping --- the correspondence is operationally exact only for
-linear full-aggregation folds and breaks for the nonlinear folds that
-dominate practical computation.  This is therefore a structural mapping
-with an explicit, tested boundary, not an identity claim. Fluid dynamics provides
+nonlinear winner/early-stop folds {[}9, 13{]}.  The winner-take-all and early-stop failures are genuine disconfirming evidence for universality of the mapping --- the correspondence is operationally exact only for linear full-aggregation folds and breaks for the nonlinear folds that dominate practical computation.  This is therefore a structural mapping with an explicit, tested boundary, not an identity claim. Fluid dynamics provides
 scaling intuition through the pipeline Reynolds number, and
 thermodynamics provides a conservation accounting lens (\(V = W + Q\))
 for modeled computational work/vent partitioning.
@@ -5563,14 +5435,7 @@ rate exceeds the dialogue rate on a channel with positive semiotic
 deficit.
 
 But the same machinery that predicts war prescribes its containment.
-Dialogue does not \emph{reverse} accumulated heat --- the second law
-forbids that, and \texttt{war\_as\_cumulative\_heat} proves it.  What
-dialogue does is reduce the \emph{rate} of new heat generation: each
-conversation turn adds shared context, shrinking the deficit, so each
-subsequent fold erases less.  The deficit converges to zero (no new
-heat), but past heat is irreversible.  This is arguably a stronger
-claim than reversal: you cannot undo damage, but you can stop making
-more.
+Dialogue does not \emph{reverse} accumulated heat --- the second law forbids that, and \texttt{war\_as\_cumulative\_heat} proves it.  What dialogue does is reduce the \emph{rate} of new heat generation: each conversation turn adds shared context, shrinking the deficit, so each subsequent fold erases less.  The deficit converges to zero (no new heat), but past heat is irreversible.  This is arguably a stronger claim than reversal: you cannot undo damage, but you can stop making more.
 A system architect who proves Byzantine fault tolerance uses the
 identical pattern: characterize the failure modes, bound the blast
 radius, install feedback loops that absorb the heat.  The companion
@@ -5592,9 +5457,7 @@ confusion is real; (2) the deficit equals
 (3) context monotonically reduces it --- every shared concept helps;
 (4) sufficient context eliminates it --- mutual understanding exists
 as a fixed point; (5) dialogue converges via traced monoidal feedback
---- the mechanism is constructive.  Sixteen theorems in
-\texttt{SemioticPeace.lean} alone, zero \texttt{sorry}, composing
-seventy-four files of mechanized proof.
+--- the mechanism is constructive.  Sixteen theorems in \texttt{SemioticPeace.lean} alone, zero \texttt{sorry}, composing seventy-four files of mechanized proof.
 
 Two forms of convergence appear in these theorems, and intellectual
 honesty requires distinguishing them.  \emph{Structural convergence}
@@ -5608,10 +5471,7 @@ point generates strictly positive information loss, bounding the number
 of non-trivial coarsening steps by the initial quotient cardinality.
 But a convergence-rate bound on the conversational trace itself remains
 open.  The structural guarantees are real; the speed guarantee is future
-work.  Without a convergence rate, the fixed-point guarantee is
-existential: peace is reachable but may require more dialogue turns than
-any practical system can sustain. Bounding the rate is the most
-important open problem in this line of work.
+work.  Without a convergence rate, the fixed-point guarantee is existential: peace is reachable but may require more dialogue turns than any practical system can sustain. Bounding the rate is the most important open problem in this line of work.
 
 The mathematics does not legislate which civilizations will sit in the
 feedback loop.  Under the stated structural conditions, the fixed point
@@ -5655,15 +5515,7 @@ convergence machinery --- context accumulation as monotone deflator,
 dialogue as traced monoidal feedback, the renormalization group fixed
 point as terminus --- constitutes, when taken together, a mathematical
 theory of peace.  Not a metaphor for peace.  Not an analogy to peace.
-A formal theory of a \emph{model} of peace, mechanized in a proof
-assistant, in which peace is a fixed point, its existence is a theorem,
-the path to it is constructive, and convergence is guaranteed under
-stated conditions.
-The logical chain is: \texttt{peace\_fixed\_point} proves the RG fixed
-point exists (zero heat, zero information loss); it \emph{is} the
-zero-deficit witness required by the conditional optimality-verification
-theorem; therefore that theorem applies non-vacuously.
-Sixteen theorems.  Every step machine-verified.
+A formal theory of a \emph{model} of peace, mechanized in a proof assistant, in which peace is a fixed point, its existence is a theorem, the path to it is constructive, and convergence is guaranteed under stated conditions. The logical chain is: \texttt{peace\_fixed\_point} proves the RG fixed point exists (zero heat, zero information loss); it \emph{is} the zero-deficit witness required by the conditional optimality-verification theorem; therefore that theorem applies non-vacuously. Sixteen theorems.  Every step machine-verified.
 
 \textbf{Scope.}  The semiotic theorems formalize a \emph{model} of
 communication: finite semantic paths collapsing through bounded
