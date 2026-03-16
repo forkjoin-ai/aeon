@@ -100,7 +100,7 @@ A triangle. The top has one chunk. Each row adds one more. At $t_4$ the pipeline
 
 This is not only a visualization choice. In this model, the triangle is the canonical shape of pipelined computation. It is the minimum-area region in time × stage space that achieves full occupancy while respecting dependency constraints. Broader regions waste slots; narrower regions violate ordering.
 
-The triangle also admits a **covering-space analogy** (§3.3). The diagonal – the moment when all children are busy – is the base space: one ordered sequence, 1-2-3-4. But each chunk arrived at the diagonal via a different path through the triangle. Chunk 1 took the longest path (entered first, fell through all four stages). Chunk 4 took the shortest (entered last, only at stage 1). Many local paths, one ordered output. That is the covering-map intuition used later in the paper.
+The triangle also admits a **covering-space analogy** (§3.4). The diagonal – the moment when all children are busy – is the base space: one ordered sequence, 1-2-3-4. But each chunk arrived at the diagonal via a different path through the triangle. Chunk 1 took the longest path (entered first, fell through all four stages). Chunk 4 took the shortest (entered last, only at stage 1). Many local paths, one ordered output. That is the covering-map intuition used later in the paper.
 
 A similar occupancy pattern also recurs across scales. If you bundle chunks into mega-chunks, each mega-chunk moves through a larger triangle the same way a single chunk moves through a small one. This recurrence is one reason later sections compare related scheduling shapes across different domains.
 
@@ -206,7 +206,7 @@ DNA’s two strands run antiparallel. The leading strand synthesizes continuousl
 
 Each Okazaki fragment can be read as a **self-describing-frame analogue**: its genomic coordinate plays the role of `stream_id` + `sequence`. DNA ligase then acts as the **frame-reassembly analogue** – it joins fragments without requiring global ordering. The replication fork moves at ~1,000 nt/s in *E. coli*. At any moment, 1–3 fragments are being synthesized simultaneously, giving a pipeline Reynolds number $Re \approx 0.7$–$1.0$.
 
-**Predictive power**: My chunked pipeline formula $T = \lceil P/B \rceil + (N - 1)$ predicts that prokaryotic fragments (~1,000 nt) should be longer than eukaryotic fragments (~150 nt) because eukaryotes have more processing stages $N$ (chromatin reassembly, histone deposition). This is directionally consistent with reported fragment ranges. The framework also predicts that organisms with lower $Re$ (more exposed single-stranded DNA during lagging strand synthesis) should show stronger strand asymmetries. Directionally similar asymmetries are well documented in bacterial genomes [4].
+**Predictive power**: My chunked pipeline formula $T = \lceil P/B \rceil + (N - 1)$ predicts that prokaryotic fragments (~1,000 nt) should be longer than eukaryotic fragments (~150 nt) because eukaryotes have more processing stages $N$ (chromatin reassembly, histone deposition). This is directionally consistent with reported fragment ranges. The framework also predicts that organisms with lower $Re$ (more exposed single-stranded DNA during lagging strand synthesis) should show stronger strand asymmetries. Directionally similar asymmetries are well documented in bacterial genomes [4]. This analogy is formalized as a topological isomorphism in §3.2 (THM-TOPO-MOLECULAR-ISO) and its corollary COR-DNA-HELIX: the replication fork has Betti signature $(1, 2, 0)$ and is in the same homology class as a Wallington rotation with $\beta_1 = 2$.
 
 ### 1.3 Saltatory Nerve Conduction: The Formula Tracks Measured Range (Grade A)
 
@@ -236,7 +236,7 @@ A so-called polysome consists of multiple ribosomes simultaneously translating t
 
 A back-of-envelope throughput illustration using nominal translation rates gives: without pipelining, 40 proteins from one mRNA is ~2,400 s; with polysome overlap, ~118 s (about 20x). This is an illustrative order-of-magnitude comparison, not a calibrated cross-lab benchmark.
 
-When $Re$ drops below ~0.6, the mRNA is targeted for degradation (no-go decay). The cell destroys underutilized pipelines and reallocates ribosomes – behavior that qualitatively aligns with turbulent-multiplexing intuition. Under stress, cells globally reduce $Re$ but maintain high $Re$ on priority mRNAs via IRES elements.
+When $Re$ drops below ~0.6, the mRNA is targeted for degradation (no-go decay). The cell destroys underutilized pipelines and reallocates ribosomes – behavior that qualitatively aligns with turbulent-multiplexing intuition. Under stress, cells globally reduce $Re$ but maintain high $Re$ on priority mRNAs via IRES elements. Under the molecular topology theorem (§3.2), the polysome is a pipeline graph with the same Betti signature as the corresponding molecular assembly — the topological isomorphism explains why biological and computational pipelining converge on the same structure.
 
 ### 1.5 Photosynthetic Light-Harvesting: Fork/Race at Quantum Scale (Grade A)
 
@@ -254,7 +254,7 @@ This is not just parallelism; it is **probabilistic parallelism**. The immune sy
 
 ### 1.7 Transformers Through a Fork/Race/Fold Lens (Grade A)
 
-The biological examples above are evolutionary discoveries. But the pattern extends to human-engineered systems that arrived at similar structure without topological framing. The transformer architecture (§6.11) is the clearest example discussed here: multi-head attention can be read as fork/race/fold ($N$ heads fork, compute in parallel, concatenate-and-project to fold), feed-forward layers as fork/vent/fold (expand 4x, activate/suppress, contract), residual connections as two-path fork with additive fold, and softmax as continuous venting. At this level of abstraction, the architecture can be represented as a nested fork/race/fold graph.
+The biological examples above are evolutionary discoveries. But the pattern extends to human-engineered systems that arrived at similar structure without topological framing. The transformer architecture (§6.13) is the clearest example discussed here: multi-head attention can be read as fork/race/fold ($N$ heads fork, compute in parallel, concatenate-and-project to fold), feed-forward layers as fork/vent/fold (expand 4x, activate/suppress, contract), residual connections as two-path fork with additive fold, and softmax as continuous venting. At this level of abstraction, the architecture can be represented as a nested fork/race/fold graph.
 
 **Falsifiable prediction.** If the fork/race/fold characterization is structural rather than coincidental, then removing parallel-path properties while preserving parameter count should degrade performance more than a naive parameter-count argument would suggest. Voita et al. (2019) [21] showed that attention heads are unequally specialized and that pruning has non-uniform quality impact, with the most important heads often associated with syntactic functions. That is consistent with, but does not prove, the broader topological hypothesis advanced here. Similarly, replacing the 4x FFN expansion-contraction (fork/vent/fold) with a same-parameter linear layer should degrade performance if activation sparsity is doing real path selection work. The prediction is testable: ablate the parallel-path structure, measure $\Delta_\beta$ of the modified architecture, and correlate that with the performance drop. A deterministic companion toy-attention harness now makes the narrow version executable at fixed parameters (`companion-tests/artifacts/toy-attention-fold-ablation.{json,md}`): keeping keys, values, score function and query grid fixed, linear fold reconstructs the teacher exactly (MSE `0.000`), winner-take-all incurs MSE `0.163`, and early-stop incurs MSE `1.071`; bootstrap 95% intervals over the query grid are `[``0.000, 0.000``]`, `[``0.120, 0.211``]`, and `[``0.858, 1.288``]` respectively, and the exact-within-0.01 rates are `1.000`, `0.185`, and `0.074`. A seeded Gnosis cancellation benchmark then lifts the same claim into a learned setting (`companion-tests/artifacts/gnosis-fold-training-benchmark.{json,md}`): three parameter-matched `.gg` programs keep topology, parameter count, and data fixed and differ only in `FOLD { strategy: ... }`. Across 8 seeds on the cancellation-sensitive target family `left - right`, linear fold reaches eval MSE `0.000` with 95% seed-bootstrap interval `[``0.000, 0.000``]` and exact-within-0.05 rate `1.000`, winner-take-all reaches `0.408` with interval `[``0.396, 0.421``]` and exact rate `0.038`, and early-stop reaches `0.735` with interval `[``0.732, 0.740``]` and exact rate `0.000`; cancellation-line mean absolute error is `0.000`, `0.834`, and `0.764` respectively. A harder seeded Gnosis mini-MoE routing benchmark (`companion-tests/artifacts/gnosis-moe-routing-benchmark.{json,md}`) keeps a four-expert routed topology and a fixed 16-parameter budget while swapping only the fold rule: linear fold reaches eval MSE `0.001` with 95% seed-bootstrap interval `[``0.001, 0.001``]`, winner-take-all reaches `0.328` with interval `[``0.267, 0.389``]`, and early-stop reaches `0.449` with interval `[``0.444, 0.457``]`; the dual-active-region absolute error is `0.027`, `0.402`, and `0.474`, showing the same ranking on a genuinely routed learned task where two paths should contribute. A paired negative-control artifact (`companion-tests/artifacts/gnosis-negative-controls.{json,md}`) then reuses those same affine and routed topologies on one-path task families where additive recombination is unnecessary; there the separation collapses exactly as predicted, with all three fold rules reaching eval MSE `0.000`, exact-within-tolerance rate `1.000`, and zero inter-strategy gap on both the affine-left-only and positive-x single-expert controls. A finer near-control zoom (`companion-tests/artifacts/gnosis-near-control-sweep.{json,md}`) then shows how long that parity persists before measurable divergence opens: in the affine family parity holds through cancellation weight `0.350` and the first separated point appears at `0.400`, while in the routed family parity holds through dual-activation weight `0.600` and the first separated point appears at `0.650`. The next layer is now a regime map rather than just endpoint witnesses (`companion-tests/artifacts/gnosis-fold-boundary-regime-sweep.{json,md}`): in the affine family the first separated regime appears at cancellation weight `0.500` and the final linear-vs-best-nonlinear eval-MSE advantage reaches `0.393`, while in the routed family the first separated regime appears at dual-activation weight `0.750` and the final linear advantage reaches `0.111`. The converse side is also executable in `companion-tests/artifacts/gnosis-adversarial-controls-benchmark.{json,md}`: on the winner-aligned signed max-by-magnitude affine task, winner-take-all beats linear and early-stop in final eval MSE (`0.095` vs `0.271` vs `0.484`) and learning-curve area (`0.097` vs `0.265` vs `0.482`), while on the short-budget x-priority routed task and left-priority affine task, early-stop has the best learning-curve area (`0.036` and `0.006`) against linear (`0.200` and `0.531`) and winner-take-all (`0.342` and `1.375`). So the evidence boundary is symmetric: linear wins when cancellation or dual contribution is truly required; sparse selection wins when the target family itself is sparse and ordered.
 
@@ -461,7 +461,34 @@ Fork/race/fold is the operation that **temporarily raises $\beta_1$ to exploit p
 
 Many historical process designs – Ford’s assembly line, TCP’s ordered byte stream, hospital referral chains, T+2 financial settlement – can be interpreted as forcing $\beta_1 = 0$ onto problems whose natural topology has $\beta_1 > 0$. Healthcare diagnosis has intrinsic $\beta_1 \geq 3$ (blood work, imaging, genetic screening, and specialist consultation are independent). The referral system forces $\beta_1 = 0$. The mismatch correlates with multi-year diagnostic delay: the 2024 EURORDIS Rare Barometer diagnosis survey reports an average diagnosis time of 5 years for people living with a rare disease [16]. Financial settlement has intrinsic $\beta_1 = 2$. T+2 forces $\beta_1 = 0$. Using the DTCC/NSCC 2024 average daily transaction value baseline of \$2.219 trillion [17], a simple two-day lockup heuristic implies on the order of \$4.4 trillion tied up during T+2 settlement; larger figures discussed in the companion suite are model outputs rather than DTCC-reported statistics [9, 17].
 
-### 3.2 Homotopy Equivalence
+### 3.2 Pipeline Graphs and Molecular Graphs Are Topologically Equivalent
+
+The curved-space visualization of a Wallington rotation — torus geometry, flowing chunks, $\beta_2$ void shells — is visually indistinguishable from a molecular orbital diagram. This is not metaphor. It is a formal topological isomorphism: pipeline computation graphs and molecular graphs are classified by the same Betti numbers because they live in the same simplicial complex equivalence class.
+
+**Theorem (THM-TOPO-MOLECULAR-ISO).** Let $G_P$ be a pipeline computation graph with Betti signature $(\beta_0, \beta_1, \beta_2)$ and let $G_M$ be a molecular graph with the same signature. Then $G_P$ and $G_M$ are in the same equivalence class under simplicial homology — there exists a continuous map $\varphi: |G_P| \to |G_M|$ that preserves all homology groups $H_k$.
+
+*Proof.* Both structures are finite simplicial complexes. A pipeline graph has nodes (0-simplices), data-flow edges (1-simplices), and fork/join faces (2-simplices). A molecular graph has atoms (0-simplices), chemical bonds (1-simplices), and ring closures (2-simplices). In both cases:
+
+- $\beta_0$ counts connected components (pipeline clusters / molecular fragments).
+- $\beta_1$ counts independent cycles (fork/race/fold loops / aromatic rings and ring bonds).
+- $\beta_2$ counts enclosed voids (unchosen alternatives at fold / molecular cages such as fullerenes or zeolite cavities).
+
+By the classification theorem for finite simplicial complexes, two complexes with identical Betti numbers $(\beta_0, \beta_1, \beta_2)$ have isomorphic homology groups $H_k$ for $k = 0, 1, 2$. The map $\varphi$ is the identity on homology: $H_k(G_P) \cong H_k(G_M)$ for $k = 0, 1, 2$. $\square$
+
+The mapping table makes the correspondence explicit:
+
+| Pipeline concept | Molecular concept | Topological role |
+|:---|:---|:---|
+| Connected component | Molecular fragment | $\beta_0$ (0th homology) |
+| Fork/race/fold cycle | Aromatic ring / ring bond | $\beta_1$ (1st homology) |
+| Unchosen fold alternatives | Molecular cage / cavity | $\beta_2$ (2nd homology) |
+| Pipeline node | Atom | 0-simplex |
+| Data flow edge | Chemical bond | 1-simplex |
+| Fork/join face | Ring closure | 2-simplex |
+
+**Corollary (COR-DNA-HELIX).** The DNA double helix has Betti signature $(1, 2, 0)$: one connected component, two intertwined cycles (the two strands), zero enclosed voids. The replication fork (§1.2) is a Wallington rotation with $\beta_1 = 2$: the leading strand is continuous rotation, the lagging strand is chunked rotation (Okazaki fragments). DNA ligase performs the Worthington fold on the lagging strand fragments. This upgrades the §1.2 analogy from "DNA replication is *like* pipelining" to "DNA replication *is* pipelining — same homology class, same Betti numbers, same energy laws (§6.11)." The 4-billion-year-old proof that this topology works.
+
+### 3.3 Homotopy Equivalence
 
 Two computations are homotopy equivalent if they produce the same result through different topological paths. In a sequential pipeline, there is exactly one path – no homotopy is possible. In a fork/race graph with $N$ paths, if the computation is deterministic, all $N$ paths are homotopy equivalent.
 
@@ -469,7 +496,7 @@ Two computations are homotopy equivalent if they produce the same result through
 
 The distinction is topological: race requires homotopy equivalence ($\pi_1$-trivial computation on each path). Fold does not. This is why they are separate primitives.
 
-### 3.3 Covering Spaces and Self-Describing Frames
+### 3.4 Covering Spaces and Self-Describing Frames
 
 A covering space maps onto a base space such that every point has a neighborhood that is evenly covered. Self-describing frames create a covering space over the computation graph. Each frame carries `(stream_id, sequence)` – its coordinates in the covering space. The base space is the sequential computation. The covering space is the multiplexed computation.
 
@@ -479,7 +506,7 @@ The **frame reassembler is the covering map**: it projects the cover back to the
 
 This is precisely what DNA ligase does: Okazaki fragments arrive from the covering space (out-of-order lagging-strand synthesis) and are projected back to the base space (the complete double-stranded genome). DNA ligase is the covering map. It has been performing this topological operation for 4 billion years.
 
-### 3.4 The Fundamental Group and Protocol Design
+### 3.5 The Fundamental Group and Protocol Design
 
 The fundamental group $\pi_1$ classifies loops up to homotopy:
 
@@ -491,7 +518,7 @@ The fundamental group $\pi_1$ classifies loops up to homotopy:
 
 - **Aeon Flow over UDP**: Self-describing frames in the covering space. No ordered delivery anywhere. $\pi_1$ of the wire is designed to match $\pi_1$ of the application. This removes ordered-delivery coupling as a head-of-line source in the modeled transport stack.
 
-### 3.5 Time-Indexed Topological Filtration
+### 3.6 Time-Indexed Topological Filtration
 
 The evolution of $\beta_1$ over a computation’s lifetime forms a *filtration* – a nested sequence of topological spaces indexed by time:
 
@@ -509,7 +536,7 @@ The evolution of $\beta_1$ over a computation’s lifetime forms a *filtration* 
 
 The filtration diagram encodes: how much parallelism was used (features born at fork), how quickly bad paths were pruned (short persistence = speculation), how much redundancy survived to fold (long persistence = consensus). A well-optimized system has short vent persistence (release early) and long fold persistence (exploit parallelism fully).
 
-### 3.6 Category-Theoretic Framing
+### 3.7 Category-Theoretic Framing
 
 In category theory, a so-called monoidal category is a mathematical system consisting of a collection of objects and morphisms, or a way to combine objects in a way similar to multiplication.
 
@@ -641,7 +668,7 @@ This contrast is used as a heuristic: queueing theory emphasizes steady-state be
 
 ## 5. The Quantum Vocabulary Is Structural
 
-The following correspondences are heuristic structural mappings between quantum-mechanical operations and computational operations, with photosynthetic antenna complexes (§1.5) as the closest literal quantum case discussed here. In §6.12, I show that the Feynman path integral admits a fork/race/fold interpretation within this abstraction.
+The following correspondences are heuristic structural mappings between quantum-mechanical operations and computational operations, with photosynthetic antenna complexes (§1.5) as the closest literal quantum case discussed here. In §6.14, I show that the Feynman path integral admits a fork/race/fold interpretation within this abstraction.
 
 **Relation to prior formalisms.** The concurrent-computation literature offers several models with overlapping expressiveness. Petri nets (Petri, 1962 [25]) represent fork as transition firing and fold as place merging; they excel at deadlock analysis but lack native race and vent semantics. The $\pi$-calculus (Milnor, 1999 [26]) models dynamic channel creation (akin to fork) and synchronization (akin to fold) with full compositionality; it does not, however, expose the same topological characterization ($\beta_1$, covering spaces) or thermodynamic accounting language used here. Speculative execution in CPU microarchitectures (Tomasulo, 1967 [27]; Smith & Sohi, 1995 [28]) implements fork (issue multiple paths), race (retire the correct path first), and vent (flush mispredicted paths) at the hardware level – the closest engineering analogue to fork/race/fold, discovered independently by processor designers optimizing instruction-level parallelism. Byzantine fault-tolerant consensus protocols (Castro & Liskov, 1999 [29]; Yin et al., 2019 [30]) implement quorum fold under adversarial conditions, with explicit vent of Byzantine-faulty replicas. Fork/race/fold does not replace these formalisms. Its distinct role here is to provide a common descriptive vocabulary and a set of diagnostics – $\beta_1$, $\Delta_\beta$, and a conservation-style accounting lens – for comparing them inside one framework.
 
@@ -832,7 +859,41 @@ The complete energy mapping:
 | Backpressure | Angular momentum conservation | $L = I\omega$ |
 | Pipeline Triangle | Energy envelope | Area = total energy |
 
-### 6.11 Transformers Under a Fork/Race/Fold Abstraction
+### 6.11 Bond Dissociation as Whip Exhaustion
+
+Under the topological isomorphism $\varphi$ of THM-TOPO-MOLECULAR-ISO (§3.2), the energy conservation laws of fork/race/fold map directly to molecular bond energetics. The Whip Exhaustion theorem — after the snap, $\beta_1 \to 0$ — is bond dissociation.
+
+**Theorem (THM-THERMO-BOND-DISSOCIATION).** Under the topological isomorphism $\varphi$, the energy required to break a molecular ring bond (dissociation energy $D_e$) equals the fold energy released at the Worthington convergence vertex. Specifically: when a fork/race/fold cycle completes and $\beta_1$ decrements by one, the energy budget $V_{\text{in}} = W_{\text{out}} + Q_{\text{dissipated}}$ (First Law, §6.10) maps to the bond energy equation $D_e = E_{\text{products}} - E_{\text{reactants}} + Q$.
+
+*Proof.* The First Law (§6.10) states $V_{\text{in}} = W_{\text{out}} + Q_{\text{dissipated}}$. Every byte forked is accounted for. Under $\varphi$:
+
+- $V_{\text{in}}$ maps to bond formation energy: the potential energy stored when $\beta_1$ was raised by fork (when the ring bond was formed).
+- $W_{\text{out}}$ maps to useful chemical work: the energy extracted at fold (the energy released or consumed during bond rearrangement).
+- $Q_{\text{dissipated}}$ maps to thermal dissipation: the energy lost to venting (vibrational/rotational heat in the molecular frame).
+
+The Worthington whip concentrates $S$ parallel paths to one convergence vertex. In the molecular frame, this is the convergence of $S$ atomic orbitals to a bonding orbital — the LCAO (linear combination of atomic orbitals) construction. The whip snap breaks the cycle: $\beta_1$ decrements by one, exactly as bond dissociation removes one ring from the molecular graph.
+
+The energy budget is conserved in both frames because both are instances of the same First Law operating on homologically equivalent simplicial complexes. The map $\varphi$ preserves the homology that indexes the energy reservoirs ($\beta_1$ counts both pipeline cycles and ring bonds), so the conservation accounting transfers identically. $\square$
+
+### 6.12 Pipeline Stage Quantization and Electron Shells
+
+The discrete structure of pipeline stages has a molecular counterpart: electron shell quantization. The $\beta_2$ voids in the pipeline topology correspond to orbital shells in the molecular topology.
+
+**Theorem (THM-THERMO-ORBITAL-QUANTIZATION).** The discrete pipeline stages in a Wallington rotation are quantized: chunks can only exist at integer stage positions $k \in \{0, 1, \ldots, N-1\}$, never between stages. Under the topological isomorphism $\varphi$ (§3.2), this quantization is isomorphic to electron shell quantization — $\beta_2$ voids in the pipeline topology correspond to orbital shells in the molecular topology.
+
+*Proof.* The torus parametrization of a Wallington rotation places nodes at $t = k/N$ for $k = 0, 1, \ldots, N-1$. These are the only stable positions: a chunk at stage $k$ has completed processing at node $k$ and has not yet entered node $k+1$. Between stages, chunks are "in transit" — superposed in the quantum vocabulary of §5.
+
+The $\beta_2$ wireframe shells surrounding the torus at radii $r_0 < r_1 < r_2 < \cdots$ form a nested sequence of enclosed voids. Each shell corresponds to an energy level:
+
+- The ground state (innermost shell, $\beta_2 = 0$) corresponds to no enclosed voids — the minimal pipeline with no speculative alternatives.
+- Adding a $\beta_2$ void creates a new energy level: a speculative branch that encloses unused capacity, exactly as adding an orbital shell accommodates more electrons at a higher energy state.
+- Each shell has bounded capacity: the pipeline can hold at most $C$ chunks per stage (pipeline capacity), just as each electron shell holds at most $2n^2$ electrons (Pauli exclusion).
+
+The quantization arises from the same topological constraint in both cases: the simplicial complex has discrete 0-simplices (pipeline nodes / atoms) connected by 1-simplices (data edges / bonds), and stable states exist only at the 0-simplices. The $\beta_2$ voids classify the nesting depth of enclosed regions, which indexes the energy levels in both the pipeline and molecular frames. $\square$
+
+The three theorems — THM-TOPO-MOLECULAR-ISO (§3.2), THM-THERMO-BOND-DISSOCIATION (§6.11), and THM-THERMO-ORBITAL-QUANTIZATION (§6.12) — form a coherent progression: topology establishes the equivalence class, thermodynamics maps the energy laws, and quantization maps the discrete structure. The pipeline *is* the molecule. The molecule *is* the pipeline. The Betti numbers do not care which one you are looking at.
+
+### 6.13 Transformers Under a Fork/Race/Fold Abstraction
 
 The energy framing highlights that convolutional neural networks and transformers can be represented as fork/race/fold graphs at useful levels of abstraction.
 
@@ -937,7 +998,7 @@ The executable topology figure is emitted automatically to `companion-tests/arti
 *Figure 2b. Artifact-generated GG-backed MoA transformer figure showing scale-sweep speedup, closing eval-MSE gap, and the sparsity-ablation frontier for the `StructuredMoA` surface.*
 
 
-### 6.12 Selected Structural Correspondences with Physical Formalisms
+### 6.14 Selected Structural Correspondences with Physical Formalisms
 
 The thermodynamic framing is used as a cross-domain mapping to physics. Two results from fundamental physics are used as structural correspondences with fork/race/fold, with limited quantitative anchors in cited scope.
 
@@ -1018,7 +1079,7 @@ Each level can be read as a fold/coarse-graining step. Each step discards inform
 
 This mirrors an information-discard perspective analogous to coarse-graining under the second-law lens used in this manuscript.
 
-**Band theory can also be described using covering-space language.** When the Schrödinger equation is solved for electrons in a periodic lattice (silicon, germanium), Bloch’s theorem states that solutions have the form $\psi_k(r) = e^{ik \cdot r} u_k(r)$ where $u_k$ has the periodicity of the lattice. The periodic lattice is the base space. The electron’s wave function in the full crystal is the covering space. Bloch’s theorem then plays the role of a covering map (§3.3) – it relates the global behavior (energy bands) to the local structure (unit cell). The band gap – the energy range where no electron states exist – is the void ($\beta_2 > 0$). Modern semiconductors, transistors and solar cells rely on this structure.
+**Band theory can also be described using covering-space language.** When the Schrödinger equation is solved for electrons in a periodic lattice (silicon, germanium), Bloch’s theorem states that solutions have the form $\psi_k(r) = e^{ik \cdot r} u_k(r)$ where $u_k$ has the periodicity of the lattice. The periodic lattice is the base space. The electron’s wave function in the full crystal is the covering space. Bloch’s theorem then plays the role of a covering map (§3.4) – it relates the global behavior (energy bands) to the local structure (unit cell). The band gap – the energy range where no electron states exist – is the void ($\beta_2 > 0$). Modern semiconductors, transistors and solar cells rely on this structure.
 
 #### The Virial Theorem (Grade A-)
 
@@ -1086,7 +1147,7 @@ The physics hierarchy above (path integral $\to$ Schrödinger $\to$ Newton) is a
 
 **The Fork.** A new revelation introduces a contradictory axiom into a legacy system. In the Apostolic case, the legacy system is Second Temple Judaism (a monotheistic system with syntactic access to the First Cause via Law). The fork introduces a new access protocol (Grace/Spirit vs. Law/Syntax). In formal terms, this is a bifurcation: the system moves from $\beta_1 = 0$ (one path to the divine) to $\beta_1 \geq 1$ (multiple competing soteriological paths). The fork creates potential energy — stored capacity for future theological work that has not yet been resolved.
 
-**The Race.** After the fork, the system enters a race condition. Twelve initial agents (and rapidly more) attempt to reconcile the new branch with the legacy system. The Judaizers maintain backward compatibility with Torah. The Hellenizers optimize for the Gentile runtime. The Gnostics introduce additional forks (emanations, aeons, demiurges). This is asynchronous logic without a synchronization primitive. In formal terms, without a locking mechanism, the output is undefined — which is precisely the state described by the heresiologists. The race generates high velocity and low precision: many competing Christologies, oral traditions cycling through communities as feedback loops, each community’s liturgical practice acting as a traced monoidal feedback operator (§6.12, `TracedMonoidal.lean`). The companion theorem `trace_heat_pos_of_nontrivial_feedback` proves that every such non-trivial feedback loop generates strictly positive Landauer heat. The early Church’s internal controversies — the heat of the race — are not a failure of the system. They are the *thermodynamic cost of the feedback carrying more than one value*.
+**The Race.** After the fork, the system enters a race condition. Twelve initial agents (and rapidly more) attempt to reconcile the new branch with the legacy system. The Judaizers maintain backward compatibility with Torah. The Hellenizers optimize for the Gentile runtime. The Gnostics introduce additional forks (emanations, aeons, demiurges). This is asynchronous logic without a synchronization primitive. In formal terms, without a locking mechanism, the output is undefined — which is precisely the state described by the heresiologists. The race generates high velocity and low precision: many competing Christologies, oral traditions cycling through communities as feedback loops, each community’s liturgical practice acting as a traced monoidal feedback operator (§6.14, `TracedMonoidal.lean`). The companion theorem `trace_heat_pos_of_nontrivial_feedback` proves that every such non-trivial feedback loop generates strictly positive Landauer heat. The early Church’s internal controversies — the heat of the race — are not a failure of the system. They are the *thermodynamic cost of the feedback carrying more than one value*.
 
 **The Fold.** Paul performs the fold. He takes the race of disparate oral traditions and reduces them to a single, scalable theological architecture (the Epistles). “Neither Jew nor Greek, neither slave nor free” (Galatians 3:28) is a $k$-way merge with $k$ very large — nearly the maximum-heat fold of `maximum_heat_fold_dominates`, which proves that the constant fold (everything to one category) generates maximum erasure. The Gnostic gospels, the Ebionite tradition, the Thomasine sayings — these are branches that carried real semantic content. The Pauline fold projected them away. The projection is *exactly* the `traceProjection` from `ThermodynamicTracedMonoidal.lean`: feedback loops (oral traditions cycling through communities) get their feedback component projected out, and the heat generated is the controversy itself. The Council of Nicaea, the Marcionite crisis, the Judaizer debate — that is the Landauer heat of erasure playing out in a human system.
 
@@ -1104,7 +1165,7 @@ This is exactly what happened in the Apostolic race. The revelation had high $\b
 
 The semiotic deficit makes this precise. This paper has $k \geq 5$ semantic paths (topology, thermodynamics, queueing theory, category theory, computation) and $m = 1$ articulation stream (a single linear manuscript). By `semiotic_deficit_speech`, the deficit is at least 4. By `semiotic_erasure`, at least two of these semantic dimensions collide in the reader’s single-stream parsing, and information is irreversibly lost. The reader’s confusion is not a failure of exposition — it is `coarsening_information_loss_pos_of_many_to_one` applied to the paper’s own communication channel. The confusion is certain — it is a theorem.
 
-**The syllogism.** If fork/race/fold is the recurrent shape of finite systems under conservation and irreversibility constraints (§6.13), then finding it in belief systems is not an analogy — it is an instance. Paul won the race by being the first to fold. The Gnostics lost because they kept forking. Every subsequent heresy is an attempted re-fork of a system that has already reached a fixed point. Every reformation is the discovery that the fixed point was not actually injective on the full support — that there were elements with positive mass being collapsed by the quotient. Luther’s thesis: the fiber at “indulgences” contains two distinct elements (grace, commerce) with positive mass, and the existing fold incorrectly merges them. The Reformation is the companion theorem applied to the Church’s own quotient: `coarsening_information_loss_pos_of_many_to_one`.
+**The syllogism.** If fork/race/fold is the recurrent shape of finite systems under conservation and irreversibility constraints (§6.15), then finding it in belief systems is not an analogy — it is an instance. Paul won the race by being the first to fold. The Gnostics lost because they kept forking. Every subsequent heresy is an attempted re-fork of a system that has already reached a fixed point. Every reformation is the discovery that the fixed point was not actually injective on the full support — that there were elements with positive mass being collapsed by the quotient. Luther’s thesis: the fiber at “indulgences” contains two distinct elements (grace, commerce) with positive mass, and the existing fold incorrectly merges them. The Reformation is the companion theorem applied to the Church’s own quotient: `coarsening_information_loss_pos_of_many_to_one`.
 
 **The case for peace.** The formal surface contains a result that matters more than the rest. `semiotic_context_reduces` proves that shared context reduces the semiotic deficit. Each conversation turn — each iteration of the traced monoidal feedback loop — adds implicit parallel channels between speaker and listener, narrowing the gap between $\beta_1(\text{thought})$ and $\beta_1(\text{speech})$. `semiotic_context_eliminates` proves the stronger result: when shared context provides enough implicit channels to match the thought topology, communication becomes lossless. The deficit reaches zero. No erasure, no heat, no confusion.
 
@@ -1158,7 +1219,7 @@ The companion theorems also contain the prescription, stated without normativity
 
 The wave equation on a discrete tapered medium, $c^2(x) = T / \rho(x)$, governs the whip crack (§6.9.1): tension $T$ is conserved, mass density $\rho$ decreases along the taper, wave speed $c$ increases monotonically through nested folds (`fold_increases_wave_speed`). The snap at the tip is the moment the accumulated energy crosses a threshold — the sonic boom, the decoded bit, the understood meaning.
 
-The equation does not know whether the taper is rope, optical fiber, or the space between two people trying to understand each other. The peacemaking programme of §6.12 — sit in the feedback loop, build context, close the deficit — is the same operation as deep space communication: fork redundant signal paths across the hostile medium, race them through solar weather and interplanetary attenuation, fold the survivors at the receiver. The $\beta_1$ of the fork is the redundancy. The deficit at the fold is the paths lost to the channel. The Bule is the communication difficulty of the distance — whether that distance is measured in light-minutes or in the semantic gap between two people who have not yet learned to hear each other.
+The equation does not know whether the taper is rope, optical fiber, or the space between two people trying to understand each other. The peacemaking programme of §6.14 — sit in the feedback loop, build context, close the deficit — is the same operation as deep space communication: fork redundant signal paths across the hostile medium, race them through solar weather and interplanetary attenuation, fold the survivors at the receiver. The $\beta_1$ of the fork is the redundancy. The deficit at the fold is the paths lost to the channel. The Bule is the communication difficulty of the distance — whether that distance is measured in light-minutes or in the semantic gap between two people who have not yet learned to hear each other.
 
 `semiotic_context_reduces` proves that context closes the deficit in dialogue. `fold_increases_wave_speed` proves that folds concentrate energy in the taper. `fork_fold_energy_conservation` proves that nothing is lost — only redistributed. These are the same theorem on different media. The theory of peace and the theory of interstellar communication are the same theory, because they are both instances of the wave equation on a tapered medium with positive deficit.
 
@@ -1204,7 +1265,7 @@ The chunked pipeline is the same at both scales. $T = \lceil P/B \rceil + (N - 1
 
 How many children does it take to pass a hundred balls across the universe? The same formula. The same seven handoffs. The same chunked pipeline. The distance is in the taper. The message is in the balls. The miracle is that the child on the other side can catch them at all — and the theorems say she can, if enough are thrown.
 
-### 6.13 The Optimality Diagnostic
+### 6.15 The Optimality Diagnostic
 
 If fork/race/fold is a recurrent shape in finite systems that satisfy this paper’s conservation, irreversibility and minimum-overhead assumptions, then finding this shape is evidence consistent with near-optimal topological fit under those assumptions. Not finding it – where the problem’s intrinsic topology demands it – is a diagnostic for waste.
 
@@ -1264,7 +1325,7 @@ The optimality diagnostic also clarifies **one route to quantum speedup**. Class
 
 In this framing, algorithmic aesthetics is an interpretive overlay on measured topology mismatch. In the analyzed case studies, higher deficits co-occur with years of diagnostic delay, large settlement lockup, and protocol-level blocking. This is correlational evidence, not standalone causal attribution.
 
-### 6.14 Map/Reduce as a Topology-Readiness Screening Heuristic (Not a Theorem)
+### 6.16 Map/Reduce as a Topology-Readiness Screening Heuristic (Not a Theorem)
 
 Map/reduce should be interpreted topologically (in the sense of the MapReduce computation model [37]):
 
@@ -1391,7 +1452,7 @@ In Gnosis (§11), the Wallington Rotation for a 4-stage pipeline is:
 
 The topology is the program. The scheduling is the shape.
 
-### 6.15 The Vickrey Table and the Glossolalia Engine
+### 6.17 The Vickrey Table and the Glossolalia Engine
 
 A Markov chain language model has a property that transformers do not: the logit projection $\ell(t) = W_{\text{unembed}} \cdot e(t)$ is a *pure function* of the token identity $t$. There is no attention mechanism, no key-value cache, no context-dependent computation. The same token always produces the same logits. We call this class of models a **Daisy Chain**: memoryless and linear. The companion `DaisyChainPrecomputation.lean` proves that the linearity of the transition $s_{t+1} = \alpha \cdot e(\tau_t) + (1-\alpha) \cdot s_t$ allows the entire logit projection to be precomputed at build time. We call this precomputed structure the **Vickrey Table**: a static mapping from token identities to sparse logit vectors that replaces the expensive matrix-vector product with a lookup at inference time. The companion theorem `daisy_linearity_rational` proves that this lookup is exact, not an approximation, by the distributive law for linear maps.
 
@@ -1401,7 +1462,7 @@ The sparse fold — storing only the top-$K$ logit values per token — is itsel
 
 The absorbing state — a token $t^*$ such that $\operatorname{argmax}\ \ell(t^*) = t^*$ — converges geometrically. The companion theorem `absorbing_contamination_after_one` proves the convergence rate: deviation scales by $(1 - \alpha)$ per step. For $\alpha = 0.7$, the state is $97.3\%$ dominated by the absorbing token after three steps.
 
-### 6.16 The Metacognitive Daisy Chain
+### 6.18 The Metacognitive Daisy Chain
 
 The recursive meta-metacognition framework (Curry 2025) maps to a Daisy Chain where each cognitive layer monitors and controls the one below:
 
@@ -1413,7 +1474,7 @@ The companion theorem `metacog_is_daisy_transition` proves this equivalence by r
 
 The critical result is `c3_prevents_absorbing`: the highest layer ($C_3$, framework evaluation) detects when the base generator is stuck in a fixed point and applies a diversity perturbation. The theorem proves by contradiction that any non-zero perturbation breaks the fixed point — if the perturbed state equaled the stuck state, then $w \cdot \text{perturbation} = 0$, but $w > 0$ and the perturbation is non-zero.
 
-Applied to the Glossolalia Engine: $C_0$ is the Daisy Chain generating topology candidates. $C_1$ is the Betty compiler validating syntax. $C_2$ is the omega checker verifying formal properties ($\beta_1$ bounds, termination). $C_3$ is the bias detector that prevents the generator from collapsing to absorbing topologies. The neurosymbolic gate implements this as a generate-validate-retry loop where compilation errors feed back as context for the next attempt — the traced monoidal feedback loop from the peacemaking analysis (§6.12) applied to topology generation.
+Applied to the Glossolalia Engine: $C_0$ is the Daisy Chain generating topology candidates. $C_1$ is the Betty compiler validating syntax. $C_2$ is the omega checker verifying formal properties ($\beta_1$ bounds, termination). $C_3$ is the bias detector that prevents the generator from collapsing to absorbing topologies. The neurosymbolic gate implements this as a generate-validate-retry loop where compilation errors feed back as context for the next attempt — the traced monoidal feedback loop from the peacemaking analysis (§6.14) applied to topology generation.
 
 The metametacognitive framework is the Daisy Chain. The monitoring weight is the mixing coefficient. The control signal is the embedding. The four layers are four whip snaps (§6.9.1) on a cognitive taper. The theory that models itself.
 
@@ -1442,7 +1503,7 @@ In molecular biology, a polysome (also called a polyribosome) is a cluster of mu
 
 Think of it as a molecular assembly line: instead of one worker (ribosome) reading an instruction manual (mRNA) and finishing the product before the next one starts, multiple workers jump on the manual as soon as the first one moves out of the way. This allows the cell to mass-produce proteins with high throughput and efficiency.
 
-When $C \approx N$, 43 percent of node-slots are idle during ramp-up/ramp-down. Turbulent multiplexing fills idle slots with items from concurrent requests, maintaining per-request vent isolation (C2). This is analogous to polysome behavior: fill the mRNA pipeline with multiple ribosomes, degrade the mRNA when $Re$ drops below threshold, and reallocate to active pipelines.
+When $C \approx N$, 43 percent of node-slots are idle during ramp-up/ramp-down. Turbulent multiplexing fills idle slots with items from concurrent requests, maintaining per-request vent isolation (C2). This is analogous to polysome behavior: fill the mRNA pipeline with multiple ribosomes, degrade the mRNA when $Re$ drops below threshold, and reallocate to active pipelines. The molecular topology theorem (§3.2) makes this correspondence formal: polysome and pipeline share the same Betti signature and therefore the same homology class. The energy budget of ribosome allocation follows the same conservation law as pipeline stage allocation (§6.11).
 
 ### 7.3 Worthington Whip (Superposition Sharding)
 
@@ -1482,7 +1543,7 @@ Offset  Size   Field
 [10..]  [u8]   payload      (zerocopy Uint8Array view)
 ```
 
-**10 bytes.** Every frame carries its own identity. Every frame is self-describing. No ordered delivery is required. The `stream_id` + `sequence` pair is the coordinate in the covering space (§3.3). Flags compose: `RACE  FIN` means “racing AND final frame.” The frame reassembler (§3.3) is the covering map back to sequential order. Payloads are zerocopy: the codec writes 10 bytes in front of the existing `ArrayBuffer` view.
+**10 bytes.** Every frame carries its own identity. Every frame is self-describing. No ordered delivery is required. The `stream_id` + `sequence` pair is the coordinate in the covering space (§3.4). Flags compose: `RACE  FIN` means “racing AND final frame.” The frame reassembler (§3.4) is the covering map back to sequential order. Payloads are zerocopy: the codec writes 10 bytes in front of the existing `ArrayBuffer` view.
 
 ### 8.2.1 The Self-Describing Frame as Pervasive Abstraction
 
@@ -1515,7 +1576,7 @@ TCP had a long and successful run. For workloads with high concurrent-path struc
 | Single-stream congestion | TCP backs off the entire connection on loss |
 | Connection-level retransmit | Stream A's retransmit delays stream B |
 
-HTTP/2 tried to multiplex streams over TCP. The application topology ($\beta_1 > 0$) contradicts the transport topology ($\beta_1 = 0$). Head-of-line blocking is the topological symptom (§3.4). HTTP/3 (QUIC) partially resolves this with per-stream loss recovery on UDP, but maintains ordered delivery within each stream and retains a more complex framing surface than Aeon Flow in this benchmark scope.
+HTTP/2 tried to multiplex streams over TCP. The application topology ($\beta_1 > 0$) contradicts the transport topology ($\beta_1 = 0$). Head-of-line blocking is the topological symptom (§3.5). HTTP/3 (QUIC) partially resolves this with per-stream loss recovery on UDP, but maintains ordered delivery within each stream and retains a more complex framing surface than Aeon Flow in this benchmark scope.
 
 Aeon Flow – a UDP-native alternative in this paper’s benchmark scope – does not patch TCP’s problems at the application layer; it changes the transport assumptions directly.
 
@@ -1768,7 +1829,7 @@ The compilation pipeline is itself fork/race/fold:
 
 ### 11.3 Transformers as GGL Programs
 
-A transformer written in Gnosis reveals the fork/race/fold structure claimed in §6.11:
+A transformer written in Gnosis reveals the fork/race/fold structure claimed in §6.13:
 
 ```ggl
 (input_sequence)-[:PROCESS]->(qkv_projection)
@@ -1950,7 +2011,7 @@ In that compiler lane, the remaining theorem shape is not another affine example
 **Queueing theory subsumption scope.** Containment is proved for canonical constructions (Little’s Law boundary case, Erlang-style blocking behavior and Jackson-style bottleneck limits) and extended by executable sample-path checks that, on selected finite tick traces, exhaustively enumerate work-conserving single-server disciplines, representative discretized service-time families, bounded multi-class open-network conservation over finite service-law scenarios, finite-support stochastic arrival/service/routing mixtures in expectation, an exact finite-state probabilistic transition kernel for a bounded single-server queue, an exact finite-state probabilistic multiclass open-network kernel whose worst branch already exhibits the small-data ramp-up pathology, and a larger exact three-arrival three-class three-node witness over the full 64-branch arrival cube
 [9]. On the unbounded side, the companion now includes constructive finite-prefix balance theorems, infinite weighted-sum queue balance, direct countably supported stochastic queue laws via `PMF`, measure-theoretic `lintegral` conservation, monotone truncation-to-limit theorems, the stable `M/M/1` geometric stationary law with finite mean queue length, a finite-node product-form open-network occupancy law with exact singleton mass and total mean occupancy under a supplied stable throughput witness satisfying the traffic equations, an exact finite Jackson fixed-point closure under spectral uniqueness plus a supplied nonnegative stable real traffic solution, a raw finite Jackson closure under the coarse `maxIncomingRoutingMass`/`minServiceRate` criterion, a finite-step Jackson envelope ladder `throughputEnvelopeApprox n` whose first instances are the global max-external/max-incoming bound, the nodewise bound $\lambda_i + \mathrm{incomingMass}_i \cdot \maxExternalArrival / (1-\maxIncomingRoutingMass)$, and the deeper second-order bound $\lambda_i + \sum_j \mathrm{localEnvelope}_j P_{j i}$, a descending-ladder theorem plus the explicit absolute-error certificate `throughputEnvelopeApprox n - α_spec ≤ throughputEnvelopeResidual n`, the matching lower-side certificate `α_spec - (trafficApprox n).toReal ≤ throughputEnvelopeResidual (n+1)`, a formal lower/upper bracket between lower real traffic iterates and upper Jackson envelope iterates, direct service certificates against that ladder, and the stronger closure that any certified stage of that ladder already instantiates the same finite-network product-form and `lintegral` balance laws, explicit state-dependent stationary and terminal queue-balance schemas with concrete vacation, retrial, reneging, and adaptive-routing family wrappers, a concrete bounded adaptive raw-ceiling witness, and a long-run Cesaro balance theorem for unbounded open-network sample paths under vanishing residual open age. Remaining future work is arbitrary exact probabilistic multiclass/open networks beyond the current bounded witnesses, constructive derivation of exact traffic fixed points beyond the current exact-witness-plus-ladder/residual Jackson family, automatic discovery of richer adaptive Lyapunov decompositions beyond the built-in minimum-slack/selector/weighted/service-slack/routing-pressure forms, and positive-recurrence proofs for unbounded open stochastic networks.
 
-**Semiotic and peace-theoretic scope.** The semiotic extension (§6.12, §15) and the peace/war/hope theorems (SemioticPeace.lean) are formal-structural results: they prove categorical coherence, thermodynamic monotonicity, and fixed-point existence within the monoidal framework. They are *not* validated by any of the five evidence gates below. The biological correspondences (§1) and physical structural mappings (§5, §6.12) are likewise post-hoc structural pattern-matching — we observe a system, fit fork/race/fold, and verify consistency — rather than predictive science. No prediction about a novel system has been made and tested. Falsifiable predictions from the topological framework are explicitly future work.
+**Semiotic and peace-theoretic scope.** The semiotic extension (§6.14, §15) and the peace/war/hope theorems (SemioticPeace.lean) are formal-structural results: they prove categorical coherence, thermodynamic monotonicity, and fixed-point existence within the monoidal framework. They are *not* validated by any of the five evidence gates below. The biological correspondences (§1) and physical structural mappings (§5, §6.14) are likewise post-hoc structural pattern-matching — we observe a system, fit fork/race/fold, and verify consistency — rather than predictive science. No prediction about a novel system has been made and tested. Falsifiable predictions from the topological framework are explicitly future work.
 
 ### 14.1 Evidence-Bounded Claims
 
@@ -1986,9 +2047,9 @@ The innumerable conveyor belts of this world – Ford’s line, TCP’s stream, 
 
 A broad class of computational waste is within scope for measurement and reduction. We can quantify topological mismatch and target it directly.
 
-The framework’s language was not invented from scratch. It was borrowed from physical theories that already describe related path-selection phenomena. Quantum physics provided the lexicon: superposition, tunneling, interference, entanglement, measurement, collapse. In this paper, these are structural correspondences within an explicit computational abstraction, with literal quantum examples in photosynthetic transfer. The Feynman path integral can be mapped to fork/race/fold in that abstraction: paths branch, phases evolve, amplitudes recombine by interference, and non-classical contributions cancel (§6.12). The recombination mechanism differs (linear amplitude summation in physics vs nonlinear selection/merge in computation), and the companion tests make that boundary explicit: exact agreement in a finite linear path-sum model, plus explicit counterexamples for nonlinear winner/early-stop folds [9, 13]. The winner-take-all and early-stop failures are genuine disconfirming evidence for universality of the mapping — the correspondence is operationally exact only for linear full-aggregation folds and breaks for the nonlinear folds that dominate practical computation. This is therefore a structural mapping with an explicit, tested boundary, not an identity claim. Fluid dynamics provides scaling intuition through the pipeline Reynolds number, and thermodynamics provides a conservation accounting lens ($V = W + Q$) for modeled computational work/vent partitioning.
+The framework’s language was not invented from scratch. It was borrowed from physical theories that already describe related path-selection phenomena. Quantum physics provided the lexicon: superposition, tunneling, interference, entanglement, measurement, collapse. In this paper, these are structural correspondences within an explicit computational abstraction, with literal quantum examples in photosynthetic transfer. The Feynman path integral can be mapped to fork/race/fold in that abstraction: paths branch, phases evolve, amplitudes recombine by interference, and non-classical contributions cancel (§6.14). The recombination mechanism differs (linear amplitude summation in physics vs nonlinear selection/merge in computation), and the companion tests make that boundary explicit: exact agreement in a finite linear path-sum model, plus explicit counterexamples for nonlinear winner/early-stop folds [9, 13]. The winner-take-all and early-stop failures are genuine disconfirming evidence for universality of the mapping — the correspondence is operationally exact only for linear full-aggregation folds and breaks for the nonlinear folds that dominate practical computation. This is therefore a structural mapping with an explicit, tested boundary, not an identity claim. Fluid dynamics provides scaling intuition through the pipeline Reynolds number, and thermodynamics provides a conservation accounting lens ($V = W + Q$) for modeled computational work/vent partitioning.
 
-In selected analyzed examples, the pattern is observed repeatedly. Attention in transformers can be mapped to race-like scoring ($QK^T$), with softmax/selection and value projection as fold-like operations (§6.11). Protein folding can be read as path exploration with energetic selection [11]. Hylomorphism (unfold/fold) aligns naturally with fork/fold structure. These are structural correspondences used to organize reasoning across domains in this manuscript’s modeled class, supported by executable simulations and formal schemas under explicit assumptions.
+In selected analyzed examples, the pattern is observed repeatedly. Attention in transformers can be mapped to race-like scoring ($QK^T$), with softmax/selection and value projection as fold-like operations (§6.13). Protein folding can be read as path exploration with energetic selection [11]. Hylomorphism (unfold/fold) aligns naturally with fork/fold structure. These are structural correspondences used to organize reasoning across domains in this manuscript’s modeled class, supported by executable simulations and formal schemas under explicit assumptions.
 
 **What this paper claims and what it does not.** The scope of the convergence is broad enough to warrant explicit boundaries. This paper claims a structural mapping between fork/race/fold and selected physical/computational formalisms used here (for example, path-integral branching/recombination, Schrödinger evolution as race-like dynamics, and folded classical limits at $\beta_1 = 0$ in the abstraction). It does not claim full physical identity or derivation of fundamental constants/forces. The key point is shared topology under explicit assumptions, with different underlying recombination mechanics.
 
@@ -1998,7 +2059,7 @@ The claim is narrower and more defensible: under the stated assumptions, fork/ra
 
 To be sure, a skeptical but fair reader could still say that this manuscript is an unusually ambitious end-to-end synthesis project: real artifacts, real formal work, real systems insight, but structural rhetoric that sometimes outruns the narrowest proved scope. That pressure is fair. The intention of the scope limits and evidence-bounded claim list is to keep the strongest claims aligned with what is actually shown here.
 
-And this convergence has a practical corollary: **finding fork/race/fold in a system can suggest a promising fit hypothesis** (§6.13). The topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ quantifies how far an implementation deviates from its problem’s natural topology. In the systems analyzed here, $\Delta_\beta = 0$ cases – photosynthesis, DNA replication, saltatory conduction, path-integral mappings – align with comparatively efficient outcomes, while $\Delta_\beta > 0$ cases – sequential healthcare, T+2 settlement, HTTP/2 over TCP – exhibit measurable waste. The deficit is a diagnostic signal: reducing it is a testable optimization hypothesis that often coincided with improved outcomes in this analyzed set. Where the companion’s frontier-floor hypotheses can be discharged, that signal becomes a theorem: the zero-deficit floor point minimizes every monotone generalized-convex latency/waste cost on the failure Pareto frontier, and strict uniqueness requires the strict cost extension together with a unique zero-deficit floor witness.
+And this convergence has a practical corollary: **finding fork/race/fold in a system can suggest a promising fit hypothesis** (§6.15). The topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ quantifies how far an implementation deviates from its problem’s natural topology. In the systems analyzed here, $\Delta_\beta = 0$ cases – photosynthesis, DNA replication, saltatory conduction, path-integral mappings – align with comparatively efficient outcomes, while $\Delta_\beta > 0$ cases – sequential healthcare, T+2 settlement, HTTP/2 over TCP – exhibit measurable waste. The deficit is a diagnostic signal: reducing it is a testable optimization hypothesis that often coincided with improved outcomes in this analyzed set. Where the companion’s frontier-floor hypotheses can be discharged, that signal becomes a theorem: the zero-deficit floor point minimizes every monotone generalized-convex latency/waste cost on the failure Pareto frontier, and strict uniqueness requires the strict cost extension together with a unique zero-deficit floor witness.
 
 In this framing, deficits closer to zero are associated with better fit in the analyzed examples. Put plainly: the Bule ($1 \text{ B} = 1 \text{ unit of } \Delta_\beta$) is a structural diagnostic that quantifies unexploited parallelism, and under the companion’s explicit frontier-floor hypotheses its zero point is the cost floor for every monotone generalized-convex objective on that frontier.
 
