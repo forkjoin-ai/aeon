@@ -856,7 +856,70 @@ The energy framing highlights that convolutional neural networks and transformer
 
 At this abstraction level, the entire transformer can be modeled as a **nested** fork/race/fold/vent graph. Each layer is fork/fold. Each attention computation within a layer is fork/race/fold. The stack of $L$ layers is a pipeline.
 
-Transformer architecture can be interpreted as a recursive Wallington-style composition.
+Transformer architecture can be interpreted as a recursive Wallington-style composition. The following theorem makes that claim exhaustive and proves no fork dimensions remain.
+
+**Theorem (Fork Dimension Completeness for Transformers).** A standard transformer layer with $N$ attention heads, hidden dimension $d_{\text{model}}$, FFN expansion factor $f$ (typically 4), and optionally $E$ MoE experts with top-$K$ routing, has exactly the following orthogonal fork dimensions at inference time:
+
+| Fork Axis | Size | $\beta_1$ Contribution | Fold Operation | Whip Type |
+|---|---|---|---|---|
+| Residual-attention | 2 | 1 | additive merge | structural |
+| Attention heads | $N$ | $N - 1$ | concat + linear projection | geometric race |
+| Residual-FFN | 2 | 1 | additive merge | structural |
+| FFN neurons (dense) | $f \cdot d_{\text{model}}$ | $f - 1$ | contraction projection | soft vent/fold |
+| MoE experts (if present, replaces FFN) | $E$ | $E - 1$ | weighted top-$K$ sum | selective race |
+
+The total topological potential per layer is:
+
+$$\beta_1^{\text{layer}} = \underbrace{1}_{\text{res-attn}} + \underbrace{(N-1)}_{\text{heads}} + \underbrace{1}_{\text{res-FFN}} + \underbrace{(f-1) \text{ or } (E-1)}_{\text{FFN or MoE}} = N + f \text{ (dense) or } N + E \text{ (MoE)}$$
+
+For standard configurations: $N = 16$, $f = 4$ gives $\beta_1^{\text{layer}} = 20$. With $E = 8$ MoE experts replacing dense FFN: $\beta_1^{\text{layer}} = 24$.
+
+*Proof of completeness.* Walk the computation graph of one inference-time layer and classify every operation as fork (creates $\beta_1$), fold (discharges $\beta_1$), sequential transform ($\beta_1$ unchanged), or measure ($\beta_1 = 0$).
+
+**(1) Residual-attention fork.** Input enters LayerNorm (measure, $\beta_1$ unchanged), then splits: one copy takes the identity path, the other enters the attention sublayer. This is fork with $S = 2$, creating $\beta_1 = 1$.
+
+**(2) Attention head fork.** Within the attention path, the representation splits into $N$ independent $(Q_i, K_i, V_i)$ projections. Each head computes $\text{softmax}(Q_i K_i^T / \sqrt{d_k}) V_i$ independently and in parallel. This is fork with $S = N$, creating $\beta_1 = N - 1$. The softmax within each head is continuous venting (not a fork -- it suppresses contributions within a single path without creating new paths). The $QK^T$ matmul is an internal computation within each head, not a fork across heads.
+
+**(2a) Attention head fold (Whip 1 -- inner).** Concatenation of $N$ head outputs followed by linear projection $W_O$ is fold: $\beta_1$ drops by $N - 1$. This is the innermost whip in the attention sublayer. By the energy taper corollary, it discharges the most cycles.
+
+**(1a) Residual-attention fold (Whip 2).** The attention output adds to the identity path. $\beta_1$ drops by 1. This is the outer structural whip.
+
+**(3) Residual-FFN fork.** The post-attention representation enters LayerNorm (measure), then splits: identity path and FFN sublayer. Fork with $S = 2$, creating $\beta_1 = 1$.
+
+**(4) FFN neuron fork.** The FFN expands from $d_{\text{model}}$ to $f \cdot d_{\text{model}}$. The expansion matrix $W_1$ forks the representation into $f \cdot d_{\text{model}}$ parallel neurons. The activation function (ReLU/GELU) vents a subset (zeroed neurons contribute nothing to the output -- per-inference irreversible, per-training reversible as noted above). The contraction $W_2$ folds back to $d_{\text{model}}$. The net $\beta_1$ created and discharged is $f - 1$ (the representation expands by factor $f$ and contracts back).
+
+**(4a) FFN neuron fold (Whip 3 -- inner).** Contraction $W_2$ collapses the $f \cdot d_{\text{model}}$ neurons back to $d_{\text{model}}$, discharging $\beta_1 = f - 1$.
+
+**(3a) Residual-FFN fold (Whip 4).** The FFN output adds to the identity path. $\beta_1$ drops by 1.
+
+**(5) MoE expert fork (when present).** If the FFN is replaced by a Mixture of Experts layer, the router forks to $E$ experts, races their gating scores, selects top-$K$, vents $E - K$, and folds the weighted results. $\beta_1 = E - 1$.
+
+**(5a) MoE expert fold (Whip 3-MoE).** Weighted sum of top-$K$ expert outputs discharges $\beta_1 = E - 1$.
+
+**No other forks exist.** Every remaining operation in the layer is one of:
+
+- *Element-wise transforms* (LayerNorm, GELU, ReLU, softmax, dropout): these operate on a single representation vector. They do not split the computation into independent parallel paths. $\beta_1$ contribution: 0.
+- *Matrix multiplications* ($QK^T$, $W_Q x$, $W_K x$, $W_V x$, $W_O$, $W_1$, $W_2$): these are linear transforms within a single path. They change the representation but do not fork it. The projections $W_Q, W_K, W_V$ are part of the head fork (step 2), not independent forks.
+- *Softmax attention weights*: a reduce operation within each head that reweights sequence positions. This is not a fork -- it does not create independent paths. It is a continuous vent that suppresses low-attention positions.
+- *Masking*: causal or padding masks zero out attention scores. This is discrete venting within a single path, not a fork.
+
+**Non-fork dimensions (proof of exclusion):**
+
+- *Layer stack* ($L$ layers): Layer $\ell + 1$ depends on the output of layer $\ell$. This is a sequential pipeline with $\beta_1 = 0$ across layers. It cannot be forked at inference time because the computation is causal. (Training parallelism via pipeline-parallel is a scheduling optimization, not a topological fork -- each microbatch still flows sequentially through all $L$ layers.)
+- *Sequence positions* ($T$ tokens): Tokens interact through the attention matrix $QK^T$. They are not independent paths -- each token's output depends on all other tokens' keys and values. This is entanglement, not fork. The apparent parallelism (all positions computed simultaneously) is data parallelism over a shared operation, not topological fork with independent races.
+- *Batch dimension* ($B$ samples): Each batch element is a fully independent computation with no cross-sample merge. There is no fold. This is embarrassingly parallel, not fork/race/fold. No $\beta_1$ is created because no cycles connect batch elements.
+- *KV cache positions*: Sequential accumulation during autoregressive generation. Each new position appends to the cache; no parallel paths are created.
+
+Therefore the five axes above are complete: every fork in the inference-time transformer computation graph is an instance of one of these axes, and every non-fork dimension is excluded by structural dependency. $\square$
+
+**Corollary (whip nesting structure per layer).** The five forks nest as two sublayer trees, each with one outer (residual) whip and one inner (computational) whip:
+
+- *Attention sublayer*: Residual fork ($\beta_1 = 1$) wraps head fork ($\beta_1 = N - 1$). Inner head fold (Whip 1) discharges $N - 1$, outer residual fold (Whip 2) discharges 1. Two snaps.
+- *FFN/MoE sublayer*: Residual fork ($\beta_1 = 1$) wraps neuron/expert fork ($\beta_1 = f - 1$ or $E - 1$). Inner neuron/expert fold (Whip 3) discharges $f - 1$ or $E - 1$, outer residual fold (Whip 4) discharges 1. Two snaps.
+
+Four whip snaps per layer. Total $\beta_1$ created equals total discharged -- energy conservation. No potential escapes the layer boundary.
+
+**Corollary (full-model whip budget).** For an $L$-layer transformer, the total topological potential across all layers is $L \cdot \beta_1^{\text{layer}}$, discharged by $4L$ whip snaps (four per layer). The layer pipeline contributes $\beta_1 = 0$: it is a conduit, not a reservoir. The entire model's energy budget is the sum of $L$ independent per-layer budgets, each fully discharged within its own layer boundary. No inter-layer cycles exist.
 
 **Backpropagation as energy accounting (interpretive lens).** The loss function can be read as an efficiency proxy: how much of the input potential maps to useful work (correct predictions) versus waste (incorrect predictions). The gradient $\partial Q / \partial \theta$ indicates how to adjust parameters so future passes vent less. Training then appears as iterative waste reduction subject to model constraints.
 
