@@ -53,20 +53,17 @@ def idleStages (numStages numChunks : ℕ) : ℕ :=
 /-- Idle stages is bounded by numStages. -/
 theorem idleStages_le_numStages (N C : ℕ) :
     idleStages N C ≤ N := by
-  unfold idleStages
-  omega
+  unfold idleStages; omega
 
 /-- When chunks ≥ stages, no stages are idle. -/
 theorem idleStages_zero_of_chunks_ge_stages (N C : ℕ) (h : C ≥ N) :
     idleStages N C = 0 := by
-  unfold idleStages
-  omega
+  unfold idleStages; omega
 
 /-- When chunks < stages, idle count = stages - chunks. -/
 theorem idleStages_eq_of_chunks_lt_stages (N C : ℕ) (hC : C < N) :
     idleStages N C = N - C := by
-  unfold idleStages
-  omega
+  unfold idleStages; omega
 
 -- ─── BFT threshold connection ───────────────────────────────────
 
@@ -105,17 +102,21 @@ theorem quorumSafe_implies_majoritySafe (N C : ℕ) :
 
 /-- The Re < 3/2 threshold: when 2C > N (equivalently C/N > 1/2,
     equivalently Re = N/C < 2), the fold is majority-safe. -/
-theorem majoritySafe_of_two_chunks_gt_stages (N C : ℕ) (h : 2 * C > N) :
+theorem majoritySafe_of_two_chunks_gt_stages (N C : ℕ) (hN : 0 < N) (h : 2 * C > N) :
     majoritySafeFold N C := by
-  unfold majoritySafeFold idleStages
-  omega
+  show 2 * idleStages N C < N
+  by_cases hle : N ≤ C
+  · simp [idleStages, Nat.min_eq_right hle]; omega
+  · push_neg at hle; simp [idleStages, Nat.min_eq_left (Nat.le_of_lt hle)]; omega
 
 /-- The Re < 3/2 threshold: when 3C > 2N (equivalently C/N > 2/3,
     equivalently Re = N/C < 3/2), the fold is quorum-safe. -/
-theorem quorumSafe_of_three_chunks_gt_two_stages (N C : ℕ) (h : 3 * C > 2 * N) :
+theorem quorumSafe_of_three_chunks_gt_two_stages (N C : ℕ) (hN : 0 < N) (h : 3 * C > 2 * N) :
     quorumSafeFold N C := by
-  unfold quorumSafeFold idleStages
-  omega
+  show 3 * idleStages N C < N
+  by_cases hle : N ≤ C
+  · simp [idleStages, Nat.min_eq_right hle]; omega
+  · push_neg at hle; simp [idleStages, Nat.min_eq_left (Nat.le_of_lt hle)]; omega
 
 -- ─── Bridge to existing quorum theorems ─────────────────────────
 
@@ -166,23 +167,21 @@ def classifyRegime (numStages numChunks : ℕ) : FoldRegime :=
   else FoldRegime.syncRequired
 
 /-- mergeAll regime implies quorum safety. -/
-theorem mergeAll_is_quorumSafe (N C : ℕ)
+theorem mergeAll_is_quorumSafe (N C : ℕ) (hN : 0 < N)
     (h : classifyRegime N C = FoldRegime.mergeAll) :
     quorumSafeFold N C := by
   unfold classifyRegime at h
   split_ifs at h with h1
-  · exact quorumSafe_of_three_chunks_gt_two_stages N C h1
+  · exact quorumSafe_of_three_chunks_gt_two_stages N C hN h1
   all_goals simp at h
 
 /-- quorumFold regime implies majority safety. -/
-theorem quorumFold_is_majoritySafe (N C : ℕ)
+theorem quorumFold_is_majoritySafe (N C : ℕ) (hN : 0 < N)
     (h : classifyRegime N C = FoldRegime.quorumFold) :
     majoritySafeFold N C := by
   unfold classifyRegime at h
-  split_ifs at h with h1 h2
-  · simp at h
-  · exact majoritySafe_of_two_chunks_gt_stages N C h2
-  · simp at h
+  split_ifs at h with h1 h2 <;> first | exact absurd h (by decide) | skip
+  exact majoritySafe_of_two_chunks_gt_stages N C hN h2
 
 /-- syncRequired regime means neither quorum nor majority safety. -/
 theorem syncRequired_not_majoritySafe (N C : ℕ)
@@ -190,11 +189,13 @@ theorem syncRequired_not_majoritySafe (N C : ℕ)
     (hN : 0 < N) :
     ¬ majoritySafeFold N C := by
   unfold classifyRegime at h
-  split_ifs at h with h1 h2
-  · simp at h
-  · simp at h
-  · unfold majoritySafeFold idleStages
-    omega
+  split_ifs at h with h1 h2 <;> first | exact absurd h (by decide) | skip
+  intro habs
+  have : majoritySafeFold N C := habs
+  unfold majoritySafeFold at this
+  by_cases hle : N ≤ C
+  · simp [idleStages, Nat.min_eq_right hle] at this; omega
+  · push_neg at hle; simp [idleStages, Nat.min_eq_left (Nat.le_of_lt hle)] at this; omega
 
 -- ─── The Determinism Chain ───────────────────────────────────────
 --
@@ -216,20 +217,20 @@ structure DiverseSystem where
     fold can work — winner-take-all is the only viable strategy. -/
 theorem diversity_forces_deterministic_fold (sys : DiverseSystem) :
     3 * (sys.pathCount - 1) ≥ sys.pathCount := by
-  omega
+  have := sys.hDiverse; omega
 
 /-- In any diverse system, the vent fraction also exceeds the
     majority threshold 1/2. Even synchronous majority vote fails. -/
 theorem diversity_exceeds_majority (sys : DiverseSystem) :
     2 * (sys.pathCount - 1) ≥ sys.pathCount := by
-  omega
+  have := sys.hDiverse; omega
 
 /-- The deterministic fold on k ≥ 2 paths with positive mass is
     necessarily non-injective: it maps k inputs to 1 output.
     Winner-take-all: k paths → 1 survivor = many-to-one. -/
 theorem deterministic_fold_is_non_injective (sys : DiverseSystem) :
     sys.pathCount - 1 ≥ 1 := by
-  omega
+  have := sys.hDiverse; omega
 
 /-- The full chain: diversity (k ≥ 2) implies the vent count is
     at least 1, AND the vent count exceeds the BFT async threshold,
