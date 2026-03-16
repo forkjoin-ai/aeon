@@ -18,8 +18,6 @@ ebook_featured_excerpt_chapters: ch14-aeon-flow-protocol, ch21-topology-of-compu
 - Reader-facing reference implementations and primitive-backed Gnosis examples: [Chapter 17 Reader-Facing Reference Implementations](./ch17-reference-implementations.md)
 - External reviewer quickstart: [Chapter 17 External Reviewer Quickstart](./ch17-external-reviewer-quickstart.md)
 - IP counsel binder: [IP Counsel Monetization Binder](../../../../../docs/IP_COUNSEL_BINDER/README.md)
-- Closure todo: [Chapter 17 Closure Todo](./ch17-closure-todo.md)
-- Gap-closure checklist: [Chapter 17 Gap-Closure Checklist](./ch17-gap-closure-checklist.md)
 - Sleep-debt homology note: [Chapter 17 Sleep-Debt Homology Note](./ch17-sleep-debt-homology-note.md)
 - Sleep-debt calibration sources: [Chapter 17 Sleep-Debt Calibration Sources](./ch17-sleep-debt-calibration-sources.md)
 - Sleep-debt state-space bridge: [Chapter 17 Sleep-Debt State-Space Bridge](./ch17-sleep-debt-state-space-bridge.md)
