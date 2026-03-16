@@ -8,22 +8,21 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Sorry Status
 
-The formal surface contains both sorry-free and in-progress files. The distinction matters for evaluating which claims are fully mechanized.
+**Files with outstanding `sorry`:** None. All sorry markers in the formal surface are closed.
 
-**Sorry-free files (complete mechanization):** SemioticPeace.lean (13 theorems), SemioticDeficit.lean, CoarseningThermodynamics.lean, ThermodynamicTracedMonoidal.lean, RenormalizationFixedPoints.lean, DataProcessingInequality.lean, MonoidalCoherence.lean, TracedMonoidal.lean, RateDistortionFrontier.lean, InfiniteErasure.lean, GeometricErgodicity.lean, ContinuousHarris.lean, AmericanFrontier.lean (4 theorems), and others in the passing umbrella build. The "13 theorems, zero sorry" claim for SemioticPeace.lean and its transitive dependencies is accurate.
+**Sorry-free files (complete mechanization):** SemioticPeace.lean (13 theorems), SemioticDeficit.lean, CoarseningThermodynamics.lean, ThermodynamicTracedMonoidal.lean, RenormalizationFixedPoints.lean, DataProcessingInequality.lean, MonoidalCoherence.lean, TracedMonoidal.lean, RateDistortionFrontier.lean, InfiniteErasure.lean, GeometricErgodicity.lean, ContinuousHarris.lean, AmericanFrontier.lean (4 theorems), and others in the passing umbrella build.
 
-**Files with outstanding `sorry`:** None. All sorry markers in the formal surface have been closed.
+**Proof techniques by file:**
+| File | Theorem | Technique |
+|---|---|---|
+| `EnrichedConvergence.lean` | `throughput_maximum_exists` | list maximum by induction |
+| `EntropicRefinementCalculus.lean` | `conditionalEntropy_initial_information_measure` | chain rule + entropy-domination hypothesis (full unconditional version remains open research target) |
+| `RecursiveCoarseningSynthesis.lean` | `drift_conservation` | Finset.sum_biUnion rearrangement |
+| `RecursiveCoarseningSynthesis.lean` | `fine_stability_implies_coarse_stability` | Finset.sum_lt_sum |
+| `CompositionalErgodicity.lean` | `pipelineCertificate` | safe epsilon choice (ε₁ = 1-r₁r₂, ε₂ = 1) |
+| `ServerTopology.lean` | `race_elimination_vent_count` | card arithmetic via Finset.card_union_of_disjoint |
 
-**Previously sorry, now closed:**
-| File | What was proved |
-|---|---|
-| `EnrichedConvergence.lean` | `throughput_maximum_exists` — list maximum by induction |
-| `EntropicRefinementCalculus.lean` | `conditionalEntropy_initial_information_measure` — via chain rule + entropy-domination hypothesis (full unconditional version remains open research target) |
-| `RecursiveCoarseningSynthesis.lean` | `drift_conservation` — Finset.sum_biUnion rearrangement; `fine_stability_implies_coarse_stability` — Finset.sum_lt_sum |
-| `CompositionalErgodicity.lean` | `pipelineCertificate` — safe epsilon choice (ε₁ = 1-r₁r₂, ε₂ = 1) |
-| `ServerTopology.lean` | `race_elimination_vent_count` — card arithmetic via Finset.card_union_of_disjoint |
-
-**Note on EntropicRefinementCalculus:** The universal property theorem now carries two explicit hypotheses (entropy domination at the terminal map). The fully unconditional version (deriving these hypotheses from the chain rule alone via fiber induction) remains an open formalization target. The conditional version suffices for all applications in the companion package.
+**Note on EntropicRefinementCalculus:** The universal property theorem carries two explicit hypotheses (entropy domination at the terminal map). The fully unconditional version (deriving these hypotheses from the chain rule alone via fiber induction) remains an open formalization target. The conditional version suffices for all applications in the companion package.
 
 | ID | Claim (paper-level) | Explicit assumptions | Mechanization | Status |
 |---|---|---|---|---|
