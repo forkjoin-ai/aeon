@@ -5517,18 +5517,7 @@ point as terminus --- constitutes, when taken together, a mathematical
 theory of peace.  Not a metaphor for peace.  Not an analogy to peace.
 A formal theory of a \emph{model} of peace, mechanized in a proof assistant, in which peace is a fixed point, its existence is a theorem, the path to it is constructive, and convergence is guaranteed under stated conditions. The logical chain is: \texttt{peace\_fixed\_point} proves the RG fixed point exists (zero heat, zero information loss); it \emph{is} the zero-deficit witness required by the conditional optimality-verification theorem; therefore that theorem applies non-vacuously. Sixteen theorems.  Every step machine-verified.
 
-\textbf{Scope.}  The semiotic theorems formalize a \emph{model} of
-communication: finite semantic paths collapsing through bounded
-articulation channels, represented as \texttt{SemioticChannel} structures
-over \texttt{Fin n} types.  They do not formalize communication itself.
-The topological space of ``thought'' is the finite-dimensional semantic
-path space of the model; $\beta_1(\text{thought})$ is the first Betti
-number of that modeled path complex; two communication acts are ``paths''
-vs ``cycles'' by their edge structure in the modeled DAG.  The structural
-correspondence between the model and human communication is a hypothesis
-grounded in the formal results, not a proof about human behavior.  The
-theorems bound what the model predicts; empirical validation of the
-correspondence is future work.
+\textbf{Scope.}  The semiotic theorems formalize a \emph{model} of communication: finite semantic paths collapsing through bounded articulation channels, represented as \texttt{SemioticChannel} structures over \texttt{Fin n} types.  They do not formalize communication itself. The topological space of ``thought'' is the finite-dimensional semantic path space of the model; $\beta_1(\text{thought})$ is the first Betti number of that modeled path complex; two communication acts are ``paths'' vs ``cycles'' by their edge structure in the modeled DAG.  The structural correspondence between the model and human communication is a hypothesis grounded in the formal results, not a proof about human behavior.  The theorems bound what the model predicts; empirical validation of the correspondence is future work.
 
 But the theory of peace was not invented here.  DNA replication
 discovered it first.  The origin of replication forks the double helix
@@ -5549,137 +5538,40 @@ and a proof.
 \begin{figure}
 \centering
 \pandocbounded{\includesvg[keepaspectratio]{companion-tests/artifacts/ch17-semiotic-peace-figure.svg}}
-\caption{The Geometry of Failure Contains Hope.
-\textbf{A.}~The semiotic deficit: thought ($\beta_1 = k{-}1$) folds
-through a single articulation stream ($\beta_1 = 0$); vented paths
-fall into the void ($\Delta\beta = k{-}1$).
-\textbf{B.}~Two trajectories diverge from the same initial deficit:
-war (cumulative Landauer heat, monotone increasing) versus peace
-(deficit converging to the fixed point under context accumulation).
-\textbf{C.}~The \texttt{hope} theorem bundles five machine-verified
-guarantees: confusion is real, bounded, reducible, eliminable, and
-convergent.
-\textbf{D.}~DNA replication as the original implementation: fork at
-origin, polymerase race, terminus fold, Okazaki vent, ligase as
-traced monoidal feedback operator, complete chromosome as fixed point.}
+\caption{The Geometry of Failure Contains Hope. \textbf{A.}~The semiotic deficit: thought ($\beta_1 = k{-}1$) folds through a single articulation stream ($\beta_1 = 0$); vented paths fall into the void ($\Delta\beta = k{-}1$). \textbf{B.}~Two trajectories diverge from the same initial deficit: war (cumulative Landauer heat, monotone increasing) versus peace (deficit converging to the fixed point under context accumulation). \textbf{C.}~The \texttt{hope} theorem bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent. \textbf{D.}~DNA replication as the original implementation: fork at origin, polymerase race, terminus fold, Okazaki vent, ligase as traced monoidal feedback operator, complete chromosome as fixed point.}
 \end{figure}
 
 Within the finite DAG classes modeled in this paper, fork/race/fold +
 vent is sufficient.
 
-\textbf{When forking is net negative.}  The framework applies to DAGs
-where fork/race/fold coordination cost is sub-linear in the work saved
-by parallelism.  When coordination overhead exceeds the parallelism
-benefit --- very small payloads where fork/fold bookkeeping dominates,
-very fast sequential paths where the critical section is shorter than
-the fork latency, or contention-bound systems where cache coherence
-traffic or lock contention scales super-linearly with $\beta_1$ ---
-the optimal topology is $\beta_1 = 0$: a simple sequential path.  The
-diversity theorem does not claim that high $\beta_1$ is universally
-beneficial.  It claims that \emph{given} a problem whose intrinsic
-$\beta_1^* > 0$, the diverse strategy subsumes the monoculture
-strategy.  The precondition matters.
+\textbf{When forking is net negative.}  The framework applies to DAGs where fork/race/fold coordination cost is sub-linear in the work saved by parallelism.  When coordination overhead exceeds the parallelism benefit --- very small payloads where fork/fold bookkeeping dominates, very fast sequential paths where the critical section is shorter than the fork latency, or contention-bound systems where cache coherence traffic or lock contention scales super-linearly with $\beta_1$ --- the optimal topology is $\beta_1 = 0$: a simple sequential path.  The diversity theorem does not claim that high $\beta_1$ is universally beneficial.  It claims that \emph{given} a problem whose intrinsic $\beta_1^* > 0$, the diverse strategy subsumes the monoculture strategy.  The precondition matters.
 
 \subsubsection{15.1 The Diversity Theorem and the Laminar
 Pipeline}\label{diversity-theorem-laminar-pipeline}
 
-Ten mechanized theorems on diversity subsumption and optimality,
-composed from six supporting files
-(\texttt{CodecRacing}, \texttt{DeficitCapacity},
-\texttt{CoveringSpaceCausality}, \texttt{FailureTrilemma},
-\texttt{FoldErasure}, and \texttt{DiversityOptimality}),
-coalesce into a single claim: \emph{diversity is not a preference or a
-heuristic --- it is a topological and thermodynamic necessity for
-optimality in the strategy-space sense.}  The composition theorem
-\texttt{diversity\_optimality\_master} (\texttt{DiversityOptimality.lean})
-bundles five pillars: (1)~monotonicity --- adding a branch never
-increases race minimum; (2)~subsumption --- racing subsumes every fixed
-strategy; (3)~necessity --- reducing diversity below intrinsic $\beta_1$
-forces information loss; (4)~optimality --- matched diversity yields
-zero deficit and lossless transport; (5)~irreversibility --- collapsing
-diversity requires waste and generates Landauer heat.
+Ten mechanized theorems on diversity subsumption and optimality, composed from six supporting files (\texttt{CodecRacing}, \texttt{DeficitCapacity}, \texttt{CoveringSpaceCausality}, \texttt{FailureTrilemma}, \texttt{FoldErasure}, and \texttt{DiversityOptimality}), coalesce into a single claim: \emph{diversity is not a preference or a heuristic --- it is a topological and thermodynamic necessity for optimality in the strategy-space sense.}  The composition theorem \texttt{diversity\_optimality\_master} (\texttt{DiversityOptimality.lean}) bundles five pillars: (1)~monotonicity --- adding a branch never increases race minimum; (2)~subsumption --- racing subsumes every fixed strategy; (3)~necessity --- reducing diversity below intrinsic $\beta_1$ forces information loss; (4)~optimality --- matched diversity yields zero deficit and lossless transport; (5)~irreversibility --- collapsing diversity requires waste and generates Landauer heat.
 
-The theorem has an immediate engineering consequence: the \textbf{laminar
-pipeline} (Layer~8 of the Aeon stack).  Instead of \texttt{sendfile(2)}
---- which transmits raw bytes via kernel DMA with zero compression ---
-the laminar pipeline chunks the file, races all available codecs
-(identity, gzip, brotli, deflate) per chunk, picks the smallest, and
-\texttt{writev}'s the compressed chunk with a 10-byte Flow frame header.
-THM-TOPO-RACE-SUBSUMPTION guarantees that racing total $\leq$ identity
-total (sendfile wire size).  THM-TOPO-RACE-IDENTITY-BASELINE guarantees
-identity is always a candidate, so the pipeline never does worse than
-raw.
+The theorem has an immediate engineering consequence: the \textbf{laminar pipeline} (Layer~8 of the Aeon stack).  Instead of \texttt{sendfile(2)} --- which transmits raw bytes via kernel DMA with zero compression --- the laminar pipeline chunks the file, races all available codecs (identity, gzip, brotli, deflate) per chunk, picks the smallest, and \texttt{writev}'s the compressed chunk with a 10-byte Flow frame header. THM-TOPO-RACE-SUBSUMPTION guarantees that racing total $\leq$ identity total (sendfile wire size).  THM-TOPO-RACE-IDENTITY-BASELINE guarantees identity is always a candidate, so the pipeline never does worse than raw.
 
-\textbf{Latency tradeoff and crossover bandwidth.}
-THM-TOPO-RACE-SUBSUMPTION proves that the laminar pipeline strictly
-dominates sendfile on \emph{wire bytes}: the racing total is provably
-$\leq$ the identity total.  It does not prove strict domination on
-\emph{end-to-end latency}.  The laminar pipeline incurs encode cost
-(13.6\,ms on the microfrontend, 45.9\,ms on big content) that sendfile
-avoids entirely --- sendfile is zero-CPU kernel DMA.  The pipeline wins
-on wall-clock time only when network transfer savings exceed encode
-overhead.  For the microfrontend: the pipeline saves $\approx$55\,KB of
-wire bytes at an encode cost of $\approx$11\,ms.  The crossover
-bandwidth is $55\text{\,KB}/11\text{\,ms} \approx 5\text{\,MB/s}$.
-Below 5\,MB/s, the laminar pipeline is faster end-to-end; above
-5\,MB/s, sendfile + pre-compressed brotli (computed at build time)
-delivers lower time-to-first-byte.  Additionally, pre-compressed content
-(brotli-at-build-time served via sendfile) avoids runtime encode cost
-entirely and achieves comparable wire-byte savings without per-request
-CPU work.  The laminar pipeline's advantage is \emph{adaptivity} --- it
-handles mixed compressible/incompressible content without build-time
-configuration --- not universal latency superiority.
+\textbf{Latency tradeoff and crossover bandwidth.} THM-TOPO-RACE-SUBSUMPTION proves that the laminar pipeline strictly dominates sendfile on \emph{wire bytes}: the racing total is provably $\leq$ the identity total.  It does not prove strict domination on \emph{end-to-end latency}.  The laminar pipeline incurs encode cost (13.6\,ms on the microfrontend, 45.9\,ms on big content) that sendfile avoids entirely --- sendfile is zero-CPU kernel DMA.  The pipeline wins on wall-clock time only when network transfer savings exceed encode overhead.  For the microfrontend: the pipeline saves $\approx$55\,KB of wire bytes at an encode cost of $\approx$11\,ms.  The crossover bandwidth is $55\text{\,KB}/11\text{\,ms} \approx 5\text{\,MB/s}$. Below 5\,MB/s, the laminar pipeline is faster end-to-end; above 5\,MB/s, sendfile + pre-compressed brotli (computed at build time) delivers lower time-to-first-byte.  Additionally, pre-compressed content (brotli-at-build-time served via sendfile) avoids runtime encode cost entirely and achieves comparable wire-byte savings without per-request CPU work.  The laminar pipeline's advantage is \emph{adaptivity} --- it handles mixed compressible/incompressible content without build-time configuration --- not universal latency superiority.
 
-The stack folds in on itself: the diversity theorem at Layer~8 is
-verified by the model checker at Layer~1, which is itself a
-fork/race/fold computation.  The same algebra reappears at each layer
---- not because it loops, but because the primitive self-composes, like
-a fern whose fronds repeat the branching pattern of the whole.
+The stack folds in on itself: the diversity theorem at Layer~8 is verified by the model checker at Layer~1, which is itself a fork/race/fold computation.  The same algebra reappears at each layer --- not because it loops, but because the primitive self-composes, like a fern whose fronds repeat the branching pattern of the whole.
 
-\textbf{The engineering result is the philosophical result.}  sendfile()
-is a monoculture: one codec (identity), one stream ($\beta_1 = 0$),
-zero adaptivity.  The laminar pipeline is diversity: four codecs racing
-per chunk, multi-stream Flow framing, per-resource optimal selection.
-THM-TOPO-RACE-SUBSUMPTION proves the diverse strategy is monotonically
-no worse --- it \emph{contains} every monoculture as a special case
-(subsumption), so it can do no worse in the limit.  It does not claim
-that per-chunk racing always achieves better compression ratio than a
-well-chosen monoculture: on homogeneous content, the \S9.2 benchmarks
-show that global brotli monoculture retains 4--15\% better ratio than
-per-chunk racing, because the global dictionary captures cross-chunk
-correlations that per-chunk racing misses.  The diversity theorem says
-the racing \emph{strategy space} subsumes the monoculture strategy
-space.
+\textbf{The engineering result is the philosophical result.}  sendfile() is a monoculture: one codec (identity), one stream ($\beta_1 = 0$), zero adaptivity.  The laminar pipeline is diversity: four codecs racing per chunk, multi-stream Flow framing, per-resource optimal selection. THM-TOPO-RACE-SUBSUMPTION proves the diverse strategy is monotonically no worse --- it \emph{contains} every monoculture as a special case (subsumption), so it can do no worse in the limit.  It does not claim that per-chunk racing always achieves better compression ratio than a well-chosen monoculture: on homogeneous content, the \S9.2 benchmarks show that global brotli monoculture retains 4--15\% better ratio than per-chunk racing, because the global dictionary captures cross-chunk correlations that per-chunk racing misses.  The diversity theorem says the racing \emph{strategy space} subsumes the monoculture strategy space.
 
-The connection is not metaphorical.  It is the same theorem applied to
-different substrates.  When \texttt{war\_as\_cumulative\_heat} proves
-that successive context-free folds accumulate irreversible thermodynamic
-waste, it is proving the same thing as when the shootoff shows HTTP/1.1
-spending 31\% of its wire budget on framing overhead: \emph{monoculture
-generates waste, and the waste is irreversible}.  When
-\texttt{peace\_context\_reduces} proves that shared context monotonically
-deflates the semiotic deficit, it is proving the same thing as when
-per-chunk codec racing adapts to content type: \emph{diversity matched
-to the problem's intrinsic topology eliminates waste}.
+The connection is not metaphorical.  It is the same theorem applied to different substrates.  When \texttt{war\_as\_cumulative\_heat} proves that successive context-free folds accumulate irreversible thermodynamic waste, it is proving the same thing as when the shootoff shows HTTP/1.1 spending 31\% of its wire budget on framing overhead: \emph{monoculture generates waste, and the waste is irreversible}.  When \texttt{peace\_context\_reduces} proves that shared context monotonically deflates the semiotic deficit, it is proving the same thing as when per-chunk codec racing adapts to content type: \emph{diversity matched to the problem's intrinsic topology eliminates waste}.
 
-Servers get faster for the same reason peace is reachable: because
-diversity is the shape of optimality, and its destruction has irreducible
-cost.
+Servers get faster for the same reason peace is reachable: because diversity is the shape of optimality, and its destruction has irreducible cost.
 
 \subsubsection{15.2 The American Frontier}\label{american-frontier}
 
-The three shootoffs --- protocol framing (\S8.5), topological compression
-(\S9.2), and laminar pipeline scheduling (\S15.1) --- appear to be
-unrelated engineering benchmarks.  They are not.  All three trace the
-same Pareto frontier, and that frontier is mechanized.
+The three shootoffs --- protocol framing (\S8.5), topological compression (\S9.2), and laminar pipeline scheduling (\S15.1) --- appear to be unrelated engineering benchmarks.  They are not.  All three trace the same Pareto frontier, and that frontier is mechanized.
 
-\textbf{THM-AMERICAN-FRONTIER} (\texttt{AmericanFrontier.lean}) proves that for
-any system with intrinsic topology $\beta_1^*$, the map
+\textbf{THM-AMERICAN-FRONTIER} (\texttt{AmericanFrontier.lean}) proves that for any system with intrinsic topology $\beta_1^*$, the map
 \[
   d \;\mapsto\; \text{waste}(d) \;=\; \Delta\beta(\beta_1^*, d)
 \]
-from diversity level $d$ to topological deficit (waste) satisfies four
-properties:
+from diversity level $d$ to topological deficit (waste) satisfies four properties:
 
 \begin{enumerate}
 \item \textbf{Monotonicity:} $d_1 \leq d_2 \implies \text{waste}(d_2) \leq \text{waste}(d_1)$.  Increasing diversity never increases waste.
@@ -5688,66 +5580,24 @@ properties:
 \item \textbf{Pigeonhole witness:} At $d = 1$, there exist distinct paths $p_1 \neq p_2$ sharing a stream --- a constructive collision that, by the data processing inequality, erases information.
 \end{enumerate}
 
-The companion theorem \texttt{buley\_frontier\_codec\_racing} proves the
-same shape for codec-racing diversity: adding codecs to a race is
-monotonically non-increasing in wire size (Pillar~1 of the diversity
-theorem), and racing achieves zero compression deficit (Pillar~2).  The
-unified theorem \texttt{buley\_frontier\_unified} composes both
-instantiations into a single statement: the topological and
-codec-racing frontiers share the same monotone envelope.
+The companion theorem \texttt{buley\_frontier\_codec\_racing} proves the same shape for codec-racing diversity: adding codecs to a race is monotonically non-increasing in wire size (Pillar~1 of the diversity theorem), and racing achieves zero compression deficit (Pillar~2).  The unified theorem \texttt{buley\_frontier\_unified} composes both instantiations into a single statement: the topological and codec-racing frontiers share the same monotone envelope.
 
 Each shootoff is a substrate-specific projection of this frontier:
 
 \begin{itemize}
-\item \textbf{Protocol:} HTTP/1.1 ($\beta_1 = 0$) wastes 31\% of wire on
-  framing.  Aeon Flow ($\beta_1 = 94$) wastes 1.5\%.  The
-  monotone decrease from 31\% to 1.5\% across HTTP/1.1 $\to$ HTTP/2
-  $\to$ HTTP/3 $\to$ Aeon Flow is the frontier.
-\item \textbf{Pipeline:} At Reynolds number $\text{Re} = 16$ (low
-  diversity), idle fraction is 92\%.  At $\text{Re} = 0.1$ (high
-  diversity), idle fraction is 7\%.  The curve is monotonically
-  decreasing --- the frontier again.
-\item \textbf{Compression:} Across five corpus types, topology racing
-  achieves 100\% win rate against both best-fixed and heuristic
-  strategies.  The gain ranges from 0.8\% on homogeneous text to 46\% on
-  heterogeneous API telemetry --- the cost of monoculture scales with
-  the problem's intrinsic $\beta_1^*$.
+\item \textbf{Protocol:} HTTP/1.1 ($\beta_1 = 0$) wastes 31\% of wire on framing.  Aeon Flow ($\beta_1 = 94$) wastes 1.5\%.  The monotone decrease from 31\% to 1.5\% across HTTP/1.1 $\to$ HTTP/2 $\to$ HTTP/3 $\to$ Aeon Flow is the frontier.
+\item \textbf{Pipeline:} At Reynolds number $\text{Re} = 16$ (low diversity), idle fraction is 92\%.  At $\text{Re} = 0.1$ (high diversity), idle fraction is 7\%.  The curve is monotonically decreasing --- the frontier again.
+\item \textbf{Compression:} Across five corpus types, topology racing achieves 100\% win rate against both best-fixed and heuristic strategies.  The gain ranges from 0.8\% on homogeneous text to 46\% on heterogeneous API telemetry --- the cost of monoculture scales with the problem's intrinsic $\beta_1^*$.
 \end{itemize}
 
-\textbf{Diagnostic application.}  The frontier is not merely descriptive;
-it is a diagnostic tool.  Given any fork/race/fold system, one can
-compute its diversity level $d$ and measured waste $w$, then check
-whether $(d, w)$ lies on the frontier.  Systems below the frontier need
-diversification; systems on it are Pareto-optimal.  The deficit
-$\Delta\beta = \beta_1^* - d$ is both the distance to the frontier and
-the lower bound on waste.  Standard Pareto-analysis tools ---
-dominance testing, efficiency frontiers, envelope computation --- apply
-directly, because THM-AMERICAN-FRONTIER provides the monotonicity and
-boundary conditions that these tools require.
+\textbf{Diagnostic application.}  The frontier is not merely descriptive; it is a diagnostic tool.  Given any fork/race/fold system, one can compute its diversity level $d$ and measured waste $w$, then check whether $(d, w)$ lies on the frontier.  Systems below the frontier need diversification; systems on it are Pareto-optimal.  The deficit $\Delta\beta = \beta_1^* - d$ is both the distance to the frontier and the lower bound on waste.  Standard Pareto-analysis tools --- dominance testing, efficiency frontiers, envelope computation --- apply directly, because THM-AMERICAN-FRONTIER provides the monotonicity and boundary conditions that these tools require.
 
-This makes diversity calculable rather than aspirational.  When the
-deficit is positive, the system is provably below the frontier and
-diversification is not a preference but a Pareto improvement.  When the
-deficit is zero, the system is on the frontier and further
-diversification provides no topological benefit (though it may provide
-robustness, which is a separate axis).  The frontier tells you exactly
-when a system needs diversification and exactly how much it will gain.
+This makes diversity calculable rather than aspirational.  When the deficit is positive, the system is provably below the frontier and diversification is not a preference but a Pareto improvement.  When the deficit is zero, the system is on the frontier and further diversification provides no topological benefit (though it may provide robustness, which is a separate axis).  The frontier tells you exactly when a system needs diversification and exactly how much it will gain.
 
 \begin{figure}
 \centering
 \pandocbounded{\includesvg[keepaspectratio]{companion-tests/artifacts/ch17-american-frontier-figure.svg}}
-\caption{Figure 3.  The American Frontier: diversity vs waste across three
-substrates.  \textbf{A.}~Protocol framing overhead on the microfrontend
-benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31\%)
-to Aeon Flow (1.5\%).  \textbf{B.}~Pipeline idle fraction vs Reynolds
-number for a 4-stage pipeline: laminar regime (high diversity, low waste)
-to turbulent regime (low diversity, high waste).  \textbf{C.}~Cost of
-monoculture: heuristic waste (topology gain \%) across five corpus types
-ordered by content heterogeneity, showing that the penalty for
-non-diverse strategy scales with intrinsic $\beta_1^*$.  All three
-panels are instantiations of THM-AMERICAN-FRONTIER
-(\texttt{AmericanFrontier.lean}): waste monotonically non-increasing in
-diversity, zero at $\beta_1 = \beta_1^*$, positive below.}
+\caption{Figure 3.  The American Frontier: diversity vs waste across three substrates.  \textbf{A.}~Protocol framing overhead on the microfrontend benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31\%) to Aeon Flow (1.5\%).  \textbf{B.}~Pipeline idle fraction vs Reynolds number for a 4-stage pipeline: laminar regime (high diversity, low waste) to turbulent regime (low diversity, high waste).  \textbf{C.}~Cost of monoculture: heuristic waste (topology gain \%) across five corpus types ordered by content heterogeneity, showing that the penalty for non-diverse strategy scales with intrinsic $\beta_1^*$.  All three panels are instantiations of THM-AMERICAN-FRONTIER (\texttt{AmericanFrontier.lean}): waste monotonically non-increasing in diversity, zero at $\beta_1 = \beta_1^*$, positive below.}
 \end{figure}
 
 \subsection{References}\label{references}
