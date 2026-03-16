@@ -70,29 +70,19 @@ The same geometry governs communication between persons. When a speaker has more
 
 Now look at what happens when four chunks move through four children. Draw it as a grid where time moves left to right, children are stacked top to bottom. This is the **grid**:
 
-    Time:  t1   t2   t3   t4   t5   t6   t7
-    Kid 1: [C1] [C2] [C3] [C4]
-    Kid 2:      [C1] [C2] [C3] [C4]
-    Kid 3:           [C1] [C2] [C3] [C4]
-    Kid 4:                [C1] [C2] [C3] [C4]
+    Time:  t1   t2   t3   t4   t5   t6   t7 Kid 1: [C1] [C2] [C3] [C4] Kid 2:      [C1] [C2] [C3] [C4] Kid 3:           [C1] [C2] [C3] [C4] Kid 4:                [C1] [C2] [C3] [C4]
 
 Focus on the **ramp-up** – the first four time steps. Read what’s active at each moment. This is the **triangle**:
 
-    t1:  1
-    t2:  2  1
-    t3:  3  2  1
-    t4:  4  3  2  1
+    t1:  1 t2:  2  1 t3:  3  2  1 t4:  4  3  2  1
 
 A triangle. The top has one chunk. Each row adds one more. At $t_4$ the pipeline is full – every child is busy. Now trace any path through this triangle:
 
-- **Read any column** (one child’s work over time): 1, 2, 3, 4. Correct
-order.
+- **Read any column** (one child’s work over time): 1, 2, 3, 4. Correct order.
 
-- **Read any row** (all children at one moment): a contiguous
-subsequence, in order under the stated stage/sequence dependencies.
+- **Read any row** (all children at one moment): a contiguous subsequence, in order under the stated stage/sequence dependencies.
 
-- **Read the diagonal** ($t_4$, all four children active): 4, 3, 2, 1
-– the wavefront. Every chunk is at a different stage, but they are all progressing in the correct relative order.
+- **Read the diagonal** ($t_4$, all four children active): 4, 3, 2, 1 – the wavefront. Every chunk is at a different stage, but they are all progressing in the correct relative order.
 
 **Under this dependency model, ordering is preserved.** The triangle encodes it geometrically. Each child depends only on what the child above passed down (stage dependency) and each chunk depends only on the chunk before it at the same child (sequence dependency). Those two axes – vertical and horizontal – are the active constraints. In this model, the triangle is the tight packing that satisfies both.
 
@@ -120,14 +110,11 @@ A working hypothesis follows from this zoom-out: efficient coordination patterns
 
 Three natural axioms set the stage.
 
-- **Locality axiom**: if correctness is governed by local constraints,
-forcing global sequential order adds latency without adding truth.
+- **Locality axiom**: if correctness is governed by local constraints, forcing global sequential order adds latency without adding truth.
 
-- **Topology axiom**: when multiple paths preserve correctness, a
-high-efficiency policy class is to fork them, race them, then fold deterministically.
+- **Topology axiom**: when multiple paths preserve correctness, a high-efficiency policy class is to fork them, race them, then fold deterministically.
 
-- **Naturalism axiom**: when the same pattern reappears in classrooms,
-cells and networks, it can motivate testing for a shared computational shape rather than treating the similarity as metaphor alone.
+- **Naturalism axiom**: when the same pattern reappears in classrooms, cells and networks, it can motivate testing for a shared computational shape rather than treating the similarity as metaphor alone.
 
 This paper studies whether the same coordination shape recurs across these settings. It has **three** operations: **fork** work into parallel paths, **race** paths against each other, **fold** results into a single answer. It has one safety mechanism: **vent** – propagate down, never across. It treats failure as first-class to minimize wasted work.
 
@@ -155,14 +142,11 @@ An information-theoretic framing (§6.8) turns the Void into an accounting ledge
 
 Fork/race/fold is used here as a structural model for natural systems. The same pattern appears across different substrates. I grade each mapping:
 
-- **Grade A**: Quantitative correspondence – the algorithm’s math
-directly models the system with embedded predictive power.
+- **Grade A**: Quantitative correspondence – the algorithm’s math directly models the system with embedded predictive power.
 
-- **Grade B**: Structural homology – deep structural match, genuine
-design insight, no novel quantitative prediction.
+- **Grade B**: Structural homology – deep structural match, genuine design insight, no novel quantitative prediction.
 
-- **Grade B+**: Structural homology with partial mechanized validation –
-the structural mapping is supported by executable companion tests that verify specific boundary conditions, but the correspondence is not quantitatively predictive across its full range.
+- **Grade B+**: Structural homology with partial mechanized validation – the structural mapping is supported by executable companion tests that verify specific boundary conditions, but the correspondence is not quantitatively predictive across its full range.
 
 Grades are evidentiary tiers, not additive votes. Grade B and B+ examples provide structural context; they are not interchangeable with Grade A quantitative confirmations.
 
@@ -172,9 +156,7 @@ In this paper, low topological deficit is treated as one interpretable sign of f
 
 ### 1.1 *Physarum polycephalum*: Distributed Tradeoffs Without Central Control (Grade A)
 
-In 2010, Tero et al. placed oat flakes on a wet surface in positions corresponding to the 36 stations of the greater Tokyo rail network
-[1]. They introduced a single *Physarum polycephalum* slime mold at
-the position corresponding to Tokyo station. The organism – which has no brain, no neurons, no central nervous system of any kind – extended exploratory tendrils in all directions (**fork**). Multiple tendrils reached each food source via different routes (**race**). The organism then pruned inefficient connections, reinforcing high-flow tubes and abandoning low-flow ones (**fold** with **venting** of abandoned paths).
+In 2010, Tero et al. placed oat flakes on a wet surface in positions corresponding to the 36 stations of the greater Tokyo rail network [1]. They introduced a single *Physarum polycephalum* slime mold at the position corresponding to Tokyo station. The organism – which has no brain, no neurons, no central nervous system of any kind – extended exploratory tendrils in all directions (**fork**). Multiple tendrils reached each food source via different routes (**race**). The organism then pruned inefficient connections, reinforcing high-flow tubes and abandoning low-flow ones (**fold** with **venting** of abandoned paths).
 
 Within 26 hours, the slime mold had independently constructed a transport network with tradeoffs similar to the actual Tokyo rail system – a network that professional engineers had spent decades and billions of dollars optimizing [1].
 
@@ -184,11 +166,9 @@ The correspondence Tero et al. emphasize is at the level of system tradeoffs:
 
 - **Fault tolerance**: it retained resilience under link removal
 
-- **Transport efficiency**: it balanced transport performance against
-cost in the same design space
+- **Transport efficiency**: it balanced transport performance against cost in the same design space
 
-- **Topology**: it remained cyclic rather than collapsing to a single
-path
+- **Topology**: it remained cyclic rather than collapsing to a single path
 
 The author does not know of a slime mold yet on display at a public library, but remains hopeful.
 
@@ -610,9 +590,7 @@ Fork/race/fold is the operation that **temporarily raises $\beta_1$ to exploit p
 | **Fold**  | Merge all paths to single output   | $\beta_1 \to 0$            |
 | **Vent**  | Release a path                     | $\beta_1 \mathrel{-}= 1$   |
 
-Many historical process designs – Ford’s assembly line, TCP’s ordered byte stream, hospital referral chains, T+2 financial settlement – can be interpreted as forcing $\beta_1 = 0$ onto problems whose natural topology has $\beta_1 > 0$. Healthcare diagnosis has intrinsic $\beta_1 \geq 3$ (blood work, imaging, genetic screening, and specialist consultation are independent). The referral system forces $\beta_1 = 0$. The mismatch correlates with multi-year diagnostic delay: the 2024 EURORDIS Rare Barometer diagnosis survey reports an average diagnosis time of 5 years for people living with a rare disease
-[16]. Financial settlement has intrinsic $\beta_1 = 2$. T+2 forces
-$\beta_1 = 0$. Using the DTCC/NSCC 2024 average daily transaction value baseline of \$2.219 trillion [17], a simple two-day lockup heuristic implies on the order of \$4.4 trillion tied up during T+2 settlement; larger figures discussed in the companion suite are model outputs rather than DTCC-reported statistics [9, 17].
+Many historical process designs – Ford’s assembly line, TCP’s ordered byte stream, hospital referral chains, T+2 financial settlement – can be interpreted as forcing $\beta_1 = 0$ onto problems whose natural topology has $\beta_1 > 0$. Healthcare diagnosis has intrinsic $\beta_1 \geq 3$ (blood work, imaging, genetic screening, and specialist consultation are independent). The referral system forces $\beta_1 = 0$. The mismatch correlates with multi-year diagnostic delay: the 2024 EURORDIS Rare Barometer diagnosis survey reports an average diagnosis time of 5 years for people living with a rare disease [16]. Financial settlement has intrinsic $\beta_1 = 2$. T+2 forces $\beta_1 = 0$. Using the DTCC/NSCC 2024 average daily transaction value baseline of \$2.219 trillion [17], a simple two-day lockup heuristic implies on the order of \$4.4 trillion tied up during T+2 settlement; larger figures discussed in the companion suite are model outputs rather than DTCC-reported statistics [9, 17].
 
 ### 3.2 Homotopy Equivalence
 
@@ -662,9 +640,7 @@ The evolution of $\beta_1$ over a computation’s lifetime forms a *filtration* 
 
 - $t = t_{\text{fold}}$: $\beta_1 \to 0$.
 
-**Terminology note.** This time-indexed $\beta_1$ evolution is a *filtration* in the algebraic-topological sense – a nested sequence of subcomplexes $K_0 \subseteq K_1 \subseteq \cdots \subseteq K_n$ where each $K_t$ is the computation graph at time $t$. It borrows the birth/death language of persistent homology (Edelsbrunner et al., 2002
-[22]) but the filtration parameter is *time*, not *distance scale* as
-in classical topological data analysis of point clouds. The formal properties of TDA persistence (stability under perturbation, isometry invariance) apply only when the filtration is metric-indexed; the time-indexed version retains the birth/death structure but not the stability guarantees.
+**Terminology note.** This time-indexed $\beta_1$ evolution is a *filtration* in the algebraic-topological sense – a nested sequence of subcomplexes $K_0 \subseteq K_1 \subseteq \cdots \subseteq K_n$ where each $K_t$ is the computation graph at time $t$. It borrows the birth/death language of persistent homology (Edelsbrunner et al., 2002 [22]) but the filtration parameter is *time*, not *distance scale* as in classical topological data analysis of point clouds. The formal properties of TDA persistence (stability under perturbation, isometry invariance) apply only when the filtration is metric-indexed; the time-indexed version retains the birth/death structure but not the stability guarantees.
 
 The filtration diagram encodes: how much parallelism was used (features born at fork), how quickly bad paths were pruned (short persistence = speculation), how much redundancy survived to fold (long persistence = consensus). A well-optimized system has short vent persistence (release early) and long fold persistence (exploit parallelism fully).
 
@@ -685,9 +661,7 @@ Fork/race/fold forms a **monoidal category**:
 
 The conveyor belt uses only composition. Fork/race/fold uses both composition and tensor product. In this sketch, that suggests a broader expressive surface. Vent propagation is modeled as a **natural transformation** from active computations to terminated computations – preserving morphism structure across the tensor product, i.e., “propagate down, never across.”
 
-**What this buys.** The monoidal framing is not fully developed here – a rigorous treatment would require specifying the unit object (the empty computation), proving associativity and unit laws for both $\otimes$ and $\circ$, and verifying the interchange law. The claim is sketched, not proved, and the paper’s results do not depend on it. The value is taxonomic: it connects fork/race/fold to the category-theoretic literature on dataflow (hylomorphisms = unfold/fold, which map to fork/fold) and allows future work to import results from monoidal category theory – in particular, the coherence theorem (Mac Lane, 1963
-[23]) would guarantee that different compositions of fork/race/fold
-reach the same result regardless of bracketing, which is a stronger form of C3 (deterministic fold).
+**What this buys.** The monoidal framing is not fully developed here – a rigorous treatment would require specifying the unit object (the empty computation), proving associativity and unit laws for both $\otimes$ and $\circ$, and verifying the interchange law. The claim is sketched, not proved, and the paper’s results do not depend on it. The value is taxonomic: it connects fork/race/fold to the category-theoretic literature on dataflow (hylomorphisms = unfold/fold, which map to fork/fold) and allows future work to import results from monoidal category theory – in particular, the coherence theorem (Mac Lane, 1963 [23]) would guarantee that different compositions of fork/race/fold reach the same result regardless of bracketing, which is a stronger form of C3 (deterministic fold).
 
 ## 4. Containing Queueing Theory
 
