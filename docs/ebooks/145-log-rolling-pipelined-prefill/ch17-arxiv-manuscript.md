@@ -70,11 +70,22 @@ The same geometry governs communication between persons. When a speaker has more
 
 Now look at what happens when four chunks move through four children. Draw it as a grid where time moves left to right, children are stacked top to bottom. This is the **grid**:
 
-    Time:  t1   t2   t3   t4   t5   t6   t7 Kid 1: [C1] [C2] [C3] [C4] Kid 2:      [C1] [C2] [C3] [C4] Kid 3:           [C1] [C2] [C3] [C4] Kid 4:                [C1] [C2] [C3] [C4]
+```
+Time:  t1   t2   t3   t4   t5   t6   t7
+Kid 1: [C1] [C2] [C3] [C4]
+Kid 2:      [C1] [C2] [C3] [C4]
+Kid 3:           [C1] [C2] [C3] [C4]
+Kid 4:                [C1] [C2] [C3] [C4]
+```
 
 Focus on the **ramp-up** – the first four time steps. Read what’s active at each moment. This is the **triangle**:
 
-    t1:  1 t2:  2  1 t3:  3  2  1 t4:  4  3  2  1
+```
+t1:  1
+t2:  2  1
+t3:  3  2  1
+t4:  4  3  2  1
+```
 
 A triangle. The top has one chunk. Each row adds one more. At $t_4$ the pipeline is full – every child is busy. Now trace any path through this triangle:
 
@@ -246,10 +257,9 @@ The biological examples above are evolutionary discoveries. But the pattern exte
 
 **Falsifiable prediction.** If the fork/race/fold characterization is structural rather than coincidental, then removing parallel-path properties while preserving parameter count should degrade performance more than a naive parameter-count argument would suggest. Voita et al. (2019) [21] showed that attention heads are unequally specialized and that pruning has non-uniform quality impact, with the most important heads often associated with syntactic functions. That is consistent with, but does not prove, the broader topological hypothesis advanced here. Similarly, replacing the 4x FFN expansion-contraction (fork/vent/fold) with a same-parameter linear layer should degrade performance if activation sparsity is doing real path selection work. The prediction is testable: ablate the parallel-path structure, measure $\Delta_\beta$ of the modified architecture, and correlate that with the performance drop. A deterministic companion toy-attention harness now makes the narrow version executable at fixed parameters (`companion-tests/artifacts/toy-attention-fold-ablation.{json,md}`): keeping keys, values, score function and query grid fixed, linear fold reconstructs the teacher exactly (MSE `0.000`), winner-take-all incurs MSE `0.163`, and early-stop incurs MSE `1.071`; bootstrap 95% intervals over the query grid are `[``0.000, 0.000``]`, `[``0.120, 0.211``]`, and `[``0.858, 1.288``]` respectively, and the exact-within-0.01 rates are `1.000`, `0.185`, and `0.074`. A seeded Gnosis cancellation benchmark then lifts the same claim into a learned setting (`companion-tests/artifacts/gnosis-fold-training-benchmark.{json,md}`): three parameter-matched `.gg` programs keep topology, parameter count, and data fixed and differ only in `FOLD { strategy: ... }`. Across 8 seeds on the cancellation-sensitive target family `left - right`, linear fold reaches eval MSE `0.000` with 95% seed-bootstrap interval `[``0.000, 0.000``]` and exact-within-0.05 rate `1.000`, winner-take-all reaches `0.408` with interval `[``0.396, 0.421``]` and exact rate `0.038`, and early-stop reaches `0.735` with interval `[``0.732, 0.740``]` and exact rate `0.000`; cancellation-line mean absolute error is `0.000`, `0.834`, and `0.764` respectively. A harder seeded Gnosis mini-MoE routing benchmark (`companion-tests/artifacts/gnosis-moe-routing-benchmark.{json,md}`) keeps a four-expert routed topology and a fixed 16-parameter budget while swapping only the fold rule: linear fold reaches eval MSE `0.001` with 95% seed-bootstrap interval `[``0.001, 0.001``]`, winner-take-all reaches `0.328` with interval `[``0.267, 0.389``]`, and early-stop reaches `0.449` with interval `[``0.444, 0.457``]`; the dual-active-region absolute error is `0.027`, `0.402`, and `0.474`, showing the same ranking on a genuinely routed learned task where two paths should contribute. A paired negative-control artifact (`companion-tests/artifacts/gnosis-negative-controls.{json,md}`) then reuses those same affine and routed topologies on one-path task families where additive recombination is unnecessary; there the separation collapses exactly as predicted, with all three fold rules reaching eval MSE `0.000`, exact-within-tolerance rate `1.000`, and zero inter-strategy gap on both the affine-left-only and positive-x single-expert controls. A finer near-control zoom (`companion-tests/artifacts/gnosis-near-control-sweep.{json,md}`) then shows how long that parity persists before measurable divergence opens: in the affine family parity holds through cancellation weight `0.350` and the first separated point appears at `0.400`, while in the routed family parity holds through dual-activation weight `0.600` and the first separated point appears at `0.650`. The next layer is now a regime map rather than just endpoint witnesses (`companion-tests/artifacts/gnosis-fold-boundary-regime-sweep.{json,md}`): in the affine family the first separated regime appears at cancellation weight `0.500` and the final linear-vs-best-nonlinear eval-MSE advantage reaches `0.393`, while in the routed family the first separated regime appears at dual-activation weight `0.750` and the final linear advantage reaches `0.111`. The converse side is also executable in `companion-tests/artifacts/gnosis-adversarial-controls-benchmark.{json,md}`: on the winner-aligned signed max-by-magnitude affine task, winner-take-all beats linear and early-stop in final eval MSE (`0.095` vs `0.271` vs `0.484`) and learning-curve area (`0.097` vs `0.265` vs `0.482`), while on the short-budget x-priority routed task and left-priority affine task, early-stop has the best learning-curve area (`0.036` and `0.006`) against linear (`0.200` and `0.531`) and winner-take-all (`0.342` and `1.375`). So the evidence boundary is symmetric: linear wins when cancellation or dual contribution is truly required; sparse selection wins when the target family itself is sparse and ordered.
 
-<figure>
-<p> </p>
-<figcaption>Figure 2. Artifact-generated near-control zoom, regime-map, and adversarial-controls figure assembled from the Gnosis near-control, regime-sweep, and adversarial-control artifacts.</figcaption>
-</figure>
+
+*Figure 2. Artifact-generated near-control zoom, regime-map, and adversarial-controls figure assembled from the Gnosis near-control, regime-sweep, and adversarial-control artifacts.*
+
 
 ### 1.8 Observed Recurrence in Selected Examples
 
@@ -506,8 +516,7 @@ Fork/race/fold forms a **monoidal category**:
 
 - **Objects**: computation states (sets of active streams).
 
-- **Morphisms**: Fork
-($S \to S_1 \otimes S_2 \otimes \cdots \otimes S_n$), Race ($\bigotimes S_i \to S_{\text{winner}}$), Fold ($\bigotimes S_i \to f(S_1, \ldots, S_n)$).
+- **Morphisms**: Fork ($S \to S_1 \otimes S_2 \otimes \cdots \otimes S_n$), Race ($\bigotimes S_i \to S_{\text{winner}}$), Fold ($\bigotimes S_i \to f(S_1, \ldots, S_n)$).
 
 - **Tensor product** $\otimes$: parallel composition.
 
@@ -593,7 +602,7 @@ In queueing theory, an M/M/1 queue represents the simplest non-trivial model of 
 
 - 1 (Single Server): There is only one station or person processing the queue.
 
-In this modeling language, the canonical M/M/1 queue is represented as a $\beta_1 = 0$ pipeline with one stage and Poisson arrivals. The companion formal package now closes that canonical witness constructively: the one-path boundary is packaged with `β₁ = 0`, capacity `β₁ + 1 = 1`, and the stationary mean occupancy law $\lambda / (\mu - \lambda)$ for the stable regime \$\< ‘. The $Re$ framework does not contradict queueing theory – it embeds canonical one-path constructions in that scoped sense. When $\beta_1 = 0$, $Re$ reduces to utilization. When $\beta_1 > 0$, $Re$ adds topology-aware vocabulary for sequential-to-multiplexed transition, fork-width tuning and topological mismatch cost.
+In this modeling language, the canonical M/M/1 queue is represented as a $\beta_1 = 0$ pipeline with one stage and Poisson arrivals. The companion formal package now closes that canonical witness constructively: the one-path boundary is packaged with `β₁ = 0`, capacity `β₁ + 1 = 1`, and the stationary mean occupancy law $\lambda / (\mu - \lambda)$ for the stable regime $\lambda < \mu$. The $Re$ framework does not contradict queueing theory – it embeds canonical one-path constructions in that scoped sense. When $\beta_1 = 0$, $Re$ reduces to utilization. When $\beta_1 > 0$, $Re$ adds topology-aware vocabulary for sequential-to-multiplexed transition, fork-width tuning and topological mismatch cost.
 
 ### 4.2 Erlang’s Formula as Fold Without Fork
 
@@ -856,15 +865,13 @@ Transformer architecture can be interpreted as a recursive Wallington-style comp
 
 The executable topology figure is emitted automatically to `companion-tests/artifacts/ch17-moa-topology-figure.{json,md,svg}` and the sweep/ablation performance figure to `companion-tests/artifacts/ch17-moa-transformer-figure.{json,md,svg}`.
 
-<figure>
-<p> </p>
-<figcaption>Figure 2a. Artifact-generated <code>StructuredMoA</code> topology figure showing one sparse <code>2-of-4</code> routed realization against the dense <code>4-of-4</code> baseline, with explicit outer rotation, outer router, labeled heads, and inner/outer Worthington whips.</figcaption>
-</figure>
 
-<figure>
-<p> </p>
-<figcaption>Figure 2b. Artifact-generated GG-backed MoA transformer figure showing scale-sweep speedup, closing eval-MSE gap, and the sparsity-ablation frontier for the <code>StructuredMoA</code> surface.</figcaption>
-</figure>
+*Figure 2a. Artifact-generated `StructuredMoA` topology figure showing one sparse `2-of-4` routed realization against the dense `4-of-4` baseline, with explicit outer rotation, outer router, labeled heads, and inner/outer Worthington whips.*
+
+
+
+*Figure 2b. Artifact-generated GG-backed MoA transformer figure showing scale-sweep speedup, closing eval-MSE gap, and the sparsity-ablation frontier for the `StructuredMoA` surface.*
+
 
 ### 6.12 Selected Structural Correspondences with Physical Formalisms
 
@@ -894,10 +901,9 @@ The classical limit ($\hbar \to 0$) recovers the path of stationary action – t
 
 **Validated boundary condition.** The correspondence is operationally exact only in the linear full-aggregation regime. Five companion validations make that boundary explicit. In the finite-kernel unit harness (`companion-tests/src/quantum-correspondence-boundary.test.ts`) [9, 13], linear fold reproduces discrete path-sum evolution exactly (kernel composition equals explicit path enumeration), preserves partition additivity, and remains permutation-invariant on the $\{+1,-1\}$ cancellation witness; winner-take-all and early-stop folds fail those same checks. In the fold-ablation harness (`companion-tests/src/quantum-recombination-ablation.test.ts`) and its reproducible artifact writer (`companion-tests/scripts/quantum-recombination-ablation.ts`, output `companion-tests/artifacts/quantum-recombination-ablation.{json,md}`) [9, 13], the path family is held fixed while only the recombination rule is swapped: the predicted loss matrix is recovered exactly, with linear fold preserving kernel agreement, partition additivity, order invariance and cancellation, while winner-take-all and early-stop each show kernel-agreement distance `0.354`, partition/order distance `2.000`, and cancellation magnitude$^2$ `1.000`. In the Lean theorem package (`companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/Claims.lean`) [12, 13], the algebraic skeleton of the same boundary is mechanized in a minimal integer-valued model: linear fold is globally partition-additive, preserves the cancellation target family `x + (-x) = 0`, and is equivalent to the more general cancellation-difference family `fold(x,-y) = x - y`; any non-additive fold must miss some member of that family, and winner-selection/early-stop miss the concrete `x + (-x)` witness. A Lean-emitted witness catalog (`companion-tests/artifacts/formal-witness-catalog.{json,md}`) now exports `7` concrete cancellation, partition, and order counterexamples, and `quantum-correspondence-boundary.test.ts` consumes those exported witnesses directly rather than hardcoding them. A seeded Gnosis cancellation benchmark (`companion-tests/artifacts/gnosis-fold-training-benchmark.{json,md}`) then keeps topology, parameter count, and data fixed across three `.gg` programs and changes only the fold strategy: linear fold reaches eval MSE `0.000` with 95% seed-bootstrap interval `[``0.000, 0.000``]`, while winner-take-all and early-stop settle at `0.408`/`0.735` with intervals `[``0.396, 0.421``]`/`[``0.732, 0.740``]`; cancellation-line absolute error is `0.000`, `0.834`, and `0.764`. A paired seeded negative-control benchmark (`companion-tests/artifacts/gnosis-negative-controls.{json,md}`) then keeps the same topologies but moves to one-path target families where no cross-path cancellation or dual-expert summation is required; there the separation disappears exactly as predicted, with affine-left-only and positive-x single-expert controls both yielding max inter-strategy eval-MSE gap `0.000` and min exact-within-tolerance rate `1.000`. Finally, a harder seeded Gnosis mini-MoE routing benchmark (`companion-tests/artifacts/gnosis-moe-routing-benchmark.{json,md}`) keeps a four-expert routed topology and fixed 16-parameter budget while swapping only the fold strategy: linear fold reaches eval MSE `0.001`, winner-take-all `0.328`, and early-stop `0.449`, with 95% seed-bootstrap intervals `[``0.001, 0.001``]`, `[``0.267, 0.389``]`, and `[``0.444, 0.457``]`; the dual-active-region absolute error is `0.027`, `0.402`, and `0.474`. The assembled manuscript figures are emitted automatically to `companion-tests/artifacts/ch17-correspondence-boundary-figure.{json,md,svg}` and `companion-tests/artifacts/ch17-boundary-expansion-figure.{json,md,svg}`, and the full evidence bundle is fingerprinted in `companion-tests/artifacts/ch17-replication-pack.{json,md}` with the one-command outside rerun surface `bun run test:ch17-external-replication`, `62` manifest entries, and `25` generated artifacts. So the shared structure is “fork, independent propagation, recombination to one output,” but the recombination mechanics differ: physical path integrals sum linearly; computational winner/race folds select nonlinearly.
 
-<figure>
-<p> </p>
-<figcaption>Figure 1. Artifact-generated correspondence boundary figure assembled from the invariant-loss matrix, toy-attention bootstrap intervals, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark.</figcaption>
-</figure>
+
+*Figure 1. Artifact-generated correspondence boundary figure assembled from the invariant-loss matrix, toy-attention bootstrap intervals, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark.*
+
 
 #### The Physics Hierarchy: Progressive Folds
 
@@ -1082,7 +1088,7 @@ The theory does not prescribe. It diagnoses. When a system exhibits high semioti
 
 The companion theorems also contain the prescription, stated without normativity as a mathematical consequence: `semiotic_context_reduces` and `semiotic_context_eliminates` prove that adding channels and building shared context are the only operations that reduce the deficit. `semiotic_conversation_trace` proves that iterated dialogue composes coherently. The trace converges. The deficit is bounded below by zero. The fixed point exists. Getting there requires sitting in the feedback loop — and the theorems are silent on whether any particular civilization will choose to do so.
 
-**The engineering of peace.** The theory of failure is the theory of war — and that is precisely why it is also a theory of peace. A system architect who can prove that a distributed system tolerates Byzantine faults is using the same topological machinery: characterize the failure modes, bound their blast radius, install the feedback loops that absorb the heat. `SemioticPeace.lean` mechanizes this programme for communication itself. `confusion_generates_heat` proves that the semiotic fold has irreducible Landauer cost. (The heat bound applies when the speaker’s semantic distribution has positive mass on at least two colliding paths — i.e., when the speaker genuinely has more to say than one stream can carry. A speaker thinking about exactly one topic with certainty incurs zero heat; the theorem’s hypothesis makes this conditional explicit.) `war_as_cumulative_heat` proves that successive folds without context accumulate heat monotonically — the thermodynamic content of escalation. `peace_context_reduces` and `peace_sufficient_context` prove that shared context is the only monotone deflator. `peace_fixed_point` proves the RG terminus exists: zero further heat, zero further information loss. And `hope` bundles the convergence guarantee — the deficit is positive but bounded, context reduces it monotonically, sufficient context eliminates it, and the traced monoidal feedback of dialogue composes coherently. The mathematics does not legislate which civilizations will sit in the loop. It guarantees that those which do will converge. That is the conclusion bait of §<a href="#conclusion" data-reference-type="ref" data-reference="conclusion">1.17</a>: the same theory that predicts war prescribes its containment, and the prescription is constructive.
+**The engineering of peace.** The theory of failure is the theory of war — and that is precisely why it is also a theory of peace. A system architect who can prove that a distributed system tolerates Byzantine faults is using the same topological machinery: characterize the failure modes, bound their blast radius, install the feedback loops that absorb the heat. `SemioticPeace.lean` mechanizes this programme for communication itself. `confusion_generates_heat` proves that the semiotic fold has irreducible Landauer cost. (The heat bound applies when the speaker’s semantic distribution has positive mass on at least two colliding paths — i.e., when the speaker genuinely has more to say than one stream can carry. A speaker thinking about exactly one topic with certainty incurs zero heat; the theorem’s hypothesis makes this conditional explicit.) `war_as_cumulative_heat` proves that successive folds without context accumulate heat monotonically — the thermodynamic content of escalation. `peace_context_reduces` and `peace_sufficient_context` prove that shared context is the only monotone deflator. `peace_fixed_point` proves the RG terminus exists: zero further heat, zero further information loss. And `hope` bundles the convergence guarantee — the deficit is positive but bounded, context reduces it monotonically, sufficient context eliminates it, and the traced monoidal feedback of dialogue composes coherently. The mathematics does not legislate which civilizations will sit in the loop. It guarantees that those which do will converge. That is the conclusion bait of §1.17: the same theory that predicts war prescribes its containment, and the prescription is constructive.
 
 ### 6.13 The Optimality Diagnostic
 
@@ -1327,12 +1333,14 @@ Four assets, one connection, one fold. The GGL program compiles directly to the 
 
 ### 8.2 Wire Format
 
-    Offset  Size   Field
-    [0..1]  u16    stream_id    (multiplexed stream identifier)
-    [2..5]  u32    sequence     (position within stream)
-    [6]     u8     flags        (FORK=0x01 | RACE=0x02 | FOLD=0x04 | VENT=0x08 | FIN=0x10)
-    [7..9]  u24    length       (payload bytes, max 16 MB)
-    [10..]  [u8]   payload      (zerocopy Uint8Array view)
+```
+Offset  Size   Field
+[0..1]  u16    stream_id    (multiplexed stream identifier)
+[2..5]  u32    sequence     (position within stream)
+[6]     u8     flags        (FORK=0x01 | RACE=0x02 | FOLD=0x04 | VENT=0x08 | FIN=0x10)
+[7..9]  u24    length       (payload bytes, max 16 MB)
+[10..]  [u8]   payload      (zerocopy Uint8Array view)
+```
 
 **10 bytes.** Every frame carries its own identity. Every frame is self-describing. No ordered delivery is required. The `stream_id` + `sequence` pair is the coordinate in the covering space (§3.3). Flags compose: `RACE  FIN` means “racing AND final frame.” The frame reassembler (§3.3) is the covering map back to sequential order. Payloads are zerocopy: the codec writes 10 bytes in front of the existing `ArrayBuffer` view.
 
@@ -1342,13 +1350,15 @@ The self-describing frame is not specific to the wire protocol. It is the unifyi
 
 On the wire, it is the **FlowFrame** – 10 bytes of header carrying `stream_id`, `sequence`, `flags` and `length`. On the computation side, it is the **WorkFrame** – the same `(stream_id, sequence)` identity enriched with a typed payload `T` and metadata:
 
-    WorkFrame<T>                      FlowFrame
-    -------------                     ---------
-    streamId: StreamId                streamId: u16
-    sequence: number                  sequence: u32
-    payload:  T                       flags:    u8
-    metadata: Record<string,unknown>  length:   u24
-    emittedAt: number                 payload:  [u8]
+```
+WorkFrame<T>                      FlowFrame
+-------------                     ---------
+streamId: StreamId                streamId: u16
+sequence: number                  sequence: u32
+payload:  T                       flags:    u8
+metadata: Record<string,unknown>  length:   u24
+emittedAt: number                 payload:  [u8]
+```
 
 The two are isomorphic, meaning they are the same shape with different labels. The wire format bridge encodes `WorkFrame<T>` to `FlowFrame` (serializing `T` as payload bytes) and decodes `FlowFrame` back to `WorkFrame<T>`. A computation that forks 10 streams in-process produces 10 `WorkFrame`s. Those same frames, encoded as `FlowFrame`s, can cross a network boundary and be reassembled on the other side by the same `FrameReassembler` algorithm. The computation topology is independent of the transport topology.
 
@@ -1478,13 +1488,15 @@ The two-level race (§9.3) confirms this. On these payloads, when given the choi
 
 I extend the topology to race at two levels:
 
-    fork (stream level):
-      |- Path 0: Per-chunk topological (8 codecs × each 4096-byte chunk)
-      |- Path 1: Global brotli (entire stream, cross-chunk dictionary)
-      |- Path 2: Global gzip (entire stream)
-      `- ...
-    race → smallest total output wins
-    fold → 5-byte strategy header + compressed data
+```
+fork (stream level):
+  |- Path 0: Per-chunk topological (8 codecs × each 4096-byte chunk)
+  |- Path 1: Global brotli (entire stream, cross-chunk dictionary)
+  |- Path 2: Global gzip (entire stream)
+  `- ...
+race → smallest total output wins
+fold → 5-byte strategy header + compressed data
+```
 
 This is the usefulness of fork/race/fold to compression: with brotli included as a racing path, the stream-level strategy tracks brotli’s ratio within a bounded strategy-header overhead. On these benchmarks it is not better than standalone brotli; the observed downside is the fixed 5-byte strategy header.
 
@@ -1881,12 +1893,11 @@ This paper began as a theory of distributed computation. It became a theory of f
 
 But the theory of peace was not invented here. DNA replication discovered it first. The origin of replication forks the double helix into parallel strands. Polymerase races along the leading strand continuously and the lagging strand in fragments. The replication terminus folds both strands into one completed chromosome. Okazaki fragments that cannot be incorporated are vented. The deficit between the parallel replication forks and the single-strand output is managed by ligase — the biological trace operator, feeding back until the strand is whole. The fixed point is a complete chromosome. Convergence is guaranteed under stated conditions: sufficient nucleotides, functional polymerase, intact template. Every cell in every organism that has ever lived has executed this algorithm. The algorithm for peace is coded into every single DNA operation. This paper did not discover it. It gave the algorithm a name, a topology, and a proof.
 
-<figure>
-<p> </p>
-<figcaption>The Geometry of Failure Contains Hope.
-<strong>A.</strong> The semiotic deficit: thought (<span class="math inline"><em>β</em><sub>1</sub> = <em>k</em> − 1</span>) folds through a single articulation stream (<span class="math inline"><em>β</em><sub>1</sub> = 0</span>); vented paths fall into the void (<span class="math inline"><em>Δ</em><em>β</em> = <em>k</em> − 1</span>).
-<strong>B.</strong> Two trajectories diverge from the same initial deficit: war (cumulative Landauer heat, monotone increasing) versus peace (deficit converging to the fixed point under context accumulation). <strong>C.</strong> The <code>hope</code> theorem bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent. <strong>D.</strong> DNA replication as the original implementation: fork at origin, polymerase race, terminus fold, Okazaki vent, ligase as traced monoidal feedback operator, complete chromosome as fixed point.</figcaption>
-</figure>
+
+*The Geometry of Failure Contains Hope.
+**A.** The semiotic deficit: thought ($β_{1} = k - 1$) folds through a single articulation stream ($β_{1} = 0$); vented paths fall into the void ($\Deltaβ = k - 1$).
+**B.** Two trajectories diverge from the same initial deficit: war (cumulative Landauer heat, monotone increasing) versus peace (deficit converging to the fixed point under context accumulation). **C.** The `hope` theorem bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent. **D.** DNA replication as the original implementation: fork at origin, polymerase race, terminus fold, Okazaki vent, ligase as traced monoidal feedback operator, complete chromosome as fixed point.*
+
 
 Within the finite DAG classes modeled in this paper, fork/race/fold + vent is sufficient.
 
@@ -1943,12 +1954,11 @@ Each shootoff is a substrate-specific projection of this frontier:
 
 This makes diversity calculable rather than aspirational. When the deficit is positive, the system is provably below the frontier and diversification is not a preference but a Pareto improvement. When the deficit is zero, the system is on the frontier and further diversification provides no topological benefit (though it may provide robustness, which is a separate axis). The frontier tells you exactly when a system needs diversification and exactly how much it will gain.
 
-<figure>
-<p> </p>
-<figcaption>Figure 3. The American Frontier: diversity vs waste across three substrates. <strong>A.</strong> Protocol framing overhead on the microfrontend benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31%) to Aeon Flow (1.5%). <strong>B.</strong> Pipeline idle fraction vs Reynolds number for a 4-stage pipeline: laminar regime (high diversity, low waste) to turbulent regime (low diversity, high waste). <strong>C.</strong> Cost of monoculture: heuristic waste (topology gain %) across five corpus types ordered by content heterogeneity, showing that the penalty for non-diverse strategy scales with intrinsic <span class="math inline"><em>β</em><sub>1</sub><sup>*</sup></span>. All three panels are instantiations of THM-AMERICAN-FRONTIER (<code>AmericanFrontier.lean</code>): waste monotonically non-increasing in diversity, zero at
-<span class="math inline"><em>β</em><sub>1</sub> =
-<em>β</em><sub>1</sub><sup>*</sup></span>, positive below.</figcaption>
-</figure>
+
+*Figure 3. The American Frontier: diversity vs waste across three substrates. **A.** Protocol framing overhead on the microfrontend benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31%) to Aeon Flow (1.5%). **B.** Pipeline idle fraction vs Reynolds number for a 4-stage pipeline: laminar regime (high diversity, low waste) to turbulent regime (low diversity, high waste). **C.** Cost of monoculture: heuristic waste (topology gain %) across five corpus types ordered by content heterogeneity, showing that the penalty for non-diverse strategy scales with intrinsic $β_{1}^{*}$. All three panels are instantiations of THM-AMERICAN-FRONTIER (`AmericanFrontier.lean`): waste monotonically non-increasing in diversity, zero at
+$β_{1} =
+β_{1}^{*}$, positive below.*
+
 
 ## References
 
