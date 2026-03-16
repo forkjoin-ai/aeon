@@ -1649,6 +1649,19 @@ The table below reports modeled step-count speedups only (not wall-clock through
 
 **Wall-clock matrix evidence (fixture-scoped).** A live distributed wall-clock matrix is provided via `companion-tests/scripts/gate1-wallclock-matrix.ts`, with artifacts in `companion-tests/artifacts/gate1-wallclock-matrix.{json,md}`. The harness runs real loopback HTTP stage servers across predeclared RTT/jitter/loss/workload cells, reporting p50/p95 completion latency plus 95% bootstrap confidence intervals and explicit pass/fail criteria. In this matrix, all predeclared primary cells reject no-improvement (speedup CI lower bound \> 1.0 and improvement CI lower bound \> 0 ms). Non-loopback runs also satisfy the same criteria in `companion-tests/artifacts/gate1-wallclock-external-single-host.{json,md}` and `companion-tests/artifacts/gate1-wallclock-external-multihost.{json,md}` (six distinct external hosts, one stage endpoint per host). This supports a scoped wall-clock claim for this harness family and does not by itself imply universal production-network speedups.
 
+**Gate 1 external multihost results** (6 distinct hosts, verdict: PASS, 8/8 primary cells):
+
+| Cell | Network | Seq p50 (ms) | Chunked p50 (ms) | Median Speedup (95% CI) | Median Improvement (95% CI, ms) |
+|---|---|---:|---:|---:|---:|
+| 24 tok, 4 nodes, B6 | RTT 3 ms, loss 0% | 4,154 | 350 | 11.9x (11.6x--12.5x) | 3,811 (3,596--4,251) |
+| 24 tok, 4 nodes, B6 | RTT 3 ms, loss 2% | 4,322 | 357 | 12.1x (11.4x--13.6x) | 3,964 (3,573--4,579) |
+| 24 tok, 4 nodes, B6 | RTT 7 ms, loss 0% | 4,353 | 372 | 11.8x (11.5x--12.2x) | 3,988 (3,920--4,069) |
+| 24 tok, 4 nodes, B6 | RTT 7 ms, loss 2% | 4,325 | 358 | 12.2x (11.7x--12.4x) | 3,968 (3,904--4,053) |
+| 36 tok, 6 nodes, B9 | RTT 3 ms, loss 0% | 8,827 | 447 | 20.1x (19.6x--21.6x) | 8,381 (8,281--8,926) |
+| 36 tok, 6 nodes, B9 | RTT 3 ms, loss 2% | 9,104 | 464 | 19.2x (18.2x--20.0x) | 8,627 (8,406--8,730) |
+| 36 tok, 6 nodes, B9 | RTT 7 ms, loss 0% | 10,428 | 489 | 21.6x (20.1x--23.0x) | 9,945 (9,443--10,764) |
+| 36 tok, 6 nodes, B9 | RTT 7 ms, loss 2% | 10,215 | 482 | 21.0x (20.9x--24.4x) | 9,734 (9,558--10,849) |
+
 ### 7.2 Turbulent Multiplexing
 
 In molecular biology, a polysome (also called a polyribosome) is a cluster of multiple ribosomes that are simultaneously translating a single mRNA strand into proteins.
@@ -1833,7 +1846,19 @@ I benchmark across both sites on Aeon Flow transport. The results are honest and
 | Topo-full (8 codecs per-chunk)         | 159 KB    | 25.4 percent | 7           |
 | Topo-pure (6 pure-JS codecs per-chunk) | 229 KB    | 36.8 percent | 5           |
 
-**Standalone brotli wins on compression ratio.** On these benchmarks – homogeneous web content – global brotli beats per-chunk topological compression by 4–15 percentage points. This is not surprising: brotli compresses the entire stream with a sliding window that builds dictionary context across chunks. Per-chunk compression resets the dictionary every 4096 bytes.
+**Gate 3 heterogeneous compression corpus** (90 samples, 20,133,761 bytes, verdict: PASS, 4/4 primary cells):
+
+| Corpus family | Samples | Median gain vs best fixed codec (95% CI) | Median gain vs heuristic (95% CI) | Win rate | Pass |
+|---|---:|---:|---:|---:|---|
+| web-mixed | 18 | 0.005% (0.004%--0.007%) | 0.777% (0.386%--1.237%) | 100% | yes |
+| api-telemetry | 18 | 0.008% (0.007%--0.009%) | 46.37% (39.45%--50.91%) | 100% | yes |
+| media-plus-metadata | 18 | 0.001% (0.001%--0.001%) | 7.44% (6.21%--10.31%) | 100% | yes |
+| polyglot-bundle | 18 | 0.003% (0.002%--0.003%) | 26.65% (25.24%--33.53%) | 100% | yes |
+| text-homogeneous | 18 | 0.833% (0.787%--0.872%) | 0.833% (0.786%--0.870%) | 100% | -- |
+
+The gain vs best fixed codec is marginal (topological per-chunk racing selects the same winner a fixed oracle would). The gain vs heuristic baseline is large and corpus-dependent: 46% on api-telemetry, 27% on polyglot bundles, under 1% on homogeneous text. This is the American Frontier in action -- diversity of content drives diversity of strategy, and the gain scales with intrinsic $\beta_1^*$.
+
+**Standalone brotli wins on compression ratio.** On these benchmarks -- homogeneous web content -- global brotli beats per-chunk topological compression by 4--15 percentage points. This is not surprising: brotli compresses the entire stream with a sliding window that builds dictionary context across chunks. Per-chunk compression resets the dictionary every 4096 bytes.
 
 The two-level race (§9.3) confirms this. On these payloads, when given the choice between global brotli and per-chunk topological, the harness-selected winner was global brotli across the observed benchmark runs, matching standalone brotli’s ratio plus 5 bytes of strategy header. For this homogeneous-content benchmark, the 9-byte per-chunk header tax and the loss of cross-chunk dictionary context outweighed per-chunk adaptive gains.
 
@@ -1940,6 +1965,30 @@ This means fork/race/fold is closed under self-application: a system built from 
 
 Executable companion tests verify these claims [13].
 
+### 10.5 Fold Strategy Benchmark
+
+The fold strategy is not decorative -- different recombination rules produce measurably different learning outcomes. We benchmark three fold implementations on a cancellation-sensitive target family (`left-minus-right`, 8 seeds, 720 epochs):
+
+| Strategy | Mean eval MSE | 95% CI | Exact-within-tolerance | Cancellation-line abs error |
+|---|---:|---:|---:|---:|
+| `linear` | 0.000 | [0.000, 0.000] | 1.000 | 0.000 |
+| `winner-take-all` | 0.408 | [0.396, 0.421] | 0.038 | 0.834 |
+| `early-stop` | 0.735 | [0.732, 0.740] | 0.000 | 0.764 |
+
+Linear fold learns the exact cancellation target. Winner-take-all and early-stop leave persistent error floors because nonlinear selection discards the precise cancellation information that linear recombination preserves. A paired negative-control artifact (`companion-tests/artifacts/gnosis-negative-controls.{json,md}`) confirms the separation collapses on one-path tasks where additive recombination is unnecessary.
+
+### 10.6 Biological Effect-Size Validation
+
+The opening discussion (section 1) mapped four biological systems to fork/race/fold. We validate three predeclared comparative effect-size pairs against cited quantitative ranges (verdict: PASS, 3/3 primary pairs):
+
+| Biological pair | Median ratio | 95% CI | Pass |
+|---|---:|---:|---|
+| Neural conduction (myelinated vs unmyelinated velocity) | 79.5x | 45.8x--192.5x | yes |
+| Photosynthesis (exciton step efficiency vs whole-plant yield) | 21.5x | 16.4x--31.6x | yes |
+| Replication (prokaryotic vs eukaryotic Okazaki fragment length) | 10.1x | 5.8x--17.1x | yes |
+
+Pooled log-ratio: **3.280** (95% CI 2.289--4.360). These are effect-size ratios between the fork/race/fold-exhibiting system and its sequential counterpart, confirming that the structural parallels identified in section 1 are backed by quantitative separation in the cited literature.
+
 ## 11. Instantiation B: Formal Language Theory (Stack Layer 2)
 
 Although it appears fifth in the manuscript’s section order, formal language theory is the second stack layer: a programming language whose source code *is* the computation graph, whose compiler *is* a fork/race/fold pipeline, and whose self-hosting connects the verification foundation below to the scheduler, transport and compression layers above.
@@ -2008,7 +2057,41 @@ Gnosis supports a strong evidence-backed claim: it is a self-hosted, self-checki
 
 This is a claim of structural formal compatibility and mechanized verification workflow, not a claim of automatic asymptotic quantum advantage.
 
-### 11.5 The Six Domains as a Stack
+### 11.5 Gnosis Routing and Framing Benchmarks
+
+GGL topologies are not just descriptions -- they produce measurable performance differences. Three benchmark families validate this across the stack:
+
+**MoE routing benchmark** (4 sign-specialized experts, 12 seeds, 1,400 epochs):
+
+| Strategy | Mean eval MSE | 95% CI | Exact-within-tolerance | Dual-active abs error |
+|---|---:|---:|---:|---:|
+| `linear` | 0.001 | [0.001, 0.001] | 0.978 | 0.027 |
+| `winner-take-all` | 0.328 | [0.267, 0.389] | 0.126 | 0.402 |
+| `early-stop` | 0.449 | [0.444, 0.457] | 0.080 | 0.474 |
+
+Linear recombination aggregates two simultaneously active experts for the $|x| + |y|$ target. Sparse selection leaves persistent dual-path under-recombination.
+
+**Aeon-framed transformer benchmark** (4 frame stages per stream, 12 seeds, 1,800 epochs):
+
+| Strategy | Mean eval MSE | 95% CI | Codec round-trip | Reassembly | Fold invariance |
+|---|---:|---:|---:|---:|---:|
+| `linear` | 0.001 | [0.001, 0.001] | 1.000 | 1.000 | 1.000 |
+| `winner-take-all` | 0.318 | [0.273, 0.365] | 1.000 | 1.000 | 1.000 |
+| `early-stop` | 0.462 | [0.461, 0.464] | 1.000 | 1.000 | 1.000 |
+
+Framed outputs survive FlowFrame codec round-trips and out-of-order reassembly without changing inference results. The wire format is transparent to the computation.
+
+**Sparse mixture-of-attention evidence** (4 base seeds, scale sweep):
+
+| Scale | MoA eval MSE | Regular eval MSE | MoA speedup | MoA active heads | Regular active heads |
+|---|---:|---:|---:|---:|---:|
+| Compact (25 train) | 0.083 | 0.002 | 4.35x | 4 | 16 |
+| Baseline (49 train) | 0.067 | 0.001 | 3.58x | 4 | 16 |
+| Wide (81 train) | 0.003 | 0.001 | 3.45x | 4 | 16 |
+
+MoA uses 4 active heads vs 16. The accuracy gap narrows as data increases (closing eval-MSE gap from 0.081 to 0.002 at wide scale) while the speed advantage holds. Ablation confirms both outer-block and inner-head sparsity contribute: removing either doubles wall time; under-routing (1 active block) collapses accuracy entirely.
+
+### 11.6 The Six Domains as a Stack
 
 The six instantiation domains are not independent – they form a stack, each enabled by the ones below:
 
@@ -2128,6 +2211,18 @@ For auditability, the primary evidence-bounded claims map directly to primary ha
 | Out-of-sample $R_{qr}$ | `scripts/gate4-rqr-holdout.ts` | `artifacts/gate4-rqr-holdout.{json,md}` |
 | Biological effect-size mapping | `scripts/gate5-bio-effect-size.ts` | `artifacts/gate5-bio-effect-size.{json,md}` |
 
+**Gate 4 out-of-sample $R_{qr}$ holdout** (520 holdout samples, verdict: PASS):
+
+| Criterion | Observed | 95% CI | Threshold | Pass |
+|---|---:|---:|---:|---|
+| Spearman | 0.517 | 0.446--0.575 | CI low >= 0.240 | yes |
+| Slope | 0.651 | 0.427--1.032 | CI low >= 0.300 | yes |
+| Quartile delta | 0.128 | 0.100--0.153 | CI low >= 0.080 | yes |
+| Predictor-correlation | 0.248 | 0.176--0.347 | CI low >= 0.150 | yes |
+| Decile monotonicity | 1 violation | -- | violations <= 3 | yes |
+
+**Companion test suite totals** (last run): 346 pass, 7 fail, 5 errors across 353 tests in 59 files with 10,931 assertions. The 5 errors are missing runtime modules (`@aeon/flow`, `@aeon/compression`) in the companion-tests environment; the 7 failures are manuscript-artifact text synchronization checks that drift with edits. All primary gate verdicts pass.
+
 - **Companion obligations and executable proofs**: pipeline topology, queueing containment (including exhaustive finite-trace work-conserving discipline coverage, representative discretized service-time families, a mechanized TLA+ sample-path conservation module for the bounded single-server case, a mechanized bounded multi-class open-network conservation module over finite service-law scenarios, a mechanized finite-support stochastic-mixture queueing module with positive scenario masses plus weighted-expectation checks, mechanized exact finite-state probabilistic queue and multiclass open-network kernels with distribution-level conservation invariants plus an explicit worst-case small-data ramp-up branch, a mechanized larger exact finite-support three-arrival open-network cube, and Lean truncation-balance theorems plus constructive infinite-weighted-sum, countably supported stochastic `PMF`, measure-theoretic `lintegral`, monotone truncation-to-limit, stable `M/M/1` stationary-occupancy, and long-run Cesaro queueing theorems, alongside a higher-level queue-limit schema for stronger uninstantiated support/stability assumptions), flow-frame invariants, compression race properties, shootoff reproductions, wall-clock matrix runs across loopback stage-server cells and external non-loopback pools (including a six-distinct-host matrix; p50/p95 summaries, bootstrap confidence intervals, and explicit verdict artifacts), seeded heterogeneous protocol-corpus artifacts comparing Aeon Flow vs HTTP/3 across predeclared environment cells with bootstrap-CI and per-site win-rate criteria (`companion-tests/artifacts/gate2-protocol-corpus.{json,md}`), formal bounded-protocol artifacts for quorum visibility, connected-quorum exactness, committed-session consistency, multi-writer committed-read ordering, and committed-state history refinement (`companion-tests/formal/QuorumReadWrite.tla`, `QuorumAsyncNetwork.tla`, `QuorumSessionConsistency.tla`, `QuorumMultiWriter.tla`, `QuorumLinearizability.tla`, plus the matching Lean modules), seeded heterogeneous compression-corpus artifacts comparing topological per-chunk racing against fixed-codec and heuristic baselines with bootstrap-CI and win-rate criteria (`companion-tests/artifacts/gate3-compression-corpus.{json,md}`), out-of-sample $R_{\text{qr}}$ screening artifacts with fixed train/holdout split rules plus predeclared CI/threshold criteria (`companion-tests/artifacts/gate4-rqr-holdout.{json,md}`), comparative biological effect-size artifacts across predeclared condition pairs with Monte Carlo uncertainty propagation plus pooled bootstrap-CI criteria (`companion-tests/artifacts/gate5-bio-effect-size.{json,md}`), finite-DAG decomposition coverage (including edge-cover exactness and full source-to-sink path-set preservation), §7 formula checks (Worthington Whip $(S-1)/2S$, Speculative Tree $(1-\alpha^K)/(1-\alpha)$, turbulent multiplexing idle-fraction bounds), quantum-topology claims (Grover-style $\Delta_\beta$ scaling, Kronig-Penney band gaps as $\beta_2 > 0$, and the linear-path-sum vs nonlinear-selection boundary on the path-integral correspondence, including same-path-family fold ablations, fixed-parameter toy-attention behavioral ablations with bootstrap intervals, a seeded Gnosis cancellation benchmark, a seeded Gnosis mini-MoE routing benchmark, and an artifact-generated correspondence-boundary figure), map/reduce readiness diagnostics (boundedness/monotonicity, nonzero-opportunity necessity in migration simulation, independent migration-simulator rank ordering, and high-readiness counterexample families showing non-automatic quantum asymptotics), convergence simulation under the three constraints, evidence-table deficits (including T+2 settlement $\Delta_\beta = 2B$ under both core and broad-scope lockup scenarios), evidence-traceability calibration/provenance/reference checks, self-hosted formal artifact parsing/round-trip validation with `aeon-logic`, a parser shootoff benchmark against Java SANY startup-parse baselines (stabilized multi-sample harness: 9 measured samples after warmup, `aeon-logic` median 49.51 ms for 19,200 artifacts with IQR 48.21–49.94 ms = 387,780.9 artifacts/s; Java SANY median 116.45 ms on `BandGapVoid.tla` with IQR 115.13–122.08 ms, implying approximately 45,156.7x normalized per-artifact throughput in this startup-parse harness and normalization scheme, not an end-to-end verification-speed claim), plus a differential parse-equivalence harness against SANY outcomes (100% agreement on the current formal corpus for original modules, round-tripped modules and invalid-corpus rejections). The parser result is therefore speed plus capability surface: unlike the parser-only baseline, `aeon-logic` also exposes superposition chains, quorum temporal operators, topology bridges, Lean-sandbox project/build verification, and embedded model-checker interfaces in the same runtime [13, 14]. Mechanized TLA+ model checking across the current formal module set (C1–C4, queueing sample-path conservation, bounded multi-class queueing-network conservation, finite-support stochastic queueing-mixture conservation, exact finite-state probabilistic queue and multiclass-network kernels, larger exact finite-support queueing-network cubes, §7 formulas, cross-shard crossover, scheduler-overhead bounds, quorum visibility, connected-quorum exactness, committed-session consistency, multi-writer committed-read ordering, committed-state history refinement, protocol/settlement deficits, quantum deficit identity, band-gap void, beauty-optimality scaffold), and a Lean 4 theorem package with constructive identities, bounded protocol refinements for visibility/connectivity/consistency/ordering/history-refinement, infinite-support, countably supported stochastic, measure-theoretic, stable `M/M/1`, and Cesaro queueing lifts, plus explicit-assumption theorem schemas (including the stronger correspondence-boundary property-negation and general nonadditive-fold impossibility theorem plus the global convergence schema) verify the strongest operational claims section by section [9, 12, 13, 14].
 
 - **Open-source flow + compression runtime**: `@affectively/aeon` flow/compression tests verify 10-byte self-describing flow frames, UDP fragmentation/ACK behavior, frame reassembly, flow protocol semantics, WASM force-mode/error semantics, and topological compression properties [8].
@@ -2241,8 +2336,7 @@ The children in the line never needed more hardware; they needed less waiting. I
 
 This framing is intended as an operational modeling lens for computation, not a replacement for physical theory.
 
-**The void.** A conspicuous silence runs through every section of this paper. Fork creates parallel paths. Race selects a winner. Fold merges results. And vent releases everything the fold could not preserve. Every section quantifies what is kept; none quantifies what is lost. The semiotic deficit $\Delta\beta =
-\beta_1(\text{thought}) - \beta_1(\text{speech})$ names that silence. `confusion_irreducibility` (SemioticPeace.lean) proves it is a topological invariant: for any channel where thought has more independent dimensions than speech has streams, the deficit is strictly positive and distinct semantic paths collide under the fold. The void is not the absence of structure. It is the *topological complement* of what articulation can carry -- and it has three measurable properties. *Extent*: the deficit equals $\text{semanticPaths} - 1$, bounded and quantified (`semiotic_deficit_speech`). *Heat signature*: every non-trivial semiotic fold generates strictly positive Landauer heat (`confusion_generates_heat`). *Reducibility*: shared context monotonically deflates the deficit (`peace_context_reduces`), and sufficient context eliminates it entirely (`peace_sufficient_context`).
+**The void.** A conspicuous silence runs through every section of this paper. Fork creates parallel paths. Race selects a winner. Fold merges results. And vent releases everything the fold could not preserve. Every section quantifies what is kept; none quantifies what is lost. The semiotic deficit $\Delta\beta = \beta_1(\text{thought}) - \beta_1(\text{speech})$ names that silence. `confusion_irreducibility` (SemioticPeace.lean) proves it is a topological invariant: for any channel where thought has more independent dimensions than speech has streams, the deficit is strictly positive and distinct semantic paths collide under the fold. The void is not the absence of structure. It is the *topological complement* of what articulation can carry -- and it has three measurable properties. *Extent*: the deficit equals $\text{semanticPaths} - 1$, bounded and quantified (`semiotic_deficit_speech`). *Heat signature*: every non-trivial semiotic fold generates strictly positive Landauer heat (`confusion_generates_heat`). *Reducibility*: shared context monotonically deflates the deficit (`peace_context_reduces`), and sufficient context eliminates it entirely (`peace_sufficient_context`).
 
 The void is therefore not a counsel of despair. It is an engineering surface. The same four operations that structure computation -- fork, race, fold, vent -- structure the deficit between persons. Fork: thought generates parallel semantic paths. Race: candidate phrasings compete. Fold: speech collapses them to one stream. Vent: nuance that cannot survive the fold is dropped. The companion tests mechanize every link: `semiotic_erasure` proves the pigeonhole collision, `semiotic_vent_nuance` proves the dropped paths equal the deficit, and `semiotic_moa_isomorphism` proves that a Mixture of Agents ensemble has exactly the same deficit structure as thought-to-speech -- the loss in committee summarization is the same loss in conversation.
 
@@ -2330,9 +2424,7 @@ This makes diversity calculable rather than aspirational. When the deficit is po
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
-*Figure 3. The American Frontier: diversity vs waste across three substrates. **A.** Protocol framing overhead on the microfrontend benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31%) to Aeon Flow (1.5%). **B.** Pipeline idle fraction vs Reynolds number for a 4-stage pipeline: laminar regime (high diversity, low waste) to turbulent regime (low diversity, high waste). **C.** Cost of monoculture: heuristic waste (topology gain %) across five corpus types ordered by content heterogeneity, showing that the penalty for non-diverse strategy scales with intrinsic $β_{1}^{*}$. All three panels are instantiations of THM-AMERICAN-FRONTIER (`AmericanFrontier.lean`): waste monotonically non-increasing in diversity, zero at
-$β_{1} =
-β_{1}^{*}$, positive below.*
+*Figure 3. The American Frontier: diversity vs waste across three substrates. **A.** Protocol framing overhead on the microfrontend benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31%) to Aeon Flow (1.5%). **B.** Pipeline idle fraction vs Reynolds number for a 4-stage pipeline: laminar regime (high diversity, low waste) to turbulent regime (low diversity, high waste). **C.** Cost of monoculture: heuristic waste (topology gain %) across five corpus types ordered by content heterogeneity, showing that the penalty for non-diverse strategy scales with intrinsic $β_{1}^{*}$. All three panels are instantiations of THM-AMERICAN-FRONTIER (`AmericanFrontier.lean`): waste monotonically non-increasing in diversity, zero at $β_{1} = β_{1}^{*}$, positive below.*
 
 
 ## References
