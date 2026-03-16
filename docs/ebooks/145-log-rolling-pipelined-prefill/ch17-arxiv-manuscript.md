@@ -248,8 +248,7 @@ The biological examples above are evolutionary discoveries. But the pattern exte
 
 <figure>
 <p> </p>
-<figcaption>Figure 2. Artifact-generated near-control zoom, regime-map,
-and adversarial-controls figure assembled from the Gnosis near-control, regime-sweep, and adversarial-control artifacts.</figcaption>
+<figcaption>Figure 2. Artifact-generated near-control zoom, regime-map, and adversarial-controls figure assembled from the Gnosis near-control, regime-sweep, and adversarial-control artifacts.</figcaption>
 </figure>
 
 ### 1.8 Observed Recurrence in Selected Examples
@@ -340,15 +339,13 @@ Given pipeline state $S$ and operation set $O$:
 
 Fork/race/fold preserves correctness when:
 
-- **C1 (Constraint locality)**: Stage-local ordering is sufficient for
-global correctness.
+- **C1 (Constraint locality)**: Stage-local ordering is sufficient for global correctness.
 
 - **C2 (Branch isolation)**: A vented branch does not corrupt siblings.
 
 - **C3 (Deterministic fold)**: The merger $f$ is deterministic.
 
-- **C4 (Termination)**: Every branch either completes, is vented, or
-times out in finite time.
+- **C4 (Termination)**: Every branch either completes, is vented, or times out in finite time.
 
 These conditions are mechanized in a two-layer formal stack. Finite-state models in TLA+ verify C1–C4 as invariants across the formal module set (checked by both TLC and the self-hosted `aeon-logic` parser/checker). Lean 4 theorem schemas verify the quantitative identities that depend on C1–C4 under explicit assumptions. The sufficiency claim – that any finite DAG decomposes into fork points, join points, and linear chains, and that these four conditions preserve correctness through the decomposition – is verified constructively by executable finite-DAG decomposition checks [9, 13].
 
@@ -393,17 +390,13 @@ Race is not a fold strategy – it is a separate primitive. Race picks the *fast
 
 The framework is most useful when treated as a small ledger over four derived observables:
 
-- **Branch mass**: how many live alternatives remain in play at a given
-moment. Fork raises branch mass, vent lowers it, and fold collapses it.
+- **Branch mass**: how many live alternatives remain in play at a given moment. Fork raises branch mass, vent lowers it, and fold collapses it.
 
-- **Collapse law**: the explicit reconciliation rule used at fold.
-Merge-all, quorum, winner-take-all, consensus, and weighted fold are different collapse laws with different obligations.
+- **Collapse law**: the explicit reconciliation rule used at fold. Merge-all, quorum, winner-take-all, consensus, and weighted fold are different collapse laws with different obligations.
 
-- **Interference pattern**: the observable recombination behavior
-induced by the collapse law on the same path family. Consensus folds make this visible through agreement and cancellation, and later examples show that some folds preserve these patterns while others destroy them.
+- **Interference pattern**: the observable recombination behavior induced by the collapse law on the same path family. Consensus folds make this visible through agreement and cancellation, and later examples show that some folds preserve these patterns while others destroy them.
 
-- **Vented loss**: the paths, work, or information discarded when
-branches are pruned, timed out, or prevented from contributing to the terminal fold.
+- **Vented loss**: the paths, work, or information discarded when branches are pruned, timed out, or prevented from contributing to the terminal fold.
 
 With these observables in hand, fork/race/fold/vent can be read as a language for reasoning about **optionality**. Optionality here means deferred irreversible commitment while branch mass remains greater than one. Fork creates it, collapse law governs how it is resolved, interference reveals what that resolution preserves or destroys, and venting records what was paid to regain determinism. In that sense, such systems act as **structured ambiguity processors**: they hold multiple live alternatives under explicit accounting and then reconcile them.
 
@@ -479,17 +472,13 @@ This is precisely what DNA ligase does: Okazaki fragments arrive from the coveri
 
 The fundamental group $\pi_1$ classifies loops up to homotopy:
 
-- **TCP**: $\pi_1 = 0$. One path. Simply connected. Works for simply
-connected problems.
+- **TCP**: $\pi_1 = 0$. One path. Simply connected. Works for simply connected problems.
 
-- **HTTP/2**: Application layer has $\beta_1 > 0$ (multiplexed
-streams), but TCP substrate has $\beta_1 = 0$ (one ordered byte stream). **This is a topological mismatch.** Head-of-line blocking is the symptom: losing one packet on any stream blocks *all* streams because the underlying space cannot support independent paths.
+- **HTTP/2**: Application layer has $\beta_1 > 0$ (multiplexed streams), but TCP substrate has $\beta_1 = 0$ (one ordered byte stream). **This is a topological mismatch.** Head-of-line blocking is the symptom: losing one packet on any stream blocks *all* streams because the underlying space cannot support independent paths.
 
-- **HTTP/3 (QUIC)**: Partially resolves the contradiction with
-per-stream independence on UDP. But maintains ordered delivery within each stream – $\pi_1$ within each stream is trivial.
+- **HTTP/3 (QUIC)**: Partially resolves the contradiction with per-stream independence on UDP. But maintains ordered delivery within each stream – $\pi_1$ within each stream is trivial.
 
-- **Aeon Flow over UDP**: Self-describing frames in the covering space.
-No ordered delivery anywhere. $\pi_1$ of the wire is designed to match $\pi_1$ of the application. This removes ordered-delivery coupling as a head-of-line source in the modeled transport stack.
+- **Aeon Flow over UDP**: Self-describing frames in the covering space. No ordered delivery anywhere. $\pi_1$ of the wire is designed to match $\pi_1$ of the application. This removes ordered-delivery coupling as a head-of-line source in the modeled transport stack.
 
 ### 3.5 Time-Indexed Topological Filtration
 
@@ -562,8 +551,7 @@ so the invariant is still customer-time in system, now aggregated across classes
 A further bounded stochastic layer treats arrivals, class mixes, route choices and service realizations as a **finite-support weighted scenario family**. Because the customer-time identity is pathwise for each realization, finite linearity lifts it to expectation in the executable model:
 
 $$
-\mathbb{E}\!\left[\int_0^T L_{\mathrm{network}}(t)\,dt\right]
-=
+\mathbb{E}\!\left[\int_0^T L_{\mathrm{network}}(t)\,dt\right] =
 \mathbb{E}\!\left[\sum_{i \in \mathrm{departed}} (d_i - a_i) + \sum_{i \in \mathrm{open}} (T - a_i)\right].
 $$
 
@@ -599,14 +587,11 @@ The pipeline Reynolds number $Re = N/C$ is used here as a complementary topology
 
 In queueing theory, an M/M/1 queue represents the simplest non-trivial model of a waiting line. It describes a memoryless system with a single server where arrivals and service times are essentially random. Its notation follows Kendall’s Notation, where each letter defines a specific characteristic of the system:
 
-- M (Markovian/Memoryless) Arrival: Customers arrive according to a
-Poisson process. This means the time between arrivals follows an Exponential distribution. It is “memoryless” because the time until the next arrival doesn’t depend on how much time has already passed.
+- M (Markovian/Memoryless) Arrival: Customers arrive according to a Poisson process. This means the time between arrivals follows an Exponential distribution. It is “memoryless” because the time until the next arrival doesn’t depend on how much time has already passed.
 
-- M (Markovian/Memoryless) Service: The time it takes to serve a
-customer also follows an Exponential distribution.
+- M (Markovian/Memoryless) Service: The time it takes to serve a customer also follows an Exponential distribution.
 
-- 1 (Single Server): There is only one station or person processing the
-queue.
+- 1 (Single Server): There is only one station or person processing the queue.
 
 In this modeling language, the canonical M/M/1 queue is represented as a $\beta_1 = 0$ pipeline with one stage and Poisson arrivals. The companion formal package now closes that canonical witness constructively: the one-path boundary is packaged with `β₁ = 0`, capacity `β₁ + 1 = 1`, and the stationary mean occupancy law $\lambda / (\mu - \lambda)$ for the stable regime \$\< ‘. The $Re$ framework does not contradict queueing theory – it embeds canonical one-path constructions in that scoped sense. When $\beta_1 = 0$, $Re$ reduces to utilization. When $\beta_1 > 0$, $Re$ adds topology-aware vocabulary for sequential-to-multiplexed transition, fork-width tuning and topological mismatch cost.
 
@@ -679,11 +664,9 @@ Use case: a diagnostic pipeline forks blood test, MRI and genetic screening. The
 
 Constructive interference amplifies signals that agree. Destructive interference cancels signals that disagree. In fork/race/fold, the consensus fold strategy implements both:
 
-- **Constructive**: compute pairwise agreement across all $N$ results.
-Values where $> N/2$ streams agree are amplified (kept). This is signal extraction from noise.
+- **Constructive**: compute pairwise agreement across all $N$ results. Values where $> N/2$ streams agree are amplified (kept). This is signal extraction from noise.
 
-- **Destructive**: values where $\leq N/2$ streams agree are kept.
-This is outlier detection – finding the signal that *disagrees* with the majority.
+- **Destructive**: values where $\leq N/2$ streams agree are kept. This is outlier detection – finding the signal that *disagrees* with the majority.
 
 The $O(N^2)$ pairwise comparison is the interference pattern. The resulting fold is the detected signal.
 
@@ -792,17 +775,13 @@ The two-level stream race (§9.3) approaches this limit by selecting the smalles
 The Shannon entropy connection is deeper than a Carnot analogy. Fork/race/fold maps directly onto the information-theoretic primitives
 [36]:
 
-- **Fork** creates up to $\log_2 N$ bits of selection uncertainty
-under uniform-path assumptions. Before fork, the outcome is determined. After fork into $N$ paths, the observer cannot predict which path will win.
+- **Fork** creates up to $\log_2 N$ bits of selection uncertainty under uniform-path assumptions. Before fork, the outcome is determined. After fork into $N$ paths, the observer cannot predict which path will win.
 
-- **Race** is observation – each step of execution reduces entropy by
-revealing partial information about which paths are viable. The race phase is a channel: input entropy flows through the channel toward the observer.
+- **Race** is observation – each step of execution reduces entropy by revealing partial information about which paths are viable. The race phase is a channel: input entropy flows through the channel toward the observer.
 
-- **Fold** is compression to a single outcome. The fold function $f$
-reduces $\log_2 N$ bits to 0 bits of residual uncertainty. The Kraft inequality constrains this: no prefix-free encoding can compress below entropy without losing information.
+- **Fold** is compression to a single outcome. The fold function $f$ reduces $\log_2 N$ bits to 0 bits of residual uncertainty. The Kraft inequality constrains this: no prefix-free encoding can compress below entropy without losing information.
 
-- **Vent** is the bits that cannot be recovered – the
-information-theoretic cost of certainty. The vented paths carry $H(X) - I(X;Y)$ bits of equivocation: information that was created by fork but is not preserved by fold.
+- **Vent** is the bits that cannot be recovered – the information-theoretic cost of certainty. The vented paths carry $H(X) - I(X;Y)$ bits of equivocation: information that was created by fork but is not preserved by fold.
 
 The First Law restated in bits: $H_{\text{fork}} = I_{\text{fold}} + H_{\text{vent}}$. The mutual information $I(X;Y)$ between the forked ensemble $X$ and the folded result $Y$ is the useful work. The conditional entropy $H(X|Y)$ – the uncertainty about the fork given the fold result – is the waste heat. This is Shannon’s source coding theorem applied to computation: you cannot fold to a result that contains more information than the mutual information between the problem and the solution.
 
@@ -812,14 +791,11 @@ This links the thermodynamic framing (§6.1–§6.7) with the quantum framing (�
 
 The Triangle (§0.1) is an energy envelope:
 
-- **Ramp-up (fork):** Energy increases as items enter. Each new item
-adds potential energy. The pipeline fills.
+- **Ramp-up (fork):** Energy increases as items enter. Each new item adds potential energy. The pipeline fills.
 
-- **Plateau (race):** Energy is steady-state. Items enter and exit at
-the same rate. Maximum kinetic energy.
+- **Plateau (race):** Energy is steady-state. Items enter and exit at the same rate. Maximum kinetic energy.
 
-- **Ramp-down (fold):** Energy decreases as items exit without
-replacements. Potential converts to work.
+- **Ramp-down (fold):** Energy decreases as items exit without replacements. Potential converts to work.
 
 The area under the curve is total energy processed. Turbulent multiplexing (§7.2) fills the triangles – the idle slots in ramp-up/ramp-down are wasted potential energy. The Worthington Whip (§7.3) reshapes one tall triangle into multiple short, wide rectangles – same total energy, better geometry, higher utilization.
 
@@ -882,14 +858,12 @@ The executable topology figure is emitted automatically to `companion-tests/arti
 
 <figure>
 <p> </p>
-<figcaption>Figure 2a. Artifact-generated <code>StructuredMoA</code>
-topology figure showing one sparse <code>2-of-4</code> routed realization against the dense <code>4-of-4</code> baseline, with explicit outer rotation, outer router, labeled heads, and inner/outer Worthington whips.</figcaption>
+<figcaption>Figure 2a. Artifact-generated <code>StructuredMoA</code> topology figure showing one sparse <code>2-of-4</code> routed realization against the dense <code>4-of-4</code> baseline, with explicit outer rotation, outer router, labeled heads, and inner/outer Worthington whips.</figcaption>
 </figure>
 
 <figure>
 <p> </p>
-<figcaption>Figure 2b. Artifact-generated GG-backed MoA transformer
-figure showing scale-sweep speedup, closing eval-MSE gap, and the sparsity-ablation frontier for the <code>StructuredMoA</code> surface.</figcaption>
+<figcaption>Figure 2b. Artifact-generated GG-backed MoA transformer figure showing scale-sweep speedup, closing eval-MSE gap, and the sparsity-ablation frontier for the <code>StructuredMoA</code> surface.</figcaption>
 </figure>
 
 ### 6.12 Selected Structural Correspondences with Physical Formalisms
@@ -922,8 +896,7 @@ The classical limit ($\hbar \to 0$) recovers the path of stationary action – t
 
 <figure>
 <p> </p>
-<figcaption>Figure 1. Artifact-generated correspondence boundary figure
-assembled from the invariant-loss matrix, toy-attention bootstrap intervals, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark.</figcaption>
+<figcaption>Figure 1. Artifact-generated correspondence boundary figure assembled from the invariant-loss matrix, toy-attention bootstrap intervals, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark.</figcaption>
 </figure>
 
 #### The Physics Hierarchy: Progressive Folds
@@ -1019,16 +992,13 @@ This strengthens the mapping intuition: the strong-force case behaves like an an
 
 The Higgs mechanism: above the electroweak energy scale ($\sim 246$ GeV), the electromagnetic and weak forces are unified. Below it, the Higgs field selects one vacuum state from a continuous family of equivalent states. The Mexican hat potential is a fork/race/fold landscape:
 
-- **Fork:** The symmetric state at the top of the potential (all vacuum
-directions equivalent)
+- **Fork:** The symmetric state at the top of the potential (all vacuum directions equivalent)
 
 - **Race:** The field rolls down the brim (explores vacuum states)
 
-- **Fold:** Settles into one minimum (symmetry broken, particles acquire
-mass)
+- **Fold:** Settles into one minimum (symmetry broken, particles acquire mass)
 
-- **Vent:** Goldstone bosons carry away the broken symmetry degrees of
-freedom (three of four are “eaten” by the $W^\pm$ and $Z$ bosons, becoming their longitudinal polarization)
+- **Vent:** Goldstone bosons carry away the broken symmetry degrees of freedom (three of four are “eaten” by the $W^\pm$ and $Z$ bosons, becoming their longitudinal polarization)
 
 Spontaneous symmetry breaking is fold: many equivalent states $\to$ one selected state. The void ($\beta_2$) is the set of unchosen vacua. In this analogy, observed particle masses correspond to fold-selected outcomes after symmetry breaking.
 
@@ -1222,17 +1192,13 @@ $$
 
 where all factors are normalized to $[0,1]$:
 
-- $I_{\text{map}}$: fraction of map work that is truly independent
-(measured as the ratio of map tasks with zero cross-partition data access).
+- $I_{\text{map}}$: fraction of map work that is truly independent (measured as the ratio of map tasks with zero cross-partition data access).
 
-- $A_{\text{reduce}}$: reducer associativity/determinism score (1.0 if
-the reducer is associative and commutative; penalized for order dependence or non-determinism).
+- $A_{\text{reduce}}$: reducer associativity/determinism score (1.0 if the reducer is associative and commutative; penalized for order dependence or non-determinism).
 
-- $S_{\text{key}}$: partition skew (Gini coefficient of key
-distribution; 0 = uniform, 1 = all keys in one partition).
+- $S_{\text{key}}$: partition skew (Gini coefficient of key distribution; 0 = uniform, 1 = all keys in one partition).
 
-- $Z_{\text{copy}}$: zero-copy ratio across map/shuffle/fold
-boundaries (fraction of data transferred without serialization).
+- $Z_{\text{copy}}$: zero-copy ratio across map/shuffle/fold boundaries (fraction of data transferred without serialization).
 
 - $O_{\beta}$: topological opportunity from the Bule deficit.
 
@@ -1240,14 +1206,11 @@ boundaries (fraction of data transferred without serialization).
 
 Interpretation:
 
-- High $Q_{\text{mr}}$, low $O_{\beta}$: architecture is ready, but
-little headroom (already near $\Delta_\beta = 0$).
+- High $Q_{\text{mr}}$, low $O_{\beta}$: architecture is ready, but little headroom (already near $\Delta_\beta = 0$).
 
-- Low $Q_{\text{mr}}$, high $O_{\beta}$: headroom exists, but
-map/reduce quality is too poor to realize it safely.
+- Low $Q_{\text{mr}}$, high $O_{\beta}$: headroom exists, but map/reduce quality is too poor to realize it safely.
 
-- High $R_{\text{qr}}$: prioritize for preregistered pilot evaluation
-before migration to full Wallington primitives (add race + vent + Reynolds-driven multiplexing).
+- High $R_{\text{qr}}$: prioritize for preregistered pilot evaluation before migration to full Wallington primitives (add race + vent + Reynolds-driven multiplexing).
 
 So map/reduce can be interpreted as a **screening diagnostic**: it flags workloads likely to benefit from promotion into fork/race/fold, and in a subset of cases may coincide with hypotheses worth testing for quantum-style gains. The value is triage: it prioritizes which workloads to test first. The formula has guided three internal production migrations in the author’s own systems (inference routing, session preloading, and deploy artifact streaming – all described in this paper), but has not been independently validated beyond these cases and should be treated as hypothesis-generating. An open-source `@affectively/aeon-pipelines` implementation is available [2].
 
@@ -1703,11 +1666,9 @@ The stack is the paper’s clearest existence demonstration: one set of four pri
 
 The algorithm is implemented as **Aeon Pipelines** [2], a zero-dependency computation topology engine in TypeScript. It runs on Cloudflare Workers, Deno, Node, Bun and browsers. The API surface is two classes:
 
-- **`Pipeline`**: the engine – capacity, metrics, backpressure,
-turbulent multiplexing.
+- **`Pipeline`**: the engine – capacity, metrics, backpressure, turbulent multiplexing.
 
-- **`Superposition<T>`**: the builder – chainable
-fork/race/fold/vent/tunnel/interfere/entangle/measure/search operations.
+- **`Superposition<T>`**: the builder – chainable fork/race/fold/vent/tunnel/interfere/entangle/measure/search operations.
 
 ```typescript
 // Kids juggling balls
@@ -1802,21 +1763,17 @@ For auditability, the primary evidence-bounded claims map directly to primary ha
 | Out-of-sample $R_{qr}$ | `scripts/gate4-rqr-holdout.ts` | `artifacts/gate4-rqr-holdout.{json,md}` |
 | Biological effect-size mapping | `scripts/gate5-bio-effect-size.ts` | `artifacts/gate5-bio-effect-size.{json,md}` |
 
-- **Companion obligations and executable proofs**: pipeline topology,
-queueing containment (including exhaustive finite-trace work-conserving discipline coverage, representative discretized service-time families, a mechanized TLA+ sample-path conservation module for the bounded single-server case, a mechanized bounded multi-class open-network conservation module over finite service-law scenarios, a mechanized finite-support stochastic-mixture queueing module with positive scenario masses plus weighted-expectation checks, mechanized exact finite-state probabilistic queue and multiclass open-network kernels with distribution-level conservation invariants plus an explicit worst-case small-data ramp-up branch, a mechanized larger exact finite-support three-arrival open-network cube, and Lean truncation-balance theorems plus constructive infinite-weighted-sum, countably supported stochastic `PMF`, measure-theoretic `lintegral`, monotone truncation-to-limit, stable `M/M/1` stationary-occupancy, and long-run Cesaro queueing theorems, alongside a higher-level queue-limit schema for stronger uninstantiated support/stability assumptions), flow-frame invariants, compression race properties, shootoff reproductions, wall-clock matrix runs across loopback stage-server cells and external non-loopback pools (including a six-distinct-host matrix; p50/p95 summaries, bootstrap confidence intervals, and explicit verdict artifacts), seeded heterogeneous protocol-corpus artifacts comparing Aeon Flow vs HTTP/3 across predeclared environment cells with bootstrap-CI and per-site win-rate criteria (`companion-tests/artifacts/gate2-protocol-corpus.{json,md}`), formal bounded-protocol artifacts for quorum visibility, connected-quorum exactness, committed-session consistency, multi-writer committed-read ordering, and committed-state history refinement (`companion-tests/formal/QuorumReadWrite.tla`, `QuorumAsyncNetwork.tla`, `QuorumSessionConsistency.tla`, `QuorumMultiWriter.tla`, `QuorumLinearizability.tla`, plus the matching Lean modules), seeded heterogeneous compression-corpus artifacts comparing topological per-chunk racing against fixed-codec and heuristic baselines with bootstrap-CI and win-rate criteria (`companion-tests/artifacts/gate3-compression-corpus.{json,md}`), out-of-sample $R_{\text{qr}}$ screening artifacts with fixed train/holdout split rules plus predeclared CI/threshold criteria (`companion-tests/artifacts/gate4-rqr-holdout.{json,md}`), comparative biological effect-size artifacts across predeclared condition pairs with Monte Carlo uncertainty propagation plus pooled bootstrap-CI criteria (`companion-tests/artifacts/gate5-bio-effect-size.{json,md}`), finite-DAG decomposition coverage (including edge-cover exactness and full source-to-sink path-set preservation), §7 formula checks (Worthington Whip $(S-1)/2S$, Speculative Tree $(1-\alpha^K)/(1-\alpha)$, turbulent multiplexing idle-fraction bounds), quantum-topology claims (Grover-style $\Delta_\beta$ scaling, Kronig-Penney band gaps as $\beta_2 > 0$, and the linear-path-sum vs nonlinear-selection boundary on the path-integral correspondence, including same-path-family fold ablations, fixed-parameter toy-attention behavioral ablations with bootstrap intervals, a seeded Gnosis cancellation benchmark, a seeded Gnosis mini-MoE routing benchmark, and an artifact-generated correspondence-boundary figure), map/reduce readiness diagnostics (boundedness/monotonicity, nonzero-opportunity necessity in migration simulation, independent migration-simulator rank ordering, and high-readiness counterexample families showing non-automatic quantum asymptotics), convergence simulation under the three constraints, evidence-table deficits (including T+2 settlement $\Delta_\beta = 2B$ under both core and broad-scope lockup scenarios), evidence-traceability calibration/provenance/reference checks, self-hosted formal artifact parsing/round-trip validation with `aeon-logic`, a parser shootoff benchmark against Java SANY startup-parse baselines (stabilized multi-sample harness: 9 measured samples after warmup, `aeon-logic` median 49.51 ms for 19,200 artifacts with IQR 48.21–49.94 ms = 387,780.9 artifacts/s; Java SANY median 116.45 ms on `BandGapVoid.tla` with IQR 115.13–122.08 ms, implying approximately 45,156.7x normalized per-artifact throughput in this startup-parse harness and normalization scheme, not an end-to-end verification-speed claim), plus a differential parse-equivalence harness against SANY outcomes (100% agreement on the current formal corpus for original modules, round-tripped modules and invalid-corpus rejections). The parser result is therefore speed plus capability surface: unlike the parser-only baseline, `aeon-logic` also exposes superposition chains, quorum temporal operators, topology bridges, Lean-sandbox project/build verification, and embedded model-checker interfaces in the same runtime [13, 14]. Mechanized TLA+ model checking across the current formal module set (C1–C4, queueing sample-path conservation, bounded multi-class queueing-network conservation, finite-support stochastic queueing-mixture conservation, exact finite-state probabilistic queue and multiclass-network kernels, larger exact finite-support queueing-network cubes, §7 formulas, cross-shard crossover, scheduler-overhead bounds, quorum visibility, connected-quorum exactness, committed-session consistency, multi-writer committed-read ordering, committed-state history refinement, protocol/settlement deficits, quantum deficit identity, band-gap void, beauty-optimality scaffold), and a Lean 4 theorem package with constructive identities, bounded protocol refinements for visibility/connectivity/consistency/ordering/history-refinement, infinite-support, countably supported stochastic, measure-theoretic, stable `M/M/1`, and Cesaro queueing lifts, plus explicit-assumption theorem schemas (including the stronger correspondence-boundary property-negation and general nonadditive-fold impossibility theorem plus the global convergence schema) verify the strongest operational claims section by section [9, 12, 13, 14].
+- **Companion obligations and executable proofs**: pipeline topology, queueing containment (including exhaustive finite-trace work-conserving discipline coverage, representative discretized service-time families, a mechanized TLA+ sample-path conservation module for the bounded single-server case, a mechanized bounded multi-class open-network conservation module over finite service-law scenarios, a mechanized finite-support stochastic-mixture queueing module with positive scenario masses plus weighted-expectation checks, mechanized exact finite-state probabilistic queue and multiclass open-network kernels with distribution-level conservation invariants plus an explicit worst-case small-data ramp-up branch, a mechanized larger exact finite-support three-arrival open-network cube, and Lean truncation-balance theorems plus constructive infinite-weighted-sum, countably supported stochastic `PMF`, measure-theoretic `lintegral`, monotone truncation-to-limit, stable `M/M/1` stationary-occupancy, and long-run Cesaro queueing theorems, alongside a higher-level queue-limit schema for stronger uninstantiated support/stability assumptions), flow-frame invariants, compression race properties, shootoff reproductions, wall-clock matrix runs across loopback stage-server cells and external non-loopback pools (including a six-distinct-host matrix; p50/p95 summaries, bootstrap confidence intervals, and explicit verdict artifacts), seeded heterogeneous protocol-corpus artifacts comparing Aeon Flow vs HTTP/3 across predeclared environment cells with bootstrap-CI and per-site win-rate criteria (`companion-tests/artifacts/gate2-protocol-corpus.{json,md}`), formal bounded-protocol artifacts for quorum visibility, connected-quorum exactness, committed-session consistency, multi-writer committed-read ordering, and committed-state history refinement (`companion-tests/formal/QuorumReadWrite.tla`, `QuorumAsyncNetwork.tla`, `QuorumSessionConsistency.tla`, `QuorumMultiWriter.tla`, `QuorumLinearizability.tla`, plus the matching Lean modules), seeded heterogeneous compression-corpus artifacts comparing topological per-chunk racing against fixed-codec and heuristic baselines with bootstrap-CI and win-rate criteria (`companion-tests/artifacts/gate3-compression-corpus.{json,md}`), out-of-sample $R_{\text{qr}}$ screening artifacts with fixed train/holdout split rules plus predeclared CI/threshold criteria (`companion-tests/artifacts/gate4-rqr-holdout.{json,md}`), comparative biological effect-size artifacts across predeclared condition pairs with Monte Carlo uncertainty propagation plus pooled bootstrap-CI criteria (`companion-tests/artifacts/gate5-bio-effect-size.{json,md}`), finite-DAG decomposition coverage (including edge-cover exactness and full source-to-sink path-set preservation), §7 formula checks (Worthington Whip $(S-1)/2S$, Speculative Tree $(1-\alpha^K)/(1-\alpha)$, turbulent multiplexing idle-fraction bounds), quantum-topology claims (Grover-style $\Delta_\beta$ scaling, Kronig-Penney band gaps as $\beta_2 > 0$, and the linear-path-sum vs nonlinear-selection boundary on the path-integral correspondence, including same-path-family fold ablations, fixed-parameter toy-attention behavioral ablations with bootstrap intervals, a seeded Gnosis cancellation benchmark, a seeded Gnosis mini-MoE routing benchmark, and an artifact-generated correspondence-boundary figure), map/reduce readiness diagnostics (boundedness/monotonicity, nonzero-opportunity necessity in migration simulation, independent migration-simulator rank ordering, and high-readiness counterexample families showing non-automatic quantum asymptotics), convergence simulation under the three constraints, evidence-table deficits (including T+2 settlement $\Delta_\beta = 2B$ under both core and broad-scope lockup scenarios), evidence-traceability calibration/provenance/reference checks, self-hosted formal artifact parsing/round-trip validation with `aeon-logic`, a parser shootoff benchmark against Java SANY startup-parse baselines (stabilized multi-sample harness: 9 measured samples after warmup, `aeon-logic` median 49.51 ms for 19,200 artifacts with IQR 48.21–49.94 ms = 387,780.9 artifacts/s; Java SANY median 116.45 ms on `BandGapVoid.tla` with IQR 115.13–122.08 ms, implying approximately 45,156.7x normalized per-artifact throughput in this startup-parse harness and normalization scheme, not an end-to-end verification-speed claim), plus a differential parse-equivalence harness against SANY outcomes (100% agreement on the current formal corpus for original modules, round-tripped modules and invalid-corpus rejections). The parser result is therefore speed plus capability surface: unlike the parser-only baseline, `aeon-logic` also exposes superposition chains, quorum temporal operators, topology bridges, Lean-sandbox project/build verification, and embedded model-checker interfaces in the same runtime [13, 14]. Mechanized TLA+ model checking across the current formal module set (C1–C4, queueing sample-path conservation, bounded multi-class queueing-network conservation, finite-support stochastic queueing-mixture conservation, exact finite-state probabilistic queue and multiclass-network kernels, larger exact finite-support queueing-network cubes, §7 formulas, cross-shard crossover, scheduler-overhead bounds, quorum visibility, connected-quorum exactness, committed-session consistency, multi-writer committed-read ordering, committed-state history refinement, protocol/settlement deficits, quantum deficit identity, band-gap void, beauty-optimality scaffold), and a Lean 4 theorem package with constructive identities, bounded protocol refinements for visibility/connectivity/consistency/ordering/history-refinement, infinite-support, countably supported stochastic, measure-theoretic, stable `M/M/1`, and Cesaro queueing lifts, plus explicit-assumption theorem schemas (including the stronger correspondence-boundary property-negation and general nonadditive-fold impossibility theorem plus the global convergence schema) verify the strongest operational claims section by section [9, 12, 13, 14].
 
-- **Open-source flow + compression runtime**: `@affectively/aeon`
-flow/compression tests verify 10-byte self-describing flow frames, UDP fragmentation/ACK behavior, frame reassembly, flow protocol semantics, WASM force-mode/error semantics, and topological compression properties [8].
+- **Open-source flow + compression runtime**: `@affectively/aeon` flow/compression tests verify 10-byte self-describing flow frames, UDP fragmentation/ACK behavior, frame reassembly, flow protocol semantics, WASM force-mode/error semantics, and topological compression properties [8].
 
-- **Open-source topology engine**: `@affectively/aeon-pipelines` tests
-cover fork/race/fold/vent primitives, fold strategies, Reynolds/backpressure/turbulent multiplexing, quantum modalities, flow-bridge wire compatibility, domain scenarios and microbenchmarks
+- **Open-source topology engine**: `@affectively/aeon-pipelines` tests cover fork/race/fold/vent primitives, fold strategies, Reynolds/backpressure/turbulent multiplexing, quantum modalities, flow-bridge wire compatibility, domain scenarios and microbenchmarks
   [2].
 
 - **Open-source topology analyzer suite**:
 `TopologyAnalyzer`/`TopologySampler` tests in `@affectively/aeon` validate Betti extraction, $\Delta_\beta$ diagnostics, $\beta_2$ void detection and executable protocol-topology contrasts [8].
 
-- **Open-source deployment control plane**: `@affectively/aeon-forge`
-Bun test suites validate remote publish planning/gating (including production smoke-gate constraints), host capability and substrate requirement checks, AeonPID directory invariants, build-timeout and watcher-retry behavior, and telemetry metric-analyzer anomaly detection [18]. In the targeted reproducibility slice reported here (`remote-publish`, `host-compat`, `substrate`, `aeonpid-directory`, `metric-analyzer`, `build-timeout`, `watcher-retry`), 57 tests passed with 132 assertions.
+- **Open-source deployment control plane**: `@affectively/aeon-forge` Bun test suites validate remote publish planning/gating (including production smoke-gate constraints), host capability and substrate requirement checks, AeonPID directory invariants, build-timeout and watcher-retry behavior, and telemetry metric-analyzer anomaly detection [18]. In the targeted reproducibility slice reported here (`remote-publish`, `host-compat`, `substrate`, `aeonpid-directory`, `metric-analyzer`, `build-timeout`, `watcher-retry`), 57 tests passed with 132 assertions.
 
 Pass/fail totals are available from the linked suites via their reproducible commands; parser-validated formal artifacts, mechanized Lean theorem builds and mechanized TLC runs are all part of that reproducible surface [2, 8, 9, 12, 13, 14].
 
@@ -1839,8 +1796,7 @@ Pass/fail totals are available from the linked suites via their reproducible com
 In that compiler lane, the remaining theorem shape is not another affine example but automatic witness synthesis: given arbitrary continuous `.gg` source, the bridge should construct `C`, `V(x)`, and the minorization data from the program itself rather than requiring the human to hand-supply the measure theory.
 
 **Queueing theory subsumption scope.** Containment is proved for canonical constructions (Little’s Law boundary case, Erlang-style blocking behavior and Jackson-style bottleneck limits) and extended by executable sample-path checks that, on selected finite tick traces, exhaustively enumerate work-conserving single-server disciplines, representative discretized service-time families, bounded multi-class open-network conservation over finite service-law scenarios, finite-support stochastic arrival/service/routing mixtures in expectation, an exact finite-state probabilistic transition kernel for a bounded single-server queue, an exact finite-state probabilistic multiclass open-network kernel whose worst branch already exhibits the small-data ramp-up pathology, and a larger exact three-arrival three-class three-node witness over the full 64-branch arrival cube
-[9]. On the unbounded side, the companion now includes constructive
-finite-prefix balance theorems, infinite weighted-sum queue balance, direct countably supported stochastic queue laws via `PMF`, measure-theoretic `lintegral` conservation, monotone truncation-to-limit theorems, the stable `M/M/1` geometric stationary law with finite mean queue length, a finite-node product-form open-network occupancy law with exact singleton mass and total mean occupancy under a supplied stable throughput witness satisfying the traffic equations, an exact finite Jackson fixed-point closure under spectral uniqueness plus a supplied nonnegative stable real traffic solution, a raw finite Jackson closure under the coarse `maxIncomingRoutingMass`/`minServiceRate` criterion, a finite-step Jackson envelope ladder `throughputEnvelopeApprox n` whose first instances are the global max-external/max-incoming bound, the nodewise bound $\lambda_i + \mathrm{incomingMass}_i \cdot \maxExternalArrival / (1-\maxIncomingRoutingMass)$, and the deeper second-order bound $\lambda_i + \sum_j \mathrm{localEnvelope}_j P_{j i}$, a descending-ladder theorem plus the explicit absolute-error certificate `throughputEnvelopeApprox n - α_spec ≤ throughputEnvelopeResidual n`, the matching lower-side certificate `α_spec - (trafficApprox n).toReal ≤ throughputEnvelopeResidual (n+1)`, a formal lower/upper bracket between lower real traffic iterates and upper Jackson envelope iterates, direct service certificates against that ladder, and the stronger closure that any certified stage of that ladder already instantiates the same finite-network product-form and `lintegral` balance laws, explicit state-dependent stationary and terminal queue-balance schemas with concrete vacation, retrial, reneging, and adaptive-routing family wrappers, a concrete bounded adaptive raw-ceiling witness, and a long-run Cesaro balance theorem for unbounded open-network sample paths under vanishing residual open age. Remaining future work is arbitrary exact probabilistic multiclass/open networks beyond the current bounded witnesses, constructive derivation of exact traffic fixed points beyond the current exact-witness-plus-ladder/residual Jackson family, automatic discovery of richer adaptive Lyapunov decompositions beyond the built-in minimum-slack/selector/weighted/service-slack/routing-pressure forms, and positive-recurrence proofs for unbounded open stochastic networks.
+[9]. On the unbounded side, the companion now includes constructive finite-prefix balance theorems, infinite weighted-sum queue balance, direct countably supported stochastic queue laws via `PMF`, measure-theoretic `lintegral` conservation, monotone truncation-to-limit theorems, the stable `M/M/1` geometric stationary law with finite mean queue length, a finite-node product-form open-network occupancy law with exact singleton mass and total mean occupancy under a supplied stable throughput witness satisfying the traffic equations, an exact finite Jackson fixed-point closure under spectral uniqueness plus a supplied nonnegative stable real traffic solution, a raw finite Jackson closure under the coarse `maxIncomingRoutingMass`/`minServiceRate` criterion, a finite-step Jackson envelope ladder `throughputEnvelopeApprox n` whose first instances are the global max-external/max-incoming bound, the nodewise bound $\lambda_i + \mathrm{incomingMass}_i \cdot \maxExternalArrival / (1-\maxIncomingRoutingMass)$, and the deeper second-order bound $\lambda_i + \sum_j \mathrm{localEnvelope}_j P_{j i}$, a descending-ladder theorem plus the explicit absolute-error certificate `throughputEnvelopeApprox n - α_spec ≤ throughputEnvelopeResidual n`, the matching lower-side certificate `α_spec - (trafficApprox n).toReal ≤ throughputEnvelopeResidual (n+1)`, a formal lower/upper bracket between lower real traffic iterates and upper Jackson envelope iterates, direct service certificates against that ladder, and the stronger closure that any certified stage of that ladder already instantiates the same finite-network product-form and `lintegral` balance laws, explicit state-dependent stationary and terminal queue-balance schemas with concrete vacation, retrial, reneging, and adaptive-routing family wrappers, a concrete bounded adaptive raw-ceiling witness, and a long-run Cesaro balance theorem for unbounded open-network sample paths under vanishing residual open age. Remaining future work is arbitrary exact probabilistic multiclass/open networks beyond the current bounded witnesses, constructive derivation of exact traffic fixed points beyond the current exact-witness-plus-ladder/residual Jackson family, automatic discovery of richer adaptive Lyapunov decompositions beyond the built-in minimum-slack/selector/weighted/service-slack/routing-pressure forms, and positive-recurrence proofs for unbounded open stochastic networks.
 
 **Semiotic and peace-theoretic scope.** The semiotic extension (§6.12, §15) and the peace/war/hope theorems (SemioticPeace.lean) are formal-structural results: they prove categorical coherence, thermodynamic monotonicity, and fixed-point existence within the monoidal framework. They are *not* validated by any of the five evidence gates below. The biological correspondences (§1) and physical structural mappings (§5, §6.12) are likewise post-hoc structural pattern-matching — we observe a system, fit fork/race/fold, and verify consistency — rather than predictive science. No prediction about a novel system has been made and tested. Falsifiable predictions from the topological framework are explicitly future work.
 
@@ -1901,8 +1857,7 @@ The children in the line never needed more hardware; they needed less waiting. I
 This framing is intended as an operational modeling lens for computation, not a replacement for physical theory.
 
 **The void.** A conspicuous silence runs through every section of this paper. Fork creates parallel paths. Race selects a winner. Fold merges results. And vent releases everything the fold could not preserve. Every section quantifies what is kept; none quantifies what is lost. The semiotic deficit $\Delta\beta =
-\beta_1(\text{thought}) - \beta_1(\text{speech})$ names that silence.
-`confusion_irreducibility` (SemioticPeace.lean) proves it is a topological invariant: for any channel where thought has more independent dimensions than speech has streams, the deficit is strictly positive and distinct semantic paths collide under the fold. The void is not the absence of structure. It is the *topological complement* of what articulation can carry — and it has three measurable properties. *Extent*: the deficit equals $\text{semanticPaths} - 1$, bounded and quantified (`semiotic_deficit_speech`). *Heat signature*: every non-trivial semiotic fold generates strictly positive Landauer heat (`confusion_generates_heat`). *Reducibility*: shared context monotonically deflates the deficit (`peace_context_reduces`), and sufficient context eliminates it entirely (`peace_sufficient_context`).
+\beta_1(\text{thought}) - \beta_1(\text{speech})$ names that silence. `confusion_irreducibility` (SemioticPeace.lean) proves it is a topological invariant: for any channel where thought has more independent dimensions than speech has streams, the deficit is strictly positive and distinct semantic paths collide under the fold. The void is not the absence of structure. It is the *topological complement* of what articulation can carry — and it has three measurable properties. *Extent*: the deficit equals $\text{semanticPaths} - 1$, bounded and quantified (`semiotic_deficit_speech`). *Heat signature*: every non-trivial semiotic fold generates strictly positive Landauer heat (`confusion_generates_heat`). *Reducibility*: shared context monotonically deflates the deficit (`peace_context_reduces`), and sufficient context eliminates it entirely (`peace_sufficient_context`).
 
 The void is therefore not a counsel of despair. It is an engineering surface. The same four operations that structure computation — fork, race, fold, vent — structure the deficit between persons. Fork: thought generates parallel semantic paths. Race: candidate phrasings compete. Fold: speech collapses them to one stream. Vent: nuance that cannot survive the fold is dropped. The companion tests mechanize every link: `semiotic_erasure` proves the pigeonhole collision, `semiotic_vent_nuance` proves the dropped paths equal the deficit, and `semiotic_moa_isomorphism` proves that a Mixture of Agents ensemble has exactly the same deficit structure as thought-to-speech — the loss in committee summarization is the same loss in conversation.
 
@@ -1929,10 +1884,8 @@ But the theory of peace was not invented here. DNA replication discovered it fir
 <figure>
 <p> </p>
 <figcaption>The Geometry of Failure Contains Hope.
-<strong>A.</strong> The semiotic deficit: thought (<span
-class="math inline"><em>β</em><sub>1</sub> = <em>k</em> − 1</span>) folds through a single articulation stream (<span class="math inline"><em>β</em><sub>1</sub> = 0</span>); vented paths fall into the void (<span class="math inline"><em>Δ</em><em>β</em> = <em>k</em> − 1</span>).
-<strong>B.</strong> Two trajectories diverge from the same initial
-deficit: war (cumulative Landauer heat, monotone increasing) versus peace (deficit converging to the fixed point under context accumulation). <strong>C.</strong> The <code>hope</code> theorem bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent. <strong>D.</strong> DNA replication as the original implementation: fork at origin, polymerase race, terminus fold, Okazaki vent, ligase as traced monoidal feedback operator, complete chromosome as fixed point.</figcaption>
+<strong>A.</strong> The semiotic deficit: thought (<span class="math inline"><em>β</em><sub>1</sub> = <em>k</em> − 1</span>) folds through a single articulation stream (<span class="math inline"><em>β</em><sub>1</sub> = 0</span>); vented paths fall into the void (<span class="math inline"><em>Δ</em><em>β</em> = <em>k</em> − 1</span>).
+<strong>B.</strong> Two trajectories diverge from the same initial deficit: war (cumulative Landauer heat, monotone increasing) versus peace (deficit converging to the fixed point under context accumulation). <strong>C.</strong> The <code>hope</code> theorem bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent. <strong>D.</strong> DNA replication as the original implementation: fork at origin, polymerase race, terminus fold, Okazaki vent, ligase as traced monoidal feedback operator, complete chromosome as fixed point.</figcaption>
 </figure>
 
 Within the finite DAG classes modeled in this paper, fork/race/fold + vent is sufficient.
@@ -1980,14 +1933,11 @@ The companion theorem `buley_frontier_codec_racing` proves the same shape for co
 
 Each shootoff is a substrate-specific projection of this frontier:
 
-- **Protocol:** HTTP/1.1 ($\beta_1 = 0$) wastes 31% of wire on
-framing. Aeon Flow ($\beta_1 = 94$) wastes 1.5%. The monotone decrease from 31% to 1.5% across HTTP/1.1 $\to$ HTTP/2 $\to$ HTTP/3 $\to$ Aeon Flow is the frontier.
+- **Protocol:** HTTP/1.1 ($\beta_1 = 0$) wastes 31% of wire on framing. Aeon Flow ($\beta_1 = 94$) wastes 1.5%. The monotone decrease from 31% to 1.5% across HTTP/1.1 $\to$ HTTP/2 $\to$ HTTP/3 $\to$ Aeon Flow is the frontier.
 
-- **Pipeline:** At Reynolds number $\text{Re} = 16$ (low diversity),
-idle fraction is 92%. At $\text{Re} = 0.1$ (high diversity), idle fraction is 7%. The curve is monotonically decreasing — the frontier again.
+- **Pipeline:** At Reynolds number $\text{Re} = 16$ (low diversity), idle fraction is 92%. At $\text{Re} = 0.1$ (high diversity), idle fraction is 7%. The curve is monotonically decreasing — the frontier again.
 
-- **Compression:** Across five corpus types, topology racing achieves
-100% win rate against both best-fixed and heuristic strategies. The gain ranges from 0.8% on homogeneous text to 46% on heterogeneous API telemetry — the cost of monoculture scales with the problem's intrinsic $\beta_1^*$.
+- **Compression:** Across five corpus types, topology racing achieves 100% win rate against both best-fixed and heuristic strategies. The gain ranges from 0.8% on homogeneous text to 46% on heterogeneous API telemetry — the cost of monoculture scales with the problem's intrinsic $\beta_1^*$.
 
 **Diagnostic application.** The frontier is not merely descriptive; it is a diagnostic tool. Given any fork/race/fold system, one can compute its diversity level $d$ and measured waste $w$, then check whether $(d, w)$ lies on the frontier. Systems below the frontier need diversification; systems on it are Pareto-optimal. The deficit $\Delta\beta = \beta_1^* - d$ is both the distance to the frontier and the lower bound on waste. Standard Pareto-analysis tools — dominance testing, efficiency frontiers, envelope computation — apply directly, because THM-AMERICAN-FRONTIER provides the monotonicity and boundary conditions that these tools require.
 
@@ -1995,131 +1945,91 @@ This makes diversity calculable rather than aspirational. When the deficit is po
 
 <figure>
 <p> </p>
-<figcaption>Figure 3. The American Frontier: diversity vs waste across
-three substrates. <strong>A.</strong> Protocol framing overhead on the microfrontend benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31%) to Aeon Flow (1.5%). <strong>B.</strong> Pipeline idle fraction vs Reynolds number for a 4-stage pipeline: laminar regime (high diversity, low waste) to turbulent regime (low diversity, high waste). <strong>C.</strong> Cost of monoculture: heuristic waste (topology gain %) across five corpus types ordered by content heterogeneity, showing that the penalty for non-diverse strategy scales with intrinsic <span class="math inline"><em>β</em><sub>1</sub><sup>*</sup></span>. All three panels are instantiations of THM-AMERICAN-FRONTIER (<code>AmericanFrontier.lean</code>): waste monotonically non-increasing in diversity, zero at
+<figcaption>Figure 3. The American Frontier: diversity vs waste across three substrates. <strong>A.</strong> Protocol framing overhead on the microfrontend benchmark (95 resources), monotonically decreasing from HTTP/1.1 (31%) to Aeon Flow (1.5%). <strong>B.</strong> Pipeline idle fraction vs Reynolds number for a 4-stage pipeline: laminar regime (high diversity, low waste) to turbulent regime (low diversity, high waste). <strong>C.</strong> Cost of monoculture: heuristic waste (topology gain %) across five corpus types ordered by content heterogeneity, showing that the penalty for non-diverse strategy scales with intrinsic <span class="math inline"><em>β</em><sub>1</sub><sup>*</sup></span>. All three panels are instantiations of THM-AMERICAN-FRONTIER (<code>AmericanFrontier.lean</code>): waste monotonically non-increasing in diversity, zero at
 <span class="math inline"><em>β</em><sub>1</sub> =
-<em>β</em><sub>1</sub><sup>*</sup></span>, positive
-below.</figcaption>
+<em>β</em><sub>1</sub><sup>*</sup></span>, positive below.</figcaption>
 </figure>
 
 ## References
 
-[1] A. Tero, S. Takagi, T. Saigusa, K. Ito, D. P. Bebber, M. D.
-Fricker, K. Yumiki, R. Kobayashi, T. Nakagaki, “Rules for Biologically Inspired Adaptive Network Design,” *Science*, 327(5964):439–442, 2010.
+[1] A. Tero, S. Takagi, T. Saigusa, K. Ito, D. P. Bebber, M. D. Fricker, K. Yumiki, R. Kobayashi, T. Nakagaki, “Rules for Biologically Inspired Adaptive Network Design,” *Science*, 327(5964):439–442, 2010.
 
-[2] T. W. Buley, “Aeon Pipelines: A Computation Topology Engine,”
-open-source implementation, 2026. https://forkracefold.com/content/pipeline-topology.test.ts.txt
+[2] T. W. Buley, “Aeon Pipelines: A Computation Topology Engine,” open-source implementation, 2026. https://forkracefold.com/content/pipeline-topology.test.ts.txt
 
-[3] D. Akita, I. Kunita, M. D. Fricker, S. Kuroda, K. Sato, T.
-Nakagaki, “Experimental Models for Murray’s Law,” *Journal of Physics D: Applied Physics*, 50(2):024001, 2016.
+[3] D. Akita, I. Kunita, M. D. Fricker, S. Kuroda, K. Sato, T. Nakagaki, “Experimental Models for Murray’s Law,” *Journal of Physics D: Applied Physics*, 50(2):024001, 2016.
 
-[4] J. Lobry, “Asymmetric Substitution Patterns in the Two DNA Strands
-of Bacteria,” *Molecular Biology and Evolution*, 13(5):660–665, 1996.
+[4] J. Lobry, “Asymmetric Substitution Patterns in the Two DNA Strands of Bacteria,” *Molecular Biology and Evolution*, 13(5):660–665, 1996.
 
-[5] G. S. Engel, T. R. Calhoun, E. L. Read, T.-K. Ahn, T. Mančal,
-Y.-C. Cheng, R. E. Blankenship, G. R. Fleming, “Evidence for Wavelike Energy Transfer Through Quantum Coherence in Photosynthetic Systems,” *Nature*, 446(7137):782–786, 2007.
+[5] G. S. Engel, T. R. Calhoun, E. L. Read, T.-K. Ahn, T. Mančal, Y.-C. Cheng, R. E. Blankenship, G. R. Fleming, “Evidence for Wavelike Energy Transfer Through Quantum Coherence in Photosynthetic Systems,” *Nature*, 446(7137):782–786, 2007.
 
 [6] J. D. C. Little, “A Proof for the Queuing Formula:
 $L = \lambda W$,” *Operations Research*, 9(3):383–387, 1961.
 
-[7] J. R. Jackson, “Jobshop-Like Queueing Systems,” *Management
-Science*, 10(1):131–142, 1963.
+[7] J. R. Jackson, “Jobshop-Like Queueing Systems,” *Management Science*, 10(1):131–142, 1963.
 
-[8] T. W. Buley, “Aeon Core Runtime (Flow + Compression) and Test
-Suite,” open-source implementation, 2026. https://github.com/affectively-ai/aeon
+[8] T. W. Buley, “Aeon Core Runtime (Flow + Compression) and Test Suite,” open-source implementation, 2026. https://github.com/affectively-ai/aeon
 
-[9] T. W. Buley, “Fork/Race/Fold Companion Tests,” reproducibility
-suite, 2026. https://github.com/affectively-ai/aeon/tree/main/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests
+[9] T. W. Buley, “Fork/Race/Fold Companion Tests,” reproducibility suite, 2026. https://github.com/affectively-ai/aeon/tree/main/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests
 
-[10] R. P. Feynman, A. R. Hibbs, “Quantum Mechanics and Path
-Integrals,” McGraw-Hill, 1965.
+[10] R. P. Feynman, A. R. Hibbs, “Quantum Mechanics and Path Integrals,” McGraw-Hill, 1965.
 
-[11] J. N. Bryngelson, J. D. Onuchic, N. D. Socci, P. G. Wolynes,
-“Funnels, Pathways, and the Energy Landscape of Protein Folding: A Synthesis,” *Proteins*, 21(3):167–195, 1995.
+[11] J. N. Bryngelson, J. D. Onuchic, N. D. Socci, P. G. Wolynes, “Funnels, Pathways, and the Energy Landscape of Protein Folding: A Synthesis,” *Proteins*, 21(3):167–195, 1995.
 
-[12] L. Lamport, *Specifying Systems: The TLA+ Language and Tools for
-Hardware and Software Engineers*, Addison-Wesley, 2002.
+[12] L. Lamport, *Specifying Systems: The TLA+ Language and Tools for Hardware and Software Engineers*, Addison-Wesley, 2002.
 
-[13] T. W. Buley, “Aeon Logic: Fork/Race/Fold Temporal Logic Engine
-and TLC/TLA Compatibility Layer,” open-source implementation, 2026. https://github.com/affectively-ai/aeon-logic
+[13] T. W. Buley, “Aeon Logic: Fork/Race/Fold Temporal Logic Engine and TLC/TLA Compatibility Layer,” open-source implementation, 2026. https://github.com/affectively-ai/aeon-logic
 
-[14] Lean FRO Team, “The Lean Theorem Prover (Lean 4),” software and
-documentation, 2026. https://lean-lang.org
+[14] Lean FRO Team, “The Lean Theorem Prover (Lean 4),” software and documentation, 2026. https://lean-lang.org
 
-[15] T. W. Buley, “Gnosis: A Topological Programming Language with
-Self-Hosting Compiler,” open-source implementation, 2026. https://github.com/affectively-ai/gnosis
+[15] T. W. Buley, “Gnosis: A Topological Programming Language with Self-Hosting Compiler,” open-source implementation, 2026. https://github.com/affectively-ai/gnosis
 
-[16] EURORDIS-Rare Diseases Europe, “The Diagnosis Odyssey of People
-Living with a Rare Disease: Survey overview,” Rare Barometer report, 2024. https://www.eurordis.org/wp-content/uploads/2024/05/Diagnosis-Survey-overview-1.pdf
+[16] EURORDIS-Rare Diseases Europe, “The Diagnosis Odyssey of People Living with a Rare Disease: Survey overview,” Rare Barometer report, 2024. https://www.eurordis.org/wp-content/uploads/2024/05/Diagnosis-Survey-overview-1.pdf
 
-[17] Depository Trust & Clearing Corporation (DTCC), “DTCC 2024 Annual
-Report,” 2025. (NSCC average daily transaction value: \$2.219 trillion) https://www.dtcc.com/annuals/2024/
+[17] Depository Trust & Clearing Corporation (DTCC), “DTCC 2024 Annual Report,” 2025. (NSCC average daily transaction value: \$2.219 trillion) https://www.dtcc.com/annuals/2024/
 
-[18] T. W. Buley, “Aeon Forge: Deployment and Routing Primitives with
-Bun-Tested Control-Plane Invariants,” open-source implementation, 2026. https://github.com/affectively-ai/aeon-forge
+[18] T. W. Buley, “Aeon Forge: Deployment and Routing Primitives with Bun-Tested Control-Plane Invariants,” open-source implementation, 2026. https://github.com/affectively-ai/aeon-forge
 
-[19] L. M. N. Wu, A. Williams, A. Delaney, D. L. Sherman, P. J.
-Brophy, “Increasing Internodal Distance in Myelinated Nerves Accelerates Nerve Conduction to a Flat Maximum,” *Current Biology*, 22(20):1957–1961, 2012.
+[19] L. M. N. Wu, A. Williams, A. Delaney, D. L. Sherman, P. J. Brophy, “Increasing Internodal Distance in Myelinated Nerves Accelerates Nerve Conduction to a Flat Maximum,” *Current Biology*, 22(20):1957–1961, 2012.
 
-[20] I. Tasaki, “The electro-saltatory transmission of the nerve
-impulse and the effect of narcosis upon the nerve fiber,” *American Journal of Physiology*, 127(2): 211–227, 1939.
+[20] I. Tasaki, “The electro-saltatory transmission of the nerve impulse and the effect of narcosis upon the nerve fiber,” *American Journal of Physiology*, 127(2): 211–227, 1939.
 
-[21] E. Voita, D. Talbot, F. Moiseev, R. Sennrich, I. Titov,
-“Analyzing Multi-Head Self-Attention: Specialized Heads Do the Heavy Lifting, the Rest Can Be Pruned,” *Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics*, 2019.
+[21] E. Voita, D. Talbot, F. Moiseev, R. Sennrich, I. Titov, “Analyzing Multi-Head Self-Attention: Specialized Heads Do the Heavy Lifting, the Rest Can Be Pruned,” *Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics*, 2019.
 
-[22] H. Edelsbrunner, D. Letscher, A. Zomorodian, “Topological
-Persistence and Simplification,” *Discrete & Computational Geometry*, 28:511–533, 2002.
+[22] H. Edelsbrunner, D. Letscher, A. Zomorodian, “Topological Persistence and Simplification,” *Discrete & Computational Geometry*, 28:511–533, 2002.
 
-[23] S. Mac Lane, “Natural Associativity and Commutativity,” *Rice
-University Studies*, 49(4): 28–46, 1963.
+[23] S. Mac Lane, “Natural Associativity and Commutativity,” *Rice University Studies*, 49(4): 28–46, 1963.
 
-[24] J. D. C. Little, S. C. Graves, “Little’s Law,” in *Building
-Intuition: Insights From Basic Operations Management Models and Principles*, Springer, 2008.
+[24] J. D. C. Little, S. C. Graves, “Little’s Law,” in *Building Intuition: Insights From Basic Operations Management Models and Principles*, Springer, 2008.
 
-[25] C. A. Petri, “Kommunikation mit Automaten,” doctoral
-dissertation, University of Bonn, 1962.
+[25] C. A. Petri, “Kommunikation mit Automaten,” doctoral dissertation, University of Bonn, 1962.
 
-[26] R. Milner, *Communicating and Mobile Systems: The Pi-Calculus*,
-Cambridge University Press, 1999.
+[26] R. Milner, *Communicating and Mobile Systems: The Pi-Calculus*, Cambridge University Press, 1999.
 
-[27] R. M. Tomasulo, “An Efficient Algorithm for Exploiting Multiple
-Arithmetic Units,” *IBM Journal of Research and Development*, 11(1):25–33, 1967.
+[27] R. M. Tomasulo, “An Efficient Algorithm for Exploiting Multiple Arithmetic Units,” *IBM Journal of Research and Development*, 11(1):25–33, 1967.
 
-[28] J. E. Smith, G. S. Sohi, “The Microarchitecture of Superscalar
-Processors,” *Proceedings of the IEEE*, 83(12):1609–1624, 1995.
+[28] J. E. Smith, G. S. Sohi, “The Microarchitecture of Superscalar Processors,” *Proceedings of the IEEE*, 83(12):1609–1624, 1995.
 
-[29] M. Castro, B. Liskov, “Practical Byzantine Fault Tolerance,”
-*OSDI*, 1999.
+[29] M. Castro, B. Liskov, “Practical Byzantine Fault Tolerance,” *OSDI*, 1999.
 
-[30] M. Yin, D. Malkhi, M. K. Reiter, G. Golan-Gueta, I. Abraham,
-“HotStuff: BFT Consensus with Linearity and Responsiveness,” *PODC*, 2019.
+[30] M. Yin, D. Malkhi, M. K. Reiter, G. Golan-Gueta, I. Abraham, “HotStuff: BFT Consensus with Linearity and Responsiveness,” *PODC*, 2019.
 
-[31] R. E. Blankenship, D. M. Tiede, J. Barber, G. W. Brudvig, G.
-Fleming, M. Ghirardi, M. Gunner, W. Junge, D. M. Kramer, A. Melis, T. A. Moore, A. L. Moore, J. V. Moser, D. G. Nocera, A. Nozik, D. R. Ort, W. W. Parson, R. C. Prince, R. T. Sayre, “Comparing Photosynthetic and Photovoltaic Efficiencies and Recognizing the Potential for Improvement,” *Science*, 332(6031):805–809, 2011.
+[31] R. E. Blankenship, D. M. Tiede, J. Barber, G. W. Brudvig, G. Fleming, M. Ghirardi, M. Gunner, W. Junge, D. M. Kramer, A. Melis, T. A. Moore, A. L. Moore, J. V. Moser, D. G. Nocera, A. Nozik, D. R. Ort, W. W. Parson, R. C. Prince, R. T. Sayre, “Comparing Photosynthetic and Photovoltaic Efficiencies and Recognizing the Potential for Improvement,” *Science*, 332(6031):805–809, 2011.
 
-[32] S. Balakrishnan, R. A. Bambara, “Okazaki Fragment Metabolism,”
-*Cold Spring Harbor Perspectives in Biology*, 5(2):a010173, 2013.
+[32] S. Balakrishnan, R. A. Bambara, “Okazaki Fragment Metabolism,” *Cold Spring Harbor Perspectives in Biology*, 5(2):a010173, 2013.
 
-[33] S. G. Waxman, “Determinants of Conduction Velocity in Myelinated
-Nerve Fibers,” *Muscle & Nerve*, 3(2):141–150, 1980.
+[33] S. G. Waxman, “Determinants of Conduction Velocity in Myelinated Nerve Fibers,” *Muscle & Nerve*, 3(2):141–150, 1980.
 
-[34] G. M. Amdahl, “Validity of the Single Processor Approach to
-Achieving Large-Scale Computing Capabilities,” *AFIPS Spring Joint Computer Conference*, 30:483–485, 1967.
+[34] G. M. Amdahl, “Validity of the Single Processor Approach to Achieving Large-Scale Computing Capabilities,” *AFIPS Spring Joint Computer Conference*, 30:483–485, 1967.
 
-[35] J. L. Gustafson, “Reevaluating Amdahl’s Law,” *Communications of
-the ACM*, 31(5):532–533, 1988.
+[35] J. L. Gustafson, “Reevaluating Amdahl’s Law,” *Communications of the ACM*, 31(5):532–533, 1988.
 
-[36] C. E. Shannon, “A Mathematical Theory of Communication,” *Bell
-System Technical Journal*, 27(3):379–423, 1948.
+[36] C. E. Shannon, “A Mathematical Theory of Communication,” *Bell System Technical Journal*, 27(3):379–423, 1948.
 
-[37] J. Dean, S. Ghemawat, “MapReduce: Simplified Data Processing on
-Large Clusters,” *OSDI*, 2004.
+[37] J. Dean, S. Ghemawat, “MapReduce: Simplified Data Processing on Large Clusters,” *OSDI*, 2004.
 
-[38] L. K. Grover, “A Fast Quantum Mechanical Algorithm for Database
-Search,” *Proceedings of the 28th Annual ACM Symposium on Theory of Computing (STOC)*, 212–219, 1996.
+[38] L. K. Grover, “A Fast Quantum Mechanical Algorithm for Database Search,” *Proceedings of the 28th Annual ACM Symposium on Theory of Computing (STOC)*, 212–219, 1996.
 
-[39] P. W. Shor, “Algorithms for Quantum Computation: Discrete
-Logarithms and Factoring,” *Proceedings of the 35th Annual Symposium on Foundations of Computer Science (FOCS)*, 124–134, 1994.
+[39] P. W. Shor, “Algorithms for Quantum Computation: Discrete Logarithms and Factoring,” *Proceedings of the 35th Annual Symposium on Foundations of Computer Science (FOCS)*, 124–134, 1994.
 
 ## Reproducibility
 
