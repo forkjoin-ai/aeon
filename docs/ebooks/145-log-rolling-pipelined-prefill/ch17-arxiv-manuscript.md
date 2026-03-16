@@ -523,6 +523,24 @@ This is consistent with published observations: GC-rich regions (which form more
 
 The implication for CRISPR design is direct: *compute $\sigma(\ell)$ for candidate target sites and rank by ascending topological complexity*. The site with the lowest $\beta_1(\ell) = 2 + \sigma(\ell)$ requires the least unwinding energy and should yield the highest editing efficiency. This is not a replacement for existing guide RNA scoring algorithms — it is a topological prior that those algorithms could incorporate. The Betti number at the target locus is a computable, sequence-derivable feature that captures the energetic cost of the topological surgery that CRISPR performs.
 
+**Proposition (PROP-GENOME-SELF-DESCRIBING).** The genome is a self-describing frame (§3.4) whose local Betti numbers encode its own editability map. No external information is required: the sequence alone determines $\sigma(\ell)$ at every locus, and therefore determines $E_{\text{unwind}}(\ell)$ and $\eta(\ell)$. The genome carries its own editing instructions in its topology.
+
+*Proof.* The self-describing frame concept (§3.4) requires that each frame carry its own coordinates in the covering space — `(stream_id, sequence)` — so that reassembly requires no external ordering. The genome satisfies this requirement: each locus $\ell$ is identified by its chromosomal coordinate (the `stream_id` is the chromosome, the `sequence` is the base-pair position), and the local topology at $\ell$ is fully determined by the nucleotide sequence in a window around $\ell$.
+
+Specifically, $\sigma(\ell)$ is computable from the sequence alone:
+
+1. **Hairpin detection**: a palindromic or near-palindromic subsequence within a window of $\ell$ forms a stem-loop. Each stem-loop contributes $+1$ to $\sigma(\ell)$. Detection requires only sequence complementarity — no experimental data.
+
+2. **G-quadruplex detection**: four runs of $\geq 3$ guanines separated by loops of 1-7 nucleotides within a window of $\ell$ form a G-quadruplex. Each G-quadruplex contributes $+3$ or more to $\sigma(\ell)$ (four stacked tetrads, each closing an independent cycle). Detection requires only pattern matching on the sequence.
+
+3. **Cruciform detection**: an inverted repeat within a window of $\ell$ can extrude into a four-way junction. Each cruciform contributes $+2$ to $\sigma(\ell)$. Detection requires only sequence symmetry analysis.
+
+Since $\sigma(\ell)$ is sequence-computable, and since COR-CRISPR-UNWINDING derives $E_{\text{unwind}}(\ell)$ and $\eta(\ell)$ from $\sigma(\ell)$ using only the axioms of §3.2 and §6.11, the entire editability map $\ell \mapsto \eta(\ell)$ is derivable from the genome sequence alone — *from itself*.
+
+This is the self-verification property (§10) applied to biology: the genome is a system that contains, in its own structure, the information needed to determine the difficulty of editing any part of itself. The Betti numbers are the metadata. The topology is the instruction set. The theory derives this without importing any biology beyond the base-pairing rules that define the simplicial complex — the rest follows from the axioms of homological algebra and the First Law. $\square$
+
+The practical consequence is a computational pipeline: sequence $\to$ secondary structure prediction $\to$ $\sigma(\ell)$ at each candidate locus $\to$ $\eta(\ell)$ ranking $\to$ optimal guide RNA selection. Each step is a deterministic computation on the sequence. The genome tells you where to cut it, if you read its topology.
+
 ### 3.3 Homotopy Equivalence
 
 Two computations are homotopy equivalent if they produce the same result through different topological paths. In a sequential pipeline, there is exactly one path – no homotopy is possible. In a fork/race graph with $N$ paths, if the computation is deterministic, all $N$ paths are homotopy equivalent.
