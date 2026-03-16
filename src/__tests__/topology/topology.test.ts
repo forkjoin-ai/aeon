@@ -86,6 +86,7 @@ describe('TopologyAnalyzer', () => {
       expect(report.deficit).toBeDefined();
       expect(report.deficit!.deficit).toBe(0);
       expect(report.deficit!.utilization).toBe(1.0);
+      expect(report.deficit!.assessment).toContain('Topology-matched');
       expect(report.deficit!.assessment).toContain('0 Bules');
     });
 
@@ -132,6 +133,7 @@ describe('TopologyAnalyzer', () => {
       const report = TopologyAnalyzer.analyze(graph);
 
       expect(report.deficit!.deficit).toBe(0);
+      expect(report.deficit!.assessment).toContain('Topology-matched');
       expect(report.deficit!.assessment).toContain('0 Bules');
     });
   });
@@ -296,6 +298,17 @@ describe('TopologySampler', () => {
     expect(report.meanBeta1).toBe(0);
     expect(report.meanUtilization).toBe(0);
     expect(report.meanDeficit).toBe(7);
+  });
+
+  it('uses topology-matched wording for fully matched runtime reports', () => {
+    const sampler = new TopologySampler({ intrinsicBeta1: 1 });
+
+    sampler.fork('req-1', ['left', 'right']);
+
+    const report = sampler.report();
+    expect(report.meanUtilization).toBe(1);
+    expect(report.assessment).toContain('Topology-matched');
+    expect(report.assessment).not.toContain('Optimal');
   });
 
   it('reset clears all state', () => {

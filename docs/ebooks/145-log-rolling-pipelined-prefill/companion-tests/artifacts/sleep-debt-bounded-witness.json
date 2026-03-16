@@ -1,0 +1,69 @@
+{
+  "label": "sleep-debt-bounded-witness-v1",
+  "constants": {
+    "maxCapacity": 5,
+    "recoveryQuota": 3,
+    "intrusionThreshold": 3
+  },
+  "aggregate": {
+    "fullRecoveryRestoresBaseline": true,
+    "partialRecoveryLeavesPositiveDebt": true,
+    "chronicTruncationEnablesIntrusion": true
+  },
+  "scenarios": [
+    {
+      "id": "full-recovery-baseline",
+      "description": "Recovery quota matches the total burden, so the next cycle starts debt-free at full service capacity.",
+      "sleepType": "full",
+      "wakeLoadAtSleep": 3,
+      "carriedDebtAtSleep": 0,
+      "recoveryQuota": 3,
+      "totalRecoveryDemand": 3,
+      "residualDebtAfterSleep": 0,
+      "effectiveCapacityNextWake": 5,
+      "nextWakeLoad": 1,
+      "intrusionThreshold": 3,
+      "intrusionEnabledNextWake": false,
+      "theoremRefs": [
+        "SleepDebt.full_recovery_clears_residual_debt",
+        "SleepDebt.full_recovery_restores_capacity"
+      ]
+    },
+    {
+      "id": "partial-recovery-residual-debt",
+      "description": "Recovery quota is too short to clear the wake burden, so positive debt carries into the next cycle and reduces capacity.",
+      "sleepType": "partial",
+      "wakeLoadAtSleep": 5,
+      "carriedDebtAtSleep": 0,
+      "recoveryQuota": 3,
+      "totalRecoveryDemand": 5,
+      "residualDebtAfterSleep": 2,
+      "effectiveCapacityNextWake": 3,
+      "nextWakeLoad": 1,
+      "intrusionThreshold": 3,
+      "intrusionEnabledNextWake": false,
+      "theoremRefs": [
+        "SleepDebt.partial_recovery_leaves_positive_debt",
+        "SleepDebt.partial_recovery_lowers_next_capacity"
+      ]
+    },
+    {
+      "id": "chronic-truncation-intrusion-risk",
+      "description": "Carried debt from an earlier truncated night combines with new wake burden; the second truncated recovery leaves debt at the intrusion threshold and keeps next-wake capacity depressed.",
+      "sleepType": "partial",
+      "wakeLoadAtSleep": 4,
+      "carriedDebtAtSleep": 2,
+      "recoveryQuota": 3,
+      "totalRecoveryDemand": 6,
+      "residualDebtAfterSleep": 3,
+      "effectiveCapacityNextWake": 2,
+      "nextWakeLoad": 2,
+      "intrusionThreshold": 3,
+      "intrusionEnabledNextWake": true,
+      "theoremRefs": [
+        "SleepDebt.repeated_truncation_preserves_debt",
+        "SleepDebt.debt_at_or_above_intrusion_threshold_enables_intrusion"
+      ]
+    }
+  ]
+}

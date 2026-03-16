@@ -94,7 +94,7 @@ export declare class TopologyAnalyzer {
     /**
      * Quick deficit check — just the number, in Bules.
      * Returns Δβ = intrinsicBeta1 - actualBeta1.
-     * 0 Bules = optimal. >0 Bules = wasted parallelism.
+     * 0 Bules = topology-matched. >0 Bules = wasted parallelism.
      * Negative means the system has MORE parallelism than needed (over-forking).
      */
     static deficit(graph: ComputationGraph, intrinsicBeta1: number): number;

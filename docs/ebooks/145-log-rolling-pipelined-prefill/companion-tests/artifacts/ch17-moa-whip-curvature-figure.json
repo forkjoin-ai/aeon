@@ -1,0 +1,33 @@
+{
+  "label": "ch17-moa-whip-curvature-figure-v1",
+  "sourceLabel": "ch17-moa-topology-figure-v1",
+  "primitive": "StructuredMoA",
+  "sparseTopologyPath": "/Users/buley/Documents/Code/emotions/open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
+  "stages": 4,
+  "chunks": 2,
+  "blocks": 4,
+  "activeBlocks": 2,
+  "headsPerBlock": 4,
+  "activeHeadsPerLiveBlock": 2,
+  "activeBlockLabels": [
+    "blk A",
+    "blk B"
+  ],
+  "suppressedBlockLabels": [
+    "blk C",
+    "blk D"
+  ],
+  "activeHeadLabels": [
+    "h1",
+    "h2"
+  ],
+  "suppressedHeadLabels": [
+    "h3",
+    "h4"
+  ],
+  "curvatureView": {
+    "outerEnvelopeLabel": "curved whip envelope",
+    "innerEnvelopeLabel": "inner whip",
+    "foldSnapLabel": "outer whip snap"
+  }
+}

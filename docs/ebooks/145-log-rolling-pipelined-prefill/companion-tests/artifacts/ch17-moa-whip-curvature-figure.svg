@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="960" viewBox="0 0 1360 960" role="img" aria-labelledby="title desc">
+<title id="title">Chapter 17 MoA whip curvature figure</title>
+<desc id="desc">Supplemental artifact-generated MoA architecture figure that bends the sparse StructuredMoA paths into a wraparound whip envelope around the routed blocks.</desc>
+<defs><marker id="arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/></marker><marker id="arrow-suppressed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker><marker id="arrow-guide" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c2410c"/></marker></defs>
+<rect width="1360" height="960" fill="#f3efe5"/>
+<rect x="22" y="22" width="1316" height="916" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>
+<rect x="52" y="142" width="1256" height="770" rx="24" fill="#fffdfa" stroke="#d6d3c7"/>
+<text x="680" y="72" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="34" font-weight="700" fill="#1f2937">Whip-Wrapped StructuredMoA</text>
+<text x="680" y="102" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="17" font-weight="400" fill="#475569">Supplemental curvature view of the sparse 2-of-4 MoA architecture</text>
+<text x="1280" y="176" text-anchor="end" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#64748b">source ch17-moa-topology-figure-v1</text>
+<path d="M 654 356 C 458 344 336 452 338 654 C 344 722 420 766 610 716" fill="none" stroke="#f59e0b" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.18"/>
+<path d="M 706 356 C 902 344 1024 452 1022 654 C 1016 722 940 766 750 716" fill="none" stroke="#f59e0b" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" opacity="0.18"/>
+<path d="M 390 244 C 502 178 860 178 970 244" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.14"/>
+<path d="M 356 670 C 452 814 908 814 1004 670" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.12"/>
+<rect x="121.99999999999999" y="282.5" width="196.00000000000003" height="35" rx="18" ry="18" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
+<text x="220" y="304.2" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="15" font-weight="400" fill="#92400e">curved whip envelope</text>
+<path d="M 305 300 C 326 298 340 286 350 270" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.72"/>
+<circle cx="680" cy="206" r="15" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<text x="680" y="244" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#334155">input</text>
+<circle cx="680" cy="278" r="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<text x="680" y="318" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#1d4ed8">outer rot</text>
+<circle cx="680" cy="352" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="680" y="392" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#7c2d12">outer router</text>
+<path d="M 680 221 C 672 248 672 244 680 262" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
+<path d="M 680 294 C 692 328 692 312 680 336" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
+<rect x="349.84301395927935" y="334.5" width="184" height="176" rx="18" ry="18" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
+<text x="441.84301395927935" y="362.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk A</text>
+<circle cx="393.84301395927935" cy="378.5" r="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<circle cx="489.84301395927935" cy="378.5" r="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="393.84301395927935" y="411.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#1d4ed8">inner rot</text>
+<text x="489.84301395927935" y="411.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner router</text>
+<path d="M 405.84301395927935 378.5 C 423.84301395927935 352.5 459.84301395927935 352.5 477.84301395927935 378.5" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
+<circle cx="387.34084195369667" cy="454.33716831288876" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="387.34084195369667" y="459.33716831288876" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
+<path d="M 489.84301395927935 390.5 C 477.84301395927935 428.33716831288876 399.34084195369667 426.33716831288876 387.34084195369667 441.33716831288876" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<path d="M 387.34084195369667 467.33716831288876 C 387.34084195369667 484.33716831288876 423.84301395927935 448.5 441.84301395927935 456.5" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<circle cx="387.34084195369667" cy="414.6628316871112" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="387.34084195369667" y="419.6628316871112" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h2</text>
+<path d="M 489.84301395927935 390.5 C 477.84301395927935 388.6628316871112 399.34084195369667 386.6628316871112 387.34084195369667 401.6628316871112" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<path d="M 387.34084195369667 427.6628316871112 C 387.34084195369667 444.6628316871112 423.84301395927935 448.5 441.84301395927935 456.5" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<circle cx="412.84301395927935" cy="384.2705265805026" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="412.84301395927935" y="389.2705265805026" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h3</text>
+<path d="M 489.84301395927935 390.5 C 477.84301395927935 358.2705265805026 424.84301395927935 356.2705265805026 412.84301395927935 371.2705265805026" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 412.84301395927935 397.2705265805026 C 412.84301395927935 414.2705265805026 423.84301395927935 448.5 441.84301395927935 456.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="451.9146082639613" cy="377.3811503252919" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="451.9146082639613" y="382.3811503252919" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h4</text>
+<path d="M 489.84301395927935 390.5 C 477.84301395927935 351.3811503252919 463.9146082639613 349.3811503252919 451.9146082639613 364.3811503252919" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 451.9146082639613 390.3811503252919 C 451.9146082639613 407.3811503252919 459.84301395927935 448.5 441.84301395927935 456.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="441.84301395927935" cy="472.5" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="441.84301395927935" y="512.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
+<path d="M 680 368 C 680 424 441.84301395927935 280.5 441.84301395927935 334.5" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<rect x="826.1569860407207" y="334.5" width="184" height="176" rx="18" ry="18" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
+<text x="918.1569860407207" y="362.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk B</text>
+<circle cx="870.1569860407207" cy="378.5" r="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<circle cx="966.1569860407207" cy="378.5" r="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="870.1569860407207" y="411.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#1d4ed8">inner rot</text>
+<text x="966.1569860407207" y="411.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner router</text>
+<path d="M 882.1569860407207 378.5 C 900.1569860407207 352.5 936.1569860407207 352.5 954.1569860407207 378.5" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
+<circle cx="863.654814035138" cy="454.33716831288876" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="863.654814035138" y="459.33716831288876" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
+<path d="M 966.1569860407207 390.5 C 954.1569860407207 428.33716831288876 875.654814035138 426.33716831288876 863.654814035138 441.33716831288876" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<path d="M 863.654814035138 467.33716831288876 C 863.654814035138 484.33716831288876 900.1569860407207 448.5 918.1569860407207 456.5" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<circle cx="863.654814035138" cy="414.6628316871112" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="863.654814035138" y="419.6628316871112" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h2</text>
+<path d="M 966.1569860407207 390.5 C 954.1569860407207 388.6628316871112 875.654814035138 386.6628316871112 863.654814035138 401.6628316871112" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<path d="M 863.654814035138 427.6628316871112 C 863.654814035138 444.6628316871112 900.1569860407207 448.5 918.1569860407207 456.5" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<circle cx="889.1569860407207" cy="384.2705265805026" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="889.1569860407207" y="389.2705265805026" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h3</text>
+<path d="M 966.1569860407207 390.5 C 954.1569860407207 358.2705265805026 901.1569860407207 356.2705265805026 889.1569860407207 371.2705265805026" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 889.1569860407207 397.2705265805026 C 889.1569860407207 414.2705265805026 900.1569860407207 448.5 918.1569860407207 456.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="928.2285803454026" cy="377.3811503252919" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="928.2285803454026" y="382.3811503252919" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h4</text>
+<path d="M 966.1569860407207 390.5 C 954.1569860407207 351.3811503252919 940.2285803454026 349.3811503252919 928.2285803454026 364.3811503252919" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 928.2285803454026 390.3811503252919 C 928.2285803454026 407.3811503252919 936.1569860407207 448.5 918.1569860407207 456.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="918.1569860407207" cy="472.5" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="918.1569860407207" y="512.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
+<path d="M 680 368 C 680 424 918.1569860407207 280.5 918.1569860407207 334.5" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<rect x="826.1569860407205" y="609.5000000000001" width="184" height="176" rx="18" ry="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
+<text x="918.1569860407205" y="637.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk C</text>
+<circle cx="870.1569860407205" cy="653.5000000000001" r="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<circle cx="966.1569860407205" cy="653.5000000000001" r="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="870.1569860407205" y="686.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#1d4ed8">inner rot</text>
+<text x="966.1569860407205" y="686.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner router</text>
+<path d="M 882.1569860407205 653.5000000000001 C 900.1569860407205 627.5000000000001 936.1569860407205 627.5000000000001 954.1569860407205 653.5000000000001" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
+<circle cx="863.6548140351379" cy="729.3371683128889" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="863.6548140351379" y="734.3371683128889" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h1</text>
+<path d="M 966.1569860407205 665.5000000000001 C 954.1569860407205 703.3371683128889 875.6548140351379 701.3371683128889 863.6548140351379 716.3371683128889" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 863.6548140351379 742.3371683128889 C 863.6548140351379 759.3371683128889 900.1569860407205 723.5000000000001 918.1569860407205 731.5000000000001" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="863.6548140351379" cy="689.6628316871113" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="863.6548140351379" y="694.6628316871113" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h2</text>
+<path d="M 966.1569860407205 665.5000000000001 C 954.1569860407205 663.6628316871113 875.6548140351379 661.6628316871113 863.6548140351379 676.6628316871113" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 863.6548140351379 702.6628316871113 C 863.6548140351379 719.6628316871113 900.1569860407205 723.5000000000001 918.1569860407205 731.5000000000001" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="889.1569860407205" cy="659.2705265805026" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="889.1569860407205" y="664.2705265805026" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h3</text>
+<path d="M 966.1569860407205 665.5000000000001 C 954.1569860407205 633.2705265805026 901.1569860407205 631.2705265805026 889.1569860407205 646.2705265805026" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 889.1569860407205 672.2705265805026 C 889.1569860407205 689.2705265805026 900.1569860407205 723.5000000000001 918.1569860407205 731.5000000000001" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="928.2285803454025" cy="652.3811503252921" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="928.2285803454025" y="657.3811503252921" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h4</text>
+<path d="M 966.1569860407205 665.5000000000001 C 954.1569860407205 626.3811503252921 940.2285803454025 624.3811503252921 928.2285803454025 639.3811503252921" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 928.2285803454025 665.3811503252921 C 928.2285803454025 682.3811503252921 936.1569860407205 723.5000000000001 918.1569860407205 731.5000000000001" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="918.1569860407205" cy="747.5000000000001" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="918.1569860407205" y="787.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
+<path d="M 680 368 C 680 424 918.1569860407205 555.5000000000001 918.1569860407205 609.5000000000001" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<rect x="349.84301395927935" y="609.5" width="184" height="176" rx="18" ry="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
+<text x="441.84301395927935" y="637.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk D</text>
+<circle cx="393.84301395927935" cy="653.5" r="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<circle cx="489.84301395927935" cy="653.5" r="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="393.84301395927935" y="686.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#1d4ed8">inner rot</text>
+<text x="489.84301395927935" y="686.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner router</text>
+<path d="M 405.84301395927935 653.5 C 423.84301395927935 627.5 459.84301395927935 627.5 477.84301395927935 653.5" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
+<circle cx="387.34084195369667" cy="729.3371683128888" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="387.34084195369667" y="734.3371683128888" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h1</text>
+<path d="M 489.84301395927935 665.5 C 477.84301395927935 703.3371683128888 399.34084195369667 701.3371683128888 387.34084195369667 716.3371683128888" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 387.34084195369667 742.3371683128888 C 387.34084195369667 759.3371683128888 423.84301395927935 723.5 441.84301395927935 731.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="387.34084195369667" cy="689.6628316871112" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="387.34084195369667" y="694.6628316871112" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h2</text>
+<path d="M 489.84301395927935 665.5 C 477.84301395927935 663.6628316871112 399.34084195369667 661.6628316871112 387.34084195369667 676.6628316871112" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 387.34084195369667 702.6628316871112 C 387.34084195369667 719.6628316871112 423.84301395927935 723.5 441.84301395927935 731.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="412.84301395927935" cy="659.2705265805025" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="412.84301395927935" y="664.2705265805025" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h3</text>
+<path d="M 489.84301395927935 665.5 C 477.84301395927935 633.2705265805025 424.84301395927935 631.2705265805025 412.84301395927935 646.2705265805025" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 412.84301395927935 672.2705265805025 C 412.84301395927935 689.2705265805025 423.84301395927935 723.5 441.84301395927935 731.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="451.9146082639613" cy="652.381150325292" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="451.9146082639613" y="657.381150325292" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h4</text>
+<path d="M 489.84301395927935 665.5 C 477.84301395927935 626.381150325292 463.9146082639613 624.381150325292 451.9146082639613 639.381150325292" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 451.9146082639613 665.381150325292 C 451.9146082639613 682.381150325292 459.84301395927935 723.5 441.84301395927935 731.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="441.84301395927935" cy="747.5" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="441.84301395927935" y="787.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
+<path d="M 680 368 C 680 424 441.84301395927935 555.5 441.84301395927935 609.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="680" cy="678" r="18" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="680" y="720" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#7c2d12">outer whip snap</text>
+<path d="M 441.84301395927935 488.5 C 441.84301395927935 520.5 594 618 680 660" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<path d="M 918.1569860407207 488.5 C 918.1569860407207 520.5 766 618 680 660" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
+<path d="M 918.1569860407205 763.5000000000001 C 918.1569860407205 795.5000000000001 766 618 680 660" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<path d="M 441.84301395927935 763.5 C 441.84301395927935 795.5 594 618 680 660" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="680" cy="772" r="15" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<text x="680" y="808" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#334155">output</text>
+<path d="M 680 696 C 680 730 680 716 680 757" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
+<rect x="202" y="818" width="956" height="66" rx="18" ry="18" fill="#fffdf8" stroke="#d6d3c7" stroke-width="2"/>
+<text x="680" y="840" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="15" font-weight="400" fill="#475569"><tspan x="680" dy="0">The sparse path family now reads as a curved enclosure:</tspan><tspan x="680" dy="18">outer routing wraps around the blocks, and each block folds through an inner whip;</tspan><tspan x="680" dy="18">the outer whip snaps the live paths back to one output.</tspan></text>
+<circle cx="442" cy="900" r="10" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="462" y="905" text-anchor="start" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#334155">solid = live routed path</text>
+<circle cx="780" cy="900" r="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="800" y="905" text-anchor="start" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#334155">dashed = suppressed sparse path</text>
+</svg>

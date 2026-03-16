@@ -6,22 +6,22 @@
       "label": "Manuscript draft",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md",
-      "sizeBytes": 186611,
-      "sha256": "c06fd7467f2ebaec868269a52243b92c8e78853af422689f70ad425273ac5ad3"
+      "sizeBytes": 216798,
+      "sha256": "20d9271bd4a43eee53eb615334ef38c7ad2b9863bac2f6a7b42ca4649d25498d"
     },
     {
       "label": "Companion README",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md",
-      "sizeBytes": 22445,
-      "sha256": "acf62dd429676745777d24fc4c293fb9a6d852fc69c0ff1f35403df8daa09f72"
+      "sizeBytes": 38779,
+      "sha256": "21bcf78cfd32b4fa1de3e307aa2b43df3dac49d0cfb17075559841638a3ea105"
     },
     {
       "label": "Evidence workflow",
       "category": "workflow",
       "path": ".github/workflows/ch17-evidence.yml",
-      "sizeBytes": 1903,
-      "sha256": "703bafe452d44ee4678900b53f3e81c62011f904ab34e646e121aabad3bf22ff"
+      "sizeBytes": 1945,
+      "sha256": "737235df866defea29f4440f1cd5bcd6a065c776b51846472090ae21b653019f"
     },
     {
       "label": "Quantum ablation artifact",
@@ -52,6 +52,13 @@
       "sha256": "1462b8d8588b534b4eac6fa655684a8aee903402f377f0f8aa6b1eaeef423071"
     },
     {
+      "label": "Gnosis near-control artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/gnosis-near-control-sweep.json",
+      "sizeBytes": 158354,
+      "sha256": "8ddb8a42708867c0cab816e29cc9f3a1487abe8b6cd6721c3a83324ddcfe171e"
+    },
+    {
       "label": "Gnosis regime-sweep artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/gnosis-fold-boundary-regime-sweep.json",
@@ -71,6 +78,13 @@
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/gnosis-moe-routing-benchmark.json",
       "sizeBytes": 16896,
       "sha256": "81887e82d84566e6792443a8dcda8c6d18e5c21ed396c15439750108502ba42e"
+    },
+    {
+      "label": "Gnosis MoA evidence artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/gnosis-moa-transformer-evidence-benchmark.json",
+      "sizeBytes": 11289,
+      "sha256": "e174d817f9a298b21ca90b351fd13cfb0da1db525a5892b1e9da547b601b727b"
     },
     {
       "label": "Formal witness artifact",
@@ -101,18 +115,102 @@
       "sha256": "d39d0c1e2199a12c84fc23a3c9a9742943f4a5958cbd569adb17300f2e80e961"
     },
     {
+      "label": "Sleep-debt witness artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/sleep-debt-bounded-witness.json",
+      "sizeBytes": 2369,
+      "sha256": "46b46a5b2a798df4a7109ea78785f6fb39b7c71c27887c0f9ca8d8ff0897bd53"
+    },
+    {
+      "label": "Sleep-debt schedule-threshold artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/sleep-debt-schedule-threshold-witness.json",
+      "sizeBytes": 1661,
+      "sha256": "5189585fbb7ef29164d545e69b0a0bb709f2df32505f52e1fe2fefbac71b31ab"
+    },
+    {
+      "label": "Sleep-debt weighted-threshold artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/sleep-debt-weighted-threshold-witness.json",
+      "sizeBytes": 2532,
+      "sha256": "5bee72667a4f0c8a4e32c8486a51e0b2ad6b82436314ff977838821f147c6363"
+    },
+    {
+      "label": "Gate 1 figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate1-wallclock-figure.svg",
+      "sizeBytes": 21242,
+      "sha256": "f8b506721147154d5c2777e02ce965d8a1572bb80e23da5c431c2e1b8241a5fd"
+    },
+    {
+      "label": "Gate 2 figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate2-protocol-corpus-figure.svg",
+      "sizeBytes": 26728,
+      "sha256": "9638c1fef5af41ac261a2b4af2b3d8d6c55574e6cc44151e541c27a42518e704"
+    },
+    {
+      "label": "Gate 3 figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate3-compression-corpus-figure.svg",
+      "sizeBytes": 12432,
+      "sha256": "16f4e241c428be1e7e96b1efdbd071a3edd4121565f25ddba99d120cb1cf8e48"
+    },
+    {
+      "label": "Gate 4 figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate4-rqr-holdout-figure.svg",
+      "sizeBytes": 15011,
+      "sha256": "f6559ce3f4fec6066c696ee8115f8e60b80ac2224445deed63b1815d67bdac95"
+    },
+    {
+      "label": "Gate 5 figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate5-bio-effect-size-figure.svg",
+      "sizeBytes": 9107,
+      "sha256": "e987b5b8ffa32db48a782208d5404c46360205088772237e3dfe4a2e875749ca"
+    },
+    {
+      "label": "Inverted-scaling figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.svg",
+      "sizeBytes": 17008,
+      "sha256": "624144e98f4f7e15ad92b89c5ae96486332672d0413060f8298216040c2eb24d"
+    },
+    {
       "label": "Figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-correspondence-boundary-figure.svg",
-      "sizeBytes": 14208,
-      "sha256": "360d4b9a0db0d9a6da13874703e0007f1412a984d90b248b679b42bfe1d4a679"
+      "sizeBytes": 14294,
+      "sha256": "7ebd637af96bbbb0c0e4c8af009992b03f8fe787ed216a04b8bdc7e02fffc6c9"
     },
     {
       "label": "Expansion figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-boundary-expansion-figure.svg",
-      "sizeBytes": 13340,
-      "sha256": "7c3479085e73718621b2c12ae6d1b88f8367539631013bcb04dbb784a64940e7"
+      "sizeBytes": 17944,
+      "sha256": "986a40e631774214608ddd5658e8d709c9db6ed0a55342794b4ee919e08cb72d"
+    },
+    {
+      "label": "MoA topology figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-topology-figure.svg",
+      "sizeBytes": 34656,
+      "sha256": "11550fd43918b07938d50b816b0967fdf6c9e58f1dd61cbff3581141c1776889"
+    },
+    {
+      "label": "MoA whip-curvature figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-whip-curvature-figure.svg",
+      "sizeBytes": 27472,
+      "sha256": "b70a3880946e0a9a6aa4f3ee5ffe73af738854201ffd98cfac79827266d44518"
+    },
+    {
+      "label": "MoA figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-transformer-figure.svg",
+      "sizeBytes": 7481,
+      "sha256": "624950d2fbf6f6427352d307731f5f9ac9c1f6d4ea10bf88173537992fe5117d"
     },
     {
       "label": "Replication-pack script",
@@ -122,11 +220,60 @@
       "sha256": "6f4a7adaa41f29430d08851aab7410fc63abe51502cc6b153734a45513030e58"
     },
     {
+      "label": "Gate 1 figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate1-wallclock-figure.ts",
+      "sizeBytes": 3861,
+      "sha256": "75e564d4428a0e14dce5802041d9de61d42bdb5c3f5c63f269c8ea1755c91705"
+    },
+    {
+      "label": "Gate 2 figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate2-protocol-corpus-figure.ts",
+      "sizeBytes": 4065,
+      "sha256": "e01efaab280da2538f178616e1651bafedc6586ccc7e30c821cd97eeba49e780"
+    },
+    {
+      "label": "Gate 3 figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate3-compression-corpus-figure.ts",
+      "sizeBytes": 4081,
+      "sha256": "01539f7d52da32903ea1f03cab0fce0fa278fc44a38c020d361605b7b7957e61"
+    },
+    {
+      "label": "Gate 4 figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate4-rqr-holdout-figure.ts",
+      "sizeBytes": 3858,
+      "sha256": "7fa9def59f1ca2fedcce690ebe33fa5ef2a5c696270fc3c29f1423bb6ba8b514"
+    },
+    {
+      "label": "Gate 5 figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate5-bio-effect-size-figure.ts",
+      "sizeBytes": 3966,
+      "sha256": "1b171b270a75d414ea3ae96913f5f228cd04386e30066b0d14d5e9859b88c4ea"
+    },
+    {
+      "label": "Inverted-scaling figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-inverted-scaling-reynolds-figure.ts",
+      "sizeBytes": 3830,
+      "sha256": "0135cd5970361bc99a74646d84506b2009d70a2a7daf14eda332c21bab5e1fee"
+    },
+    {
       "label": "Negative-controls script",
       "category": "script",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gnosis-negative-controls-benchmark.ts",
       "sizeBytes": 2735,
       "sha256": "db7d2326aece58a6ddb0444d6551d02e64eb1e88a57a705cefdc48a34ea62fe8"
+    },
+    {
+      "label": "Near-control script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gnosis-near-control-sweep-benchmark.ts",
+      "sizeBytes": 2864,
+      "sha256": "5dc3d08d061694a544d197c3a6e309f73105c5bb3052f2820571704268a759d0"
     },
     {
       "label": "Regime-sweep script",
@@ -141,6 +288,13 @@
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gnosis-adversarial-controls-benchmark.ts",
       "sizeBytes": 2875,
       "sha256": "019884b3ccf6a92e0daddec7fd2c5561bdf9feeee32cd42a3601b2f369902fac"
+    },
+    {
+      "label": "MoA evidence script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/gnosis-moa-transformer-evidence-benchmark.ts",
+      "sizeBytes": 3946,
+      "sha256": "53f7820db5f78b2570844a1fd8cb2f9ca553436683dfd5aa12e5a9b1273cf4e8"
     },
     {
       "label": "Formal witness script",
@@ -171,11 +325,53 @@
       "sha256": "e5d04297716175f59321fca1ec9fa60c30bb3ab27180f3865a90ef31032bbd07"
     },
     {
+      "label": "Sleep-debt witness script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/sleep-debt-bounded-witness.ts",
+      "sizeBytes": 2688,
+      "sha256": "304e812f4fb9648c07bcc5078d61202e3df4881e0f108d486bd8c77d981c59a6"
+    },
+    {
+      "label": "Sleep-debt schedule-threshold script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/sleep-debt-schedule-threshold-witness.ts",
+      "sizeBytes": 2751,
+      "sha256": "7b354ca7670b94f6c93c2cb71f416b0033028e2d4f64857d48163785404097b7"
+    },
+    {
+      "label": "Sleep-debt weighted-threshold script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/sleep-debt-weighted-threshold-witness.ts",
+      "sizeBytes": 2818,
+      "sha256": "ec48bb41a0a7161fc2e474bd5307839848256d67d7199bf222d76b4ef332c863"
+    },
+    {
       "label": "Expansion figure script",
       "category": "script",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-boundary-expansion-figure.ts",
-      "sizeBytes": 4074,
-      "sha256": "0906d94aed9ce0d4073cbf905b1513e8c70abf1279d67a77a0f3d9ac2316079c"
+      "sizeBytes": 4625,
+      "sha256": "ff2e2671e2ad1cbc6b327b18dfca5cee52f5f08e929c0d798bef14dc4c3a932f"
+    },
+    {
+      "label": "MoA topology figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-topology-figure.ts",
+      "sizeBytes": 3877,
+      "sha256": "ffba9267b833a329981ddbdcf8da08e3a3d939756394b5f8de91aa5a26c57bd3"
+    },
+    {
+      "label": "MoA whip-curvature figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-whip-curvature-figure.ts",
+      "sizeBytes": 4042,
+      "sha256": "07e71ba5e3267d73ecf0dd230d713cb057788cde6b8d2d054e878d4e2b44d77c"
+    },
+    {
+      "label": "MoA figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-transformer-figure.ts",
+      "sizeBytes": 4091,
+      "sha256": "cebeb2a7fac4458a6b216b4114970f719b3139853259fdd29132315e4f63cb29"
     },
     {
       "label": "External replication script",
@@ -209,8 +405,57 @@
       "label": "Theorem ledger",
       "category": "formal",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md",
-      "sizeBytes": 38807,
-      "sha256": "cb5cd82e154cd1ae4fdf8c0d26caf5f9213e7867b305f44e1f6150a2bb8dfa75"
+      "sizeBytes": 121574,
+      "sha256": "cac57c587c8a7747933cfdbfc9a9e847735254568903ef882ce32a9fdb928ef8"
+    },
+    {
+      "label": "Gnosis theorem workspace",
+      "category": "formal",
+      "path": "open-source/gnosis/GnosisProofs.lean",
+      "sizeBytes": 119636,
+      "sha256": "26449307d4054b231df16b0347b4cd2f8243653aa0cdc0c2beba7630453cbe43"
+    },
+    {
+      "label": "Sleep-debt TLA+ model",
+      "category": "formal",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebt.tla",
+      "sizeBytes": 3203,
+      "sha256": "e99b5ea2e86101aa515b081686c02b79bf08b6c54f2748c5673732a97f177088"
+    },
+    {
+      "label": "Sleep-debt schedule-threshold TLA+ model",
+      "category": "formal",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebtScheduleThreshold.tla",
+      "sizeBytes": 1615,
+      "sha256": "ac8a4a88565fafabe5480fcb4a26e8a0f7c7048943c576799b853c96cb65ee78"
+    },
+    {
+      "label": "Sleep-debt weighted-threshold TLA+ model",
+      "category": "formal",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebtWeightedThreshold.tla",
+      "sizeBytes": 2034,
+      "sha256": "ae0cac6f4b4b7668f68bff0e9c05832e6dbbbb547d0e95846121d035c34a6814"
+    },
+    {
+      "label": "Sleep-debt Lean theorem surface",
+      "category": "formal",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebt.lean",
+      "sizeBytes": 3101,
+      "sha256": "10e47394008e685ab791418b22ffea542188a6d2ddca0afb26e7231136506afb"
+    },
+    {
+      "label": "Sleep-debt schedule-threshold Lean theorem surface",
+      "category": "formal",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtSchedule.lean",
+      "sizeBytes": 3188,
+      "sha256": "bcb9db064bdf32d84dcd6b49b29c9aad65fdbbdaa76a16b88b0e751354f7d74a"
+    },
+    {
+      "label": "Sleep-debt weighted-threshold Lean theorem surface",
+      "category": "formal",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtWeightedSchedule.lean",
+      "sizeBytes": 4491,
+      "sha256": "4a8c96e9bfdb7207b28ad721386336837ab2d66fff2261423378ee62206ccc4f"
     },
     {
       "label": "Affine benchmark topology suite",
@@ -225,9 +470,23 @@
       "path": "open-source/gnosis/examples/benchmarks/moe-routing.test.gg",
       "sizeBytes": 472,
       "sha256": "282621a787b783cfde5dceaba5cad909de0824ac9f5989b51a50a13e88671a2d"
+    },
+    {
+      "label": "MoA benchmark topology suite",
+      "category": "topology",
+      "path": "open-source/gnosis/examples/benchmarks/moa-transformer.test.gg",
+      "sizeBytes": 375,
+      "sha256": "afbf38a2956103adf958d9dc231ee164777713a303db2b0475e843c2fad4a13e"
+    },
+    {
+      "label": "StructuredMoA sparse topology",
+      "category": "topology",
+      "path": "open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg",
+      "sizeBytes": 590,
+      "sha256": "8509bfd80a9f4358f90eb7fcd341b741e21774b1835bf59410f276ab43b41940"
     }
   ],
-  "entryCount": 32,
-  "artifactCount": 13,
+  "entryCount": 69,
+  "artifactCount": 27,
   "complete": true
 }

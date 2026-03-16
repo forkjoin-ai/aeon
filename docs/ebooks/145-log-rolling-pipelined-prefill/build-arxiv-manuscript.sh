@@ -58,6 +58,14 @@ fi
 if [[ "${EXPORT_PDF}" == true ]]; then
   echo "[2/2] Exporting ${OUTPUT_PDF} from ${OUTPUT_TEX}"
 
+  if ! command -v bun >/dev/null 2>&1; then
+    echo "Missing dependency: bun" >&2
+    echo "Install bun, then rerun this script." >&2
+    exit 1
+  fi
+
+  bun ./prepare-arxiv-figures.ts
+
   if command -v tectonic >/dev/null 2>&1; then
     tectonic "${OUTPUT_TEX}"
   elif command -v latexmk >/dev/null 2>&1; then

@@ -1,0 +1,48 @@
+{
+  "label": "sleep-debt-schedule-threshold-witness-v1",
+  "aggregate": {
+    "subcriticalStaysZero": true,
+    "criticalStaysZero": true,
+    "supercriticalGrowsLinearly": true
+  },
+  "scenarios": [
+    {
+      "id": "subcritical-schedule-stays-bounded",
+      "description": "A wake schedule below the recovery quota has zero surplus, so repeated cycles do not accumulate carried debt.",
+      "scheduledWake": 3,
+      "recoveryQuota": 4,
+      "cycleCount": 4,
+      "scheduleSurplus": 0,
+      "debtAfterCycles": 0,
+      "theoremRefs": [
+        "SleepDebtSchedule.iterated_debt_eq_zero_of_wake_le_quota"
+      ]
+    },
+    {
+      "id": "critical-schedule-stays-bounded",
+      "description": "A wake schedule exactly at the recovery quota remains on the zero-surplus boundary and stays debt-free across repeated cycles.",
+      "scheduledWake": 4,
+      "recoveryQuota": 4,
+      "cycleCount": 4,
+      "scheduleSurplus": 0,
+      "debtAfterCycles": 0,
+      "theoremRefs": [
+        "SleepDebtSchedule.iterated_debt_eq_zero_of_wake_le_quota"
+      ]
+    },
+    {
+      "id": "supercritical-schedule-grows-linearly",
+      "description": "A wake schedule above the recovery quota has positive surplus, so repeated cycles accumulate debt linearly in the cycle count.",
+      "scheduledWake": 6,
+      "recoveryQuota": 4,
+      "cycleCount": 4,
+      "scheduleSurplus": 2,
+      "debtAfterCycles": 8,
+      "theoremRefs": [
+        "SleepDebtSchedule.iterated_debt_eq_cycle_count_mul_gap",
+        "SleepDebtSchedule.iterated_debt_positive_above_threshold",
+        "SleepDebtSchedule.iterated_debt_strictly_increases_above_threshold"
+      ]
+    }
+  ]
+}

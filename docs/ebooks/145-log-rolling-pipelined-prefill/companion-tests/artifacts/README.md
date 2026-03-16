@@ -13,6 +13,10 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `gate1-wallclock-external-single-host.md`: human-readable summary for the external non-loopback single-host Gate 1 run.
 - `gate1-wallclock-external-multihost.json`: machine-readable Gate 1 report for external non-loopback six-distinct-host execution (one stage endpoint per host).
 - `gate1-wallclock-external-multihost.md`: human-readable summary for the external non-loopback six-host Gate 1 run.
+- `gate1-wallclock-md5-grind.json`: machine-readable MD5-only Gate 1 report for the isolated hash-grind wall-clock surface.
+- `gate1-wallclock-md5-grind.md`: human-readable MD5-only Gate 1 summary with p50/p95, speedup intervals, and explicit gate verdict.
+- `gate1-wallclock-semiprime-factor.json`: machine-readable semiprime-only Gate 1 report for the isolated factor-search wall-clock surface.
+- `gate1-wallclock-semiprime-factor.md`: human-readable semiprime-only Gate 1 summary with p50/p95, speedup intervals, and explicit gate verdict.
 - `gate2-protocol-corpus.json`: machine-readable Gate 2 report for seeded heterogeneous protocol-corpus evaluation (Aeon Flow vs HTTP/3) across predeclared environment cells.
 - `gate2-protocol-corpus.md`: human-readable Gate 2 summary with per-cell bootstrap CIs, win rates, and explicit gate verdict.
 - `gate3-compression-corpus.json`: machine-readable Gate 3 report for seeded heterogeneous compression-corpus evaluation (topological racing vs fixed-codec and heuristic baselines).
@@ -29,12 +33,18 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `gnosis-fold-training-benchmark.md`: human-readable seeded Gnosis cancellation benchmark summary with eval-MSE, exact-rate, bootstrap intervals, and cancellation-line error metrics.
 - `gnosis-negative-controls.json`: machine-readable one-path negative-control report for the existing affine and routed Gnosis benchmark topologies on tasks where one branch or one expert is sufficient.
 - `gnosis-negative-controls.md`: human-readable negative-control summary with parity thresholds, interval-backed metrics, and representative predictions.
+- `gnosis-near-control-sweep.json`: machine-readable fine-grained low-demand sweep over the affine cancellation and routed dual-activation families, identifying the last parity point and first separated point near the control end.
+- `gnosis-near-control-sweep.md`: human-readable near-control summary with the low-demand cut points and linear-advantage zoom tables.
 - `gnosis-fold-boundary-regime-sweep.json`: machine-readable learned boundary sweep report over the affine cancellation and routed dual-activation families.
 - `gnosis-fold-boundary-regime-sweep.md`: human-readable regime-sweep summary with first-separated regime values, seed-aggregated metrics, and linear-advantage growth tables.
 - `gnosis-adversarial-controls-benchmark.json`: machine-readable symmetric control report for tasks that intentionally favor winner-selection or early-stop folds.
 - `gnosis-adversarial-controls-benchmark.md`: human-readable adversarial-control summary with ranking recovery, learning-curve areas, and favored-fold diagnostics.
 - `gnosis-moe-routing-benchmark.json`: machine-readable seeded Gnosis mini-MoE routing benchmark report for three parameter-matched routed-expert `.gg` modules that differ only in fold strategy.
 - `gnosis-moe-routing-benchmark.md`: human-readable seeded Gnosis mini-MoE routing benchmark summary with eval-MSE, exact-rate, bootstrap intervals, and dual-active-region error metrics.
+- `gnosis-aeon-framed-transformer-benchmark.json`: machine-readable staged toy-transformer benchmark report for the dual-contribution fold boundary with real Aeon frame transport and out-of-order reassembly metrics.
+- `gnosis-aeon-framed-transformer-benchmark.md`: human-readable staged toy-transformer summary with eval-MSE, exact-rate, bootstrap intervals, and frame-integrity diagnostics.
+- `gnosis-moa-transformer-evidence-benchmark.json`: machine-readable MoA sweep/ablation evidence report for the GG-backed sparse `StructuredMoA` transformer family versus the dense rotated baseline.
+- `gnosis-moa-transformer-evidence-benchmark.md`: human-readable MoA sweep/ablation summary with GG topology identity, timing-recovery claims, and sparsity-ablation tables.
 - `formal-witness-catalog.json`: machine-readable Lean-originated witness export for the correspondence boundary.
 - `formal-witness-catalog.md`: human-readable witness summary showing the exact cancellation, partition, and order counterexamples exported from the theorem package.
 - `formal-adaptive-witness-catalog.json`: machine-readable Lean-originated adaptive witness export for the concrete bounded two-node raw adaptive `α` closure.
@@ -43,14 +53,47 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `adaptive-supremum-witness.md`: human-readable summary of the concrete two-node adaptive ceiling/drift witness.
 - `adaptive-supremum-family-sweep.json`: machine-readable raw-parameter sweep over bounded two-node adaptive rerouting cases that all satisfy the same ceiling/drift closure.
 - `adaptive-supremum-family-sweep.md`: human-readable summary table for the adaptive raw-parameter family sweep.
+- `sleep-debt-bounded-witness.json`: machine-readable bounded sleep-debt witness report for full recovery, partial recovery, residual debt, next-cycle capacity, and intrusion-threshold scenarios.
+- `sleep-debt-bounded-witness.md`: human-readable bounded sleep-debt summary with theorem references for the three canonical recovery/debt scenarios.
+- `sleep-debt-schedule-threshold-witness.json`: machine-readable coarse schedule-threshold witness report for subcritical, critical, and supercritical repeated-cycle schedules.
+- `sleep-debt-schedule-threshold-witness.md`: human-readable coarse threshold summary with theorem references for the repeated-cycle schedule boundary.
+- `sleep-debt-weighted-threshold-witness.json`: machine-readable weighted schedule-threshold witness report for the integerized `20.2 h` critical wake boundary.
+- `sleep-debt-weighted-threshold-witness.md`: human-readable weighted threshold summary with theorem references for the literature-side repeated-cycle boundary.
 - `ch17-replication-pack.json`: machine-readable replication manifest for the current Chapter 17 evidence bundle, including file sizes, SHA-256 digests, and the root rerun command.
 - `ch17-replication-pack.md`: human-readable replication manifest with the same bundle inventory and hashes.
+- `ch17-gate1-wallclock-figure.json`: machine-readable manifest for the Chapter 17 Gate 1 wall-clock figure.
+- `ch17-gate1-wallclock-figure.md`: human-readable summary of the six-host Gate 1 figure source and aggregated wall-clock metrics.
+- `ch17-gate1-wallclock-figure.svg`: manuscript-ready figure pairing the six-host Gate 1 p50 latency dumbbell with the speedup confidence-interval panel.
+- `ch17-gate2-protocol-corpus-figure.json`: machine-readable manifest for the Chapter 17 Gate 2 protocol-corpus figure.
+- `ch17-gate2-protocol-corpus-figure.md`: human-readable summary of the Gate 2 figure source and aggregated framing/latency metrics.
+- `ch17-gate2-protocol-corpus-figure.svg`: manuscript-ready figure showing the Gate 2 framing and latency-gain surfaces across the environment matrix.
+- `ch17-gate3-compression-corpus-figure.json`: machine-readable manifest for the Chapter 17 Gate 3 compression-corpus figure.
+- `ch17-gate3-compression-corpus-figure.md`: human-readable summary of the Gate 3 figure source and aggregated compression-gain metrics.
+- `ch17-gate3-compression-corpus-figure.svg`: manuscript-ready figure showing the Gate 3 gain-vs-best-fixed and gain-vs-heuristic surfaces across the corpus families.
+- `ch17-gate4-rqr-holdout-figure.json`: machine-readable manifest for the Chapter 17 Gate 4 `R_qr` holdout figure.
+- `ch17-gate4-rqr-holdout-figure.md`: human-readable summary of the Gate 4 figure source and aggregated predictive-screening metrics.
+- `ch17-gate4-rqr-holdout-figure.svg`: manuscript-ready figure showing holdout decile calibration and interval-backed screening criteria for `R_qr`.
+- `ch17-gate5-bio-effect-size-figure.json`: machine-readable manifest for the Chapter 17 Gate 5 biological effect-size figure.
+- `ch17-gate5-bio-effect-size-figure.md`: human-readable summary of the Gate 5 figure source and aggregated pairwise and pooled effect-size metrics.
+- `ch17-gate5-bio-effect-size-figure.svg`: manuscript-ready figure showing the biological pair ratios and pooled geometric summary on a shared log scale.
+- `ch17-inverted-scaling-reynolds-figure.json`: machine-readable manifest for the Chapter 17 inverted-scaling and Reynolds-regime figure.
+- `ch17-inverted-scaling-reynolds-figure.md`: human-readable summary of the theory figure formulas, stage families, and scenario overlays.
+- `ch17-inverted-scaling-reynolds-figure.svg`: manuscript-ready theory figure pairing the workload-speedup curves with the laminar/transitional/turbulent Reynolds regime map.
 - `ch17-correspondence-boundary-figure.json`: machine-readable manifest for the Chapter 17 correspondence-boundary figure.
 - `ch17-correspondence-boundary-figure.md`: human-readable summary of the figure sources and aggregated metrics.
 - `ch17-correspondence-boundary-figure.svg`: manuscript-ready figure assembled from the quantum ablation, toy-attention interval chart, seeded Gnosis cancellation benchmark, and seeded Gnosis mini-MoE routing benchmark artifacts.
 - `ch17-boundary-expansion-figure.json`: machine-readable manifest for the expanded Chapter 17 boundary figure.
-- `ch17-boundary-expansion-figure.md`: human-readable summary of the regime-sweep, adversarial-control, and formal-witness figure sources.
-- `ch17-boundary-expansion-figure.svg`: manuscript-ready figure assembled from the regime sweep, adversarial controls, and Lean-originated witness catalog.
+- `ch17-boundary-expansion-figure.md`: human-readable summary of the near-control, regime-sweep, adversarial-control, and formal-witness figure sources.
+- `ch17-boundary-expansion-figure.svg`: manuscript-ready figure assembled from the near-control zoom, regime sweep, adversarial controls, and Lean-originated witness catalog.
+- `ch17-moa-transformer-figure.json`: machine-readable manifest for the GG-backed sparse-vs-dense MoA transformer figure.
+- `ch17-moa-transformer-figure.md`: human-readable summary of the scale-sweep, ablation-frontier, and GG-surface figure sources.
+- `ch17-moa-transformer-figure.svg`: manuscript-ready figure assembled from the GG-backed `StructuredMoA` evidence report.
+- `ch17-moa-topology-figure.json`: machine-readable manifest for the GG-backed sparse-vs-dense `StructuredMoA` topology figure.
+- `ch17-moa-topology-figure.md`: human-readable summary of the routed sparse blocks/heads and dense baseline topology sources.
+- `ch17-moa-topology-figure.svg`: manuscript-ready topology figure assembled directly from the sparse `StructuredMoA` GG benchmark surface.
+- `ch17-moa-whip-curvature-figure.json`: machine-readable manifest for the curved wraparound `StructuredMoA` companion figure derived from the topology surface.
+- `ch17-moa-whip-curvature-figure.md`: human-readable summary of the same routed blocks/heads rendered as a curved whip enclosure view.
+- `ch17-moa-whip-curvature-figure.svg`: companion-ready curved topology figure showing the wraparound inner and outer Worthington whips around the routed blocks.
 - `ch17-external-replication.json`: machine-readable outside-rerun report covering the end-to-end command plan and manifest/hash verification.
 - `ch17-external-replication.md`: human-readable outside-rerun summary for the same report.
 
@@ -120,6 +163,13 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - Control tasks: `affine-left-only`, `routing-positive-x-only`
 - Interpretation: when the task needs only one branch or one expert, the linear-vs-selection separation is expected to disappear, and the artifact reports parity instead of divergence
 
+## Gnosis Near-Control Snapshot
+
+- Protocol label: `gnosis-near-control-sweep-v1`
+- Affine last parity / first separated: `0.35` / `0.40`
+- Routed last parity / first separated: `0.60` / `0.65`
+- Interpretation: parity persists for small nonzero recombination demand, then a measurable linear advantage opens before the broader regime sweep reaches its coarse first-separated endpoints
+
 ## Gnosis Regime Sweep Snapshot
 
 - Protocol label: `gnosis-fold-boundary-regime-sweep-v1`
@@ -147,6 +197,121 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `winner-take-all`: eval mean squared error `0.328`, exact-within-tolerance fraction `0.126`, dual-active-region abs error `0.402`
 - `early-stop`: eval mean squared error `0.449`, exact-within-tolerance fraction `0.080`, dual-active-region abs error `0.474`
 
+## Gnosis Aeon-Framed Transformer Snapshot
+
+- Protocol label: `gnosis-aeon-framed-transformer-benchmark-v1`
+- Predicted ranking recovered: `yes`
+- Shared parameter count: `16`
+- Rotation stage count: `3`
+- `linear`: eval mean squared error `0.001`, exact-within-tolerance fraction `0.981`, codec/reassembly/fold invariance all `1.000`
+- `winner-take-all`: eval mean squared error `0.318`, exact-within-tolerance fraction `0.070`, codec/reassembly `1.000`
+- `early-stop`: eval mean squared error `0.462`, exact-within-tolerance fraction `0.073`, codec/reassembly `1.000`
+
+## Gnosis MoA Evidence Snapshot
+
+- Protocol label: `gnosis-moa-transformer-evidence-v1`
+- Sparse GG primitive: `StructuredMoA`
+- Sparse GG topology: `open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg`
+- Timing advantage recovered across sweep: `yes`
+- Accuracy gap closes with scale: `yes`
+- Outer sparsity improves efficiency: `yes`
+- Inner sparsity improves efficiency: `yes`
+- Under-routing hurts accuracy: `yes`
+- Sweep speedup range: `2.56x` to `7.02x`
+- Wide-workload eval MSE: MoA `0.0033`, regular `0.0008`
+- Interpretation: the sparse GG primitive remains materially faster across the sweep, the raw-accuracy gap narrows at larger workloads, and both outer routing sparsity and inner head sparsity are doing real work rather than decorative pruning
+
+## Chapter 17 MoA Figure Snapshot
+
+- Protocol label: `ch17-moa-transformer-figure-v1`
+- Source: `gnosis-moa-transformer-evidence-v1`
+- Sparse GG primitive: `StructuredMoA`
+- Output surface: JSON + Markdown + SVG
+- Speedup range: `2.56x` to `7.02x`
+- Wide-workload accuracy gap: `0.0025`
+- Interpretation: the figure packages the sweep speedup, the closing eval-MSE gap, the sparsity-ablation frontier, and the GG topology identity into one manuscript-ready surface
+
+## Chapter 17 Gate 1 Figure Snapshot
+
+- Protocol label: `ch17-gate1-wallclock-figure-v1`
+- Source: `workers-dev-external-multihost6-distinct`
+- Output surface: JSON + Markdown + SVG
+- Primary cells passed: `8/8`
+- Speedup range: `11.785x` to `21.620x`
+- Minimum CI lows: `11.365x` and `3,560.98 ms`
+- Interpretation: the figure keeps the strongest deployment-style wall-clock claim visible as both absolute latency separation and interval-backed speedup, rather than collapsing the result into a single headline ratio
+
+## Chapter 17 Gate 2 Figure Snapshot
+
+- Protocol label: `ch17-gate2-protocol-corpus-figure-v1`
+- Source: `gate2-protocol-corpus-v1`
+- Output surface: JSON + Markdown + SVG
+- Primary cells passed: `6/6`
+- Framing gain range: `72.252%` to `72.252%`
+- Minimum CI lows: `72.190%`, `20.240 ms`, and `19.994 ms`
+- Interpretation: the figure separates the almost flat framing advantage from the worsening median and p95 completion gains, so the transport result reads as a corpus trend rather than a single benchmark number
+
+## Chapter 17 Gate 3 Figure Snapshot
+
+- Protocol label: `ch17-gate3-compression-corpus-figure-v1`
+- Source: `gate3-compression-corpus-v1`
+- Output surface: JSON + Markdown + SVG
+- Primary cells passed: `4/4`
+- Gain vs best fixed range: `0.0010%` to `0.833%`
+- Gain vs heuristic range: `0.7766%` to `46.37%`
+- Minimum primary-cell CI lows: `0.0009%` and `0.386%`
+- Interpretation: the figure makes the manuscript's honest compression claim visible by separating the tiny but positive primary-family gains over the best fixed codec from the much larger gains over the heuristic baseline, while leaving the non-primary homogeneous-text control visible
+
+## Chapter 17 Gate 4 Figure Snapshot
+
+- Protocol label: `ch17-gate4-rqr-holdout-figure-v1`
+- Source: `gate4-rqr-out-of-sample-v1`
+- Output surface: JSON + Markdown + SVG
+- Criteria passed: `5/5`
+- Quartile delta: `12.77%` (95% CI `10.01%` to `15.33%`)
+- Monotonicity: `1/3` allowed violations
+- Interpretation: the figure keeps the `R_qr` validation publication-ready by showing the holdout decile calibration curve and the interval-backed screening criteria side by side, so the predictive claim stays visibly bounded to the tested simulator family
+
+## Chapter 17 Gate 5 Figure Snapshot
+
+- Protocol label: `ch17-gate5-bio-effect-size-figure-v1`
+- Source: `gate5-bio-effect-size-v1`
+- Output surface: JSON + Markdown + SVG
+- Primary pairs passed: `3/3`
+- Minimum primary-pair CI low: `5.829x`
+- Pooled geometric ratio: `26.57x` (95% CI `9.863x` to `78.26x`)
+- Interpretation: the figure turns the biological analogy section into a reviewable log-scale effect-size map, keeping both pairwise spread and pooled magnitude visible instead of hiding them inside prose examples
+
+## Chapter 17 Inverted-Scaling / Reynolds Figure Snapshot
+
+- Protocol label: `ch17-inverted-scaling-reynolds-figure-v1`
+- Output surface: JSON + Markdown + SVG
+- Stage families: `2`, `4`, `8`, `10`
+- Maximum overlaid table speedup: `266.667x`
+- Transport Reynolds shift: `15.833` (`HTTP/1.1`) to `0.371` (`Aeon Flow`)
+- Interpretation: the figure keeps the analytic core of Chapter 17 visible as formulas rather than metaphor alone, showing both the workload-driven speedup growth and the regime shift from turbulent to transitional when chunk capacity widens
+
+## Chapter 17 MoA Topology Figure Snapshot
+
+- Protocol label: `ch17-moa-topology-figure-v1`
+- Source: `open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg`
+- Sparse GG primitive: `StructuredMoA`
+- Output surface: JSON + Markdown + SVG
+- Sparse routed blocks: `2/4`
+- Sparse routed heads per live block: `2/4`
+- Interpretation: the figure isolates the executable sparse topology itself, showing the selected blocks, selected heads, and the matched dense rotated baseline without folding the result into benchmark metrics
+
+## Chapter 17 MoA Whip Curvature Figure Snapshot
+
+- Protocol label: `ch17-moa-whip-curvature-figure-v1`
+- Source topology report: `ch17-moa-topology-figure-v1`
+- Sparse GG primitive: `StructuredMoA`
+- Output surface: JSON + Markdown + SVG
+- Curvature labels: `curved whip envelope`, `inner whip`, `outer whip snap`
+- Sparse routed blocks: `2/4`
+- Sparse routed heads per live block: `2/4`
+- Interpretation: the supplemental view keeps the same sparse `StructuredMoA` topology but bends the routed paths into a wraparound enclosure so the inner and outer Worthington whips read as curved geometry rather than a straight collapse
+
 ## Adaptive Witness Snapshot
 
 - Protocol label: `formal-adaptive-supremum-witness-catalog-v1`
@@ -173,6 +338,33 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - Tightest case: `tight-right-slack-2x2`
 - Interpretation: the bounded two-node adaptive closure is exercised as a raw-parameter family, not just as one manuscript witness tuple
 
+## Sleep-Debt Snapshot
+
+- Protocol label: `sleep-debt-bounded-witness-v1`
+- Scenario count: `3`
+- Full recovery restores baseline: `yes`
+- Partial recovery leaves positive debt: `yes`
+- Chronic truncation enables intrusion: `yes`
+- Interpretation: this is a bounded executable witness for the sleep-debt recovery geometry, not a human-subject dataset; it only claims residual debt, reduced next-cycle capacity, and threshold intrusion reachability inside the bounded model
+
+## Sleep-Debt Threshold Snapshot
+
+- Protocol label: `sleep-debt-schedule-threshold-witness-v1`
+- Scenario count: `3`
+- Subcritical schedule stays zero: `yes`
+- Critical schedule stays zero: `yes`
+- Supercritical schedule grows linearly: `yes`
+- Interpretation: this is the coarse repeated-cycle threshold witness for the literature-side bifurcation story, not the full McCauley ODE system
+
+## Sleep-Debt Weighted Threshold Snapshot
+
+- Protocol label: `sleep-debt-weighted-threshold-witness-v1`
+- Calibrated critical wake boundary: `20.2 h`
+- Subcritical schedule stays zero: `yes`
+- Critical schedule stays zero: `yes`
+- Supercritical schedule grows linearly: `yes`
+- Interpretation: this is an integerized weighted bridge to the literature-side `20.2 h` boundary, not the full McCauley ODE system
+
 ## Formal Witness Snapshot
 
 - Protocol label: `formal-fold-boundary-witness-catalog-v1`
@@ -189,10 +381,10 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 
 ## Boundary Expansion Figure Snapshot
 
-- Protocol label: `ch17-boundary-expansion-figure-v1`
-- Sources: `gnosis-fold-boundary-regime-sweep-v1`, `gnosis-adversarial-controls-benchmark-v1`, `formal-fold-boundary-witness-catalog-v1`
+- Protocol label: `ch17-boundary-expansion-figure-v2`
+- Sources: `gnosis-near-control-sweep-v1`, `gnosis-fold-boundary-regime-sweep-v1`, `gnosis-adversarial-controls-benchmark-v1`, `formal-fold-boundary-witness-catalog-v1`
 - Output surface: JSON + Markdown + SVG
-- Interpretation: the expansion figure shows where the boundary opens, where nonlinear folds legitimately win, and which formal witnesses certify the break
+- Interpretation: the expansion figure shows the control-end zoom, where the broader boundary opens, where nonlinear folds legitimately win, and which formal witnesses certify the break
 
 ## Replication Pack Snapshot
 
@@ -203,7 +395,7 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 ## External Replication Snapshot
 
 - Protocol label: `ch17-external-replication-v1`
-- Step count: `11`
+- Step count: `12`
 - Manifest stable: `yes`
 - All hashes match: `yes`
 - Interpretation: the outside-rerun command surface rebuilds the learned/formal Chapter 17 evidence chain and then independently verifies the replication-pack hashes

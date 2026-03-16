@@ -1,0 +1,117 @@
+{
+  "label": "ch17-gate3-compression-corpus-figure-v1",
+  "sourceLabel": "gate3-compression-corpus-v1",
+  "corpus": {
+    "sampleCount": 90,
+    "totalBytes": 20133761,
+    "medianBytes": 169748
+  },
+  "primaryPassed": 4,
+  "primaryTotal": 4,
+  "bestFixedGainRangePct": {
+    "low": 0.0009905410444813333,
+    "high": 0.8333333333333334
+  },
+  "heuristicGainRangePct": {
+    "low": 0.7765885918761218,
+    "high": 46.36577389050966
+  },
+  "minPrimaryBestFixedCiLowPct": 0.000876913609830448,
+  "minPrimaryHeuristicCiLowPct": 0.3855824340176379,
+  "medianCodecsUsedRange": {
+    "low": 1,
+    "high": 1
+  },
+  "cells": [
+    {
+      "cellId": "web-mixed",
+      "primary": true,
+      "sampleCount": 18,
+      "medianGainVsBestFixedPct": 0.005154884282804743,
+      "medianGainVsBestFixedPctCi": {
+        "low": 0.004138832049814852,
+        "high": 0.0074460462539474885
+      },
+      "medianGainVsHeuristicPct": 0.7765885918761218,
+      "medianGainVsHeuristicPctCi": {
+        "low": 0.3855824340176379,
+        "high": 1.237318288910615
+      },
+      "winRateVsBestFixed": 1,
+      "winRateVsHeuristic": 1,
+      "medianCodecsUsed": 1
+    },
+    {
+      "cellId": "api-telemetry",
+      "primary": true,
+      "sampleCount": 18,
+      "medianGainVsBestFixedPct": 0.007792382544774703,
+      "medianGainVsBestFixedPctCi": {
+        "low": 0.00746728396214087,
+        "high": 0.008558529644607056
+      },
+      "medianGainVsHeuristicPct": 46.36577389050966,
+      "medianGainVsHeuristicPctCi": {
+        "low": 39.44864506879772,
+        "high": 50.91022594319546
+      },
+      "winRateVsBestFixed": 1,
+      "winRateVsHeuristic": 1,
+      "medianCodecsUsed": 1
+    },
+    {
+      "cellId": "media-plus-metadata",
+      "primary": true,
+      "sampleCount": 18,
+      "medianGainVsBestFixedPct": 0.0009905410444813333,
+      "medianGainVsBestFixedPctCi": {
+        "low": 0.000876913609830448,
+        "high": 0.001098088448532931
+      },
+      "medianGainVsHeuristicPct": 7.4415852503633015,
+      "medianGainVsHeuristicPctCi": {
+        "low": 6.214220555862827,
+        "high": 10.308220755578876
+      },
+      "winRateVsBestFixed": 1,
+      "winRateVsHeuristic": 1,
+      "medianCodecsUsed": 1
+    },
+    {
+      "cellId": "polyglot-bundle",
+      "primary": true,
+      "sampleCount": 18,
+      "medianGainVsBestFixedPct": 0.002929175817120966,
+      "medianGainVsBestFixedPctCi": {
+        "low": 0.0019622014610956853,
+        "high": 0.0032459407739474175
+      },
+      "medianGainVsHeuristicPct": 26.65133687802801,
+      "medianGainVsHeuristicPctCi": {
+        "low": 25.24129579008816,
+        "high": 33.52833570691941
+      },
+      "winRateVsBestFixed": 1,
+      "winRateVsHeuristic": 1,
+      "medianCodecsUsed": 1
+    },
+    {
+      "cellId": "text-homogeneous",
+      "primary": false,
+      "sampleCount": 18,
+      "medianGainVsBestFixedPct": 0.8333333333333334,
+      "medianGainVsBestFixedPctCi": {
+        "low": 0.7874015748031495,
+        "high": 0.8716086306344798
+      },
+      "medianGainVsHeuristicPct": 0.8333333333333334,
+      "medianGainVsHeuristicPctCi": {
+        "low": 0.7858576501466727,
+        "high": 0.869766628378027
+      },
+      "winRateVsBestFixed": 1,
+      "winRateVsHeuristic": 1,
+      "medianCodecsUsed": 1
+    }
+  ]
+}

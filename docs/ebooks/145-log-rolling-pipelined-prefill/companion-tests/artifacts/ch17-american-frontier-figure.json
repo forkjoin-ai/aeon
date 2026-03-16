@@ -1,0 +1,137 @@
+{
+  "label": "ch17-american-frontier-figure-v1",
+  "protocol": {
+    "siteName": "Microfrontend (95 resources)",
+    "resourceCount": 95,
+    "beta1Star": 94,
+    "points": [
+      {
+        "protocol": "HTTP/1.1",
+        "shortLabel": "H1",
+        "overheadPct": 31,
+        "wireKB": 187,
+        "rtts": 16,
+        "beta1Effective": 0
+      },
+      {
+        "protocol": "HTTP/2",
+        "shortLabel": "H2",
+        "overheadPct": 5.8,
+        "wireKB": 137,
+        "rtts": 2,
+        "beta1Effective": 94
+      },
+      {
+        "protocol": "HTTP/3",
+        "shortLabel": "H3",
+        "overheadPct": 4.4,
+        "wireKB": 135,
+        "rtts": 1,
+        "beta1Effective": 94
+      },
+      {
+        "protocol": "Aeon Flow",
+        "shortLabel": "AF",
+        "overheadPct": 1.5,
+        "wireKB": 131,
+        "rtts": 1,
+        "beta1Effective": 94
+      }
+    ]
+  },
+  "pipeline": {
+    "stageCount": 4,
+    "points": [
+      {
+        "reynolds": 0.1,
+        "idleFraction": 0.07
+      },
+      {
+        "reynolds": 0.2,
+        "idleFraction": 0.13
+      },
+      {
+        "reynolds": 0.3,
+        "idleFraction": 0.184
+      },
+      {
+        "reynolds": 0.5,
+        "idleFraction": 0.273
+      },
+      {
+        "reynolds": 0.7,
+        "idleFraction": 0.344
+      },
+      {
+        "reynolds": 1,
+        "idleFraction": 0.429
+      },
+      {
+        "reynolds": 1.5,
+        "idleFraction": 0.529
+      },
+      {
+        "reynolds": 2,
+        "idleFraction": 0.6
+      },
+      {
+        "reynolds": 4,
+        "idleFraction": 0.75
+      },
+      {
+        "reynolds": 8,
+        "idleFraction": 0.857
+      },
+      {
+        "reynolds": 16,
+        "idleFraction": 0.923
+      }
+    ]
+  },
+  "compression": {
+    "corpusCount": 5,
+    "points": [
+      {
+        "corpus": "text-homogeneous",
+        "shortLabel": "text",
+        "gainVsHeuristicPct": 0.83,
+        "gainVsBestFixedPct": 0.83,
+        "winRate": 1
+      },
+      {
+        "corpus": "web-mixed",
+        "shortLabel": "web",
+        "gainVsHeuristicPct": 0.78,
+        "gainVsBestFixedPct": 0.005,
+        "winRate": 1
+      },
+      {
+        "corpus": "media-plus-metadata",
+        "shortLabel": "media",
+        "gainVsHeuristicPct": 7.44,
+        "gainVsBestFixedPct": 0.001,
+        "winRate": 1
+      },
+      {
+        "corpus": "polyglot-bundle",
+        "shortLabel": "polyglot",
+        "gainVsHeuristicPct": 26.65,
+        "gainVsBestFixedPct": 0.003,
+        "winRate": 1
+      },
+      {
+        "corpus": "api-telemetry",
+        "shortLabel": "api",
+        "gainVsHeuristicPct": 46.37,
+        "gainVsBestFixedPct": 0.008,
+        "winRate": 1
+      }
+    ]
+  },
+  "frontierProperties": {
+    "monotone": true,
+    "zeroAtMatch": true,
+    "positiveBelow": true,
+    "pigeonholeWitness": true
+  }
+}

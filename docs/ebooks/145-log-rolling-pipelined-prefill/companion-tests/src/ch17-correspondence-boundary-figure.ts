@@ -419,16 +419,18 @@ export function renderCh17CorrespondenceBoundaryFigureSvg(
   for (let index = 0; index < matrixHeaders.length; index++) {
     const header = matrixHeaders[index];
     svg.push(
-      `<text x="${194 + index * 82}" y="220" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="#6b7280">${escapeXml(
+      `<text x="${194 + index * 82}" y="216" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="#6b7280">${escapeXml(
         header ?? '',
       )}</text>`,
     );
   }
 
   strategies.forEach((strategy, rowIndex) => {
+    const rowLabelY = 254 + rowIndex * 50;
+    const cellY = 232 + rowIndex * 50;
     const row = report.quantum.matrix[strategy];
     svg.push(
-      `<text x="64" y="${264 + rowIndex * 58}" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="#111827">${escapeXml(
+      `<text x="64" y="${rowLabelY}" font-family="ui-monospace, SFMono-Regular, monospace" font-size="13" fill="#111827">${escapeXml(
         strategy,
       )}</text>`,
     );
@@ -442,7 +444,7 @@ export function renderCh17CorrespondenceBoundaryFigureSvg(
       const fill = value ? '#0f766e' : '#b91c1c';
       const label = value ? 'yes' : 'no';
       const x = 174 + columnIndex * 82;
-      const y = 238 + rowIndex * 58;
+      const y = cellY;
       svg.push(`<rect x="${x}" y="${y}" width="60" height="30" rx="10" fill="${fill}" opacity="0.92"/>`);
       svg.push(
         `<text x="${x + 30}" y="${y + 20}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="#f8fafc">${label}</text>`,
@@ -450,15 +452,16 @@ export function renderCh17CorrespondenceBoundaryFigureSvg(
     });
   });
 
+  svg.push('<rect x="60" y="376" width="520" height="62" rx="12" fill="#f8fafc" stroke="#e5e7eb"/>');
   svg.push(
-    `<text x="64" y="364" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="#6b7280">winner-take-all distances: kernel ${formatNumber(
+    `<text x="76" y="400" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#6b7280">winner-take-all distances: kernel ${formatNumber(
       report.quantum.winnerTakeAllKernelDistance,
     )}, partition ${formatNumber(report.quantum.winnerTakeAllPartitionDistance)}, cancellation ${formatNumber(
       report.quantum.winnerTakeAllCancellationMagnitude2,
     )}</text>`,
   );
   svg.push(
-    `<text x="64" y="392" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="#6b7280">Linear remains the only strategy preserving all four invariants.</text>`,
+    `<text x="76" y="422" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#6b7280">Linear remains the only strategy preserving all four invariants.</text>`,
   );
 
   renderMetricPanel(svg, {
