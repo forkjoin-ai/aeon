@@ -219,53 +219,28 @@ through path-like structures. The operational remedy is to work in the
 cover space (multiplexed, out-of-order) and project back to the base
 space (sequential, reassembled).
 
-I instantiate the algorithm in \textbf{five} domains, presented in stack
-order -- from building blocks to bytes on wire -- each layer enabled by
-the ones below it.
+I instantiate the algorithm in \textbf{nine} domains --- $3^2$, the primitive trinity squared --- presented in stack order, each layer enabled by the ones below it.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
 \item
-  In formal verification (the foundation, §10), I implement a temporal
-  logic model checker (\texttt{@affectively/aeon-logic}) whose BFS
-  state-space exploration is itself a fork/race/fold computation. Each
-  multi-successor expansion is a fork, each transition to an
-  already-visited state is a fold (interference), each unfair cycle
-  filtered by weak fairness is a vent, and termination is collapse. The
-  checker verifies a \texttt{TemporalModel} of its own exploration and
-  generates a TLA+ specification of the same model, validated through a
-  round-trip-stable TLA sandbox. Both verification paths check the same
-  invariants: \(\beta_1 = \text{folded}\), \(\beta_1 \geq 0\),
-  \(\text{vents} \leq \text{folds}\), and eventual termination under
-  weak fairness. In the finite-model verification scope used here, this provides evidence of closure under self-application: the checker, itself a fork/race/fold computation, successfully verifies models of fork/race/fold computations. This is finite-state evidence, not a universal metatheoretic closure proof {[}13{]}.
+  In formal verification (the foundation, \S10), I implement a temporal logic model checker (\texttt{@affectively/aeon-logic}) whose BFS state-space exploration is itself a fork/race/fold computation. Each multi-successor expansion is a fork, each transition to an already-visited state is a fold (interference), each unfair cycle filtered by weak fairness is a vent, and termination is collapse. The checker verifies a \texttt{TemporalModel} of its own exploration and generates a TLA+ specification of the same model, validated through a round-trip-stable TLA sandbox. Both verification paths check the same invariants: $\beta_1 = \text{folded}$, $\beta_1 \geq 0$, $\text{vents} \leq \text{folds}$, and eventual termination under weak fairness. In the finite-model verification scope used here, this provides evidence of closure under self-application: the checker, itself a fork/race/fold computation, successfully verifies models of fork/race/fold computations. This is finite-state evidence, not a universal metatheoretic closure proof {[}13{]}.
 \item
-  In formal language theory (the programming model, §11), I implement
-  Gnosis {[}15{]} -- a programming language that unifies source code and
-  computation graph and whose compiler is a fork/race/fold pipeline.
-  Programs are Cypher-like graphs with four edge types (FORK, RACE,
-  FOLD, VENT). The compiler statically verifies \(\beta_1\) bounds,
-  verified by layer 1. The self-hosted compiler (Betti) is itself a GGL
-  program:
-  \texttt{(source)\ -{[}:FORK{]}-\textgreater{}\ (parse\_nodes\ \textbar{}\ parse\_edges)\ -{[}:FOLD{]}-\textgreater{}\ (ast)},
-  establishing closure under construction.
+  In formal language theory (the programming model, \S11), I implement Gnosis {[}15{]} --- a programming language that unifies source code and computation graph and whose compiler is a fork/race/fold pipeline. Programs are Cypher-like graphs with four edge types (FORK, RACE, FOLD, VENT). The compiler statically verifies $\beta_1$ bounds, verified by layer 1. The self-hosted compiler (Betti) is itself a GGL program: \texttt{(source) -[:FORK]-> (parse\_nodes | parse\_edges) -[:FOLD]-> (ast)}, establishing closure under construction.
 \item
-  In distributed staged computation (the scheduling algorithm, §7),
-  chunked pipelined processing reduces sequential depth from \(O(PN)\)
-  to \(O(\lceil P/B \rceil + N - 1)\), yielding modeled step-count
-  speedups of 3.1x--267x in the listed scenarios under explicit
-  idealized assumptions (uniform stage service time, zero inter-node communication cost; speedups halve when network cost equals compute cost --- see \S7 sensitivity analysis). The Wallington Rotation, expressed in layer 2's
-  language, verified by layer 1's checker.
+  In distributed staged computation (the scheduling algorithm, \S7), chunked pipelined processing reduces sequential depth from $O(PN)$ to $O(\lceil P/B \rceil + N - 1)$, yielding modeled step-count speedups of 3.1x--267x in the listed scenarios under explicit idealized assumptions (uniform stage service time, zero inter-node communication cost; speedups halve when network cost equals compute cost --- see \S7 sensitivity analysis). The Wallington Rotation, expressed in layer 2's language, verified by layer 1's checker.
 \item
-  In edge transport (the wire format, §8), I implement a binary stream
-  protocol with 10-byte self-describing frame headers and native
-  fork/race/fold operations on UDP, reducing framing overhead from HTTP/1.1's 31\% to 1.5\% on a 95-resource microfrontend benchmark (a 21$\times$ reduction) and multiplexing concurrent streams over a single connection to reduce forced serialization from TCP's ordered-delivery model. Layer 3's scheduling algorithm runs over layer 4's wire format.
+  In edge transport (the wire format, \S8), I implement a binary stream protocol with 10-byte self-describing frame headers and native fork/race/fold operations on UDP, reducing framing overhead from HTTP/1.1's 31\% to 1.5\% on a 95-resource microfrontend benchmark (a 21$\times$ reduction) and multiplexing concurrent streams over a single connection to reduce forced serialization from TCP's ordered-delivery model. Layer 3's scheduling algorithm runs over layer 4's wire format.
 \item
-  In compression (bytes on wire, §9), I implement per-chunk topological
-  codec racing (fork codecs, race per chunk, fold to winner), with
-  executable verification of roundtrip correctness, codec-vent behavior
-  and \(\beta_1 = \text{codecs}-1\) invariants {[}8, 9{]}. The capstone:
-  actual bytes, actual ratios, actual wire -- using every layer below
-  it.
+  In compression (bytes on wire, \S9), I implement per-chunk topological codec racing (fork codecs, race per chunk, fold to winner), with executable verification of roundtrip correctness, codec-vent behavior and $\beta_1 = \text{codecs}-1$ invariants {[}8, 9{]}.
+\item
+  In kernel execution (the laminar pipeline, \S15.1), the native Rust kernel \texttt{send\_laminar\_flow} chunks the file, races all available codecs per chunk, picks the smallest, and \texttt{writev}'s the compressed chunk with a 10-byte Flow frame header. Actual bytes, actual ratios, actual wire --- using every layer below it.
+\item
+  In mechanized proof (the formal surface, \S15.1), seventy-four Lean 4 files and sixty-eight TLA+ specifications mechanize the theorems that validate layers 1--6: topological subsumption, BFT regime classification, Landauer erasure bounds, and the diversity--determinism--irreversibility chain. Zero \texttt{sorry}, zero custom axioms.
+\item
+  In precomputation (the Vickrey Table, \S15.2), the Daisy Chain's linearity (\texttt{daisy\_linearity\_rational}) enables exact precomputation of proof witnesses for the omega-class arithmetic fragment. The table maps normalized theorem statements to proof terms. Verification is lookup, not search.
+\item
+  In self-verification (the omega checker, \S15.2), a Gnosis topology (\texttt{omega-checker.gg}) implements a Daisy Chain MOA proof checker --- four agents with different $\alpha$ values racing precomputed Vickrey Tables. The checker verifies the theorems that prove the checker's fold is BFT-correct. Layer 9 checks layer 7. Layer 7 proves layer 9 is sound. The fern.
 \end{enumerate}
 
 Within the modeled scope in this paper (finite DAG decompositions under
