@@ -2376,6 +2376,17 @@ Twelve mechanized theorems, proved independently across five files, compose into
 
 The theorem has an immediate engineering consequence: the **laminar pipeline** (Layer 8 of the Aeon stack). Instead of `sendfile(2)` -- which transmits raw bytes via kernel DMA with zero compression -- the laminar pipeline chunks the file, races all available codecs (identity, gzip, brotli, deflate) per chunk, picks the smallest, and `writev`’s the compressed chunk with a 10-byte Flow frame header. THM-TOPO-RACE-SUBSUMPTION guarantees that racing total $\leq$ identity total (sendfile wire size). THM-TOPO-RACE-IDENTITY-BASELINE guarantees identity is always a candidate, so the pipeline never does worse than raw.
 
+**x-gnosis laminar pipeline vs sendfile vs nginx** (wire bytes, brotli compression):
+
+| Site | sendfile | nginx brotli | x-gnosis laminar | Laminar framing | nginx framing | Framing ratio |
+|---|---:|---:|---:|---:|---:|---:|
+| Blog post (5 resources, 283 KB) | 283.2 KB | 97.0 KB | 95.9 KB | 70 B | 1.5 KB | 21x less |
+| SPA bundle (6 resources, 1.25 MB) | 1.25 MB | 3.4 KB | 7.2 KB | 250 B | 1.8 KB | 7x less |
+| Microfrontend (95 resources, 882 KB) | 882.0 KB | 54.4 KB | 27.5 KB | 950 B | 27.8 KB | 29x less |
+| API response (1 resource, 2.29 MB) | 2.29 MB | 633 B | 10.7 KB | 370 B | 300 B | -- |
+
+On the microfrontend stress test (95 resources), the laminar pipeline uses **950 bytes** of Flow framing vs nginx's **27.8 KB** of HTTP framing -- a **29x reduction**. THM-TOPO-RACE-SUBSUMPTION guarantees the laminar pipeline strictly dominates sendfile on wire bytes for all compressible content. On homogeneous large payloads (SPA, API), nginx brotli achieves better ratio because global-dictionary context captures cross-chunk correlations; the laminar pipeline's advantage is per-chunk adaptivity and framing efficiency, not universal ratio superiority.
+
 **Latency tradeoff and crossover bandwidth.** THM-TOPO-RACE-SUBSUMPTION proves that the laminar pipeline strictly dominates sendfile on *wire bytes*: the racing total is provably $\leq$ the identity total. It does not prove strict domination on *end-to-end latency*. The laminar pipeline incurs encode cost (13.6 ms on the microfrontend, 45.9 ms on big content) that sendfile avoids entirely -- sendfile is zero-CPU kernel DMA. The pipeline wins on wall-clock time only when network transfer savings exceed encode overhead. For the microfrontend: the pipeline saves $\approx$<!-- -->55 KB of wire bytes at an encode cost of $\approx$<!-- -->11 ms. The crossover bandwidth is $55\text{\,KB}/11\text{\,ms} \approx 5\text{\,MB/s}$. Below 5 MB/s, the laminar pipeline is faster end-to-end; above 5 MB/s, sendfile + pre-compressed brotli (computed at build time) delivers lower time-to-first-byte. Additionally, pre-compressed content (brotli-at-build-time served via sendfile) avoids runtime encode cost entirely and achieves comparable wire-byte savings without per-request CPU work. The laminar pipeline’s advantage is *adaptivity* -- it handles mixed compressible/incompressible content without build-time configuration -- not universal latency superiority.
 
 The stack folds in on itself: the diversity theorem at Layer 8 is verified by the model checker at Layer 1, which is itself a fork/race/fold computation. The same algebra reappears at each layer -- not because it loops, but because the primitive self-composes, like a fern whose fronds repeat the branching pattern of the whole.
