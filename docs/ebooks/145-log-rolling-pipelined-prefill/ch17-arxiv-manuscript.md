@@ -1391,6 +1391,32 @@ In Gnosis (§11), the Wallington Rotation for a 4-stage pipeline is:
 
 The topology is the program. The scheduling is the shape.
 
+### 6.15 The Vickrey Table and the Glossolalia Engine
+
+A Markov chain language model has a property that transformers do not: the logit projection $\ell(t) = W_{\text{unembed}} \cdot e(t)$ is a *pure function* of the token identity $t$. There is no attention mechanism, no key-value cache, no context-dependent computation. The same token always produces the same logits. We call this class of models a **Daisy Chain**: memoryless and linear. The companion `DaisyChainPrecomputation.lean` proves that the linearity of the transition $s_{t+1} = \alpha \cdot e(\tau_t) + (1-\alpha) \cdot s_t$ allows the entire logit projection to be precomputed at build time. We call this precomputed structure the **Vickrey Table**: a static mapping from token identities to sparse logit vectors that replaces the expensive matrix-vector product with a lookup at inference time. The companion theorem `daisy_linearity_rational` proves that this lookup is exact, not an approximation, by the distributive law for linear maps.
+
+The sparse fold — storing only the top-$K$ logit values per token — is itself a semiotic fold executed at build time. The companion theorem `topk_deficit` quantifies the information loss: $\Delta\beta = V - K$. The combined deficit of the full system — fork/race/fold over $k$ agents using a top-$K$ table — is $(k - 1) + (V - K)$, proved additive by `total_deficit_additive`.
+
+**Benchmark results.** The Vickrey Table throughput is constant regardless of agent count. Raw matVec cost scales as $O(k \cdot V \cdot d)$; the Vickrey Table scales as $O(V)$ independent of $k$. At five agents on the medium configuration ($d = 256$, $V = 1024$), the measured speedup is $4.8\times$ over raw matVec. The speedup *increases* with more agents — precisely because the table factors the matVec out of the per-agent loop.
+
+The absorbing state — a token $t^*$ such that $\operatorname{argmax}\ \ell(t^*) = t^*$ — converges geometrically. The companion theorem `absorbing_contamination_after_one` proves the convergence rate: deviation scales by $(1 - \alpha)$ per step. For $\alpha = 0.7$, the state is $97.3\%$ dominated by the absorbing token after three steps.
+
+### 6.16 The Metacognitive Daisy Chain
+
+The recursive meta-metacognition framework (Curry 2025) maps to a Daisy Chain where each cognitive layer monitors and controls the one below:
+
+$$C_0 \xrightarrow{M_1} C_1 \xrightarrow{M_2} C_2 \xrightarrow{M_3} C_3$$
+
+The monitoring function $M_i: X_{i-1} \to X_i$ is a fold — it projects the lower layer's state to a higher-level assessment. The control function $C_i: X_i \times X_{i-1} \to X_{i-1}$ is a trace — it feeds the assessment back. The weighted update $X'_{i-1} = (1 - w_i) \cdot X_{i-1} + w_i \cdot C_i(X_i, X_{i-1})$ is the Daisy Chain transition with $\alpha = w_i$.
+
+The companion theorem `metacog_is_daisy_transition` proves this equivalence by ring arithmetic. The companion theorem `metacog_convergence_factor` proves that each monitoring layer contracts the error by factor $(1 - w_i)$ — the same geometric convergence as the absorbing state, but used constructively: the metametacognitive stack converges toward correctness instead of toward a fixed point.
+
+The critical result is `c3_prevents_absorbing`: the highest layer ($C_3$, framework evaluation) detects when the base generator is stuck in a fixed point and applies a diversity perturbation. The theorem proves by contradiction that any non-zero perturbation breaks the fixed point — if the perturbed state equaled the stuck state, then $w \cdot \text{perturbation} = 0$, but $w > 0$ and the perturbation is non-zero.
+
+Applied to the Glossolalia Engine: $C_0$ is the Daisy Chain generating topology candidates. $C_1$ is the Betty compiler validating syntax. $C_2$ is the omega checker verifying formal properties ($\beta_1$ bounds, termination). $C_3$ is the bias detector that prevents the generator from collapsing to absorbing topologies. The neurosymbolic gate implements this as a generate-validate-retry loop where compilation errors feed back as context for the next attempt — the traced monoidal feedback loop from the peacemaking analysis (§6.12) applied to topology generation.
+
+The metametacognitive framework is the Daisy Chain. The monitoring weight is the mixing coefficient. The control signal is the embedding. The four layers are four whip snaps (§6.9.1) on a cognitive taper. The theory that models itself.
+
 ### 7.1 Chunked Pipelined Prefill (Wallington Rotation)
 
 https://youtu.be/xD5Lc3-5iDs?t=1071
