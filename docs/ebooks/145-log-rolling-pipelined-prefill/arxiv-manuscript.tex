@@ -85,6 +85,21 @@
 % Allow footnotes in longtable head/foot
 \IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
 \makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -939,6 +954,12 @@ winner-take-all (\texttt{0.342} and \texttt{1.375}). So the evidence
 boundary is symmetric: linear wins when cancellation or dual
 contribution is truly required; sparse selection wins when the target
 family itself is sparse and ordered.
+
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 2}]{companion-tests/artifacts/ch17-boundary-expansion-figure.png}}
+\caption{Figure 2}
+\end{figure}
 
 \emph{Figure 2. Artifact-generated near-control zoom, regime-map, and
 adversarial-controls figure assembled from the Gnosis near-control,
@@ -3306,10 +3327,22 @@ The executable topology figure is emitted automatically to
 and the sweep/ablation performance figure to
 \texttt{companion-tests/artifacts/ch17-moa-transformer-figure.\{json,md,svg\}}.
 
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 2a}]{companion-tests/artifacts/ch17-moa-topology-figure.png}}
+\caption{Figure 2a}
+\end{figure}
+
 \emph{Figure 2a. Artifact-generated \texttt{StructuredMoA} topology
 figure showing one sparse \texttt{2-of-4} routed realization against the
 dense \texttt{4-of-4} baseline, with explicit outer rotation, outer
 router, labeled heads, and inner/outer Worthington whips.}
+
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 2b}]{companion-tests/artifacts/ch17-moa-transformer-figure.png}}
+\caption{Figure 2b}
+\end{figure}
 
 \emph{Figure 2b. Artifact-generated GG-backed MoA transformer figure
 showing scale-sweep speedup, closing eval-MSE gap, and the
@@ -3453,6 +3486,12 @@ entries, and \texttt{25} generated artifacts. So the shared structure is
 ``fork, independent propagation, recombination to one output,'' but the
 recombination mechanics differ: physical path integrals sum linearly;
 computational winner/race folds select nonlinearly.
+
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 1}]{companion-tests/artifacts/ch17-correspondence-boundary-figure.png}}
+\caption{Figure 1}
+\end{figure}
 
 \emph{Figure 1. Artifact-generated correspondence boundary figure
 assembled from the invariant-loss matrix, toy-attention bootstrap
@@ -7272,6 +7311,12 @@ deficit is zero, the system is on the frontier and further
 diversification provides no topological benefit (though it may provide
 robustness, which is a separate axis). The frontier tells you exactly
 when a system needs diversification and exactly how much it will gain.
+
+\begin{figure}
+\centering
+\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 3}]{companion-tests/artifacts/ch17-american-frontier-figure.png}}
+\caption{Figure 3}
+\end{figure}
 
 \emph{Figure 3. The American Frontier: diversity vs waste across three
 substrates. \textbf{A.} Protocol framing overhead on the microfrontend
