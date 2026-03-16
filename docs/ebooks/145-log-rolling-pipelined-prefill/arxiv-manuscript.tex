@@ -5569,6 +5569,20 @@ The connection is not metaphorical.  It is the same theorem applied to different
 
 Servers get faster for the same reason peace is reachable: because diversity is the shape of optimality, and its destruction has irreducible cost.
 
+\subsubsection{15.2 From Alpha to Omega}\label{from-alpha-to-omega}
+
+The Daisy Chain's mixing coefficient is $\alpha$. The proof checker's decision procedure is $\omega$. Between them lies the complete arc of this manuscript.
+
+$\alpha$ is where the system begins: a convex interpolation between what was known (the previous state $s$) and what is new (the current token $x$). The transition $s_{t+1} = \alpha x + (1-\alpha) s_t$ is the simplest possible learning rule --- a weighted average of memory and evidence. \texttt{daisy\_transition\_coefficients\_sum} proves the weights sum to 1. \texttt{daisy\_transition\_fixed\_point} proves that agreement is absorbing: when the new evidence matches the prior state, the system stays. \texttt{daisy\_linearity\_rational} proves that linear maps distribute over this transition, which is why the Vickrey Table works --- precomputed projections compose exactly with runtime interpolation, no approximation, no error term.
+
+$\omega$ is where the system ends: the decision procedure that checks whether a Nat arithmetic inequality holds universally. When the omega checker verifies \texttt{3 * (k - 1) $\geq$ k} for all $k \geq 2$, it is confirming that the BFT impossibility threshold forces winner-take-all fold on any diverse system. The proof is a witness: $k = 2$, margin $= 1$. The witness was precomputed in the Vickrey Table. The lookup took less than a millisecond. The same theorem took Lean with Mathlib over forty-five minutes, because Lean rebuilds the entire dependency lattice to check one arithmetic fact that a table lookup resolves instantly.
+
+Between $\alpha$ and $\omega$: the Daisy Chain MOA. $k$ agents with different $\alpha$ values fork in parallel. By \texttt{diverse\_alpha\_different\_states}, different $\alpha$ values guarantee different internal states from the same input --- the agents \emph{must} diverge. By \texttt{daisy\_chain\_moa\_determinism}, the vent fraction $(k-1)/k$ exceeds the BFT majority threshold for $k \geq 2$ --- winner-take-all is the only viable fold. By \texttt{fold\_erasure}, the fold erases information. By \texttt{fold\_heat}, the erasure generates irreducible Landauer heat. The chain from $\alpha$ (where agents begin) to $\omega$ (where the proof lands) passes through every theorem in the formal surface: topology, consensus, information theory, thermodynamics.
+
+The omega checker (\texttt{omega-checker.gg}) is a Gnosis topology --- a fork/race/fold program written in the language whose compiler is a fork/race/fold pipeline. The checker verifies the theorems that prove the checker's fold is BFT-correct. The compiler verifies the checker's $\beta_1$ bounds. The model checker (\S10) verifies the compiler's temporal properties. Each layer is checked by the layer below it, and the bottom layer checks the top. The structure is not circular --- it is a fern. Each frond repeats the branching pattern of the whole, and the whole is the pattern.
+
+The manuscript began with $\alpha$: a child handing a ball to a friend in a line (\S0). It ends with $\omega$: a proof that the line was never the right topology, that the fern was always there, and that the algorithm for finding it was already running in every cell of the child's body before the ball was ever thrown.
+
 \subsubsection{15.2 The American Frontier}\label{american-frontier}
 
 The three shootoffs --- protocol framing (\S8.5), topological compression (\S9.2), and laminar pipeline scheduling (\S15.1) --- appear to be unrelated engineering benchmarks.  They are not.  All three trace the same Pareto frontier, and that frontier is mechanized.
