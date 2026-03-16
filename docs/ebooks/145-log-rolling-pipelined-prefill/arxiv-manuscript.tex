@@ -213,7 +213,7 @@ geometric terms, unmanaged topological deficit is one recurring source
 of waste or instability in the analyzed examples, and validation should
 test negative drift rather than merely count broken cases.
 
-\texttt{o~-\textgreater{}~o~-\textgreater{}~o~-\textgreater{}~o~-\textgreater{}~o~-\textgreater{}~o}
+\texttt{o\ -\textgreater{}\ o\ -\textgreater{}\ o\ -\textgreater{}\ o\ -\textgreater{}\ o\ -\textgreater{}\ o}
 
 The conveyor belt was not new when Ford adopted it in 1913. It is a path
 graph -- a line: one-dimensional, simply connected and without
@@ -479,9 +479,9 @@ computation graphs in this paper's mechanized scope under explicit
 decomposition assumptions. They have a natural topological
 characterization in terms of Betti numbers, covering spaces and homotopy
 equivalence. Within the modeled scope, selected canonical queueing
-constructions are treated as path-like or \texttt{β₁~=~0} boundary cases
-rather than as a closed identification of all queueing theory with the
-one-path limit. The quantum-mechanical vocabulary -- superposition,
+constructions are treated as path-like or \texttt{β₁\ =\ 0} boundary
+cases rather than as a closed identification of all queueing theory with
+the one-path limit. The quantum-mechanical vocabulary -- superposition,
 tunneling, interference, entanglement, collapse -- is used here as
 structural correspondence language.
 
@@ -892,26 +892,26 @@ keeping keys, values, score function and query grid fixed, linear fold
 reconstructs the teacher exactly (MSE \texttt{0.000}), winner-take-all
 incurs MSE \texttt{0.163}, and early-stop incurs MSE \texttt{1.071};
 bootstrap 95\% intervals over the query grid are
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.000,~0.000\textasciigrave{}\textasciigrave{}{]}},
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.120,~0.211\textasciigrave{}\textasciigrave{}{]}},
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.000,\ 0.000\textasciigrave{}\textasciigrave{}{]}},
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.120,\ 0.211\textasciigrave{}\textasciigrave{}{]}},
 and
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.858,~1.288\textasciigrave{}\textasciigrave{}{]}}
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.858,\ 1.288\textasciigrave{}\textasciigrave{}{]}}
 respectively, and the exact-within-0.01 rates are \texttt{1.000},
 \texttt{0.185}, and \texttt{0.074}. A seeded Gnosis cancellation
 benchmark then lifts the same claim into a learned setting
 (\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}fold-\allowbreak{}training-\allowbreak{}benchmark.\allowbreak{}\{json,md\}}):
 three parameter-matched \texttt{.gg} programs keep topology, parameter
 count, and data fixed and differ only in
-\texttt{FOLD~\{~strategy:~...~\}}. Across 8 seeds on the
-cancellation-sensitive target family \texttt{left~-~right}, linear fold
-reaches eval MSE \texttt{0.000} with 95\% seed-bootstrap interval
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.000,~0.000\textasciigrave{}\textasciigrave{}{]}}
+\texttt{FOLD\ \{\ strategy:\ ...\ \}}. Across 8 seeds on the
+cancellation-sensitive target family \texttt{left\ -\ right}, linear
+fold reaches eval MSE \texttt{0.000} with 95\% seed-bootstrap interval
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.000,\ 0.000\textasciigrave{}\textasciigrave{}{]}}
 and exact-within-0.05 rate \texttt{1.000}, winner-take-all reaches
 \texttt{0.408} with interval
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.396,~0.421\textasciigrave{}\textasciigrave{}{]}}
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.396,\ 0.421\textasciigrave{}\textasciigrave{}{]}}
 and exact rate \texttt{0.038}, and early-stop reaches \texttt{0.735}
 with interval
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.732,~0.740\textasciigrave{}\textasciigrave{}{]}}
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.732,\ 0.740\textasciigrave{}\textasciigrave{}{]}}
 and exact rate \texttt{0.000}; cancellation-line mean absolute error is
 \texttt{0.000}, \texttt{0.834}, and \texttt{0.764} respectively. A
 harder seeded Gnosis mini-MoE routing benchmark
@@ -919,11 +919,11 @@ harder seeded Gnosis mini-MoE routing benchmark
 keeps a four-expert routed topology and a fixed 16-parameter budget
 while swapping only the fold rule: linear fold reaches eval MSE
 \texttt{0.001} with 95\% seed-bootstrap interval
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.001,~0.001\textasciigrave{}\textasciigrave{}{]}},
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.001,\ 0.001\textasciigrave{}\textasciigrave{}{]}},
 winner-take-all reaches \texttt{0.328} with interval
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.267,~0.389\textasciigrave{}\textasciigrave{}{]}},
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.267,\ 0.389\textasciigrave{}\textasciigrave{}{]}},
 and early-stop reaches \texttt{0.449} with interval
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.444,~0.457\textasciigrave{}\textasciigrave{}{]}};
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.444,\ 0.457\textasciigrave{}\textasciigrave{}{]}};
 the dual-active-region absolute error is \texttt{0.027}, \texttt{0.402},
 and \texttt{0.474}, showing the same ranking on a genuinely routed
 learned task where two paths should contribute. A paired
@@ -1216,8 +1216,8 @@ rather than a general partition-tolerance theorem.
 
 Within that same bounded protocol surface, the companion now also proves
 a narrower session-consistency statement: if reads are restricted to
-committed states (no in-flight write, \texttt{pendingVersion~=~0}), then
-each observed session read equals the acknowledged version, and
+committed states (no in-flight write, \texttt{pendingVersion\ =\ 0}),
+then each observed session read equals the acknowledged version, and
 therefore satisfies read-your-writes and monotonic reads as acknowledged
 versions increase. The boundary is explicit here too: allowing reads
 against in-flight writes admits pending-read regression, and dropping
@@ -1373,7 +1373,7 @@ The current formal companion already proves one sharp boundary behind
 this language: from a nontrivial fork, a deterministic single-survivor
 collapse cannot occur with both zero vent and zero repair debt, and over
 the normalized failure trajectories studied there the exact minimum
-collapse cost is \texttt{initialLive~-~1}. That is the narrow formal
+collapse cost is \texttt{initialLive\ -\ 1}. That is the narrow formal
 content behind phrases like ``the price of determinism'' in this
 manuscript's scope.
 
@@ -1993,7 +1993,7 @@ Frames}\label{covering-spaces-and-self-describing-frames}
 A covering space maps onto a base space such that every point has a
 neighborhood that is evenly covered. Self-describing frames create a
 covering space over the computation graph. Each frame carries
-\texttt{(stream\_id,~sequence)} -- its coordinates in the covering
+\texttt{(stream\_id,\ sequence)} -- its coordinates in the covering
 space. The base space is the sequential computation. The covering space
 is the multiplexed computation.
 
@@ -2151,9 +2151,9 @@ are \emph{stronger} (C3 demands deterministic fold, C4 demands finite
 termination). In the companion ledger, the general queueing-containment
 statement is still an explicit-assumption schema plus executable checks,
 not a closed theorem that all queueing theory literally is the
-\texttt{β₁~=~0} fork/race/fold case. What is fully constructive today is
-narrower: finite-trace sample-path Little's Law, a dedicated stable
-\texttt{M/M/1} one-path witness with \texttt{β₁~=~0}, capacity
+\texttt{β₁\ =\ 0} fork/race/fold case. What is fully constructive today
+is narrower: finite-trace sample-path Little's Law, a dedicated stable
+\texttt{M/M/1} one-path witness with \texttt{β₁\ =\ 0}, capacity
 \texttt{1}, and stationary mean occupancy \(\lambda / (\mu - \lambda)\),
 the bounded/open-network conservation layers, and the Jackson-style
 product-form layer under an explicit stable throughput witness. The
@@ -2290,35 +2290,35 @@ point after \texttt{toReal}, and already closes the same constructive
 mean-occupancy and \texttt{lintegral} balance laws, so the
 spectral/resolvent route no longer has to be read only through the
 envelope ladder. One fully raw route is now packaged too: if
-\texttt{maxIncomingRoutingMass~\textless{}~1} and the coarse envelope
-\texttt{maxExternalArrival~/\allowbreak{}~(1~-\allowbreak{}~maxIncomingRoutingMass)} lies below
-\texttt{minServiceRate}, the finite open network is instantiated
+\texttt{maxIncomingRoutingMass\ \textless{}\ 1} and the coarse envelope
+\texttt{maxExternalArrival\ /\allowbreak{}\ (1\ -\allowbreak{}\ maxIncomingRoutingMass)} lies
+below \texttt{minServiceRate}, the finite open network is instantiated
 constructively with no hand-supplied throughput witness, and the same
 mean-occupancy and \texttt{lintegral} balance laws follow from raw
-\texttt{(λ,~P,~μ)} data under that explicit criterion. There is now also
-a nontrivial raw exact subclass of that story: the bounded two-node
+\texttt{(λ,\ P,\ μ)} data under that explicit criterion. There is now
+also a nontrivial raw exact subclass of that story: the bounded two-node
 feed-forward ceiling witness has nilpotent routing
-(\texttt{P\^{}2~=~0}), so its explicit candidate already equals the
+(\texttt{P\^{}2\ =\ 0}), so its explicit candidate already equals the
 constructive least fixed point and the same mean-occupancy /
 \texttt{lintegral} laws close directly from raw arrivals, reroute
 probability, and service rates. The Jackson side is sharper than that
 single coarse route: the same package now closes the finite-network
 product-form and \texttt{lintegral} laws at any stage of the descending
-raw envelope ladder \texttt{throughputEnvelopeApprox~n} once that chosen
-stage already lies below service rates, with \texttt{n~=~1} recovering
-the local envelope and \texttt{n~=~2} the second-order envelope. The
-companion also now names the state-dependent frontier formally: an
-assumption-parameterized Foster-Lyapunov/irreducibility schema turns
-state-dependent service and routing hypotheses into positive recurrence,
-stationary-law existence, and stationary or terminal queue-balance
-identities; one concrete bounded two-node adaptive rerouting family now
-closes that route end to end with its own ceiling kernel, spectral side
-conditions, throughput witness, adaptive witness catalog, and linear
-drift proof, with the Lean export surfaced in
-\texttt{formal-\allowbreak{}adaptive-\allowbreak{}witness-\allowbreak{}catalog.\allowbreak{}\{json,md\}} as
-\texttt{α~=~(1/4,~11/40)}, drift gap \texttt{1/8}, and spectral radius
-\texttt{0}; and the generic adaptive shell now supports five derived
-drift routes once the ceiling comparison data is in place: an
+raw envelope ladder \texttt{throughputEnvelopeApprox\ n} once that
+chosen stage already lies below service rates, with \texttt{n\ =\ 1}
+recovering the local envelope and \texttt{n\ =\ 2} the second-order
+envelope. The companion also now names the state-dependent frontier
+formally: an assumption-parameterized Foster-Lyapunov/irreducibility
+schema turns state-dependent service and routing hypotheses into
+positive recurrence, stationary-law existence, and stationary or
+terminal queue-balance identities; one concrete bounded two-node
+adaptive rerouting family now closes that route end to end with its own
+ceiling kernel, spectral side conditions, throughput witness, adaptive
+witness catalog, and linear drift proof, with the Lean export surfaced
+in \texttt{formal-\allowbreak{}adaptive-\allowbreak{}witness-\allowbreak{}catalog.\allowbreak{}\{json,md\}} as
+\texttt{α\ =\ (1/4,\ 11/40)}, drift gap \texttt{1/8}, and spectral
+radius \texttt{0}; and the generic adaptive shell now supports five
+derived drift routes once the ceiling comparison data is in place: an
 automatically synthesized minimum-slack bottleneck selector, a raw-score
 normalization route, a positive-part normalization route for arbitrary
 real scores, an explicit selector-based one-hot slack decomposition, or
@@ -2333,10 +2333,10 @@ finite envelope-ladder closure, an adaptive comparison layer for
 state-indexed routing families, an assumption-parameterized
 state-dependent stability interface, and an ergodic interface for open
 networks. What it still does not provide is a constructive derivation of
-such exact fixed points from raw \texttt{(λ,~P,~μ)} outside the current
-envelope/residual routes, automatic discovery of richer chosen-Lyapunov
-decompositions for arbitrary adaptive kernels, or a positive-recurrence
-derivation for arbitrary open stochastic networks.
+such exact fixed points from raw \texttt{(λ,\ P,\ μ)} outside the
+current envelope/residual routes, automatic discovery of richer
+chosen-Lyapunov decompositions for arbitrary adaptive kernels, or a
+positive-recurrence derivation for arbitrary open stochastic networks.
 
 The compiler-side version of that gap is now explicit too: beyond the
 bounded affine queue witness, Betti still must synthesize the measurable
@@ -2399,14 +2399,15 @@ specific characteristic of the system:
 In this modeling language, the canonical M/M/1 queue is represented as a
 \(\beta_1 = 0\) pipeline with one stage and Poisson arrivals. The
 companion formal package now closes that canonical witness
-constructively: the one-path boundary is packaged with \texttt{β₁~=~0},
-capacity \texttt{β₁~+~1~=~1}, and the stationary mean occupancy law
-\(\lambda / (\mu - \lambda)\) for the stable regime \(\lambda < \mu\).
-The \(Re\) framework does not contradict queueing theory -- it embeds
-canonical one-path constructions in that scoped sense. When
-\(\beta_1 = 0\), \(Re\) reduces to utilization. When \(\beta_1 > 0\),
-\(Re\) adds topology-aware vocabulary for sequential-to-multiplexed
-transition, fork-width tuning and topological mismatch cost.
+constructively: the one-path boundary is packaged with
+\texttt{β₁\ =\ 0}, capacity \texttt{β₁\ +\ 1\ =\ 1}, and the stationary
+mean occupancy law \(\lambda / (\mu - \lambda)\) for the stable regime
+\(\lambda < \mu\). The \(Re\) framework does not contradict queueing
+theory -- it embeds canonical one-path constructions in that scoped
+sense. When \(\beta_1 = 0\), \(Re\) reduces to utilization. When
+\(\beta_1 > 0\), \(Re\) adds topology-aware vocabulary for
+sequential-to-multiplexed transition, fork-width tuning and topological
+mismatch cost.
 
 \subsubsection{4.2 Erlang's Formula as Fold Without
 Fork}\label{erlangs-formula-as-fold-without-fork}
@@ -2571,14 +2572,15 @@ the \emph{first sufficient result} and vents everything else -- it
 ``tunnels through'' the waiting barrier.
 
 Tunneling is not a fifth primitive. It is a composition:
-\texttt{race(predicate)~+~vent(losers)} -- race with a quality predicate
-instead of a speed predicate. Topologically, tunneling operates on
-homotopy-equivalent paths (§3.2) but selects by a criterion other than
-arrival time. Where race exploits temporal homotopy (all paths reach the
-same destination, pick the fastest), tunneling exploits quality homotopy
-(all paths produce valid results, pick the first that's sufficient). The
-fallback to race or fold when the predicate is too strict confirms this:
-tunneling degrades gracefully into its constituent primitives.
+\texttt{race(predicate)\ +\ vent(losers)} -- race with a quality
+predicate instead of a speed predicate. Topologically, tunneling
+operates on homotopy-equivalent paths (§3.2) but selects by a criterion
+other than arrival time. Where race exploits temporal homotopy (all
+paths reach the same destination, pick the fastest), tunneling exploits
+quality homotopy (all paths produce valid results, pick the first that's
+sufficient). The fallback to race or fold when the predicate is too
+strict confirms this: tunneling degrades gracefully into its constituent
+primitives.
 
 Use case: a diagnostic pipeline forks blood test, MRI and genetic
 screening. The blood test returns a conclusive positive. Tunneling
@@ -3320,8 +3322,8 @@ through the \texttt{StructuredMoA} primitive and reported in
 Across the compact, baseline, and wide workload sweep, the sparse
 surface retains multi-x eval wall-clock speedups while the eval-MSE gap
 against the dense regular baseline closes from \texttt{0.0806}
-(\texttt{0.0829~-~0.0023}) to \texttt{0.0025}
-(\texttt{0.0033~-~0.0008}). At the wide workload, the sparse surface
+(\texttt{0.0829\ -\ 0.0023}) to \texttt{0.0025}
+(\texttt{0.0033\ -\ 0.0008}). At the wide workload, the sparse surface
 runs with \texttt{4} active heads rather than \texttt{16} and
 \texttt{16} frames rather than \texttt{64}; on the sparsity-ablation
 frontier, full MoA reaches compute-adjusted exact \texttt{0.2306},
@@ -3442,11 +3444,11 @@ Lean theorem package
 {[}12, 13{]}, the algebraic skeleton of the same boundary is mechanized
 in a minimal integer-valued model: linear fold is globally
 partition-additive, preserves the cancellation target family
-\texttt{x~+~(-x)~=~0}, and is equivalent to the more general
-cancellation-difference family \texttt{fold(x,-y)~=~x~-~y}; any
+\texttt{x\ +\ (-x)\ =\ 0}, and is equivalent to the more general
+cancellation-difference family \texttt{fold(x,-y)\ =\ x\ -\ y}; any
 non-additive fold must miss some member of that family, and
-winner-selection/early-stop miss the concrete \texttt{x~+~(-x)} witness.
-A Lean-emitted witness catalog
+winner-selection/early-stop miss the concrete \texttt{x\ +\ (-x)}
+witness. A Lean-emitted witness catalog
 (\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}formal-\allowbreak{}witness-\allowbreak{}catalog.\allowbreak{}\{json,md\}})
 now exports \texttt{7} concrete cancellation, partition, and order
 counterexamples, and \texttt{quantum-correspondence-boundary.test.ts}
@@ -3456,10 +3458,10 @@ A seeded Gnosis cancellation benchmark
 then keeps topology, parameter count, and data fixed across three
 \texttt{.gg} programs and changes only the fold strategy: linear fold
 reaches eval MSE \texttt{0.000} with 95\% seed-bootstrap interval
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.000,~0.000\textasciigrave{}\textasciigrave{}{]}},
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.000,\ 0.000\textasciigrave{}\textasciigrave{}{]}},
 while winner-take-all and early-stop settle at
 \texttt{0.408}/\texttt{0.735} with intervals
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.396,~0.421\textasciigrave{}\textasciigrave{}{]}}/\texttt{{[}\textasciigrave{}\textasciigrave{}0.732,~0.740\textasciigrave{}\textasciigrave{}{]}};
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.396,\ 0.421\textasciigrave{}\textasciigrave{}{]}}/\texttt{{[}\textasciigrave{}\textasciigrave{}0.732,\ 0.740\textasciigrave{}\textasciigrave{}{]}};
 cancellation-line absolute error is \texttt{0.000}, \texttt{0.834}, and
 \texttt{0.764}. A paired seeded negative-control benchmark
 (\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}negative-\allowbreak{}controls.\allowbreak{}\{json,md\}})
@@ -3475,10 +3477,10 @@ keeps a four-expert routed topology and fixed 16-parameter budget while
 swapping only the fold strategy: linear fold reaches eval MSE
 \texttt{0.001}, winner-take-all \texttt{0.328}, and early-stop
 \texttt{0.449}, with 95\% seed-bootstrap intervals
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.001,~0.001\textasciigrave{}\textasciigrave{}{]}},
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.267,~0.389\textasciigrave{}\textasciigrave{}{]}},
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.001,\ 0.001\textasciigrave{}\textasciigrave{}{]}},
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.267,\ 0.389\textasciigrave{}\textasciigrave{}{]}},
 and
-\texttt{{[}\textasciigrave{}\textasciigrave{}0.444,~0.457\textasciigrave{}\textasciigrave{}{]}};
+\texttt{{[}\textasciigrave{}\textasciigrave{}0.444,\ 0.457\textasciigrave{}\textasciigrave{}{]}};
 the dual-active-region absolute error is \texttt{0.027}, \texttt{0.402},
 and \texttt{0.474}. The assembled manuscript figures are emitted
 automatically to
@@ -3488,7 +3490,7 @@ and
 and the full evidence bundle is fingerprinted in
 \texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}ch17-\allowbreak{}replication-\allowbreak{}pack.\allowbreak{}\{json,md\}}
 with the one-command outside rerun surface
-\texttt{bun~run~test:ch17-external-replication}, \texttt{62} manifest
+\texttt{bun\ run\ test:ch17-external-replication}, \texttt{62} manifest
 entries, and \texttt{25} generated artifacts. So the shared structure is
 ``fork, independent propagation, recombination to one output,'' but the
 recombination mechanics differ: physical path integrals sum linearly;
@@ -5219,10 +5221,10 @@ Offset  Size   Field
 \textbf{10 bytes.} Every frame carries its own identity. Every frame is
 self-describing. No ordered delivery is required. The
 \texttt{stream\_id} + \texttt{sequence} pair is the coordinate in the
-covering space (§3.4). Flags compose: \texttt{RACE~~FIN} means ``racing
-AND final frame.'' The frame reassembler (§3.4) is the covering map back
-to sequential order. Payloads are zerocopy: the codec writes 10 bytes in
-front of the existing \texttt{ArrayBuffer} view.
+covering space (§3.4). Flags compose: \texttt{RACE\ \ FIN} means
+``racing AND final frame.'' The frame reassembler (§3.4) is the covering
+map back to sequential order. Payloads are zerocopy: the codec writes 10
+bytes in front of the existing \texttt{ArrayBuffer} view.
 
 \subsubsection{8.2.1 The Self-Describing Frame as Pervasive
 Abstraction}\label{the-self-describing-frame-as-pervasive-abstraction}
@@ -5234,7 +5236,7 @@ computation engine.
 On the wire, it is the \textbf{FlowFrame} -- 10 bytes of header carrying
 \texttt{stream\_id}, \texttt{sequence}, \texttt{flags} and
 \texttt{length}. On the computation side, it is the \textbf{WorkFrame}
--- the same \texttt{(stream\_id,~sequence)} identity enriched with a
+-- the same \texttt{(stream\_id,\ sequence)} identity enriched with a
 typed payload \texttt{T} and metadata:
 
 \begin{verbatim}
@@ -6490,9 +6492,9 @@ durability/stability under branch-isolating failures with weakly fair
 repair, bounded asynchronous quorum read/write visibility under explicit
 majority-style quorum assumptions, bounded connected-quorum exactness
 under explicit connectivity partitions and the additional
-\texttt{pendingVersion~=~0} committed-read restriction, bounded
+\texttt{pendingVersion\ =\ 0} committed-read restriction, bounded
 committed-read session consistency under the additional
-\texttt{pendingVersion~=~0} read restriction, bounded multi-writer
+\texttt{pendingVersion\ =\ 0} read restriction, bounded multi-writer
 committed-read ordering under globally unique ballots and the additional
 no-pending-read restriction, bounded committed-state history refinement
 to the latest completed-write prefix under the same no-pending-read
@@ -6521,7 +6523,7 @@ closure under spectral uniqueness plus a supplied nonnegative stable
 real traffic solution, a raw finite Jackson closure under the
 \texttt{maxIncomingRoutingMass}/\texttt{minServiceRate} criterion, a
 sharper envelope-ladder finite Jackson closure at any certified stage
-\texttt{throughputEnvelopeApprox~n}, a state-dependent open-network
+\texttt{throughputEnvelopeApprox\ n}, a state-dependent open-network
 stability/terminal-balance schema whose recurrence and stationary-law
 layer is derived from explicit kernel witnesses, a concrete bounded
 adaptive raw-ceiling family, trajectory-level Cesaro balance for
@@ -6556,8 +6558,8 @@ surface with emitted \texttt{*\_measurable\_observable},
 \texttt{*\_measurable\_observable\_drift}, and
 \texttt{*\_measurable\_continuous\_harris\_certified} theorems when
 syntax supplies
-\texttt{0~\textless{}~driftGap~\textless{}=~observableScale}, but still
-stops short of synthesizing the measurable small set \(C\), the
+\texttt{0\ \textless{}\ driftGap\ \textless{}=\ observableScale}, but
+still stops short of synthesizing the measurable small set \(C\), the
 minorization package, the continuous Lyapunov witness \(V(x)\), richer
 Lyapunov families, or non-queue measurable kernels directly from
 \texttt{.gg} syntax, and also stops short of
@@ -6608,16 +6610,16 @@ traffic equations, an exact finite Jackson fixed-point closure under
 spectral uniqueness plus a supplied nonnegative stable real traffic
 solution, a raw finite Jackson closure under the coarse
 \texttt{maxIncomingRoutingMass}/\texttt{minServiceRate} criterion, a
-finite-step Jackson envelope ladder \texttt{throughputEnvelopeApprox~n}
+finite-step Jackson envelope ladder \texttt{throughputEnvelopeApprox\ n}
 whose first instances are the global max-external/max-incoming bound,
 the nodewise bound
 \(\lambda_i + \mathrm{incomingMass}_i \cdot \mathrm{maxExternalArrival} / (1-\mathrm{maxIncomingRoutingMass})\),
 and the deeper second-order bound
 \(\lambda_i + \sum_j \mathrm{localEnvelope}_j P_{j i}\), a
 descending-ladder theorem plus the explicit absolute-error certificate
-\texttt{throughputEnvelopeApprox~n~-\allowbreak{}~α\_spec~≤~throughputEnvelopeResidual~n},
+\texttt{throughputEnvelopeApprox\ n\ -\allowbreak{}\ α\_spec\ ≤\ throughputEnvelopeResidual\ n},
 the matching lower-side certificate
-\texttt{α\_spec~-\allowbreak{}~(trafficApprox~n).\allowbreak{}toReal~≤~throughputEnvelopeResidual~(n+1)},
+\texttt{α\_spec\ -\allowbreak{}\ (trafficApprox\ n).\allowbreak{}toReal\ ≤\ throughputEnvelopeResidual\ (n+1)},
 a formal lower/upper bracket between lower real traffic iterates and
 upper Jackson envelope iterates, direct service certificates against
 that ladder, and the stronger closure that any certified stage of that
@@ -7123,15 +7125,15 @@ that has ever lived has executed this algorithm. The algorithm for peace
 is coded into every single DNA operation. This paper did not discover
 it. It gave the algorithm a name, a topology, and a proof.
 
-\emph{The Geometry of Failure Contains Hope. \textbf{A.}~The semiotic
-deficit: thought (\(β_{1} = k - 1\)) folds through a single articulation
-stream (\(β_{1} = 0\)); vented paths fall into the void
-(\(\Deltaβ = k - 1\)). \textbf{B.}~Two trajectories diverge from the
+\emph{The Geometry of Failure Contains Hope. \textbf{A.} The semiotic
+deficit: thought (\(β_{1} = k - 1\)) folds through a single articulation
+stream (\(β_{1} = 0\)); vented paths fall into the void
+(\(\Deltaβ = k - 1\)). \textbf{B.} Two trajectories diverge from the
 same initial deficit: war (cumulative Landauer heat, monotone
 increasing) versus peace (deficit converging to the fixed point under
-context accumulation). \textbf{C.}~The \texttt{hope} theorem bundles
+context accumulation). \textbf{C.} The \texttt{hope} theorem bundles
 five machine-verified guarantees: confusion is real, bounded, reducible,
-eliminable, and convergent. \textbf{D.}~DNA replication as the original
+eliminable, and convergent. \textbf{D.} DNA replication as the original
 implementation: fork at origin, polymerase race, terminus fold, Okazaki
 vent, ligase as traced monoidal feedback operator, complete chromosome
 as fixed point.}
@@ -7160,16 +7162,16 @@ compose into a single claim: \emph{diversity is not a preference or a
 heuristic --- it is a topological and thermodynamic necessity for
 optimality in the strategy-space sense.} The composition theorem
 \texttt{diversity\_optimality\_master}
-(\texttt{DiversityOptimality.lean}) bundles five pillars:
-(1)~monotonicity --- adding a branch never increases race minimum;
-(2)~subsumption --- racing subsumes every fixed strategy; (3)~necessity
---- reducing diversity below intrinsic \(\beta_1\) forces information
-loss; (4)~optimality --- matched diversity yields zero deficit and
-lossless transport; (5)~irreversibility --- collapsing diversity
-requires waste and generates Landauer heat.
+(\texttt{DiversityOptimality.lean}) bundles five pillars: (1)
+monotonicity --- adding a branch never increases race minimum; (2)
+subsumption --- racing subsumes every fixed strategy; (3) necessity ---
+reducing diversity below intrinsic \(\beta_1\) forces information loss;
+(4) optimality --- matched diversity yields zero deficit and lossless
+transport; (5) irreversibility --- collapsing diversity requires waste
+and generates Landauer heat.
 
 The theorem has an immediate engineering consequence: the
-\textbf{laminar pipeline} (Layer~8 of the Aeon stack). Instead of
+\textbf{laminar pipeline} (Layer 8 of the Aeon stack). Instead of
 \texttt{sendfile(2)} --- which transmits raw bytes via kernel DMA with
 zero compression --- the laminar pipeline chunks the file, races all
 available codecs (identity, gzip, brotli, deflate) per chunk, picks the
@@ -7183,14 +7185,14 @@ candidate, so the pipeline never does worse than raw.
 THM-TOPO-RACE-SUBSUMPTION proves that the laminar pipeline strictly
 dominates sendfile on \emph{wire bytes}: the racing total is provably
 \(\leq\) the identity total. It does not prove strict domination on
-\emph{end-to-end latency}. The laminar pipeline incurs encode cost
-(13.6 ms on the microfrontend, 45.9 ms on big content) that sendfile
-avoids entirely --- sendfile is zero-CPU kernel DMA. The pipeline wins
-on wall-clock time only when network transfer savings exceed encode
-overhead. For the microfrontend: the pipeline saves \(\approx\)55 KB of
-wire bytes at an encode cost of \(\approx\)11 ms. The crossover
+\emph{end-to-end latency}. The laminar pipeline incurs encode cost (13.6
+ms on the microfrontend, 45.9 ms on big content) that sendfile avoids
+entirely --- sendfile is zero-CPU kernel DMA. The pipeline wins on
+wall-clock time only when network transfer savings exceed encode
+overhead. For the microfrontend: the pipeline saves \(\approx\)55 KB of
+wire bytes at an encode cost of \(\approx\)11 ms. The crossover
 bandwidth is \(55\text{\,KB}/11\text{\,ms} \approx 5\text{\,MB/s}\).
-Below 5 MB/s, the laminar pipeline is faster end-to-end; above 5 MB/s,
+Below 5 MB/s, the laminar pipeline is faster end-to-end; above 5 MB/s,
 sendfile + pre-compressed brotli (computed at build time) delivers lower
 time-to-first-byte. Additionally, pre-compressed content
 (brotli-at-build-time served via sendfile) avoids runtime encode cost
@@ -7199,8 +7201,8 @@ CPU work. The laminar pipeline's advantage is \emph{adaptivity} --- it
 handles mixed compressible/incompressible content without build-time
 configuration --- not universal latency superiority.
 
-The stack folds in on itself: the diversity theorem at Layer~8 is
-verified by the model checker at Layer~1, which is itself a
+The stack folds in on itself: the diversity theorem at Layer 8 is
+verified by the model checker at Layer 1, which is itself a
 fork/race/fold computation. The same algebra reappears at each layer ---
 not because it loops, but because the primitive self-composes, like a
 fern whose fronds repeat the branching pattern of the whole.
