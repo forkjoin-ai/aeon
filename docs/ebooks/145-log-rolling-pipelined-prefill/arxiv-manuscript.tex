@@ -2,8 +2,10 @@
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \documentclass[
+  11pt,
 ]{article}
 \usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
 \usepackage{iftex}
@@ -113,6 +115,11 @@
 \author{}
 \date{}
 
+
+\usepackage{seqsplit}
+\tolerance=9999
+\emergencystretch=3em
+\hbadness=9999
 \begin{document}
 
 \section{\texorpdfstring{\textbf{Finding Hope in the Shape of Failure}:
@@ -880,7 +887,7 @@ The prediction is testable: ablate the parallel-path structure, measure
 \(\Delta_\beta\) of the modified architecture, and correlate that with
 the performance drop. A deterministic companion toy-attention harness
 now makes the narrow version executable at fixed parameters
-(\texttt{companion-tests/artifacts/toy-attention-fold-ablation.\{json,md\}}):
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}toy-\allowbreak{}attention-\allowbreak{}fold-\allowbreak{}ablation.\allowbreak{}\{json,md\}}):
 keeping keys, values, score function and query grid fixed, linear fold
 reconstructs the teacher exactly (MSE \texttt{0.000}), winner-take-all
 incurs MSE \texttt{0.163}, and early-stop incurs MSE \texttt{1.071};
@@ -892,7 +899,7 @@ and
 respectively, and the exact-within-0.01 rates are \texttt{1.000},
 \texttt{0.185}, and \texttt{0.074}. A seeded Gnosis cancellation
 benchmark then lifts the same claim into a learned setting
-(\texttt{companion-tests/artifacts/gnosis-fold-training-benchmark.\{json,md\}}):
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}fold-\allowbreak{}training-\allowbreak{}benchmark.\allowbreak{}\{json,md\}}):
 three parameter-matched \texttt{.gg} programs keep topology, parameter
 count, and data fixed and differ only in
 \texttt{FOLD~\{~strategy:~...~\}}. Across 8 seeds on the
@@ -908,7 +915,7 @@ with interval
 and exact rate \texttt{0.000}; cancellation-line mean absolute error is
 \texttt{0.000}, \texttt{0.834}, and \texttt{0.764} respectively. A
 harder seeded Gnosis mini-MoE routing benchmark
-(\texttt{companion-tests/artifacts/gnosis-moe-routing-benchmark.\{json,md\}})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}moe-\allowbreak{}routing-\allowbreak{}benchmark.\allowbreak{}\{json,md\}})
 keeps a four-expert routed topology and a fixed 16-parameter budget
 while swapping only the fold rule: linear fold reaches eval MSE
 \texttt{0.001} with 95\% seed-bootstrap interval
@@ -921,28 +928,28 @@ the dual-active-region absolute error is \texttt{0.027}, \texttt{0.402},
 and \texttt{0.474}, showing the same ranking on a genuinely routed
 learned task where two paths should contribute. A paired
 negative-control artifact
-(\texttt{companion-tests/artifacts/gnosis-negative-controls.\{json,md\}})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}negative-\allowbreak{}controls.\allowbreak{}\{json,md\}})
 then reuses those same affine and routed topologies on one-path task
 families where additive recombination is unnecessary; there the
 separation collapses exactly as predicted, with all three fold rules
 reaching eval MSE \texttt{0.000}, exact-within-tolerance rate
 \texttt{1.000}, and zero inter-strategy gap on both the affine-left-only
 and positive-x single-expert controls. A finer near-control zoom
-(\texttt{companion-tests/artifacts/gnosis-near-control-sweep.\{json,md\}})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}near-\allowbreak{}control-\allowbreak{}sweep.\allowbreak{}\{json,md\}})
 then shows how long that parity persists before measurable divergence
 opens: in the affine family parity holds through cancellation weight
 \texttt{0.350} and the first separated point appears at \texttt{0.400},
 while in the routed family parity holds through dual-activation weight
 \texttt{0.600} and the first separated point appears at \texttt{0.650}.
 The next layer is now a regime map rather than just endpoint witnesses
-(\texttt{companion-tests/artifacts/gnosis-fold-boundary-regime-sweep.\{json,md\}}):
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}fold-\allowbreak{}boundary-\allowbreak{}regime-\allowbreak{}sweep.\allowbreak{}\{json,md\}}):
 in the affine family the first separated regime appears at cancellation
 weight \texttt{0.500} and the final linear-vs-best-nonlinear eval-MSE
 advantage reaches \texttt{0.393}, while in the routed family the first
 separated regime appears at dual-activation weight \texttt{0.750} and
 the final linear advantage reaches \texttt{0.111}. The converse side is
 also executable in
-\texttt{companion-tests/artifacts/gnosis-adversarial-controls-benchmark.\{json,md\}}:
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}adversarial-\allowbreak{}controls-\allowbreak{}benchmark.\allowbreak{}\{json,md\}}:
 on the winner-aligned signed max-by-magnitude affine task,
 winner-take-all beats linear and early-stop in final eval MSE
 (\texttt{0.095} vs \texttt{0.271} vs \texttt{0.484}) and learning-curve
@@ -957,7 +964,7 @@ family itself is sparse and ordered.
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 2}]{companion-tests/artifacts/ch17-boundary-expansion-figure.png}}
+\includegraphics[width=\textwidth,keepaspectratio,alt={Figure 2}]{companion-tests/artifacts/ch17-boundary-expansion-figure.png}
 \caption{Figure 2}
 \end{figure}
 
@@ -2284,7 +2291,7 @@ mean-occupancy and \texttt{lintegral} balance laws, so the
 spectral/resolvent route no longer has to be read only through the
 envelope ladder. One fully raw route is now packaged too: if
 \texttt{maxIncomingRoutingMass~\textless{}~1} and the coarse envelope
-\texttt{maxExternalArrival~/~(1~-~maxIncomingRoutingMass)} lies below
+\texttt{maxExternalArrival~/\allowbreak{}~(1~-\allowbreak{}~maxIncomingRoutingMass)} lies below
 \texttt{minServiceRate}, the finite open network is instantiated
 constructively with no hand-supplied throughput witness, and the same
 mean-occupancy and \texttt{lintegral} balance laws follow from raw
@@ -2308,7 +2315,7 @@ identities; one concrete bounded two-node adaptive rerouting family now
 closes that route end to end with its own ceiling kernel, spectral side
 conditions, throughput witness, adaptive witness catalog, and linear
 drift proof, with the Lean export surfaced in
-\texttt{formal-adaptive-witness-catalog.\{json,md\}} as
+\texttt{formal-\allowbreak{}adaptive-\allowbreak{}witness-\allowbreak{}catalog.\allowbreak{}\{json,md\}} as
 \texttt{α~=~(1/4,~11/40)}, drift gap \texttt{1/8}, and spectral radius
 \texttt{0}; and the generic adaptive shell now supports five derived
 drift routes once the ceiling comparison data is in place: an
@@ -3307,9 +3314,9 @@ fork/race/fold with selective venting.
 
 \textbf{A GG-backed sparse transformer witness now makes that recursive
 claim executable.} The sparse family is declared directly in
-\texttt{open-source/gnosis/examples/benchmarks/moa-transformer-moa.gg}
+\texttt{open-\allowbreak{}source/\allowbreak{}gnosis/\allowbreak{}examples/\allowbreak{}benchmarks/\allowbreak{}moa-\allowbreak{}transformer-\allowbreak{}moa.\allowbreak{}gg}
 through the \texttt{StructuredMoA} primitive and reported in
-\texttt{companion-tests/artifacts/gnosis-moa-transformer-evidence-benchmark.\{json,md\}}.
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}moa-\allowbreak{}transformer-\allowbreak{}evidence-\allowbreak{}benchmark.\allowbreak{}\{json,md\}}.
 Across the compact, baseline, and wide workload sweep, the sparse
 surface retains multi-x eval wall-clock speedups while the eval-MSE gap
 against the dense regular baseline closes from \texttt{0.0806}
@@ -3323,13 +3330,13 @@ without inner sparsity, while the under-routed regime degrades to eval
 MSE \texttt{0.2233} and exact-within-tolerance \texttt{0.1900}.
 
 The executable topology figure is emitted automatically to
-\texttt{companion-tests/artifacts/ch17-moa-topology-figure.\{json,md,svg\}}
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}ch17-\allowbreak{}moa-\allowbreak{}topology-\allowbreak{}figure.\allowbreak{}\{json,md,svg\}}
 and the sweep/ablation performance figure to
-\texttt{companion-tests/artifacts/ch17-moa-transformer-figure.\{json,md,svg\}}.
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}ch17-\allowbreak{}moa-\allowbreak{}transformer-\allowbreak{}figure.\allowbreak{}\{json,md,svg\}}.
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 2a}]{companion-tests/artifacts/ch17-moa-topology-figure.png}}
+\includegraphics[width=\textwidth,keepaspectratio,alt={Figure 2a}]{companion-tests/artifacts/ch17-moa-topology-figure.png}
 \caption{Figure 2a}
 \end{figure}
 
@@ -3340,7 +3347,7 @@ router, labeled heads, and inner/outer Worthington whips.}
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 2b}]{companion-tests/artifacts/ch17-moa-transformer-figure.png}}
+\includegraphics[width=\textwidth,keepaspectratio,alt={Figure 2b}]{companion-tests/artifacts/ch17-moa-transformer-figure.png}
 \caption{Figure 2b}
 \end{figure}
 
@@ -3413,17 +3420,17 @@ diagrams are computation graphs whose topological properties
 operationally exact only in the linear full-aggregation regime. Five
 companion validations make that boundary explicit. In the finite-kernel
 unit harness
-(\texttt{companion-tests/src/quantum-correspondence-boundary.test.ts})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}src/\allowbreak{}quantum-\allowbreak{}correspondence-\allowbreak{}boundary.\allowbreak{}test.\allowbreak{}ts})
 {[}9, 13{]}, linear fold reproduces discrete path-sum evolution exactly
 (kernel composition equals explicit path enumeration), preserves
 partition additivity, and remains permutation-invariant on the
 \(\{+1,-1\}\) cancellation witness; winner-take-all and early-stop folds
 fail those same checks. In the fold-ablation harness
-(\texttt{companion-tests/src/quantum-recombination-ablation.test.ts})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}src/\allowbreak{}quantum-\allowbreak{}recombination-\allowbreak{}ablation.\allowbreak{}test.\allowbreak{}ts})
 and its reproducible artifact writer
-(\texttt{companion-tests/scripts/quantum-recombination-ablation.ts},
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}scripts/\allowbreak{}quantum-\allowbreak{}recombination-\allowbreak{}ablation.\allowbreak{}ts},
 output
-\texttt{companion-tests/artifacts/quantum-recombination-ablation.\{json,md\}})
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}quantum-\allowbreak{}recombination-\allowbreak{}ablation.\allowbreak{}\{json,md\}})
 {[}9, 13{]}, the path family is held fixed while only the recombination
 rule is swapped: the predicted loss matrix is recovered exactly, with
 linear fold preserving kernel agreement, partition additivity, order
@@ -3431,7 +3438,7 @@ invariance and cancellation, while winner-take-all and early-stop each
 show kernel-agreement distance \texttt{0.354}, partition/order distance
 \texttt{2.000}, and cancellation magnitude\(^2\) \texttt{1.000}. In the
 Lean theorem package
-(\texttt{companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/Claims.lean})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}formal/\allowbreak{}lean/\allowbreak{}Lean/\allowbreak{}ForkRaceFoldTheorems/\allowbreak{}Claims.\allowbreak{}lean})
 {[}12, 13{]}, the algebraic skeleton of the same boundary is mechanized
 in a minimal integer-valued model: linear fold is globally
 partition-additive, preserves the cancellation target family
@@ -3440,12 +3447,12 @@ cancellation-difference family \texttt{fold(x,-y)~=~x~-~y}; any
 non-additive fold must miss some member of that family, and
 winner-selection/early-stop miss the concrete \texttt{x~+~(-x)} witness.
 A Lean-emitted witness catalog
-(\texttt{companion-tests/artifacts/formal-witness-catalog.\{json,md\}})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}formal-\allowbreak{}witness-\allowbreak{}catalog.\allowbreak{}\{json,md\}})
 now exports \texttt{7} concrete cancellation, partition, and order
 counterexamples, and \texttt{quantum-correspondence-boundary.test.ts}
 consumes those exported witnesses directly rather than hardcoding them.
 A seeded Gnosis cancellation benchmark
-(\texttt{companion-tests/artifacts/gnosis-fold-training-benchmark.\{json,md\}})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}fold-\allowbreak{}training-\allowbreak{}benchmark.\allowbreak{}\{json,md\}})
 then keeps topology, parameter count, and data fixed across three
 \texttt{.gg} programs and changes only the fold strategy: linear fold
 reaches eval MSE \texttt{0.000} with 95\% seed-bootstrap interval
@@ -3455,7 +3462,7 @@ while winner-take-all and early-stop settle at
 \texttt{{[}\textasciigrave{}\textasciigrave{}0.396,~0.421\textasciigrave{}\textasciigrave{}{]}}/\texttt{{[}\textasciigrave{}\textasciigrave{}0.732,~0.740\textasciigrave{}\textasciigrave{}{]}};
 cancellation-line absolute error is \texttt{0.000}, \texttt{0.834}, and
 \texttt{0.764}. A paired seeded negative-control benchmark
-(\texttt{companion-tests/artifacts/gnosis-negative-controls.\{json,md\}})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}negative-\allowbreak{}controls.\allowbreak{}\{json,md\}})
 then keeps the same topologies but moves to one-path target families
 where no cross-path cancellation or dual-expert summation is required;
 there the separation disappears exactly as predicted, with
@@ -3463,7 +3470,7 @@ affine-left-only and positive-x single-expert controls both yielding max
 inter-strategy eval-MSE gap \texttt{0.000} and min
 exact-within-tolerance rate \texttt{1.000}. Finally, a harder seeded
 Gnosis mini-MoE routing benchmark
-(\texttt{companion-tests/artifacts/gnosis-moe-routing-benchmark.\{json,md\}})
+(\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gnosis-\allowbreak{}moe-\allowbreak{}routing-\allowbreak{}benchmark.\allowbreak{}\{json,md\}})
 keeps a four-expert routed topology and fixed 16-parameter budget while
 swapping only the fold strategy: linear fold reaches eval MSE
 \texttt{0.001}, winner-take-all \texttt{0.328}, and early-stop
@@ -3475,11 +3482,11 @@ and
 the dual-active-region absolute error is \texttt{0.027}, \texttt{0.402},
 and \texttt{0.474}. The assembled manuscript figures are emitted
 automatically to
-\texttt{companion-tests/artifacts/ch17-correspondence-boundary-figure.\{json,md,svg\}}
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}ch17-\allowbreak{}correspondence-\allowbreak{}boundary-\allowbreak{}figure.\allowbreak{}\{json,md,svg\}}
 and
-\texttt{companion-tests/artifacts/ch17-boundary-expansion-figure.\{json,md,svg\}},
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}ch17-\allowbreak{}boundary-\allowbreak{}expansion-\allowbreak{}figure.\allowbreak{}\{json,md,svg\}},
 and the full evidence bundle is fingerprinted in
-\texttt{companion-tests/artifacts/ch17-replication-pack.\{json,md\}}
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}ch17-\allowbreak{}replication-\allowbreak{}pack.\allowbreak{}\{json,md\}}
 with the one-command outside rerun surface
 \texttt{bun~run~test:ch17-external-replication}, \texttt{62} manifest
 entries, and \texttt{25} generated artifacts. So the shared structure is
@@ -3489,7 +3496,7 @@ computational winner/race folds select nonlinearly.
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 1}]{companion-tests/artifacts/ch17-correspondence-boundary-figure.png}}
+\includegraphics[width=\textwidth,keepaspectratio,alt={Figure 1}]{companion-tests/artifacts/ch17-correspondence-boundary-figure.png}
 \caption{Figure 1}
 \end{figure}
 
@@ -5115,9 +5122,9 @@ for 500 tokens / 8 nodes uses \(B = 500\) (one chunk), giving
 
 \textbf{Wall-clock matrix evidence (fixture-scoped).} A live distributed
 wall-clock matrix is provided via
-\texttt{companion-tests/scripts/gate1-wallclock-matrix.ts}, with
+\texttt{companion-\allowbreak{}tests/\allowbreak{}scripts/\allowbreak{}gate1-\allowbreak{}wallclock-\allowbreak{}matrix.\allowbreak{}ts}, with
 artifacts in
-\texttt{companion-tests/artifacts/gate1-wallclock-matrix.\{json,md\}}.
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate1-\allowbreak{}wallclock-\allowbreak{}matrix.\allowbreak{}\{json,md\}}.
 The harness runs real loopback HTTP stage servers across predeclared
 RTT/jitter/loss/workload cells, reporting p50/p95 completion latency
 plus 95\% bootstrap confidence intervals and explicit pass/fail
@@ -5125,9 +5132,9 @@ criteria. In this matrix, all predeclared primary cells reject
 no-improvement (speedup CI lower bound \textgreater{} 1.0 and
 improvement CI lower bound \textgreater{} 0 ms). Non-loopback runs also
 satisfy the same criteria in
-\texttt{companion-tests/artifacts/gate1-wallclock-external-single-host.\{json,md\}}
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate1-\allowbreak{}wallclock-\allowbreak{}external-\allowbreak{}single-\allowbreak{}host.\allowbreak{}\{json,md\}}
 and
-\texttt{companion-tests/artifacts/gate1-wallclock-external-multihost.\{json,md\}}
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate1-\allowbreak{}wallclock-\allowbreak{}external-\allowbreak{}multihost.\allowbreak{}\{json,md\}}
 (six distinct external hosts, one stage endpoint per host). This
 supports a scoped wall-clock claim for this harness family and does not
 by itself imply universal production-network speedups.
@@ -6271,14 +6278,14 @@ Primary artifacts
 Wall-clock matrix & \texttt{scripts/gate1-wallclock-matrix.ts} &
 \texttt{artifacts/gate1-wallclock-*.\{json,md\}} \\
 Protocol corpus & \texttt{scripts/gate2-protocol-corpus.ts} &
-\texttt{artifacts/gate2-protocol-corpus.\{json,md\}} \\
+\texttt{artifacts/\allowbreak{}gate2-\allowbreak{}protocol-\allowbreak{}corpus.\allowbreak{}\{json,md\}} \\
 Compression corpus & \texttt{scripts/gate3-compression-corpus.ts} &
-\texttt{artifacts/gate3-compression-corpus.\{json,md\}} \\
+\texttt{artifacts/\allowbreak{}gate3-\allowbreak{}compression-\allowbreak{}corpus.\allowbreak{}\{json,md\}} \\
 Out-of-sample \(R_{qr}\) & \texttt{scripts/gate4-rqr-holdout.ts} &
 \texttt{artifacts/gate4-rqr-holdout.\{json,md\}} \\
 Biological effect-size mapping &
 \texttt{scripts/gate5-bio-effect-size.ts} &
-\texttt{artifacts/gate5-bio-effect-size.\{json,md\}} \\
+\texttt{artifacts/\allowbreak{}gate5-\allowbreak{}bio-\allowbreak{}effect-\allowbreak{}size.\allowbreak{}\{json,md\}} \\
 \end{longtable}
 }
 
@@ -6309,25 +6316,25 @@ Biological effect-size mapping &
   seeded heterogeneous protocol-corpus artifacts comparing Aeon Flow vs
   HTTP/3 across predeclared environment cells with bootstrap-CI and
   per-site win-rate criteria
-  (\texttt{companion-tests/artifacts/gate2-protocol-corpus.\{json,md\}}),
+  (\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate2-\allowbreak{}protocol-\allowbreak{}corpus.\allowbreak{}\{json,md\}}),
   formal bounded-protocol artifacts for quorum visibility,
   connected-quorum exactness, committed-session consistency,
   multi-writer committed-read ordering, and committed-state history
-  refinement (\texttt{companion-tests/formal/QuorumReadWrite.tla},
+  refinement (\texttt{companion-\allowbreak{}tests/\allowbreak{}formal/\allowbreak{}QuorumReadWrite.\allowbreak{}tla},
   \texttt{QuorumAsyncNetwork.tla},
   \texttt{QuorumSessionConsistency.tla}, \texttt{QuorumMultiWriter.tla},
   \texttt{QuorumLinearizability.tla}, plus the matching Lean modules),
   seeded heterogeneous compression-corpus artifacts comparing
   topological per-chunk racing against fixed-codec and heuristic
   baselines with bootstrap-CI and win-rate criteria
-  (\texttt{companion-tests/artifacts/gate3-compression-corpus.\{json,md\}}),
+  (\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate3-\allowbreak{}compression-\allowbreak{}corpus.\allowbreak{}\{json,md\}}),
   out-of-sample \(R_{\text{qr}}\) screening artifacts with fixed
   train/holdout split rules plus predeclared CI/threshold criteria
-  (\texttt{companion-tests/artifacts/gate4-rqr-holdout.\{json,md\}}),
+  (\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate4-\allowbreak{}rqr-\allowbreak{}holdout.\allowbreak{}\{json,md\}}),
   comparative biological effect-size artifacts across predeclared
   condition pairs with Monte Carlo uncertainty propagation plus pooled
   bootstrap-CI criteria
-  (\texttt{companion-tests/artifacts/gate5-bio-effect-size.\{json,md\}}),
+  (\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate5-\allowbreak{}bio-\allowbreak{}effect-\allowbreak{}size.\allowbreak{}\{json,md\}}),
   finite-DAG decomposition coverage (including edge-cover exactness and
   full source-to-sink path-set preservation), §7 formula checks
   (Worthington Whip \((S-1)/2S\), Speculative Tree
@@ -6450,19 +6457,19 @@ sizes are derived from predeclared quantitative ranges already stated in
 §1 (saltatory conduction velocity contrast, photosynthesis
 step-vs-system efficiency contrast, and Okazaki-fragment chunk-size
 contrast), with uncertainty propagation reported in
-\texttt{companion-tests/artifacts/gate5-bio-effect-size.\{json,md\}}.
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate5-\allowbreak{}bio-\allowbreak{}effect-\allowbreak{}size.\allowbreak{}\{json,md\}}.
 This supports bounded comparative statements for those listed conditions
 and does not constitute preregistered wet-lab causal inference.
 
 \textbf{Sleep-debt homology scope.} Bounded companion witnesses now
 exist in \texttt{companion-tests/formal/SleepDebt.tla},
-\texttt{companion-tests/formal/SleepDebtScheduleThreshold.tla},
-\texttt{companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebt.lean},
-\texttt{companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SleepDebtSchedule.lean},
+\texttt{companion-\allowbreak{}tests/\allowbreak{}formal/\allowbreak{}SleepDebtScheduleThreshold.\allowbreak{}tla},
+\texttt{companion-\allowbreak{}tests/\allowbreak{}formal/\allowbreak{}lean/\allowbreak{}Lean/\allowbreak{}ForkRaceFoldTheorems/\allowbreak{}SleepDebt.\allowbreak{}lean},
+\texttt{companion-\allowbreak{}tests/\allowbreak{}formal/\allowbreak{}lean/\allowbreak{}Lean/\allowbreak{}ForkRaceFoldTheorems/\allowbreak{}SleepDebtSchedule.\allowbreak{}lean},
 and
-\texttt{companion-tests/artifacts/sleep-debt-bounded-witness.\{json,md\}}
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}sleep-\allowbreak{}debt-\allowbreak{}bounded-\allowbreak{}witness.\allowbreak{}\{json,md\}}
 plus
-\texttt{companion-tests/artifacts/sleep-debt-schedule-threshold-witness.\{json,md\}}.
+\texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}sleep-\allowbreak{}debt-\allowbreak{}schedule-\allowbreak{}threshold-\allowbreak{}witness.\allowbreak{}\{json,md\}}.
 In that bounded package, incomplete recovery leaves positive residual
 debt and reduced next-cycle capacity, full recovery restores baseline,
 debt above threshold admits intrusion-style local venting, and
@@ -6608,9 +6615,9 @@ the nodewise bound
 and the deeper second-order bound
 \(\lambda_i + \sum_j \mathrm{localEnvelope}_j P_{j i}\), a
 descending-ladder theorem plus the explicit absolute-error certificate
-\texttt{throughputEnvelopeApprox~n~-~α\_spec~≤~throughputEnvelopeResidual~n},
+\texttt{throughputEnvelopeApprox~n~-\allowbreak{}~α\_spec~≤~throughputEnvelopeResidual~n},
 the matching lower-side certificate
-\texttt{α\_spec~-~(trafficApprox~n).toReal~≤~throughputEnvelopeResidual~(n+1)},
+\texttt{α\_spec~-\allowbreak{}~(trafficApprox~n).\allowbreak{}toReal~≤~throughputEnvelopeResidual~(n+1)},
 a formal lower/upper bracket between lower real traffic iterates and
 upper Jackson envelope iterates, direct service certificates against
 that ladder, and the stronger closure that any certified stage of that
@@ -6655,7 +6662,7 @@ boundary and reproducible artifact path.
   (\texttt{workers-dev-external-multihost6-distinct}), satisfy
   predeclared criteria with p50/p95 and bootstrap confidence intervals
   in \texttt{gate1-wallclock-matrix.\{json,md\}} and
-  \texttt{gate1-wallclock-external-multihost.\{json,md\}}. In the
+  \texttt{gate1-\allowbreak{}wallclock-\allowbreak{}external-\allowbreak{}multihost.\allowbreak{}\{json,md\}}. In the
   six-host external matrix, 8/8 primary cells satisfy the primary
   criteria; across all cells, median speedup ranges 11.785x-21.620x, and
   the minimum 95\% CI lower bounds remain positive (11.365x speedup and
@@ -6664,7 +6671,7 @@ boundary and reproducible artifact path.
 \item
   \textbf{Protocol corpus advantage claim (simulated corpus scope):
   supported for the seeded corpus family.}
-  \texttt{companion-tests/artifacts/gate2-protocol-corpus.\{json,md\}}
+  \texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate2-\allowbreak{}protocol-\allowbreak{}corpus.\allowbreak{}\{json,md\}}
   reports 144 sites and 12,371 resources with 6/6 primary environment
   cells satisfying predeclared criteria; framing median gain is 72.252\%
   (CI low approximately 72.19\%); primary-cell completion-median CI lows
@@ -6675,7 +6682,7 @@ boundary and reproducible artifact path.
 \item
   \textbf{Compression corpus advantage claim (seeded corpus scope):
   supported for the seeded corpus family.}
-  \texttt{companion-tests/artifacts/gate3-compression-corpus.\{json,md\}}
+  \texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate3-\allowbreak{}compression-\allowbreak{}corpus.\allowbreak{}\{json,md\}}
   reports 90 samples and 20,133,761 bytes with 4/4 primary family cells
   satisfying predeclared criteria. Primary-cell median gain vs best
   fixed codec is positive with positive CI lows (approximately
@@ -6687,7 +6694,7 @@ boundary and reproducible artifact path.
 \item
   \textbf{Out-of-sample \(R_{\text{qr}}\) predictive-screening claim
   (model scope): supported for the tested simulator family.}
-  \texttt{companion-tests/artifacts/gate4-rqr-holdout.\{json,md\}}
+  \texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate4-\allowbreak{}rqr-\allowbreak{}holdout.\allowbreak{}\{json,md\}}
   reports independent train/holdout validation with predeclared scoring
   criteria: Spearman CI low 0.446, slope CI low 0.427, quartile-delta CI
   low 0.100, predictor-correlation CI low 0.176, and decile monotonicity
@@ -6698,7 +6705,7 @@ boundary and reproducible artifact path.
   \textbf{Biological effect-size mapping claim (predeclared
   range-extraction scope): supported as internal consistency evidence
   for the listed comparative set.}
-  \texttt{companion-tests/artifacts/gate5-bio-effect-size.\{json,md\}}
+  \texttt{companion-\allowbreak{}tests/\allowbreak{}artifacts/\allowbreak{}gate5-\allowbreak{}bio-\allowbreak{}effect-\allowbreak{}size.\allowbreak{}\{json,md\}}
   reports three primary biological condition pairs with positive
   uncertainty-bounded effect sizes (minimum primary-pair ratio CI low
   5.829x; median pair ratio 21.524x; pooled log-ratio 3.280 with 95\% CI
@@ -7314,7 +7321,7 @@ when a system needs diversification and exactly how much it will gain.
 
 \begin{figure}
 \centering
-\pandocbounded{\includegraphics[keepaspectratio,alt={Figure 3}]{companion-tests/artifacts/ch17-american-frontier-figure.png}}
+\includegraphics[width=\textwidth,keepaspectratio,alt={Figure 3}]{companion-tests/artifacts/ch17-american-frontier-figure.png}
 \caption{Figure 3}
 \end{figure}
 
