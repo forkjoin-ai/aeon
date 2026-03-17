@@ -137,6 +137,22 @@ migrationEngine.registerMigration({
 - [`packages/wall`](./packages/wall/README.md): command-line client for Aeon Flow
 - `packages/nginx-flow-aeon`: nginx bridge for putting Aeon Flow behind HTTP infrastructure
 
+## Negotiation Ecosystem
+
+Aeon's formal surface (companion-tests/formal/) includes TLA+ specifications for negotiation convergence built on the void walking framework from Chapter 25:
+
+| Spec | What It Models |
+|------|---------------|
+| `NegotiationConvergence.tla` | Single-party fork-race-fold with BATNA threshold |
+| `MetacognitiveWalker.tla` | c0-c3 cognitive loop, kurtosis convergence |
+| `SkyrmsNadir.tla` | Two walkers converging via accumulated failure |
+| `SkyrmsThreeWalker.tla` | Mediator as third walker on the convergence site |
+
+These specifications are implemented in two sibling repositories:
+
+- [**aeon-bazaar**](https://github.com/affectively-ai/aeon-bazaar): unbounded negotiation engine -- void walking, complement distributions, c0-c3 metacognitive walker, 1,548 rounds/ms
+- [**aeon-neutral**](https://github.com/affectively-ai/aeon-neutral): bounded dispute resolution -- three-walker Skyrms mediation with convergence certificates
+
 ## Documentation
 
 - [docs/README.md](./docs/README.md): repo docs index
