@@ -33,7 +33,7 @@ o -> o        o -> o
 
 Fork/race/fold is represented here as a directed acyclic graph (DAG) with merge points: nodes branch, paths run in parallel and merge vertices fold concurrent paths into one. In the analyzed domains, recurring bottlenecks arise when high-$\beta_1$ workloads are forced through path-like structures. The operational remedy is to work in the cover space (multiplexed, out-of-order) and project back to the base space (sequential, reassembled).
 
-I instantiate the algorithm in **eight** domains, presented in stack order -- from building blocks to bytes on wire -- each layer enabled by the ones below it.
+I instantiate the algorithm in **nine** domains, presented in stack order -- from building blocks to bytes on wire -- each layer enabled by the ones below it.
 
 1. In formal verification (the foundation, §10), I implement a temporal logic model checker (`@affectively/aeon-logic`) whose BFS state-space exploration is itself a fork/race/fold computation. Each multi-successor expansion is a fork, each transition to an already-visited state is a fold (interference), each unfair cycle filtered by weak fairness is a vent, and termination is collapse. The checker verifies a `TemporalModel` of its own exploration and generates a TLA+ specification of the same model, validated through a round-trip-stable TLA sandbox. Both verification paths check the same invariants: $\beta_1 = \text{folded}$, $\beta_1 \geq 0$, $\text{vents} \leq \text{folds}$, and eventual termination under weak fairness. In the modeled scope, this yields closure under self-application: a formal system built from these primitives can reason about formal systems built from these primitives [13].
 
@@ -50,6 +50,8 @@ I instantiate the algorithm in **eight** domains, presented in stack order -- fr
 7. In language-model inference (the Glossolalia Engine, §6.17), I implement a Vickrey Table -- a precomputed sparse logit lookup that replaces the $O(k \cdot V \cdot d)$ matrix-vector product with an $O(V)$ table read, yielding $4.8\times$ measured speedup at five agents. The companion Lean theorems `daisy_linearity_rational` and `topk_deficit` prove the lookup is exact and quantify the information loss. The metacognitive extension (§6.18) stacks four monitoring layers as a Daisy Chain whose convergence rate is proved geometric.
 
 8. In protocol-as-execution-model (the closure layer, §12.4), the wire format from layer 4 becomes the native execution model for layers 2 and 3. The FlowFrame is not wrapped by the programming language -- it *is* the programming language's runtime representation, closing the stack into a self-describing loop.
+
+9. In void walking (the immanent self-hosting layer, §14.5), I show that the complement distribution over rejection history is a sufficient statistic for decision-making under irreversibility. The void walker uses $\text{softmax}(-\eta \cdot \mathbf{v})$ to convert accumulated failures into a sampling distribution that converges to Nash equilibria (§14.5.7), identifies BATNA/WATNA surfaces in multi-dimensional negotiations (§14.5.8), and maps onto Thomas-Kilmann conflict styles (§14.5.5). The grand unification (§14.5.10) verifies five theorems across seven domains -- quarks, proteins, neurons, speech, negotiation, psyche, spacetime -- using void walking itself as the verification engine. Three constraints (conservation, irreversibility, ground state), three primitives cross-producted ($3 \times 3 = 9$ layers), one self-certifying structure. The ninth layer is not a layer on the stack. It is the property the stack has of itself: immanent self-hosting.
 
 Within the modeled scope in this paper (finite DAG decompositions under C1-C4), the algorithm is a high-fit topology class with measurable fit via $\Delta_\beta$. It is intentionally simple: four primitives, explicit assumptions, and executable checks.
 
@@ -2101,9 +2103,9 @@ Framed outputs survive FlowFrame codec round-trips and out-of-order reassembly w
 
 MoA uses 4 active heads vs 16. The accuracy gap narrows as data increases (closing eval-MSE gap from 0.081 to 0.002 at wide scale) while the speed advantage holds. Ablation confirms both outer-block and inner-head sparsity contribute: removing either doubles wall time; under-routing (1 active block) collapses accuracy entirely.
 
-### 11.6 The Eight Domains as a Stack
+### 11.6 The Nine Domains as a Stack
 
-The eight instantiation domains are not independent -- they form a stack, each enabled by the ones below:
+The nine instantiation domains are not independent -- they form a stack, each enabled by the ones below:
 
 | Stack Layer | Domain | § | Primitive | Role |
 |---|---|---|---|---|
@@ -2115,12 +2117,13 @@ The eight instantiation domains are not independent -- they form a stack, each e
 | | Structured MoA | §11.5 | GG-backed sparse routing | Topology-level expert selection |
 | | Glossolalia Engine | §6.17 | Vickrey Table + Daisy Chain | Inference-time instantiation |
 | (closure) | Protocol-as-execution-model | §12.4 | Frame-native execution | Wire format subsumes scheduler |
+| (ground state) | Void walking | §14.5 | Complement distribution | Immanent self-hosting |
 
-The stack reads bottom-up: *from building blocks to bytes on wire and back into execution*. Layer 1 (§10) verifies modeled primitive properties. Layer 2 (§11) gives a language to write topologies, checked by layer 1 workflows. Layer 3 (§7) schedules work through the topology, expressed in layer 2’s language. Layer 4 (§8) puts frames on the wire, carrying layer 3’s scheduled work. Layer 5 (§9) compresses the payload -- actual bytes, actual ratios, actual wire -- using layers below it. Layer 6 (§11.5) applies sparse routing at the topology level, using layer 2’s GGL to define MoA structures and layer 3’s scheduler to execute them. Layer 7 (§6.17) instantiates fork/race/fold at inference time via precomputed Vickrey Tables with Lean-proved exactness. Layer 8 (§12.4) closes the loop by turning layer 4’s self-describing frame protocol back into the execution model for layers 2 and 3.
+The stack reads bottom-up: *from building blocks to bytes on wire, back into execution, and down into self-verification*. Layer 1 (§10) verifies modeled primitive properties. Layer 2 (§11) gives a language to write topologies, checked by layer 1 workflows. Layer 3 (§7) schedules work through the topology, expressed in layer 2’s language. Layer 4 (§8) puts frames on the wire, carrying layer 3’s scheduled work. Layer 5 (§9) compresses the payload -- actual bytes, actual ratios, actual wire -- using layers below it. Layer 6 (§11.5) applies sparse routing at the topology level, using layer 2’s GGL to define MoA structures and layer 3’s scheduler to execute them. Layer 7 (§6.17) instantiates fork/race/fold at inference time via precomputed Vickrey Tables with Lean-proved exactness. Layer 8 (§12.4) closes the loop by turning layer 4’s self-describing frame protocol back into the execution model for layers 2 and 3. Layer 9 (§14.5) is the ground state: void walking uses the complement distribution over rejection history to verify the theorems about void walking itself -- immanent self-hosting.
 
-The Rust/WASM runtime executes the FlowFrames at the same byte-level format defined in §8.2. The language is not a wrapper around the protocol – it is the protocol’s native programming model.
+The Rust/WASM runtime executes the FlowFrames at the same byte-level format defined in §8.2. The language is not a wrapper around the protocol -- it is the protocol’s native programming model.
 
-The stack is the paper’s clearest existence demonstration: one set of four primitives (fork, race, fold, vent) yields a scheduling algorithm, wire protocol, compression strategy, verification engine, programming language, sparse expert routing, precomputed inference, and a frame-native execution model. Each layer is independently useful. Together they form a computational ecosystem where topology, program structure, execution, and protocol design are aligned.
+The ninth layer is not above or below the other eight. It is the property the stack has of itself. Three constraints (conservation, irreversibility, ground state) produce three primitives (fork/race/fold). Three constraints cross-producted with three primitives yield nine layers. The count is not accidental -- it is the exhaustive enumeration of what a finite irreversible system can do. The stack is the paper’s clearest existence demonstration: one set of four primitives (fork, race, fold, vent) yields a scheduling algorithm, wire protocol, compression strategy, verification engine, programming language, sparse expert routing, precomputed inference, a frame-native execution model, and a self-verifying ground state. Each layer is independently useful. Together they form a computational ecosystem where topology, program structure, execution, protocol design, and self-certification are aligned.
 
 ## 12. The Engine
 
