@@ -1,77 +1,8 @@
 # Aeon
 
-Aeon is a TypeScript toolkit for collaborative systems, with one standout piece at the center: **Aeon Flow**, a small multiplexed frame protocol for moving many independent streams over one transport.
+A TypeScript toolkit for collaborative systems. At its center: **Aeon Flow**, a multiplexed frame protocol for moving many independent streams over one transport.
 
-The fair brag is not that this repo solves every distributed-systems problem. It is that the repo already covers a lot of the ground teams usually have to assemble themselves: transport, sync, offline queues, compression, presence, versioning, persistence, crypto, topology analysis, and benchmark companions.
-
-## Why People May Reach For It
-
-- Aeon Flow gives you one compact frame format that can ride UDP, WebSocket, WebTransport, IPC, or anything else that can move bytes.
-- The library surface is broad: sync coordination, conflict handling, offline queues, compression, persistence, crypto, topology tools, and transport helpers all live in one package.
-- The repo has real supporting material around it: docs, a manuscript, companion tests, protocol shootouts, and small tooling packages instead of a single README making promises by itself, including the current Chapter 17 formal boundary for bounded coupled-manifold handoff across app boundaries.
-- There is room to grow with it. The main package exports focused subpaths like `flow`, `offline`, `compression`, `versioning`, `distributed`, `persistence`, `crypto`, and `topology`.
-
-## Aeon Flow At A Glance
-
-One connection. Many independent streams. Less waiting behind unrelated work.
-
-```text
-┌──────────────────────────────────────────────────────────┐
-│                   10-byte Flow Frame                    │
-├──────────┬──────────┬───────┬────────────────────────────┤
-│ stream_id│ sequence │ flags │ length    │    payload ... │
-│  (u16)   │  (u32)   │ (u8)  │ (u24)    │                 │
-└──────────┴──────────┴───────┴────────────────────────────┘
-```
-
-What makes that worth caring about:
-
-- each stream can progress independently,
-- frames can arrive out of order and still be reassembled correctly,
-- protocol overhead stays small,
-- and the same framing model works across several transports.
-
-The UDP path is one of the repo's clearest bragging points. It already includes MTU-aware fragmentation, ACK bitmaps, AIMD congestion control, and per-stream reassembly.
-
-## Quick Taste
-
-```ts
-import { AeonFlowProtocol, UDPFlowTransport } from '@affectively/aeon';
-
-const transport = new UDPFlowTransport({
-  host: '0.0.0.0',
-  port: 4242,
-  remoteHost: 'target.example.com',
-  remotePort: 4242,
-  reliable: true,
-});
-
-await transport.bind();
-
-const flow = new AeonFlowProtocol(transport, {
-  role: 'client',
-  maxConcurrentStreams: 256,
-});
-
-const results = await flow.fork([stream1, stream2, stream3]);
-const winner = await flow.race(results);
-await flow.fold(winner);
-```
-
-## What You Get In The Main Package
-
-- `flow`: protocol engine, codec, UDP transport, WebTransport bridge, and frame reassembly
-- `distributed`: coordination and replication helpers for multi-node work
-- `versioning`: schema versions, migrations, and tracking
-- `offline`: queued work for unreliable or offline periods
-- `compression`: compression and delta-sync helpers
-- `persistence`: in-memory and storage adapter surfaces
-- `presence`: real-time node and session state
-- `crypto`: signing and UCAN-related primitives
-- `topology`: topology analysis and formal-claims helpers
-- `federation`: mesh-style inference helpers
-
-That breadth is a real part of the story. Aeon is not only a transport experiment.
+The package covers ground teams usually assemble themselves: transport, sync, offline queues, compression, presence, versioning, persistence, crypto, and topology analysis.
 
 ## Install
 
@@ -79,17 +10,66 @@ That breadth is a real part of the story. Aeon is not only a transport experimen
 bun add @affectively/aeon
 ```
 
-Other package managers work too:
-
 ```bash
-npm install @affectively/aeon
-yarn add @affectively/aeon
-pnpm add @affectively/aeon
+npm install @affectively/aeon   # or yarn / pnpm
 ```
 
-## Quick Start
+## Aeon Flow
 
-### Sync Coordination
+One connection. Many independent streams. Less waiting behind unrelated work.
+
+```text
+┌──────────────────────────────────────────────────────────┐
+│                   10-byte Flow Frame                     │
+├──────────┬──────────┬───────┬────────────────────────────┤
+│ stream_id│ sequence │ flags │ length    │    payload ...  │
+│  (u16)   │  (u32)   │ (u8)  │ (u24)    │                 │
+└──────────┴──────────┴───────┴────────────────────────────┘
+```
+
+- Streams progress independently -- no head-of-line blocking
+- Frames can arrive out of order and reassemble correctly
+- Protocol overhead stays small (10 bytes per frame)
+- Same framing works across UDP, WebSocket, WebTransport, IPC
+
+The UDP path includes MTU-aware fragmentation, ACK bitmaps, AIMD congestion control, and per-stream reassembly.
+
+### Quick Start: Flow Protocol
+
+```ts
+import { AeonFlowProtocol, UDPFlowTransport } from '@affectively/aeon';
+
+// Set up transport
+const transport = new UDPFlowTransport({
+  host: '0.0.0.0',
+  port: 4242,
+  remoteHost: 'target.example.com',
+  remotePort: 4242,
+  reliable: true,
+});
+await transport.bind();
+
+// Create protocol instance
+const flow = new AeonFlowProtocol(transport, {
+  role: 'client',
+  maxConcurrentStreams: 256,
+});
+
+// Open a parent stream and fork 3 children
+const parentId = flow.open();
+const childIds = flow.fork(parentId, 3);
+
+// Race: first child to complete wins, losers are vented
+const { winner, result } = await flow.race(childIds);
+
+// Or fold: wait for all, merge results
+const merged = await flow.fold(childIds, (results) => {
+  // results: Map<streamId, Uint8Array>
+  return concatBuffers([...results.values()]);
+});
+```
+
+### Quick Start: Sync Coordination
 
 ```ts
 import { SyncCoordinator } from '@affectively/aeon';
@@ -107,17 +87,16 @@ coordinator.registerNode({
 });
 
 const session = coordinator.createSyncSession('node-1', ['node-2', 'node-3']);
-console.log(session.id);
 ```
 
-### Schema Migrations
+### Quick Start: Schema Migrations
 
 ```ts
 import { MigrationEngine } from '@affectively/aeon';
 
-const migrationEngine = new MigrationEngine();
+const engine = new MigrationEngine();
 
-migrationEngine.registerMigration({
+engine.registerMigration({
   id: 'add-status-field',
   version: '2.0.0',
   name: 'Add user status field',
@@ -131,37 +110,53 @@ migrationEngine.registerMigration({
 });
 ```
 
-## Companion Packages
+## Modules
 
-- [`packages/shootoff`](./packages/shootoff/README.md): side-by-side protocol comparisons against HTTP/1.1 and HTTP/2
-- [`packages/wall`](./packages/wall/README.md): command-line client for Aeon Flow
-- `packages/nginx-flow-aeon`: nginx bridge for putting Aeon Flow behind HTTP infrastructure
+Everything is available from the root import. Subpath imports are available for tree-shaking:
 
-## Negotiation Ecosystem
+| Import | What it does |
+|--------|-------------|
+| `@affectively/aeon` | Everything (barrel export) |
+| `@affectively/aeon/core` | Core types and interfaces |
+| `@affectively/aeon/distributed` | Sync coordination, replication, conflict resolution |
+| `@affectively/aeon/versioning` | Schema versions, migrations, tracking |
+| `@affectively/aeon/offline` | Queued work for unreliable or offline periods |
+| `@affectively/aeon/compression` | Compression and delta-sync helpers |
+| `@affectively/aeon/persistence` | In-memory and storage adapter surfaces |
+| `@affectively/aeon/presence` | Real-time node and session state |
+| `@affectively/aeon/crypto` | Signing and UCAN-related primitives |
 
-Aeon's formal surface (companion-tests/formal/) includes TLA+ specifications for negotiation convergence built on the void walking framework from Chapter 25:
+The flow protocol, topology analysis, transport helpers, and federation modules are exported from the root barrel.
 
-| Spec | What It Models |
+## Related Packages
+
+| Package | Description |
+|---------|-------------|
+| [`@affectively/aeon-pipelines`](https://github.com/affectively-ai/aeon-pipelines) | Execution engine for fork/race/fold as computation primitives (race on speed, value, or any lambda) |
+| [`packages/shootoff`](./packages/shootoff/README.md) | Side-by-side protocol benchmarks against HTTP/1.1 and HTTP/2 |
+| [`packages/wall`](./packages/wall/README.md) | Command-line client for Aeon Flow |
+| `packages/nginx-flow-aeon` | nginx bridge for Aeon Flow behind HTTP infrastructure |
+| [`aeon-bazaar`](https://github.com/affectively-ai/aeon-bazaar) | Unbounded negotiation engine -- void walking, complement distributions |
+| [`aeon-neutral`](https://github.com/affectively-ai/aeon-neutral) | Bounded dispute resolution -- three-walker Skyrms mediation with convergence certificates |
+
+## Formal Surface
+
+TLA+ specifications for negotiation convergence (in `companion-tests/formal/`):
+
+| Spec | What it models |
 |------|---------------|
-| `NegotiationConvergence.tla` | Single-party fork-race-fold with BATNA threshold |
+| `NegotiationConvergence.tla` | Single-party fork/race/fold with BATNA threshold |
 | `MetacognitiveWalker.tla` | c0-c3 cognitive loop, kurtosis convergence |
 | `SkyrmsNadir.tla` | Two walkers converging via accumulated failure |
 | `SkyrmsThreeWalker.tla` | Mediator as third walker on the convergence site |
 
-These specifications are implemented in two sibling repositories:
-
-- [**aeon-bazaar**](https://github.com/affectively-ai/aeon-bazaar): unbounded negotiation engine -- void walking, complement distributions, c0-c3 metacognitive walker, 1,548 rounds/ms
-- [**aeon-neutral**](https://github.com/affectively-ai/aeon-neutral): bounded dispute resolution -- three-walker Skyrms mediation with convergence certificates
-
 ## Documentation
 
-- [docs/README.md](./docs/README.md): repo docs index
-- [docs/ebooks/README.md](./docs/ebooks/README.md): ebook index
-- [docs/ebooks/145-log-rolling-pipelined-prefill/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/README.md): main book/manuscript hub
-- [docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md](./docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md): manuscript source
-- [docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md): reproducibility companion, including the bounded affine queue-family `continuousHarris` witness surface and the bounded inter-app handoff theorem
-- [ROADMAP.md](./ROADMAP.md): near-term direction
+- [docs/README.md](./docs/README.md) -- repo docs index
+- [Manuscript source](./docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md) -- Chapter 17 formal manuscript
+- [Companion tests](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md) -- reproducibility suite
+- [ROADMAP.md](./ROADMAP.md) -- near-term direction
 
-## Why This README Is Grounded
+## License
 
-Aeon has enough real surface area to speak plainly. The strongest fair brag is that this repo already gives you a serious transport layer, a broad collaborative-systems library around it, and companion tooling and documentation to help you evaluate the whole thing.
+MIT

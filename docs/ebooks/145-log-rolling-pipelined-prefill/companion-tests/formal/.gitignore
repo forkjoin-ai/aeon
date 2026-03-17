@@ -2,3 +2,4 @@
 *_TTrace_*.tla
 *_TTrace_*.bin
 states/
+__tmp_*.tla
