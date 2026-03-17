@@ -637,8 +637,7 @@ The two-level stream race (§9.3) approaches this limit by selecting the smalles
 
 ### 6.8 The Information-Theoretic Framing
 
-The Shannon entropy connection is deeper than a Carnot analogy. Fork/race/fold maps directly onto the information-theoretic primitives
-[36]:
+The Shannon entropy connection is deeper than a Carnot analogy. Fork/race/fold maps directly onto the information-theoretic primitives [36]:
 
 - **Fork** creates up to $\log_2 N$ bits of selection uncertainty under uniform-path assumptions. Before fork, the outcome is determined. After fork into $N$ paths, the observer cannot predict which path will win.
 
