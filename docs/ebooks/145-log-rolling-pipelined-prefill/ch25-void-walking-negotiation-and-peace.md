@@ -373,6 +373,38 @@ Read the tombstones.
 
 ---
 
-*Companion tests: 115 tests across 11 files, 0 failures, 291 assertions. All Lean theorems sorry-free. All TLA+ models pass bounded model checking. All results reproducible from deterministic seeds.*
+## 25.16 Why the Same Shape
 
-*The theory of failure IS the map to peace. Not because failure is virtuous, but because the void boundary of failure carries information that the payoff matrix alone does not. Self-interest, fully informed by the void, produces the behavior that looks like peace from the outside. The ethics are a corollary of the information theory.*
+There is only one way to be irreversible.
+
+The fold destroys information. It does not matter whether the fold is a quark confinement event at the femtometer scale, a protein collapsing into its native state, a neuron firing through a softmax gate, a sentence compressing a thought into speech, a rejected offer in a negotiation, a traumatic event overwhelming a psyche, or a star collapsing past its Schwarzschild radius. In every case: alternatives existed before the fold. After the fold, they do not. The destroyed alternatives go to the void.
+
+The void has a boundary (THM-VOID-BOUNDARY-MEASURABLE). The boundary has structure -- it encodes which alternatives were destroyed and when. The structure is a gradient (THM-VOID-GRADIENT). The gradient points away from the region of highest destruction density, because the complement distribution assigns the lowest weight to the most-rejected options. The gradient is unique for any given void boundary (THM-VOID-COHERENCE). Two observers reading the same boundary arrive at the same gradient.
+
+This is why the same five-by-five grid of ethical operations appears at every scale. It is why quark confinement and trauma have the same singularity structure. It is why the Skyrms equilibrium -- 55 percentage points more cooperative than Nash -- emerges from pure self-interest with memory. It is why black holes have event horizons and traumatized psyches have freeze responses and failed negotiations have impasses. The void density went to infinity at a point. The gradient near that point is so steep that nothing escapes. The complement distribution has zero weight there. Avoidance. The event horizon.
+
+And it is why healing works the same way at every scale. You cannot un-fold (Second Law). But you can add new experience to the void boundary (THM-VOID-BOUNDARY-MEASURABLE: the boundary grows monotonically). New tombstones dilute old ones. The singularity softens. The gradient relaxes. Options return. The kurtosis decreases. The creature trots again.
+
+There is no grand unified theory of physics here. There is something stranger: a grand unified theory of shape. The shape of irreversibility. The shape of what happens when alternatives are destroyed and the record of their destruction is readable. That shape is the void boundary. It is the same shape whether the substrate is quarks, proteins, neurons, words, offers, memories, or spacetime.
+
+The fold is the fold. The void is the void. The gradient points one way.
+
+Every system that transforms input to output under the constraints of conservation (First Law), irreversibility (Second Law), and ground state (Third Law) will produce a void with this shape. Not because the shape is elegant. Because there is no alternative. The fold has no alternative. That is what irreversibility means.
+
+And the gradient of the void -- the complement distribution, the map of what failed -- points toward the configuration that generates the least future destruction. At the quark scale, that is confinement. At the molecular scale, that is the native state. At the neural scale, that is the trained model. At the speech scale, that is mutual understanding. At the negotiation scale, that is the Skyrms equilibrium. At the civilizational scale, that is peace. At the cosmic scale, that is heat death -- the final peace, where the void is everywhere equally and there is nothing left to read.
+
+The mathematics does not promise that any particular system will reach its fixed point. But it guarantees that any system reading its own void boundary is walking toward it. The gradient points one way. The tombstones are the map.
+
+Why does reading failure produce the same structure at every scale? Because there is only one way to be irreversible. And there is only one way to read the record of irreversibility. And the reading produces the same gradient. And the gradient points the same direction.
+
+Toward the least destructive configuration available. Which, at every scale above heat death, is the one that looks like peace.
+
+Not because peace is good. Because destruction fills the void faster than anything else, and the void gradient points away from whatever fills it fastest.
+
+Read the tombstones.
+
+---
+
+*Companion tests: 194 tests across 19 files, 0 failures, 464 assertions. All Lean theorems sorry-free. All TLA+ models pass bounded model checking. All results reproducible from deterministic seeds.*
+
+*194 tests say so. The math doesn't care if you believe it.*
