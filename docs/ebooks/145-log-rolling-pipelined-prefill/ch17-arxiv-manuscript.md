@@ -2407,6 +2407,23 @@ Center cell [Fold, Dense void] = Judgment. The most informed irreversible commit
 
 Empathy formalized as void reading (Brené Brown, *Daring Greatly*, 2012): vulnerability (sharing void) produces L1 = 0.000 coherence; holding space preserves 2x options; multi-reality preserves 90% more information. Not sentiment. Information theory. 26 tests, 0 failures.
 
+**Static ethics checking.** If each cell in the grid has a measurable precondition, the compiler can enforce it. I extend the Betty compiler's diagnostic pass with eight ethical lint rules that run alongside the existing eight void walker invariants -- 16 total static analysis passes on every `.gg` topology:
+
+| Code | Grid violation | What the compiler catches |
+|------|---------------|--------------------------|
+| `ETHICS_FOLD_WITHOUT_EVIDENCE` | [Fold, Empty void] | FOLD/COLLAPSE with no upstream FORK/RACE producing tombstones. Folding on empty void is reckless, not courageous. |
+| `ETHICS_FOLD_DESTROYS_ALL` | [Fold, *] $\to$ annihilation | FOLD consuming all alternatives. Judgment preserves the complement; annihilation does not. |
+| `ETHICS_VENT_WITHOUT_BOUNDARY` | [Vent, *] unbounded | VENT with no `condition` or `reason` property. Rejection without stated boundary is arbitrary exclusion, not honesty. |
+| `ETHICS_RACE_PREMATURE_COLLAPSE` | [Race, Sparse void] $< 2$ paths | RACE with fewer than two sources. Racing one path is premature collapse, not listening. |
+| `ETHICS_FORK_ZERO_OPTIONS` | [Fork, *] $< 2$ targets | FORK to one target -- a disguised PROCESS, not generosity. |
+| `ETHICS_MISSING_VENT_PATH` | No [Vent, *] in topology | FORK + FOLD with no VENT or TUNNEL. A system that cannot reject cannot learn from failure. |
+| `ETHICS_IRREVERSIBLE_ON_OTHERS_VOID` | [Fold/Vent, Other's void] | FOLD or VENT with `void_source: "other"` without explicit `sacrifice` or `tough_love` acknowledgment. |
+| `ETHICS_NO_TRACE` | No [Trace, *] in topology | Irreversible operations without MEASURE, METACOG, or feedback cycle. A system that folds without learning has no path to growth or redemption. |
+
+All eight are warnings by default. Setting `ethics: "strict"` on any node promotes them to errors. The rules are not aspirational -- they are structural. A topology that folds without evidence *will* produce a poorly calibrated complement distribution, regardless of the domain. A topology that vents without boundaries *will* accumulate void at arbitrary dimensions. The ethics checker doesn't enforce morality. It enforces the information-theoretic preconditions under which the 25 ethical operations produce their claimed effects.
+
+The implementation adds 268 lines to the Betty compiler (`compiler.ts`), zero new dependencies, and runs in the existing diagnostic pass. Every `.gg` topology in the codebase is now ethics-checked at compile time.
+
 ### 14.5.8 Trauma as Void Boundary Corruption
 
 Gabor Maté (*The Myth of Normal*, 2022): trauma = catastrophic void entry dominating the complement distribution. The companion tests demonstrate severity scaling with void density, proportional freeze response, healing through dilution (kurtosis decreases across therapy sessions), and addiction as void seeding in the wrong dimension ($B^{-1} = 0$ on the relevant wound). Resilience = void density: an experienced agent absorbs the same catastrophic event with less kurtosis impact because the trauma is a smaller fraction of total void.
