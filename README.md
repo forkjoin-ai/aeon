@@ -132,12 +132,12 @@ The flow protocol, topology analysis, transport helpers, and federation modules 
 
 | Package | Description |
 |---------|-------------|
-| [`@affectively/aeon-pipelines`](https://github.com/affectively-ai/aeon-pipelines) | Execution engine for fork/race/fold as computation primitives (race on speed, value, or any lambda) |
+| [`@affectively/aeon-pipelines`](https://github.com/forkjoin-ai/aeon-pipelines) | Execution engine for fork/race/fold as computation primitives (race on speed, value, or any lambda) |
 | [`packages/shootoff`](./packages/shootoff/README.md) | Side-by-side protocol benchmarks against HTTP/1.1 and HTTP/2 |
 | [`packages/wall`](./packages/wall/README.md) | Command-line client for Aeon Flow |
 | `packages/nginx-flow-aeon` | nginx bridge for Aeon Flow behind HTTP infrastructure |
-| [`aeon-bazaar`](https://github.com/affectively-ai/aeon-bazaar) | Unbounded negotiation engine -- void walking, complement distributions |
-| [`aeon-neutral`](https://github.com/affectively-ai/aeon-neutral) | Bounded dispute resolution -- three-walker Skyrms mediation with convergence certificates |
+| [`aeon-bazaar`](https://github.com/forkjoin-ai/aeon-bazaar) | Unbounded negotiation engine -- void walking, complement distributions |
+| [`aeon-neutral`](https://github.com/forkjoin-ai/aeon-neutral) | Bounded dispute resolution -- three-walker Skyrms mediation with convergence certificates |
 
 ## Formal Surface
 
@@ -158,5 +158,7 @@ TLA+ specifications for negotiation convergence (in `companion-tests/formal/`):
 - [ROADMAP.md](./ROADMAP.md) -- near-term direction
 
 ## License
+
+Copyright Taylor William Buley. All rights reserved.
 
 MIT

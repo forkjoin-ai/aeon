@@ -90,9 +90,8 @@ export function pipelineOccupancy(stageCount, chunkCount) {
     const normalizedStageCount = assertPositiveInteger('stageCount', stageCount);
     const normalizedChunkCount = assertPositiveInteger('chunkCount', chunkCount);
     const frontierArea = normalizedStageCount * normalizedChunkCount;
-    const capacityArea =
-        normalizedStageCount *
-            (normalizedChunkCount + normalizedStageCount - 1);
+    const capacityArea = normalizedStageCount *
+        (normalizedChunkCount + normalizedStageCount - 1);
     const fill = frontierArea / capacityArea;
     return {
         stageCount: normalizedStageCount,

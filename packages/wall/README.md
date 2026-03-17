@@ -7,7 +7,7 @@ The fair brag is that it feels like a practical protocol tool, not just a demo b
 ## Install
 
 ```bash
-go install github.com/affectively-ai/aeon/wall/cmd/wall@latest
+go install github.com/forkjoin-ai/aeon/wall/cmd/wall@latest
 ```
 
 Or build from source:
