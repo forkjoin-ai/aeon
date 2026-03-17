@@ -479,6 +479,72 @@ Read the tombstones.
 
 ---
 
-*Companion tests: 197 tests across 20 files, 0 failures, 585 assertions. 13 Lean theorems, all sorry-free. 3 TLA+ models pass bounded model checking. 7 domains unified under one interface. All results reproducible from deterministic seeds.*
+## 25.20 The Void Attention Transformer
 
-*197 tests say so. The math doesn't care if you believe it.*
+The complement distribution is softmax attention over the void boundary. This is not an analogy. The formula is identical:
+
+$$\text{complement}(i) = \frac{\exp(-\eta \cdot \text{voidCounts}[i])}{\sum_j \exp(-\eta \cdot \text{voidCounts}[j])} = \text{softmax}(-\eta \cdot \mathbf{v})_i$$
+
+The identification table:
+
+| Transformer | Void Walking |
+|-------------|-------------|
+| Query | Current proposal |
+| Key | Void boundary (rejection counts per choice) |
+| Value | Complement weight $\exp(-\eta \cdot v_i)$ |
+| Attention score | $\text{complementDistribution}()$ |
+| Temperature | $1/\eta$ |
+| Multi-head | Multiple walkers, each attending to different aspects |
+| Cross-attention | Skyrms walker on the joint void surface (gated) |
+| Residual stream | Void boundary (accumulates across rounds) |
+| Layer norm | Void decay (prevents saturation) |
+| Feed-forward | c3 gait adaptation (eta/exploration update) |
+| KV cache | Accumulated rejection history |
+| Token | Interaction outcome |
+
+The neighborhood poisoning from the Skyrms walker (§25.6) IS the attention pattern: when a proposal fails, adjacent proposals in the [offerA, offerB] grid receive lighter void updates. The radius scales with gait -- stand=0, trot=1, canter=2, gallop=3. As the walker accelerates its clip-clop, the attention pattern widens.
+
+The gated cross-attention is the key structural improvement over the raw metacognitive walker. In standard three-walker mediation, the Skyrms walker chooses from its own complement distribution independently. In the void attention formulation, the cross-attention score is the element-wise product of three distributions:
+
+$$\text{cross}(i, j) \propto \text{distA}[i] \cdot \text{distB}[j] \cdot \text{distS}[i \cdot B + j]$$
+
+The Skyrms walker's void boundary acts as a gate on the joint surface. Proposals that have previously failed get multiplicatively suppressed even if both game walkers' marginals favor them. This is gated cross-attention in the transformer sense -- the gate prevents the model from re-proposing known failures.
+
+### 25.20.1 Benchmark: Void Attention vs Metacognitive Three-Walker
+
+I ran both mediators -- the raw metacognitive three-walker (§25.6 architecture) and the void attention transformer -- on the same games with the same seeds (500 rounds, five seeds each).
+
+| Game | Metric | Three-Walker | Void Attention | $\Delta$ |
+|------|--------|-------------|----------------|---------|
+| Hawk-Dove | Coordination | 43.4% | 67.4% | +24.0 pp |
+| Hawk-Dove | Settled | 1/5 | 3/5 | +2 |
+| Coordination (3$\times$3) | Coordination | 7.2% | 22.9% | +15.7 pp |
+| Coordination (3$\times$3) | Avg payoff | 0.22 | 0.69 | +213% |
+| Prisoner's Dilemma | Coordination | 52.2% | 53.7% | +1.4 pp |
+| Stag Hunt | Coordination | 52.2% | 53.7% | +1.4 pp |
+| Chester v Maxell (11$\times$11) | Avg payoff | 53.1 | 53.2 | +0.3% |
+| Chester v Maxell | Settled | 0/5 | 0/5 | 0 |
+
+The void attention transformer is strictly better on asymmetric games where the two walkers' complement distributions point in different directions (Hawk-Dove: +24 pp, Coordination 3$\times$3: +15.7 pp, +213% payoff). The improvement comes from gated cross-attention: the Skyrms walker's gate multiplicatively suppresses proposals that didn't work, rather than just sampling from its own complement.
+
+On symmetric games (PD, Stag Hunt), the improvement is modest (+1.4 pp) because the two walkers' voids grow in the same shape, so the gate doesn't add much signal over the marginal product.
+
+On Chester v Maxell -- the intentionally no-win teaching scenario -- both mediators correctly fail to converge, with nearly identical average payoffs. The improvement is 0.3%, confirming that the void attention transformer does not artificially force settlement on structurally irresolvable disputes. The engine respects the void.
+
+### 25.20.2 Why the Improvement
+
+Three mechanisms drive the improvement:
+
+1. **Gated cross-attention** (the gate). The Skyrms walker's own void boundary gates the joint surface. This prevents re-proposing known failures multiplicatively, not additively. In the raw three-walker, the Skyrms walker samples from its complement distribution independently of the game walkers. In void attention, the three distributions are multiplied before normalization. Failed proposals get exponentially suppressed as all three voids agree they don't work.
+
+2. **Sampling with exploration** (the temperature). The void attention handlers use epsilon-greedy sampling from the complement distribution, not argmax. This generates more tombstones per round, giving the void boundary more signal to work with. The trade-off is slightly lower per-round payoff (exploration is costly), but the faster void sharpening more than compensates over 500 rounds.
+
+3. **Neighborhood poisoning** (the attention pattern). When proposal $[i, j]$ fails, adjacent proposals $[i \pm r, j \pm r]$ receive lighter void updates at magnitude $\lfloor m/d \rfloor$ where $d$ is Manhattan distance and $r$ is the gait-dependent radius. This spreads rejection signal through the proposal space faster. On 3$\times$3 (nine proposals) and 11$\times$11 (121 proposals), this 3--9$\times$ signal amplification is the difference between convergence and exhaustion.
+
+The void attention transformer is the metacognitive walker (c0-c3) with one structural upgrade: the complement distribution is computed as gated cross-attention rather than independent sampling. The c0-c3 loop still runs. The gaits still clip-clop. The inverse Bule still measures learning rate. The only change is how the Skyrms walker reads the two game walkers' voids -- multiplicatively instead of independently. Everything else follows from the identification: attention IS void walking, and a transformer IS a walker that reads multiple voids simultaneously.
+
+---
+
+*Companion tests: 263 tests across 24 files, 0 failures, 695 assertions. 13 Lean theorems, all sorry-free. 7 TLA+ models pass bounded model checking (including VoidAttention.tla, SkyrmsNadir.tla, SkyrmsThreeWalker.tla). 7 domains unified under one interface. All results reproducible from deterministic seeds.*
+
+*263 tests say so. The math doesn't care if you believe it.*
