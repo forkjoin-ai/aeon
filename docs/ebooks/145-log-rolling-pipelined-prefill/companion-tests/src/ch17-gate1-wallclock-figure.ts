@@ -173,15 +173,15 @@ export function renderCh17Gate1WallclockFigureMarkdown(
 export function renderCh17Gate1WallclockFigureSvg(
   report: Ch17Gate1WallclockFigureReport,
 ): string {
-  const width = 1420;
-  const height = 940;
+  const width = 1460;
+  const height = 1020;
   const rowStartY = 224;
-  const rowGap = 56;
+  const rowGap = 66;
   const latencyPanelX = 324;
   const latencyPanelWidth = 430;
   const speedupPanelX = 812;
   const speedupPanelWidth = 320;
-  const improvementColumnX = 1160;
+  const improvementColumnX = 1150;
   const rows = report.cells;
   const speedupMin = Math.floor((report.minSpeedupCiLow - 1) / 2) * 2;
   const speedupMax =
@@ -205,7 +205,7 @@ export function renderCh17Gate1WallclockFigureSvg(
   svg.push('<stop offset="100%" stop-color="#fffdf8"/>');
   svg.push('</linearGradient>');
   svg.push('</defs>');
-  svg.push('<rect width="1420" height="940" rx="24" fill="url(#gate1bg)"/>');
+  svg.push(`<rect width="${width}" height="${height}" rx="24" fill="url(#gate1bg)"/>`);
   svg.push(
     '<text x="48" y="58" font-family="Georgia, serif" font-size="30" fill="#111827">Chapter 17 Gate 1 Wall-Clock Matrix</text>',
   );
@@ -216,8 +216,9 @@ export function renderCh17Gate1WallclockFigureSvg(
     `<text x="48" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">Median speedups span ${formatRatio(report.speedupMedianRange.low)}–${formatRatio(report.speedupMedianRange.high)}; minimum CI lows stay at ${formatRatio(report.minSpeedupCiLow)} and +${formatMs(report.minImprovementCiLowMs)} ms</text>`,
   );
 
-  svg.push('<rect x="40" y="140" width="720" height="736" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>');
-  svg.push('<rect x="780" y="140" width="600" height="736" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>');
+  const panelHeight = height - 180;
+  svg.push(`<rect x="40" y="140" width="720" height="${panelHeight}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`);
+  svg.push(`<rect x="780" y="140" width="${width - 820}" height="${panelHeight}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`);
 
   svg.push(
     '<text x="64" y="172" font-family="Georgia, serif" font-size="20" fill="#111827">p50 Completion Latency</text>',
@@ -235,7 +236,7 @@ export function renderCh17Gate1WallclockFigureSvg(
   const latencyTicks = [300, 500, 1_000, 3_000, 10_000];
   const axisY = rowStartY + rowGap * rows.length + 12;
   const axisLabelY = axisY + 36;
-  const legendY = 906;
+  const legendY = height - 34;
   for (const tick of latencyTicks) {
     const x = latencyScale(tick, latencyPanelX, latencyPanelWidth);
     svg.push(
@@ -265,7 +266,7 @@ export function renderCh17Gate1WallclockFigureSvg(
     `<text x="${improvementColumnX}" y="214" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">median gain</text>`,
   );
 
-  svg.push('<line x1="68" y1="884" x2="1352" y2="884" stroke="#d6d3c7" stroke-width="1"/>');
+  svg.push(`<line x1="68" y1="${height - 56}" x2="${width - 68}" y2="${height - 56}" stroke="#d6d3c7" stroke-width="1"/>`);
   svg.push(
     `<circle cx="96" cy="${legendY}" r="6" fill="${latencyColor('chunked')}"/>`,
   );
@@ -292,15 +293,16 @@ export function renderCh17Gate1WallclockFigureSvg(
     const rowFill = index % 2 === 0 ? '#fffdfa' : '#f8fafc';
 
     svg.push(
-      `<rect x="52" y="${y - 26}" width="692" height="44" rx="10" fill="${rowFill}" opacity="0.85"/>`,
+      `<rect x="52" y="${y - 30}" width="692" height="54" rx="10" fill="${rowFill}" opacity="0.85"/>`,
     );
     svg.push(
-      `<rect x="792" y="${y - 26}" width="576" height="44" rx="10" fill="${rowFill}" opacity="0.85"/>`,
+      `<rect x="792" y="${y - 30}" width="${width - 832}" height="54" rx="10" fill="${rowFill}" opacity="0.85"/>`,
     );
 
     if (index === 5) {
+      const divY = rowStartY + 5 * rowGap + rowGap / 2;
       svg.push(
-        '<line x1="64" y1="474" x2="1360" y2="474" stroke="#d6d3c7" stroke-width="1.5"/>',
+        `<line x1="64" y1="${divY}" x2="${width - 60}" y2="${divY}" stroke="#d6d3c7" stroke-width="1.5"/>`,
       );
     }
 
@@ -309,7 +311,7 @@ export function renderCh17Gate1WallclockFigureSvg(
       `<text x="88" y="${y - 2}" font-family="Georgia, serif" font-size="15" fill="#111827">${escapeXml(cell.workloadLabel)}</text>`,
     );
     svg.push(
-      `<text x="88" y="${y + 16}" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(cell.networkLabel)}${cell.primary ? ' • primary' : ' • non-primary'}</text>`,
+      `<text x="88" y="${y + 18}" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(cell.networkLabel)}${cell.primary ? ' • primary' : ' • non-primary'}</text>`,
     );
 
     const chunkCiLow = latencyScale(cell.chunkedP50Ci.low, latencyPanelX, latencyPanelWidth);

@@ -337,11 +337,12 @@ function renderCalibrationPanel(
     svg.push(
       `<rect x="${cx - 4.5}" y="${predictedCy - 4.5}" width="9" height="9" rx="1.5" fill="#f59e0b" stroke="#78350f" stroke-width="1.4"/>`,
     );
+    const staggerOffset = index % 2 === 1 ? 14 : 0;
     svg.push(
-      `<text x="${cx}" y="${innerY + innerHeight + 22}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#374151">D${decile.decile}</text>`,
+      `<text x="${cx}" y="${innerY + innerHeight + 22 + staggerOffset}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#374151">D${decile.decile}</text>`,
     );
     svg.push(
-      `<text x="${cx}" y="${innerY + innerHeight + 38}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">R=${formatRqr(decile.meanRqr)}</text>`,
+      `<text x="${cx}" y="${innerY + innerHeight + 36 + staggerOffset}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">R=${formatRqr(decile.meanRqr)}</text>`,
     );
   });
 
@@ -352,20 +353,20 @@ function renderCalibrationPanel(
     `<text x="${innerX - 50}" y="${innerY + innerHeight / 2}" transform="rotate(-90 ${innerX - 50} ${innerY + innerHeight / 2})" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Mean realized / predicted gain</text>`,
   );
 
-  const legendY = y + height - 32;
-  svg.push(`<circle cx="${x + 34}" cy="${legendY}" r="5.5" fill="#0f766e" stroke="#ecfeff" stroke-width="2"/>`);
+  const legendY = y + 68;
+  svg.push(`<circle cx="${x + 24}" cy="${legendY}" r="5.5" fill="#0f766e" stroke="#ecfeff" stroke-width="2"/>`);
   svg.push(
-    `<text x="${x + 48}" y="${legendY + 4}" font-family="system-ui, sans-serif" font-size="12" fill="#374151">Observed gain</text>`,
+    `<text x="${x + 38}" y="${legendY + 4}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">Observed gain</text>`,
   );
   svg.push(
-    `<rect x="${x + 168}" y="${legendY - 4.5}" width="9" height="9" rx="1.5" fill="#f59e0b" stroke="#78350f" stroke-width="1.4"/>`,
+    `<rect x="${x + 148}" y="${legendY - 4.5}" width="9" height="9" rx="1.5" fill="#f59e0b" stroke="#78350f" stroke-width="1.4"/>`,
   );
   svg.push(
-    `<text x="${x + 184}" y="${legendY + 4}" font-family="system-ui, sans-serif" font-size="12" fill="#374151">Predicted gain</text>`,
+    `<text x="${x + 164}" y="${legendY + 4}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">Predicted gain</text>`,
   );
 
   svg.push(
-    `<text x="${x + width - 24}" y="${legendY + 4}" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">quartile delta ${formatGain(report.quartileDelta.value)}</text>`,
+    `<text x="${x + width - 24}" y="${legendY + 4}" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">quartile delta ${formatGain(report.quartileDelta.value)}</text>`,
   );
 }
 
@@ -399,9 +400,9 @@ function renderCriteriaPanel(
   );
 
   const innerX = x + 148;
-  const innerY = y + 92;
+  const innerY = y + 108;
   const innerWidth = width - 188;
-  const rowStep = 66;
+  const rowStep = 62;
 
   for (const tick of [0, 0.25, 0.5, 0.75, 1]) {
     const cx = innerX + (tick / metricMax) * innerWidth;
@@ -448,7 +449,7 @@ function renderCriteriaPanel(
       `<circle cx="${observedX}" cy="${cy}" r="5.5" fill="${criterion.pass ? '#0f766e' : '#b91c1c'}" stroke="#f8fafc" stroke-width="2"/>`,
     );
     svg.push(
-      `<text x="${x + width - 20}" y="${cy + 5}" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#475569">${escapeXml(`${formatMetric(criterion.observed)} | ${criterion.threshold}`)}</text>`,
+      `<text x="${x + width - 20}" y="${cy + 24}" text-anchor="end" font-family="system-ui, sans-serif" font-size="10" fill="#475569">${escapeXml(`${formatMetric(criterion.observed)} | ${criterion.threshold}`)}</text>`,
     );
   });
 

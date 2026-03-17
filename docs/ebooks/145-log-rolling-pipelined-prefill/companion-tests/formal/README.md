@@ -1,7 +1,6 @@
 # Formal Verification Artifacts (TLA+ + Lean)
 
 - Parent README: [../README.md](../README.md)
-- Gap checklist: [../../ch17-gap-closure-checklist.md](../../ch17-gap-closure-checklist.md)
 - Theorem ledger: [THEOREM_LEDGER.md](./THEOREM_LEDGER.md)
 - Gnosis compiler boundary: [GNOSIS_COMPILER_BOUNDARY.md](./GNOSIS_COMPILER_BOUNDARY.md)
 - Lean package: [lean/README.md](./lean/README.md)

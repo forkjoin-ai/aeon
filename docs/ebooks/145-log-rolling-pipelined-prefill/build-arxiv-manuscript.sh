@@ -52,7 +52,54 @@ if [[ "${REGENERATE_TEX}" == true ]]; then
   fi
 
   echo "[1/2] Regenerating ${OUTPUT_TEX} from ${SOURCE_MD}"
-  pandoc --standalone "${SOURCE_MD}" -o "${OUTPUT_TEX}"
+  pandoc --standalone \
+    -V geometry:margin=1in \
+    -V fontsize=11pt \
+    "${SOURCE_MD}" -o "${OUTPUT_TEX}"
+
+  # Post-process: allow line breaks in monospace text
+  python3 -c "
+import re, sys
+with open('${OUTPUT_TEX}', 'r') as f:
+    tex = f.read()
+# Add seqsplit and sloppypar to preamble
+preamble_additions = r'''
+\\usepackage{seqsplit}
+\\tolerance=9999
+\\emergencystretch=3em
+\\hbadness=9999
+'''
+tex = tex.replace(r'\\begin{document}', preamble_additions + r'\\begin{document}')
+# Make \\texttt content breakable by wrapping long paths in seqsplit
+# Match \\texttt{...long content with / or .  ...}
+def fix_texttt(m):
+    content = m.group(1)
+    if len(content) > 40:
+        # Allow breaks at / - . _
+        broken = content.replace('/', '/\\\\allowbreak{}')
+        broken = broken.replace('.', '.\\\\allowbreak{}')
+        broken = broken.replace('-', '-\\\\allowbreak{}')
+        # Don't touch underscores — they're already valid in \\texttt
+        pass
+        return '\\\\texttt{' + broken + '}'
+    return m.group(0)
+tex = re.sub(r'\\\\texttt\{([^}]{40,})\}', fix_texttt, tex)
+# Force all figures to full text width for legibility
+tex = tex.replace(
+    r'\\pandocbounded{\\includegraphics[keepaspectratio',
+    r'\\includegraphics[width=\\textwidth,keepaspectratio'
+)
+# Remove the pandocbounded wrapper closing brace for replaced figures
+import re as re2
+tex = re2.sub(
+    r'\\\\includegraphics\[width=\\\\textwidth,keepaspectratio,alt=\{([^}]*)\}\]\{([^}]*)\}\}',
+    r'\\\\includegraphics[width=\\\\textwidth,keepaspectratio,alt={\1}]{\2}',
+    tex
+)
+with open('${OUTPUT_TEX}', 'w') as f:
+    f.write(tex)
+print('  Post-processed: geometry, tolerance, texttt breaks, full-width figures')
+"
 fi
 
 if [[ "${EXPORT_PDF}" == true ]]; then

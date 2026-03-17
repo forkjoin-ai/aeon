@@ -2,7 +2,6 @@
 
 - Parent README: [README.md](./README.md)
 - Theorem ledger: [THEOREM_LEDGER.md](./THEOREM_LEDGER.md)
-- Gap checklist: [../../ch17-gap-closure-checklist.md](../../ch17-gap-closure-checklist.md)
 - Shared compiler workspace: [../../../../../../gnosis/GnosisProofs.lean](../../../../../../gnosis/GnosisProofs.lean)
 
 This note is the canonical documentation surface for the current Betti-to-Lean compiler boundary in Chapter 17. It is the shortest path to the answer to four questions: what is already checked, what Betti can emit today, what still blocks the full measurable Harris package, and why that remaining gap matters.

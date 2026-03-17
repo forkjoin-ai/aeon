@@ -20,15 +20,16 @@
 <circle cx="680" cy="278" r="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
 <text x="680" y="318" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#1d4ed8">outer rot</text>
 <circle cx="680" cy="352" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<rect x="632" y="380" width="96" height="20" fill="#fffdfa" rx="4" ry="4"/>
 <text x="680" y="392" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#7c2d12">outer router</text>
 <path d="M 680 221 C 672 248 672 244 680 262" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
 <path d="M 680 294 C 692 328 692 312 680 336" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
 <rect x="349.84301395927935" y="334.5" width="184" height="176" rx="18" ry="18" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
-<text x="441.84301395927935" y="362.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk A</text>
+<text x="441.84301395927935" y="356.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk A</text>
 <circle cx="393.84301395927935" cy="378.5" r="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
 <circle cx="489.84301395927935" cy="378.5" r="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="393.84301395927935" y="411.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#1d4ed8">inner rot</text>
-<text x="489.84301395927935" y="411.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner router</text>
+<text x="393.84301395927935" y="413.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#1d4ed8">inner rot</text>
+<text x="489.84301395927935" y="413.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12">inner router</text>
 <path d="M 405.84301395927935 378.5 C 423.84301395927935 352.5 459.84301395927935 352.5 477.84301395927935 378.5" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
 <circle cx="387.34084195369667" cy="454.33716831288876" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
 <text x="387.34084195369667" y="459.33716831288876" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
@@ -47,14 +48,15 @@
 <path d="M 489.84301395927935 390.5 C 477.84301395927935 351.3811503252919 463.9146082639613 349.3811503252919 451.9146082639613 364.3811503252919" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <path d="M 451.9146082639613 390.3811503252919 C 451.9146082639613 407.3811503252919 459.84301395927935 448.5 441.84301395927935 456.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="441.84301395927935" cy="472.5" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="441.84301395927935" y="512.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
+<rect x="402.2430139592793" y="507.5" width="79.2" height="18" fill="#fcfffe" rx="4" ry="4"/>
+<text x="441.84301395927935" y="518.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
 <path d="M 680 368 C 680 424 441.84301395927935 280.5 441.84301395927935 334.5" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
 <rect x="826.1569860407207" y="334.5" width="184" height="176" rx="18" ry="18" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
-<text x="918.1569860407207" y="362.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk B</text>
+<text x="918.1569860407207" y="356.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk B</text>
 <circle cx="870.1569860407207" cy="378.5" r="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
 <circle cx="966.1569860407207" cy="378.5" r="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="870.1569860407207" y="411.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#1d4ed8">inner rot</text>
-<text x="966.1569860407207" y="411.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner router</text>
+<text x="870.1569860407207" y="413.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#1d4ed8">inner rot</text>
+<text x="966.1569860407207" y="413.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12">inner router</text>
 <path d="M 882.1569860407207 378.5 C 900.1569860407207 352.5 936.1569860407207 352.5 954.1569860407207 378.5" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
 <circle cx="863.654814035138" cy="454.33716831288876" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
 <text x="863.654814035138" y="459.33716831288876" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
@@ -73,14 +75,15 @@
 <path d="M 966.1569860407207 390.5 C 954.1569860407207 351.3811503252919 940.2285803454026 349.3811503252919 928.2285803454026 364.3811503252919" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <path d="M 928.2285803454026 390.3811503252919 C 928.2285803454026 407.3811503252919 936.1569860407207 448.5 918.1569860407207 456.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="918.1569860407207" cy="472.5" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="918.1569860407207" y="512.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
+<rect x="878.5569860407206" y="507.5" width="79.2" height="18" fill="#fcfffe" rx="4" ry="4"/>
+<text x="918.1569860407207" y="518.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
 <path d="M 680 368 C 680 424 918.1569860407207 280.5 918.1569860407207 334.5" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-active)"/>
 <rect x="826.1569860407205" y="609.5000000000001" width="184" height="176" rx="18" ry="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
-<text x="918.1569860407205" y="637.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk C</text>
+<text x="918.1569860407205" y="631.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk C</text>
 <circle cx="870.1569860407205" cy="653.5000000000001" r="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
 <circle cx="966.1569860407205" cy="653.5000000000001" r="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="870.1569860407205" y="686.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#1d4ed8">inner rot</text>
-<text x="966.1569860407205" y="686.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner router</text>
+<text x="870.1569860407205" y="688.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#1d4ed8">inner rot</text>
+<text x="966.1569860407205" y="688.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12">inner router</text>
 <path d="M 882.1569860407205 653.5000000000001 C 900.1569860407205 627.5000000000001 936.1569860407205 627.5000000000001 954.1569860407205 653.5000000000001" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
 <circle cx="863.6548140351379" cy="729.3371683128889" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
 <text x="863.6548140351379" y="734.3371683128889" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h1</text>
@@ -99,14 +102,15 @@
 <path d="M 966.1569860407205 665.5000000000001 C 954.1569860407205 626.3811503252921 940.2285803454025 624.3811503252921 928.2285803454025 639.3811503252921" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <path d="M 928.2285803454025 665.3811503252921 C 928.2285803454025 682.3811503252921 936.1569860407205 723.5000000000001 918.1569860407205 731.5000000000001" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="918.1569860407205" cy="747.5000000000001" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="918.1569860407205" y="787.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
+<rect x="878.5569860407205" y="782.5000000000001" width="79.2" height="18" fill="#f8fafc" rx="4" ry="4"/>
+<text x="918.1569860407205" y="793.5000000000001" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
 <path d="M 680 368 C 680 424 918.1569860407205 555.5000000000001 918.1569860407205 609.5000000000001" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <rect x="349.84301395927935" y="609.5" width="184" height="176" rx="18" ry="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
-<text x="441.84301395927935" y="637.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk D</text>
+<text x="441.84301395927935" y="631.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk D</text>
 <circle cx="393.84301395927935" cy="653.5" r="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
 <circle cx="489.84301395927935" cy="653.5" r="12" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="393.84301395927935" y="686.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#1d4ed8">inner rot</text>
-<text x="489.84301395927935" y="686.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner router</text>
+<text x="393.84301395927935" y="688.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#1d4ed8">inner rot</text>
+<text x="489.84301395927935" y="688.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12">inner router</text>
 <path d="M 405.84301395927935 653.5 C 423.84301395927935 627.5 459.84301395927935 627.5 477.84301395927935 653.5" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-guide)"/>
 <circle cx="387.34084195369667" cy="729.3371683128888" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
 <text x="387.34084195369667" y="734.3371683128888" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h1</text>
@@ -125,7 +129,8 @@
 <path d="M 489.84301395927935 665.5 C 477.84301395927935 626.381150325292 463.9146082639613 624.381150325292 451.9146082639613 639.381150325292" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <path d="M 451.9146082639613 665.381150325292 C 451.9146082639613 682.381150325292 459.84301395927935 723.5 441.84301395927935 731.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="441.84301395927935" cy="747.5" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="441.84301395927935" y="787.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
+<rect x="402.2430139592793" y="782.5" width="79.2" height="18" fill="#f8fafc" rx="4" ry="4"/>
+<text x="441.84301395927935" y="793.5" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="400" fill="#7c2d12">inner whip</text>
 <path d="M 680 368 C 680 424 441.84301395927935 555.5 441.84301395927935 609.5" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="680" cy="678" r="18" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
 <text x="680" y="720" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#7c2d12">outer whip snap</text>

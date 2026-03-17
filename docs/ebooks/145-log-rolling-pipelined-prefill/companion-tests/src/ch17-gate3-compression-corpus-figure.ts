@@ -209,7 +209,7 @@ function renderMetricPanel(
 
   const innerX = options.x + 64;
   const innerY = options.y + 84;
-  const innerWidth = options.width - 108;
+  const innerWidth = options.width - 148;
   const innerHeight = options.height - 134;
   const color = metricColor(options.metric);
   const xStep =
@@ -260,7 +260,7 @@ function renderMetricPanel(
   });
 
   svg.push(
-    `<text x="${innerX + innerWidth / 2}" y="${options.y + options.height - 16}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(options.axisLabel)}</text>`,
+    `<text x="${innerX + innerWidth / 2}" y="${options.y + options.height - 4}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(options.axisLabel)}</text>`,
   );
 }
 

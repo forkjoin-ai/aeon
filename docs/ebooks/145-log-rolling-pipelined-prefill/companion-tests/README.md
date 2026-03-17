@@ -3,8 +3,6 @@
 - Parent volume README: [open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/README.md](../README.md)
 - Live docs home: [docs.aeonflux.dev](https://docs.aeonflux.dev)
 - External reviewer quickstart: [../ch17-external-reviewer-quickstart.md](../ch17-external-reviewer-quickstart.md)
-- Closure todo: [../ch17-closure-todo.md](../ch17-closure-todo.md)
-- Gap checklist: [../ch17-gap-closure-checklist.md](../ch17-gap-closure-checklist.md)
 - Test sources: [src/README.md](./src/README.md)
 - Formal artifacts: [formal/README.md](./formal/README.md)
 - Gnosis compiler boundary: [formal/GNOSIS_COMPILER_BOUNDARY.md](./formal/GNOSIS_COMPILER_BOUNDARY.md)

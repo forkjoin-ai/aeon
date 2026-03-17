@@ -31,18 +31,22 @@
 <rect x="48" y="470" width="700" height="360" rx="20" ry="20" fill="#fffdf8" stroke="#d6d3c7"/>
 <text x="72" y="508" font-family="Georgia, Times New Roman, serif" font-size="24" font-weight="700" fill="#1f2937">Ablation Frontier</text>
 <text x="72" y="534" font-family="Georgia, Times New Roman, serif" font-size="15" fill="#64748b">Speedup on x-axis, exact fraction on y-axis; bubble size tracks compute-adjusted exact</text>
-<line x1="92" y1="778" x2="702" y2="778" stroke="#94a3b8" stroke-width="2"/>
-<line x1="92" y1="568" x2="92" y2="778" stroke="#94a3b8" stroke-width="2"/>
-<circle cx="343.3263803909143" cy="584.275" r="27.07" fill="#0f766e" fill-opacity="0.20" stroke="#0f766e" stroke-width="2"/>
-<text x="343.3263803909143" y="592.275" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#0f172a"><tspan x="343.3263803909143" dy="0">full-moa</tspan></text>
-<circle cx="96.72023129619771" cy="568" r="22" fill="#0f766e" fill-opacity="0.20" stroke="#0f766e" stroke-width="2"/>
-<line x1="96.72023129619771" y1="558.1" x2="44.72023129619771" y2="542" stroke="#64748b" stroke-width="1.5" opacity="0.75"/>
-<text x="44.72023129619771" y="548" text-anchor="end" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#0f172a"><tspan x="44.72023129619771" dy="0">no outer</tspan><tspan x="44.72023129619771" dy="14">sparsity</tspan></text>
-<circle cx="92" cy="570.1" r="21.939999999999998" fill="#0f766e" fill-opacity="0.20" stroke="#0f766e" stroke-width="2"/>
-<line x1="92" y1="560.227" x2="144" y2="544.1" stroke="#64748b" stroke-width="1.5" opacity="0.75"/>
-<text x="144" y="550.1" text-anchor="start" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#0f172a"><tspan x="144" dy="0">no inner</tspan><tspan x="144" dy="14">sparsity</tspan></text>
+<line x1="148" y1="778" x2="702" y2="778" stroke="#94a3b8" stroke-width="2"/>
+<line x1="148" y1="568" x2="148" y2="778" stroke="#94a3b8" stroke-width="2"/>
+<circle cx="376.25379465010906" cy="584.275" r="27.07" fill="#0f766e" fill-opacity="0.20" stroke="#0f766e" stroke-width="2"/>
+<rect x="342.25379465010906" y="606.275" width="68" height="20" rx="4" ry="4" fill="#fffdf8" fill-opacity="0.88"/>
+<text x="376.25379465010906" y="618.275" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#0f172a"><tspan x="376.25379465010906" dy="0">full-moa</tspan></text>
+<circle cx="152.2868985870386" cy="568" r="22" fill="#0f766e" fill-opacity="0.20" stroke="#0f766e" stroke-width="2"/>
+<line x1="152.2868985870386" y1="558.1" x2="100.28689858703859" y2="542" stroke="#64748b" stroke-width="1.5" opacity="0.75"/>
+<rect x="36.28689858703859" y="536" width="68" height="34" rx="4" ry="4" fill="#fffdf8" fill-opacity="0.88"/>
+<text x="100.28689858703859" y="548" text-anchor="end" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#0f172a"><tspan x="100.28689858703859" dy="0">no outer</tspan><tspan x="100.28689858703859" dy="14">sparsity</tspan></text>
+<circle cx="148" cy="570.1" r="21.939999999999998" fill="#0f766e" fill-opacity="0.20" stroke="#0f766e" stroke-width="2"/>
+<line x1="148" y1="560.227" x2="200" y2="544.1" stroke="#64748b" stroke-width="1.5" opacity="0.75"/>
+<rect x="196" y="538.1" width="68" height="34" rx="4" ry="4" fill="#fffdf8" fill-opacity="0.88"/>
+<text x="200" y="550.1" text-anchor="start" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#0f172a"><tspan x="200" dy="0">no inner</tspan><tspan x="200" dy="14">sparsity</tspan></text>
 <circle cx="702" cy="738.1" r="20.560000000000002" fill="#0f766e" fill-opacity="0.20" stroke="#0f766e" stroke-width="2"/>
-<text x="702" y="744.1" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#0f172a"><tspan x="702" dy="0">under-routed</tspan></text>
+<rect x="653" y="760.1" width="98" height="20" rx="4" ry="4" fill="#fffdf8" fill-opacity="0.88"/>
+<text x="702" y="772.1" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#0f172a"><tspan x="702" dy="0">under-routed</tspan></text>
 <rect x="780" y="470" width="372" height="360" rx="20" ry="20" fill="#fffdf8" stroke="#d6d3c7"/>
 <text x="804" y="508" font-family="Georgia, Times New Roman, serif" font-size="24" font-weight="700" fill="#1f2937">GG Surface</text>
 <text x="806" y="548" font-family="Georgia, Times New Roman, serif" font-size="17" fill="#334155">Structured primitive: StructuredMoA</text>

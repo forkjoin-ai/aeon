@@ -377,17 +377,22 @@ function renderSpeedupPanel(
     );
   });
 
+  const leftPanelLabelOffsets: Record<string, { dx: number; dy: number }> = {
+    'table-500x8': { dx: 10, dy: -22 },
+  };
+
   report.scenarios
     .filter(isPlottedScenario)
     .forEach((scenario) => {
       const cx = logScale(scenario.workload, xRange, innerX, innerWidth);
       const cy = innerY + innerHeight - (scenario.speedup / yMax) * innerHeight;
       const color = stageColor(scenario.stageCount);
+      const offset = leftPanelLabelOffsets[scenario.id] ?? { dx: 10, dy: -10 };
       svg.push(
         `<circle cx="${cx}" cy="${cy}" r="6" fill="#ffffff" stroke="${color}" stroke-width="3"/>`,
       );
       svg.push(
-        `<text x="${cx + 10}" y="${cy - 10}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">${escapeXml(scenario.label)}</text>`,
+        `<text x="${cx + offset.dx}" y="${cy + offset.dy}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">${escapeXml(scenario.label)}</text>`,
       );
     });
 
@@ -485,15 +490,34 @@ function renderRegimePanel(
     );
   });
 
+  const rightPanelLabelOffsets: Record<string, { dx: number; dy: number }> = {
+    'table-14x2': { dx: 8, dy: 18 },
+    'table-100x4': { dx: 8, dy: -52 },
+    'table-500x8': { dx: 8, dy: -14 },
+    'table-100x10': { dx: -8, dy: -36 },
+    'aeon-flow-microfrontend': { dx: -8, dy: 16 },
+    'http1-microfrontend': { dx: 8, dy: -14 },
+  };
+
   report.scenarios.forEach((scenario) => {
     const cx = logScale(scenario.reynolds, xRange, innerX, innerWidth);
     const cy = innerY + innerHeight - scenario.idleFraction * innerHeight;
     const color = regimeColor(scenario.regime);
+    const offset = rightPanelLabelOffsets[scenario.id] ?? { dx: 8, dy: -8 };
+    const labelX = cx + offset.dx;
+    const labelY = cy + offset.dy;
+    const textAnchor = offset.dx < 0 ? 'end' : 'start';
+    const needsLeader = Math.abs(offset.dy) > 16;
+    if (needsLeader) {
+      svg.push(
+        `<line x1="${cx}" y1="${cy - 6}" x2="${labelX}" y2="${labelY + 4}" stroke="#9ca3af" stroke-width="0.75" stroke-dasharray="2,2"/>`,
+      );
+    }
     svg.push(
       `<circle cx="${cx}" cy="${cy}" r="5.5" fill="${color}" stroke="#ffffff" stroke-width="2"/>`,
     );
     svg.push(
-      `<text x="${cx + 8}" y="${cy - 8}" font-family="system-ui, sans-serif" font-size="10.5" fill="#374151">${escapeXml(scenario.label)}</text>`,
+      `<text x="${labelX}" y="${labelY}" text-anchor="${textAnchor}" font-family="system-ui, sans-serif" font-size="10.5" fill="#374151">${escapeXml(scenario.label)}</text>`,
     );
   });
 
@@ -520,13 +544,13 @@ export function renderCh17InvertedScalingReynoldsFigureSvg(
   report: Ch17InvertedScalingReynoldsFigureReport,
 ): string {
   const svg: string[] = [];
-  svg.push('<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820" role="img" aria-labelledby="title desc">');
+  svg.push('<svg xmlns="http://www.w3.org/2000/svg" width="1380" height="820" viewBox="0 0 1380 820" role="img" aria-labelledby="title desc">');
   svg.push('<title id="title">Chapter 17 inverted-scaling and Reynolds-regime figure</title>');
   svg.push(
     '<desc id="desc">Two-panel analytic figure showing workload-speedup curves under balanced chunks and a Reynolds-number regime map with manuscript scenarios overlaid.</desc>',
   );
-  svg.push('<rect width="1280" height="820" fill="#f3efe5"/>');
-  svg.push('<rect x="22" y="22" width="1236" height="776" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>');
+  svg.push('<rect width="1380" height="820" fill="#f3efe5"/>');
+  svg.push('<rect x="22" y="22" width="1336" height="776" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>');
   svg.push('<text x="60" y="82" font-family="Georgia, serif" font-size="32" fill="#111827">Inverted Scaling and Reynolds Regimes</text>');
   svg.push(
     `<text x="60" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">${escapeXml(report.speedupFormula)} | ${escapeXml(report.idleFormula)} | ${escapeXml(report.reynoldsFormula)}</text>`,
@@ -536,7 +560,7 @@ export function renderCh17InvertedScalingReynoldsFigureSvg(
   );
 
   renderSpeedupPanel(svg, report, 52, 168, 620, 610);
-  renderRegimePanel(svg, report, 700, 168, 528, 610);
+  renderRegimePanel(svg, report, 700, 168, 628, 610);
 
   svg.push('</svg>');
   return `${svg.join('')}\n`;

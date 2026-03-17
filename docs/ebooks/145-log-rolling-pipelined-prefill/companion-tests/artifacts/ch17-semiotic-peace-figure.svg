@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" font-family="'Georgia', 'Times New Roman', serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 740" font-family="'Georgia', 'Times New Roman', serif">
   <defs>
     <linearGradient id="warGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#dc2626"/>
@@ -28,7 +28,7 @@
   </defs>
 
   <!-- Background -->
-  <rect width="960" height="720" fill="#fafaf9"/>
+  <rect width="960" height="740" fill="#fafaf9"/>
 
   <!-- Title -->
   <text x="480" y="36" text-anchor="middle" font-size="18" font-weight="bold" fill="#1c1917">Finding Hope in the Shape of Failure</text>

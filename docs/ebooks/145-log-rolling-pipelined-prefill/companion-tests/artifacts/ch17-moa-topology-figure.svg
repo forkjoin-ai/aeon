@@ -13,119 +13,120 @@
 <circle cx="364" cy="308" r="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
 <text x="364" y="348" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#1d4ed8">outer rot</text>
 <circle cx="364" cy="378" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<rect x="316" y="406" width="96" height="20" fill="#fffdf8" rx="4" ry="4"/>
 <text x="364" y="418" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#7c2d12">outer router</text>
 <line x1="364" y1="253" x2="364" y2="292" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <line x1="364" y1="324" x2="364" y2="362" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<rect x="69.6" y="436" width="128" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
-<text x="133.6" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk A</text>
-<circle cx="105.6" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
-<circle cx="161.6" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
-<text x="105.6" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="105.6" dy="0">head</tspan><tspan x="105.6" dy="12">rot</tspan></text>
-<text x="161.6" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="161.6" dy="0">head</tspan><tspan x="161.6" dy="12">sel</tspan></text>
-<line x1="117.6" y1="502" x2="149.6" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="95.19999999999999" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="95.19999999999999" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h1</text>
-<line x1="161.6" y1="514" x2="95.19999999999999" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="95.19999999999999" y1="581" x2="133.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="120.8" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="120.8" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h2</text>
-<line x1="161.6" y1="514" x2="120.8" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="120.8" y1="581" x2="133.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="146.4" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="146.4" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h3</text>
-<line x1="161.6" y1="514" x2="146.4" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="146.4" y1="581" x2="133.6" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<rect x="53.6" y="436" width="148" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
+<text x="127.6" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk A</text>
+<circle cx="89.6" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<circle cx="165.6" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
+<text x="89.6" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="89.6" dy="0">head</tspan><tspan x="89.6" dy="12">rot</tspan></text>
+<text x="165.6" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="165.6" dy="0">head</tspan><tspan x="165.6" dy="12">sel</tspan></text>
+<line x1="101.6" y1="502" x2="153.6" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="83.2" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="83.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
+<line x1="165.6" y1="514" x2="83.2" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="83.2" y1="581" x2="127.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="112.80000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="112.80000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h2</text>
+<line x1="165.6" y1="514" x2="112.80000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="112.80000000000001" y1="581" x2="127.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="142.4" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="142.4" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h3</text>
+<line x1="165.6" y1="514" x2="142.4" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="142.4" y1="581" x2="127.6" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="172" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="172" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h4</text>
-<line x1="161.6" y1="514" x2="172" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="172" y1="581" x2="133.6" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="133.6" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="133.6" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="133.6" dy="0">inner</tspan><tspan x="133.6" dy="12">whip</tspan></text>
-<line x1="364" y1="394" x2="133.6" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<rect x="223.2" y="436" width="128" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
-<text x="287.2" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk B</text>
-<circle cx="259.2" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
-<circle cx="315.2" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
-<text x="259.2" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="259.2" dy="0">head</tspan><tspan x="259.2" dy="12">rot</tspan></text>
-<text x="315.2" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="315.2" dy="0">head</tspan><tspan x="315.2" dy="12">sel</tspan></text>
-<line x1="271.2" y1="502" x2="303.2" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="248.79999999999998" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="248.79999999999998" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h1</text>
-<line x1="315.2" y1="514" x2="248.79999999999998" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="248.79999999999998" y1="581" x2="287.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="274.4" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="274.4" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h2</text>
-<line x1="315.2" y1="514" x2="274.4" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="274.4" y1="581" x2="287.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<text x="172" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h4</text>
+<line x1="165.6" y1="514" x2="172" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="172" y1="581" x2="127.6" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="127.6" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="127.6" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="127.6" dy="0">inner</tspan><tspan x="127.6" dy="12">whip</tspan></text>
+<line x1="364" y1="394" x2="127.6" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<rect x="211.2" y="436" width="148" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
+<text x="285.2" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk B</text>
+<circle cx="247.2" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<circle cx="323.2" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
+<text x="247.2" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="247.2" dy="0">head</tspan><tspan x="247.2" dy="12">rot</tspan></text>
+<text x="323.2" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="323.2" dy="0">head</tspan><tspan x="323.2" dy="12">sel</tspan></text>
+<line x1="259.2" y1="502" x2="311.2" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="240.79999999999998" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="240.79999999999998" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
+<line x1="323.2" y1="514" x2="240.79999999999998" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="240.79999999999998" y1="581" x2="285.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="270.4" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="270.4" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h2</text>
+<line x1="323.2" y1="514" x2="270.4" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="270.4" y1="581" x2="285.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <circle cx="300" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="300" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h3</text>
-<line x1="315.2" y1="514" x2="300" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="300" y1="581" x2="287.2" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="325.6" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="325.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h4</text>
-<line x1="315.2" y1="514" x2="325.6" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="325.6" y1="581" x2="287.2" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="287.2" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="287.2" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="287.2" dy="0">inner</tspan><tspan x="287.2" dy="12">whip</tspan></text>
-<line x1="364" y1="394" x2="287.2" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<rect x="376.8" y="436" width="128" height="240" rx="16" ry="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
-<text x="440.8" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk C</text>
-<circle cx="412.8" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
-<circle cx="468.8" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
-<text x="412.8" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="412.8" dy="0">head</tspan><tspan x="412.8" dy="12">rot</tspan></text>
-<text x="468.8" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="468.8" dy="0">head</tspan><tspan x="468.8" dy="12">sel</tspan></text>
-<line x1="424.8" y1="502" x2="456.8" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="402.40000000000003" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="402.40000000000003" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h1</text>
-<line x1="468.8" y1="514" x2="402.40000000000003" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="402.40000000000003" y1="581" x2="440.8" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<text x="300" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h3</text>
+<line x1="323.2" y1="514" x2="300" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="300" y1="581" x2="285.2" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="329.6" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="329.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h4</text>
+<line x1="323.2" y1="514" x2="329.6" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="329.6" y1="581" x2="285.2" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="285.2" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="285.2" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="285.2" dy="0">inner</tspan><tspan x="285.2" dy="12">whip</tspan></text>
+<line x1="364" y1="394" x2="285.2" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<rect x="368.8" y="436" width="148" height="240" rx="16" ry="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
+<text x="442.8" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk C</text>
+<circle cx="404.8" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<circle cx="480.79999999999995" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
+<text x="404.8" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="404.8" dy="0">head</tspan><tspan x="404.8" dy="12">rot</tspan></text>
+<text x="480.79999999999995" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="480.79999999999995" dy="0">head</tspan><tspan x="480.79999999999995" dy="12">sel</tspan></text>
+<line x1="416.8" y1="502" x2="468.79999999999995" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="398.40000000000003" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="398.40000000000003" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h1</text>
+<line x1="480.79999999999995" y1="514" x2="398.40000000000003" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="398.40000000000003" y1="581" x2="442.8" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="428" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="428" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h2</text>
-<line x1="468.8" y1="514" x2="428" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="428" y1="581" x2="440.8" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="453.6" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="453.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h3</text>
-<line x1="468.8" y1="514" x2="453.6" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="453.6" y1="581" x2="440.8" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="479.20000000000005" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="479.20000000000005" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h4</text>
-<line x1="468.8" y1="514" x2="479.20000000000005" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="479.20000000000005" y1="581" x2="440.8" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="440.8" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="440.8" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="440.8" dy="0">inner</tspan><tspan x="440.8" dy="12">whip</tspan></text>
-<line x1="364" y1="394" x2="440.8" y2="436" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<rect x="530.4" y="436" width="128" height="240" rx="16" ry="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
-<text x="594.4" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk D</text>
-<circle cx="566.4" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
-<circle cx="622.4" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
-<text x="566.4" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="566.4" dy="0">head</tspan><tspan x="566.4" dy="12">rot</tspan></text>
-<text x="622.4" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="622.4" dy="0">head</tspan><tspan x="622.4" dy="12">sel</tspan></text>
-<line x1="578.4" y1="502" x2="610.4" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<text x="428" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h2</text>
+<line x1="480.79999999999995" y1="514" x2="428" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="428" y1="581" x2="442.8" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="457.6" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="457.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h3</text>
+<line x1="480.79999999999995" y1="514" x2="457.6" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="457.6" y1="581" x2="442.8" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="487.20000000000005" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="487.20000000000005" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h4</text>
+<line x1="480.79999999999995" y1="514" x2="487.20000000000005" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="487.20000000000005" y1="581" x2="442.8" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="442.8" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="442.8" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="442.8" dy="0">inner</tspan><tspan x="442.8" dy="12">whip</tspan></text>
+<line x1="364" y1="394" x2="442.8" y2="436" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<rect x="526.4" y="436" width="148" height="240" rx="16" ry="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 7"/>
+<text x="600.4" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk D</text>
+<circle cx="562.4" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<circle cx="638.4" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
+<text x="562.4" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="562.4" dy="0">head</tspan><tspan x="562.4" dy="12">rot</tspan></text>
+<text x="638.4" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="638.4" dy="0">head</tspan><tspan x="638.4" dy="12">sel</tspan></text>
+<line x1="574.4" y1="502" x2="626.4" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <circle cx="556" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="556" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h1</text>
-<line x1="622.4" y1="514" x2="556" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="556" y1="581" x2="594.4" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="581.6" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="581.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h2</text>
-<line x1="622.4" y1="514" x2="581.6" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="581.6" y1="581" x2="594.4" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="607.2" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="607.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h3</text>
-<line x1="622.4" y1="514" x2="607.2" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="607.2" y1="581" x2="594.4" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="632.8" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="632.8" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#64748b">h4</text>
-<line x1="622.4" y1="514" x2="632.8" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="632.8" y1="581" x2="594.4" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<circle cx="594.4" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 6"/>
-<text x="594.4" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="594.4" dy="0">inner</tspan><tspan x="594.4" dy="12">whip</tspan></text>
-<line x1="364" y1="394" x2="594.4" y2="436" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<text x="556" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h1</text>
+<line x1="638.4" y1="514" x2="556" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="556" y1="581" x2="600.4" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="585.6" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="585.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h2</text>
+<line x1="638.4" y1="514" x2="585.6" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="585.6" y1="581" x2="600.4" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="615.2" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="615.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h3</text>
+<line x1="638.4" y1="514" x2="615.2" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="615.2" y1="581" x2="600.4" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="644.8" cy="568" r="13" fill="#f8fafc" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="644.8" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#64748b">h4</text>
+<line x1="638.4" y1="514" x2="644.8" y2="555" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="644.8" y1="581" x2="600.4" y2="620" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<circle cx="600.4" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="600.4" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="600.4" dy="0">inner</tspan><tspan x="600.4" dy="12">whip</tspan></text>
+<line x1="364" y1="394" x2="600.4" y2="436" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="364" cy="808" r="18" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
 <text x="364" y="850" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#7c2d12">outer whip</text>
-<line x1="133.6" y1="650" x2="364" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="287.2" y1="650" x2="364" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="440.8" y1="650" x2="364" y2="790" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
-<line x1="594.4" y1="650" x2="364" y2="790" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="127.6" y1="650" x2="364" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="285.2" y1="650" x2="364" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="442.8" y1="650" x2="364" y2="790" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
+<line x1="600.4" y1="650" x2="364" y2="790" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow-suppressed)"/>
 <circle cx="364" cy="870" r="15" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
 <text x="364" y="906" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#334155">output</text>
 <line x1="364" y1="826" x2="364" y2="855" stroke="#c2410c" stroke-width="2.5" marker-end="url(#arrow-active)"/>
@@ -137,119 +138,120 @@
 <circle cx="1036" cy="308" r="16" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
 <text x="1036" y="348" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#1d4ed8">outer rot</text>
 <circle cx="1036" cy="378" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<rect x="988" y="406" width="96" height="20" fill="#fffdf8" rx="4" ry="4"/>
 <text x="1036" y="418" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="400" fill="#7c2d12">outer router</text>
 <line x1="1036" y1="253" x2="1036" y2="292" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <line x1="1036" y1="324" x2="1036" y2="362" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<rect x="741.6" y="436" width="128" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
-<text x="805.6" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk A</text>
-<circle cx="777.6" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
-<circle cx="833.6" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
-<text x="777.6" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="777.6" dy="0">head</tspan><tspan x="777.6" dy="12">rot</tspan></text>
-<text x="833.6" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="833.6" dy="0">head</tspan><tspan x="833.6" dy="12">sel</tspan></text>
-<line x1="789.6" y1="502" x2="821.6" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="767.2" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="767.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h1</text>
-<line x1="833.6" y1="514" x2="767.2" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="767.2" y1="581" x2="805.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="792.8000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="792.8000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h2</text>
-<line x1="833.6" y1="514" x2="792.8000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="792.8000000000001" y1="581" x2="805.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="818.4000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="818.4000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h3</text>
-<line x1="833.6" y1="514" x2="818.4000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="818.4000000000001" y1="581" x2="805.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<rect x="725.6" y="436" width="148" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
+<text x="799.6" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk A</text>
+<circle cx="761.6" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<circle cx="837.6" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
+<text x="761.6" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="761.6" dy="0">head</tspan><tspan x="761.6" dy="12">rot</tspan></text>
+<text x="837.6" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="837.6" dy="0">head</tspan><tspan x="837.6" dy="12">sel</tspan></text>
+<line x1="773.6" y1="502" x2="825.6" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="755.2" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="755.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
+<line x1="837.6" y1="514" x2="755.2" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="755.2" y1="581" x2="799.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="784.8000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="784.8000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h2</text>
+<line x1="837.6" y1="514" x2="784.8000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="784.8000000000001" y1="581" x2="799.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="814.4000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="814.4000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h3</text>
+<line x1="837.6" y1="514" x2="814.4000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="814.4000000000001" y1="581" x2="799.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <circle cx="844" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="844" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h4</text>
-<line x1="833.6" y1="514" x2="844" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="844" y1="581" x2="805.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="805.6" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="805.6" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="805.6" dy="0">inner</tspan><tspan x="805.6" dy="12">whip</tspan></text>
-<line x1="1036" y1="394" x2="805.6" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<rect x="895.2" y="436" width="128" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
-<text x="959.2" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk B</text>
-<circle cx="931.2" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
-<circle cx="987.2" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
-<text x="931.2" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="931.2" dy="0">head</tspan><tspan x="931.2" dy="12">rot</tspan></text>
-<text x="987.2" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="987.2" dy="0">head</tspan><tspan x="987.2" dy="12">sel</tspan></text>
-<line x1="943.2" y1="502" x2="975.2" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="920.8000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="920.8000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h1</text>
-<line x1="987.2" y1="514" x2="920.8000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="920.8000000000001" y1="581" x2="959.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="946.4000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="946.4000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h2</text>
-<line x1="987.2" y1="514" x2="946.4000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="946.4000000000001" y1="581" x2="959.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<text x="844" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h4</text>
+<line x1="837.6" y1="514" x2="844" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="844" y1="581" x2="799.6" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="799.6" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="799.6" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="799.6" dy="0">inner</tspan><tspan x="799.6" dy="12">whip</tspan></text>
+<line x1="1036" y1="394" x2="799.6" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<rect x="883.2" y="436" width="148" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
+<text x="957.2" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk B</text>
+<circle cx="919.2" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<circle cx="995.2" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
+<text x="919.2" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="919.2" dy="0">head</tspan><tspan x="919.2" dy="12">rot</tspan></text>
+<text x="995.2" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="995.2" dy="0">head</tspan><tspan x="995.2" dy="12">sel</tspan></text>
+<line x1="931.2" y1="502" x2="983.2" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="912.8000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="912.8000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
+<line x1="995.2" y1="514" x2="912.8000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="912.8000000000001" y1="581" x2="957.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="942.4000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="942.4000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h2</text>
+<line x1="995.2" y1="514" x2="942.4000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="942.4000000000001" y1="581" x2="957.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <circle cx="972" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="972" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h3</text>
-<line x1="987.2" y1="514" x2="972" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="972" y1="581" x2="959.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="997.6" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="997.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h4</text>
-<line x1="987.2" y1="514" x2="997.6" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="997.6" y1="581" x2="959.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="959.2" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="959.2" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="959.2" dy="0">inner</tspan><tspan x="959.2" dy="12">whip</tspan></text>
-<line x1="1036" y1="394" x2="959.2" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<rect x="1048.8" y="436" width="128" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
-<text x="1112.8" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk C</text>
-<circle cx="1084.8" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
-<circle cx="1140.8" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
-<text x="1084.8" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="1084.8" dy="0">head</tspan><tspan x="1084.8" dy="12">rot</tspan></text>
-<text x="1140.8" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="1140.8" dy="0">head</tspan><tspan x="1140.8" dy="12">sel</tspan></text>
-<line x1="1096.8" y1="502" x2="1128.8" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="1074.3999999999999" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="1074.3999999999999" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h1</text>
-<line x1="1140.8" y1="514" x2="1074.3999999999999" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1074.3999999999999" y1="581" x2="1112.8" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<text x="972" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h3</text>
+<line x1="995.2" y1="514" x2="972" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="972" y1="581" x2="957.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1001.6" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="1001.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h4</text>
+<line x1="995.2" y1="514" x2="1001.6" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1001.6" y1="581" x2="957.2" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="957.2" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="957.2" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="957.2" dy="0">inner</tspan><tspan x="957.2" dy="12">whip</tspan></text>
+<line x1="1036" y1="394" x2="957.2" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<rect x="1040.8" y="436" width="148" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
+<text x="1114.8" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk C</text>
+<circle cx="1076.8" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<circle cx="1152.8" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
+<text x="1076.8" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="1076.8" dy="0">head</tspan><tspan x="1076.8" dy="12">rot</tspan></text>
+<text x="1152.8" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="1152.8" dy="0">head</tspan><tspan x="1152.8" dy="12">sel</tspan></text>
+<line x1="1088.8" y1="502" x2="1140.8" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1070.3999999999999" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="1070.3999999999999" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
+<line x1="1152.8" y1="514" x2="1070.3999999999999" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1070.3999999999999" y1="581" x2="1114.8" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <circle cx="1100" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="1100" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h2</text>
-<line x1="1140.8" y1="514" x2="1100" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1100" y1="581" x2="1112.8" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="1125.6" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="1125.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h3</text>
-<line x1="1140.8" y1="514" x2="1125.6" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1125.6" y1="581" x2="1112.8" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="1151.2" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="1151.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h4</text>
-<line x1="1140.8" y1="514" x2="1151.2" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1151.2" y1="581" x2="1112.8" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="1112.8" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="1112.8" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="1112.8" dy="0">inner</tspan><tspan x="1112.8" dy="12">whip</tspan></text>
-<line x1="1036" y1="394" x2="1112.8" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<rect x="1202.4" y="436" width="128" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
-<text x="1266.4" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk D</text>
-<circle cx="1238.4" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
-<circle cx="1294.4" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
-<text x="1238.4" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="1238.4" dy="0">head</tspan><tspan x="1238.4" dy="12">rot</tspan></text>
-<text x="1294.4" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="1294.4" dy="0">head</tspan><tspan x="1294.4" dy="12">sel</tspan></text>
-<line x1="1250.4" y1="502" x2="1282.4" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<text x="1100" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h2</text>
+<line x1="1152.8" y1="514" x2="1100" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1100" y1="581" x2="1114.8" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1129.6" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="1129.6" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h3</text>
+<line x1="1152.8" y1="514" x2="1129.6" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1129.6" y1="581" x2="1114.8" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1159.2" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="1159.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h4</text>
+<line x1="1152.8" y1="514" x2="1159.2" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1159.2" y1="581" x2="1114.8" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1114.8" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="1114.8" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="1114.8" dy="0">inner</tspan><tspan x="1114.8" dy="12">whip</tspan></text>
+<line x1="1036" y1="394" x2="1114.8" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<rect x="1198.4" y="436" width="148" height="240" rx="16" ry="16" fill="#fcfffe" stroke="#0f766e" stroke-width="2"/>
+<text x="1272.4" y="464" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="18" font-weight="700" fill="#1f2937">blk D</text>
+<circle cx="1234.4" cy="502" r="13" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
+<circle cx="1310.4" cy="502" r="13" fill="#fffdf8" stroke="#c2410c" stroke-width="2"/>
+<text x="1234.4" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="1234.4" dy="0">head</tspan><tspan x="1234.4" dy="12">rot</tspan></text>
+<text x="1310.4" y="530" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#334155"><tspan x="1310.4" dy="0">head</tspan><tspan x="1310.4" dy="12">sel</tspan></text>
+<line x1="1246.4" y1="502" x2="1298.4" y2="502" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <circle cx="1228" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="1228" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h1</text>
-<line x1="1294.4" y1="514" x2="1228" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1228" y1="581" x2="1266.4" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="1253.6000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="1253.6000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h2</text>
-<line x1="1294.4" y1="514" x2="1253.6000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1253.6000000000001" y1="581" x2="1266.4" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="1279.2" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="1279.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h3</text>
-<line x1="1294.4" y1="514" x2="1279.2" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1279.2" y1="581" x2="1266.4" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="1304.8000000000002" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
-<text x="1304.8000000000002" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="13" font-weight="700" fill="#065f46">h4</text>
-<line x1="1294.4" y1="514" x2="1304.8000000000002" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1304.8000000000002" y1="581" x2="1266.4" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<circle cx="1266.4" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
-<text x="1266.4" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="1266.4" dy="0">inner</tspan><tspan x="1266.4" dy="12">whip</tspan></text>
-<line x1="1036" y1="394" x2="1266.4" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<text x="1228" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h1</text>
+<line x1="1310.4" y1="514" x2="1228" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1228" y1="581" x2="1272.4" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1257.6000000000001" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="1257.6000000000001" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h2</text>
+<line x1="1310.4" y1="514" x2="1257.6000000000001" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1257.6000000000001" y1="581" x2="1272.4" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1287.2" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="1287.2" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h3</text>
+<line x1="1310.4" y1="514" x2="1287.2" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1287.2" y1="581" x2="1272.4" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1316.8000000000002" cy="568" r="13" fill="#dcfce7" stroke="#0f766e" stroke-width="2"/>
+<text x="1316.8000000000002" y="573" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="12" font-weight="700" fill="#065f46">h4</text>
+<line x1="1310.4" y1="514" x2="1316.8000000000002" y2="555" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1316.8000000000002" y1="581" x2="1272.4" y2="620" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<circle cx="1272.4" cy="634" r="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
+<text x="1272.4" y="668" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="11" font-weight="400" fill="#7c2d12"><tspan x="1272.4" dy="0">inner</tspan><tspan x="1272.4" dy="12">whip</tspan></text>
+<line x1="1036" y1="394" x2="1272.4" y2="436" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <circle cx="1036" cy="808" r="18" fill="#fff7ed" stroke="#c2410c" stroke-width="2"/>
 <text x="1036" y="850" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#7c2d12">outer whip</text>
-<line x1="805.6" y1="650" x2="1036" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="959.2" y1="650" x2="1036" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1112.8" y1="650" x2="1036" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
-<line x1="1266.4" y1="650" x2="1036" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="799.6" y1="650" x2="1036" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="957.2" y1="650" x2="1036" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1114.8" y1="650" x2="1036" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
+<line x1="1272.4" y1="650" x2="1036" y2="790" stroke="#0f766e" stroke-width="2.5" marker-end="url(#arrow-active)"/>
 <circle cx="1036" cy="870" r="15" fill="#fffdf8" stroke="#334155" stroke-width="2"/>
 <text x="1036" y="906" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="14" font-weight="400" fill="#334155">output</text>
 <line x1="1036" y1="826" x2="1036" y2="855" stroke="#c2410c" stroke-width="2.5" marker-end="url(#arrow-active)"/>

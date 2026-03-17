@@ -476,8 +476,27 @@ function renderLinePanel(
   }
 
   svg.push(
-    `<text x="${x + 24}" y="${y + height - 16}" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="#6b7280">first separated: ${firstSeparated === null ? 'none' : firstSeparated.toFixed(2)}</text>`,
+    `<text x="${x + width - 28}" y="${y + 78}" text-anchor="end" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12" fill="#6b7280">separated: ${firstSeparated === null ? 'none' : firstSeparated.toFixed(2)}</text>`,
   );
+}
+
+function abbreviateTaskId(taskId: string): string[] {
+  const parts = taskId.split('-');
+  const lines: string[] = [];
+  let current = '';
+  for (const part of parts) {
+    const candidate = current ? `${current}-${part}` : part;
+    if (candidate.length > 16 && current) {
+      lines.push(current);
+      current = part;
+    } else {
+      current = candidate;
+    }
+  }
+  if (current) {
+    lines.push(current);
+  }
+  return lines;
 }
 
 function renderAdversarialPanel(
@@ -498,8 +517,8 @@ function renderAdversarialPanel(
   const chartTop = y + 88;
   const groupWidth = 156;
   const barWidth = 34;
-  const chartBottom = y + height - 48;
-  const chartHeight = height - 150;
+  const chartBottom = y + height - 80;
+  const chartHeight = height - 182;
   const maxValue = Math.max(
     0.1,
     ...taskIds.flatMap((taskId) =>
@@ -539,15 +558,23 @@ function renderAdversarialPanel(
         )}</text>`,
       );
     }
+    const labelLines = abbreviateTaskId(taskId);
+    for (const [lineIndex, line] of labelLines.entries()) {
+      svg.push(
+        `<text x="${groupX + 54}" y="${chartBottom + 16 + lineIndex * 13}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="9" fill="#111827">${escapeXml(
+          line,
+        )}</text>`,
+      );
+    }
     svg.push(
-      `<text x="${groupX + 54}" y="${chartBottom + 20}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="10" fill="#111827">${escapeXml(
-        taskId,
+      `<text x="${groupX + 54}" y="${chartBottom + 16 + labelLines.length * 13 + 4}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="9" fill="#6b7280">fav: ${escapeXml(
+        favoredStrategies[taskId] ?? 'n/a',
       )}</text>`,
     );
     svg.push(
-      `<text x="${groupX + 54}" y="${chartBottom + 38}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="10" fill="#6b7280">favored ${escapeXml(
-        favoredStrategies[taskId] ?? 'n/a',
-      )} | winner ${escapeXml(rankings[taskId]?.[0] ?? 'n/a')}</text>`,
+      `<text x="${groupX + 54}" y="${chartBottom + 16 + labelLines.length * 13 + 16}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="9" fill="#6b7280">win: ${escapeXml(
+        rankings[taskId]?.[0] ?? 'n/a',
+      )}</text>`,
     );
   }
 }

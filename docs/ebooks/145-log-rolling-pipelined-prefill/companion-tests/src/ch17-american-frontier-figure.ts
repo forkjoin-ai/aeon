@@ -254,17 +254,17 @@ function trimFixed(value: number, digits: number): string {
   return fixed.replace(/0+$/, '').replace(/\.$/, '');
 }
 
-const PANEL_W = 380;
+const PANEL_W = 400;
 const PANEL_H = 320;
 const PAD_L = 60;
-const PAD_R = 20;
+const PAD_R = 40;
 const PAD_T = 50;
-const PAD_B = 70;
+const PAD_B = 84;
 const PLOT_W = PANEL_W - PAD_L - PAD_R;
 const PLOT_H = PANEL_H - PAD_T - PAD_B;
 const GAP = 30;
 const TOTAL_W = PANEL_W * 3 + GAP * 2 + 40;
-const TOTAL_H = PANEL_H + 60;
+const TOTAL_H = PANEL_H + 90;
 
 const TEAL = '#0f766e';
 const ORANGE = '#c2410c';
@@ -415,7 +415,7 @@ function renderPipelinePanel(report: AmericanFrontierReport): string {
 
   // X-axis label (inverted: low Re on right = high diversity)
   lines.push(
-    `<text x="${ox + PAD_L + PLOT_W / 2}" y="${oy + PAD_T + PLOT_H + 38}" text-anchor="middle" font-size="11" fill="${TEXT}">← high diversity (low Re)     Re     low diversity (high Re) →</text>`,
+    `<text x="${ox + PAD_L + PLOT_W / 2}" y="${oy + PAD_T + PLOT_H + 52}" text-anchor="middle" font-size="11" fill="${TEXT}">← high diversity (low Re)     Re     low diversity (high Re) →</text>`,
   );
 
   // Curve
