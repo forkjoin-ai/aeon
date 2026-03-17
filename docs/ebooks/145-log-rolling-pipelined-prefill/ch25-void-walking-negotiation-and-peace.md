@@ -240,7 +240,7 @@ The kurtosis trajectories visualize each party's crystallization over time. In s
 
 ## 25.9 Getting to No: Shell, Fisher/Ury, and the Value of Rejection
 
-G. Richard Shell, in *Bargaining for Advantage* (1999), liked to joke that Fisher and Ury's *Getting to Yes* (1981) sells, but getting to no can be just as useful or better. Void walking says why he was right.
+G. Richard Shell, who teaches negotiation at the Wharton School of Business at the University of Pennsylvania and whose course I took alongside Skyrms' evolutionary game theory, liked to joke in his *Bargaining for Advantage* (1999) that Fisher and Ury's *Getting to Yes* (1981) sells, but getting to no can be just as useful or better. Void walking says why he was right.
 
 "Getting to Yes" is about the payoff matrix -- finding the Zone of Possible Agreement, expanding the pie, inventing options for mutual gain. It operates on the acceptance surface. "Getting to No" operates on the rejection surface -- the void boundary. And the void boundary carries more information.
 
