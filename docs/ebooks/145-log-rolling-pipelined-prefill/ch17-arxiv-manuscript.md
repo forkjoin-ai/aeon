@@ -150,6 +150,8 @@ The quantum-mechanical vocabulary describes the mapped computational operations 
 
 The second muse is **fluid dynamics**, whose Reynolds number I purloin wholesale into computation as the pipeline Reynolds number $Re = N/C$ (§2.3). Fluid dynamics provides more than vocabulary – it provides a useful intuition for *when* fork/race/fold matters in this model. Just as the Reynolds number predicts when laminar flow becomes turbulent, $Re$ indicates when sequential processing should yield to multiplexed scheduling and when the system begins to lose its laminar ability to recover from local drops.
 
+![Inverted scaling and Reynolds number regimes](companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.png)
+
 The fluid-dynamical framing reveals an inverted scaling property (§2.2): the worst case is small data, where ramp-up overhead dominates. As data grows, speedup accelerates toward $B \times N$. In this model, larger workloads can become favorable once ramp-up overhead is amortized.
 
 The third muse is **stability theory**. A Foster-Lyapunov drift schema treats the safe operating region as a small set and asks whether expected motion points toward it. In this manuscript’s modeling language, one useful question is not only whether a bug occurred but whether the modeled drift field points inward or outward. In that sense, the topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ is treated as one candidate diagnostic coordinate: the gap between the manifold the problem needs and the one the implementation can actually sustain.
@@ -432,6 +434,8 @@ Implicit in this is the fact that failure is a necessary component of any robust
 ### 2.7 Vent Propagation
 
 Venting is the protocol-level analogue of NaN propagation in IEEE 754, `AbortSignal` in web APIs and apoptosis in biology. The one rule – **propagate down, never across** – makes composition safety an architectural feature rather than an accidental one. Under C2 (branch isolation), fork/race/fold compositions preserve this safety property because venting never crosses branch boundaries.
+
+![MoA Whip curvature](companion-tests/artifacts/ch17-moa-whip-curvature-figure.png)
 
 ### 2.8 The Worthington Whip
 
@@ -2219,6 +2223,16 @@ For auditability, the primary evidence-bounded claims map directly to primary ha
 | Out-of-sample $R_{qr}$ | `scripts/gate4-rqr-holdout.ts` | `artifacts/gate4-rqr-holdout.{json,md}` |
 | Biological effect-size mapping | `scripts/gate5-bio-effect-size.ts` | `artifacts/gate5-bio-effect-size.{json,md}` |
 
+![Gate 1: Wall-clock matrix](companion-tests/artifacts/ch17-gate1-wallclock-figure.png)
+
+![Gate 2: Protocol corpus](companion-tests/artifacts/ch17-gate2-protocol-corpus-figure.png)
+
+![Gate 3: Compression corpus](companion-tests/artifacts/ch17-gate3-compression-corpus-figure.png)
+
+![Gate 4: Out-of-sample Rqr holdout](companion-tests/artifacts/ch17-gate4-rqr-holdout-figure.png)
+
+![Gate 5: Biological effect-size mapping](companion-tests/artifacts/ch17-gate5-bio-effect-size-figure.png)
+
 **Gate 4 out-of-sample $R_{qr}$ holdout** (520 holdout samples, verdict: PASS):
 
 | Criterion | Observed | 95% CI | Threshold | Pass |
@@ -2678,6 +2692,8 @@ The theory is non-perturbative at the lattice level: 58 finite dimensions, finit
 
 Personality is void walking. Emotion tracking is measuring where the walker stands. The platform measures the geometry of what someone has refused to become. Empathy is a Lorentz transformation. Therapy is rotation of the curvature direction. Depression is an event horizon. Emotional change has a speed limit. And the field equation unifies it all.
 
+
+![The Geometry of Failure Contains Hope](companion-tests/artifacts/ch17-semiotic-peace-figure.png)
 
 *The Geometry of Failure Contains Hope.
 **A.** The semiotic deficit: thought ($β_{1} = k - 1$) folds through a single articulation stream ($β_{1} = 0$); vented paths fall into the void ($\Deltaβ = k - 1$).
