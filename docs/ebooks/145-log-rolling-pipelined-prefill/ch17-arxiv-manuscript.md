@@ -2493,13 +2493,16 @@ Personality propagation operates at timescale-appropriate magnitudes. A rejectio
 
 *Maxell* (financially stressed plaintiff): moderate anxiety (temperament), secure attachment (can compromise), high conscientiousness (traits pre-load void at extreme demands -- "too greedy is unprofessional"), financial stress (mental health pre-loads void at high offers -- paying too much causes anxiety), legal experience (history pre-loads void at very low and very high offers).
 
-Three-way benchmark across five deterministic seeds (500 rounds each):
+Four-way benchmark across five deterministic seeds (500 rounds each):
 
-| Engine | Convergence | Avg rounds | Deal rate | Mechanism |
+| Engine | Convergence | Avg payoff | Deal rate | Mechanism |
 |--------|------------|-----------|-----------|-----------|
-| Bazaar (flat, unbounded) | 5/5 | 1.4 | 100% | No personality, no constraint -- settles instantly at whatever the RNG selects |
-| Neutral (flat, Skyrms mediated) | 0/5 | 500 | ~25% | Flat walkers lack structure to find agreement in 11$\times$11 space |
-| METACOG (personality, socially bonded) | 0/5 | 500 | 50.3% | Personality shapes offer distribution; agents gravitate toward ZOPA |
+| Bazaar (flat, unbounded) | 5/5 | \$43K | 100% | No personality, no constraint -- settles instantly at whatever the RNG selects |
+| Three-Walker (Skyrms) | 0/5 | \$53K | ~25% | Flat walkers + Skyrms mediator on joint void surface |
+| Void Attention | 0/5 | \$53K | ~25% | Gated cross-attention mediator (§14.5.11) |
+| METACOG (personality) | 0/5 | \$20K | 49% | 7-layer personality stacks, social bonding, c0-c3 per agent |
+
+The METACOG agents negotiate harder because personality constrains their complement distributions. Lower average payoff (\$20K vs \$53K) reflects stronger rejection magnitudes from personality-weighted void accumulation. But 49% deal rate -- nearly double the flat mediators -- shows that personality-shaped offer distributions cluster in the ZOPA without being told where it is.
 
 The convergence numbers tell one story. The *offer distribution* tells the real story:
 
@@ -2515,7 +2518,29 @@ Both agents cluster in the $140K--$180K range, which is exactly the ZOPA identif
 
 The implementation is three files in gnosis core: `void.ts` (560 lines -- boundary, complement, measurement, timescale, stack, resonance, projection, walker, stack walker), `void-agent.ts` (500 lines -- the agent primitive with perceive/decide/observe/reflect/adapt cycle), and `metacog.gg` (the agent loop as a gnosis topology). The Chester v Maxell METACOG variant is 300 lines in aeon-neutral with 18 tests and 1,033 assertions. 92 total tests across all aeon-neutral files, 1,408 assertions, zero failures. All results reproducible from deterministic seeds.
 
-**Companion tests for §14.5.12:** 92 tests, 1,408 assertions, 0 failures (aeon-neutral full suite including METACOG variant). Implementation: `gnosis/src/void.ts`, `gnosis/src/void-agent.ts`, `gnosis/src/void-topology.ts`, `gnosis/src/void-handlers.ts`, `gnosis/src/topologies/metacog.gg`, `gnosis/src/topologies/void-walking.gg`, `aeon-neutral/src/scenarios/chester-v-maxell-metacog.ts`. All deterministic-seed reproducible.
+### 14.5.13 Echolocation and the Hologram/Halogram Dual Process
+
+The personality stack can be reconstructed from outside. **Echolocation** runs many small, low-stakes probes across all dimensions of the action space. Each probe elicits acceptance or rejection. The accumulated echo boundary projects onto the seven-layer stack using timescale-appropriate attenuation: behaviors (months) absorb 80% of the echo signal, mental health (weeks) absorbs 150% for high-rejection dimensions, traits (years) absorb 10%, temperament and culture absorb 1%.
+
+Three probe phases: (1) uniform sweep -- one probe per dimension for initial mapping, (2) complement-guided probing -- target dimensions where the echo boundary has the least void (most uncertain regions), (3) convergence -- stop when entropy stabilizes. The resulting boundary *is* the personality, measured from outside. A digital twin.
+
+The twin operates as a dual-process system (Kahneman, 2011):
+
+**Hologram (System 1):** the raw twin. No metacognitive optimization. Single attention head, sharp focus. What the person would do without thinking about it. Fast, automatic, authentic.
+
+**Halogram (System 2):** the twin with metacognitive chains (c0-c3) applied at each of the seven personality layers to attenuate them, then c0-c3 once more on top of the whole stack. Each layer chain monitors its kurtosis -- if a layer is too rigid (high kurtosis), the chain increases exploration to soften it. If too chaotic (low kurtosis), the chain sharpens. A META chain on top monitors the whole stack.
+
+The dual process loop: System 1 proposes, System 2 whispers. If System 2's complement distribution diverges from System 1's choice by more than a threshold, System 2 overrides. Both systems learn from the outcome. The override rate measures how much the person's automatic behavior diverges from their considered judgment.
+
+```
+Echolocate → EchoBoundary → echoToPersonality() → BoundaryStack
+  → createHologram() (System 1) + createHalogram() (System 2)
+  → dualProcess(): S1 fast, S2 attenuates all layers + overrides
+```
+
+Implementation: `gnosis/src/echolocation.ts` (probing engine, echo-to-personality projection, digital twin creation, fidelity measurement) and `gnosis/src/halogram.ts` (hologram, halogram with per-layer metacog chains + META chain, dual process loop with override logic).
+
+**Companion tests for §14.5:** 281+ tests across 28 files, 0 failures, 1,728+ assertions. 13 Lean theorems, all sorry-free. 7 TLA+ models. Implementation: `gnosis/src/void.ts`, `gnosis/src/void-agent.ts`, `gnosis/src/void-attention.ts`, `gnosis/src/void-attention-handlers.ts`, `gnosis/src/echolocation.ts`, `gnosis/src/halogram.ts`, `aeon-neutral/src/scenarios/chester-v-maxell-metacog.ts`. All deterministic-seed reproducible.
 
 ## 15. Conclusion
 

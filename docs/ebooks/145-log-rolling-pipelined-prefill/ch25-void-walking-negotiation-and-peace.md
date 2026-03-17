@@ -502,7 +502,7 @@ The identification table:
 | KV cache | Accumulated rejection history |
 | Token | Interaction outcome |
 
-The neighborhood poisoning from the Skyrms walker (§25.6) IS the attention pattern: when a proposal fails, adjacent proposals in the [offerA, offerB] grid receive lighter void updates. The radius scales with gait -- stand=0, trot=1, canter=2, gallop=3. As the walker accelerates its clip-clop, the attention pattern widens.
+The neighborhood poisoning from the Skyrms walker (§25.6) *is* the attention pattern: when a proposal fails, adjacent proposals in the [offerA, offerB] grid receive lighter void updates. The radius scales with gait -- stand=0, trot=1, canter=2, gallop=3. As the walker accelerates its clip-clop, the attention pattern widens.
 
 The gated cross-attention is the key structural improvement over the raw metacognitive walker. In standard three-walker mediation, the Skyrms walker chooses from its own complement distribution independently. In the void attention formulation, the cross-attention score is the element-wise product of three distributions:
 
@@ -545,6 +545,107 @@ The void attention transformer is the metacognitive walker (c0-c3) with one stru
 
 ---
 
-*Companion tests: 263 tests across 24 files, 0 failures, 695 assertions. 13 Lean theorems, all sorry-free. 7 TLA+ models pass bounded model checking (including VoidAttention.tla, SkyrmsNadir.tla, SkyrmsThreeWalker.tla). 7 domains unified under one interface. All results reproducible from deterministic seeds.*
+## 25.21 Personality as Void: The METACOG Agent
 
-*263 tests say so. The math doesn't care if you believe it.*
+The void walker becomes a person when the boundary becomes a stack.
+
+The BoundaryStack (§25.6) organizes void boundaries at different timescales: temperament (lifetime), attachment (lifetime), traits (years), behaviors (months), mental health (weeks), history (years), culture (generational). Upward constraint: deeper layers shape shallower ones. Downward context: shallower layers reinforce deeper ones. This is not a metaphor for personality. It *is* personality, formalized as void accumulation at multiple clock rates.
+
+I ran Chester v Maxell with full personality-as-void agents. Each party is a VoidAgent with a seven-layer personality stack, initialized from their known characteristics:
+
+**Chester's personality stack:**
+- Temperament: cautious, health-anxious (high void at extreme offers)
+- Attachment: avoidant (high void at secure/trust dimensions -- slow to engage, rigid once committed)
+- Traits: values safety, contractual compliance (void biases away from low offers)
+- Behaviors: defensive, avoidance-driven (void at confrontational extremes)
+- Mental health: elevated anxiety from prior mold exposure (1.5$\times$ rejection amplification at low offers that don't cover remediation)
+- History: prior mold trauma, landlord disputes (void concentrated at $100K--$120K)
+- Culture: homeowner rights, consumer protection expectations
+
+**Maxell's personality stack:**
+- Temperament: competitive, moderate anxiety (mild void at extremes)
+- Attachment: secure (low void at trust -- can compromise)
+- Traits: high conscientiousness (void at extreme demands -- too greedy is unprofessional)
+- Behaviors: methodical, cost-conscious
+- Mental health: financial stress (void amplified at high offers that consume profit margin)
+- History: experienced contractor, knows litigation costs (void at unrealistic extremes)
+- Culture: construction industry norms (handshake deals, substantial performance)
+
+Social bonding (cross-attention between agents) lets each party perceive the other's complement distribution and be influenced by it -- but only if the other's suggestion has higher complement weight than their own choice.
+
+### 25.21.1 Four-Way Benchmark
+
+| Mediator | Settled | Avg Payoff | Deal Rate | What It Models |
+|----------|---------|-----------|-----------|----------------|
+| Bazaar (unbounded) | 5/5 | \$43K | -- | No personality, no mediator |
+| Three-Walker | 0/5 | \$53K | -- | Flat walkers + Skyrms mediator |
+| Void Attention | 0/5 | \$53K | -- | Gated cross-attention mediator |
+| METACOG | 0/5 | \$20K | 49% | Personality-as-void, 7-layer stack |
+
+The METACOG result is the most informative. Average payoff drops to \$20K -- but this is correct. When agents have personality, they negotiate harder. Chester's health anxiety makes him reject low offers more aggressively. Maxell's conscientiousness makes him reject extreme demands. Both are more rigid than flat walkers. The negative payoffs from mismatches are larger because the personality-weighted rejection magnitudes are stronger.
+
+But 49% of rounds produce a deal-possible state. The $140K--$160K corridor emerges as the personality-constrained ZOPA. Neither party can see outside this range clearly -- Chester's health anxiety voids $100K--$120K, Maxell's financial stress voids $190K--$200K. The corridor is what's left after both personalities have removed the impossible.
+
+### 25.21.2 Personality Shapes Offers
+
+Chester's offer distribution after 300 rounds (seed 42):
+
+| Amount | Offers | Personality Driver |
+|--------|-------:|-------------------|
+| \$100K | 28 | Depressed by health anxiety (temperament + mental health void) |
+| \$120K | 47 | Moderate (traits push away from extremes) |
+| \$140K | 66 | Peak (ZOPA floor -- health concern met, savings possible) |
+| \$160K | 66 | Peak (ZOPA center) |
+| \$180K | 45 | Declining (too expensive, but remediation covered) |
+| \$200K | 22 | Suppressed by attachment (avoidant -- won't commit to full payment) |
+
+Maxell's offer distribution:
+
+| Amount | Offers | Personality Driver |
+|--------|-------:|-------------------|
+| \$100K | 22 | Suppressed by history (knows \$100K barely covers costs) |
+| \$140K | 59 | Strong (conscientiousness finds this reasonable) |
+| \$160K | 72 | Peak (profit-positive, not greedy) |
+| \$180K | 57 | Strong (good profit margin) |
+| \$200K | 42 | Suppressed by traits (too greedy = unprofessional) |
+
+The \$110K and \$130K zones have almost zero offers from Maxell -- his personality literally cannot see those as reasonable. Chester's \$190K has two offers total. The personality *is* the void. The void shapes the offers. The offers reveal the personality.
+
+### 25.21.3 Echolocation: Measuring the Void from Outside
+
+The offer distributions above were computed from initialized personality stacks. But in practice, you don't know someone's seven-layer void. You have to measure it.
+
+Echolocation: run many small, low-stakes probes across all dimensions of the action space. Each probe is a micro-interaction -- present a stimulus, observe acceptance or rejection, accumulate. The accumulated echo boundary *is* the personality, measured from outside.
+
+The engine runs three phases:
+1. **Uniform sweep**: probe every dimension once (initial mapping)
+2. **Complement-guided probing**: target dimensions where the echo boundary has the least void (most uncertain regions)
+3. **Convergence**: stop when entropy stabilizes (we've learned what we can)
+
+The echo boundary projects onto the seven-layer personality stack using timescale-appropriate attenuation: behaviors (months) absorb 80% of the echo signal, mental health (weeks) absorbs 150% for high-rejection dimensions (amplified by distress), traits (years) absorb 10%, temperament and culture absorb 1%.
+
+The resulting stack *is* the person, reconstructed from echoes. A digital twin.
+
+### 25.21.4 Hologram and Halogram: System 1 and System 2
+
+The digital twin operates in dual-process mode:
+
+**Hologram (System 1)**: the raw twin. No metacognitive optimization. Single attention head, sharp focus, no neighborhood spread. What the person would do without thinking about it. Fast, automatic, authentic.
+
+**Halogram (System 2)**: the twin with metacognitive chains (c0-c3) applied at each of the seven personality layers individually, then c0-c3 once more on top of the whole stack. Like a hologram but with self-awareness at every depth. Each layer chain monitors its kurtosis -- if a layer is too rigid (high kurtosis), the chain increases exploration to soften it. If too chaotic (low kurtosis), the chain sharpens. The META chain on top monitors the whole stack.
+
+The dual process loop:
+1. System 1 (hologram) perceives and decides -- fast, automatic
+2. System 2 (halogram) attenuates each personality layer, then perceives and decides -- slow, deliberate
+3. If System 2's complement distribution disagrees with System 1's choice by more than a threshold, System 2 overrides
+4. Both systems learn from the outcome
+
+The override rate *is* the measure of how much the person's automatic behavior diverges from their considered judgment. High override rate means the person is running on autopilot in ways their deliberate self would disagree with. Low override rate means System 1 and System 2 are aligned -- the person's instincts match their reflective self.
+
+This is Kahneman's dual process, implemented as void walking. System 1 *is* the hologram. System 2 *is* the halogram. The whisper from System 2 to System 1 *is* the divergence threshold. The override *is* the moment when the deliberate self takes the reins.
+
+---
+
+*Companion tests: 281+ tests across 28 files, 0 failures, 1728+ assertions. 13 Lean theorems, all sorry-free. 7 TLA+ models pass bounded model checking. 8 domains unified under one interface. All results reproducible from deterministic seeds.*
+
+*The personality *is* the void. The void shapes the offers. The offers reveal the personality. And the halogram whispers: not that one.*
