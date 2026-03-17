@@ -238,7 +238,27 @@ The kurtosis trajectories visualize each party's crystallization over time. In s
 
 ---
 
-## 25.9 Connection to Skyrms
+## 25.9 Getting to No: Shell, Fisher/Ury, and the Value of Rejection
+
+G. Richard Shell, in *Bargaining for Advantage* (1999), liked to joke that Fisher and Ury's *Getting to Yes* (1981) sells, but getting to no can be just as useful or better. Void walking says why he was right.
+
+"Getting to Yes" is about the payoff matrix -- finding the Zone of Possible Agreement, expanding the pie, inventing options for mutual gain. It operates on the acceptance surface. "Getting to No" operates on the rejection surface -- the void boundary. And the void boundary carries more information.
+
+Every no is a tombstone. Every rejected offer narrows the space of future proposals more precisely than any accepted offer does. Acceptance tells you that you are inside the ZOPA. Rejection tells you *where the boundary is*. The boundary is the map. The interior is just the territory you already occupy.
+
+This has a painful corollary for doves. The dove strategy -- accommodating, cooperative, low BATNA threshold -- produces fast settlement but a sparse void. The dove doesn't accumulate enough tombstones to know where the real boundaries are. In the short run, the dove gets exploited by hawks. In a one-shot negotiation like a divorce, the dove gets wrecked.
+
+But the theory predicts something else for the long run. The dove who got wrecked now has the densest void boundary of anyone at the table. Every loss is a tombstone. Every exploitation is a data point. The hawk who won learned nothing -- their void is empty. Over a lifetime of negotiations, the dove's inverse Bule compounds. The hawk's stays flat.
+
+This is Skyrms' ultra long run made personal. The time horizon matters. Nash is one-shot -- it predicts the hawk wins the individual negotiation. The Skyrms equilibrium is evolutionary -- it predicts the dove's *descendants* (or future selves) dominate because they inherit the densest void boundary.
+
+The asymmetry problem in practice: you don't know what the other side is doing. Nash handles this with the rationality assumption -- assume they're rational, compute the equilibrium. But people aren't rational. Void walking handles it differently: you don't need the rationality assumption. You need the rejection history. You don't need to predict what they'll do. You need to read what they've already rejected. That's observable. That's data. That's the metric you can trust when instincts fail.
+
+"Don't trust your instincts -- trust the math" is a hard sell. But the implementation is simple: track what gets rejected, weight future offers inversely. The complement distribution does the rest. The people who do this -- who read the no's, who study the rejections, who walk the void -- are the peacemakers. Not because they are virtuous. Because they have the best data.
+
+---
+
+## 25.10 Connection to Skyrms: The Ultra Long Run
 
 Brian Skyrms demonstrated in *Evolution of the Social Contract* (1996) and *The Stag Hunt and the Evolution of Social Structure* (2004) that evolutionary dynamics on repeated games converge to efficient equilibria in the ultra long run -- even without rationality assumptions.
 
@@ -252,7 +272,7 @@ The ultra long run wins because it accumulates the most void boundary -- the den
 
 ---
 
-## 25.10 Formal Theorems
+## 25.11 Formal Theorems
 
 All theorems are mechanized in Lean 4 with zero `sorry` markers.
 
@@ -279,7 +299,7 @@ All theorems are mechanized in Lean 4 with zero `sorry` markers.
 
 ---
 
-## 25.11 The Fixed Point
+## 25.12 The Fixed Point
 
 Self-interest with perfect knowledge of the payoff matrix produces Nash equilibrium: 33% cooperation in Hawk-Dove.
 
@@ -301,7 +321,7 @@ Read the tombstones.
 
 ---
 
-## 25.12 Open Questions
+## 25.13 Open Questions
 
 1. Does void walking converge to correlated equilibria or only Nash? The shared void boundary may function as a correlation device (Aumann, 1974), producing equilibria strictly better than Nash.
 
