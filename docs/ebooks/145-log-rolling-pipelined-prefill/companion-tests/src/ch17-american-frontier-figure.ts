@@ -254,10 +254,10 @@ function trimFixed(value: number, digits: number): string {
   return fixed.replace(/0+$/, '').replace(/\.$/, '');
 }
 
-const PANEL_W = 380;
+const PANEL_W = 400;
 const PANEL_H = 320;
 const PAD_L = 60;
-const PAD_R = 20;
+const PAD_R = 40;
 const PAD_T = 50;
 const PAD_B = 84;
 const PLOT_W = PANEL_W - PAD_L - PAD_R;

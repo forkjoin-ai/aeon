@@ -400,9 +400,9 @@ function renderCriteriaPanel(
   );
 
   const innerX = x + 148;
-  const innerY = y + 92;
+  const innerY = y + 108;
   const innerWidth = width - 188;
-  const rowStep = 66;
+  const rowStep = 62;
 
   for (const tick of [0, 0.25, 0.5, 0.75, 1]) {
     const cx = innerX + (tick / metricMax) * innerWidth;

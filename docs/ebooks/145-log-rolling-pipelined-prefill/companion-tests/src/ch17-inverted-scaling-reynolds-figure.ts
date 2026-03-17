@@ -544,13 +544,13 @@ export function renderCh17InvertedScalingReynoldsFigureSvg(
   report: Ch17InvertedScalingReynoldsFigureReport,
 ): string {
   const svg: string[] = [];
-  svg.push('<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820" role="img" aria-labelledby="title desc">');
+  svg.push('<svg xmlns="http://www.w3.org/2000/svg" width="1380" height="820" viewBox="0 0 1380 820" role="img" aria-labelledby="title desc">');
   svg.push('<title id="title">Chapter 17 inverted-scaling and Reynolds-regime figure</title>');
   svg.push(
     '<desc id="desc">Two-panel analytic figure showing workload-speedup curves under balanced chunks and a Reynolds-number regime map with manuscript scenarios overlaid.</desc>',
   );
-  svg.push('<rect width="1280" height="820" fill="#f3efe5"/>');
-  svg.push('<rect x="22" y="22" width="1236" height="776" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>');
+  svg.push('<rect width="1380" height="820" fill="#f3efe5"/>');
+  svg.push('<rect x="22" y="22" width="1336" height="776" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>');
   svg.push('<text x="60" y="82" font-family="Georgia, serif" font-size="32" fill="#111827">Inverted Scaling and Reynolds Regimes</text>');
   svg.push(
     `<text x="60" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">${escapeXml(report.speedupFormula)} | ${escapeXml(report.idleFormula)} | ${escapeXml(report.reynoldsFormula)}</text>`,
@@ -560,7 +560,7 @@ export function renderCh17InvertedScalingReynoldsFigureSvg(
   );
 
   renderSpeedupPanel(svg, report, 52, 168, 620, 610);
-  renderRegimePanel(svg, report, 700, 168, 528, 610);
+  renderRegimePanel(svg, report, 700, 168, 628, 610);
 
   svg.push('</svg>');
   return `${svg.join('')}\n`;

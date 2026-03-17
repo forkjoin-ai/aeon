@@ -6,15 +6,15 @@
       "label": "Manuscript draft",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md",
-      "sizeBytes": 216798,
-      "sha256": "20d9271bd4a43eee53eb615334ef38c7ad2b9863bac2f6a7b42ca4649d25498d"
+      "sizeBytes": 393981,
+      "sha256": "48b9af2582a75b446622f1031d2ade03378826bf60d0d939e93b8acdc2107c48"
     },
     {
       "label": "Companion README",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md",
-      "sizeBytes": 38779,
-      "sha256": "21bcf78cfd32b4fa1de3e307aa2b43df3dac49d0cfb17075559841638a3ea105"
+      "sizeBytes": 40186,
+      "sha256": "148987cd64453af5773599e40cf5b4695041f039f957fce2d974cb2d46bc1782"
     },
     {
       "label": "Evidence workflow",
@@ -139,8 +139,8 @@
       "label": "Gate 1 figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate1-wallclock-figure.svg",
-      "sizeBytes": 21242,
-      "sha256": "f8b506721147154d5c2777e02ce965d8a1572bb80e23da5c431c2e1b8241a5fd"
+      "sizeBytes": 21245,
+      "sha256": "23556ea10942df29c29c26926f89db149593bd1589ba4ad863cd63cd697487a8"
     },
     {
       "label": "Gate 2 figure artifact",
@@ -154,63 +154,63 @@
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate3-compression-corpus-figure.svg",
       "sizeBytes": 12432,
-      "sha256": "16f4e241c428be1e7e96b1efdbd071a3edd4121565f25ddba99d120cb1cf8e48"
+      "sha256": "f92869d79688f0119aca577b656a4aa02baefc94ecf46dc75b85e3ff22d7f694"
     },
     {
       "label": "Gate 4 figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate4-rqr-holdout-figure.svg",
-      "sizeBytes": 15011,
-      "sha256": "f6559ce3f4fec6066c696ee8115f8e60b80ac2224445deed63b1815d67bdac95"
+      "sizeBytes": 15000,
+      "sha256": "81531a49c81336fa0c79c3c5b415c803245dbe38fb687faf9f7034c73c6d55c5"
     },
     {
       "label": "Gate 5 figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate5-bio-effect-size-figure.svg",
-      "sizeBytes": 9107,
-      "sha256": "e987b5b8ffa32db48a782208d5404c46360205088772237e3dfe4a2e875749ca"
+      "sizeBytes": 9128,
+      "sha256": "aa93f1791843ee055527a9b1149f36f9d4e8ac6fc25589802e27c4350c29ba3d"
     },
     {
       "label": "Inverted-scaling figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.svg",
-      "sizeBytes": 17008,
-      "sha256": "624144e98f4f7e15ad92b89c5ae96486332672d0413060f8298216040c2eb24d"
+      "sizeBytes": 17579,
+      "sha256": "30bc7fb313870d88d554d2feb4438e9c75def973e3aa90b769673a9d9b0bde5b"
     },
     {
       "label": "Figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-correspondence-boundary-figure.svg",
-      "sizeBytes": 14294,
-      "sha256": "7ebd637af96bbbb0c0e4c8af009992b03f8fe787ed216a04b8bdc7e02fffc6c9"
+      "sizeBytes": 14226,
+      "sha256": "1860e5919d5d9ce47cd928ccd8cf2a94fcfdf020fc5b86dd41ca62d5312abcb6"
     },
     {
       "label": "Expansion figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-boundary-expansion-figure.svg",
-      "sizeBytes": 17944,
-      "sha256": "986a40e631774214608ddd5658e8d709c9db6ed0a55342794b4ee919e08cb72d"
+      "sizeBytes": 20299,
+      "sha256": "4dc8ba571ad5d32799c71bcde1da67a3f89d38027b39de3d03a0ea99a2114814"
     },
     {
       "label": "MoA topology figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-topology-figure.svg",
-      "sizeBytes": 34656,
-      "sha256": "11550fd43918b07938d50b816b0967fdf6c9e58f1dd61cbff3581141c1776889"
+      "sizeBytes": 34925,
+      "sha256": "fc9025e2afde55e1ff4b6a194a5c08e550ff09bd27d9545139271694ced41022"
     },
     {
       "label": "MoA whip-curvature figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-whip-curvature-figure.svg",
-      "sizeBytes": 27472,
-      "sha256": "b70a3880946e0a9a6aa4f3ee5ffe73af738854201ffd98cfac79827266d44518"
+      "sizeBytes": 27936,
+      "sha256": "f5d42a16b9d8e45ec304dc74e89cc642492b117941daf3f0504636206c03b005"
     },
     {
       "label": "MoA figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-transformer-figure.svg",
-      "sizeBytes": 7481,
-      "sha256": "624950d2fbf6f6427352d307731f5f9ac9c1f6d4ea10bf88173537992fe5117d"
+      "sizeBytes": 7914,
+      "sha256": "c917d1e073edfee224b8eafc023ef94e4397bfa59b523b7b1026566049a447df"
     },
     {
       "label": "Replication-pack script",
@@ -405,15 +405,15 @@
       "label": "Theorem ledger",
       "category": "formal",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md",
-      "sizeBytes": 121574,
-      "sha256": "cac57c587c8a7747933cfdbfc9a9e847735254568903ef882ce32a9fdb928ef8"
+      "sizeBytes": 239633,
+      "sha256": "4689dd6b8964dfbb15e727710d50217e1ae6542cb7cb5801427fbc1bb879da8c"
     },
     {
       "label": "Gnosis theorem workspace",
       "category": "formal",
       "path": "open-source/gnosis/GnosisProofs.lean",
-      "sizeBytes": 119636,
-      "sha256": "26449307d4054b231df16b0347b4cd2f8243653aa0cdc0c2beba7630453cbe43"
+      "sizeBytes": 122667,
+      "sha256": "926450e9caa0f9fb1bac5547e7d817a58f49283d588931f1fc4990a8293b87cb"
     },
     {
       "label": "Sleep-debt TLA+ model",

@@ -374,7 +374,7 @@ function renderMetricPanel(svg: string[], config: MetricPanelConfig): void {
     svg.push(
       `<line x1="${centerX - 10}" y1="${intervalLowY}" x2="${centerX + 10}" y2="${intervalLowY}" stroke="#111827" stroke-width="2"/>`,
     );
-    const labelAnchorY = Math.min(barY, intervalHighY);
+    const labelAnchorY = Math.max(config.y + 60, Math.min(barY, intervalHighY));
     svg.push(
       `<text x="${centerX}" y="${labelAnchorY - 12}" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, monospace" font-size="11" fill="#374151">${formatNumber(
         value,
