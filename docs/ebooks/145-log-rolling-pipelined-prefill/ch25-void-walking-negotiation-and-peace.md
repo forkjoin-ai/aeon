@@ -258,7 +258,25 @@ The asymmetry problem in practice: you don't know what the other side is doing. 
 
 ---
 
-## 25.10 Connection to Skyrms: The Ultra Long Run
+## 25.10 Empathy as Void Reading: Vulnerability, Seeing, Holding Space
+
+Several practices that appear cultural or therapeutic turn out to be information operations on the void boundary. The theory predicts exactly which "soft skills" produce convergence: the ones that increase shared void access and decrease premature folding.
+
+**Vulnerability as power.** Brené Brown's central insight -- that vulnerability is not weakness but strength -- has a precise game-theoretic content. Revealing your void boundary to your counterpart is, in classical game theory, suicide: if they know your rejection history, they exploit it. But THM-NEGOTIATION-COHERENCE says the opposite. When both parties read the *same* void boundary, they converge to the *same* strategy. Vulnerability is the mechanism that converts private voids into shared voids. Two agents with private voids diverge (each reading different tombstones, arriving at different complement distributions). Two agents with a shared void converge (same tombstones, same distribution). Vulnerability forces coherence. It is not an emotional risk. It is an information operation that enables the Skyrms equilibrium.
+
+**Seeing other people.** To "really see" someone -- in the therapeutic sense -- is to read *their* void boundary, not just your own. Most agents read only their own tombstones. Seeing someone is reading theirs: understanding their rejection history, their losses, the offers life made them that didn't work out. This gives you access to a richer void boundary (yours plus theirs), which produces a better-calibrated complement distribution. The inverse Bule of an agent who sees others is higher because they have doubled their data. Empathy, in this framing, is not feeling what the other person feels. Empathy is reading the other person's void. It is the practice of accessing tombstones you did not personally experience. This is why empathy produces better negotiators: not because kind people are rewarded, but because empathetic people have access to more rejection data.
+
+**Holding space.** In the c0-c3 metacognitive framework, holding space is temporarily suspending c0 (do not make moves, do not propose) and c3 (do not adapt your strategy yet) while continuing to run c1 (monitor the void boundary shape) and c2 (evaluate whether the gradient is changing). Nothing is vented. Nothing is folded. The system is in the *race phase* -- pure exploration, no irreversible commitment. THM-VOID-TUNNEL guarantees that void regions from shared ancestry retain positive mutual information. Holding space preserves the tunnel. It keeps the correlation alive between both parties' voids instead of collapsing it with a premature fold. Every therapist who says "don't fix it, just listen" is saying: stay in race, do not fold yet. The fold destroys information. The race preserves it.
+
+**Multi-reality theory.** In couples therapy and conflict resolution, the principle that both parties' realities can be simultaneously valid is not relativism. It is the covering space interpretation from chapter 3. Each person's reality IS a sheet of the covering space. The conversation projects both sheets onto a single base space (the shared narrative). The semiotic deficit is the gap between the covering space dimension and the base space dimension. Multi-reality theory says: do not collapse the covering space. Do not project one sheet onto the other. Keep both sheets alive. This is topologically identical to maintaining the race phase across multiple paths. The fold destroys one sheet. Multi-reality refuses the fold until enough shared context has accumulated to make the fold injective -- to preserve both realities in the merged narrative.
+
+These four practices share a common prediction: they all *increase the context accumulation rate*, the parameter that separates settlement from impasse. In the historic negotiation simulations (§25.8), the Cuban Missile Crisis settled because the backchannel built shared context at 0.30 Bules per round. Galileo vs the Church reached permanent impasse because the paradigm gap permitted only 0.02 Bules per round. Vulnerability, seeing, holding space, and multi-reality are all mechanisms for pushing the context rate higher -- for building shared void faster.
+
+The theory does not say these practices are morally good. It says they are informationally optimal. They produce higher inverse Bule, faster convergence, and more stable settlements. The ethics, again, are a corollary of the information theory.
+
+---
+
+## 25.11 Connection to Skyrms: The Ultra Long Run
 
 Brian Skyrms demonstrated in *Evolution of the Social Contract* (1996) and *The Stag Hunt and the Evolution of Social Structure* (2004) that evolutionary dynamics on repeated games converge to efficient equilibria in the ultra long run -- even without rationality assumptions.
 
@@ -272,7 +290,7 @@ The ultra long run wins because it accumulates the most void boundary -- the den
 
 ---
 
-## 25.11 Formal Theorems
+## 25.12 Formal Theorems
 
 All theorems are mechanized in Lean 4 with zero `sorry` markers.
 
@@ -299,7 +317,7 @@ All theorems are mechanized in Lean 4 with zero `sorry` markers.
 
 ---
 
-## 25.12 The Fixed Point
+## 25.13 The Fixed Point
 
 Self-interest with perfect knowledge of the payoff matrix produces Nash equilibrium: 33% cooperation in Hawk-Dove.
 
@@ -321,7 +339,7 @@ Read the tombstones.
 
 ---
 
-## 25.13 Open Questions
+## 25.14 Open Questions
 
 1. Does void walking converge to correlated equilibria or only Nash? The shared void boundary may function as a correlation device (Aumann, 1974), producing equilibria strictly better than Nash.
 
