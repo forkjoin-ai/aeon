@@ -1851,6 +1851,16 @@ The compilation pipeline is itself fork/race/fold:
   -[:PROCESS]-> (executable_binary)
 ```
 
+After stability analysis, Betty runs a **theorem-backed optimization pass manager** that consumes the emitted spectral and drift certificates to guide topology rewrites. Each pass is backed by a mechanized theorem from the formal ledger (§A), so the optimization is not heuristic but provably sound:
+
+1. **Coarsening** (THM-RECURSIVE-COARSENING-SYNTHESIS): identifies connected components of stable nodes, computes aggregate arrival/service/drift per coarse node via the proven drift conservation identity ($\sum_{\text{fine}} d_i = \sum_{\text{coarse}} d_j$), and collapses them into a smaller graph when all coarse nodes have negative drift. The synthesis soundness theorem guarantees that the emitted drift certificate is valid whenever the fine graph is stable.
+
+2. **Codec racing** (THM-TOPO-RACE-SUBSUMPTION): analyzes `LAMINAR` edges and certifies zero external compression deficit -- per-resource codec racing subsumes any fixed codec, and adding a codec to the race never increases wire size. The internal $\beta_1$ from racing internals is tracked but hidden from the external topology.
+
+3. **Warmup efficiency** (THM-WARMUP-CONTROLLER): identifies fork/fold pairs where staged expansion recovers throughput waste, computing the Wallace drop cross (sequential waste minus multiplexed waste). The closed-form identity $\text{wallaceDropCross} = \text{busyWork} \times \text{recoveredOverlap}$ determines whether warmup is worth the controller burden.
+
+The pass manager accumulates optimization certificates that are emitted alongside the stability proofs in the generated Lean 4 artifacts, so the formal surface records not just that the topology is stable but *why* the optimizer's rewrites preserved that stability.
+
 ### 11.3 Transformers as GGL Programs
 
 A transformer written in Gnosis reveals the fork/race/fold structure claimed in §3.13:
@@ -1876,7 +1886,7 @@ $$
 
 This is closure under a different axis than §6. Self-verification (§6) provides finite-model evidence that the checker can reason about itself – closure under *reasoning*. Self-hosting (Betti) provides executable evidence that the language can compile itself – closure under *construction*. Together they support closure under both reasoning and construction in this manuscript’s scope.
 
-Gnosis supports a strong evidence-backed claim: it is a self-hosted, self-checking topology language with automated formal-artifact generation. The compiler topology is itself written in GG (`betti.gg`) and included in formal lint checks, while execution paths enforce bounded-state structural verification with explicit invariants and eventual reachability conditions before or during topology use. The `verify` workflow can generate TLC-ready TLA+ modules and configs with safety and liveness obligations, and these paths are covered by source-level tests and formal-check scripts [9, 13, 15]. That path now explicitly covers first-class structured primitives as well as handwritten graphs: a sink-wrapped `StructuredMoA` declaration lowers before analysis into an acyclic emitted kernel and inherits the same nilpotent spectral certificate path as the fully expanded benchmark graph.
+Gnosis supports a strong evidence-backed claim: it is a self-hosted, self-checking topology language with automated formal-artifact generation. The compiler topology is itself written in GG (`betti.gg`) and included in formal lint checks, while execution paths enforce bounded-state structural verification with explicit invariants and eventual reachability conditions before or during topology use. The `verify` workflow can generate TLC-ready TLA+ modules and configs with safety and liveness obligations, and these paths are covered by source-level tests and formal-check scripts [9, 13, 15]. That path now explicitly covers first-class structured primitives as well as handwritten graphs: a sink-wrapped `StructuredMoA` declaration lowers before analysis into an acyclic emitted kernel and inherits the same nilpotent spectral certificate path as the fully expanded benchmark graph. As of the current formal surface, all 284 ledger theorems are mechanized -- the last open row, THM-RECURSIVE-COARSENING-SYNTHESIS, is now closed with five sorry-free Lean theorems proving synthesis soundness, drift conservation, and stability transfer -- and the compiler consumes those theorems directly as optimization passes rather than treating the formal surface as a separate verification layer.
 
 This is a claim of structural formal compatibility and mechanized verification workflow, not a claim of automatic asymptotic quantum advantage.
 
