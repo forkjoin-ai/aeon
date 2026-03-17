@@ -258,7 +258,27 @@ The asymmetry problem in practice: you don't know what the other side is doing. 
 
 ---
 
-## 25.10 Empathy as Void Reading: Vulnerability, Seeing, Holding Space
+## 25.10 Fold Ethics: The Complete Grid
+
+Every ethical operation is one of five primitives applied at one of five void conditions. The grid is 5 x 5 = 25 cells. Two dimensions is the maximum that survives a single fold -- three would collapse, destroying the third axis. The ethics have exactly this shape because the covering space of moral action is two-dimensional: *what you do* (the primitive) and *what you know when you do it* (the void state).
+
+|  | Sparse void | Moderate void | Dense void | Other's void | Inherited void |
+|---|---|---|---|---|---|
+| **Fork** (creates possibility) | **Trust** -- fork before verification. Extend possibility on faith. The void is sparse but you fork anyway, betting on the counterpart. | **Generosity** -- fork wider than necessary. Offer more options than required. The void has moderate structure but you create additional paths. | **Hope** -- fork despite dense failure history. Every prior attempt failed and the tombstones say stop. You fork anyway. | **Opportunity** -- fork for others. Create paths they can take. Enrich *their* void boundary, not yours. | **Forgiveness** -- re-fork a vented path. Restore a dead option by reducing its rejection count. Resurrection in the void. |
+| **Race** (creates knowledge) | **Curiosity** -- race with high exploration rate. The void is sparse because you haven't tried much. Explore widely. | **Listening** -- race without pre-selecting. Let all paths compete fairly. Low eta, no bias. Hear everything before judging. | **Patience** -- race for more ticks before folding. The void is dense enough to fold, but you wait for more data. The therapist's discipline. | **Multi-reality** -- race on the covering space. Keep both parties' sheets alive. Don't project one reality onto the other. | **Holding space** -- race with no deadline. Let exploration complete on its own timeline. Preserve the void tunnel between parties. |
+| **Fold** (creates commitment) | **Courage** -- fold despite sparse void. Act with incomplete information. The data says "uncertain" and you commit anyway. The entropy is high and you fold into it. | **Decision** -- fold to end ambiguity. The void has enough structure to guide the choice. Crystallize. Kurtosis rises. | **Judgment** -- fold on dense evidence. The void is thoroughly mapped. You know what failed. The fold is informed, deliberate, and final. Row 3, column 3 of the ethics grid. | **Sacrifice** -- fold that vents self for others. Choose the option that costs you but benefits the counterpart. A costly signal of commitment. | **Promise** -- fold that constrains future forks. An irreversible commitment that narrows your own future possibility space. The void of broken promises is the densest void there is. |
+| **Vent** (creates clarity) | **Rejection** -- vent an offer. The standard tombstone. One data point added to the void boundary. The simplest ethical act. | **Criticism** -- vent with high information. A detailed tombstone that carries more signal per entry. The ratio shifts more. | **Boundaries** -- vent all offers outside a region. Define the ZOPA. Massive clarity at the cost of massive nuance destruction. | **Tough love** -- vent deliberately to accelerate the other's learning. Void seeding: create pain to build their map faster. | **Honesty** -- vent the truth. The tombstone records what IS, not what is comfortable. Accurate void = accurate gradient = convergence to reality. |
+| **Trace** (creates learning) | **Growth** -- trace with increasing inverse Bule. Each iteration learns more than the last. The trajectory of a student. | **Dialogue** -- trace with context accumulation. The semiotic deficit decreases per round. Two people becoming mutually intelligible. | **Culture** -- trace across generations. Void archaeology as inheritance. The tombstones of ancestors guide the forks of descendants. Civilization. | **Relationship** -- trace with void gifting. Shared history. Two voids merged into one. Divergence = 0. Coherence. | **Redemption** -- trace that restores a vented path. Forgiveness (re-fork) combined with dialogue (trace). The return of a possibility that was destroyed. The most complex ethical operation: it requires both the primitive of creation and the primitive of learning applied to inherited failure. |
+
+The grid reads left to right as increasing information. Sparse void = acting in ignorance. Inherited void = acting on the accumulated wisdom of all who came before. The grid reads top to bottom as increasing irreversibility. Fork = reversible (you can always un-fork by not pursuing a path). Trace = accumulative (what you learn, you cannot un-learn). The fold, in the center, is the moment of commitment -- irreversible, information-destroying, and necessary.
+
+The ethical content of any act is determined by its position in this grid. "Was this a courageous decision or a reckless one?" = "Was the void sparse (courage, row 3 column 1) or empty (recklessness, which isn't in the grid -- it's folding with NO void, which is below the grid's floor)." "Was this honesty or cruelty?" = "Was the vent accurate to the void (honesty, row 4 column 5) or inaccurate (cruelty, which is dishonest venting -- a corrupt tombstone that misleads the gradient)."
+
+The grid is complete because any more than two dimensions would require a fold to observe, and the fold would destroy the third axis. This is not a limitation. It is the reason ethics exist: the fold is irreversible, and the question of *when and how to fold* is the only question that matters.
+
+---
+
+## 25.11 Empathy as Void Reading: Vulnerability, Seeing, Holding Space
 
 Several practices that appear cultural or therapeutic turn out to be information operations on the void boundary. The theory predicts exactly which "soft skills" produce convergence: the ones that increase shared void access and decrease premature folding.
 
@@ -276,7 +296,7 @@ The theory does not say these practices are morally good. It says they are infor
 
 ---
 
-## 25.11 Connection to Skyrms: The Ultra Long Run
+## 25.12 Connection to Skyrms: The Ultra Long Run
 
 Brian Skyrms demonstrated in *Evolution of the Social Contract* (1996) and *The Stag Hunt and the Evolution of Social Structure* (2004) that evolutionary dynamics on repeated games converge to efficient equilibria in the ultra long run -- even without rationality assumptions.
 
@@ -290,7 +310,7 @@ The ultra long run wins because it accumulates the most void boundary -- the den
 
 ---
 
-## 25.12 Formal Theorems
+## 25.13 Formal Theorems
 
 All theorems are mechanized in Lean 4 with zero `sorry` markers.
 
@@ -317,7 +337,7 @@ All theorems are mechanized in Lean 4 with zero `sorry` markers.
 
 ---
 
-## 25.13 The Fixed Point
+## 25.14 The Fixed Point
 
 Self-interest with perfect knowledge of the payoff matrix produces Nash equilibrium: 33% cooperation in Hawk-Dove.
 
@@ -339,7 +359,7 @@ Read the tombstones.
 
 ---
 
-## 25.14 Open Questions
+## 25.15 Open Questions
 
 1. Does void walking converge to correlated equilibria or only Nash? The shared void boundary may function as a correlation device (Aumann, 1974), producing equilibria strictly better than Nash.
 
