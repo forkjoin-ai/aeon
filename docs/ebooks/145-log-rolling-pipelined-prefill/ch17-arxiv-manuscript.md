@@ -2123,7 +2123,17 @@ The stack reads bottom-up: *from building blocks to bytes on wire, back into exe
 
 The Rust/WASM runtime executes the FlowFrames at the same byte-level format defined in §8.2. The language is not a wrapper around the protocol -- it is the protocol’s native programming model.
 
-The ninth layer is not above or below the other eight. It is the property the stack has of itself. Three constraints (conservation, irreversibility, ground state) produce three primitives (fork/race/fold). Three constraints cross-producted with three primitives yield nine layers. The count is not accidental -- it is the exhaustive enumeration of what a finite irreversible system can do. The stack is the paper’s clearest existence demonstration: one set of four primitives (fork, race, fold, vent) yields a scheduling algorithm, wire protocol, compression strategy, verification engine, programming language, sparse expert routing, precomputed inference, a frame-native execution model, and a self-verifying ground state. Each layer is independently useful. Together they form a computational ecosystem where topology, program structure, execution, protocol design, and self-certification are aligned.
+The ninth layer is not above or below the other eight. It is the property the stack has of itself. Three constraints (conservation, irreversibility, ground state) produce three primitives (fork/race/fold). Three constraints cross-producted with three primitives yield nine layers. The count is not accidental -- it is the exhaustive enumeration of what a finite irreversible system can do:
+
+|  | Conservation | Irreversibility | Ground State |
+|---|---|---|---|
+| **Fork** | L1: Self-verification | L2: Formal language | L3: Scheduling |
+| **Race** | L4: Transport | L5: Compression | L6: Sparse routing |
+| **Fold** | L7: Inference | L8: Protocol-as-execution | L9: Void walking |
+
+Each cell is the unique layer that arises when a specific primitive operates under a specific constraint. Fork under conservation produces self-verification (layer 1): branching that preserves invariants. Race under ground state produces sparse routing (layer 6): competition that finds the minimum-cost path. Fold under ground state produces void walking (layer 9): irreversible selection that reads its own record. The matrix is full. There is no tenth layer because there is no fourth constraint and no fourth primitive.
+
+The stack is the paper’s clearest existence demonstration: one set of four primitives (fork, race, fold, vent) yields a scheduling algorithm, wire protocol, compression strategy, verification engine, programming language, sparse expert routing, precomputed inference, a frame-native execution model, and a self-verifying ground state. Each layer is independently useful. Together they form a computational ecosystem where topology, program structure, execution, protocol design, and self-certification are aligned.
 
 ## 12. The Engine
 
