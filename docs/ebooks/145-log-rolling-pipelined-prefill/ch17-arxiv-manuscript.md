@@ -1958,7 +1958,7 @@ Framed outputs survive FlowFrame codec round-trips and out-of-order reassembly w
 
 MoA uses 4 active heads vs 16. The accuracy gap narrows as data increases (closing eval-MSE gap from 0.081 to 0.002 at wide scale) while the speed advantage holds. Ablation confirms both outer-block and inner-head sparsity contribute: removing either doubles wall time; under-routing (1 active block) collapses accuracy entirely.
 
-### 11.6 The Provably Optimal Server
+### 11.6 The Provably-Optimal Server
 
 x-gnosis is -- to the authors' knowledge -- the first web server whose throughput bound is a mathematical theorem rather than a benchmark. THM-SERVER-OPTIMALITY composes 14 mechanized theorems into a single certificate proving that a server with fork/race/fold at every layer, zero topological deficit at every layer boundary, and Wallington Rotation scheduling simultaneously achieves:
 
