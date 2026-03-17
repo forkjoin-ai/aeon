@@ -16,7 +16,7 @@ It is incomplete.
 
 The payoff matrix describes what happens when you make a choice. It does not describe what happened when you made *previous* choices. It does not describe the accumulated record of failures -- the offers rejected, the wars lost, the experiments that returned null, the civilizations that went silent. This record exists. It has structure. And it changes the equilibrium.
 
-We call this record the **void boundary**. We call the practice of reading it **void walking**. And we show that a self-interested agent with perfect knowledge of the void boundary converges to a strategy that is 54 percentage points more cooperative than Nash predicts -- not from altruism, not from irrationality, but from *more information*.
+I call this record the **void boundary**. I call the practice of reading it **void walking**. And I show that a self-interested agent with perfect knowledge of the void boundary converges to a strategy that is 54 percentage points more cooperative than Nash predicts -- not from altruism, not from irrationality, but from *more information*.
 
 The failures are the missing variable. They have been there the whole time, in the void, unread.
 
@@ -36,7 +36,7 @@ These are not analogies. They are structural identifications, formalized in Lean
 
 ## 25.3 The Central Result
 
-We ran void walkers -- self-interested agents that read their own void boundary -- against the Nash equilibrium prediction in seven classic games. The void walker has no knowledge of game theory, no access to the payoff matrix as an analytical object, and no preference for cooperation. It simply tracks which of its choices led to worse outcomes than its opponent's choices, and adjusts its distribution accordingly.
+I ran void walkers -- self-interested agents that read their own void boundary -- against the Nash equilibrium prediction in seven classic games. The void walker has no knowledge of game theory, no access to the payoff matrix as an analytical object, and no preference for cooperation. It simply tracks which of its choices led to worse outcomes than its opponent's choices, and adjusts its distribution accordingly.
 
 | Game | Nash p(cooperative) | Void walker p(cooperative) | Difference |
 |------|-------------------:|-------------------------:|-----------:|
@@ -63,7 +63,7 @@ The rejection history carries information that the payoff matrix does not: *how 
 
 ## 25.4 The Inverse Bule: Measuring Learning from Rejection
 
-We introduce a novel measurement: the **inverse Bule** (B^{-1}).
+I introduce a novel measurement: the **inverse Bule** (B^{-1}).
 
 The Bule (B) is the unit of semiotic deficit defined in chapter 15 (SemioticDeficit.lean): one Bule equals one dimension of meaning lost when multi-dimensional thought is compressed through a single-stream channel. For negotiation, the deficit is (total interest dimensions of both parties) - 1.
 
@@ -86,7 +86,7 @@ In the cross-game fitness landscape, generous-tit-for-tat has the highest averag
 
 ## 25.5 Thomas-Kilmann as Void Signature
 
-The Thomas-Kilmann Conflict Mode Instrument (TKI) describes five conflict styles: competing, collaborating, compromising, avoiding, accommodating. Traditionally measured by self-report questionnaire. We derive a quantitative, real-time TKI from the void signature of each strategy.
+The Thomas-Kilmann Conflict Mode Instrument (TKI) describes five conflict styles: competing, collaborating, compromising, avoiding, accommodating. Traditionally measured by self-report questionnaire. I derive a quantitative, real-time TKI from the void signature of each strategy.
 
 The mapping:
 
@@ -179,13 +179,13 @@ The void of mutual destruction is denser than the void of mutual cooperation. In
 
 ### 25.7.5 The Fermi Paradox (1950)
 
-Where is everybody? The galaxy is old enough and large enough that intelligent civilizations should be abundant. Yet we detect no signals.
+Where is everybody? The galaxy is old enough and large enough that intelligent civilizations should be abundant. Yet no signals have been detected.
 
 The silence IS the void boundary. Every civilization that broadcast and went extinct is a tombstone. The complement distribution over civilization strategies: broadcast (7.7% weight), quiet (87.9% weight), moderate (4.4% weight).
 
 Simulation: 0/34 broadcasting civilizations survived 1000 time periods. 8/29 quiet ones did. The survival rate for quiet civilizations is strictly higher than for broadcasters because broadcasting attracts threats (the "dark forest" hypothesis, Liu Cixin, 2008) without proportional benefit.
 
-Read the tombstones: the survivors are quiet. The Fermi silence is not evidence of absence. It is the void boundary of extinct broadcasting civilizations. The complement distribution over strategies -- derived from the void alone -- predicts exactly the pattern we observe: silence.
+Read the tombstones: the survivors are quiet. The Fermi silence is not evidence of absence. It is the void boundary of extinct broadcasting civilizations. The complement distribution over strategies -- derived from the void alone -- predicts exactly the pattern observed: silence.
 
 ### 25.7.6 Sleeping Beauty Problem (2000)
 
@@ -219,7 +219,7 @@ The Condorcet Paradox (majority cycles with 3+ alternatives) is the case where t
 
 ## 25.8 Historic Negotiations as Void Walking
 
-We modeled eight historic negotiations as fork/race/fold processes with measurable void boundaries.
+I modeled eight historic negotiations as fork/race/fold processes with measurable void boundaries.
 
 | Negotiation | Deficit (Bules) | Context/round | Rounds | Outcome |
 |------------|----------------:|--------------:|-------:|---------|
@@ -242,7 +242,7 @@ The kurtosis trajectories visualize each party's crystallization over time. In s
 
 Brian Skyrms demonstrated in *Evolution of the Social Contract* (1996) and *The Stag Hunt and the Evolution of Social Structure* (2004) that evolutionary dynamics on repeated games converge to efficient equilibria in the ultra long run -- even without rationality assumptions.
 
-Void walking mechanizes Skyrms' insight. What Skyrms demonstrated through evolutionary dynamics and basin of attraction analysis, we formalize as a gradient flow on the void boundary with a measurable convergence rate (the inverse Bule).
+Void walking mechanizes Skyrms' insight. What Skyrms demonstrated through evolutionary dynamics and basin of attraction analysis, I formalize as a gradient flow on the void boundary with a measurable convergence rate (the inverse Bule).
 
 The void boundary is the information structure that evolutionary dynamics accumulate. Each generation's failures are tombstones that the next generation's complement distribution reads. The inverse Bule is the fitness measure: strategies with higher B^{-1} learn faster from the void and therefore dominate in the ultra long run.
 
@@ -285,7 +285,7 @@ Self-interest with perfect knowledge of the payoff matrix produces Nash equilibr
 
 Self-interest with perfect knowledge of the void boundary produces the **Skyrms equilibrium**: 88% cooperation in Hawk-Dove.
 
-We call this the **Skyrms equilibrium** in honor of Brian Skyrms, whose work on the evolution of the social contract (Skyrms, 1996, 2004) established that cooperative equilibria emerge from evolutionary dynamics without requiring rationality -- only iteration. The author studied under Skyrms at the University of Pennsylvania, where the seed of this work was planted: the conviction that the ultra long run is where the real answers live, and that self-interest with sufficient memory is indistinguishable from cooperation. The Skyrms equilibrium is the fixed point of the void gradient flow: the strategy profile where self-interested agents with perfect knowledge of the void boundary have no incentive to deviate. It differs from the Nash equilibrium precisely by the information content of the void boundary.
+I call this the **Skyrms equilibrium** in honor of Brian Skyrms, whose work on the evolution of the social contract (Skyrms, 1996, 2004) established that cooperative equilibria emerge from evolutionary dynamics without requiring rationality -- only iteration. I studied under Skyrms at the University of Pennsylvania, where the seed of this work was planted: the conviction that the ultra long run is where the real answers live, and that self-interest with sufficient memory is indistinguishable from cooperation. The Skyrms equilibrium is the fixed point of the void gradient flow: the strategy profile where self-interested agents with perfect knowledge of the void boundary have no incentive to deviate. It differs from the Nash equilibrium precisely by the information content of the void boundary.
 
 **Definition (Skyrms equilibrium).** For a finite game G with choice set C and payoff function u, the Skyrms equilibrium is the mixed strategy profile sigma* such that sigma_i* = complementDist(voidBoundary_i) for each player i, where voidBoundary_i is the accumulated rejection history of player i and complementDist is the exponentially weighted complement distribution. The Skyrms equilibrium coincides with Nash when the void boundary is empty (no rejection history). It deviates from Nash when the void boundary carries asymmetric density -- specifically, when catastrophic mutual outcomes fill the void faster than other outcomes.
 
@@ -307,7 +307,7 @@ Read the tombstones.
 
 2. Can the inverse Bule replace discount factors in Rubinstein's alternating-offers model? The discount factor measures impatience; the inverse Bule measures learning rate. They may be dual.
 
-3. Empirical validation: can we measure inverse Bule in real negotiations? The data requirements are modest: a time series of offers and rejections. The computation is a single pass.
+3. Empirical validation: can the inverse Bule be measured in real negotiations? The data requirements are modest: a time series of offers and rejections. The computation is a single pass.
 
 4. The Born Rule connection: if wave function collapse is a fold and the void of uncollapsed branches has measurable boundary structure, is the Born probability p = |psi|^2 the complement distribution over the quantum void? This would connect quantum mechanics to information theory through the same framework.
 
