@@ -1986,6 +1986,22 @@ All five equalities are proved as `rfl` in Lean -- they hold by definitional com
 
 The claim is precise: no other *schedule on this DAG structure* can serve requests faster. A fundamentally different DAG (fewer stages, different branching) could have a different critical path. But within the fork/race/fold scheduling family -- which, per §3, captures the intrinsic structure of any pipeline with parallelism and nondeterminism -- the Wallington Rotation is optimal, and x-gnosis implements it at every layer.
 
+The theorem constrains the server DAG, not the transport envelope around it. To make that boundary explicit, I ran the local `kernel-server` harness through a deterministic hostile-network proxy on Apple M1 / macOS 15.5 with `wrk 4.2.0 [kqueue]`, using four concrete fixtures: a 58 B HTML response, a 2.5 KB JSON config, a 185 KB CSS bundle, and a 750 KB JavaScript bundle. This is a separate benchmark from the single-threaded pipelined 7.6M req/s figure: here the goal is not to maximize throughput, but to quantify how an optimal server schedule degrades once latency, jitter, retransmit pressure, resets, and bandwidth caps are injected into the wire itself.
+
+**Adverse-network benchmark -- `x-gnosis` kernel server, `wrk -t1 -c2 -d5s`**:
+
+| Profile | Plaintext req/s | CSS req/s | JS req/s | Notes |
+|---|---:|---:|---:|---|
+| baseline | 30,459 | 18,505 | 7,393 | direct loopback, no errors |
+| lossy | 43 | 11 | 3 | 20 ms base latency, +/-8 ms jitter, 3% retransmit-style loss, 12 Mbps cap |
+| cellular | 13 | 3 | 1 | 70 ms base latency, +/-35 ms jitter, 3.5 Mbps cap |
+| dribble | 25 | 2 | 0 | 35 ms base latency, 512 B bursts; JS completed 0 full responses in-window |
+| hostile | 5 | 1 | 0 | 150 ms base latency, +/-80 ms jitter, 8% retransmit-style loss, 900 kbps cap |
+
+The ordering is intentionally not a single severity axis. `lossy` still outperforms `cellular` on throughput because its bandwidth ceiling is much higher (12 Mbps vs 3.5 Mbps) even though it injects retransmit pressure; `dribble` punishes large assets harder than plaintext because 512-byte bursts throttle sustained transfers more than short request/response exchanges. Tail latency responds exactly as the profile design predicts: plaintext p99 rises from **562 us** at baseline to **170.6 ms** (`lossy`), **369.7 ms** (`cellular`), **166.6 ms** (`dribble`), and **655.5 ms** (`hostile`); the 185 KB CSS bundle rises from **90 us** p50 at baseline to **169 ms**, **568 ms**, **1.16 s**, and **1.99 s** respectively. The 750 KB JavaScript bundle marks the bandwidth cliff most sharply: baseline delivers **7,393 req/s**, `cellular` falls to **1 req/s** with **1.88 s** p50, `lossy` to **3 req/s** with **541 ms** p50, and both `dribble` and `hostile` finish the 5 s window with zero completed responses.
+
+This does not weaken THM-SERVER-OPTIMALITY; it sharpens its scope. The theorem states that, for a fixed admissible server DAG, no other schedule on that DAG can serve the same requests faster. Once the wire itself becomes the bottleneck, the limiting resource is no longer the server schedule but the transport envelope. What the hostile-network matrix shows is that x-gnosis cleanly exposes that transition: baseline performance reflects the schedule bound, while the impaired profiles push the system into latency-bound, bandwidth-bound, and reset-bound regimes outside the theorem's jurisdiction.
+
 The proof chain closes a loop between formal mathematics and systems engineering. The theorem surface is not a post-hoc verification of code that was written intuitively. The code *follows from* the theorems: the compiler enforces zero deficit at every sink boundary (`ERR_DEFICIT_NONZERO`), the optimizer's passes are themselves structured as fork/race/fold (transform passes sequential, analysis passes forked), and the runtime's LAMINAR codec racing implements the very race that THM-TOPO-RACE-SUBSUMPTION proves optimal. The architecture is not inspired by the mathematics -- it is *derived from* it.
 
 ## 11. Instantiation E: Topological Compression (Stack Layer 5 -- Capstone)
