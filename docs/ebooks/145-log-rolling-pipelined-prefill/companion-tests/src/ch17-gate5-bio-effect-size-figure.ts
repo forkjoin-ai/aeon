@@ -233,7 +233,7 @@ function renderForestPlot(
     `<text x="${x + 24}" y="${y + 34}" font-family="Georgia, serif" font-size="20" fill="#111827">Pairwise Ratios on Log Scale</text>`,
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 56}" font-family="Georgia, serif" font-size="13" fill="#4b5563">Median ratio markers with 95% uncertainty intervals, plus the pooled geometric summary.</text>`,
+    `<text x="${x + 24}" y="${y + 56}" font-family="Georgia, serif" font-size="11" fill="#4b5563">Median ratios with 95% CIs and pooled summary.</text>`,
   );
 
   const innerX = x + 270;
