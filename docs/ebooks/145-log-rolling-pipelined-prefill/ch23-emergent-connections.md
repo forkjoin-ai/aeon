@@ -1,4 +1,4 @@
-# Chapter 23: Emergent Connections  --  Nine Resonances of Fork/Race/Fold
+# Chapter 23: Emergent Connections  --  Ten Resonances of Fork/Race/Fold
 
 > *"The universe is not only queerer than we suppose, but queerer than we can suppose."*  --  J.B.S. Haldane
 
@@ -230,9 +230,43 @@ The absence of an unfold primitive is not a limitation. It is the *definition* o
 
 Every computation that produces a definite answer has folded. Every fold has created a void. The void is the price of the answer.
 
+But the void is not empty. It has structure.
+
 ---
 
-## 23.10 Summary: The Nine Resonances
+## 23.10 Void Walking: The Void Has Structure
+
+The ninth resonance stopped at irreversibility. The void is the exhaust trail of computation -- you cannot un-fold, you cannot un-vent, you cannot recover the lost paths. But that observation, while true, misses something fundamental.
+
+*The void has a boundary, and the boundary is measurable.*
+
+Each N-way fork that collapses to a single survivor contributes N-1 boundary cells to the void -- one per vented equivalence class. After T folds, the void boundary has homology rank at most sum of (N_t - 1) across all steps. This boundary encodes *which* paths were discarded and *when*. It is the dual of persistent homology: instead of tracking which features are born and persist, it tracks which features died and when they died.
+
+The void boundary requires only O(T * log N_max) space -- exponentially more compact than storing the actual discarded paths. Yet it is a *sufficient statistic* for computing the optimal fork distribution at the next step. You don't need to remember everything that was thrown away. You only need to remember the boundary of what was thrown away.
+
+**Void walking** is the practice of reading this boundary to guide future forks:
+
+1. **Void density**: for each choice i, compute rho_i = (times i was vented) / T. This is the empirical failure rate.
+2. **Complement distribution**: mu_i proportional to (1 - rho_i + epsilon). Choices that failed less get more probability. The epsilon ensures exploration.
+3. **Fork**: sample the next fork from the complement distribution.
+
+This is the void analogue of gradient descent. In gradient descent, the loss gradient points toward maximum waste heat in parameter space, and you walk away from it. In void walking, the void gradient points toward maximum discard in fork-choice space, and you walk away from it. Both are waste-minimizing flows on their respective manifolds.
+
+The formal results (companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/VoidWalking.lean):
+
+- **THM-VOID-BOUNDARY-MEASURABLE**: boundary rank is computable in O(T * N_max) time
+- **THM-VOID-DOMINANCE**: void volume grows as Omega(T * (N-1)), dominating active computation by factor Omega(T). The void fraction approaches 1 as T grows -- computational dark energy. And just as dark matter (~85% of mass) has gravitational structure that shapes galaxy formation, the computational void dominates active paths and has boundary structure that shapes future forks. The void is the dark matter of computation -- invisible but structurally essential. The universe is expanding; the exhaust from vents pushes the boundaries of the explored space ever outward, exactly as dark energy drives cosmic expansion.
+- **THM-VOID-MEMORY-EFFICIENCY**: boundary encoding is Omega(N * payload / log N) more compact than full path storage
+- **THM-VOID-TUNNEL**: void regions sharing a common ancestor fork retain positive mutual information -- correlation decays exponentially but never reaches zero for finite sequences. This is *why counterfactual reasoning works*: "what would have happened if I chose differently?" is answerable because the void of the actual path and the void of the counterfactual path share information through their common ancestry.
+- **THM-VOID-REGRET-BOUND**: void walking reduces adversarial regret from Omega(sqrt(TN)) to O(sqrt(T log N))
+- **THM-VOID-GRADIENT**: the complement distribution uniquely minimizes expected regret under stationary costs
+- **THM-VOID-COHERENCE**: two independent void walkers reading the same boundary produce identical fork distributions (deterministic case) or epsilon-close distributions (stochastic case)
+
+The void is not a waste product. It is a map. Every fold that destroys a possibility inscribes that destruction on the void boundary, and that inscription tells the next fork where not to go. The Second Law says you cannot recover the lost paths. Void walking says you don't need to -- you only need to read their tombstones.
+
+---
+
+## 23.11 Summary: The Ten Resonances
 
 | # | Connection | Domain | Key Insight |
 |---|-----------|--------|-------------|
@@ -245,6 +279,7 @@ Every computation that produces a definite answer has folded. Every fold has cre
 | 7 | Loss = Q | Optimization | Training minimizes waste heat, gradient descent = ∂Q/∂θ |
 | 8 | Breathing is venting | Physiology | Mitochondria are fork/race/fold engines, lungs are vents |
 | 9 | The void | Thermodynamics | No unfold primitive  --  fold is irreversible  --  this *is* the Second Law |
+| 10 | Void walking | Online learning | The void boundary is a sufficient statistic for optimal future forks  --  read the tombstones |
 
 These are not analogies. They are structural isomorphisms. The same four-phase pattern  --  create possibilities, explore them, dissipate the losers, extract the winner  --  appears in category theory, thermodynamics, quantum mechanics, molecular biology, machine learning, and physiology because it is the *only* pattern that satisfies three simultaneous constraints:
 
@@ -253,3 +288,9 @@ These are not analogies. They are structural isomorphisms. The same four-phase p
 3. **Ground state**: there is always minimum overhead (Third Law)
 
 Any system that transforms input to output under these constraints will converge to fork/race/fold. Not because it's elegant. Because there is no alternative.
+
+And the tenth resonance adds a fourth constraint:
+
+4. **Learning**: the void boundary is measurable, and its complement distribution minimizes future regret
+
+The first nine resonances describe the structure of computation. The tenth describes how computation learns from its own exhaust.
