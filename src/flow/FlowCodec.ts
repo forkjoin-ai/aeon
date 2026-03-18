@@ -439,7 +439,10 @@ export class FlowCodec {
     const wasmUrl = new URL(wasmPath, import.meta.url);
 
     try {
-      const response = await fetch(wasmUrl);
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 2_000);
+      const response = await fetch(wasmUrl, { signal: controller.signal });
+      clearTimeout(timer);
       if (!response.ok) return null;
       return new Uint8Array(await response.arrayBuffer());
     } catch {
