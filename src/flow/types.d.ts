@@ -125,6 +125,10 @@ export interface FlowProtocolEvents {
     streamVented: {
         streamId: number;
     };
+    /** A stream was poisoned */
+    streamPoisoned: {
+        streamId: number;
+    };
     /** Backpressure: stream is paused */
     streamPaused: {
         streamId: number;

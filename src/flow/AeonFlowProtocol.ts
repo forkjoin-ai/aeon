@@ -332,6 +332,36 @@ export class AeonFlowProtocol {
   }
 
   /**
+   * Poison a stream. Sends a POISON frame and marks the stream as vented.
+   *
+   * This is used when a branch of work fails definitively and should lose a
+   * race without masquerading as a normal vent/cancel path.
+   */
+  poison(streamId: number): void {
+    const stream = this.streams.get(streamId);
+    if (!stream || stream.state === 'vented' || stream.state === 'closed') {
+      return;
+    }
+
+    stream.state = 'vented';
+    this.sendFrame(streamId, POISON, new Uint8Array(0));
+
+    const poisonHandlers = this.poisonHandlers.get(streamId);
+    if (poisonHandlers) {
+      for (const handler of poisonHandlers) {
+        handler();
+      }
+    }
+
+    const ventHandlers = this.ventHandlers.get(streamId);
+    if (ventHandlers) {
+      for (const handler of ventHandlers) {
+        handler();
+      }
+    }
+  }
+
+  /**
    * Vent a stream. Sends a VENT frame and propagates to all descendants.
    *
    * Venting is the protocol-level equivalent of NaN propagation,

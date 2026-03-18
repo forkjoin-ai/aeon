@@ -194,6 +194,30 @@ describe('FlowCodec', () => {
       expect(poisoned).toHaveBeenCalledOnce();
       expect(protocol.getStream(2)?.state).toBe('vented');
     });
+
+    it('sends a poison frame when poisoning a local stream', () => {
+      const transport = createRecordingTransport();
+      const protocol = new AeonFlowProtocol(transport, { role: 'client' });
+      const codec = FlowCodec.createSync();
+      const poisoned = vi.fn();
+      const vented = vi.fn();
+
+      const streamId = protocol.openStream();
+      protocol.onStreamPoisoned(streamId, poisoned);
+      protocol.onStreamVented(streamId, vented);
+
+      protocol.poison(streamId);
+
+      expect(poisoned).toHaveBeenCalledOnce();
+      expect(vented).toHaveBeenCalledOnce();
+      expect(protocol.getStream(streamId)?.state).toBe('vented');
+      expect(transport.sent).toHaveLength(1);
+
+      const { frame } = codec.decode(transport.sent[0]);
+      expect(frame.streamId).toBe(streamId);
+      expect(frame.flags).toBe(POISON);
+      expect(frame.payload).toHaveLength(0);
+    });
   });
 
   describe('u24 length boundary', () => {

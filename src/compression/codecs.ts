@@ -29,6 +29,87 @@ export interface CompressionCodec {
   decode(data: Uint8Array, originalSize: number): Uint8Array;
 }
 
+interface NodeZlibModule {
+  readonly constants: {
+    readonly BROTLI_PARAM_QUALITY: number;
+  };
+  brotliCompressSync(
+    data: Uint8Array,
+    options?: { params?: Record<number, number> }
+  ): Uint8Array;
+  brotliDecompressSync(data: Uint8Array): Uint8Array;
+  gzipSync(data: Uint8Array, options?: { level?: number }): Uint8Array;
+  gunzipSync(data: Uint8Array): Uint8Array;
+}
+
+interface ProcessWithBuiltinLoader {
+  getBuiltinModule?(moduleSpecifier: string): unknown;
+}
+
+const NODE_ZLIB_SPECIFIER = 'node:zlib';
+let cachedNodeZlib: NodeZlibModule | null | undefined;
+
+function isNodeZlibModule(candidate: unknown): candidate is NodeZlibModule {
+  if (typeof candidate !== 'object' || candidate === null) {
+    return false;
+  }
+
+  const zlib = candidate as Partial<NodeZlibModule>;
+  return (
+    typeof zlib.brotliCompressSync === 'function' &&
+    typeof zlib.brotliDecompressSync === 'function' &&
+    typeof zlib.gzipSync === 'function' &&
+    typeof zlib.gunzipSync === 'function' &&
+    typeof zlib.constants?.BROTLI_PARAM_QUALITY === 'number'
+  );
+}
+
+function loadNodeZlib(): NodeZlibModule | null {
+  if (cachedNodeZlib !== undefined) {
+    return cachedNodeZlib;
+  }
+
+  const processLike = globalThis as typeof globalThis & {
+    process?: ProcessWithBuiltinLoader;
+  };
+  const loadBuiltin = processLike.process?.getBuiltinModule;
+
+  if (typeof loadBuiltin === 'function') {
+    try {
+      const builtinModule = loadBuiltin(NODE_ZLIB_SPECIFIER);
+      if (isNodeZlibModule(builtinModule)) {
+        cachedNodeZlib = builtinModule;
+        return cachedNodeZlib;
+      }
+    } catch {
+      // Fall through to dynamic require for older Node runtimes.
+    }
+  }
+
+  try {
+    const dynamicRequire = new Function(
+      'moduleSpecifier',
+      'return typeof require === "function" ? require(moduleSpecifier) : null;'
+    ) as (moduleSpecifier: string) => unknown;
+    const requiredModule = dynamicRequire(NODE_ZLIB_SPECIFIER);
+    if (isNodeZlibModule(requiredModule)) {
+      cachedNodeZlib = requiredModule;
+      return cachedNodeZlib;
+    }
+  } catch {
+    // Workers and browsers intentionally fall through to the pure-codec path.
+  }
+
+  cachedNodeZlib = null;
+  return cachedNodeZlib;
+}
+
+function missingNodeZlibError(codecName: string): Error {
+  return new Error(
+    `${codecName} requires node:zlib and is unavailable in this runtime.`
+  );
+}
+
 // ============================================================================
 // Codec 0: Raw (Identity)
 // ============================================================================
@@ -279,22 +360,26 @@ export class BrotliCodec implements CompressionCodec {
   }
 
   encode(data: Uint8Array): Uint8Array {
-    try {
-      const zlib = require('node:zlib');
-      return new Uint8Array(zlib.brotliCompressSync(Buffer.from(data), {
-        params: {
-          [zlib.constants.BROTLI_PARAM_QUALITY]: this.quality,
-        },
-      }));
-    } catch {
+    const zlib = loadNodeZlib();
+    if (!zlib) {
       // node:zlib unavailable (browser/CF Workers) — return raw (will be vented)
       return data;
     }
+
+    return new Uint8Array(zlib.brotliCompressSync(data, {
+      params: {
+        [zlib.constants.BROTLI_PARAM_QUALITY]: this.quality,
+      },
+    }));
   }
 
   decode(data: Uint8Array): Uint8Array {
-    const zlib = require('node:zlib');
-    return new Uint8Array(zlib.brotliDecompressSync(Buffer.from(data)));
+    const zlib = loadNodeZlib();
+    if (!zlib) {
+      throw missingNodeZlibError('BrotliCodec');
+    }
+
+    return new Uint8Array(zlib.brotliDecompressSync(data));
   }
 }
 
@@ -318,19 +403,23 @@ export class GzipCodec implements CompressionCodec {
   }
 
   encode(data: Uint8Array): Uint8Array {
-    try {
-      const zlib = require('node:zlib');
-      return new Uint8Array(zlib.gzipSync(Buffer.from(data), {
-        level: this.level,
-      }));
-    } catch {
+    const zlib = loadNodeZlib();
+    if (!zlib) {
       return data;
     }
+
+    return new Uint8Array(zlib.gzipSync(data, {
+      level: this.level,
+    }));
   }
 
   decode(data: Uint8Array): Uint8Array {
-    const zlib = require('node:zlib');
-    return new Uint8Array(zlib.gunzipSync(Buffer.from(data)));
+    const zlib = loadNodeZlib();
+    if (!zlib) {
+      throw missingNodeZlibError('GzipCodec');
+    }
+
+    return new Uint8Array(zlib.gunzipSync(data));
   }
 }
 
