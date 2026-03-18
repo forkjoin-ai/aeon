@@ -44,4 +44,5 @@ import ForkRaceFoldTheorems.EnrichedConvergence
 import ForkRaceFoldTheorems.RenormalizationFixedPoints
 import ForkRaceFoldTheorems.ThermodynamicTracedMonoidal
 import ForkRaceFoldTheorems.FoldHeatHierarchy
+import ForkRaceFoldTheorems.HeteroMoAFabric
 import ForkRaceFoldTheorems.SemioticPeace
