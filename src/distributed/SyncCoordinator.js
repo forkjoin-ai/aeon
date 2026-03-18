@@ -13,7 +13,7 @@
  * - DID-based node identification
  * - Authenticated sync sessions
  */
-import { AeonEventEmitter } from '../core/AeonEventEmitter.js';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 import { logger } from '../utils/logger';
 /**
  * Sync Coordinator

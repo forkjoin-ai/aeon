@@ -52,11 +52,26 @@ export interface SyncEvent {
     timestamp: string;
     data?: unknown;
 }
+export interface SyncCoordinatorEvents {
+    'node-joined': (node: SyncNode) => void;
+    'node-left': (node: SyncNode) => void;
+    'node-status-changed': (data: {
+        nodeId: string;
+        status: SyncNode['status'];
+    }) => void;
+    'sync-started': (session: SyncSession) => void;
+    'sync-completed': (session: SyncSession) => void;
+    'conflict-detected': (data: {
+        session: SyncSession;
+        nodeId: string;
+        conflictData?: unknown;
+    }) => void;
+}
 /**
  * Sync Coordinator
  * Coordinates synchronization across distributed nodes
  */
-export declare class SyncCoordinator extends AeonEventEmitter {
+export declare class SyncCoordinator extends AeonEventEmitter<SyncCoordinatorEvents> {
     private static readonly MAX_SYNC_EVENTS;
     private nodes;
     private sessions;

@@ -42,6 +42,7 @@ export declare class AeonFlowProtocol {
     private frameHandlers;
     private endHandlers;
     private ventHandlers;
+    private poisonHandlers;
     private raceGroups;
     private foldGroups;
     constructor(transport: FlowTransport, config?: Partial<FlowProtocolConfig>);
@@ -120,6 +121,10 @@ export declare class AeonFlowProtocol {
      * Register a handler for when a stream is vented.
      */
     onStreamVented(streamId: number, handler: VoidHandler): () => void;
+    /**
+     * Register a handler for when a stream is poisoned.
+     */
+    onStreamPoisoned(streamId: number, handler: VoidHandler): () => void;
     /**
      * Close the protocol and underlying transport.
      * Vents all open streams first.

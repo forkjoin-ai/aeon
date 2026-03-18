@@ -148,7 +148,8 @@ export class WebRTCFlowTransport {
             console.warn('[aeon-webrtc] DataChannel buffer full, dropping frame');
             return;
         }
-        this.dc.send(data);
+        const payload = data.buffer instanceof ArrayBuffer ? data : Uint8Array.from(data);
+        this.dc.send(payload);
     }
     onReceive(handler) {
         this.receiveHandler = handler;

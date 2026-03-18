@@ -52,6 +52,8 @@ export class AeonEventEmitter {
         if (!listeners || listeners.length === 0) {
             return false;
         }
+        // Emit against a point-in-time snapshot so registration churn during
+        // delivery affects only future folds.
         for (const listener of [...listeners]) {
             if (listener.once) {
                 this.removeListener(event, listener.fn, listener.context, true);
@@ -64,7 +66,8 @@ export class AeonEventEmitter {
         return Array.from(this.listenerMap.keys());
     }
     listeners(event) {
-        return this.listenerMap.get(event)?.map((listener) => listener.fn) ?? [];
+        return (this.listenerMap.get(event)?.map((listener) => listener.fn) ??
+            []);
     }
     listenerCount(event) {
         return this.listenerMap.get(event)?.length ?? 0;
@@ -79,7 +82,8 @@ export class AeonEventEmitter {
         if (typeof fn !== 'function') {
             throw new TypeError('The listener must be a function');
         }
-        const listeners = this.listenerMap.get(event) ?? [];
+        const listeners = this.listenerMap.get(event) ??
+            [];
         listeners.push({
             fn,
             context: context || this,

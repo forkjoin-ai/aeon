@@ -4,7 +4,7 @@
  * Tracks real-time presence of all agents in a session.
  * Provides status updates, cursor tracking, and activity monitoring.
  */
-import { AeonEventEmitter } from '../core/AeonEventEmitter.js';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 import { getLogger } from '../utils/logger';
 const logger = getLogger();
 // ============================================================================

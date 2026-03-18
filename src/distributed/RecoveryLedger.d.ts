@@ -1,9 +1,30 @@
+/**
+ * Recovery Ledger
+ *
+ * Monotone request-recovery state for sharded object delivery.
+ *
+ * The ledger does not store the payload bytes themselves. It stores the
+ * convergent facts needed to decide whether an object can be reconstructed:
+ * - which request IDs alias the same object fetch
+ * - which data/parity shards have been observed
+ * - which paths have already succeeded or failed
+ * - whether conflicting shard digests make reconstruction unsafe
+ *
+ * This is the "shared state without shared mutable state" surface:
+ * every peer can observe partial delivery and merge those observations
+ * without coordination. Reconstruction becomes legal once the merged
+ * observation crosses the configured threshold.
+ */
 export type RecoveryShardRole = 'data' | 'parity';
 export type RecoveryPathStatus = 'succeeded' | 'failed';
 export interface RecoveryLedgerConfig {
     readonly objectId: string;
     readonly dataShardCount: number;
     readonly parityShardCount?: number;
+    /**
+     * Number of unique shard units required to reconstruct the object.
+     * Defaults to `dataShardCount`, which matches MDS-style parity coding.
+     */
     readonly recoveryThreshold?: number;
 }
 export interface RecoveryPathObservation {

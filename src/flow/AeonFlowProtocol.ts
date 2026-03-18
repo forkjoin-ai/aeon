@@ -31,6 +31,7 @@ import {
   FOLD,
   VENT,
   FIN,
+  POISON,
   DEFAULT_FLOW_CONFIG,
 } from './types';
 import type {
@@ -66,6 +67,7 @@ export class AeonFlowProtocol {
   private frameHandlers: Map<number, Set<FrameHandler>> = new Map();
   private endHandlers: Map<number, Set<VoidHandler>> = new Map();
   private ventHandlers: Map<number, Set<VoidHandler>> = new Map();
+  private poisonHandlers: Map<number, Set<VoidHandler>> = new Map();
 
   // Race tracking
   private raceGroups: Map<string, {
@@ -401,6 +403,19 @@ export class AeonFlowProtocol {
     return () => { handlers!.delete(handler); };
   }
 
+  /**
+   * Register a handler for when a stream is poisoned.
+   */
+  onStreamPoisoned(streamId: number, handler: VoidHandler): () => void {
+    let handlers = this.poisonHandlers.get(streamId);
+    if (!handlers) {
+      handlers = new Set();
+      this.poisonHandlers.set(streamId, handlers);
+    }
+    handlers.add(handler);
+    return () => { handlers!.delete(handler); };
+  }
+
   // ═══════════════════════════════════════════════════════════════════════
   // Destroy
   // ═══════════════════════════════════════════════════════════════════════
@@ -419,6 +434,7 @@ export class AeonFlowProtocol {
     this.frameHandlers.clear();
     this.endHandlers.clear();
     this.ventHandlers.clear();
+    this.poisonHandlers.clear();
     this.raceGroups.clear();
     this.foldGroups.clear();
     this.transport.close();
@@ -455,6 +471,25 @@ export class AeonFlowProtocol {
     const stream = this.streams.get(streamId)!;
 
     // Handle control flags
+    if (flags & POISON) {
+      stream.state = 'vented';
+
+      const poisonHandlers = this.poisonHandlers.get(streamId);
+      if (poisonHandlers) {
+        for (const handler of poisonHandlers) {
+          handler();
+        }
+      }
+
+      const ventHandlers = this.ventHandlers.get(streamId);
+      if (ventHandlers) {
+        for (const handler of ventHandlers) {
+          handler();
+        }
+      }
+      return;
+    }
+
     if (flags & VENT) {
       this.vent(streamId);
       return;

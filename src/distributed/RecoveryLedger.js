@@ -2,6 +2,18 @@
  * Recovery Ledger
  *
  * Monotone request-recovery state for sharded object delivery.
+ *
+ * The ledger does not store the payload bytes themselves. It stores the
+ * convergent facts needed to decide whether an object can be reconstructed:
+ * - which request IDs alias the same object fetch
+ * - which data/parity shards have been observed
+ * - which paths have already succeeded or failed
+ * - whether conflicting shard digests make reconstruction unsafe
+ *
+ * This is the "shared state without shared mutable state" surface:
+ * every peer can observe partial delivery and merge those observations
+ * without coordination. Reconstruction becomes legal once the merged
+ * observation crosses the configured threshold.
  */
 function createShardKey(shardRole, shardIndex) {
     return `${shardRole}:${shardIndex}`;
@@ -97,6 +109,8 @@ export class RecoveryLedger {
             this.paths.set(input.pathId, path);
         }
         if (path.status !== input.status) {
+            // Success dominates failure because it carries the stronger observation:
+            // this path eventually delivered useful work.
             path.status = path.status === 'succeeded' || input.status === 'succeeded'
                 ? 'succeeded'
                 : 'failed';
@@ -165,7 +179,7 @@ export class RecoveryLedger {
             }
             return left.shardIndex - right.shardIndex;
         })
-            .map((shard) => ({
+            .map(shard => ({
             shardRole: shard.shardRole,
             shardIndex: shard.shardIndex,
             digests: sortStrings(shard.digests),
@@ -177,7 +191,7 @@ export class RecoveryLedger {
         }));
         const paths = [...this.paths.values()]
             .sort((left, right) => left.pathId.localeCompare(right.pathId))
-            .map((path) => ({
+            .map(path => ({
             pathId: path.pathId,
             status: path.status,
             requestIds: sortStrings(path.requestIds),
@@ -264,8 +278,8 @@ export class RecoveryLedger {
     }
     getAvailableShardIndices(role) {
         return [...this.shards.values()]
-            .filter((shard) => shard.shardRole === role)
-            .map((shard) => shard.shardIndex)
+            .filter(shard => shard.shardRole === role)
+            .map(shard => shard.shardIndex)
             .sort((left, right) => left - right);
     }
     getMissingDataShardIndices() {
@@ -280,14 +294,14 @@ export class RecoveryLedger {
     }
     getPathsByStatus(status) {
         return [...this.paths.values()]
-            .filter((path) => path.status === status)
-            .map((path) => path.pathId)
+            .filter(path => path.status === status)
+            .map(path => path.pathId)
             .sort();
     }
     getConflicts() {
         return [...this.shards.values()]
-            .filter((shard) => shard.digests.size > 1)
-            .map((shard) => ({
+            .filter(shard => shard.digests.size > 1)
+            .map(shard => ({
             shardRole: shard.shardRole,
             shardIndex: shard.shardIndex,
             digests: sortStrings(shard.digests),

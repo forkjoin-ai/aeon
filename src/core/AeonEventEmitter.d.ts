@@ -1,3 +1,11 @@
+/**
+ * Aeon Event Emitter
+ *
+ * Aeon's control-plane events are low-volume observation surfaces, not
+ * throughput-critical data planes. This implementation favors a small, typed,
+ * dependency-free API with deterministic snapshot delivery over micro-optimized
+ * special cases.
+ */
 type EventListener = (...args: any[]) => void;
 export type AeonEventMap = Record<PropertyKey, EventListener>;
 type EventShape = Record<string, EventListener>;

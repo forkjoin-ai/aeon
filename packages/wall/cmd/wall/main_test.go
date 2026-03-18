@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/binary"
+	"encoding/json"
 	"io"
 	"net"
 	"net/http"
@@ -12,7 +13,27 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
+
+func serializeBrowserFlowResponseForTest(status int, headers map[string]string, body []byte) []byte {
+	headersJSON, err := json.Marshal(headers)
+	if err != nil {
+		panic(err)
+	}
+
+	buf := make([]byte, 2+4+len(headersJSON)+len(body))
+	offset := 0
+	binary.BigEndian.PutUint16(buf[offset:offset+2], uint16(status))
+	offset += 2
+	binary.BigEndian.PutUint32(buf[offset:offset+4], uint32(len(headersJSON)))
+	offset += 4
+	copy(buf[offset:], headersJSON)
+	offset += len(headersJSON)
+	copy(buf[offset:], body)
+	return buf
+}
 
 func TestBenchmarkHeadersAddRaceMetadata(t *testing.T) {
 	base := map[string]string{"Accept": "*/*"}
@@ -161,6 +182,134 @@ func TestDoHTTPRequestSendsPropagatedAuthHeaders(t *testing.T) {
 		}
 	case <-time.After(2 * time.Second):
 		t.Fatalf("timed out waiting for HTTP server to receive request")
+	}
+}
+
+func TestDiscoverFlowTargetUsesLegacyHeaders(t *testing.T) {
+	var flowURL string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Aeon-Flow", "supported")
+		w.Header().Set("X-Aeon-Flow-Endpoint", flowURL)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	flowURL = "ws" + strings.TrimPrefix(server.URL, "http") + "/.aeon/flow"
+
+	target, err := discoverFlowTarget(server.URL+"/paper", nil, false)
+	if err != nil {
+		t.Fatalf("discoverFlowTarget: %v", err)
+	}
+	if target.requestPath != "/paper" {
+		t.Fatalf("expected request path /paper, got %q", target.requestPath)
+	}
+	if target.websocketEndpoint != flowURL {
+		t.Fatalf("expected websocket endpoint %q, got %q", flowURL, target.websocketEndpoint)
+	}
+	if target.websocketStatus != "available" {
+		t.Fatalf("expected websocket status available, got %q", target.websocketStatus)
+	}
+	if target.webtransportEndpoint != server.URL+"/.aeon/udp" {
+		t.Fatalf("expected default webtransport endpoint %q, got %q", server.URL+"/.aeon/udp", target.webtransportEndpoint)
+	}
+}
+
+func TestDoFlowRequestDiscoversWebSocketTransport(t *testing.T) {
+	upgrader := websocket.Upgrader{}
+	var flowURL string
+	serverErrs := make(chan error, 1)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/.aeon/flow" {
+			conn, err := upgrader.Upgrade(w, r, nil)
+			if err != nil {
+				serverErrs <- err
+				return
+			}
+			defer conn.Close()
+
+			messageType, payload, err := conn.ReadMessage()
+			if err != nil {
+				serverErrs <- err
+				return
+			}
+			if messageType != websocket.BinaryMessage {
+				serverErrs <- io.ErrUnexpectedEOF
+				return
+			}
+
+			frame, _, err := DecodeFrame(payload)
+			if err != nil {
+				serverErrs <- err
+				return
+			}
+			method, rawURL, requestHeaders, _, err := deserializeBrowserFlowRequest(frame.Payload)
+			if err != nil {
+				serverErrs <- err
+				return
+			}
+			if method != http.MethodGet {
+				serverErrs <- io.ErrUnexpectedEOF
+				return
+			}
+			if !strings.HasSuffix(rawURL, "/paper") {
+				serverErrs <- io.ErrUnexpectedEOF
+				return
+			}
+			if requestHeaders["X-Test"] != "1" {
+				serverErrs <- io.ErrUnexpectedEOF
+				return
+			}
+
+			responsePayload := serializeBrowserFlowResponseForTest(http.StatusOK, map[string]string{
+				"content-type": "text/plain; charset=utf-8",
+			}, []byte("wallington"))
+			responseFrame := EncodeFrame(Frame{
+				StreamID: frame.StreamID,
+				Sequence: 0,
+				Flags:    FlagFIN,
+				Length:   uint32(len(responsePayload)),
+				Payload:  responsePayload,
+			})
+			if err := conn.WriteMessage(websocket.BinaryMessage, responseFrame); err != nil {
+				serverErrs <- err
+			}
+			return
+		}
+
+		w.Header().Set("X-Aeon-Flow", "supported")
+		w.Header().Set("X-Aeon-Flow-Endpoint", flowURL)
+		w.Header().Set("X-Aeon-WebSocket-Status", "available")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	flowURL = "ws" + strings.TrimPrefix(server.URL, "http") + "/.aeon/flow"
+
+	body, events, transport, err := doFlowRequest(
+		server.URL+"/paper",
+		map[string]string{"X-Test": "1"},
+		false,
+		false,
+		true,
+		false,
+	)
+	if err != nil {
+		t.Fatalf("doFlowRequest: %v", err)
+	}
+	if transport != benchmarkTransportWebSocket {
+		t.Fatalf("expected websocket transport, got %q", transport)
+	}
+	if string(body) != "wallington" {
+		t.Fatalf("expected body wallington, got %q", string(body))
+	}
+	if len(events) < 2 {
+		t.Fatalf("expected send and recv events, got %d", len(events))
+	}
+	select {
+	case err := <-serverErrs:
+		t.Fatalf("websocket server assertion failed: %v", err)
+	default:
 	}
 }
 

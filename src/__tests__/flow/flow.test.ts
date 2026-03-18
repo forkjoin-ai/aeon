@@ -9,6 +9,7 @@ import {
   FOLD,
   VENT,
   FIN,
+  POISON,
 } from '../../flow';
 import type { FlowFrame, FlowTransport } from '../../flow';
 
@@ -170,6 +171,28 @@ describe('FlowCodec', () => {
       expect(decoded.payload[0]).toBe(0);
       expect(decoded.payload[255]).toBe(255);
       expect(decoded.payload[256]).toBe(0);
+    });
+  });
+
+  describe('poison handling', () => {
+    it('notifies poison handlers when a stream is poisoned', () => {
+      const transport = createLoopbackTransport();
+      const protocol = new AeonFlowProtocol(transport, { role: 'client' });
+      const codec = FlowCodec.createSync();
+      const poisoned = vi.fn();
+
+      protocol.onStreamPoisoned(2, poisoned);
+      transport.send(
+        codec.encode({
+          streamId: 2,
+          sequence: 0,
+          flags: POISON,
+          payload: new Uint8Array(0),
+        })
+      );
+
+      expect(poisoned).toHaveBeenCalledOnce();
+      expect(protocol.getStream(2)?.state).toBe('vented');
     });
   });
 
