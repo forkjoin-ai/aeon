@@ -64,6 +64,7 @@ const (
 	HeaderSize   = 10
 	MaxPayload   = 0xFFFFFF
 	MaxDatagram  = 65536
+	UDPBufBytes  = 4 * 1024 * 1024
 	FlagFork     = 0x01
 	FlagRace     = 0x02
 	FlagCollapse = 0x04
@@ -197,6 +198,14 @@ func DialUDP(addr string) (*AeonConn, error) {
 	conn, err := net.DialUDP("udp", nil, udpAddr)
 	if err != nil {
 		return nil, fmt.Errorf("connect udp %s: %w", addr, err)
+	}
+	if err := conn.SetReadBuffer(UDPBufBytes); err != nil {
+		_ = conn.Close()
+		return nil, fmt.Errorf("set udp read buffer: %w", err)
+	}
+	if err := conn.SetWriteBuffer(UDPBufBytes); err != nil {
+		_ = conn.Close()
+		return nil, fmt.Errorf("set udp write buffer: %w", err)
 	}
 	return &AeonConn{
 		conn:         conn,
@@ -877,9 +886,8 @@ type benchCompletion struct {
 }
 
 type benchmarkRaceState struct {
-	startedAt       time.Time
-	winnerRecorded  bool
-	completionCount uint8
+	startedAt      time.Time
+	winnerRecorded bool
 }
 
 type benchClientStats struct {
@@ -1472,12 +1480,12 @@ func doBenchmarkRaceClient(
 	defer httpConn.Close()
 
 	stop := make(chan struct{})
-	completions := make(chan benchCompletion, depth*8)
+	completions := make(chan benchCompletion, depth*16)
 	errors := make(chan error, 2)
-	httpQueue := make(chan uint64, depth*8)
+	httpQueue := make(chan uint64, depth*16)
 	defer close(httpQueue)
 
-	pendingAeon := make(map[uint16]uint64, depth*2)
+	pendingAeon := make(map[uint16]uint64, depth*4)
 	var pendingAeonMu sync.Mutex
 	var readers sync.WaitGroup
 	readers.Add(2)
@@ -1565,7 +1573,6 @@ func doBenchmarkRaceClient(
 				continue
 			}
 
-			state.completionCount++
 			if !state.winnerRecorded {
 				state.winnerRecorded = true
 				activeWinners--
@@ -1575,9 +1582,6 @@ func doBenchmarkRaceClient(
 				} else {
 					stats.aeonWins++
 				}
-			}
-
-			if state.completionCount >= 2 {
 				delete(races, completion.raceID)
 			}
 		case <-time.After(readTimeout):

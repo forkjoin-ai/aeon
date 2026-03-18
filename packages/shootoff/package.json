@@ -12,7 +12,7 @@
     "serve:micro": "node --loader ts-node/esm src/serve.ts microfrontend"
   },
   "dependencies": {
-    "@a0n/aeon": "*"
+    "@a0n/aeon": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
