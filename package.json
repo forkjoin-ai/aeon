@@ -1,5 +1,5 @@
 {
-  "name": "@affectively/aeon",
+  "name": "@a0n/aeon",
   "version": "5.0.1",
   "description": "Distributed synchronization, schema versioning, and conflict resolution for real-time collaborative applications",
   "keywords": [
@@ -168,13 +168,13 @@
   },
   "peerDependencies": {
     "@affectively/auth": "^0.1.0",
-    "@affectively/aeon-flux-react": "^1.0.0"
+    "@a0n/aeon-flux-react": "^1.0.0"
   },
   "peerDependenciesMeta": {
     "@affectively/auth": {
       "optional": true
     },
-    "@affectively/aeon-flux-react": {
+    "@a0n/aeon-flux-react": {
       "optional": true
     }
   },

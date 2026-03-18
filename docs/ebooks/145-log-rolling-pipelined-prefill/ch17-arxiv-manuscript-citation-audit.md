@@ -38,7 +38,7 @@ Current state:
 | Ref | Real | URL / official source | Source type | Primary use | Note |
 | --- | --- | --- | --- | --- | --- |
 | 1 | yes | DOI-backed journal article | journal article | Physarum / Tokyo-network experiment | Supports the experiment and tradeoff framing. |
-| 2 | yes | public artifact URL resolves | self artifact | `@affectively/aeon-pipelines` implementation | Public artifact link remains a raw public artifact page. |
+| 2 | yes | public artifact URL resolves | self artifact | `@a0n/aeon-pipelines` implementation | Public artifact link remains a raw public artifact page. |
 | 3 | yes | journal source | journal article | Physarum morphology / Murray's law | Metadata corrected to *Journal of Physics D: Applied Physics*. |
 | 4 | yes | DOI-backed journal article | journal article | bacterial strand asymmetry | Used only for the softer strand-asymmetry claim. |
 | 5 | yes | DOI-backed journal article | journal article | quantum coherence in photosynthesis | Used for coherence / wavelike-transfer evidence. |

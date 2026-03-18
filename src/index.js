@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { SyncCoordinator, SchemaVersionManager } from '@affectively/aeon';
+ * import { SyncCoordinator, SchemaVersionManager } from '@a0n/aeon';
  *
  * // Create a sync coordinator
  * const coordinator = new SyncCoordinator();
@@ -58,16 +58,16 @@ export * from './transport';
 export * from './federation';
 /**
  * STUBS for React components and hooks
- * These are normally provided by @affectively/aeon-flux-react but are
- * imported from @affectively/aeon in many legacy parts of edge-web-app.
+ * These are normally provided by @a0n/aeon-flux-react but are
+ * imported from @a0n/aeon in many legacy parts of edge-web-app.
  *
  * NOTE: Only stub things NOT exported by submodules above.
  * SchemaVersionManager, SyncCoordinator, getAdaptiveCompressionOptimizer,
  * and getAgentPresenceManager are real exports — do NOT shadow them here.
  */
 export const Link = (() => {
-    throw new Error('Link: Stub called from @affectively/aeon. Import from @affectively/aeon-flux-react or mock in tests.');
+    throw new Error('Link: Stub called from @a0n/aeon. Import from @a0n/aeon-flux-react or mock in tests.');
 });
 export const useAeonPage = (() => {
-    throw new Error('useAeonPage: Stub called from @affectively/aeon. Import from @affectively/aeon-flux-react or mock in tests.');
+    throw new Error('useAeonPage: Stub called from @a0n/aeon. Import from @a0n/aeon-flux-react or mock in tests.');
 });

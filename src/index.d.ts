@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { SyncCoordinator, SchemaVersionManager } from '@affectively/aeon';
+ * import { SyncCoordinator, SchemaVersionManager } from '@a0n/aeon';
  *
  * // Create a sync coordinator
  * const coordinator = new SyncCoordinator();
@@ -44,8 +44,8 @@ export * from './transport';
 export * from './federation';
 /**
  * STUBS for React components and hooks
- * These are normally provided by @affectively/aeon-flux-react but are
- * imported from @affectively/aeon in many legacy parts of edge-web-app.
+ * These are normally provided by @a0n/aeon-flux-react but are
+ * imported from @a0n/aeon in many legacy parts of edge-web-app.
  *
  * NOTE: Only stub things NOT exported by submodules above.
  * SchemaVersionManager, SyncCoordinator, getAdaptiveCompressionOptimizer,

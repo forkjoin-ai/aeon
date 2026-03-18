@@ -251,7 +251,7 @@ the ones below it.
 \def\labelenumi{\arabic{enumi}.}
 \item
   In formal verification (the foundation, §10), I implement a temporal
-  logic model checker (\texttt{@affectively/aeon-logic}) whose BFS
+  logic model checker (\texttt{@a0n/aeon-logic}) whose BFS
   state-space exploration is itself a fork/race/fold computation. Each
   multi-successor expansion is a fork, each transition to an
   already-visited state is a fold (interference), each unfair cycle
@@ -4018,20 +4018,20 @@ migrations in the author's own systems (inference routing, session
 preloading, and deploy artifact streaming -- all described in this
 paper), but has not been independently validated beyond these cases and
 should be treated as hypothesis-generating. An open-source
-\texttt{@affectively/aeon-pipelines} implementation is available
+\texttt{@a0n/aeon-pipelines} implementation is available
 {[}2{]}.
 
 \paragraph{Executable Diagnostic Tool}\label{executable-diagnostic-tool}
 
 The topological deficit is not just a theoretical quantity. The
-\texttt{@affectively/aeon} package {[}8{]} includes a
+\texttt{@a0n/aeon} package {[}8{]} includes a
 \texttt{TopologyAnalyzer} that computes Betti numbers and Bules from a
 computation graph, and a \texttt{TopologySampler} that instruments a
 running system to measure deficit over time:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ImportTok{import}\NormalTok{ \{ TopologyAnalyzer}\OperatorTok{,}\NormalTok{ TopologySampler \} }\ImportTok{from} \StringTok{\textquotesingle{}@affectively/aeon\textquotesingle{}}\OperatorTok{;}
+\ImportTok{import}\NormalTok{ \{ TopologyAnalyzer}\OperatorTok{,}\NormalTok{ TopologySampler \} }\ImportTok{from} \StringTok{\textquotesingle{}@a0n/aeon\textquotesingle{}}\OperatorTok{;}
 
 \CommentTok{// Static analysis: is this system wasting parallelism?}
 \KeywordTok{const}\NormalTok{ graph }\OperatorTok{=}\NormalTok{ TopologyAnalyzer}\OperatorTok{.}\FunctionTok{fromForkRaceFold}\NormalTok{(\{}
@@ -4705,7 +4705,7 @@ checker can verify a model of its own exploration.
 Fork/Race/Fold}\label{the-checkers-bfs-is-forkracefold}
 
 The \texttt{ForkRaceFoldModelChecker} in
-\texttt{@affectively/aeon-logic} {[}13{]} explores state spaces via
+\texttt{@a0n/aeon-logic} {[}13{]} explores state spaces via
 breadth-first search. Each BFS layer is a time step. Each state is a
 spatial position. The exploration graph maps directly to the four
 primitives:
@@ -6902,7 +6902,7 @@ homogeneous content.
 Executable evidence is available in two independent suites: the
 companion topological-compression obligations {[}9{]} and the production
 \texttt{TopologicalCompressor} tests in the open-source
-\texttt{@affectively/aeon} package {[}8{]}. Together they verify
+\texttt{@a0n/aeon} package {[}8{]}. Together they verify
 per-chunk adaptive winner selection, 9-byte self-describing chunk
 headers, codec vent behavior (discarding expansions), two-level stream
 race strategy selection, \(\beta_1 = \text{codecs} - 1\) invariants and
@@ -8547,25 +8547,25 @@ with edits. All primary gate verdicts pass.
   strongest operational claims section by section {[}9, 12, 13, 14{]}.
 \item
   \textbf{Open-source flow + compression runtime}:
-  \texttt{@affectively/aeon} flow/compression tests verify 10-byte
+  \texttt{@a0n/aeon} flow/compression tests verify 10-byte
   self-describing flow frames, UDP fragmentation/ACK behavior, frame
   reassembly, flow protocol semantics, WASM force-mode/error semantics,
   and topological compression properties {[}8{]}.
 \item
   \textbf{Open-source topology engine}:
-  \texttt{@affectively/aeon-pipelines} tests cover fork/race/fold/vent
+  \texttt{@a0n/aeon-pipelines} tests cover fork/race/fold/vent
   primitives, fold strategies, Reynolds/backpressure/turbulent
   multiplexing, quantum modalities, flow-bridge wire compatibility,
   domain scenarios and microbenchmarks {[}2{]}.
 \item
   \textbf{Open-source topology analyzer suite}:
   \texttt{TopologyAnalyzer}/\texttt{TopologySampler} tests in
-  \texttt{@affectively/aeon} validate Betti extraction, \(\Delta_\beta\)
+  \texttt{@a0n/aeon} validate Betti extraction, \(\Delta_\beta\)
   diagnostics, \(\beta_2\) void detection and executable
   protocol-topology contrasts {[}8{]}.
 \item
   \textbf{Open-source deployment control plane}:
-  \texttt{@affectively/aeon-forge} Bun test suites validate remote
+  \texttt{@a0n/aeon-forge} Bun test suites validate remote
   publish planning/gating (including production smoke-gate constraints),
   host capability and substrate requirement checks, AeonPID directory
   invariants, build-timeout and watcher-retry behavior, and telemetry
@@ -9515,7 +9515,7 @@ executable testing (semantic content) caught a failure mode that neither
 method alone would have found.
 
 This bug produced a concrete engineering outcome. The aeon-logic model
-checker (\texttt{@affectively/aeon-logic}) now includes two new
+checker (\texttt{@a0n/aeon-logic}) now includes two new
 primitives in its boundary learning module: \texttt{diagnoseVacuity()}
 classifies a checked property as vacuous or substantive by running both
 the claim and its opposite through the state space, and

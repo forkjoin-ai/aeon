@@ -9,7 +9,7 @@ This directory contains a Lean 4 theorem package that encodes constructive and e
 
 The current compiler-facing boundary is still that bounded affine queue family: automatic synthesis of the measurable small set `C`, the continuous Lyapunov witness `V(x)`, and the full minorization package from arbitrary continuous `.gg` syntax remains open. The canonical summary of the emitted theorem family, rerun commands, and still-open gaps lives in [../GNOSIS_COMPILER_BOUNDARY.md](../GNOSIS_COMPILER_BOUNDARY.md).
 
-The companion suite now exercises this package through `@affectively/aeon-logic`'s Lean sandbox for both inspection preflight and the actual mechanized build path.
+The companion suite now exercises this package through `@a0n/aeon-logic`'s Lean sandbox for both inspection preflight and the actual mechanized build path.
 
 ## Modules
 

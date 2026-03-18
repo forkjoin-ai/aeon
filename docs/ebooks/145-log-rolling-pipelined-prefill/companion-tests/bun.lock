@@ -5,14 +5,14 @@
     "": {
       "name": "fork-race-collapse-companion",
       "devDependencies": {
-        "@affectively/aeon-logic": "file:../../../../../aeon-logic",
+        "@a0n/aeon-logic": "file:../../../../../aeon-logic",
         "typescript": "^5.7.0",
         "vitest": "^2.1.0",
       },
     },
   },
   "packages": {
-    "@affectively/aeon-logic": ["@affectively/aeon-logic@file:../../../../../aeon-logic", { "devDependencies": { "typescript": "^5.9.3", "vitest": "^2.1.9" } }],
+    "@a0n/aeon-logic": ["@a0n/aeon-logic@file:../../../../../aeon-logic", { "devDependencies": { "typescript": "^5.9.3", "vitest": "^2.1.9" } }],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.21.5", "", { "os": "aix", "cpu": "ppc64" }, "sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ=="],
 

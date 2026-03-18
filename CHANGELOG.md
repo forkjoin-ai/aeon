@@ -4,7 +4,7 @@
 
 ### Added
 
-- **Persistence module (`@affectively/aeon/persistence`)**
+- **Persistence module (`@a0n/aeon/persistence`)**
   - `StorageAdapter` persistence boundary for runtime-agnostic durability.
   - `InMemoryStorageAdapter` for testing and baseline integration.
   - `DashStorageAdapter` for local-first writes with optional debounced D1/R2 sync batching.
@@ -48,11 +48,11 @@ Aeon is a distributed synchronization library for real-time collaborative applic
 
 ### Modules
 
-- `@affectively/aeon/core` - Core types and utilities
-- `@affectively/aeon/versioning` - Schema versioning and migrations
-- `@affectively/aeon/distributed` - Replication and sync coordination
-- `@affectively/aeon/utils` - Logging and helper utilities
-- `@affectively/aeon/crypto` - UCAN-based identity and encryption (requires optional peer deps)
+- `@a0n/aeon/core` - Core types and utilities
+- `@a0n/aeon/versioning` - Schema versioning and migrations
+- `@a0n/aeon/distributed` - Replication and sync coordination
+- `@a0n/aeon/utils` - Logging and helper utilities
+- `@a0n/aeon/crypto` - UCAN-based identity and encryption (requires optional peer deps)
 
 ### Optional Peer Dependencies
 

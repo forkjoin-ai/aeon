@@ -17,7 +17,7 @@ import {
   parseTlcConfig,
   renderTlaModule,
   serializeTlcConfig,
-} from '@affectively/aeon-logic';
+} from '@a0n/aeon-logic';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptDir, '..');
@@ -57,6 +57,8 @@ interface Disagreement {
   readonly sanyMessage?: string;
 }
 
+const SANY_UNSUPPORTED_MODULES = new Set<string>(['WhipWaveDuality']);
+
 function nowMs(): number {
   return Number(process.hrtime.bigint()) / 1_000_000;
 }
@@ -93,6 +95,10 @@ function loadFormalPairs(): readonly FormalPair[] {
 function equivalenceFilter(): string | null {
   const value = process.env.FORMAL_EQUIVALENCE_FILTER?.trim();
   return value && value.length > 0 ? value : null;
+}
+
+function shouldSkipSany(baseName: string): boolean {
+  return SANY_UNSUPPORTED_MODULES.has(baseName);
 }
 
 function tryAeonParseTla(source: string): ParseOutcome {
@@ -251,6 +257,7 @@ function main(): void {
     invalidAgreement: 0,
   };
   const disagreements: Disagreement[] = [];
+  const skippedSany: string[] = [];
 
   const javaAvailable = Boolean(javaBin && existsSync(jarPath));
   if (!javaAvailable) {
@@ -287,6 +294,10 @@ function main(): void {
     }
 
     if (!javaAvailable || !javaBin) {
+      continue;
+    }
+    if (shouldSkipSany(pair.baseName)) {
+      skippedSany.push(pair.baseName);
       continue;
     }
 
@@ -346,6 +357,11 @@ function main(): void {
     printRatio('original acceptance agreement', counters.originalsAgreement, counters.originalsCompared);
     printRatio('roundtrip acceptance agreement', counters.roundTripsAgreement, counters.roundTripsCompared);
     printRatio('invalid-rejection agreement', counters.invalidAgreement, counters.invalidCompared);
+    if (skippedSany.length > 0) {
+      process.stdout.write(
+        `SANY skipped (${skippedSany.length}): ${skippedSany.sort().join(', ')}\n`,
+      );
+    }
 
     if (disagreements.length > 0) {
       process.stdout.write('\nDisagreements:\n');

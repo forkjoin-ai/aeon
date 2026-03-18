@@ -3,7 +3,7 @@ import { dirname, extname, join, resolve, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
-import { parseTlaModule, parseTlcConfig } from '@affectively/aeon-logic';
+import { parseTlaModule, parseTlcConfig } from '@a0n/aeon-logic';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptDir, '..');

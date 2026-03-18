@@ -1,4 +1,4 @@
-// Canonical checker implementation now lives in @affectively/aeon-logic.
+// Canonical checker implementation now lives in @a0n/aeon-logic.
 // This file remains as a compatibility shim for companion imports.
 export {
   ForkRaceFoldModelChecker,
@@ -10,7 +10,7 @@ export {
   renderTlaModule,
   serializeTlcConfig,
   toTlaValue,
-} from '@affectively/aeon-logic';
+} from '@a0n/aeon-logic';
 
 export type {
   CheckerOptions,
@@ -22,4 +22,4 @@ export type {
   TraceStep,
   Violation,
   WeakFairnessRule,
-} from '@affectively/aeon-logic';
+} from '@a0n/aeon-logic';
