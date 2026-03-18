@@ -67,16 +67,17 @@ import (
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const (
-	HeaderSize   = 10
-	MaxPayload   = 0xFFFFFF
-	MaxDatagram  = 65536
-	UDPBufBytes  = 4 * 1024 * 1024
-	FlagFork     = 0x01
-	FlagRace     = 0x02
-	FlagCollapse = 0x04
-	FlagPoison   = 0x08
-	FlagFIN      = 0x10
-	FlagVent     = 0x40
+	HeaderSize               = 10
+	MaxPayload               = 0xFFFFFF
+	MaxDatagram              = 65536
+	UDPBufBytes              = 4 * 1024 * 1024
+	SingleRequestReadTimeout = 10 * time.Second
+	FlagFork                 = 0x01
+	FlagRace                 = 0x02
+	FlagCollapse             = 0x04
+	FlagPoison               = 0x08
+	FlagFIN                  = 0x10
+	FlagVent                 = 0x40
 )
 
 // Frame is a single Aeon Flow protocol frame.
@@ -807,6 +808,10 @@ func doSingleRequestWithConn(conn *AeonConn, path string, headers map[string]str
 	// Read response frames until FIN or POISON
 	var body []byte
 	for {
+		if err := conn.conn.SetReadDeadline(time.Now().Add(SingleRequestReadTimeout)); err != nil {
+			return nil, conn.events, fmt.Errorf("set read deadline: %w", err)
+		}
+
 		f, err := conn.Recv()
 		if err != nil {
 			if err == io.EOF {
@@ -876,6 +881,10 @@ func doForkRequestWithConn(conn *AeonConn, childPaths []string, headers map[stri
 	finished := 0
 
 	for finished < len(children) {
+		if err := conn.conn.SetReadDeadline(time.Now().Add(SingleRequestReadTimeout)); err != nil {
+			return results, conn.events, fmt.Errorf("set read deadline: %w", err)
+		}
+
 		f, err := conn.Recv()
 		if err != nil {
 			if err == io.EOF {
@@ -1078,6 +1087,10 @@ func doBrowserRequestWithConn(
 
 	var responsePayload []byte
 	for {
+		if err := conn.conn.SetReadDeadline(time.Now().Add(SingleRequestReadTimeout)); err != nil {
+			return nil, conn.events, fmt.Errorf("set read deadline: %w", err)
+		}
+
 		frame, err := conn.Recv()
 		if err != nil {
 			if err == io.EOF {
@@ -1139,6 +1152,10 @@ func doBrowserForkRequestWithConn(
 	finished := 0
 
 	for finished < len(childPaths) {
+		if err := conn.conn.SetReadDeadline(time.Now().Add(SingleRequestReadTimeout)); err != nil {
+			return results, conn.events, fmt.Errorf("set read deadline: %w", err)
+		}
+
 		frame, err := conn.Recv()
 		if err != nil {
 			if err == io.EOF {
