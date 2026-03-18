@@ -47,6 +47,7 @@ Vitest suites that provide executable claim coverage for the manuscript.
 - `ch17-moa-transformer-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sweep/ablation chart.
 - `ch17-moa-topology-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sparse-vs-dense topology chart.
 - `ch17-moa-whip-curvature-figure.ts` / `.test.ts`: supplemental figure manifest/SVG renderer and tests for the curved wraparound `StructuredMoA` topology view that makes the inner and outer Worthington whips read as enclosure geometry.
+- `ch17-hetero-moa-fabric-curvature-figure.ts` / `.test.ts`: supplemental figure manifest/SVG renderer and tests for the backend-diverse `HeteroMoAFabric` curvature view, reusing the wraparound whip grammar to show CPU/GPU/NPU/WASM layer racing and paired-kernel snaps as one stretched spring.
 - `wallington-worthington-reference.ts` / `.test.ts`: reader-facing reference implementation that expresses Wallington Rotation and Worthington Whip on plain arrays, including chunk/tick schedule emission and shard-collapse output.
 - `ch17-external-replication.ts` / `.test.ts`: outside-rerun executor and tests that verify the command plan plus manifest/hash stability checks.
 - `deficit-evidence.test.ts`: protocol/settlement/healthcare deficit evidence checks.

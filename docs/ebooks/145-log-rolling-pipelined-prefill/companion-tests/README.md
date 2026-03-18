@@ -57,6 +57,7 @@ bun run test:ch17-boundary-expansion-figure
 bun run test:ch17-moa-figure
 bun run test:ch17-moa-topology-figure
 bun run test:ch17-moa-whip-curvature-figure
+bun run test:ch17-hetero-moa-fabric-curvature-figure
 bun run test:ch17-replication-pack
 bun run test:ch17-reproduction-surface
 bun run test:ch17-external-replication
@@ -115,6 +116,7 @@ Use that command when you want the shared compiler-facing theorem workspace itse
 | `ch17-moa-transformer-figure.test.ts` + `scripts/ch17-moa-transformer-figure.ts` | §6.11, §1.7 | Auto-generated figure surface for the GG-backed `StructuredMoA` sweep/ablation result, showing speedup, closing eval-MSE gap, and sparsity-ablation frontier in one chart |
 | `ch17-moa-topology-figure.ts` / `.test.ts` | §6.11, §1.7 | Figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sparse-vs-dense topology diagram, exposing the routed blocks, live heads, and matched dense baseline as a manuscript artifact |
 | `ch17-moa-whip-curvature-figure.ts` / `.test.ts` | §6.11, companion supplement | Supplemental figure manifest/SVG renderer and tests for the curved wraparound `StructuredMoA` topology view, emphasizing the inner and outer Worthington whip geometry around the routed blocks |
+| `ch17-hetero-moa-fabric-curvature-figure.ts` / `.test.ts` | §6.11, companion supplement | Supplemental figure manifest/SVG renderer and tests for the backend-diverse `HeteroMoAFabric` curvature view, reusing the whipped MoA geometry so device-layer racing and paired-kernel snaps read as one curved spring |
 | `ch17-external-replication.test.ts` + `scripts/ch17-external-replication.ts` | Chapter 17 outside rerun | Executes the full outside-rerun command chain, verifies the refreshed replication manifest, and confirms that the checked-in evidence bundle hashes still match the files on disk |
 | `deficit-evidence.test.ts` | §6.12 evidence table, §8.3 | Protocol/settlement/healthcare deficits and entropy-vent trend checks |
 | `map-reduce-readiness.test.ts` | §6.14 heuristic | Executable checks for `Q_mr`, `O_beta`, `R_qr` bounds/monotonicity, necessity of nonzero topological opportunity in the migration simulator, independent rank correlation, and non-automatic-quantum-advantage counterexamples |
@@ -155,6 +157,7 @@ Use that command when you want the shared compiler-facing theorem workspace itse
 | `scripts/ch17-moa-transformer-figure.ts` + `artifacts/ch17-moa-transformer-figure.{json,md,svg}` | §6.11, §1.7 | Auto-generated manuscript figure for the GG-backed `StructuredMoA` sparse transformer result, combining scale sweep, accuracy-gap closure, and ablation frontier in one artifact |
 | `scripts/ch17-moa-topology-figure.ts` + `artifacts/ch17-moa-topology-figure.{json,md,svg}` | §6.11, §1.7 | Auto-generated topology figure for the sparse `StructuredMoA` GG surface, showing the 2-of-4 block routing, the 2-of-4 head routing inside each live block, and the dense rotated baseline in one artifact |
 | `scripts/ch17-moa-whip-curvature-figure.ts` + `artifacts/ch17-moa-whip-curvature-figure.{json,md,svg}` | §6.11, companion supplement | Auto-generated wraparound topology figure for the same sparse `StructuredMoA` GG surface, bending the routed paths into a curved envelope so the inner and outer Worthington whips read as enclosure geometry |
+| `scripts/ch17-hetero-moa-fabric-curvature-figure.ts` + `artifacts/ch17-hetero-moa-fabric-curvature-figure.{json,md,svg}` | §6.11, companion supplement | Auto-generated backend-diverse curvature figure for the `HeteroMoAFabric` surface, carrying the same wraparound grammar into CPU/GPU/NPU/WASM layer racing, mirrored pair lanes, and the global laminar collapse |
 | `scripts/ch17-external-replication.ts` + `artifacts/ch17-external-replication.{json,md}` | Chapter 17 outside rerun | Runs the full outside-rerun command surface and verifies that the refreshed replication-pack hashes still match the evidence bundle on disk |
 | `genomic-topology.test.ts` + `genomic-topology.ts` | §3.2 Molecular Topology | σ(ℓ) sequence-computability, Δσ mutation detection, CRISPR efficiency η ∝ 1/β₁, cancer hotspot topology (TP53/KRAS real sequences), driver vs passenger Bule severity, σ_ref + Δσ = σ_mutant accounting identity (28 tests) |
 | `confinement-topology.test.ts` | §6.14 Color Confinement | SU(3) β₁=3 covering space, mandatory fold to β₁=0, anti-vent property, whip-snap energy conservation, linear confinement potential (σ ≈ 1 GeV/fm), deconfinement transition (T_c ≈ 155 MeV), hadron multiplicity scaling, scale tower functoriality (31 tests) |
@@ -207,6 +210,7 @@ bun run test:ch17-boundary-expansion-figure # §1.7, §6.12 artifact-generated e
 bun run test:ch17-moa-figure # §6.11, §1.7 artifact-generated StructuredMoA figure
 bun run test:ch17-moa-topology-figure # §6.11, §1.7 artifact-generated StructuredMoA topology diagram
 bun run test:ch17-moa-whip-curvature-figure # §6.11 companion supplemental curved-whip topology diagram
+bun run test:ch17-hetero-moa-fabric-curvature-figure # §6.11 companion supplemental hetero-fabric curvature diagram
 bun run test:ch17-replication-pack # Chapter 17 bundle hash manifest + rerun command
 bun run test:ch17-reproduction-surface # artifact/witness/manuscript reproduction surface without the separate full Lean gate
 bun run test:ch17-external-replication # one-command outside rerun + manifest/hash verification

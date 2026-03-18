@@ -97,6 +97,9 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `ch17-moa-whip-curvature-figure.json`: machine-readable manifest for the curved wraparound `StructuredMoA` companion figure derived from the topology surface.
 - `ch17-moa-whip-curvature-figure.md`: human-readable summary of the same routed blocks/heads rendered as a curved whip enclosure view.
 - `ch17-moa-whip-curvature-figure.svg`: companion-ready curved topology figure showing the wraparound inner and outer Worthington whips around the routed blocks.
+- `ch17-hetero-moa-fabric-curvature-figure.json`: machine-readable manifest for the backend-diverse `HeteroMoAFabric` companion figure rendered with the same curved whip geometry.
+- `ch17-hetero-moa-fabric-curvature-figure.md`: human-readable summary of the CPU/GPU/NPU/WASM paired-lane fabric rendered as one curved meta-laminar spring.
+- `ch17-hetero-moa-fabric-curvature-figure.svg`: companion-ready curved topology figure showing device-layer racing, mirrored pair snaps, and the global laminar collapse.
 - `ch17-external-replication.json`: machine-readable outside-rerun report covering the end-to-end command plan and manifest/hash verification.
 - `ch17-external-replication.md`: human-readable outside-rerun summary for the same report.
 

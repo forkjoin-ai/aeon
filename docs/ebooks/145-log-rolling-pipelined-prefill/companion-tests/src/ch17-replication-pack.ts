@@ -176,6 +176,11 @@ const replicationPaths = [
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-whip-curvature-figure.svg',
   ],
   [
+    'Hetero MoA fabric curvature figure artifact',
+    'artifact',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-hetero-moa-fabric-curvature-figure.svg',
+  ],
+  [
     'MoA figure artifact',
     'artifact',
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-transformer-figure.svg',
@@ -289,6 +294,11 @@ const replicationPaths = [
     'MoA whip-curvature figure script',
     'script',
     'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-whip-curvature-figure.ts',
+  ],
+  [
+    'Hetero MoA fabric curvature figure script',
+    'script',
+    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-hetero-moa-fabric-curvature-figure.ts',
   ],
   [
     'MoA figure script',

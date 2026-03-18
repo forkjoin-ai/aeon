@@ -1,0 +1,67 @@
+{
+  "label": "ch17-hetero-moa-fabric-curvature-figure-v1",
+  "primitive": "HeteroMoAFabric",
+  "sourceSurface": {
+    "loweringPath": "open-source/gnosis/src/structured-primitives.ts",
+    "runtimePath": "open-source/gnosis/src/runtime/hetero-fabric.ts",
+    "benchmarkPath": "open-source/gnosis/src/benchmarks/hetero-moa-fabric-benchmark.ts"
+  },
+  "frameProtocol": "aeon-10-byte-binary",
+  "scheduleStrategy": "cannon",
+  "pairedKernel": "mirrored-coupled",
+  "cpuLanes": 2,
+  "gpuLanes": 1,
+  "npuLanes": 1,
+  "wasmLanes": 1,
+  "totalLanes": 5,
+  "pairCount": 5,
+  "mirroredKernelCount": 10,
+  "launchGate": "armed",
+  "hedgeDelayTicks": 1,
+  "hedgePolicy": "skip-on-sufficient",
+  "communityMemory": "QDoc decay",
+  "layers": [
+    {
+      "kind": "cpu",
+      "label": "CPU control helix",
+      "laneCount": 2,
+      "bindings": [
+        "native threads",
+        "command CUDA fallback"
+      ]
+    },
+    {
+      "kind": "gpu",
+      "label": "GPU wave helix",
+      "laneCount": 1,
+      "bindings": [
+        "WebGPU",
+        "CUDA-style runner"
+      ]
+    },
+    {
+      "kind": "npu",
+      "label": "NPU route helix",
+      "laneCount": 1,
+      "bindings": [
+        "WebNN",
+        "vendor NPU runner"
+      ]
+    },
+    {
+      "kind": "wasm",
+      "label": "WASM browser helix",
+      "laneCount": 1,
+      "bindings": [
+        "WASM",
+        "browser worker"
+      ]
+    }
+  ],
+  "curvatureView": {
+    "outerEnvelopeLabel": "curved meta-laminar envelope",
+    "layerHelixLabel": "backend helix lanes",
+    "pairSnapLabel": "paired-kernel snap",
+    "metaCollapseLabel": "global race collapse"
+  }
+}
