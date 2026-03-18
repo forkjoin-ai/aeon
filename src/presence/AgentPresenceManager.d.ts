@@ -4,7 +4,7 @@
  * Tracks real-time presence of all agents in a session.
  * Provides status updates, cursor tracking, and activity monitoring.
  */
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 export interface AgentPresence {
     agentId: string;
     name: string;
@@ -134,7 +134,7 @@ export interface PresenceEvents {
         status: AgentPresence['status'];
     }) => void;
 }
-export declare class AgentPresenceManager extends EventEmitter<PresenceEvents> {
+export declare class AgentPresenceManager extends AeonEventEmitter<PresenceEvents> {
     private presences;
     private sessionId;
     private heartbeatInterval;

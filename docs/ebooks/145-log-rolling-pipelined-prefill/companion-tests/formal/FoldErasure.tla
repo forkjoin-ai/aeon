@@ -206,6 +206,6 @@ InvChainComplete ==
 
 \* ─── Liveness ────────────────────────────────────────────────────────
 
-ChainTermination == <>(phase = "complete")
+ChainTermination == <>(phase = "complete" \/ phase = "injective_complete")
 
 =============================================================================

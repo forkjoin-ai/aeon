@@ -14,7 +14,7 @@
  * - Authenticated sync sessions
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 import { logger } from '../utils/logger';
 import type { ICryptoProvider } from '../crypto/CryptoProvider';
 import type { AeonEncryptionMode } from '../crypto/types';
@@ -68,11 +68,27 @@ export interface SyncEvent {
   data?: unknown;
 }
 
+export interface SyncCoordinatorEvents {
+  'node-joined': (node: SyncNode) => void;
+  'node-left': (node: SyncNode) => void;
+  'node-status-changed': (data: {
+    nodeId: string;
+    status: SyncNode['status'];
+  }) => void;
+  'sync-started': (session: SyncSession) => void;
+  'sync-completed': (session: SyncSession) => void;
+  'conflict-detected': (data: {
+    session: SyncSession;
+    nodeId: string;
+    conflictData?: unknown;
+  }) => void;
+}
+
 /**
  * Sync Coordinator
  * Coordinates synchronization across distributed nodes
  */
-export class SyncCoordinator extends EventEmitter {
+export class SyncCoordinator extends AeonEventEmitter<SyncCoordinatorEvents> {
   private static readonly MAX_SYNC_EVENTS = 10000;
 
   private nodes: Map<string, SyncNode> = new Map();
@@ -627,7 +643,7 @@ export class SyncCoordinator extends EventEmitter {
   /**
    * Start heartbeat monitoring
    */
-  startHeartbeatMonitoring(interval: number = 5000): void {
+  startHeartbeatMonitoring(interval = 5000): void {
     if (this.heartbeatInterval) {
       return;
     }

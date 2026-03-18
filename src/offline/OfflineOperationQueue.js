@@ -4,13 +4,13 @@
  * Manages pending operations for offline-first clients.
  * Provides priority-based queuing, persistence, and retry logic.
  */
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter.js';
 import { getLogger } from '../utils/logger';
 const logger = getLogger();
 // ============================================================================
 // Offline Operation Queue
 // ============================================================================
-export class OfflineOperationQueue extends EventEmitter {
+export class OfflineOperationQueue extends AeonEventEmitter {
     static DEFAULT_PERSIST_KEY = 'aeon:offline-queue:v1';
     queue = new Map();
     syncingIds = new Set();

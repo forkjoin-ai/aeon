@@ -79,6 +79,9 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `ch17-inverted-scaling-reynolds-figure.json`: machine-readable manifest for the Chapter 17 inverted-scaling and Reynolds-regime figure.
 - `ch17-inverted-scaling-reynolds-figure.md`: human-readable summary of the theory figure formulas, stage families, and scenario overlays.
 - `ch17-inverted-scaling-reynolds-figure.svg`: manuscript-ready theory figure pairing the workload-speedup curves with the laminar/transitional/turbulent Reynolds regime map.
+- `ch17-american-frontier-figure.json`: machine-readable manifest for the Chapter 17 American Frontier curve-family figure, including the recursive wire witness.
+- `ch17-american-frontier-figure.md`: human-readable summary of the American Frontier framing/scheduling/encoding curves and the explicit Aeon/UDP vs HTTP/TCP transport witness.
+- `ch17-american-frontier-figure.svg`: manuscript-ready four-panel figure showing the American Frontier as a curve family plus the explicit Aeon/UDP vs HTTP/TCP mixed-race panel.
 - `ch17-correspondence-boundary-figure.json`: machine-readable manifest for the Chapter 17 correspondence-boundary figure.
 - `ch17-correspondence-boundary-figure.md`: human-readable summary of the figure sources and aggregated metrics.
 - `ch17-correspondence-boundary-figure.svg`: manuscript-ready figure assembled from the quantum ablation, toy-attention interval chart, seeded Gnosis cancellation benchmark, and seeded Gnosis mini-MoE routing benchmark artifacts.

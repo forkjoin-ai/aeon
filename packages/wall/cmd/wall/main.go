@@ -70,6 +70,7 @@ const (
 	FlagCollapse = 0x04
 	FlagPoison   = 0x08
 	FlagFIN      = 0x10
+	FlagVent     = 0x40
 )
 
 // Frame is a single Aeon Flow protocol frame.
@@ -316,7 +317,26 @@ func buildRequestPayload(method, path string, headers map[string]string) []byte 
 
 func benchmarkAeonPayload(path string, headers map[string]string, rawPath bool) []byte {
 	if rawPath {
-		return []byte(path)
+		if len(headers) == 0 {
+			return []byte(path)
+		}
+
+		keys := make([]string, 0, len(headers))
+		for key := range headers {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+
+		var sb strings.Builder
+		sb.Grow(len(path) + len(headers)*32)
+		sb.WriteString(path)
+		for _, key := range keys {
+			sb.WriteByte('\n')
+			sb.WriteString(key)
+			sb.WriteString(": ")
+			sb.WriteString(headers[key])
+		}
+		return []byte(sb.String())
 	}
 	return buildRequestPayload("GET", path, headers)
 }
@@ -661,6 +681,9 @@ func flagNames(flags uint8) string {
 	if flags&FlagFIN != 0 {
 		parts = append(parts, "FIN")
 	}
+	if flags&FlagVent != 0 {
+		parts = append(parts, "VENT")
+	}
 	if flags == 0 {
 		parts = append(parts, "DATA")
 	}
@@ -883,16 +906,61 @@ type benchCompletion struct {
 	raceID    uint64
 	transport string
 	bytes     int
+	vented    bool
 }
 
 type benchmarkRaceState struct {
-	startedAt      time.Time
-	winnerRecorded bool
+	startedAt       time.Time
+	winnerRecorded  bool
+	winnerTransport string
+	plannedHTTP     bool
+	plannedAeon     bool
+	completedHTTP   bool
+	completedAeon   bool
+	skippedHTTP     bool
+	skippedAeon     bool
+}
+
+func (s *benchmarkRaceState) markCompleted(transport string) {
+	switch transport {
+	case benchmarkTransportHTTP:
+		s.completedHTTP = true
+	case benchmarkTransportAeon:
+		s.completedAeon = true
+	}
+}
+
+func (s *benchmarkRaceState) markSkipped(transport string) {
+	switch transport {
+	case benchmarkTransportHTTP:
+		s.skippedHTTP = true
+	case benchmarkTransportAeon:
+		s.skippedAeon = true
+	}
+}
+
+func (s *benchmarkRaceState) transportPending(transport string) bool {
+	switch transport {
+	case benchmarkTransportHTTP:
+		return s.plannedHTTP && !s.completedHTTP && !s.skippedHTTP
+	case benchmarkTransportAeon:
+		return s.plannedAeon && !s.completedAeon && !s.skippedAeon
+	default:
+		return false
+	}
+}
+
+func (s *benchmarkRaceState) isClosed() bool {
+	httpDone := !s.plannedHTTP || s.completedHTTP || s.skippedHTTP
+	aeonDone := !s.plannedAeon || s.completedAeon || s.skippedAeon
+	return httpDone && aeonDone
 }
 
 type benchClientStats struct {
 	requests            uint64
 	bytes               uint64
+	winnerBytes         uint64
+	loserBytes          uint64
 	latencySum          time.Duration
 	latencyMax          time.Duration
 	latencySamples      []time.Duration
@@ -901,6 +969,11 @@ type benchClientStats struct {
 	sequenceRegressions uint64
 	httpWins            uint64
 	aeonWins            uint64
+	loserCompletions    uint64
+	loserVents          uint64
+	winnerVents         uint64
+	skippedHTTP         uint64
+	skippedAeon         uint64
 }
 
 func (s *benchClientStats) recordCompletion(latency time.Duration) {
@@ -920,6 +993,8 @@ type benchResult struct {
 	duration            time.Duration
 	requests            uint64
 	bytes               uint64
+	winnerBytes         uint64
+	loserBytes          uint64
 	requestsPerSecond   float64
 	throughputMBps      float64
 	avgLatency          time.Duration
@@ -933,6 +1008,11 @@ type benchResult struct {
 	sequenceRegressions uint64
 	httpWins            uint64
 	aeonWins            uint64
+	loserCompletions    uint64
+	loserVents          uint64
+	winnerVents         uint64
+	skippedHTTP         uint64
+	skippedAeon         uint64
 }
 
 func awaitBenchmarkStart(start <-chan struct{}, abort <-chan struct{}, ready chan<- struct{}, setupDeadline time.Time) bool {
@@ -990,8 +1070,9 @@ func percentileDuration(sorted []time.Duration, fraction float64) time.Duration 
 	return sorted[index]
 }
 
-func benchmarkHeaders(base map[string]string, raceID uint64, transport string) map[string]string {
+func benchmarkHeaders(base map[string]string, clientID int, raceID uint64, transport string) map[string]string {
 	headers := cloneHeaders(base)
+	headers["X-Laminar-Client-ID"] = fmt.Sprintf("%d", clientID)
 	headers["X-Laminar-Race-ID"] = fmt.Sprintf("%d", raceID)
 	headers["X-Laminar-Transport"] = transport
 	return headers
@@ -1079,10 +1160,10 @@ func findHTTPHeaderEnd(buf []byte) int {
 	return -1
 }
 
-func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
+func parseHTTPBenchmarkResponse(buf []byte) (int, int, int, bool, error) {
 	headerEnd := findHTTPHeaderEnd(buf)
 	if headerEnd < 0 {
-		return 0, 0, false, nil
+		return 0, 0, 0, false, nil
 	}
 
 	statusEnd := -1
@@ -1093,7 +1174,15 @@ func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
 		}
 	}
 	if statusEnd <= 0 {
-		return 0, 0, false, fmt.Errorf("malformed HTTP response status line")
+		return 0, 0, 0, false, fmt.Errorf("malformed HTTP response status line")
+	}
+	statusFields := strings.Fields(string(buf[:statusEnd]))
+	if len(statusFields) < 2 {
+		return 0, 0, 0, false, fmt.Errorf("malformed HTTP response status line")
+	}
+	statusCode, ok := parseDecimalBytes([]byte(statusFields[1]))
+	if !ok {
+		return 0, 0, 0, false, fmt.Errorf("invalid HTTP response status code")
 	}
 
 	contentLength := -1
@@ -1104,7 +1193,7 @@ func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
 			lineEnd++
 		}
 		if lineEnd+1 >= headerEnd {
-			return 0, 0, false, fmt.Errorf("malformed HTTP response header line")
+			return 0, 0, 0, false, fmt.Errorf("malformed HTTP response header line")
 		}
 		if lineEnd == lineStart {
 			break
@@ -1118,12 +1207,12 @@ func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
 			}
 		}
 		if colon < 0 {
-			return 0, 0, false, fmt.Errorf("malformed HTTP response header: missing colon")
+			return 0, 0, 0, false, fmt.Errorf("malformed HTTP response header: missing colon")
 		}
 		if headerNameEqual(buf[lineStart:colon], "Content-Length") {
 			length, ok := parseDecimalBytes(buf[colon+1 : lineEnd])
 			if !ok {
-				return 0, 0, false, fmt.Errorf("invalid Content-Length header")
+				return 0, 0, 0, false, fmt.Errorf("invalid Content-Length header")
 			}
 			contentLength = length
 		}
@@ -1131,15 +1220,15 @@ func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
 	}
 
 	if contentLength < 0 {
-		return 0, 0, false, fmt.Errorf("missing Content-Length header")
+		return 0, 0, 0, false, fmt.Errorf("missing Content-Length header")
 	}
 
 	totalLen := headerEnd + contentLength
 	if len(buf) < totalLen {
-		return 0, 0, false, nil
+		return statusCode, contentLength, 0, false, nil
 	}
 
-	return contentLength, totalLen, true, nil
+	return statusCode, contentLength, totalLen, true, nil
 }
 
 func readHTTPBenchmarkResponses(
@@ -1174,7 +1263,7 @@ func readHTTPBenchmarkResponses(
 		}
 
 		for {
-			bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(buf[:buffered])
+			statusCode, bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(buf[:buffered])
 			if err != nil {
 				select {
 				case <-stop:
@@ -1203,6 +1292,7 @@ func readHTTPBenchmarkResponses(
 				raceID:    raceID,
 				transport: benchmarkTransportHTTP,
 				bytes:     bodyBytes,
+				vented:    statusCode == http.StatusNoContent && bodyBytes == 0,
 			})
 
 			if consumed == buffered {
@@ -1335,6 +1425,7 @@ func readAeonBenchmarkResponses(
 			raceID:    raceID,
 			transport: benchmarkTransportAeon,
 			bytes:     totalBytes,
+			vented:    frame.Flags&FlagVent != 0 || totalBytes == 0,
 		})
 	}
 }
@@ -1365,27 +1456,36 @@ func sendAeonBenchmarkRequest(
 	return nil
 }
 
-func sendBenchmarkRaceRequest(
+type benchmarkRaceDispatch struct {
+	firstTransport  string
+	secondTransport string
+	gap             time.Duration
+	sendFirst       func() error
+	sendSecond      func() error
+}
+
+func buildBenchmarkRaceDispatch(
 	httpConn net.Conn,
 	httpHost string,
 	httpPath string,
 	aeonConn *AeonConn,
 	aeonPath string,
-	aeonPayload []byte,
+	aeonRawPath bool,
 	baseHeaders map[string]string,
+	clientID int,
 	pendingMu *sync.Mutex,
 	pending map[uint16]uint64,
 	httpQueue chan<- uint64,
 	raceID uint64,
 	tcpDelay time.Duration,
 	udpDelay time.Duration,
-) error {
+) benchmarkRaceDispatch {
 	sendHTTP := func() error {
 		if err := sendHTTPBenchmarkRequest(
 			httpConn,
 			httpHost,
 			httpPath,
-			benchmarkHeaders(baseHeaders, raceID, benchmarkTransportHTTP),
+			benchmarkHeaders(baseHeaders, clientID, raceID, benchmarkTransportHTTP),
 		); err != nil {
 			return err
 		}
@@ -1397,49 +1497,149 @@ func sendBenchmarkRaceRequest(
 		return sendAeonBenchmarkRequest(
 			aeonConn,
 			aeonPath,
-			aeonPayload,
+			nil,
 			baseHeaders,
 			pendingMu,
 			pending,
 			raceID,
 			func(streamID uint16) error {
-				if aeonPayload != nil {
-					return aeonConn.SendPayload(streamID, aeonPayload)
+				headers := benchmarkHeaders(baseHeaders, clientID, raceID, benchmarkTransportAeon)
+				if aeonRawPath {
+					return aeonConn.SendPayload(streamID, benchmarkAeonPayload(aeonPath, headers, true))
 				}
 				return aeonConn.SendRequest(
 					streamID,
 					"GET",
 					aeonPath,
-					benchmarkHeaders(baseHeaders, raceID, benchmarkTransportAeon),
+					headers,
 				)
 			},
 		)
 	}
 
-	sendInOrder := func(first func() error, second func() error, gap time.Duration) error {
-		if err := first(); err != nil {
-			return err
-		}
-		if gap > 0 {
-			time.Sleep(gap)
-		}
-		return second()
-	}
-
 	switch {
 	case tcpDelay < udpDelay:
-		return sendInOrder(sendHTTP, sendAeon, udpDelay-tcpDelay)
+		return benchmarkRaceDispatch{
+			firstTransport:  benchmarkTransportHTTP,
+			secondTransport: benchmarkTransportAeon,
+			gap:             udpDelay - tcpDelay,
+			sendFirst:       sendHTTP,
+			sendSecond:      sendAeon,
+		}
 	case udpDelay < tcpDelay:
-		return sendInOrder(sendAeon, sendHTTP, tcpDelay-udpDelay)
+		return benchmarkRaceDispatch{
+			firstTransport:  benchmarkTransportAeon,
+			secondTransport: benchmarkTransportHTTP,
+			gap:             tcpDelay - udpDelay,
+			sendFirst:       sendAeon,
+			sendSecond:      sendHTTP,
+		}
 	default:
 		if raceID%2 == 0 {
-			return sendInOrder(sendHTTP, sendAeon, 0)
+			return benchmarkRaceDispatch{
+				firstTransport:  benchmarkTransportHTTP,
+				secondTransport: benchmarkTransportAeon,
+				sendFirst:       sendHTTP,
+				sendSecond:      sendAeon,
+			}
 		}
-		return sendInOrder(sendAeon, sendHTTP, 0)
+		return benchmarkRaceDispatch{
+			firstTransport:  benchmarkTransportAeon,
+			secondTransport: benchmarkTransportHTTP,
+			sendFirst:       sendAeon,
+			sendSecond:      sendHTTP,
+		}
+	}
+}
+
+func processBenchmarkRaceCompletion(
+	stats *benchClientStats,
+	races map[uint64]*benchmarkRaceState,
+	completion benchCompletion,
+	activeWinners *int,
+) {
+	stats.bytes += uint64(completion.bytes)
+
+	state, ok := races[completion.raceID]
+	if !ok {
+		return
+	}
+
+	state.markCompleted(completion.transport)
+
+	switch {
+	case completion.vented:
+		stats.loserCompletions++
+		stats.loserBytes += uint64(completion.bytes)
+		stats.loserVents++
+	case !state.winnerRecorded:
+		state.winnerRecorded = true
+		state.winnerTransport = completion.transport
+		if *activeWinners > 0 {
+			*activeWinners--
+		}
+		stats.recordCompletion(time.Since(state.startedAt))
+		stats.winnerBytes += uint64(completion.bytes)
+		if completion.transport == benchmarkTransportHTTP {
+			stats.httpWins++
+		} else {
+			stats.aeonWins++
+		}
+	case completion.transport != state.winnerTransport:
+		stats.loserCompletions++
+		stats.loserBytes += uint64(completion.bytes)
+	}
+
+	if !state.isClosed() {
+		return
+	}
+
+	if !state.winnerRecorded {
+		if *activeWinners > 0 {
+			*activeWinners--
+		}
+		stats.droppedInflight++
+	}
+	delete(races, completion.raceID)
+}
+
+func waitBenchmarkHedgeGap(
+	raceID uint64,
+	gap time.Duration,
+	completions <-chan benchCompletion,
+	errors <-chan error,
+	stats *benchClientStats,
+	races map[uint64]*benchmarkRaceState,
+	activeWinners *int,
+) error {
+	if gap <= 0 {
+		return nil
+	}
+
+	timer := time.NewTimer(gap)
+	defer timer.Stop()
+
+	for {
+		state, ok := races[raceID]
+		if !ok || state.winnerRecorded {
+			return nil
+		}
+
+		select {
+		case err := <-errors:
+			if err != nil {
+				return err
+			}
+		case completion := <-completions:
+			processBenchmarkRaceCompletion(stats, races, completion, activeWinners)
+		case <-timer.C:
+			return nil
+		}
 	}
 }
 
 func doBenchmarkRaceClient(
+	clientID int,
 	aeonAddr string,
 	aeonPath string,
 	httpAddr string,
@@ -1504,10 +1704,6 @@ func doBenchmarkRaceClient(
 	nextRaceID := uint64(1)
 	activeWinners := 0
 	backlogLimit := depth * 2
-	var aeonPayload []byte
-	if aeonRawPath {
-		aeonPayload = benchmarkAeonPayload(aeonPath, nil, true)
-	}
 
 	if !awaitBenchmarkStart(start, abort, ready, setupDeadline) {
 		close(stop)
@@ -1520,25 +1716,67 @@ func doBenchmarkRaceClient(
 	sendRace := func() error {
 		raceID := nextRaceID
 		nextRaceID++
-		if err := sendBenchmarkRaceRequest(
+		dispatch := buildBenchmarkRaceDispatch(
 			httpConn,
 			httpAddr,
 			httpPath,
 			aeonConn,
 			aeonPath,
-			aeonPayload,
+			aeonRawPath,
 			headers,
+			clientID,
 			&pendingAeonMu,
 			pendingAeon,
 			httpQueue,
 			raceID,
 			tcpDelay,
 			udpDelay,
+		)
+
+		races[raceID] = &benchmarkRaceState{
+			startedAt:   time.Now(),
+			plannedHTTP: true,
+			plannedAeon: true,
+		}
+
+		if err := dispatch.sendFirst(); err != nil {
+			delete(races, raceID)
+			return err
+		}
+		activeWinners++
+
+		if err := waitBenchmarkHedgeGap(
+			raceID,
+			dispatch.gap,
+			completions,
+			errors,
+			&stats,
+			races,
+			&activeWinners,
 		); err != nil {
 			return err
 		}
-		races[raceID] = &benchmarkRaceState{startedAt: time.Now()}
-		activeWinners++
+
+		state, ok := races[raceID]
+		if !ok {
+			return nil
+		}
+		if state.winnerRecorded && state.transportPending(dispatch.secondTransport) {
+			state.markSkipped(dispatch.secondTransport)
+			if dispatch.secondTransport == benchmarkTransportHTTP {
+				stats.skippedHTTP++
+			} else {
+				stats.skippedAeon++
+			}
+			if state.isClosed() {
+				delete(races, raceID)
+			}
+			return nil
+		}
+
+		if err := dispatch.sendSecond(); err != nil {
+			return err
+		}
 		return nil
 	}
 
@@ -1567,23 +1805,7 @@ func doBenchmarkRaceClient(
 				return stats, err
 			}
 		case completion := <-completions:
-			stats.bytes += uint64(completion.bytes)
-			state, ok := races[completion.raceID]
-			if !ok {
-				continue
-			}
-
-			if !state.winnerRecorded {
-				state.winnerRecorded = true
-				activeWinners--
-				stats.recordCompletion(time.Since(state.startedAt))
-				if completion.transport == benchmarkTransportHTTP {
-					stats.httpWins++
-				} else {
-					stats.aeonWins++
-				}
-				delete(races, completion.raceID)
-			}
+			processBenchmarkRaceCompletion(&stats, races, completion, &activeWinners)
 		case <-time.After(readTimeout):
 			stats.timeouts++
 			if time.Now().After(drainDeadline) {
@@ -1629,9 +1851,10 @@ func doBenchmarkRace(
 
 	for client := 0; client < clients; client++ {
 		wg.Add(1)
-		go func() {
+		go func(clientID int) {
 			defer wg.Done()
 			stats, err := doBenchmarkRaceClient(
+				clientID,
 				aeonAddr,
 				aeonPath,
 				httpAddr,
@@ -1655,7 +1878,7 @@ func doBenchmarkRace(
 				return
 			}
 			results <- stats
-		}()
+		}(client + 1)
 	}
 
 	if err := waitForBenchmarkClients(ready, errors, clients, setupDeadline); err != nil {
@@ -1689,11 +1912,18 @@ func doBenchmarkRace(
 	for stats := range results {
 		result.requests += stats.requests
 		result.bytes += stats.bytes
+		result.winnerBytes += stats.winnerBytes
+		result.loserBytes += stats.loserBytes
 		result.timeouts += stats.timeouts
 		result.droppedInflight += stats.droppedInflight
 		result.sequenceRegressions += stats.sequenceRegressions
 		result.httpWins += stats.httpWins
 		result.aeonWins += stats.aeonWins
+		result.loserCompletions += stats.loserCompletions
+		result.loserVents += stats.loserVents
+		result.winnerVents += stats.winnerVents
+		result.skippedHTTP += stats.skippedHTTP
+		result.skippedAeon += stats.skippedAeon
 		totalLatency += stats.latencySum
 		if stats.latencyMax > result.maxLatency {
 			result.maxLatency = stats.latencyMax
@@ -1944,6 +2174,31 @@ func printBenchmark(result benchResult) {
 	if result.aeonWins > 0 || result.httpWins > 0 {
 		fmt.Fprintf(os.Stderr, "  Aeon wins:          %d\n", result.aeonWins)
 		fmt.Fprintf(os.Stderr, "  HTTP wins:          %d\n", result.httpWins)
+		fmt.Fprintf(os.Stderr, "  Winner bytes:       %d\n", result.winnerBytes)
+		if result.skippedHTTP > 0 || result.skippedAeon > 0 {
+			fmt.Fprintf(os.Stderr, "  Skipped HTTP hedges:%d\n", result.skippedHTTP)
+			fmt.Fprintf(os.Stderr, "  Skipped Aeon hedges:%d\n", result.skippedAeon)
+		}
+		fmt.Fprintf(os.Stderr, "  Loser completions:  %d\n", result.loserCompletions)
+		fmt.Fprintf(os.Stderr, "  Loser bytes:        %d\n", result.loserBytes)
+		if result.requests > 0 {
+			fmt.Fprintf(os.Stderr, "  Waste bytes/win:    %.2f\n", float64(result.loserBytes)/float64(result.requests))
+			fmt.Fprintf(
+				os.Stderr,
+				"  Loser completion%%:  %.2f%%\n",
+				100.0*float64(result.loserCompletions)/float64(result.requests),
+			)
+		}
+		if result.loserCompletions > 0 {
+			fmt.Fprintf(
+				os.Stderr,
+				"  Loser vent%%:        %.2f%%\n",
+				100.0*float64(result.loserVents)/float64(result.loserCompletions),
+			)
+		}
+		if result.winnerVents > 0 {
+			fmt.Fprintf(os.Stderr, "  Winner vents:       %d\n", result.winnerVents)
+		}
 	}
 }
 
@@ -1966,8 +2221,8 @@ func main() {
 	depth := flag.Int("depth", 1, "LAMINAR inflight request depth per client in benchmark mode")
 	readTimeout := flag.Duration("timeout", 250*time.Millisecond, "benchmark receive timeout before retrying")
 	rawPath := flag.Bool("raw-path", false, "benchmark Aeon using bare path payloads instead of HTTP-style request envelopes")
-	tcpDelay := flag.Duration("tcp-delay", 0, "delay the TCP/HTTP leg in mixed benchmark race mode")
-	udpDelay := flag.Duration("udp-delay", 0, "delay the UDP/Aeon leg in mixed benchmark race mode")
+	tcpDelay := flag.Duration("tcp-delay", 0, "hedge-delay the TCP/HTTP leg in mixed benchmark race mode; skipped if the other leg already produced a sufficient response")
+	udpDelay := flag.Duration("udp-delay", 0, "hedge-delay the UDP/Aeon leg in mixed benchmark race mode; skipped if the other leg already produced a sufficient response")
 	authToken := flag.String("auth", "", "Bearer token for Authorization header (ew_ API key or UCAN)")
 	aeonAuthVerified := flag.Bool("aeon-auth-verified", false, "send a trusted X-Aeon auth snapshot instead of only Authorization")
 	aeonAuthSource := flag.String("aeon-auth-source", "", "X-Aeon auth source: propagated, ucan, or did_bearer")

@@ -85,3 +85,23 @@ export {
   type RequestSignature,
   type SpeculationBudget,
 } from './projection';
+
+export {
+  type AeonAgentProjectionKind,
+  type AeonAgentProjection,
+  type AeonAppProjectionKind,
+  type AeonAppProjection,
+  type AeonDocumentProjection,
+  type AeonObjectAuthority,
+  type AeonObjectEnvelope,
+  type AeonObjectIdentity,
+  type AeonObjectProjectionKind,
+  type AeonObjectProjections,
+  type AeonProjectionBootstrap,
+  type AeonObjectReplication,
+  type AeonObjectStorage,
+  type AeonObjectViews,
+  type AeonObjectWitness,
+  type AeonStreamProjectionKind,
+  type AeonStreamProjection,
+} from './object';

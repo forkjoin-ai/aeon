@@ -1,6 +1,6 @@
 {
   "name": "@a0n/aeon",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Distributed synchronization, schema versioning, and conflict resolution for real-time collaborative applications",
   "keywords": [
     "distributed",
@@ -114,6 +114,36 @@
         "default": "./dist/distributed/index.cjs"
       }
     },
+    "./topology": {
+      "import": {
+        "types": "./dist/topology/index.d.ts",
+        "default": "./dist/topology/index.js"
+      },
+      "require": {
+        "types": "./dist/topology/index.d.cts",
+        "default": "./dist/topology/index.cjs"
+      }
+    },
+    "./topology/projection": {
+      "import": {
+        "types": "./dist/topology/projection.d.ts",
+        "default": "./dist/topology/projection.js"
+      },
+      "require": {
+        "types": "./dist/topology/projection.d.cts",
+        "default": "./dist/topology/projection.cjs"
+      }
+    },
+    "./topology/object": {
+      "import": {
+        "types": "./dist/topology/object.d.ts",
+        "default": "./dist/topology/object.js"
+      },
+      "require": {
+        "types": "./dist/topology/object.d.cts",
+        "default": "./dist/topology/object.cjs"
+      }
+    },
     "./utils": {
       "import": {
         "types": "./dist/utils/index.d.ts",
@@ -162,9 +192,6 @@
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
-  },
-  "dependencies": {
-    "eventemitter3": "^5.0.4"
   },
   "peerDependencies": {
     "@affectively/auth": "^0.1.0",

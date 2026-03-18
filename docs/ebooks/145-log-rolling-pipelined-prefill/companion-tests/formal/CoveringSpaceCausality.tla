@@ -63,30 +63,35 @@ PathToStream(p) ==
 SendPacket(p) ==
   /\ p \in Paths
   /\ pathProgress[p] < MaxSeqNum
-  /\ step < MaxSeqNum * PathCount
+  /\ step < MaxSteps
+  /\ step' = step + 1
   /\ LET stream == PathToStream(p)
          seq == pathProgress[p] + 1
      IN
        /\ transportQueue' = [transportQueue EXCEPT
             ![stream] = Append(@, <<p, seq>>)]
        /\ UNCHANGED <<pathProgress, pathBlocked, transportHead, lostPacket,
-                       step, maxLatencyInflation>>
+                       maxLatencyInflation>>
 
 \* Loss event: a specific packet is lost, creating a gap
 LossEvent(p, seq) ==
   /\ p \in Paths
   /\ seq > 0
   /\ seq <= MaxSeqNum
+  /\ step < MaxSteps
+  /\ step' = step + 1
   /\ lostPacket = <<0, 0>>  \* only one loss event per trace
   /\ lostPacket' = <<p, seq>>
   /\ UNCHANGED <<pathProgress, pathBlocked, transportHead, transportQueue,
-                  step, maxLatencyInflation>>
+                  maxLatencyInflation>>
 
 \* Deliver: transport delivers next in-order packet per stream
 \* If head-of-line is blocked by loss, ALL paths on that stream stall
 Deliver(s) ==
   /\ s \in 1..TransportStreams
   /\ Len(transportQueue[s]) > 0
+  /\ step < MaxSteps
+  /\ step' = step + 1
   /\ LET head == Head(transportQueue[s])
          headPath == head[1]
          headSeq == head[2]
@@ -96,12 +101,12 @@ Deliver(s) ==
             /\ pathBlocked' = [p \in Paths |->
                  IF PathToStream(p) = s THEN TRUE ELSE pathBlocked[p]]
             /\ UNCHANGED <<pathProgress, transportHead, transportQueue, lostPacket,
-                           step, maxLatencyInflation>>
+                           maxLatencyInflation>>
        ELSE \* Deliver successfully
             /\ pathProgress' = [pathProgress EXCEPT ![headPath] = headSeq]
             /\ transportQueue' = [transportQueue EXCEPT ![s] = Tail(@)]
             /\ transportHead' = [transportHead EXCEPT ![s] = headSeq]
-            /\ UNCHANGED <<pathBlocked, lostPacket, step, maxLatencyInflation>>
+            /\ UNCHANGED <<pathBlocked, lostPacket, maxLatencyInflation>>
 
 \* Measure latency inflation from cross-path blocking
 MeasureInflation ==

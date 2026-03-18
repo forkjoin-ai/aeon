@@ -10,6 +10,9 @@ export default defineConfig({
     'presence/index': 'src/presence/index.ts',
     'versioning/index': 'src/versioning/index.ts',
     'distributed/index': 'src/distributed/index.ts',
+    'topology/index': 'src/topology/index.ts',
+    'topology/projection': 'src/topology/projection.ts',
+    'topology/object': 'src/topology/object.ts',
     'utils/index': 'src/utils/index.ts',
     'crypto/index': 'src/crypto/index.ts',
     'persistence/index': 'src/persistence/index.ts',
@@ -21,7 +24,7 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: ['eventemitter3', '@a0n/aeon-flux-react'],
+  external: ['@a0n/aeon-flux-react'],
   outDir: 'dist',
   target: 'es2022',
 });

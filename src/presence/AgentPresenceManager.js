@@ -4,13 +4,13 @@
  * Tracks real-time presence of all agents in a session.
  * Provides status updates, cursor tracking, and activity monitoring.
  */
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter.js';
 import { getLogger } from '../utils/logger';
 const logger = getLogger();
 // ============================================================================
 // Agent Presence Manager
 // ============================================================================
-export class AgentPresenceManager extends EventEmitter {
+export class AgentPresenceManager extends AeonEventEmitter {
     presences = new Map();
     sessionId;
     heartbeatInterval = null;

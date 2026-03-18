@@ -158,9 +158,9 @@ CombinedDeficitHolds ==
 \* ═══════════════════════════════════════════════════════════════════════
 
 \* Convergence factor after n steps: (1 - alpha)^n
-\* For alpha in (0,1), this converges to 0 geometrically
+\* Alpha is in tenths, so (1 - alpha) maps to (10 - Alpha)/10.
 ConvergenceFactor(n) == IF Alpha > 0 /\ Alpha < 10
-                        THEN (1 - Alpha)  \* each step multiplies by this
+                        THEN (10 - Alpha)  \* tenths of contraction per step
                         ELSE 0
 
 AbsorbingStateHolds ==

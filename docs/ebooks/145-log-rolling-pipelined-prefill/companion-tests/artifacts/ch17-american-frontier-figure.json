@@ -1,9 +1,8 @@
 {
-  "label": "ch17-american-frontier-figure-v1",
+  "label": "ch17-american-frontier-figure-v2",
   "protocol": {
     "siteName": "Microfrontend (95 resources)",
     "resourceCount": 95,
-    "beta1Star": 94,
     "points": [
       {
         "protocol": "HTTP/1.1",
@@ -11,7 +10,7 @@
         "overheadPct": 31,
         "wireKB": 187,
         "rtts": 16,
-        "beta1Effective": 0
+        "diversityOrder": 1
       },
       {
         "protocol": "HTTP/2",
@@ -19,7 +18,7 @@
         "overheadPct": 5.8,
         "wireKB": 137,
         "rtts": 2,
-        "beta1Effective": 94
+        "diversityOrder": 2
       },
       {
         "protocol": "HTTP/3",
@@ -27,7 +26,7 @@
         "overheadPct": 4.4,
         "wireKB": 135,
         "rtts": 1,
-        "beta1Effective": 94
+        "diversityOrder": 3
       },
       {
         "protocol": "Aeon Flow",
@@ -35,7 +34,7 @@
         "overheadPct": 1.5,
         "wireKB": 131,
         "rtts": 1,
-        "beta1Effective": 94
+        "diversityOrder": 4
       }
     ]
   },
@@ -88,12 +87,13 @@
       }
     ]
   },
-  "compression": {
+  "encoding": {
     "corpusCount": 5,
     "points": [
       {
         "corpus": "text-homogeneous",
         "shortLabel": "text",
+        "heterogeneityOrder": 1,
         "gainVsHeuristicPct": 0.83,
         "gainVsBestFixedPct": 0.83,
         "winRate": 1
@@ -101,6 +101,7 @@
       {
         "corpus": "web-mixed",
         "shortLabel": "web",
+        "heterogeneityOrder": 2,
         "gainVsHeuristicPct": 0.78,
         "gainVsBestFixedPct": 0.005,
         "winRate": 1
@@ -108,6 +109,7 @@
       {
         "corpus": "media-plus-metadata",
         "shortLabel": "media",
+        "heterogeneityOrder": 3,
         "gainVsHeuristicPct": 7.44,
         "gainVsBestFixedPct": 0.001,
         "winRate": 1
@@ -115,6 +117,7 @@
       {
         "corpus": "polyglot-bundle",
         "shortLabel": "polyglot",
+        "heterogeneityOrder": 4,
         "gainVsHeuristicPct": 26.65,
         "gainVsBestFixedPct": 0.003,
         "winRate": 1
@@ -122,16 +125,93 @@
       {
         "corpus": "api-telemetry",
         "shortLabel": "api",
+        "heterogeneityOrder": 5,
         "gainVsHeuristicPct": 46.37,
         "gainVsBestFixedPct": 0.008,
         "winRate": 1
       }
     ]
   },
+  "transport": {
+    "workload": "Same-request Aeon/UDP vs HTTP/TCP mixed race, plaintext, 64 clients, depth 16",
+    "points": [
+      {
+        "label": "0 ms",
+        "tcpDelayMs": 0,
+        "requestsPerSec": 165807.66,
+        "aeonWins": 709652,
+        "httpWins": 1820058,
+        "skippedHttpHedges": 0,
+        "loserVentPct": 99.64,
+        "wasteBytesPerWin": 0.05
+      },
+      {
+        "label": "0.25 ms",
+        "tcpDelayMs": 0.25,
+        "requestsPerSec": 56130.28,
+        "aeonWins": 725645,
+        "httpWins": 130736,
+        "skippedHttpHedges": 399721,
+        "loserVentPct": 99.61,
+        "wasteBytesPerWin": 0.03
+      },
+      {
+        "label": "0.5 ms",
+        "tcpDelayMs": 0.5,
+        "requestsPerSec": 77485.11,
+        "aeonWins": 1028706,
+        "httpWins": 172414,
+        "skippedHttpHedges": 646907,
+        "loserVentPct": 99.54,
+        "wasteBytesPerWin": 0.03
+      },
+      {
+        "label": "1 ms",
+        "tcpDelayMs": 1,
+        "requestsPerSec": 98045.19,
+        "aeonWins": 1502210,
+        "httpWins": 17612,
+        "skippedHttpHedges": 1240698,
+        "loserVentPct": 99.15,
+        "wasteBytesPerWin": 0.02
+      },
+      {
+        "label": "2 ms",
+        "tcpDelayMs": 2,
+        "requestsPerSec": 109790.68,
+        "aeonWins": 1670747,
+        "httpWins": 3660,
+        "skippedHttpHedges": 1644757,
+        "loserVentPct": 99.21,
+        "wasteBytesPerWin": 0
+      },
+      {
+        "label": "4 ms",
+        "tcpDelayMs": 4,
+        "requestsPerSec": 111570.09,
+        "aeonWins": 1699969,
+        "httpWins": 1631,
+        "skippedHttpHedges": 1699075,
+        "loserVentPct": 99.76,
+        "wasteBytesPerWin": 0
+      }
+    ],
+    "heavyWitness": {
+      "workload": "Same-request Aeon/UDP vs HTTP/TCP mixed race, plaintext, 256 clients, depth 256",
+      "zeroSkewRequestsPerSec": 248714.95,
+      "zeroSkewAeonWinSharePct": 0.1020612684079497,
+      "zeroSkewWasteBytesPerWin": 0.5,
+      "tcpDelay2msRequestsPerSec": 221606.8,
+      "tcpDelay2msAeonWinSharePct": 99.91057638924316,
+      "tcpDelay2msWasteBytesPerWin": 0.02,
+      "throughputRetentionPct": 89.1007154978018
+    }
+  },
   "frontierProperties": {
     "monotone": true,
     "zeroAtMatch": true,
     "positiveBelow": true,
-    "pigeonholeWitness": true
+    "pigeonholeWitness": true,
+    "recursiveAcrossLayers": true
   }
 }

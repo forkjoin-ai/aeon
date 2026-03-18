@@ -13,7 +13,7 @@
  * - DID-based node identification
  * - Authenticated sync sessions
  */
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 import type { ICryptoProvider } from '../crypto/CryptoProvider';
 import type { AeonEncryptionMode } from '../crypto/types';
 export interface SyncNode {
@@ -56,7 +56,7 @@ export interface SyncEvent {
  * Sync Coordinator
  * Coordinates synchronization across distributed nodes
  */
-export declare class SyncCoordinator extends EventEmitter {
+export declare class SyncCoordinator extends AeonEventEmitter {
     private static readonly MAX_SYNC_EVENTS;
     private nodes;
     private sessions;

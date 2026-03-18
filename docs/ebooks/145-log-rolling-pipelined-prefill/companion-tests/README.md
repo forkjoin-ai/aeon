@@ -12,6 +12,8 @@
 
 This package is the reproducibility and validation surface for the manuscript. The fair brag is not that it proves everything by existing. It is that the repo already contains a broad, explicit rerun surface: runtime tests, benchmark harnesses, formal artifacts, figure generation, and external-reviewer entry points.
 
+Adjacent to this companion package, the same repository now carries a bounded cover-space audit surface for the manuscript's theorem-indexed failure vocabulary: `open-source/aeon-logic/src/crypto-cover-space.ts`, the GG corpus in `open-source/gnosis/examples/crypto`, and the red/blue reporting wrapper in `open-source/aeon-crackerjack`. That surface is included here as a documentation-level corollary witness, not as a new mechanized theorem family. It treats `cracking` as metaphorical corollary extraction with preserved witness ancestry, and it calibrates two safe families: offline-risk password-digest negative controls and socio-technical recovery/trust topologies.
+
 For readers who want a tiny host-language sketch before they wade into the larger schedulers, the companion source tree now also includes `src/wallington-worthington-reference.ts`: a stripped-down Wallington Rotation / Worthington Whip implementation over plain arrays, paired with the minimal Gnosis examples in `open-source/gnosis/examples/transformer/wallington-rotation.gg` and `open-source/gnosis/examples/transformer/worthington-whip.gg`.
 
 The formal subtree also distinguishes mechanized theorems from theorem-indexed derived vocabulary such as `optionality` and `structured ambiguity processor`, and it now documents a finite/countable/measurable finite-type Landauer calibration boundary plus an observable-pushforward shell relating equiprobable frontier erasure, arbitrary finite-support branch-law entropy, the sharp finite equality cases, arbitrary Bernoulli binary erasure, the countable-support entropy/heat shells, coarse-grained finite/countable observable codomains for arbitrary source PMFs, finite-effective-support source-side monotonicity under deterministic observable coarsening, and the direct finite-type measurable entropy/heat lifts to the existing deterministic-collapse failure-tax floor and the beauty-side deficit/tax/observable bridge stack that isolates exactly what is still missing for the unconditional zero-deficit floor target; see [formal/THEOREM_LEDGER.md](./formal/THEOREM_LEDGER.md).
@@ -49,6 +51,7 @@ bun run test:adaptive-supremum-family-sweep
 bun run test:sleep-debt
 bun run test:sleep-debt-threshold
 bun run test:sleep-debt-weighted
+bun run test:ch17-american-frontier-figure
 bun run test:ch17-figure
 bun run test:ch17-boundary-expansion-figure
 bun run test:ch17-moa-figure
@@ -106,6 +109,7 @@ Use that command when you want the shared compiler-facing theorem workspace itse
 | `ch17-gate4-rqr-holdout-figure.test.ts` + `scripts/ch17-gate4-rqr-holdout-figure.ts` | §6.14, §14.1 | Auto-generated Chapter 17 Gate 4 figure surface showing holdout decile calibration and interval-backed predictive-screening criteria for `R_qr` |
 | `ch17-gate5-bio-effect-size-figure.test.ts` + `scripts/ch17-gate5-bio-effect-size-figure.ts` | §2, §14.1 | Auto-generated Chapter 17 Gate 5 figure surface showing the biological pair ratios as a log-scale forest plot with a pooled geometric summary |
 | `ch17-inverted-scaling-reynolds-figure.test.ts` + `scripts/ch17-inverted-scaling-reynolds-figure.ts` | §2, §7 | Auto-generated Chapter 17 theory figure surface showing inverted scaling under balanced chunks and the Reynolds-number regime map with manuscript scenario overlays |
+| `ch17-american-frontier-figure.test.ts` + `scripts/ch17-american-frontier-figure.ts` | §15.2 | Auto-generated Chapter 17 American Frontier curve family showing framing waste by protocol, idle waste by Reynolds regime, encoding waste by content mix, and the explicit Aeon/UDP vs HTTP/TCP mixed-race witness |
 | `ch17-correspondence-boundary-figure.test.ts` + `scripts/ch17-correspondence-boundary-figure.ts` | §1.7, §6.12 | Auto-generated Chapter 17 figure surface built from the quantum ablation, toy-attention bootstrap intervals, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark |
 | `ch17-boundary-expansion-figure.test.ts` + `scripts/ch17-boundary-expansion-figure.ts` | §1.7, §6.12 | Auto-generated companion figure surface built from the near-control zoom, regime sweep, adversarial controls, and Lean-exported witness catalog so the expanded evidence boundary is visible as a single artifact |
 | `ch17-moa-transformer-figure.test.ts` + `scripts/ch17-moa-transformer-figure.ts` | §6.11, §1.7 | Auto-generated figure surface for the GG-backed `StructuredMoA` sweep/ablation result, showing speedup, closing eval-MSE gap, and sparsity-ablation frontier in one chart |
@@ -145,6 +149,7 @@ Use that command when you want the shared compiler-facing theorem workspace itse
 | `scripts/ch17-gate4-rqr-holdout-figure.ts` + `artifacts/ch17-gate4-rqr-holdout-figure.{json,md,svg}` | §6.14, §14.1 | Auto-generated Gate 4 figure showing holdout decile calibration and interval-backed screening criteria so the `R_qr` validation reads as a predictive surface instead of a table |
 | `scripts/ch17-gate5-bio-effect-size-figure.ts` + `artifacts/ch17-gate5-bio-effect-size-figure.{json,md,svg}` | §2, §14.1 | Auto-generated Gate 5 figure showing the biological pair ratios and pooled geometric summary on a shared log scale so the analogy section reads as an effect-size surface instead of prose examples |
 | `scripts/ch17-inverted-scaling-reynolds-figure.ts` + `artifacts/ch17-inverted-scaling-reynolds-figure.{json,md,svg}` | §2, §7 | Auto-generated theory figure showing the workload-speedup curve family and the Reynolds-number regime map so the inverted-scaling claim stays attached to explicit formulas and scenario overlays |
+| `scripts/ch17-american-frontier-figure.ts` + `artifacts/ch17-american-frontier-figure.{json,md,svg}` | §15.2 | Auto-generated American Frontier figure showing the curve family across framing, scheduling, response encoding, and the explicit same-request Aeon/UDP vs HTTP/TCP wire race |
 | `scripts/ch17-correspondence-boundary-figure.ts` + `artifacts/ch17-correspondence-boundary-figure.{json,md,svg}` | §1.7, §6.12 | Auto-generated manuscript figure combining the invariant-loss matrix, toy-attention interval chart, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark |
 | `scripts/ch17-boundary-expansion-figure.ts` + `artifacts/ch17-boundary-expansion-figure.{json,md,svg}` | §1.7, §6.12 | Auto-generated expansion figure combining the near-control zoom, regime sweep, adversarial controls, and Lean-originated witness bridge into one manuscript-ready surface |
 | `scripts/ch17-moa-transformer-figure.ts` + `artifacts/ch17-moa-transformer-figure.{json,md,svg}` | §6.11, §1.7 | Auto-generated manuscript figure for the GG-backed `StructuredMoA` sparse transformer result, combining scale sweep, accuracy-gap closure, and ablation frontier in one artifact |
@@ -196,6 +201,7 @@ bun run test:adaptive-supremum-family-sweep # §5 raw-parameter family sweep for
 bun run test:sleep-debt # §14 bounded sleep-debt witness artifact generation
 bun run test:sleep-debt-threshold # §14 bounded schedule-threshold witness artifact generation
 bun run test:sleep-debt-weighted # §14 weighted schedule-threshold bridge artifact generation
+bun run test:ch17-american-frontier-figure # §15.2 artifact-generated American Frontier curve family + recursive wire witness
 bun run test:ch17-figure   # §1.7, §6.12 artifact-generated manuscript figure
 bun run test:ch17-boundary-expansion-figure # §1.7, §6.12 artifact-generated expanded boundary figure
 bun run test:ch17-moa-figure # §6.11, §1.7 artifact-generated StructuredMoA figure

@@ -4,7 +4,7 @@
  * Manages pending operations for offline-first clients.
  * Provides priority-based queuing, persistence, and retry logic.
  */
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 import type { Operation, OperationPriority } from '../core/types';
 import type { PersistenceDeserializer, PersistenceSerializer, StorageAdapter } from '../persistence';
 export type { OperationPriority } from '../core/types';
@@ -54,7 +54,7 @@ export interface OfflineOperationQueueOptions {
     defaultMaxRetries?: number;
     persistence?: OfflineQueuePersistenceConfig;
 }
-export declare class OfflineOperationQueue extends EventEmitter<OfflineQueueEvents> {
+export declare class OfflineOperationQueue extends AeonEventEmitter<OfflineQueueEvents> {
     private static readonly DEFAULT_PERSIST_KEY;
     private queue;
     private syncingIds;

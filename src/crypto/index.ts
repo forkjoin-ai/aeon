@@ -53,9 +53,16 @@ export type {
   AeonCapabilityResult,
   SignedSyncData,
 } from './types';
+export type {
+  AeonCryptoManifestClaim,
+  AeonCryptoManifestFamily,
+  AeonCryptoManifestWeakness,
+  AeonCryptoMethodManifestEntry,
+} from './manifest';
 
 // Constants
 export { AEON_CAPABILITIES, DEFAULT_CRYPTO_CONFIG } from './types';
+export { AEON_CRYPTO_METHOD_MANIFEST } from './manifest';
 
 // Crypto Provider Interface
 export type { ICryptoProvider } from './CryptoProvider';

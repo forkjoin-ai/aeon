@@ -1,5 +1,5 @@
 ------------------------------ MODULE CoveringSpaceMatch ------------------------------
-EXTENDS Naturals, FiniteSets
+EXTENDS Naturals, FiniteSets, Sequences
 
 \* THM-COVERING-MATCH verification under matched topology.
 \* When TransportStreams >= PathCount (β₁(transport) ≥ β₁(computation)),
@@ -22,6 +22,7 @@ vars == <<pathProgress, pathBlocked, streamHead, streamQueue, lostPacket, step>>
 
 Paths == 1..PathCount
 Streams == 1..PathCount  \* 1:1 mapping — matched topology
+MaxSteps == MaxSeqNum * PathCount
 
 ComputationBeta1 == PathCount - 1
 TransportBeta1 == PathCount - 1
@@ -38,20 +39,26 @@ Init ==
 SendPacket(p) ==
   /\ p \in Paths
   /\ pathProgress[p] < MaxSeqNum
+  /\ step < MaxSteps
+  /\ step' = step + 1
   /\ LET seq == pathProgress[p] + 1 IN
        streamQueue' = [streamQueue EXCEPT ![p] = Append(@, <<p, seq>>)]
-  /\ UNCHANGED <<pathProgress, pathBlocked, streamHead, lostPacket, step>>
+  /\ UNCHANGED <<pathProgress, pathBlocked, streamHead, lostPacket>>
 
 LossEvent(p, seq) ==
   /\ p \in Paths
   /\ seq > 0 /\ seq <= MaxSeqNum
+  /\ step < MaxSteps
+  /\ step' = step + 1
   /\ lostPacket = <<0, 0>>
   /\ lostPacket' = <<p, seq>>
-  /\ UNCHANGED <<pathProgress, pathBlocked, streamHead, streamQueue, step>>
+  /\ UNCHANGED <<pathProgress, pathBlocked, streamHead, streamQueue>>
 
 Deliver(s) ==
   /\ s \in Streams
   /\ Len(streamQueue[s]) > 0
+  /\ step < MaxSteps
+  /\ step' = step + 1
   /\ LET head == Head(streamQueue[s])
          headPath == head[1]
          headSeq == head[2]
@@ -59,16 +66,16 @@ Deliver(s) ==
        IF lostPacket = <<headPath, headSeq>>
        THEN \* Only the stream's own path is blocked
             /\ pathBlocked' = [pathBlocked EXCEPT ![headPath] = TRUE]
-            /\ UNCHANGED <<pathProgress, streamHead, streamQueue, lostPacket, step>>
+            /\ UNCHANGED <<pathProgress, streamHead, streamQueue, lostPacket>>
        ELSE
             /\ pathProgress' = [pathProgress EXCEPT ![headPath] = headSeq]
             /\ streamQueue' = [streamQueue EXCEPT ![s] = Tail(@)]
             /\ streamHead' = [streamHead EXCEPT ![s] = headSeq]
-            /\ UNCHANGED <<pathBlocked, lostPacket, step>>
+            /\ UNCHANGED <<pathBlocked, lostPacket>>
 
 Tick ==
   /\ step' = step + 1
-  /\ step < MaxSeqNum * PathCount
+  /\ step < MaxSteps
   /\ UNCHANGED <<pathProgress, pathBlocked, streamHead, streamQueue, lostPacket>>
 
 Stutter == UNCHANGED vars
