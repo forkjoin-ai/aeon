@@ -3207,13 +3207,14 @@ theorem JacksonTrafficData.spectral_network_lintegral_balance_of_maxIncomingRout
 noncomputable def JacksonTrafficData.autoSpectralDischarge
     [DecidableEq ι] [Nonempty ι]
     (data : JacksonTrafficData (ι := ι))
-    (hContractive : ∀ i, ∑ j, data.routing i j < 1) :
+    (hContractive : ∀ i, ∑ j, data.routing i j < 1)
+    (hNonneg :
+      ∀ i, 0 ≤ data.spectralThroughput
+        (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive) i) :
     {hρ : spectralRadius ℝ data.routingMatrix < 1 //
       ∀ i, 0 ≤ data.spectralThroughput hρ i} := by
   refine ⟨data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive, ?_⟩
-  intro i
-  exact data.spectralThroughput_nonneg
-    (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive) i
+  simpa using hNonneg
 
 /-- Convenience entry point: given raw traffic data with strictly column-substochastic
     routing (max incoming mass < 1), automatically derive spectral radius < 1. -/
@@ -3224,9 +3225,7 @@ noncomputable def JacksonTrafficData.autoSpectralDischargeColumn
     {hρ : spectralRadius ℝ data.routingMatrix < 1 //
       ∀ i, 0 ≤ data.spectralThroughput hρ i} := by
   refine ⟨data.routingMatrix_spectralRadius_lt_one_of_maxIncomingRoutingMass_lt_one hContractive, ?_⟩
-  intro i
-  exact data.spectralThroughput_nonneg
-    (data.routingMatrix_spectralRadius_lt_one_of_maxIncomingRoutingMass_lt_one hContractive) i
+  exact data.spectralThroughput_nonneg_of_maxIncomingRoutingMass_lt_one hContractive
 
 /-- Combined entry point: try row-substochastic first, then column-substochastic.
     For concrete networks from raw (λ,P,μ) data, the compiler should compute
@@ -3235,15 +3234,15 @@ noncomputable def JacksonTrafficData.autoSpectralDischargeRow
     [DecidableEq ι] [Nonempty ι]
     (data : JacksonTrafficData (ι := ι))
     (hContractive : ∀ i, ∑ j, data.routing i j < 1)
+    (hNonneg :
+      ∀ i, 0 ≤ data.spectralThroughput
+        (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive) i)
     (hStable : ∀ i, data.spectralThroughput
       (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive) i <
       data.serviceRate i) :
     JacksonNetworkData (ι := ι) :=
-  data.spectralNetworkData
-    (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive)
-    (data.spectralThroughput_nonneg
-      (data.routingMatrix_spectralRadius_lt_one_of_strict_row_substochastic hContractive))
-    hStable
+  by
+    exact data.constructiveNetworkDataOfStrictRowSubstochastic hContractive hNonneg hStable
 
 end JacksonProduct
 

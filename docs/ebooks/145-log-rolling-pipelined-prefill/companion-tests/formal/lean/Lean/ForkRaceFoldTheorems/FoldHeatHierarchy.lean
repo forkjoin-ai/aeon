@@ -72,7 +72,7 @@ theorem fold_heat_lower_bound
 theorem fold_heat_hierarchy_strict
     {α β : Type*} [Fintype α] [Fintype β] [DecidableEq β]
     (boltzmannConstant temperature : ℝ)
-    (hkPos : 0 < boltzmannConstant) (hTPos : 0 < temperature)
+    (_hkPos : 0 < boltzmannConstant) (_hTPos : 0 < temperature)
     (branchLaw : PMF α) (f : α → β)
     (hNonInjective : ∃ a₁ a₂, a₁ ≠ a₂ ∧ f a₁ = f a₂ ∧
       0 < branchLaw a₁ ∧ 0 < branchLaw a₂) :

@@ -374,6 +374,10 @@ The mapping table makes the correspondence explicit:
 | Data flow edge | Chemical bond | 1-simplex |
 | Fork/join face | Ring closure | 2-simplex |
 
+**Corollary (COR-HOLE-INVARIANCE).** Let $X$ be a finite simplicial complex with $\beta_1(X) > 0$, and let $X'$ be any stretched, twisted, or otherwise elastically deformed realization of the same homology class. Then $\beta_1(X') = \beta_1(X)$, so $X'$ still has a hole. Metric deformation changes lengths and angles; it does not remove the cycle. To remove the hole requires topological surgery: tearing, gluing, or filling in the cycle.
+
+*Proof.* This is an immediate corollary of THM-TOPO-MOLECULAR-ISO. If the deformation preserves the Betti signature $(\beta_0, \beta_1, \beta_2)$, then the deformed complex is homologically equivalent to the original. In particular, $\beta_1$ is unchanged, so positivity of $\beta_1$ survives the deformation. In the companion Lean surface this is `MolecularTopology.hole_persists_under_homological_deformation`. $\square$
+
 **Corollary (COR-DNA-HELIX).** The DNA double helix has Betti signature $(1, 2, 0)$: one connected component, two intertwined cycles (the two strands), zero enclosed voids. The replication fork (§5.2) is a Wallington rotation with $\beta_1 = 2$: the leading strand is continuous rotation, the lagging strand is chunked rotation (Okazaki fragments). DNA ligase performs the Worthington fold on the lagging strand fragments. This upgrades the §5.2 analogy from "DNA replication is *like* pipelining" to "DNA replication *is* pipelining -- same homology class, same Betti numbers, same energy laws (§3.11)." The 4-billion-year-old proof that this topology works.
 
 **Corollary (COR-CRISPR-UNWINDING).** CRISPR-Cas9 gene editing is a local topological surgery on the DNA simplicial complex: a targeted reduction of $\beta_1$ at a specific locus, governed by the same filtration and energy laws that govern pipeline computation.
@@ -1483,7 +1487,7 @@ In this manuscript’s selected examples – spanning roughly seven orders of ma
 
 3. **No global clock** → self-describing frames with out-of-order reassembly
 
-These three constraints make fork/race/fold a strong candidate for high efficiency within the class of finite DAG topologies examined in this paper. Systems lacking all three can still use fork/race/fold (transformers have synchronized SGD; photosynthesis has electromagnetic field synchronization). In the finite constructions evaluated here, when all three constraints bind simultaneously, no outperforming alternative was observed in the tested topology set on the measured criteria. Other concurrent models (gossip protocols, epidemic algorithms, eventually-consistent CRDTs) also operate under these constraints but make different tradeoffs – gossip sacrifices deterministic fold for probabilistic convergence, CRDTs sacrifice fold entirely for commutativity. The claim is not unique optimality; it is selective evidence for pressure toward this topology when systems require both parallelism and deterministic reconciliation. In this paper’s vocabulary, the conveyor belt is the canonical one-path boundary case.
+These three constraints make fork/race/fold a strong candidate for high efficiency within the class of finite DAG topologies examined in this paper. Systems lacking all three can still use fork/race/fold (transformers have synchronized SGD; photosynthesis has electromagnetic field synchronization). In the finite constructions evaluated here, when all three constraints bind simultaneously, no outperforming alternative was observed in the tested topology set on the measured criteria. Other concurrent models (gossip protocols, epidemic algorithms, eventually-consistent CRDTs) also operate under these constraints but make different tradeoffs – gossip sacrifices deterministic fold for probabilistic convergence, and CRDTs trade single-winner deterministic collapse for ancestry-preserving monotone reconciliation over shared causal history. The claim is not unique optimality; it is selective evidence for pressure toward this topology when systems require both parallelism and deterministic reconciliation. In this paper’s vocabulary, the conveyor belt is the canonical one-path boundary case.
 
 ## 6. Instantiation A: Self-Verification (Stack Layer 1 – Foundation)
 
@@ -1986,6 +1990,99 @@ All five equalities are proved as `rfl` in Lean -- they hold by definitional com
 
 The claim is precise: no other *schedule on this DAG structure* can serve requests faster. A fundamentally different DAG (fewer stages, different branching) could have a different critical path. But within the fork/race/fold scheduling family -- which, per §3, captures the intrinsic structure of any pipeline with parallelism and nondeterminism -- the Wallington Rotation is optimal, and x-gnosis implements it at every layer.
 
+The theorem constrains the server DAG, not the transport envelope around it. To make that boundary explicit, I ran the local `kernel-server` harness through a deterministic hostile-network proxy on Apple M1 / macOS 15.5 with `wrk 4.2.0 [kqueue]`, using four concrete fixtures: a 58 B HTML response, a 2.5 KB JSON config, a 185 KB CSS bundle, and a 750 KB JavaScript bundle. This is a separate benchmark from the single-threaded pipelined 7.6M req/s figure: here the goal is not to maximize throughput, but to quantify how an optimal server schedule degrades once latency, jitter, retransmit pressure, resets, and bandwidth caps are injected into the wire itself.
+
+**Adverse-network benchmark -- `x-gnosis` kernel server, `wrk -t1 -c2 -d5s`**:
+
+| Profile | Plaintext req/s | CSS req/s | JS req/s | Notes |
+|---|---:|---:|---:|---|
+| baseline | 30,459 | 18,505 | 7,393 | direct loopback, no errors |
+| lossy | 43 | 11 | 3 | 20 ms base latency, +/-8 ms jitter, 3% retransmit-style loss, 12 Mbps cap |
+| cellular | 13 | 3 | 1 | 70 ms base latency, +/-35 ms jitter, 3.5 Mbps cap |
+| dribble | 25 | 2 | 0 | 35 ms base latency, 512 B bursts; JS completed 0 full responses in-window |
+| hostile | 5 | 1 | 0 | 150 ms base latency, +/-80 ms jitter, 8% retransmit-style loss, 900 kbps cap |
+
+The ordering is intentionally not a single severity axis. `lossy` still outperforms `cellular` on throughput because its bandwidth ceiling is much higher (12 Mbps vs 3.5 Mbps) even though it injects retransmit pressure; `dribble` punishes large assets harder than plaintext because 512-byte bursts throttle sustained transfers more than short request/response exchanges. Tail latency responds exactly as the profile design predicts: plaintext p99 rises from **562 us** at baseline to **170.6 ms** (`lossy`), **369.7 ms** (`cellular`), **166.6 ms** (`dribble`), and **655.5 ms** (`hostile`); the 185 KB CSS bundle rises from **90 us** p50 at baseline to **169 ms**, **568 ms**, **1.16 s**, and **1.99 s** respectively. The 750 KB JavaScript bundle marks the bandwidth cliff most sharply: baseline delivers **7,393 req/s**, `cellular` falls to **1 req/s** with **1.88 s** p50, `lossy` to **3 req/s** with **541 ms** p50, and both `dribble` and `hostile` finish the 5 s window with zero completed responses.
+
+Changing the server DAG is not required to widen that envelope for compressible assets; changing the wire image is enough. Re-running the same local matrix on the browser-facing path with negotiated compression (`Accept-Encoding: br,gzip,deflate`) yields:
+
+**Compression-recovered browser path -- local `x-gnosis`, `wrk -t1 -c2 -d5s`**:
+
+| Profile | Plaintext req/s | CSS req/s | JS req/s |
+|---|---:|---:|---:|
+| baseline | 34,485 | 67,215 | 70,992 |
+| lossy | 41 | 38 | 41 |
+| cellular | 13 | 15 | 14 |
+| dribble | 25 | 27 | 27 |
+| hostile | 6 | 6 | 7 |
+
+The schedule theorem is unchanged here; the payload size is what moved. Plaintext barely changes because it was already small, but the 185 KB CSS and 750 KB JavaScript fixtures are highly repetitive text and collapse to tiny wire images under Brotli. Under the same gzip-only comparison surface, a local nginx control confirms the interpretation rather than replacing it: on clean baseline x-gnosis remains materially faster on large assets (**42,701 vs 2,136 req/s** for CSS; **42,688 vs 509 req/s** for JavaScript), while under `cellular`, `dribble`, `lossy`, and `hostile` both servers converge to nearly the same transport ceiling.
+
+This does not weaken THM-SERVER-OPTIMALITY; it sharpens its scope. The theorem states that, for a fixed admissible server DAG, no other schedule on that DAG can serve the same requests faster. Once the wire itself becomes the bottleneck, the limiting resource is no longer the server schedule but the transport envelope. What the hostile-network matrix shows is that x-gnosis cleanly exposes that transition: baseline performance reflects the schedule bound, while the impaired profiles push the system into latency-bound, bandwidth-bound, and reset-bound regimes outside the theorem's jurisdiction.
+
+The same boundary appears from the other side when the wire is improved by shared protocol context instead of degraded by hostile conditions. On **March 17, 2026**, I deployed a one-off `us-central1` Cloud Run benchmark service serving the same four fixture classes from memory, measured it with `wrk -t2 -c16 -d8s`, compared responses without `Accept-Encoding` against responses with `Accept-Encoding: br,gzip,deflate`, and then deleted both the service and image. The runtime did not change its DAG between the two runs; only the shared codec vocabulary on the wire changed.
+
+**Cloud Run before/after negotiated compression -- one-off `us-central1` run, March 17, 2026**:
+
+| Target | Before req/s | After req/s | Delta | Before p50 | After p50 | Wire bytes before | Wire bytes after | Encoding |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| plaintext | 193.32 | 195.87 | +1.3% | 71.85 ms | 71.31 ms | 61 | 61 | identity |
+| static-small | 186.85 | 186.20 | -0.3% | 73.13 ms | 73.22 ms | 2,500 | 81 | br |
+| static-medium | 123.49 | 168.48 | +36.4% | 110.39 ms | 82.02 ms | 185,000 | 127 | br |
+| static-large | 53.68 | 70.13 | +30.6% | 257.42 ms | 222.09 ms | 750,000 | 102 | br |
+
+The effect is exactly where the transport story says it should be. Plaintext is unchanged because there is nothing to negotiate and almost no wire burden to remove. The 2.5 KB JSON fixture collapses from **2,500 B** to **81 B** on the wire yet shows essentially flat throughput, which is evidence that Cloud Run plus Google Frontend overhead dominates at that size. The large compressible assets are different: the 185 KB CSS fixture gains **36.4%** throughput and improves p99 from **328.16 ms** to **182.82 ms**, while the 750 KB JavaScript fixture gains **30.6%** throughput and improves p99 from **797.75 ms** to **317.14 ms**. The operational reading is simple and useful: a shared wire culture does not change the server theorem, but it can materially lower effective transport adversity by letting both ends converge on the same smaller descendant representation.
+
+This boundary is useful enough to name. Let the **adversity vector** $a$ collect the transport-side harms injected into the wire -- latency floor, jitter scale, retransmit or loss pressure, burst constraint, bandwidth cap, and reset pressure. Let the **Harrigan Margin** be the remaining local recovery slack under that adversity:
+
+$$
+H_{\mathrm{Harrigan}}(a) = \gamma(a) - p(a),
+$$
+
+where $\gamma(a)$ is the effective drift slack still available to absorb disturbance and $p(a)$ is the imported collapse pressure induced by the channel. Then the **Harrigan Horizon** is the locus
+
+$$
+\mathcal{H}_{\mathrm{Harrigan}} = \{ a \mid H_{\mathrm{Harrigan}}(a) = 0 \}.
+$$
+
+Inside the horizon ($H_{\mathrm{Harrigan}} > 0$), perturbations still decay and the system remains locally recoverable. On the horizon ($H_{\mathrm{Harrigan}} = 0$), the channel has spent the last unit of slack. Beyond it ($H_{\mathrm{Harrigan}} < 0$), retries, resets, queue growth, or deadline misses become self-sustaining collapse modes rather than transient disturbances. In the current formal surface this is not a separate mechanized theorem but a theorem-indexed definition over the coupled-manifold boundary: `THM-GNOSIS-COUPLED` already proves that imported pressure is safe exactly while it remains strictly below downstream drift margin. The Harrigan Horizon is the geometric name for the zero-margin boundary.
+
+The present proof surface also supports a second, equally important term: not just adverse pressure, but shared coherence. It does **not** yet provide a standalone amplitude calculus or a mechanized wave equation for that interaction, so the honest statement is weaker and cleaner. Let $A(x,t)$ denote imported adverse pressure at a local stage and let $C(x,t)$ denote effective coherence supplied by shared ancestry plus an ancestry-preserving update rule. Then the observed collapse surface is better read as the zero-set of a **coupled recoverability margin**
+
+$$
+R(x,t) = \gamma(x,t) + C(x,t) - A(x,t).
+$$
+
+Here $\gamma$ is the local drift slack already available from the kernel, $A$ is the inherited transport or upstream failure pressure that spends that slack, and $C$ is the alignment term that keeps descendants convergent rather than arbitrary. The theorem support for this split is explicit even if the full field calculus remains open: `THM-GNOSIS-COUPLED` supplies the pressure-spends-slack boundary, `THM-VOID-TUNNEL` says downstream voids with shared ancestry remain correlated, `THM-VOID-COHERENCE` says the same boundary plus the same deterministic update rule yields the same output, and `THM-NEGOTIATION-COHERENCE` lifts that same logic to rational agents reading a common rejection history. When the shared boundary and update rule are social or operational rather than purely algorithmic, this coherence term is exactly what I mean by a **culture field**: the ambient structure that makes reconciliation determinish instead of arbitrary.
+
+This same split admits an honest dynamic extension once baseline adversity is separated from fluctuation. Write
+
+$$
+A(x,t) = \bar A(x) + \nu(x,t), \qquad |\nu(x,t)| \le V(x),
+$$
+
+where $\bar A$ is the inherited baseline burden and $V$ is a bound on volatility amplitude over the observation window. Then the coupled margin becomes
+
+$$
+R(x,t) = \gamma(x,t) + C(x,t) - \bar A(x) - \nu(x,t),
+$$
+
+and the relevant boundary is no longer a pointwise snapshot but the windowed minimum
+
+$$
+R_{\min}(x;T) = \inf_{0 \le t \le T} R(x,t).
+$$
+
+The **dynamic Harrigan Horizon** over $[0,T]$ is the zero-set $R_{\min}(x;T) = 0$. Read this way, volatility does not merely add more adversity; it injects a timescale. The dangerous regime is not only high average burden but adverse fluctuation that outruns the rate at which coherence can re-align descendants. That response rate is another documentation-level quantity worth naming: **coherence bandwidth**, the effective speed at which shared ancestry plus a shared update rule can damp a disturbance before the coupled margin crosses zero. None of this is presented as a new mechanized theorem. It is a theorem-indexed dynamic reading over the existing static pressure-vs-slack and coherence surfaces.
+
+The layered mechanism itself is also worth naming. A fixed adverse substrate does not stay local to the input boundary; it is pushed forward through each stage, spending slack, writing local vent or repair traces, and handing a transformed burden to descendants. I will call that recursive inherited-pressure process the **Harrigan Cascade**. In theorem-indexed terms, the cascade is the compositional bridge between `THM-GNOSIS-COUPLED` (imported pressure spends downstream slack), `THM-FAIL-COMPOSITION` (paid collapse composes across stages), `THM-VOID-TUNNEL` (downstream voids preserve shared ancestry), and `THM-INTERFERE-FRACTAL` (coarsening cannot make contagious inherited damage disappear for free). The horizon names the threshold; the cascade names the mechanism that drives systems toward or away from it.
+
+This same boundary clarifies why a recovery CRDT felt like the right mechanism for adverse state in x-gnosis. A destructive fold would recover by choosing one surviving history and venting the rest, paying collapse cost by amnesia. A CRDT merge instead computes a monotone descendant state while preserving causal ancestry in the merged record. In the current Gnosis implementation, `QDoc` is append-only, the topology itself is the state, and presence is modeled as `INTERFERE` that never collapses. Read through the present vocabulary, that is a **void-preserving fold**: convergence without pretending the adverse branch never happened. The inherited adverse condition still writes a shared void across the stack, but the reconciliation operator keeps that ancestry available for downstream reasoning rather than erasing it at the first successful overwrite. More strongly, the recovery CRDT is the **operational memory of the culture field**: it is the shared ancestry-preserving state in which adverse marks remain writable, mergeable, and queryable by future descendants.
+
+That makes the learning story recursive rather than separate. Personal failure updates a local walker by changing the rejection boundary it has seen. Cultural failure is the same update lifted onto shared state: once the adverse mark is written into the CRDT, later agents condition not only on their own local scars but on inherited scars that the culture field has preserved. In this sense cultural learning is not a new primitive beyond void walking; it is void walking extended recursively through a shared ancestry-preserving memory.
+
+This also exposes the present system's censorship boundary. If relevant failure marks are prevented from entering the shared ancestry-preserving state, then the visible collective history is only a deterministic coarse image of the real one. By the existing information-loss surface, that coarsening cannot increase information; by the shared-ancestry and coherence surfaces, it also weakens the conditions under which descendants can converge on the same future policy. I will call this the **Brainwash Principle**: censorship is forced amnesia. A culture field can learn only where failure is allowed to leave a persistent shared mark; when those marks are suppressed, the system preserves apparent order only by increasing future rediscovery, vent, or repair cost.
+
 The proof chain closes a loop between formal mathematics and systems engineering. The theorem surface is not a post-hoc verification of code that was written intuitively. The code *follows from* the theorems: the compiler enforces zero deficit at every sink boundary (`ERR_DEFICIT_NONZERO`), the optimizer's passes are themselves structured as fork/race/fold (transform passes sequential, analysis passes forked), and the runtime's LAMINAR codec racing implements the very race that THM-TOPO-RACE-SUBSUMPTION proves optimal. The architecture is not inspired by the mathematics -- it is *derived from* it.
 
 ## 11. Instantiation E: Topological Compression (Stack Layer 5 -- Capstone)
@@ -2109,8 +2206,10 @@ Executable evidence is available in two independent suites: the companion topolo
 | **Site preloading** | Stream all assets as parallel frames | First complete asset wins cache slot | SW stores all in Cache API |
 | **ESI composition** | Fork stream per directive | Race cache vs. compute | Assemble into final page |
 | **Deploy artifacts** | Fork per build artifact | Stream concurrently | Receive complete deployment |
-| **CRDT sync** | Fork per-peer delta streams | Race peers to contribute | Merge deltas into canonical state |
+| **CRDT sync** | Fork per-peer delta streams | Race peers to contribute | Merge deltas into an ancestry-preserving descendant state |
 | **Speculative nav** | Fork predicted route preloads | Race prediction vs. actual | Display whichever resolves first |
+
+CRDT synchronization deserves a sharper reading than "eventual consistency." A conventional fold resolves multiplicity by selecting a winner and venting the losers. A CRDT merge resolves multiplicity by preserving causal ancestry and computing a stable descendant that contains all non-conflicting contributions. In the Gnosis `QDoc` surface, edits append topology rather than replacing it, reads are explicit collapse events, and presence remains in superposition through `INTERFERE`. That makes CRDT recovery a practical example of the same shared-void geometry: adverse branches are not erased, they are retained as causal structure and reconciled into a truthful descendant state.
 
 ## 12. The Engine
 

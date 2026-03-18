@@ -6,7 +6,7 @@ import ForkRaceFoldTheorems.LandauerBuley
 
 namespace ForkRaceFoldTheorems
 
-/--
+/-!
 Track Theta: Deficit-Capacity Duality (Information Bottleneck)
 
 Proves that topological deficit Δβ = β₁* - β₁ quantitatively lower-bounds
@@ -57,7 +57,7 @@ def transportCapacity (m : ℕ) (c : PerStreamCapacity) : ℝ :=
 
 /-- Capacity gap: the difference between required and available capacity. -/
 def capacityGap (w : DeficitCapacityWitness) : ℝ :=
-  (w.pathCount - w.streamCount : ℤ) * w.perStreamCap.capacity
+  ((w.pathCount - w.streamCount : ℕ) : ℝ) * w.perStreamCap.capacity
 
 /-- Pigeonhole collision count: with k paths on m < k streams, at least
     k - m paths must share a stream with another path. -/
@@ -76,13 +76,14 @@ def collisionCount (k m : ℕ) : ℕ :=
 theorem deficit_capacity_gap (w : DeficitCapacityWitness) :
     0 < capacityGap w := by
   unfold capacityGap
-  apply mul_pos
-  · exact Int.cast_pos.mpr (by omega)
-  · exact w.perStreamCap.hCapPos
+  have hGapNat : 0 < w.pathCount - w.streamCount := Nat.sub_pos_of_lt w.hDeficit
+  have hGap : 0 < ((w.pathCount - w.streamCount : ℕ) : ℝ) := by
+    exact_mod_cast hGapNat
+  nlinarith [hGap, w.perStreamCap.hCapPos]
 
 /-- The capacity gap equals exactly (k - m) · c. -/
 theorem deficit_capacity_gap_exact (w : DeficitCapacityWitness) :
-    capacityGap w = (w.pathCount - w.streamCount : ℤ) * w.perStreamCap.capacity := by
+    capacityGap w = (((w.pathCount - w.streamCount : ℕ) : ℝ) * w.perStreamCap.capacity) := by
   rfl
 
 -- ═══════════════════════════════════════════════════════════════════════

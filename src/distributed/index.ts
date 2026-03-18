@@ -42,3 +42,17 @@ export type {
   ReconciliationResult,
   MergeStrategy,
 } from './StateReconciler';
+
+export { RecoveryLedger } from './RecoveryLedger';
+export type {
+  RecoveryLedgerConfig,
+  RecoveryLedgerSnapshot,
+  RecoveryStatus,
+  RecoveryConflict,
+  RecoveryShardRole,
+  RecoveryPathStatus,
+  RecoveryShardObservation,
+  RecoveryPathObservation,
+  RecordShardObservationInput,
+  RecordPathObservationInput,
+} from './RecoveryLedger';

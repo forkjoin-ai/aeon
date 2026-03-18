@@ -14,3 +14,4 @@
 export { TopologyAnalyzer, } from './TopologyAnalyzer';
 export { TopologySampler, } from './TopologySampler';
 export { adaptiveParallelismPolicy, beta2FromBandGap, classifyPipelineRegime, frontierFill, firstLawConserved, pipelineOccupancy, protocolDeficits, quantumDeficitIdentity, settlementDeficits, speculativeTreeExpectedAccepted, turbulentIdleFraction, worthingtonWhipSavings, } from './formal-claims';
+export { GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES, getGnosisImpossibleSystemTopology, } from './gnosis-impossible-systems';

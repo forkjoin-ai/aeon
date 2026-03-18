@@ -21,13 +21,13 @@
   "workspaces": [
     "packages/*"
   ],
-  "homepage": "https://github.com/affectively-ai/aeon#readme",
+  "homepage": "https://github.com/forkjoin-ai/aeon#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/affectively-ai/aeon.git"
+    "url": "git+https://github.com/forkjoin-ai/aeon.git"
   },
   "bugs": {
-    "url": "https://github.com/affectively-ai/aeon/issues"
+    "url": "https://github.com/forkjoin-ai/aeon/issues"
   },
   "type": "module",
   "main": "./dist/index.cjs",

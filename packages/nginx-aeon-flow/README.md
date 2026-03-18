@@ -178,4 +178,6 @@ Same as the Aeon Flow Protocol spec (10-byte header):
 
 ## License
 
+Copyright Taylor William Buley. All rights reserved.
+
 MIT

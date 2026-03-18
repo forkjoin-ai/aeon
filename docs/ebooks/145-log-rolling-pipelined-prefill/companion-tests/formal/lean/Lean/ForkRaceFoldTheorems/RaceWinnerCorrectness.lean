@@ -3,7 +3,7 @@ import ForkRaceFoldTheorems.Claims
 
 namespace ForkRaceFoldTheorems
 
-/--
+/-!
 Track Omicron: Race-Winner Correctness
 
 The ledger explicitly notes that the formal surface "does not by itself
@@ -138,7 +138,7 @@ theorem race_winner_isolation {α : Type} {n : ℕ}
     (config : RaceConfig α n) (w : Fin n)
     (hWinner : isValidWinner config w)
     (ventedIdx : Fin n)
-    (hDistinct : w ≠ ventedIdx) :
+    (_hDistinct : w ≠ ventedIdx) :
     -- The winner remains valid regardless of the vented branch's state
     isValidWinner config w := by
   exact hWinner

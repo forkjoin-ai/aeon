@@ -62,3 +62,26 @@ export {
   type GnosisImpossibleSystemId,
   type GnosisImpossibleSystemTopology,
 } from './gnosis-impossible-systems';
+
+export {
+  DEFAULT_SPECULATION_BUDGET,
+  canonicalizeFeatureFlags,
+  computeProjectionCacheKey,
+  createProjectionArtifactId,
+  matchesRequestGuard,
+  normalizeRequestSignature,
+  requestSignatureKey,
+  stableContentHash,
+  type FragmentEffectClass,
+  type FragmentKind,
+  type FragmentNode,
+  type FragmentObservabilityClass,
+  type FragmentRuntimeTemplate,
+  type ProjectedAssetPayload,
+  type ProjectionArtifact,
+  type ProjectionProofLevel,
+  type ProjectionResult,
+  type RequestGuard,
+  type RequestSignature,
+  type SpeculationBudget,
+} from './projection';

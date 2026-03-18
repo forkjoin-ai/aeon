@@ -89,6 +89,40 @@ coordinator.registerNode({
 const session = coordinator.createSyncSession('node-1', ['node-2', 'node-3']);
 ```
 
+### Quick Start: Recovery Ledger
+
+```ts
+import { RecoveryLedger } from '@affectively/aeon';
+
+const ledger = new RecoveryLedger({
+  objectId: 'asset:app.bundle.js',
+  dataShardCount: 4,
+  parityShardCount: 2,
+});
+
+ledger.registerRequest('req-a');
+ledger.registerRequest('req-b');
+
+ledger.recordShardObservation({
+  shardRole: 'data',
+  shardIndex: 0,
+  digest: 'sha256:data-0',
+  observedBy: 'edge-a',
+});
+
+ledger.recordShardObservation({
+  shardRole: 'parity',
+  shardIndex: 0,
+  digest: 'sha256:parity-0',
+  observedBy: 'edge-b',
+});
+
+const status = ledger.getStatus();
+if (status.canReconstruct) {
+  // Fold the request family once the merged shard ledger crosses threshold.
+}
+```
+
 ### Quick Start: Schema Migrations
 
 ```ts
@@ -118,7 +152,7 @@ Everything is available from the root import. Subpath imports are available for 
 |--------|-------------|
 | `@affectively/aeon` | Everything (barrel export) |
 | `@affectively/aeon/core` | Core types and interfaces |
-| `@affectively/aeon/distributed` | Sync coordination, replication, conflict resolution |
+| `@affectively/aeon/distributed` | Sync coordination, replication, conflict resolution, and recovery ledgers |
 | `@affectively/aeon/versioning` | Schema versions, migrations, tracking |
 | `@affectively/aeon/offline` | Queued work for unreliable or offline periods |
 | `@affectively/aeon/compression` | Compression and delta-sync helpers |
@@ -132,12 +166,12 @@ The flow protocol, topology analysis, transport helpers, and federation modules 
 
 | Package | Description |
 |---------|-------------|
-| [`@affectively/aeon-pipelines`](https://github.com/affectively-ai/aeon-pipelines) | Execution engine for fork/race/fold as computation primitives (race on speed, value, or any lambda) |
+| [`@affectively/aeon-pipelines`](https://github.com/forkjoin-ai/aeon-pipelines) | Execution engine for fork/race/fold as computation primitives (race on speed, value, or any lambda) |
 | [`packages/shootoff`](./packages/shootoff/README.md) | Side-by-side protocol benchmarks against HTTP/1.1 and HTTP/2 |
-| [`packages/wall`](./packages/wall/README.md) | Command-line client for Aeon Flow |
+| [`packages/wall`](./packages/wall/README.md) | Command-line client and benchmark harness for Aeon Flow, including native raw-path Aeon blasts and mixed UDP+TCP transport races |
 | `packages/nginx-flow-aeon` | nginx bridge for Aeon Flow behind HTTP infrastructure |
-| [`aeon-bazaar`](https://github.com/affectively-ai/aeon-bazaar) | Unbounded negotiation engine -- void walking, complement distributions |
-| [`aeon-neutral`](https://github.com/affectively-ai/aeon-neutral) | Bounded dispute resolution -- three-walker Skyrms mediation with convergence certificates |
+| [`aeon-bazaar`](https://github.com/forkjoin-ai/aeon-bazaar) | Unbounded negotiation engine -- void walking, complement distributions |
+| [`aeon-neutral`](https://github.com/forkjoin-ai/aeon-neutral) | Bounded dispute resolution -- three-walker Skyrms mediation with convergence certificates |
 
 ## Formal Surface
 
@@ -153,10 +187,13 @@ TLA+ specifications for negotiation convergence (in `companion-tests/formal/`):
 ## Documentation
 
 - [docs/README.md](./docs/README.md) -- repo docs index
+- [src/README.md](./src/README.md) -- source tree index
 - [Manuscript source](./docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md) -- Chapter 17 formal manuscript
 - [Companion tests](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md) -- reproducibility suite
 - [ROADMAP.md](./ROADMAP.md) -- near-term direction
 
 ## License
+
+Copyright Taylor William Buley. All rights reserved.
 
 MIT

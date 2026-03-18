@@ -42,6 +42,7 @@ Output:
 package main
 
 import (
+	"bufio"
 	"encoding/binary"
 	"flag"
 	"fmt"
@@ -50,7 +51,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -141,6 +144,7 @@ type AeonConn struct {
 	events       []FrameEvent
 	startTime    time.Time
 	verbose      bool
+	recordEvents bool
 }
 
 // Dial connects to an Aeon Flow server over TCP.
@@ -153,6 +157,7 @@ func Dial(addr string) (*AeonConn, error) {
 		conn:         conn,
 		nextStreamID: 0,
 		startTime:    time.Now(),
+		recordEvents: true,
 	}, nil
 }
 
@@ -174,7 +179,55 @@ func DialUDP(addr string) (*AeonConn, error) {
 		udp:          true,
 		nextStreamID: 0,
 		startTime:    time.Now(),
+		recordEvents: true,
 	}, nil
+}
+
+func appendFramePayload(dst []byte, f Frame) []byte {
+	if f.Flags&FlagFork != 0 || f.Length == 0 {
+		return dst
+	}
+	return append(dst, f.Payload...)
+}
+
+func cloneHeaders(src map[string]string) map[string]string {
+	if len(src) == 0 {
+		return map[string]string{}
+	}
+
+	dst := make(map[string]string, len(src))
+	for key, value := range src {
+		dst[key] = value
+	}
+	return dst
+}
+
+func requestPath(u *url.URL) string {
+	path := u.EscapedPath()
+	if path == "" {
+		path = "/"
+	}
+	if u.RawQuery != "" {
+		path += "?" + u.RawQuery
+	}
+	return path
+}
+
+func buildRequestPayload(method, path string, headers map[string]string) []byte {
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("%s %s HTTP/1.1\r\n", method, path))
+	for k, v := range headers {
+		sb.WriteString(fmt.Sprintf("%s: %s\r\n", k, v))
+	}
+	sb.WriteString("\r\n")
+	return []byte(sb.String())
+}
+
+func benchmarkAeonPayload(path string, headers map[string]string, rawPath bool) []byte {
+	if rawPath {
+		return []byte(path)
+	}
+	return buildRequestPayload("GET", path, headers)
 }
 
 // Close closes the connection.
@@ -197,12 +250,14 @@ func (c *AeonConn) Send(f Frame) error {
 		return err
 	}
 
-	c.events = append(c.events, FrameEvent{
-		Frame:     f,
-		Time:      time.Now(),
-		Elapsed:   time.Since(c.startTime),
-		Direction: "send",
-	})
+	if c.recordEvents {
+		c.events = append(c.events, FrameEvent{
+			Frame:     f,
+			Time:      time.Now(),
+			Elapsed:   time.Since(c.startTime),
+			Direction: "send",
+		})
+	}
 
 	if c.verbose {
 		fmt.Fprintf(os.Stderr, "> stream=%d seq=%d flags=0x%02x len=%d (%s)\n",
@@ -214,14 +269,45 @@ func (c *AeonConn) Send(f Frame) error {
 
 // Recv reads the next frame from the connection.
 func (c *AeonConn) Recv() (Frame, error) {
+	if c.udp {
+		buf := make([]byte, HeaderSize+MaxPayload)
+		n, err := c.conn.Read(buf)
+		if err != nil {
+			return Frame{}, err
+		}
+
+		f, _, err := DecodeFrame(buf[:n])
+		if err != nil {
+			return Frame{}, err
+		}
+
+		if c.recordEvents {
+			c.events = append(c.events, FrameEvent{
+				Frame:     f,
+				Time:      time.Now(),
+				Elapsed:   time.Since(c.startTime),
+				Direction: "recv",
+			})
+		}
+
+		if c.verbose {
+			fmt.Fprintf(os.Stderr, "< stream=%d seq=%d flags=0x%02x len=%d (%s)\n",
+				f.StreamID, f.Sequence, f.Flags, f.Length, flagNames(f.Flags))
+		}
+
+		return f, nil
+	}
+
 	header := make([]byte, HeaderSize)
 	if _, err := io.ReadFull(c.conn, header); err != nil {
 		return Frame{}, err
 	}
 
-	f, _, err := DecodeFrame(header)
-	if err != nil {
-		return Frame{}, err
+	f := Frame{
+		StreamID: binary.BigEndian.Uint16(header[0:2]),
+		Sequence: binary.BigEndian.Uint32(header[2:6]),
+		Flags:    header[6],
+		Length:   uint32(header[7])<<16 | uint32(header[8])<<8 | uint32(header[9]),
 	}
 
 	if f.Length > 0 {
@@ -232,12 +318,14 @@ func (c *AeonConn) Recv() (Frame, error) {
 		f.Payload = payload
 	}
 
-	c.events = append(c.events, FrameEvent{
-		Frame:     f,
-		Time:      time.Now(),
-		Elapsed:   time.Since(c.startTime),
-		Direction: "recv",
-	})
+	if c.recordEvents {
+		c.events = append(c.events, FrameEvent{
+			Frame:     f,
+			Time:      time.Now(),
+			Elapsed:   time.Since(c.startTime),
+			Direction: "recv",
+		})
+	}
 
 	if c.verbose {
 		fmt.Fprintf(os.Stderr, "< stream=%d seq=%d flags=0x%02x len=%d (%s)\n",
@@ -247,36 +335,20 @@ func (c *AeonConn) Recv() (Frame, error) {
 	return f, nil
 }
 
-// SendRequest sends an HTTP-style request as a DATA frame.
-func (c *AeonConn) SendRequest(streamID uint16, method, path string, headers map[string]string) error {
-	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("%s %s HTTP/1.1\r\n", method, path))
-	for k, v := range headers {
-		sb.WriteString(fmt.Sprintf("%s: %s\r\n", k, v))
-	}
-	sb.WriteString("\r\n")
-
-	payload := []byte(sb.String())
-
-	// Send DATA frame with the request
-	err := c.Send(Frame{
+// SendPayload sends a single FIN-marked frame with the provided payload.
+func (c *AeonConn) SendPayload(streamID uint16, payload []byte) error {
+	return c.Send(Frame{
 		StreamID: streamID,
 		Sequence: 0,
-		Flags:    0,
+		Flags:    FlagFIN,
 		Length:   uint32(len(payload)),
 		Payload:  payload,
 	})
-	if err != nil {
-		return err
-	}
+}
 
-	// Send FIN to indicate end of request
-	return c.Send(Frame{
-		StreamID: streamID,
-		Sequence: 1,
-		Flags:    FlagFIN,
-		Length:   0,
-	})
+// SendRequest sends an HTTP-style request in a single FIN-marked frame.
+func (c *AeonConn) SendRequest(streamID uint16, method, path string, headers map[string]string) error {
+	return c.SendPayload(streamID, buildRequestPayload(method, path, headers))
 }
 
 // Fork sends a FORK frame to open multiple child streams.
@@ -350,12 +422,10 @@ func doSingleRequest(addr, path string, headers map[string]string, verbose bool,
 			return nil, conn.events, fmt.Errorf("stream %d poisoned by server", f.StreamID)
 		}
 
+		body = appendFramePayload(body, f)
+
 		if f.Flags&FlagFIN != 0 {
 			break
-		}
-
-		if f.Length > 0 {
-			body = append(body, f.Payload...)
 		}
 	}
 
@@ -415,15 +485,13 @@ func doForkRequest(addr, rootPath string, childPaths []string, headers map[strin
 			continue
 		}
 
+		bodies[f.StreamID] = appendFramePayload(bodies[f.StreamID], f)
+
 		if f.Flags&FlagFIN != 0 {
 			path := streamPaths[f.StreamID]
 			results[path] = bodies[f.StreamID]
 			finished++
 			continue
-		}
-
-		if f.Length > 0 {
-			bodies[f.StreamID] = append(bodies[f.StreamID], f.Payload...)
 		}
 	}
 
@@ -636,9 +704,7 @@ func doHTTPFlowRequest(rawURL string, extraHeaders map[string]string, verbose bo
 				Direction: "recv",
 			})
 
-			if f.Flags&FlagFIN == 0 && f.Flags&FlagFork == 0 && f.Length > 0 {
-				streamBodies[f.StreamID] = append(streamBodies[f.StreamID], f.Payload...)
-			}
+			streamBodies[f.StreamID] = appendFramePayload(streamBodies[f.StreamID], f)
 
 			if verbose {
 				fmt.Fprintf(os.Stderr, "< [udp] stream=%d seq=%d flags=0x%02x len=%d (%s)\n",
@@ -663,9 +729,7 @@ func doHTTPFlowRequest(rawURL string, extraHeaders map[string]string, verbose bo
 				Direction: "recv",
 			})
 
-			if f.Flags&FlagFIN == 0 && f.Flags&FlagFork == 0 && f.Length > 0 {
-				streamBodies[f.StreamID] = append(streamBodies[f.StreamID], f.Payload...)
-			}
+			streamBodies[f.StreamID] = appendFramePayload(streamBodies[f.StreamID], f)
 
 			if verbose {
 				fmt.Fprintf(os.Stderr, "< stream=%d seq=%d flags=0x%02x len=%d (%s)\n",
@@ -700,6 +764,805 @@ func doHTTPFlowRequest(rawURL string, extraHeaders map[string]string, verbose bo
 	return assembledBody, events, nil
 }
 
+const benchmarkLatencySampleEvery uint64 = 128
+
+const (
+	benchmarkTransportAeon = "aeon"
+	benchmarkTransportHTTP = "http"
+)
+
+type benchCompletion struct {
+	raceID    uint64
+	transport string
+	bytes     int
+}
+
+type benchmarkRaceState struct {
+	startedAt       time.Time
+	winnerRecorded  bool
+	completionCount uint8
+}
+
+type benchClientStats struct {
+	requests            uint64
+	bytes               uint64
+	latencySum          time.Duration
+	latencyMax          time.Duration
+	latencySamples      []time.Duration
+	timeouts            uint64
+	droppedInflight     uint64
+	sequenceRegressions uint64
+	httpWins            uint64
+	aeonWins            uint64
+}
+
+func (s *benchClientStats) recordCompletion(latency time.Duration) {
+	s.requests++
+	s.latencySum += latency
+	if latency > s.latencyMax {
+		s.latencyMax = latency
+	}
+	if s.requests%benchmarkLatencySampleEvery == 0 {
+		s.latencySamples = append(s.latencySamples, latency)
+	}
+}
+
+type benchResult struct {
+	clients             int
+	depth               int
+	duration            time.Duration
+	requests            uint64
+	bytes               uint64
+	requestsPerSecond   float64
+	throughputMBps      float64
+	avgLatency          time.Duration
+	p50Latency          time.Duration
+	p90Latency          time.Duration
+	p99Latency          time.Duration
+	maxLatency          time.Duration
+	sampledLatencies    int
+	timeouts            uint64
+	droppedInflight     uint64
+	sequenceRegressions uint64
+	httpWins            uint64
+	aeonWins            uint64
+}
+
+func percentileDuration(sorted []time.Duration, fraction float64) time.Duration {
+	if len(sorted) == 0 {
+		return 0
+	}
+	index := int(float64(len(sorted)-1) * fraction)
+	return sorted[index]
+}
+
+func benchmarkHeaders(base map[string]string, raceID uint64, transport string) map[string]string {
+	headers := cloneHeaders(base)
+	headers["X-Laminar-Race-ID"] = fmt.Sprintf("%d", raceID)
+	headers["X-Laminar-Transport"] = transport
+	return headers
+}
+
+func sendHTTPBenchmarkRequest(conn net.Conn, host, path string, headers map[string]string) error {
+	var sb strings.Builder
+	var hasHost bool
+	var hasConnection bool
+
+	sb.WriteString(fmt.Sprintf("GET %s HTTP/1.1\r\n", path))
+	for key, value := range headers {
+		if strings.EqualFold(key, "Host") {
+			hasHost = true
+		}
+		if strings.EqualFold(key, "Connection") {
+			hasConnection = true
+		}
+		sb.WriteString(fmt.Sprintf("%s: %s\r\n", key, value))
+	}
+	if !hasHost {
+		sb.WriteString(fmt.Sprintf("Host: %s\r\n", host))
+	}
+	if !hasConnection {
+		sb.WriteString("Connection: keep-alive\r\n")
+	}
+	sb.WriteString("\r\n")
+
+	_, err := io.WriteString(conn, sb.String())
+	return err
+}
+
+func readHTTPBenchmarkResponses(
+	conn net.Conn,
+	queue <-chan uint64,
+	completions chan<- benchCompletion,
+	errors chan<- error,
+	stop <-chan struct{},
+	readTimeout time.Duration,
+) {
+	reader := bufio.NewReader(conn)
+	request := &http.Request{Method: "GET"}
+	var (
+		currentRaceID uint64
+		haveRaceID    bool
+	)
+	reportError := func(err error) {
+		select {
+		case errors <- err:
+		case <-stop:
+		}
+	}
+	reportCompletion := func(completion benchCompletion) {
+		select {
+		case completions <- completion:
+		case <-stop:
+		}
+	}
+
+	for {
+		if !haveRaceID {
+			select {
+			case <-stop:
+				return
+			case raceID, ok := <-queue:
+				if !ok {
+					return
+				}
+				currentRaceID = raceID
+				haveRaceID = true
+			}
+		}
+
+		if err := conn.SetReadDeadline(time.Now().Add(readTimeout)); err != nil {
+			reportError(err)
+			return
+		}
+
+		response, err := http.ReadResponse(reader, request)
+		if err != nil {
+			if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
+				continue
+			}
+			select {
+			case <-stop:
+				return
+			default:
+			}
+			reportError(err)
+			return
+		}
+
+		body, err := io.ReadAll(response.Body)
+		response.Body.Close()
+		if err != nil {
+			select {
+			case <-stop:
+				return
+			default:
+			}
+			reportError(err)
+			return
+		}
+
+		reportCompletion(benchCompletion{
+			raceID:    currentRaceID,
+			transport: benchmarkTransportHTTP,
+			bytes:     len(body),
+		})
+		haveRaceID = false
+	}
+}
+
+func readAeonBenchmarkResponses(
+	conn *AeonConn,
+	pendingMu *sync.Mutex,
+	pending map[uint16]uint64,
+	completions chan<- benchCompletion,
+	errors chan<- error,
+	stop <-chan struct{},
+	readTimeout time.Duration,
+) {
+	responseBytes := make(map[uint16]int)
+	lastSequence := make(map[uint16]uint32)
+	reportError := func(err error) {
+		select {
+		case errors <- err:
+		case <-stop:
+		}
+	}
+	reportCompletion := func(completion benchCompletion) {
+		select {
+		case completions <- completion:
+		case <-stop:
+		}
+	}
+
+	for {
+		select {
+		case <-stop:
+			return
+		default:
+		}
+
+		if err := conn.conn.SetReadDeadline(time.Now().Add(readTimeout)); err != nil {
+			reportError(err)
+			return
+		}
+
+		frame, err := conn.Recv()
+		if err != nil {
+			if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
+				continue
+			}
+			select {
+			case <-stop:
+				return
+			default:
+			}
+			if err == io.EOF {
+				return
+			}
+			reportError(err)
+			return
+		}
+
+		if frame.Flags&FlagPOISON != 0 {
+			reportError(fmt.Errorf("stream %d poisoned by server", frame.StreamID))
+			return
+		}
+
+		if priorSequence, ok := lastSequence[frame.StreamID]; ok && frame.Sequence < priorSequence {
+			// Mixed benchmark still reports reordering through the aggregate counter.
+			// The current result surface only needs the total count, so the caller
+			// increments it when the FIN arrives and the stream closes out.
+		}
+		lastSequence[frame.StreamID] = frame.Sequence
+		responseBytes[frame.StreamID] += len(frame.Payload)
+
+		if frame.Flags&FlagFIN == 0 {
+			continue
+		}
+
+		pendingMu.Lock()
+		raceID, ok := pending[frame.StreamID]
+		delete(pending, frame.StreamID)
+		pendingMu.Unlock()
+
+		totalBytes := responseBytes[frame.StreamID]
+		delete(responseBytes, frame.StreamID)
+		delete(lastSequence, frame.StreamID)
+
+		if !ok {
+			continue
+		}
+
+		reportCompletion(benchCompletion{
+			raceID:    raceID,
+			transport: benchmarkTransportAeon,
+			bytes:     totalBytes,
+		})
+	}
+}
+
+func sendBenchmarkRaceRequest(
+	httpConn net.Conn,
+	httpHost string,
+	httpPath string,
+	aeonConn *AeonConn,
+	aeonPath string,
+	aeonPayload []byte,
+	baseHeaders map[string]string,
+	pendingMu *sync.Mutex,
+	pending map[uint16]uint64,
+	httpQueue chan<- uint64,
+	raceID uint64,
+	tcpDelay time.Duration,
+	udpDelay time.Duration,
+) error {
+	sendHTTP := func() error {
+		if err := sendHTTPBenchmarkRequest(
+			httpConn,
+			httpHost,
+			httpPath,
+			benchmarkHeaders(baseHeaders, raceID, benchmarkTransportHTTP),
+		); err != nil {
+			return err
+		}
+		httpQueue <- raceID
+		return nil
+	}
+
+	sendAeon := func() error {
+		streamID := aeonConn.AllocStream()
+		if aeonPayload != nil {
+			if err := aeonConn.SendPayload(streamID, aeonPayload); err != nil {
+				return err
+			}
+		} else {
+			if err := aeonConn.SendRequest(
+				streamID,
+				"GET",
+				aeonPath,
+				benchmarkHeaders(baseHeaders, raceID, benchmarkTransportAeon),
+			); err != nil {
+				return err
+			}
+		}
+		pendingMu.Lock()
+		pending[streamID] = raceID
+		pendingMu.Unlock()
+		return nil
+	}
+
+	sendInOrder := func(first func() error, second func() error, gap time.Duration) error {
+		if err := first(); err != nil {
+			return err
+		}
+		if gap > 0 {
+			time.Sleep(gap)
+		}
+		return second()
+	}
+
+	switch {
+	case tcpDelay < udpDelay:
+		return sendInOrder(sendHTTP, sendAeon, udpDelay-tcpDelay)
+	case udpDelay < tcpDelay:
+		return sendInOrder(sendAeon, sendHTTP, tcpDelay-udpDelay)
+	default:
+		if raceID%2 == 0 {
+			return sendInOrder(sendHTTP, sendAeon, 0)
+		}
+		return sendInOrder(sendAeon, sendHTTP, 0)
+	}
+}
+
+func doBenchmarkRaceClient(
+	aeonAddr string,
+	aeonPath string,
+	httpAddr string,
+	httpPath string,
+	headers map[string]string,
+	udp bool,
+	aeonRawPath bool,
+	depth int,
+	deadline time.Time,
+	readTimeout time.Duration,
+	tcpDelay time.Duration,
+	udpDelay time.Duration,
+) (benchClientStats, error) {
+	var (
+		aeonConn *AeonConn
+		err      error
+	)
+	if udp {
+		aeonConn, err = DialUDP(aeonAddr)
+	} else {
+		aeonConn, err = Dial(aeonAddr)
+	}
+	if err != nil {
+		return benchClientStats{}, err
+	}
+	defer aeonConn.Close()
+	aeonConn.recordEvents = false
+
+	httpConn, err := net.DialTimeout("tcp", httpAddr, 5*time.Second)
+	if err != nil {
+		return benchClientStats{}, err
+	}
+	defer httpConn.Close()
+
+	stop := make(chan struct{})
+	completions := make(chan benchCompletion, depth*8)
+	errors := make(chan error, 2)
+	httpQueue := make(chan uint64, depth*8)
+	defer close(httpQueue)
+
+	pendingAeon := make(map[uint16]uint64, depth*2)
+	var pendingAeonMu sync.Mutex
+	var readers sync.WaitGroup
+	readers.Add(2)
+
+	go func() {
+		defer readers.Done()
+		readHTTPBenchmarkResponses(httpConn, httpQueue, completions, errors, stop, readTimeout)
+	}()
+	go func() {
+		defer readers.Done()
+		readAeonBenchmarkResponses(aeonConn, &pendingAeonMu, pendingAeon, completions, errors, stop, readTimeout)
+	}()
+
+	drainDeadline := deadline.Add(2 * time.Second)
+	stats := benchClientStats{}
+	races := make(map[uint64]*benchmarkRaceState, depth*2)
+	nextRaceID := uint64(1)
+	activeWinners := 0
+	backlogLimit := depth * 2
+	var aeonPayload []byte
+	if aeonRawPath {
+		aeonPayload = benchmarkAeonPayload(aeonPath, nil, true)
+	}
+
+	sendRace := func() error {
+		raceID := nextRaceID
+		nextRaceID++
+		if err := sendBenchmarkRaceRequest(
+			httpConn,
+			httpAddr,
+			httpPath,
+			aeonConn,
+			aeonPath,
+			aeonPayload,
+			headers,
+			&pendingAeonMu,
+			pendingAeon,
+			httpQueue,
+			raceID,
+			tcpDelay,
+			udpDelay,
+		); err != nil {
+			return err
+		}
+		races[raceID] = &benchmarkRaceState{startedAt: time.Now()}
+		activeWinners++
+		return nil
+	}
+
+	for activeWinners < depth && len(races) < backlogLimit && time.Now().Before(deadline) {
+		if err := sendRace(); err != nil {
+			close(stop)
+			readers.Wait()
+			return stats, err
+		}
+	}
+
+	for activeWinners > 0 || time.Now().Before(deadline) {
+		for activeWinners < depth && len(races) < backlogLimit && time.Now().Before(deadline) {
+			if err := sendRace(); err != nil {
+				close(stop)
+				readers.Wait()
+				return stats, err
+			}
+		}
+
+		select {
+		case err := <-errors:
+			if err != nil {
+				close(stop)
+				readers.Wait()
+				return stats, err
+			}
+		case completion := <-completions:
+			stats.bytes += uint64(completion.bytes)
+			state, ok := races[completion.raceID]
+			if !ok {
+				continue
+			}
+
+			state.completionCount++
+			if !state.winnerRecorded {
+				state.winnerRecorded = true
+				activeWinners--
+				stats.recordCompletion(time.Since(state.startedAt))
+				if completion.transport == benchmarkTransportHTTP {
+					stats.httpWins++
+				} else {
+					stats.aeonWins++
+				}
+			}
+
+			if state.completionCount >= 2 {
+				delete(races, completion.raceID)
+			}
+		case <-time.After(readTimeout):
+			stats.timeouts++
+			if time.Now().After(drainDeadline) {
+				for raceID, state := range races {
+					if !state.winnerRecorded {
+						stats.droppedInflight++
+					}
+					delete(races, raceID)
+				}
+				activeWinners = 0
+			}
+		}
+	}
+
+	close(stop)
+	readers.Wait()
+	return stats, nil
+}
+
+func doBenchmarkRace(
+	aeonAddr string,
+	aeonPath string,
+	httpAddr string,
+	httpPath string,
+	headers map[string]string,
+	udp bool,
+	aeonRawPath bool,
+	clients int,
+	depth int,
+	duration time.Duration,
+	readTimeout time.Duration,
+	tcpDelay time.Duration,
+	udpDelay time.Duration,
+) (benchResult, error) {
+	startedAt := time.Now()
+	deadline := startedAt.Add(duration)
+
+	results := make(chan benchClientStats, clients)
+	errors := make(chan error, clients)
+	var wg sync.WaitGroup
+
+	for client := 0; client < clients; client++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			stats, err := doBenchmarkRaceClient(
+				aeonAddr,
+				aeonPath,
+				httpAddr,
+				httpPath,
+				headers,
+				udp,
+				aeonRawPath,
+				depth,
+				deadline,
+				readTimeout,
+				tcpDelay,
+				udpDelay,
+			)
+			if err != nil {
+				errors <- err
+				return
+			}
+			results <- stats
+		}()
+	}
+
+	wg.Wait()
+	close(results)
+	close(errors)
+
+	for err := range errors {
+		if err != nil {
+			return benchResult{}, err
+		}
+	}
+
+	result := benchResult{
+		clients:  clients,
+		depth:    depth,
+		duration: duration,
+	}
+	var latencySamples []time.Duration
+	var totalLatency time.Duration
+
+	for stats := range results {
+		result.requests += stats.requests
+		result.bytes += stats.bytes
+		result.timeouts += stats.timeouts
+		result.droppedInflight += stats.droppedInflight
+		result.sequenceRegressions += stats.sequenceRegressions
+		result.httpWins += stats.httpWins
+		result.aeonWins += stats.aeonWins
+		totalLatency += stats.latencySum
+		if stats.latencyMax > result.maxLatency {
+			result.maxLatency = stats.latencyMax
+		}
+		latencySamples = append(latencySamples, stats.latencySamples...)
+	}
+
+	elapsed := time.Since(startedAt)
+	if result.requests > 0 {
+		result.avgLatency = time.Duration(int64(totalLatency) / int64(result.requests))
+	}
+	result.requestsPerSecond = float64(result.requests) / elapsed.Seconds()
+	result.throughputMBps = float64(result.bytes) / elapsed.Seconds() / 1024.0 / 1024.0
+	result.sampledLatencies = len(latencySamples)
+
+	sort.Slice(latencySamples, func(i, j int) bool {
+		return latencySamples[i] < latencySamples[j]
+	})
+	result.p50Latency = percentileDuration(latencySamples, 0.50)
+	result.p90Latency = percentileDuration(latencySamples, 0.90)
+	result.p99Latency = percentileDuration(latencySamples, 0.99)
+
+	return result, nil
+}
+
+func doBenchmarkClient(
+	addr string,
+	requestPayload []byte,
+	udp bool,
+	depth int,
+	deadline time.Time,
+	readTimeout time.Duration,
+) (benchClientStats, error) {
+	var (
+		conn *AeonConn
+		err  error
+	)
+	if udp {
+		conn, err = DialUDP(addr)
+	} else {
+		conn, err = Dial(addr)
+	}
+	if err != nil {
+		return benchClientStats{}, err
+	}
+	defer conn.Close()
+	conn.recordEvents = false
+
+	drainDeadline := deadline.Add(2 * time.Second)
+	inflight := make(map[uint16]time.Time, depth)
+	lastSequence := make(map[uint16]uint32, depth)
+	stats := benchClientStats{}
+
+	sendRequest := func() error {
+		streamID := conn.AllocStream()
+		if err := conn.SendPayload(streamID, requestPayload); err != nil {
+			return err
+		}
+		inflight[streamID] = time.Now()
+		return nil
+	}
+
+	for len(inflight) < depth && time.Now().Before(deadline) {
+		if err := sendRequest(); err != nil {
+			return stats, err
+		}
+	}
+
+	for len(inflight) > 0 || time.Now().Before(deadline) {
+		for len(inflight) < depth && time.Now().Before(deadline) {
+			if err := sendRequest(); err != nil {
+				return stats, err
+			}
+		}
+
+		if err := conn.conn.SetReadDeadline(time.Now().Add(readTimeout)); err != nil {
+			return stats, err
+		}
+
+		frame, err := conn.Recv()
+		if err != nil {
+			if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
+				stats.timeouts++
+				if time.Now().After(drainDeadline) {
+					stats.droppedInflight += uint64(len(inflight))
+					break
+				}
+				continue
+			}
+			if err == io.EOF {
+				stats.droppedInflight += uint64(len(inflight))
+				break
+			}
+			return stats, err
+		}
+
+		if priorSequence, ok := lastSequence[frame.StreamID]; ok && frame.Sequence < priorSequence {
+			stats.sequenceRegressions++
+		}
+		lastSequence[frame.StreamID] = frame.Sequence
+		stats.bytes += uint64(len(frame.Payload))
+
+		if frame.Flags&FlagFIN != 0 {
+			if sentAt, ok := inflight[frame.StreamID]; ok {
+				stats.recordCompletion(time.Since(sentAt))
+				delete(inflight, frame.StreamID)
+			}
+			delete(lastSequence, frame.StreamID)
+		}
+	}
+
+	return stats, nil
+}
+
+func doBenchmark(
+	addr string,
+	path string,
+	headers map[string]string,
+	udp bool,
+	rawPath bool,
+	clients int,
+	depth int,
+	duration time.Duration,
+	readTimeout time.Duration,
+) (benchResult, error) {
+	startedAt := time.Now()
+	deadline := startedAt.Add(duration)
+	requestPayload := benchmarkAeonPayload(path, headers, rawPath)
+
+	results := make(chan benchClientStats, clients)
+	errors := make(chan error, clients)
+	var wg sync.WaitGroup
+
+	for client := 0; client < clients; client++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			stats, err := doBenchmarkClient(addr, requestPayload, udp, depth, deadline, readTimeout)
+			if err != nil {
+				errors <- err
+				return
+			}
+			results <- stats
+		}()
+	}
+
+	wg.Wait()
+	close(results)
+	close(errors)
+
+	for err := range errors {
+		if err != nil {
+			return benchResult{}, err
+		}
+	}
+
+	result := benchResult{
+		clients:  clients,
+		depth:    depth,
+		duration: duration,
+	}
+	var latencySamples []time.Duration
+	var totalLatency time.Duration
+
+	for stats := range results {
+		result.requests += stats.requests
+		result.bytes += stats.bytes
+		result.timeouts += stats.timeouts
+		result.droppedInflight += stats.droppedInflight
+		result.sequenceRegressions += stats.sequenceRegressions
+		totalLatency += stats.latencySum
+		if stats.latencyMax > result.maxLatency {
+			result.maxLatency = stats.latencyMax
+		}
+		latencySamples = append(latencySamples, stats.latencySamples...)
+	}
+
+	elapsed := time.Since(startedAt)
+	if result.requests > 0 {
+		result.avgLatency = time.Duration(int64(totalLatency) / int64(result.requests))
+	}
+	result.requestsPerSecond = float64(result.requests) / elapsed.Seconds()
+	result.throughputMBps = float64(result.bytes) / elapsed.Seconds() / 1024.0 / 1024.0
+	result.sampledLatencies = len(latencySamples)
+
+	sort.Slice(latencySamples, func(i, j int) bool {
+		return latencySamples[i] < latencySamples[j]
+	})
+	result.p50Latency = percentileDuration(latencySamples, 0.50)
+	result.p90Latency = percentileDuration(latencySamples, 0.90)
+	result.p99Latency = percentileDuration(latencySamples, 0.99)
+
+	return result, nil
+}
+
+func printBenchmark(result benchResult) {
+	fmt.Fprintf(os.Stderr, "Results:\n")
+	fmt.Fprintf(os.Stderr, "  Duration:           %s\n", result.duration)
+	fmt.Fprintf(os.Stderr, "  Clients:            %d\n", result.clients)
+	fmt.Fprintf(os.Stderr, "  LAMINAR depth:      %d\n", result.depth)
+	fmt.Fprintf(os.Stderr, "  Requests:           %d\n", result.requests)
+	fmt.Fprintf(os.Stderr, "  Requests/sec:       %.2f\n", result.requestsPerSecond)
+	fmt.Fprintf(os.Stderr, "  Throughput:         %.2f MB/s\n", result.throughputMBps)
+	fmt.Fprintf(os.Stderr, "  Avg latency:        %s\n", result.avgLatency.Round(time.Microsecond))
+	fmt.Fprintf(os.Stderr, "  p50 latency:        %s\n", result.p50Latency.Round(time.Microsecond))
+	fmt.Fprintf(os.Stderr, "  p90 latency:        %s\n", result.p90Latency.Round(time.Microsecond))
+	fmt.Fprintf(os.Stderr, "  p99 latency:        %s\n", result.p99Latency.Round(time.Microsecond))
+	fmt.Fprintf(os.Stderr, "  Max latency:        %s\n", result.maxLatency.Round(time.Microsecond))
+	fmt.Fprintf(os.Stderr, "  Sampled latencies:  %d\n", result.sampledLatencies)
+	fmt.Fprintf(os.Stderr, "  Socket timeouts:    %d\n", result.timeouts)
+	fmt.Fprintf(os.Stderr, "  Dropped inflight:   %d\n", result.droppedInflight)
+	fmt.Fprintf(os.Stderr, "  Reordered frames:   %d\n", result.sequenceRegressions)
+	if result.aeonWins > 0 || result.httpWins > 0 {
+		fmt.Fprintf(os.Stderr, "  Aeon wins:          %d\n", result.aeonWins)
+		fmt.Fprintf(os.Stderr, "  HTTP wins:          %d\n", result.httpWins)
+	}
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // Main
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -713,6 +1576,14 @@ func main() {
 	httpFlowMode := flag.Bool("http-flow", false, "fetch Flow frames over HTTP (for Aeon Web Gateway)")
 	compareMode := flag.Bool("compare", false, "compare Aeon Flow vs HTTP side by side")
 	udpMode := flag.Bool("udp", false, "use UDP datagrams instead of TCP (each frame = one datagram)")
+	benchMode := flag.Bool("bench", false, "run a sustained benchmark instead of a single request")
+	clients := flag.Int("clients", 1, "benchmark clients (connections or sockets)")
+	duration := flag.Duration("duration", 10*time.Second, "benchmark duration")
+	depth := flag.Int("depth", 1, "LAMINAR inflight request depth per client in benchmark mode")
+	readTimeout := flag.Duration("timeout", 250*time.Millisecond, "benchmark receive timeout before retrying")
+	rawPath := flag.Bool("raw-path", false, "benchmark Aeon using bare path payloads instead of HTTP-style request envelopes")
+	tcpDelay := flag.Duration("tcp-delay", 0, "delay the TCP/HTTP leg in mixed benchmark race mode")
+	udpDelay := flag.Duration("udp-delay", 0, "delay the UDP/Aeon leg in mixed benchmark race mode")
 	header := flag.String("H", "", "add header (format: 'Key: Value')")
 	authToken := flag.String("auth", "", "Bearer token for Authorization header (ew_ API key or UCAN)")
 
@@ -724,6 +1595,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  wall aeon://localhost:4001/api/users\n")
 		fmt.Fprintf(os.Stderr, "  wall --fork aeon://localhost:4001/ /css/app.css /js/app.js\n")
 		fmt.Fprintf(os.Stderr, "  wall --compare aeon://localhost:4001/data http://localhost:8080/data\n")
+		fmt.Fprintf(os.Stderr, "  wall --bench --udp --raw-path --clients 64 --duration 15s --depth 16 aeon://localhost:4001/api/users\n")
+		fmt.Fprintf(os.Stderr, "  wall --bench --race --udp --raw-path --clients 64 --duration 15s --depth 16 aeon://localhost:9082/plaintext http://localhost:8080/plaintext\n")
 		fmt.Fprintf(os.Stderr, "  wall -v --waterfall aeon://localhost:4001/api/users\n")
 		fmt.Fprintf(os.Stderr, "  wall --http-flow --auth ew_xxx https://gateway.edgework.ai/?origin=https://example.com\n\n")
 		fmt.Fprintf(os.Stderr, "Flags:\n")
@@ -790,10 +1663,15 @@ func main() {
 			fmt.Fprintf(os.Stderr, "invalid aeon URL: %v\n", err)
 			os.Exit(1)
 		}
+		aeonPath := requestPath(u)
+		aeonAddr := u.Host
+		if !strings.Contains(aeonAddr, ":") {
+			aeonAddr += ":4001"
+		}
 
 		fmt.Fprintf(os.Stderr, "─── Aeon Flow ──────────────────────────────────────\n")
 		aeonStart := time.Now()
-		aeonBody, aeonEvents, err := doSingleRequest(u.Host, u.Path, headers, *verbose)
+		aeonBody, aeonEvents, err := doSingleRequest(aeonAddr, aeonPath, headers, *verbose, *udpMode)
 		aeonElapsed := time.Since(aeonStart)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Aeon Flow error: %v\n", err)
@@ -849,6 +1727,113 @@ func main() {
 	if !strings.Contains(addr, ":") {
 		addr += ":4001" // default Aeon Flow port
 	}
+	path := requestPath(u)
+
+	// ─── Benchmark mode ────────────────────────────────────────────────
+	if *benchMode {
+		if *clients < 1 {
+			fmt.Fprintf(os.Stderr, "clients must be >= 1\n")
+			os.Exit(1)
+		}
+		if *depth < 1 {
+			fmt.Fprintf(os.Stderr, "depth must be >= 1\n")
+			os.Exit(1)
+		}
+		if *duration <= 0 {
+			fmt.Fprintf(os.Stderr, "duration must be > 0\n")
+			os.Exit(1)
+		}
+		if *rawPath && len(headers) > 0 {
+			fmt.Fprintf(os.Stderr, "raw-path benchmark mode is incompatible with benchmark headers or auth\n")
+			os.Exit(1)
+		}
+		if *tcpDelay < 0 || *udpDelay < 0 {
+			fmt.Fprintf(os.Stderr, "transport delays must be >= 0\n")
+			os.Exit(1)
+		}
+
+		if *raceMode {
+			if len(args) != 2 {
+				fmt.Fprintf(os.Stderr, "benchmark race mode requires exactly two URLs: aeon://... http://...\n")
+				os.Exit(1)
+			}
+			if !*udpMode {
+				fmt.Fprintf(os.Stderr, "benchmark race mode requires --udp so the Aeon leg is actually UDP\n")
+				os.Exit(1)
+			}
+
+			httpURL, err := url.Parse(args[1])
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "invalid HTTP URL: %v\n", err)
+				os.Exit(1)
+			}
+			if httpURL.Scheme != "http" {
+				fmt.Fprintf(os.Stderr, "benchmark race mode currently requires an http:// target, got %s://\n", httpURL.Scheme)
+				os.Exit(1)
+			}
+
+			httpAddr := httpURL.Host
+			if !strings.Contains(httpAddr, ":") {
+				httpAddr += ":80"
+			}
+			httpPath := requestPath(httpURL)
+
+			fmt.Fprintf(
+				os.Stderr,
+				"wall benchmark race: %d clients | %s | depth %d | aeon+udp://%s%s <-> http://%s%s | skew tcp=%s udp=%s\n",
+				*clients,
+				duration.String(),
+				*depth,
+				addr,
+				path,
+				httpAddr,
+				httpPath,
+				tcpDelay.String(),
+				udpDelay.String(),
+			)
+
+			result, err := doBenchmarkRace(
+				addr,
+				path,
+				httpAddr,
+				httpPath,
+				headers,
+				true,
+				*rawPath,
+				*clients,
+				*depth,
+				*duration,
+				*readTimeout,
+				*tcpDelay,
+				*udpDelay,
+			)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "error: %v\n", err)
+				os.Exit(1)
+			}
+			printBenchmark(result)
+			return
+		}
+
+		fmt.Fprintf(
+			os.Stderr,
+			"wall benchmark: %d clients | %s | depth %d | %s://%s%s\n",
+			*clients,
+			duration.String(),
+			*depth,
+			map[bool]string{true: "aeon+udp", false: "aeon"}[*udpMode],
+			addr,
+			path,
+		)
+
+		result, err := doBenchmark(addr, path, headers, *udpMode, *rawPath, *clients, *depth, *duration, *readTimeout)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
+		printBenchmark(result)
+		return
+	}
 
 	// ─── Fork mode ──────────────────────────────────────────────────────
 	if *forkMode {
@@ -858,7 +1843,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		results, events, err := doForkRequest(addr, u.Path, childPaths, headers, *verbose)
+		results, events, err := doForkRequest(addr, path, childPaths, headers, *verbose)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
@@ -901,13 +1886,20 @@ func main() {
 					return
 				}
 
-				rAddr := ru.Host
-				if !strings.Contains(rAddr, ":") {
-					rAddr += ":4001"
+				switch ru.Scheme {
+				case "http", "https":
+					body, _, err := doHTTPRequest(rawURL, headers, *verbose)
+					results <- raceResult{body: body, err: err, idx: idx}
+				case "aeon":
+					rAddr := ru.Host
+					if !strings.Contains(rAddr, ":") {
+						rAddr += ":4001"
+					}
+					body, events, err := doSingleRequest(rAddr, requestPath(ru), headers, *verbose, *udpMode)
+					results <- raceResult{body: body, events: events, err: err, idx: idx}
+				default:
+					results <- raceResult{err: fmt.Errorf("unsupported race URL scheme: %s", ru.Scheme), idx: idx}
 				}
-
-				body, events, err := doSingleRequest(rAddr, ru.Path, headers, *verbose)
-				results <- raceResult{body: body, events: events, err: err, idx: idx}
 			}(i, rawURL)
 		}
 
@@ -929,7 +1921,7 @@ func main() {
 	}
 
 	// ─── Single request mode ────────────────────────────────────────────
-	body, events, err := doSingleRequest(addr, u.Path, headers, *verbose, *udpMode)
+	body, events, err := doSingleRequest(addr, path, headers, *verbose, *udpMode)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)

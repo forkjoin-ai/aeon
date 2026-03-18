@@ -13,3 +13,4 @@ export { SyncCoordinator } from './SyncCoordinator';
 export { ReplicationManager } from './ReplicationManager';
 export { SyncProtocol } from './SyncProtocol';
 export { StateReconciler } from './StateReconciler';
+export { RecoveryLedger } from './RecoveryLedger';

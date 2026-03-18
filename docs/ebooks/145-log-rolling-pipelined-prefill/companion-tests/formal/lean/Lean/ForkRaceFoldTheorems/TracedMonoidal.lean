@@ -2,7 +2,7 @@ import ForkRaceFoldTheorems.MonoidalCoherence
 
 namespace ForkRaceFoldTheorems
 
-/--
+/-!
 Track Eta: Traced Monoidal Structure (Feedback Loops)
 
 Extends the symmetric monoidal category (MonoidalCoherence) with a trace
@@ -31,7 +31,7 @@ def traceIter {A B U : Type} (f : A × U → B × U) (init : U) (a : A) (fuel : 
   | 0 => (f (a, init)).1
   | n + 1 =>
     let (b, u') := f (a, init)
-    if h : n = 0 then b
+    if n = 0 then b
     else (f (a, u')).1
 
 /-- The trace operator Tr : Hom(A⊗U, B⊗U) → Hom(A, B).
@@ -138,9 +138,8 @@ theorem trace_sliding (A B U : Type) (f : GHom (A × U) (B × U)) (g : GHom U U)
 theorem trace_superposing (A B C U : Type) (f : GHom (A × U) (B × U)) (u₀ : U) :
     ∀ a : A, ∀ c : C,
       tensorHom (trace f u₀) (@gid C) (a, c) =
-      (trace (fun p : (A × C) × U => ((f (p.1.1, p.2)).1, p.1.2, (f (p.1.1, p.2)).2).1)
-        u₀ (a, c),
-       c) := by
+      trace (fun p : (A × C) × U =>
+        (((f (p.1.1, p.2)).1, p.1.2), (f (p.1.1, p.2)).2)) u₀ (a, c) := by
   intro a c
   rfl
 
@@ -196,9 +195,7 @@ theorem trace_iteration_equiv (A : Type) (u₀ : A) (fuel : ℕ) :
   intro a
   cases fuel with
   | zero => rfl
-  | succ n =>
-    simp [trace, traceIter, gid]
-    split <;> rfl
+  | succ n => simp [trace, traceIter, gid]
 
 /-- Trace of identity is projection to first component, regardless of fuel. -/
 theorem trace_id_is_fst (A U : Type) (u₀ : U) :

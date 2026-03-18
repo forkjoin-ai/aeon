@@ -7,7 +7,7 @@ import ForkRaceFoldTheorems.FoldErasure
 
 namespace ForkRaceFoldTheorems
 
-/--
+/-!
 Track Pi: Semiotic Deficit Theory
 
 Maps fork/race/fold/vent to formal semiotics.  The central claim:
@@ -79,8 +79,8 @@ def contextReducedDeficit (ch : SemioticChannel) : ℤ :=
 theorem semiotic_deficit (ch : SemioticChannel)
     (hMismatch : ch.articulationStreams < ch.semanticPaths) :
     0 < semioticDeficit ch := by
-  unfold semioticDeficit
-  unfold topologicalDeficit computationBeta1 transportBeta1
+  have hArticulation : 1 ≤ ch.articulationStreams := Nat.succ_le_of_lt ch.hArticulationPos
+  unfold semioticDeficit topologicalDeficit computationBeta1 transportBeta1
   omega
 
 /-- For standard speech (1 stream), the deficit equals semanticPaths - 1.
@@ -90,9 +90,9 @@ theorem semiotic_deficit_speech
     (ch : SemioticChannel)
     (hSpeech : ch.articulationStreams = 1) :
     semioticDeficit ch = (ch.semanticPaths : ℤ) - 1 := by
-  unfold semioticDeficit
-  rw [hSpeech]
-  exact tcp_deficit_is_path_count_minus_one (by omega)
+  have hPaths : 1 ≤ ch.semanticPaths := le_trans (by decide : 1 ≤ 2) ch.hSemanticPos
+  simpa [semioticDeficit, hSpeech] using
+    tcp_deficit_is_path_count_minus_one hPaths
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-SEMIOTIC-ERASURE
@@ -116,9 +116,8 @@ theorem semiotic_erasure (ch : SemioticChannel)
     ∃ (p1 p2 : Fin ch.semanticPaths), p1 ≠ p2 ∧
       pathToStream ch.semanticPaths 1 p1 =
       pathToStream ch.semanticPaths 1 p2 := by
-  rw [show ch.articulationStreams = 1 from hSpeech] at *
   constructor
-  · unfold semioticDeficit topologicalDeficit computationBeta1 transportBeta1; omega
+  · simpa [semioticDeficit, hSpeech] using deficit_latency_separation ch.hSemanticPos
   · exact deficit_forces_collision ch.hSemanticPos
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -140,8 +139,7 @@ theorem semiotic_vent_nuance (ch : SemioticChannel)
     0 < semioticDeficit ch := by
   constructor
   · exact semiotic_deficit_speech ch hSpeech
-  · unfold semioticDeficit topologicalDeficit computationBeta1 transportBeta1
-    rw [hSpeech]; omega
+  · simpa [semioticDeficit, hSpeech] using deficit_latency_separation ch.hSemanticPos
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-SEMIOTIC-RACE-ARTICULATION
@@ -181,11 +179,13 @@ theorem semiotic_race_articulation {α : Type} {n : ℕ}
     to the communication channel reduces the topological mismatch
     between thought and speech. -/
 theorem semiotic_context_reduces (ch : SemioticChannel)
-    (hContext : 0 < ch.contextPaths) :
+    (_hContext : 0 < ch.contextPaths) :
     contextReducedDeficit ch ≤ semioticDeficit ch := by
+  have hStreams : ch.articulationStreams ≤ ch.articulationStreams + ch.contextPaths := by
+    exact Nat.le_add_right _ _
+  have hArticulation : 1 ≤ ch.articulationStreams := Nat.succ_le_of_lt ch.hArticulationPos
   unfold contextReducedDeficit semioticDeficit
-  unfold topologicalDeficit computationBeta1 transportBeta1
-  omega
+  exact deficit_decreasing_in_streams hStreams hArticulation
 
 /-- Sufficient context eliminates the deficit entirely: when shared
     context provides enough implicit channels to match the thought
@@ -194,7 +194,7 @@ theorem semiotic_context_eliminates (ch : SemioticChannel)
     (hEnough : ch.semanticPaths ≤ ch.articulationStreams + ch.contextPaths) :
     contextReducedDeficit ch ≤ 0 := by
   unfold contextReducedDeficit
-  exact covering_match hEnough (by omega)
+  exact covering_match hEnough (lt_of_lt_of_le (by norm_num) ch.hSemanticPos)
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-SEMIOTIC-CONVERSATION-TRACE
@@ -276,7 +276,7 @@ theorem semiotic_moa_zero_deficit
     For k ≥ 2 semantic paths through 1 stream, the vented paths
     k-1 satisfy 3*(k-1) ≥ k. No async consensus fold is viable. -/
 theorem semiotic_fold_exceeds_bft_threshold (ch : SemioticChannel)
-    (hSpeech : ch.articulationStreams = 1) :
+    (_hSpeech : ch.articulationStreams = 1) :
     3 * (ch.semanticPaths - 1) ≥ ch.semanticPaths := by
   have := ch.hSemanticPos; omega
 
@@ -284,7 +284,7 @@ theorem semiotic_fold_exceeds_bft_threshold (ch : SemioticChannel)
     For k ≥ 2 semantic paths through 1 stream, 2*(k-1) ≥ k.
     Even synchronous majority vote cannot preserve all paths. -/
 theorem semiotic_fold_exceeds_majority (ch : SemioticChannel)
-    (hSpeech : ch.articulationStreams = 1) :
+    (_hSpeech : ch.articulationStreams = 1) :
     2 * (ch.semanticPaths - 1) ≥ ch.semanticPaths := by
   have := ch.hSemanticPos; omega
 
@@ -300,7 +300,7 @@ theorem semiotic_fold_exceeds_majority (ch : SemioticChannel)
     shared context to widen the channel — is the only operation
     that reduces the deficit without triggering the BFT bound. -/
 theorem semiotic_determinism_chain (ch : SemioticChannel)
-    (hSpeech : ch.articulationStreams = 1) :
+    (_hSpeech : ch.articulationStreams = 1) :
     (ch.semanticPaths - 1 ≥ 1) ∧
     (3 * (ch.semanticPaths - 1) ≥ ch.semanticPaths) ∧
     (2 * (ch.semanticPaths - 1) ≥ ch.semanticPaths) := by
