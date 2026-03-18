@@ -5,6 +5,8 @@ import (
 	"encoding/binary"
 	"io"
 	"net"
+	"net/http"
+	"net/http/httptest"
 	"runtime"
 	"strings"
 	"sync"
@@ -83,6 +85,61 @@ func TestApplyPropagatedAuthHeadersAddsTrustedSnapshot(t *testing.T) {
 	}
 	if _, ok := base["X-Aeon-Auth-Verified"]; ok {
 		t.Fatalf("expected propagated auth helper to clone instead of mutating the base map")
+	}
+}
+
+func TestDoHTTPRequestSendsPropagatedAuthHeaders(t *testing.T) {
+	received := make(chan http.Header, 1)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		received <- r.Header.Clone()
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
+	}))
+	defer server.Close()
+
+	headers := applyPropagatedAuthHeaders(map[string]string{
+		"Accept": "*/*",
+	}, propagatedAuthOptions{
+		actor:      "did:key:test-user",
+		audience:   "did:web:x-gnosis.test",
+		tier:       "enterprise",
+		flags:      "alpha,beta",
+		requestPID: "request:abc|feedface|0",
+	})
+
+	body, _, err := doHTTPRequest(server.URL, headers, false)
+	if err != nil {
+		t.Fatalf("doHTTPRequest: %v", err)
+	}
+	if string(body) != "ok" {
+		t.Fatalf("expected body ok, got %q", string(body))
+	}
+
+	select {
+	case got := <-received:
+		if got.Get("X-Aeon-Auth-Verified") != "1" {
+			t.Fatalf("expected verified header, got %q", got.Get("X-Aeon-Auth-Verified"))
+		}
+		if got.Get("X-Aeon-Actor") != "did:key:test-user" {
+			t.Fatalf("expected actor header, got %q", got.Get("X-Aeon-Actor"))
+		}
+		if got.Get("X-Aeon-Audience") != "did:web:x-gnosis.test" {
+			t.Fatalf("expected audience header, got %q", got.Get("X-Aeon-Audience"))
+		}
+		if got.Get("X-Aeon-Tier") != "enterprise" {
+			t.Fatalf("expected tier header, got %q", got.Get("X-Aeon-Tier"))
+		}
+		if got.Get("X-Aeon-Flags") != "alpha,beta" {
+			t.Fatalf("expected flags header, got %q", got.Get("X-Aeon-Flags"))
+		}
+		if got.Get("X-Aeon-Request-Pid") != "request:abc|feedface|0" {
+			t.Fatalf("expected request pid header, got %q", got.Get("X-Aeon-Request-Pid"))
+		}
+		if got.Get("X-Aeon-Supervisor-Pid") != "request:abc|feedface|0" {
+			t.Fatalf("expected supervisor pid header, got %q", got.Get("X-Aeon-Supervisor-Pid"))
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatalf("timed out waiting for HTTP server to receive request")
 	}
 }
 
