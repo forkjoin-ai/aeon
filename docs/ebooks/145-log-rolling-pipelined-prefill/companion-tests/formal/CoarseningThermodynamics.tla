@@ -16,11 +16,18 @@ CONSTANTS
     FineNodes,          \* Set of fine-grained nodes (e.g. {1, 2, 3, 4})
     CoarseNodes,        \* Set of coarse nodes after first quotient
     CoarserNodes,       \* Set of coarser nodes after second quotient
-    QuotientMap,        \* Function: FineNodes -> CoarseNodes
-    SecondQuotientMap,  \* Function: CoarseNodes -> CoarserNodes
-    BranchMass,         \* Function: FineNodes -> Real (probability mass)
     BoltzmannConstant,  \* Positive real constant kB
     Temperature         \* Positive real temperature T
+
+DefaultFineNodes == {1, 2, 3}
+DefaultCoarseNodes == {1, 2}
+DefaultCoarserNodes == {1}
+DefaultQuotientMap == (1 :> 1 @@ 2 :> 1 @@ 3 :> 2)
+DefaultSecondQuotientMap == (1 :> 1 @@ 2 :> 1)
+DefaultBranchMass == (1 :> 1 @@ 2 :> 1 @@ 3 :> 1)
+QuotientMap == DefaultQuotientMap
+SecondQuotientMap == DefaultSecondQuotientMap
+BranchMass == DefaultBranchMass
 
 ASSUME
     /\ FineNodes # {}

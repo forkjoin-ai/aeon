@@ -21,7 +21,7 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: ['eventemitter3', '@affectively/aeon-flux-react'],
+  external: ['eventemitter3', '@a0n/aeon-flux-react'],
   outDir: 'dist',
   target: 'es2022',
 });

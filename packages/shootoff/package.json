@@ -1,5 +1,5 @@
 {
-  "name": "@affectively/aeon-shootoff",
+  "name": "@a0n/aeon-shootoff",
   "version": "5.0.0",
   "private": true,
   "description": "Protocol shootoff: Aeon Flow vs HTTP/1.1 vs HTTP/2 \u2014 same nginx reverse proxy, real compression, real sites",
@@ -12,7 +12,7 @@
     "serve:micro": "node --loader ts-node/esm src/serve.ts microfrontend"
   },
   "dependencies": {
-    "@affectively/aeon": "*"
+    "@a0n/aeon": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

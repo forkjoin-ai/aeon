@@ -26,7 +26,7 @@ Every field needed for reassembly is in the header. No connection state required
 The `UDPFlowTransport` class wraps a Node/Bun dgram socket and implements the `FlowTransport` interface:
 
 ```typescript
-import { UDPFlowTransport, AeonFlowProtocol } from '@affectively/aeon';
+import { UDPFlowTransport, AeonFlowProtocol } from '@a0n/aeon';
 
 const transport = new UDPFlowTransport({
   host: '0.0.0.0',
@@ -104,7 +104,7 @@ Unacknowledged frames are retransmitted after the timeout. After 5 retransmits, 
 The `FrameReassembler` handles per-stream out-of-order reconstruction. This is the key component that eliminates head-of-line blocking:
 
 ```typescript
-import { FrameReassembler } from '@affectively/aeon';
+import { FrameReassembler } from '@a0n/aeon';
 
 const reassembler = new FrameReassembler({
   maxBufferPerStream: 256,  // max frames buffered per stream
@@ -133,7 +133,7 @@ const missing = reassembler.getMissingSequences(streamId);
 Browsers can't bind raw UDP sockets. `WebTransportFlowTransport` bridges this gap using HTTP/3 unreliable datagrams (the `WebTransport` API):
 
 ```typescript
-import { WebTransportFlowTransport } from '@affectively/aeon';
+import { WebTransportFlowTransport } from '@a0n/aeon';
 
 const transport = new WebTransportFlowTransport(
   'https://relay.example.com/.aeon/flow'

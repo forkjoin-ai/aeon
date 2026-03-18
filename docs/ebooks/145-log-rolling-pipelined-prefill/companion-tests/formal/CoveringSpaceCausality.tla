@@ -1,5 +1,5 @@
 ------------------------------ MODULE CoveringSpaceCausality ------------------------------
-EXTENDS Naturals, FiniteSets
+EXTENDS Naturals, FiniteSets, Sequences
 
 \* THM-COVERING-CAUSALITY: If β₁(computation) > 0 and β₁(transport) = 0
 \* (TCP-style single ordered stream), there exists a reachable state where
@@ -30,6 +30,7 @@ vars == <<pathProgress, pathBlocked, transportHead, transportQueue,
           lostPacket, step, maxLatencyInflation>>
 
 Paths == 1..PathCount
+MaxSteps == MaxSeqNum * PathCount
 
 \* First Betti number of the computation graph
 \* PathCount independent paths → β₁ = PathCount - 1 (cycle rank)
@@ -104,6 +105,7 @@ Deliver(s) ==
 
 \* Measure latency inflation from cross-path blocking
 MeasureInflation ==
+  /\ step < MaxSteps
   /\ step' = step + 1
   /\ LET blockedCount == Cardinality({p \in Paths : pathBlocked[p]})
      IN maxLatencyInflation' = IF blockedCount > maxLatencyInflation

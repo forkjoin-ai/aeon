@@ -1,7 +1,7 @@
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { runLeanSandbox } from '@affectively/aeon-logic';
+import { runLeanSandbox } from '@a0n/aeon-logic';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptDir, '..');

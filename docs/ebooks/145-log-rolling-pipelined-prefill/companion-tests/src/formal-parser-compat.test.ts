@@ -9,7 +9,7 @@ import {
   renderTlaModule,
   runLeanSandbox,
   serializeTlcConfig,
-} from '@affectively/aeon-logic';
+} from '@a0n/aeon-logic';
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const formalDir = resolve(currentDir, '../formal');

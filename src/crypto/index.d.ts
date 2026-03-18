@@ -5,7 +5,7 @@
  *
  * @example
  * ```typescript
- * import { AeonCryptoProvider, AEON_CAPABILITIES } from '@affectively/aeon/crypto';
+ * import { AeonCryptoProvider, AEON_CAPABILITIES } from '@a0n/aeon/crypto';
  *
  * const crypto = new AeonCryptoProvider({
  *   defaultEncryptionMode: 'end-to-end',

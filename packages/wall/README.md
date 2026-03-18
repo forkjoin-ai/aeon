@@ -4,7 +4,7 @@
 
 Child: [cmd/wall](./cmd/wall/README.md)
 
-The fair brag is that it feels like a practical protocol tool, not just a demo binary. It supports normal requests, `fork`, `race`, HTTP comparison, UDP transport, verbose waterfall output, and sustained benchmarking with configurable client count and LAMINAR depth, including same-request UDP+TCP transport races and a native raw-path Aeon benchmark mode that skips HTTP-style request envelopes.
+The fair brag is that it feels like a practical protocol tool, not just a demo binary. It supports normal requests, `fork`, `race`, HTTP comparison, UDP transport, verbose waterfall output, and sustained benchmarking with configurable client count and LAMINAR depth, including same-request UDP+TCP transport races and a native raw-path Aeon benchmark mode that skips HTTP-style request envelopes. It also knows how to send either a normal bearer token or a trusted `X-Aeon-*` auth snapshot when you need to exercise the low-overhead intra-platform auth path. Benchmark clients now preconnect and arm before the launch gate opens, so the timed run starts after the cannon is actually loaded.
 
 ## Install
 
@@ -30,6 +30,7 @@ wall --udp aeon://localhost:4001/api/users
 wall --bench --udp --raw-path --clients 64 --duration 15s --depth 16 aeon://localhost:4001/api/users
 wall --bench --race --udp --raw-path --clients 64 --duration 15s --depth 16 aeon://localhost:9082/plaintext http://localhost:8080/plaintext
 wall -v --waterfall aeon://localhost:4001/api/users
+wall --aeon-actor did:key:tester --aeon-tier pro --aeon-request-pid 'request:abc|feedface|0' aeon://localhost:4001/api/users
 ```
 
 ## Useful Flags
@@ -45,7 +46,9 @@ wall -v --waterfall aeon://localhost:4001/api/users
 - `--raw-path`: benchmark the Aeon leg with bare path payloads for the zero-overhead native wire path
 - `--clients`, `--duration`, `--depth`: shape the LAMINAR benchmark load
 - `--tcp-delay`, `--udp-delay`: add requester-side skew to the mixed transport race
-- `-H "Key: Value"`: send headers
+- `-H "Key: Value"`: send headers, repeatable
+- `--auth`: send `Authorization: Bearer ...`
+- `--aeon-auth-verified`, `--aeon-actor`, `--aeon-tier`, `--aeon-flags`, `--aeon-request-pid`, `--aeon-supervisor-pid`: send a trusted `X-Aeon-*` auth snapshot directly
 
 ## Why This README Is Grounded
 

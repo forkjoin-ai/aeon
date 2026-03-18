@@ -102,7 +102,7 @@
     "test:confinement": "vitest run src/confinement-topology.test.ts"
   },
   "devDependencies": {
-    "@affectively/aeon-logic": "file:../../../../../aeon-logic",
+    "@a0n/aeon-logic": "workspace:*",
     "typescript": "^5.7.0",
     "vitest": "^2.1.0"
   }

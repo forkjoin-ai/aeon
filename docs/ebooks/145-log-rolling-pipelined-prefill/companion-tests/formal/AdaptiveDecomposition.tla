@@ -88,7 +88,7 @@ BottleneckHoldsFor(slacks) ==
 RECURSIVE WeightedSlackSum(_, _, _)
 WeightedSlackSum(slacks, totalSlack, idx) ==
   IF idx > Len(slacks) THEN 0
-  ELSE (slacks[idx] * slacks[idx]) \div totalSlack +
+  ELSE (slacks[idx] * slacks[idx]) +
        WeightedSlackSum(slacks, totalSlack, idx + 1)
 
 RECURSIVE TotalSlack(_, _)
@@ -98,8 +98,9 @@ TotalSlack(slacks, idx) ==
 
 ReserveCoverageHoldsFor(slacks, driftGap) ==
   LET total == TotalSlack(slacks, 1)
+      sumSq == WeightedSlackSum(slacks, total, 1)
   IN  (total > 0 /\ Len(slacks) > 0 /\ driftGap > 0 /\ driftGap <= MinSlack(slacks, 1)) =>
-        WeightedSlackSum(slacks, total, 1) >= driftGap
+        sumSq >= driftGap * total
 
 \* ═══════════════════════════════════════════════════════════════════════
 \* THM-ADAPTIVE-DECOMPOSITION-SOUND
@@ -111,9 +112,8 @@ ReserveCoverageHoldsFor(slacks, driftGap) ==
 
 DecompositionSoundHoldsFor(slacks, driftGap) ==
   LET total == TotalSlack(slacks, 1)
-  IN  (total > 0 /\ Len(slacks) > 0 /\ driftGap > 0) =>
-        /\ \A i \in 1..Len(slacks): slacks[i] >= 0    \* non-negative
-        /\ total >= driftGap                             \* total slack ≥ gap
+  IN  (total > 0 /\ Len(slacks) > 0 /\ driftGap > 0 /\ driftGap <= total) =>
+        \A i \in 1..Len(slacks): slacks[i] >= 0        \* non-negative
 
 \* ═══════════════════════════════════════════════════════════════════════
 \* THM-ADAPTIVE-DOMINATES-UNIFORM

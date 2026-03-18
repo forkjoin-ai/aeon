@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@affectively/aeon",
+      "name": "@a0n/aeon",
       "dependencies": {
         "eventemitter3": "^5.0.4",
       },

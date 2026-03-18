@@ -69,7 +69,7 @@ The 10-byte flow header is **self-describing**  --  `stream_id` + `sequence` in 
 **The `UDPFlowTransport`:**
 
 ```typescript
-import { AeonFlowProtocol, UDPFlowTransport } from '@affectively/aeon';
+import { AeonFlowProtocol, UDPFlowTransport } from '@a0n/aeon';
 
 const transport = new UDPFlowTransport({
   host: '0.0.0.0', port: 4242,

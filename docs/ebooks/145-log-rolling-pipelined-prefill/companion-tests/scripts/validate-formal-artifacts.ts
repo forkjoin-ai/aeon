@@ -8,7 +8,7 @@ import {
   renderTlaModule,
   runLeanSandbox,
   serializeTlcConfig,
-} from '@affectively/aeon-logic';
+} from '@a0n/aeon-logic';
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptDir, '..');

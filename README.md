@@ -7,11 +7,11 @@ The package covers ground teams usually assemble themselves: transport, sync, of
 ## Install
 
 ```bash
-bun add @affectively/aeon
+bun add @a0n/aeon
 ```
 
 ```bash
-npm install @affectively/aeon   # or yarn / pnpm
+npm install @a0n/aeon   # or yarn / pnpm
 ```
 
 ## Aeon Flow
@@ -37,7 +37,7 @@ The UDP path includes MTU-aware fragmentation, ACK bitmaps, AIMD congestion cont
 ### Quick Start: Flow Protocol
 
 ```ts
-import { AeonFlowProtocol, UDPFlowTransport } from '@affectively/aeon';
+import { AeonFlowProtocol, UDPFlowTransport } from '@a0n/aeon';
 
 // Set up transport
 const transport = new UDPFlowTransport({
@@ -72,7 +72,7 @@ const merged = await flow.fold(childIds, (results) => {
 ### Quick Start: Sync Coordination
 
 ```ts
-import { SyncCoordinator } from '@affectively/aeon';
+import { SyncCoordinator } from '@a0n/aeon';
 
 const coordinator = new SyncCoordinator();
 
@@ -92,7 +92,7 @@ const session = coordinator.createSyncSession('node-1', ['node-2', 'node-3']);
 ### Quick Start: Recovery Ledger
 
 ```ts
-import { RecoveryLedger } from '@affectively/aeon';
+import { RecoveryLedger } from '@a0n/aeon';
 
 const ledger = new RecoveryLedger({
   objectId: 'asset:app.bundle.js',
@@ -126,7 +126,7 @@ if (status.canReconstruct) {
 ### Quick Start: Schema Migrations
 
 ```ts
-import { MigrationEngine } from '@affectively/aeon';
+import { MigrationEngine } from '@a0n/aeon';
 
 const engine = new MigrationEngine();
 
@@ -150,15 +150,15 @@ Everything is available from the root import. Subpath imports are available for 
 
 | Import | What it does |
 |--------|-------------|
-| `@affectively/aeon` | Everything (barrel export) |
-| `@affectively/aeon/core` | Core types and interfaces |
-| `@affectively/aeon/distributed` | Sync coordination, replication, conflict resolution, and recovery ledgers |
-| `@affectively/aeon/versioning` | Schema versions, migrations, tracking |
-| `@affectively/aeon/offline` | Queued work for unreliable or offline periods |
-| `@affectively/aeon/compression` | Compression and delta-sync helpers |
-| `@affectively/aeon/persistence` | In-memory and storage adapter surfaces |
-| `@affectively/aeon/presence` | Real-time node and session state |
-| `@affectively/aeon/crypto` | Signing and UCAN-related primitives |
+| `@a0n/aeon` | Everything (barrel export) |
+| `@a0n/aeon/core` | Core types and interfaces |
+| `@a0n/aeon/distributed` | Sync coordination, replication, conflict resolution, and recovery ledgers |
+| `@a0n/aeon/versioning` | Schema versions, migrations, tracking |
+| `@a0n/aeon/offline` | Queued work for unreliable or offline periods |
+| `@a0n/aeon/compression` | Compression and delta-sync helpers |
+| `@a0n/aeon/persistence` | In-memory and storage adapter surfaces |
+| `@a0n/aeon/presence` | Real-time node and session state |
+| `@a0n/aeon/crypto` | Signing and UCAN-related primitives |
 
 The flow protocol, topology analysis, transport helpers, and federation modules are exported from the root barrel.
 
@@ -166,9 +166,9 @@ The flow protocol, topology analysis, transport helpers, and federation modules 
 
 | Package | Description |
 |---------|-------------|
-| [`@affectively/aeon-pipelines`](https://github.com/forkjoin-ai/aeon-pipelines) | Execution engine for fork/race/fold as computation primitives (race on speed, value, or any lambda) |
+| [`@a0n/aeon-pipelines`](https://github.com/forkjoin-ai/aeon-pipelines) | Execution engine for fork/race/fold as computation primitives (race on speed, value, or any lambda) |
 | [`packages/shootoff`](./packages/shootoff/README.md) | Side-by-side protocol benchmarks against HTTP/1.1 and HTTP/2 |
-| [`packages/wall`](./packages/wall/README.md) | Command-line client and benchmark harness for Aeon Flow, including native raw-path Aeon blasts and mixed UDP+TCP transport races |
+| [`packages/wall`](./packages/wall/README.md) | Command-line client and benchmark harness for Aeon Flow, including native raw-path Aeon blasts, preconnected launch-gate benchmarking, mixed UDP+TCP transport races, and direct bearer or `X-Aeon-*` auth injection |
 | `packages/nginx-flow-aeon` | nginx bridge for Aeon Flow behind HTTP infrastructure |
 | [`aeon-bazaar`](https://github.com/forkjoin-ai/aeon-bazaar) | Unbounded negotiation engine -- void walking, complement distributions |
 | [`aeon-neutral`](https://github.com/forkjoin-ai/aeon-neutral) | Bounded dispute resolution -- three-walker Skyrms mediation with convergence certificates |
