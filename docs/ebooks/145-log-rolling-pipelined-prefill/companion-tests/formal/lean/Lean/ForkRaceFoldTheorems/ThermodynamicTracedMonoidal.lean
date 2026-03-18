@@ -137,9 +137,10 @@ structure FeedbackThermodynamicCost
   /-- The heat cost of this feedback loop -/
   heatCost : ℝ := traceHeat A U boltzmannConstant temperature branchLaw
   /-- The heat cost is non-negative -/
-  hHeatNonneg : 0 ≤ heatCost :=
-    trace_heat_nonneg A U boltzmannConstant temperature
-      hBoltzmannPos hTemperaturePos branchLaw
+  hHeatNonneg : 0 ≤ heatCost := by
+    simpa [heatCost] using
+      (trace_heat_nonneg A U boltzmannConstant temperature
+        hBoltzmannPos hTemperaturePos branchLaw)
 
 /-! ### Trace vanishing = zero heat -/
 
@@ -155,7 +156,7 @@ structure FeedbackThermodynamicCost
 theorem trace_vanishing_heat
     (A : Type) [Fintype A] [Fintype (A × PUnit)] [DecidableEq A]
     (boltzmannConstant temperature : ℝ)
-    (hkPos : 0 < boltzmannConstant) (hTPos : 0 < temperature)
+    (_hkPos : 0 < boltzmannConstant) (_hTPos : 0 < temperature)
     (branchLaw : PMF (A × PUnit)) :
     coarseningInformationLoss branchLaw (traceProjection A PUnit) = 0 := by
   unfold coarseningInformationLoss

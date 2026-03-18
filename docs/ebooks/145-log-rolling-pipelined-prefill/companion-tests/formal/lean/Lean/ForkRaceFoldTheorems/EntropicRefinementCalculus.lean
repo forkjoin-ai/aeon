@@ -215,15 +215,14 @@ theorem coarsening_lattice_monotone
     provides the entropy-domination hypothesis. -/
 theorem conditionalEntropy_initial_information_measure
     (μ : InformationMeasure)
-    {α β : Type} [inst1 : Fintype α] [inst2 : Fintype β] [inst3 : DecidableEq α]
-    [inst4 : DecidableEq β]
+    {α β : Type} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
     (p : PMF α) (f : α → β)
     -- Hypothesis: μ at the constant (terminal) map dominates Shannon entropy.
     -- This holds for Landauer heat and all physically motivated information measures.
-    (hDominates : shannonEntropyNats p ≤
+    (hDominates : finiteBranchEntropyNats p ≤
       μ.measure p (fun _ : α => (⟨⟩ : Unit)))
     (hPushDominates : μ.measure (p.map f) (fun _ : β => (⟨⟩ : Unit)) ≤
-      shannonEntropyNats (p.map f)) :
+      finiteBranchEntropyNats (p.map f)) :
     conditionalEntropyNats p f ≤ μ.measure p f := by
   -- By the chain rule: μ(p, const) = μ(p, f) + μ(p.map f, const)
   -- where const : α → Unit is the terminal map.
@@ -232,7 +231,7 @@ theorem conditionalEntropy_initial_information_measure
   -- = μ(p, const) - μ(p.map f, const)  (since const ∘ f = const)
   -- Note: (fun _ => ()) ∘ f = fun _ => (), so const ∘ f = const
   have hConstComp : (fun _ : β => (⟨⟩ : Unit)) ∘ f = fun _ : α => (⟨⟩ : Unit) := by
-    ext; rfl
+    rfl
   rw [hConstComp] at hChain
   -- hChain: μ(p, const) = μ(p, f) + μ(p.map f, const)
   -- Therefore: μ(p, f) = μ(p, const) - μ(p.map f, const)

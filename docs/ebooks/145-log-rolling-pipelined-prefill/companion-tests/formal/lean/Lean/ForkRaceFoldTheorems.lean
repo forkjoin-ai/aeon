@@ -18,6 +18,7 @@ import ForkRaceFoldTheorems.QuorumLinearizability
 import ForkRaceFoldTheorems.QuorumOrdering
 import ForkRaceFoldTheorems.QuorumVisibility
 import ForkRaceFoldTheorems.MeasureQueueing
+import ForkRaceFoldTheorems.MolecularTopology
 import ForkRaceFoldTheorems.JacksonEnvelopeClosure
 import ForkRaceFoldTheorems.JacksonExactClosure
 import ForkRaceFoldTheorems.JacksonFeedForwardClosure

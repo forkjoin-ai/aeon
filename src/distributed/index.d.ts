@@ -17,3 +17,5 @@ export { SyncProtocol } from './SyncProtocol';
 export type { SyncMessage, Handshake, SyncRequest, SyncResponse, ProtocolError, SyncProtocolPersistenceData, SyncProtocolPersistenceConfig, SyncProtocolOptions, } from './SyncProtocol';
 export { StateReconciler } from './StateReconciler';
 export type { StateVersion, StateDiff, ReconciliationResult, MergeStrategy, } from './StateReconciler';
+export { RecoveryLedger } from './RecoveryLedger';
+export type { RecoveryLedgerConfig, RecoveryLedgerSnapshot, RecoveryStatus, RecoveryConflict, RecoveryShardRole, RecoveryPathStatus, RecoveryShardObservation, RecoveryPathObservation, RecordShardObservationInput, RecordPathObservationInput, } from './RecoveryLedger';

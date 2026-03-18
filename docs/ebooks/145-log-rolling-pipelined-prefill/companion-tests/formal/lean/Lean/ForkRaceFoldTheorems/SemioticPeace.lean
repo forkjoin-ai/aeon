@@ -52,7 +52,8 @@ def semioticFold (ch : SemioticChannel) :
 theorem semioticFold_speech_constant (ch : SemioticChannel)
     (hSpeech : ch.articulationStreams = 1) (p : Fin ch.semanticPaths) :
     semioticFold ch p = ⟨0, ch.hArticulationPos⟩ := by
-  ext; simp [semioticFold, hSpeech]
+  ext
+  simp [semioticFold, hSpeech, Nat.mod_one]
 
 /-- For standard speech, any two semantic paths collide: the semiotic
     fold is maximally non-injective. There is no way to articulate
@@ -193,7 +194,7 @@ theorem war_as_cumulative_heat
     heat at each stage is at least the heat of all previous stages. -/
 theorem war_three_stage_monotone
     {β₂ β₃ : Type*} [Fintype β₂] [Fintype β₃]
-    [DecidableEq (Fin ch.articulationStreams)] [DecidableEq β₂] [DecidableEq β₃]
+    [DecidableEq β₂] [DecidableEq β₃]
     (ch : SemioticChannel)
     (boltzmannConstant temperature : ℝ)
     (hkPos : 0 < boltzmannConstant) (hTPos : 0 < temperature)
@@ -355,7 +356,7 @@ theorem peace_is_reachable
     images, so the trajectory terminates in at most `Fintype.card β`
     steps. This provides a finite upper bound on the path to peace. -/
 theorem convergence_rate_bound
-    {α β : Type*} [Fintype α] [Fintype β] [DecidableEq α] [DecidableEq β]
+    {α β : Type*} [Fintype α] [Fintype β] [Nonempty β] [DecidableEq α] [DecidableEq β]
     (branchLaw : PMF α) (quotientMap : α → β)
     (hNotYet : ¬ Set.InjOn quotientMap (PMF.support branchLaw)) :
     -- Strictly positive progress per step implies termination within card β steps

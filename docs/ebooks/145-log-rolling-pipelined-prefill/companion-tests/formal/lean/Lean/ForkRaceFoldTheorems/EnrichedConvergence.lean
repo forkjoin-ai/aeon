@@ -106,9 +106,9 @@ theorem throughput_maximum_exists (skeletons : List MonoidalSkeleton)
   | cons hd tl ih =>
     by_cases htl : tl = []
     · -- Singleton list: hd is trivially the max
-      exact ⟨hd, List.mem_cons_self _ _, fun t ht => by
+      exact ⟨hd, by simp, fun t ht => by
         rw [htl] at ht
-        simp [List.mem_cons, List.mem_nil_iff] at ht
+        simp [List.mem_cons] at ht
         rw [ht]⟩
     · -- Non-empty tail: get the tail maximum and compare
       obtain ⟨sMax, hsMax_mem, hsMax_max⟩ := ih htl
@@ -120,7 +120,7 @@ theorem throughput_maximum_exists (skeletons : List MonoidalSkeleton)
           | inr h => exact hsMax_max t h⟩
       · -- hd wins
         push_neg at hle
-        exact ⟨hd, List.mem_cons_self _ _, fun t ht => by
+        exact ⟨hd, by simp, fun t ht => by
           cases List.mem_cons.mp ht with
           | inl h => rw [h]
           | inr h => exact le_of_lt (lt_of_le_of_lt (hsMax_max t h) hle)⟩

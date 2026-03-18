@@ -111,24 +111,42 @@ theorem drift_conservation
     (data : RawGraphData α β) :
     ∑ c ∈ data.coarseNodes, coarseDrift data c =
     ∑ a ∈ data.fineNodes, (data.arrivalRate a - data.serviceRate a) := by
-  -- Expand definitions
-  simp only [coarseDrift, aggregateArrival, aggregateService]
-  -- Push the subtraction through the sum
-  simp only [Finset.sum_sub_distrib]
-  -- Both sides are ∑ over fineNodes, partitioned by quotientMap image
-  -- Use Finset.sum_biUnion to rearrange: ∑_{c ∈ image} ∑_{a | φ(a)=c} = ∑_{a ∈ fineNodes}
-  rw [← Finset.sum_biUnion (f := fun c => data.fineNodes.filter (fun a => data.quotientMap a = c))
-    (by intro c _ d _ hcd
-        rw [Finset.disjoint_filter]
-        intro a _ hac had
-        exact hcd (hac ▸ had))]
-  congr 1
-  -- The biUnion of fibers over the image equals fineNodes
-  ext a
-  simp only [Finset.mem_biUnion, Finset.mem_filter, RawGraphData.coarseNodes, Finset.mem_image]
-  constructor
-  · rintro ⟨_, ⟨b, hb, rfl⟩, ha, _⟩; exact ha
-  · intro ha; exact ⟨data.quotientMap a, ⟨a, ha, rfl⟩, ha, rfl⟩
+  classical
+  unfold coarseDrift aggregateArrival aggregateService
+  calc
+    ∑ c ∈ data.coarseNodes,
+        ((∑ fineNode ∈ data.fineNodes with data.quotientMap fineNode = c, data.arrivalRate fineNode) -
+          (∑ fineNode ∈ data.fineNodes with data.quotientMap fineNode = c, data.serviceRate fineNode))
+      =
+        (∑ c ∈ data.coarseNodes,
+          ∑ fineNode ∈ data.fineNodes with data.quotientMap fineNode = c, data.arrivalRate fineNode) -
+        (∑ c ∈ data.coarseNodes,
+          ∑ fineNode ∈ data.fineNodes with data.quotientMap fineNode = c, data.serviceRate fineNode) := by
+            rw [Finset.sum_sub_distrib]
+    _ =
+        (∑ a ∈ data.fineNodes, data.arrivalRate a) -
+        (∑ a ∈ data.fineNodes, data.serviceRate a) := by
+          congr
+          · simpa [RawGraphData.coarseNodes] using
+              (Finset.sum_fiberwise_of_maps_to
+                (s := data.fineNodes)
+                (t := data.fineNodes.image data.quotientMap)
+                (g := data.quotientMap)
+                (h := by
+                  intro fineNode hFineNode
+                  exact Finset.mem_image_of_mem data.quotientMap hFineNode)
+                (f := data.arrivalRate))
+          · simpa [RawGraphData.coarseNodes] using
+              (Finset.sum_fiberwise_of_maps_to
+                (s := data.fineNodes)
+                (t := data.fineNodes.image data.quotientMap)
+                (g := data.quotientMap)
+                (h := by
+                  intro fineNode hFineNode
+                  exact Finset.mem_image_of_mem data.quotientMap hFineNode)
+                (f := data.serviceRate))
+    _ = ∑ a ∈ data.fineNodes, (data.arrivalRate a - data.serviceRate a) := by
+        rw [Finset.sum_sub_distrib]
 
 -- ─── THM-RECURSIVE-COARSENING-SYNTHESIS: Stability transfer ────────────
 
@@ -162,7 +180,7 @@ theorem fine_stability_implies_coarse_stability
 theorem identity_quotient_preserves_stability
     {α : Type*} [DecidableEq α]
     (data : RawGraphData α α)
-    (hId : data.quotientMap = id)
+    (_hId : data.quotientMap = id)
     (hFineStable : ∀ a ∈ data.fineNodes, data.arrivalRate a < data.serviceRate a)
     (a : α) (ha : a ∈ data.coarseNodes) :
     coarseDrift data a < 0 := by

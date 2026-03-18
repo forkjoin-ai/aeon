@@ -35,6 +35,18 @@ theorem homological_equivalence (a b : BettiSignature)
     a = b := by
   cases a; cases b; simp_all
 
+/-- A nontrivial hole persists under any deformation that preserves the Betti
+    signature. This is the formal content of "stretching or twisting the fabric
+    does not remove the hole." -/
+theorem hole_persists_under_homological_deformation
+    (original deformed : BettiSignature)
+    (_h0 : original.beta0 = deformed.beta0)
+    (h1 : original.beta1 = deformed.beta1)
+    (_h2 : original.beta2 = deformed.beta2)
+    (hHole : 0 < original.beta1) :
+    0 < deformed.beta1 := by
+  simpa [← h1] using hHole
+
 /-- The DNA double helix has Betti signature (1, 2, 0). -/
 def dnaHelix : BettiSignature := ⟨1, 2, 0⟩
 
@@ -139,7 +151,7 @@ def EvolutionaryGeneration.beta1 (g : EvolutionaryGeneration) : ℕ :=
 
 /-- Selection (fold) reduces β₁: only the fittest survive. -/
 def selectionFold (g : EvolutionaryGeneration) (survivors : ℕ)
-    (h : 0 < survivors) (h2 : survivors ≤ g.populationSize) : ℕ :=
+    (_h : 0 < survivors) (_h2 : survivors ≤ g.populationSize) : ℕ :=
   survivors - 1
 
 /-- Selection reduces β₁ when survivors < population. -/
@@ -179,6 +191,8 @@ theorem scale_tower_additive (s1 s2 : ScaleLevel)
     (h : s1.baseBeta1 = s2.coveringBeta1) :
     s1.foldReduction + s2.foldReduction =
     s1.coveringBeta1 - s2.baseBeta1 := by
+  have hBase : s2.baseBeta1 ≤ s2.coveringBeta1 := s2.fold_reduces
+  have hCover : s2.coveringBeta1 ≤ s1.coveringBeta1 := by simpa [h] using s1.fold_reduces
   simp [ScaleLevel.foldReduction]
   omega
 
@@ -235,8 +249,7 @@ def InformationMatterBridge.totalHeat (b : InformationMatterBridge) : ℕ :=
 /-- Positive erasure produces positive heat. -/
 theorem positive_erasure_positive_heat (b : InformationMatterBridge) (h : 0 < b.bitsErased) :
     0 < b.totalHeat := by
-  simp [InformationMatterBridge.totalHeat]
-  exact Nat.mul_pos h b.heatPerBit_pos
+  simpa [InformationMatterBridge.totalHeat] using Nat.mul_pos h b.heatPerBit_pos
 
 /-- More erasure → more heat (monotone). -/
 theorem erasure_heat_monotone (b : InformationMatterBridge) (n m : ℕ) (h : n ≤ m) :

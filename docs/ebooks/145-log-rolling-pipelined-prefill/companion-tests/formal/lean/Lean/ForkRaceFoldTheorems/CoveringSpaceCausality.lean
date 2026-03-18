@@ -1,10 +1,9 @@
 import Mathlib
-import ForkRaceFoldTheorems.Claims
 import ForkRaceFoldTheorems.BeautyOptimality
 
 namespace ForkRaceFoldTheorems
 
-/--
+/-!
 Track Beta: Covering-Space Causality
 
 THM-COVERING-CAUSALITY — If β₁(computation) > 0 and β₁(transport) = 0
@@ -64,7 +63,7 @@ def pathToStream (pathCount transportStreams : ℕ) (path : Fin pathCount) : ℕ
 theorem covering_causality
     {pathCount : ℕ}
     (hPaths : 2 ≤ pathCount)
-    (hTcpTransport : transportBeta1 1 = 0) :
+    (_hTcpTransport : transportBeta1 1 = 0) :
     0 < computationBeta1 pathCount ∧
     ∃ (p1 p2 : Fin pathCount), p1 ≠ p2 ∧
       pathToStream pathCount 1 p1 = pathToStream pathCount 1 p2 := by
@@ -95,7 +94,7 @@ def blockingWitnessFromMismatch
 theorem covering_match
     {pathCount transportStreams : ℕ}
     (hMatch : pathCount ≤ transportStreams)
-    (hPathCount : 0 < pathCount) :
+    (_hPathCount : 0 < pathCount) :
     topologicalDeficit pathCount transportStreams ≤ 0 := by
   unfold topologicalDeficit computationBeta1 transportBeta1
   omega
@@ -103,7 +102,7 @@ theorem covering_match
 /-- Under matched topology, distinct paths map to distinct streams. -/
 theorem matched_paths_isolated
     {pathCount : ℕ}
-    (hPathCount : 0 < pathCount)
+    (_hPathCount : 0 < pathCount)
     (p1 p2 : Fin pathCount)
     (hDistinct : p1 ≠ p2) :
     pathToStream pathCount pathCount p1 ≠ pathToStream pathCount pathCount p2 ∨
@@ -122,7 +121,7 @@ theorem matched_paths_isolated
     multiplicative latency inflation proportional to Δ. -/
 theorem deficit_latency_separation
     {pathCount : ℕ}
-    (hPaths : 2 ≤ pathCount) :
+    (_hPaths : 2 ≤ pathCount) :
     0 < topologicalDeficit pathCount 1 := by
   unfold topologicalDeficit computationBeta1 transportBeta1
   omega
@@ -138,7 +137,7 @@ theorem tcp_deficit_is_path_count_minus_one
 /-- QUIC/Aeon Flow deficit is zero when streams match paths. -/
 theorem matched_deficit_is_zero
     {pathCount : ℕ}
-    (hPaths : 1 ≤ pathCount) :
+    (_hPaths : 1 ≤ pathCount) :
     topologicalDeficit pathCount pathCount = 0 := by
   unfold topologicalDeficit computationBeta1 transportBeta1
   omega
@@ -167,7 +166,7 @@ theorem protocol_deficit_ordering
     (streamId field) IS the covering map from computation to transport. -/
 theorem frame_header_is_covering_map
     {pathCount : ℕ}
-    (hPaths : 0 < pathCount) :
+    (_hPaths : 0 < pathCount) :
     -- Frame header maps paths to streams (the covering map)
     -- When the map is injective (1:1), no blocking occurs
     (∀ (p1 p2 : Fin pathCount),
