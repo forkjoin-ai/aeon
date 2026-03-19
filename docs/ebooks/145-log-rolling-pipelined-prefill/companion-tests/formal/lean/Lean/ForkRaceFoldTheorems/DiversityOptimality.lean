@@ -71,9 +71,10 @@ structure DiversityOptimalityWitness where
 /-- Pillar 1: More options, more paths, more strategies = monotonically
     better or equal. Never worse. Directly from CodecRacing.lean. -/
 theorem diversity_monotonicity (results : List CodecResult)
-    (newOption : CodecResult) :
+    (newOption : CodecResult)
+    (hne : results ≠ []) :
     raceMin (newOption :: results) ≤ raceMin results :=
-  race_monotone_on_add results newOption
+  race_monotone_on_add results hne newOption
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Pillar 2: Subsumption
@@ -220,13 +221,13 @@ theorem diversity_optimality_master
       (conditionalEntropyNats w.foldWitness.branchLaw w.foldWitness.foldMerge) := by
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   -- Pillar 1: Monotonicity
-  · exact fun newOption => diversity_monotonicity w.codecResults newOption
+  · exact fun newOption => diversity_monotonicity w.codecResults newOption w.hCodecNonempty
   -- Pillar 2: Subsumption
   · exact diversity_subsumption w.codecResults
   -- Pillar 3: Necessity
   · exact diversity_necessity w.hPathCount
   -- Pillar 4: Optimality
-  · exact diversity_optimality (by omega)
+  · exact diversity_optimality (by omega : 0 < w.pathCount)
   -- Pillar 5a: Collapse requires waste
   · exact diversity_collapse_requires_waste w.hAligned w.hForked w.hCollapse
   -- Pillar 5b: Fold erasure
