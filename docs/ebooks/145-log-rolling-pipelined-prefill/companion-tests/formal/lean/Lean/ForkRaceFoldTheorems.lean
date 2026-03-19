@@ -70,3 +70,4 @@ import ForkRaceFoldTheorems.SemioticPeace
 import ForkRaceFoldTheorems.NovelInference
 import ForkRaceFoldTheorems.NovelInferenceForms
 import ForkRaceFoldTheorems.PredictionsRound5
+import ForkRaceFoldTheorems.PredictionsRound6
