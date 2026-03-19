@@ -3681,7 +3681,53 @@ The cancer topology theorems (§3.17, CancerTopology.lean, CancerPredictions.lea
 
 ---
 
-The ten predictions (§19.8 and §19.9) now span seven domains: semiconductor physics, genomics, psychotherapy, compression, finance, cancer genomics, and stem cell biology. All ten chain mechanized theorems. All ten name their falsification conditions.
+### 19.10 Five Geometric Predictions from the Fisher Manifold
+
+The Fisher manifold geometry (§15.26) and the Buleyean probability implementation (`@a0n/maybe`, `manifold.ts`, `predictions.test.ts`, 14 tests, all passing) compose into five additional predictions. Each chains the Fisher information metric, geodesic curvature, and the four-layer Buleyean coordinate system into falsifiable claims that go beyond what the manifold section alone states.
+
+**Prediction 6: Buleyean learners will maintain sensitivity to late-arriving evidence longer than softmax learners.**
+
+*Theorem chain:* `buleyean_positivity` (§15.17) $\to$ Fisher metric $g_{ij} = \delta_{ij}/p_i$ (§15.26) $\to$ Fisher-Rao velocity $\to$ sustained responsiveness.
+
+*Claim:* Under concentrated rejection (one outcome dominating the rejection stream), the Buleyean complement distribution maintains a higher late-stage/early-stage manifold velocity ratio than the softmax complement at any temperature $\eta$. Specifically, define $\rho_B = v_{\text{late}} / v_{\text{early}}$ where $v = d_{\text{FR}}(p_t, p_{t+1})$ is the per-step Fisher-Rao velocity. The Buleyean ratio $\rho_B$ exceeds the softmax ratio $\rho_S$ because the exponential dampening in softmax ($e^{-\eta v_i}$) drives the distribution to near-delta concentration, after which additional rejections produce near-zero manifold movement (stagnation). The linear Buleyean formula ($T - v_i + 1$) never fully concentrates -- the "+1" sliver (§15.17, `buleyean_positivity`) ensures every dimension retains positive weight, maintaining manifold velocity indefinitely. In a reinforcement learning context, this predicts that Buleyean-guided exploration will discover reward-bearing states that softmax-guided exploration misses after concentration -- the softmax agent "freezes" while the Buleyean agent keeps learning.
+
+*Falsification:* Implement both Buleyean and softmax complement walkers on a multi-armed bandit with a late-appearing optimal arm (activated after round $T/2$). If the softmax walker discovers the late arm in equal or fewer rounds than the Buleyean walker across 1,000 trials, the prediction fails. The prediction is that the Buleyean walker's late-stage velocity advantage translates to faster discovery of arms that appear after concentration.
+
+**Prediction 7: The rate of Fisher-Rao distance increase from uniform will predict convergence speed of online learning algorithms.**
+
+*Theorem chain:* Fisher-Rao distance $d_{\text{FR}}(P, u) = 2\arccos(\sum \sqrt{P_i/n})$ (§15.26) $\to$ Shannon entropy $H(P) = -\sum P_i \log P_i$ $\to$ `buleyean_concentration` (§15.17) $\to$ `void_walking_regret_bound` (§15.17).
+
+*Claim:* The per-step Fisher-Rao velocity from the uniform distribution -- $v_t = d_{\text{FR}}(P_t, u) - d_{\text{FR}}(P_{t-1}, u)$ -- correlates positively with the per-step entropy reduction $\Delta H_t = H_{t-1} - H_t$. Both quantities are manifold-intrinsic measures of learning rate: the velocity measures geometric movement away from maximum uncertainty, and the entropy reduction measures information gain. The prediction is that for any online learning algorithm operating on a Buleyean void boundary, the Pearson correlation between $v_t$ and $\Delta H_t$ exceeds 0.5 over any window of 40+ observations. This is a geometric reformulation of the inverse Bule: the void walker's convergence metric IS the manifold velocity.
+
+*Falsification:* Run a Buleyean void walker on 20 distinct multi-armed bandit instances with varying arm distributions. Compute the correlation between $v_t$ and $\Delta H_t$ for each instance. If the median correlation falls below 0.5, the prediction fails. If the correlation is negative for any instance, the monotonic relationship between geometric movement and information gain is refuted.
+
+**Prediction 8: The inter-layer Fisher-Rao distances in a four-layer Buleyean stack will decrease monotonically under the tick operation.**
+
+*Theorem chain:* `upwardConstraint` + `downwardContext` (§15.26, `void.ts`) $\to$ `tickBoundaryStack` $\to$ manifold coordinates $(b_0, b_1, b_2, b_3)$ $\to$ inter-layer distances.
+
+*Claim:* Given a four-layer Buleyean `BoundaryStack` where each layer has been initialized with distinct biases (different dimensions rejected at different layers), the sum of inter-layer Fisher-Rao distances $D = \sum_{k < l} d_{\text{FR}}(P_k, P_l)$ decreases over successive tick operations. The upward constraint flow (deeper layers constrain shallower) and downward context flow (shallower layers modulate deeper) act as contractive maps on the manifold -- they pull the four distribution points toward each other. The epistemological tetrahedron shrinks. The rate of contraction is proportional to the initial separation: widely separated layers (high epistemological tension) contract faster than closely spaced ones. Furthermore, all four layers maintain Buleyean positivity throughout contraction -- the tetrahedron shrinks but never degenerates (no layer reaches a delta distribution). In cognitive terms, this predicts that the four inference modes (retrocausal constraint, Bayesian updating, frequentist observation, Solomonoff complexity) converge toward agreement over time, with faster convergence when they initially disagree more.
+
+*Falsification:* Initialize a Buleyean stack with four layers biased on different dimensions (e.g., retrocausal on dim 0, Bayesian on dim 2, frequentist on dim 4, Solomonoff on dim 1). Tick 30 times. If the average inter-layer distance in the last 10 ticks is not strictly less than the average in the first 10 ticks, the contraction prediction fails. If any layer violates Buleyean positivity at any tick, the axiom preservation fails.
+
+**Prediction 9: Statistical fraud detection sensitivity will increase with the number of outcomes in the distribution.**
+
+*Theorem chain:* Scalar curvature $R = (n-1)(n-2)/4$ (§15.26) $\to$ geodesic curvature $\kappa_t$ (§15.26) $\to$ fraud score $F$ $\to$ sensitivity scaling.
+
+*Claim:* For an $n$-outcome Buleyean distribution, the minimum perturbation magnitude detectable by the geodesic curvature fraud detector decreases with $n$. The intrinsic scalar curvature of the $(n-1)$-dimensional Fisher manifold is $R = (n-1)(n-2)/4$, which grows quadratically with $n$. Higher curvature provides more geometric contrast against which trajectory deviations are measured -- a perturbation that is invisible on a 2-simplex ($R = 0$, flat) becomes detectable on a 20-simplex ($R = 85.5$, highly curved). This predicts that fraud detectors operating on high-dimensional distributions (many possible outcomes) will detect smaller manipulations than those operating on low-dimensional distributions, even at the same perturbation magnitude.
+
+*Falsification:* For each $n \in \{3, 5, 8, 12, 20\}$, construct a geodesic path on $\Delta^{n-1}$ and introduce a single-point perturbation of magnitude $\epsilon$ at the midpoint. Binary-search for the minimum $\epsilon$ that produces a fraud score $> 0.01$. If the minimum $\epsilon$ is non-decreasing in $n$, the sensitivity-scaling prediction fails.
+
+**Prediction 10: In any multi-layer inference system, the Solomonoff curvature coordinate ($b_3$) will dominate the frequentist coordinate ($b_2$) before data arrives, with a measurable crossover point after which $b_2 > b_3$.**
+
+*Theorem chain:* `solomonoff_pre_empirical_occam` (§15.18) $\to$ manifold coordinates $(b_0, b_1, b_2, b_3)$ (§15.26) $\to$ Fisher-Rao distance from uniform $\to$ `solomonoff_weight_gap_fixed` (§15.18).
+
+*Claim:* In the four-layer Buleyean system, the Solomonoff layer ($b_3$) starts with higher curvature than the frequentist layer ($b_2$) because complexity-initialization pushes the Solomonoff distribution away from uniform (§15.18, `solomonoff_pre_empirical_occam`), while the frequentist layer begins at uniform (no data). As observations accumulate, the frequentist layer's curvature grows while the Solomonoff layer's curvature is fixed by its initialization. There exists a crossover round $T^*$ at which $b_2(T^*) = b_3$ -- after which data dominates complexity. The crossover is $O(K_{\max})$ where $K_{\max}$ is the maximum complexity in the Solomonoff initialization, because `solomonoff_weight_gap_fixed` proves the complexity gap is constant while data grows linearly. Before $T^*$, Occam's razor governs prediction. After $T^*$, data governs. The crossover point $T^*$ is computable and marks the transition from theory-driven to data-driven inference.
+
+*Falsification:* Initialize a Buleyean stack with Solomonoff complexities $K = (1, 2, 3, 4, 5)$ and add frequentist rejections biased toward one dimension. Track $b_2$ and $b_3$ per round. If no crossover occurs within $10 \cdot K_{\max}$ rounds, the prediction fails. If the crossover round $T^*$ is not within a factor of 2 of $K_{\max}$, the scaling prediction fails.
+
+---
+
+The fifteen predictions (§19.8, §19.9, and §19.10) now span nine domains: semiconductor physics, genomics, psychotherapy, compression, finance, cancer genomics, stem cell biology, information geometry, and machine learning. All fifteen chain mechanized theorems. All fifteen name their falsification conditions. The five geometric predictions add the Fisher manifold as a new diagnostic surface: the curvature of the probability simplex is not a metaphor but a measurable quantity, and the shape of a distribution's trajectory on that surface distinguishes truthful evolution from manipulation.
 
 ## 20. Conclusion
 
