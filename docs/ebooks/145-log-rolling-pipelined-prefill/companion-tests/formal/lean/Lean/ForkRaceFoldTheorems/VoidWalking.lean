@@ -71,13 +71,18 @@ theorem void_boundary_grows_per_step (step : FoldStep) :
 theorem void_boundary_monotone (steps : List FoldStep) (step : FoldStep) :
     steps.foldl (fun acc s => acc + (s.forkWidth - 1)) 0 ≤
     (steps ++ [step]).foldl (fun acc s => acc + (s.forkWidth - 1)) 0 := by
-  induction steps with
+  suffices h : ∀ (acc : ℕ),
+      List.foldl (fun a s => a + (s.forkWidth - 1)) acc steps ≤
+      List.foldl (fun a s => a + (s.forkWidth - 1)) acc (steps ++ [step]) by
+    exact h 0
+  intro acc
+  induction steps generalizing acc with
   | nil =>
     simp only [List.nil_append, List.foldl_cons, List.foldl_nil]
     have := step.nontrivial; omega
   | cons hd tl ih =>
-    simp only [List.cons_append, List.foldl_cons] at ih ⊢
-    exact ih
+    simp only [List.cons_append, List.foldl_cons]
+    exact ih _
 
 /-- Space efficiency: boundary needs only O(T * log N_max) space.
     Each of T steps stores one log(N_t)-bit class ID. -/
@@ -158,8 +163,28 @@ def nestedVoidVolume (N d T : ℕ) : ℕ := T * (N ^ d - 1)
 theorem void_dominance_nested (N d T : ℕ) (hN : 2 ≤ N) (hd : 1 ≤ d) (hT : 1 ≤ T) :
     T ≤ nestedVoidVolume N d T + N ^ d := by
   unfold nestedVoidVolume
-  have hPow : 1 ≤ N ^ d := Nat.one_le_pow _ _ (by linarith)
-  nlinarith [Nat.mul_le_mul_left T (Nat.sub_le (N ^ d) 1)]
+  have hPow : 1 ≤ N ^ d := Nat.one_le_pow _ _ (by omega)
+  -- T ≤ T * (N^d - 1) + N^d
+  -- = T * N^d - T + N^d
+  -- = (T + 1) * N^d - T
+  -- ≥ (T + 1) * 1 - T = 1 ≥ ... no, we need T ≤ T*(N^d-1) + N^d
+  -- Rearrange: T ≤ T*N^d - T + N^d iff 2T ≤ T*N^d + N^d = N^d*(T+1)
+  -- Since N^d ≥ 1: N^d*(T+1) ≥ T+1 ≥ T. And T*(N^d-1) ≥ 0. So T ≤ 0 + N^d... no.
+  -- Actually: T*(N^d - 1) + N^d = T*N^d - T + N^d = N^d*(T+1) - T
+  -- We need T ≤ N^d*(T+1) - T, i.e., 2T ≤ N^d*(T+1)
+  -- Since N^d ≥ 1 and T+1 ≥ 2: N^d*(T+1) ≥ 1*2 = 2 ≥ 2T when T ≤ 1... not always.
+  -- Actually N^d ≥ 2 since N ≥ 2 and d ≥ 1: N^d ≥ 2^1 = 2.
+  -- So N^d*(T+1) ≥ 2*(T+1) = 2T+2 > 2T. Done.
+  have hPow2 : 2 ≤ N ^ d := by
+    calc 2 ≤ N := hN
+      _ = N ^ 1 := (pow_one N).symm
+      _ ≤ N ^ d := Nat.pow_le_pow_right (by omega) hd
+  -- Goal: T ≤ T * (N ^ d - 1) + N ^ d
+  -- Since N^d ≥ 2: N^d - 1 ≥ 1, so T * (N^d - 1) ≥ T.
+  -- Then T * (N^d - 1) + N^d ≥ T + 2 ≥ T.
+  have h1 : 1 ≤ N ^ d - 1 := by omega
+  have h2 : T ≤ T * (N ^ d - 1) := Nat.le_mul_of_pos_right T (by omega)
+  linarith
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- §23.10 THM-VOID-MEMORY-EFFICIENCY: Boundary Encoding Is Exponentially Compact
@@ -179,35 +204,16 @@ def boundaryStorage (T logN : ℕ) : ℕ := T * logN
     The boundary is a sufficient statistic for optimal fork distributions. -/
 theorem void_boundary_sufficient_statistic (N T payloadBits logN : ℕ)
     (hN : 2 ≤ N) (hT : 0 < T) (hPayload : 1 ≤ payloadBits)
-    (hLog : 1 ≤ logN) (hLogBound : logN ≤ N) :
+    (hLog : 1 ≤ logN) (hLogBound : logN ≤ N - 1) :
     boundaryStorage T logN ≤ fullPathStorage N T payloadBits := by
   unfold boundaryStorage fullPathStorage
-  -- Goal: T * logN ≤ (N - 1) * T * payloadBits
-  -- Sufficient: logN ≤ (N - 1) * payloadBits, then multiply by T.
   suffices hKey : logN ≤ (N - 1) * payloadBits by
     calc T * logN ≤ T * ((N - 1) * payloadBits) := Nat.mul_le_mul_left T hKey
       _ = (N - 1) * T * payloadBits := by ring
-  -- logN ≤ N ≤ (N-1)+1 and (N-1)*payloadBits ≥ (N-1) ≥ N-1 ≥ logN-1
-  -- For N ≥ 2, payloadBits ≥ 1: (N-1)*payloadBits ≥ N-1 ≥ 1.
-  -- We need logN ≤ (N-1)*payloadBits. We know logN ≤ N.
-  -- Case: payloadBits ≥ 2: (N-1)*payloadBits ≥ 2*(N-1) = 2N-2 ≥ N for N ≥ 2. Done.
-  -- Case: payloadBits = 1: (N-1)*1 = N-1. Need logN ≤ N-1. Since logN ≤ N, sufficient if N ≥ logN+1, which holds when N ≥ 2 and logN ≤ N.
-  -- Actually logN ≤ N and N-1 ≥ 1, so (N-1)*payloadBits ≥ payloadBits ≥ 1.
-  -- And logN ≤ N. Is N ≤ (N-1)*payloadBits? Not necessarily when payloadBits=1.
-  -- But logN ≤ N and (N-1)*1 = N-1. So we need logN ≤ N-1.
-  -- This requires logN < N, which is given by hLogBound : logN ≤ N and... actually
-  -- logN could equal N. The original theorem had hLogBound : logN ≤ N.
-  -- The theorem is actually false when logN = N and payloadBits = 1: then
-  -- T*N ≤ (N-1)*T*1 iff N ≤ N-1, which is false.
-  -- The original proof must have had an extra step. Let me just weaken it.
-  -- Actually the original proof DID work because the calc chain went to a LARGER
-  -- expression. It proved T*logN ≤ SOMETHING_BIGGER ≥ (N-1)*T*payloadBits.
-  -- That's not a valid calc chain either. The original proof was likely buggy.
-  -- For now, add the assumption logN ≤ N - 1 (log is strictly less than N).
-  -- Actually, for natural log base 2: log2(N) ≤ N-1 for all N ≥ 1. So hLogBound : logN ≤ N
-  -- is overly generous. In practice logN = Nat.log 2 N < N for N ≥ 1.
-  -- Let's just use omega with all available hypotheses.
-  omega
+  -- logN ≤ N-1 and (N-1)*payloadBits ≥ (N-1) since payloadBits ≥ 1
+  calc logN ≤ N - 1 := hLogBound
+    _ = (N - 1) * 1 := by ring
+    _ ≤ (N - 1) * payloadBits := Nat.mul_le_mul_left _ hPayload
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- §23.10 THM-VOID-TUNNEL: Cross-Void Mutual Information
@@ -308,7 +314,10 @@ theorem void_walking_regret_bound (T N : ℕ) (hT : 0 < T) (hN : 2 ≤ N) :
   unfold voidWalkingRegretBound standardRegretBound
   -- √(T * log N) ≤ √(T * N) since log N ≤ N
   have hLog : Nat.log 2 N + 1 ≤ N := by
-    have : Nat.log 2 N ≤ N := Nat.log_le_self_of_pos (by omega)
+    have h1 : Nat.log 2 N < N := by
+      apply Nat.log_lt_of_lt_pow (by omega)
+      -- Need: N < 2^N. True by induction for all N.
+      exact Nat.lt_pow_self (by omega : 1 < 2)
     omega
   have hMul : T * (Nat.log 2 N + 1) ≤ T * N := Nat.mul_le_mul_left _ hLog
   calc Nat.sqrt (T * (Nat.log 2 N + 1))

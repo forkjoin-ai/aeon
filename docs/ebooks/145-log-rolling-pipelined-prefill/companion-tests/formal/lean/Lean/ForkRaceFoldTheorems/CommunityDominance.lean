@@ -172,7 +172,7 @@ theorem community_monotone_nondegradation (ft : FailureTopology)
       ((failureToSemiotic ft 0).articulationStreams +
        (failureToSemiotic ft 0).contextPaths) := by
         simp [failureToSemiotic]
-        unfold topologicalDeficit
+        unfold topologicalDeficit computationBeta1 transportBeta1
         omega
     _ ≤ 0 := hGoodHand
 
@@ -228,7 +228,7 @@ theorem community_bridges_tares (ft : FailureTopology)
     unbridgedTares ft c2 ≤ unbridgedTares ft c1 := by
   unfold unbridgedTares communityReducedDeficit contextReducedDeficit
   simp [failureToSemiotic]
-  unfold topologicalDeficit
+  unfold topologicalDeficit computationBeta1 transportBeta1
   omega
 
 /-- With sufficient community context, all tares are bridged. -/
@@ -271,7 +271,7 @@ theorem community_strict_domination (ft : FailureTopology)
   unfold communityReducedDeficit schedulingDeficit
   unfold contextReducedDeficit semioticDeficit
   simp [failureToSemiotic]
-  unfold topologicalDeficit
+  unfold topologicalDeficit computationBeta1 transportBeta1
   omega
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -311,7 +311,7 @@ theorem bule_deficit_monotone_decreasing (ft : FailureTopology)
     buleDeficit ft c2 ≤ buleDeficit ft c1 := by
   unfold buleDeficit communityReducedDeficit contextReducedDeficit
   simp [failureToSemiotic]
-  unfold topologicalDeficit
+  unfold topologicalDeficit computationBeta1 transportBeta1
   omega
 
 /-- Bule deficit strictly decreases per community observation when
@@ -322,7 +322,7 @@ theorem bule_deficit_strict_progress (ft : FailureTopology)
     buleDeficit ft (c + 1) < buleDeficit ft c := by
   unfold buleDeficit communityReducedDeficit contextReducedDeficit at *
   simp [failureToSemiotic] at *
-  unfold topologicalDeficit at *
+  unfold topologicalDeficit computationBeta1 transportBeta1 at *
   omega
 
 /-- Bule convergence: sufficient community context drives the
@@ -335,7 +335,7 @@ theorem bule_convergence (ft : FailureTopology)
     buleDeficit ft communityContext = 0 := by
   unfold buleDeficit communityReducedDeficit contextReducedDeficit
   simp [failureToSemiotic]
-  unfold topologicalDeficit
+  unfold topologicalDeficit computationBeta1 transportBeta1
   omega
 
 /-- The number of CRDT sync rounds needed for convergence is bounded
@@ -492,13 +492,13 @@ theorem community_dominance_theory
   · -- Part I: positive deficit for bad hand
     unfold schedulingDeficit semioticDeficit
     simp [failureToSemiotic]
-    unfold topologicalDeficit
+    unfold topologicalDeficit computationBeta1 transportBeta1
     omega
   · -- Part II-a: strict domination
     exact community_strict_domination ft communityContext hCommunity (by
       unfold schedulingDeficit semioticDeficit
       simp [failureToSemiotic]
-      unfold topologicalDeficit
+      unfold topologicalDeficit computationBeta1 transportBeta1
       omega)
   · -- Part II-b: Bule monotone decreasing
     exact bule_deficit_monotone_decreasing ft 0 communityContext (Nat.zero_le _)

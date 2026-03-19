@@ -91,7 +91,7 @@ structure ComplexityAssignment where
 noncomputable def ComplexityAssignment.minComplexity (ca : ComplexityAssignment) : ℕ :=
   Finset.min' (Finset.univ.image ca.complexity) (by
     simp [Finset.image_nonempty]
-    exact Finset.univ_nonempty)
+    exact ⟨⟨0, by have := ca.nontrivial; omega⟩, Finset.mem_univ _⟩)
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- The Solomonoff-Buleyean Space
@@ -259,30 +259,14 @@ theorem solomonoff_weight_grows_with_data (ss : SolomonoffSpace)
 -- Theorem 4: The Three-Regime Tower
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- The three probability regimes form a monotone tower under
-    subsumption. Each regime is a special case of the one above it.
-
-    1. Bayesian (Bule = 0): converged complement distribution,
-       initialized void boundary from prior learning session.
-       → Special case of Buleyean with pre-filled boundary.
-
-    2. Frequentist (0 < Bule): learning from rejections, void
-       boundary growing with each observation.
-       → General Buleyean regime.
-
-    3. Solomonoff (Bule = max, before any empirical data):
-       void boundary initialized from complexity assignment,
-       empiricalRounds = 0. Not uniform -- structured by K(x).
-       → Buleyean with complexity-initialized boundary.
-
-    The tower is:
-      Solomonoff ⊃ Frequentist ⊃ Bayesian
-      (max info need) → (learning) → (converged)
-
-    The Solomonoff layer handles the case where empirical data
-    is impossible or has not yet arrived. The frequentist layer
-    handles active learning. The Bayesian layer handles convergence.
-    All three are BuleyeanSpaces at different Bule values. -/
+-- The three probability regimes form a monotone tower under
+-- subsumption. Each regime is a special case of the one above it.
+--
+--   1. Bayesian (Bule = 0): converged complement distribution.
+--   2. Frequentist (0 < Bule): learning from rejections.
+--   3. Solomonoff (Bule = max): complexity-initialized boundary.
+--
+-- The tower is: Solomonoff ⊃ Frequentist ⊃ Bayesian
 
 /-- A Solomonoff space with zero empirical rounds is a valid
     BuleyeanSpace. The complexity assignment alone provides a
@@ -396,14 +380,15 @@ theorem complexity_overestimate_conservative
       ss1.assignment.complexity i ≤ ss2.assignment.complexity (i.cast hSameN))
     (i : Fin ss1.assignment.numChoices) :
     ss2.toBuleyeanSpace.weight (i.cast hSameN) ≤ ss1.toBuleyeanSpace.weight i := by
-  unfold SolomonoffSpace.toBuleyeanSpace BuleyeanSpace.weight
-  simp [Nat.min_def]
-  split_ifs <;> {
-    have := ss1.assignment.bounded i
-    have := ss2.assignment.bounded (i.cast hSameN)
-    have := hOverestimate i
-    omega
-  }
+  have hb1 := ss1.assignment.bounded i
+  have hb2 := ss2.assignment.bounded (i.cast hSameN)
+  have hOver := hOverestimate i
+  have hRounds := hSameRounds
+  unfold SolomonoffSpace.toBuleyeanSpace at hRounds ⊢
+  unfold BuleyeanSpace.weight
+  simp only at hRounds ⊢
+  rw [Nat.min_eq_left (by omega), Nat.min_eq_left (by omega)]
+  omega
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 7: First-Contact Events

@@ -94,7 +94,7 @@ def NegotiationChannel.toSemioticChannel (nc : NegotiationChannel) :
   semanticPaths := nc.totalDimensions
   articulationStreams := 1  -- single offer stream
   contextPaths := nc.sharedContext
-  hSemanticPos := by unfold NegotiationChannel.totalDimensions; omega
+  hSemanticPos := by unfold NegotiationChannel.totalDimensions; have := nc.partyA_complex; have := nc.partyB_complex; omega
   hArticulationPos := by omega
   hContextNonneg := trivial
 
@@ -112,7 +112,7 @@ def NegotiationChannel.toSemioticChannel (nc : NegotiationChannel) :
 theorem negotiation_deficit_positive (nc : NegotiationChannel) :
     0 < nc.deficit := by
   unfold NegotiationChannel.deficit NegotiationChannel.totalDimensions
-  omega
+  have := nc.partyA_complex; have := nc.partyB_complex; omega
 
 /-- The deficit equals the total dimensions minus 1.
     Each additional dimension of interest beyond the first adds one
@@ -427,7 +427,7 @@ theorem negotiation_regret_bound (T : ℕ) (nr : NegotiationRound) (hT : 0 < T) 
 theorem batna_sufficient_statistic (nr : NegotiationRound)
     (T payloadBits logN : ℕ)
     (hT : 0 < T) (hPayload : 1 ≤ payloadBits)
-    (hLog : 1 ≤ logN) (hLogBound : logN ≤ nr.offerCount) :
+    (hLog : 1 ≤ logN) (hLogBound : logN ≤ nr.offerCount - 1) :
     boundaryStorage T logN ≤ fullPathStorage nr.offerCount T payloadBits :=
   void_boundary_sufficient_statistic nr.offerCount T payloadBits logN
     nr.nontrivial hT hPayload hLog hLogBound
@@ -669,9 +669,8 @@ theorem dual_void_squeeze (vp : VoidPartition)
   obtain ⟨i, hi⟩ := hBatna
   exact ⟨i, by
     unfold VoidPartition.settlementScore VoidPartition.watnaRepulsion
-    rw [hi]
-    simp
-    exact Int.ofNat_lt.mpr (batna_attraction_positive vp i)⟩
+    rw [hi]; simp
+    have := batna_attraction_positive vp i; omega⟩
 
 /-- Stronger squeeze: any term with zero WATNA history has positive
     settlement score. Terms the environment never rejected are safe
@@ -680,9 +679,8 @@ theorem settlement_positive_of_no_watna (vp : VoidPartition)
     (i : Fin vp.numTerms) (h : vp.watnaVents i = 0) :
     0 < vp.settlementScore i := by
   unfold VoidPartition.settlementScore VoidPartition.watnaRepulsion
-  rw [h]
-  simp
-  exact Int.ofNat_lt.mpr (batna_attraction_positive vp i)
+  rw [h]; simp
+  have := batna_attraction_positive vp i; omega
 
 /-- Dual: any term with maximum WATNA density has the lowest settlement
     score. The most catastrophic terms are the hardest to settle on. -/

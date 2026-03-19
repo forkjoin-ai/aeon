@@ -105,7 +105,7 @@ theorem buleyean_normalization (bs : BuleyeanSpace) :
   apply Finset.sum_pos
   · intro i _
     exact buleyean_positivity bs i
-  · exact Finset.univ_nonempty
+  · exact ⟨⟨0, by have := bs.nontrivial; omega⟩, Finset.mem_univ _⟩
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Axiom 3: Monotone updating
@@ -722,9 +722,11 @@ theorem converged_prior_informative (cp : ConvergedPrior)
     (i j : Fin cp.space.numChoices)
     (hDifferent : cp.space.voidBoundary i < cp.space.voidBoundary j) :
     cp.space.weight j < cp.space.weight i := by
+  have hi := cp.space.bounded i
+  have hj := cp.space.bounded j
   unfold BuleyeanSpace.weight
-  simp [Nat.min_def]
-  split_ifs <;> omega
+  simp [Nat.min_eq_left hi, Nat.min_eq_left hj]
+  omega
 
 /-- A uniform prior (all zero void) has equal weights everywhere.
     This is maximum Bule: no previous learning. The starting state
