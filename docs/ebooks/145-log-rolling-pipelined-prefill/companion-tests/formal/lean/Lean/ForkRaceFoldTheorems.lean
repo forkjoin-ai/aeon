@@ -80,3 +80,4 @@ import ForkRaceFoldTheorems.PredictionsRound12
 import ForkRaceFoldTheorems.CrossFileCompositions
 import ForkRaceFoldTheorems.PredictionsRound13
 import ForkRaceFoldTheorems.PredictionsRound14
+import ForkRaceFoldTheorems.NovelCompositions
