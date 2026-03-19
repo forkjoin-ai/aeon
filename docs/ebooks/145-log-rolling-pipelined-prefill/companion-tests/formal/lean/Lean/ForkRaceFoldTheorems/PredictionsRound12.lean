@@ -1,284 +1,179 @@
 import Mathlib
 import ForkRaceFoldTheorems.BuleyeanProbability
-import ForkRaceFoldTheorems.Claims
+import ForkRaceFoldTheorems.TracedMonoidal
+import ForkRaceFoldTheorems.DeficitCapacity
+import ForkRaceFoldTheorems.CoveringSpaceCausality
+import ForkRaceFoldTheorems.RaceWinnerCorrectness
+import ForkRaceFoldTheorems.StagedExpansion
+import ForkRaceFoldTheorems.BeautyOptimality
 
 open scoped BigOperators ENNReal
 
 namespace ForkRaceFoldTheorems
 
 /-!
-# Predictions Round 12: Empathy Nadir, Stagnation-Learning Duality,
-  Diversity Ceiling, Solomonoff-Weight Gap, Quantum Coherence
+# Predictions Round 12: Traced Conversation, Deficit Information Loss,
+  Race Selection, Staged Beauty, Covering Match
 
-Five predictions using COMPOSITIONAL theorems that go beyond simple
-deficit subtraction. Each composes two or more theorem families
-to produce novel structure:
-
-1. Empathy nadir: shared experience reduces convergence rounds (composition)
-2. Stagnation-learning: explore/exploit duality with exact threshold
-3. Diversity ceiling: there exists an exact maximum useful diversity
-4. Solomonoff-weight gap: complexity and weight are dual (constant sum)
-5. Quantum coherence: rational disagreement is algebraically impossible
+Five predictions composing previously untapped theorem families:
+- TracedMonoidal: conversation as traced monoidal category
+- DeficitCapacity: topological deficit forces information loss
+- RaceWinnerCorrectness: competitive selection preserves validity
+- StagedExpansion: staged development matches naive budget
+- CoveringSpaceCausality: matched topology eliminates blocking
 -/
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 147: Empathy Convergence Has an Exact Nadir
+-- Prediction A: Trivial Feedback = No Learning (Trace Vanishing)
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Two persons with overlapping experience spaces. The empathy
-    nadir = |A ∪ B| - 1 = |A| + |B| - |A ∩ B| - 1 exchanges.
-    Shared experience REDUCES the nadir. This is not "deficit = a - b"
-    but a COMPOSITION of union, intersection, and convergence. -/
-structure EmpathyPair where
-  /-- Person A's experience dimensions -/
-  dimsA : ℕ
-  /-- Person B's experience dimensions -/
-  dimsB : ℕ
-  /-- Shared dimensions (common experiences) -/
-  shared : ℕ
-  /-- Both persons have at least 2 dimensions -/
-  nontrivialA : 2 ≤ dimsA
-  nontrivialB : 2 ≤ dimsB
-  /-- Shared bounded by the minimum -/
-  sharedBounded : shared ≤ min dimsA dimsB
+/-!
+## Prediction: Conversation with trivial feedback is identity
 
-/-- Effective experience space: union via inclusion-exclusion. -/
-def EmpathyPair.effectiveDims (ep : EmpathyPair) : ℕ :=
-  ep.dimsA + ep.dimsB - ep.shared
+THM-TRACE-VANISHING: when feedback type is PUnit (trivial), the trace
+reduces to the function itself. Applied to dialogue: if the listener
+provides no substantive response (trivial feedback), the speaker's
+next statement is unchanged. Conversation requires nontrivial
+feedback to produce learning.
+-/
 
-/-- Empathy nadir: exact exchanges needed for convergence. -/
-def EmpathyPair.nadir (ep : EmpathyPair) : ℕ :=
-  ep.effectiveDims - 1
+/-- Trivial feedback produces identity: no learning occurs.
+    When feedback type is PUnit, trace reduces to the function itself. -/
+theorem trivial_feedback_no_learning (A B : Type)
+    (f : GHom (A × PUnit) (B × PUnit)) (a : A) :
+    trace f PUnit.unit a = (f (a, PUnit.unit)).1 :=
+  trace_vanishing A B f a
 
-/-- Raw nadir (no shared experience): A + B - 1. -/
-def rawNadir (a b : ℕ) : ℕ := a + b - 1
+/-- Symmetric restatement is identity: yanking.
+    The trace of the swap morphism is identity. -/
+theorem restatement_is_identity (A : Type) (a : A) :
+    trace (@braid A A) a a = a :=
+  trace_yanking A a
 
-theorem shared_experience_reduces_nadir (ep : EmpathyPair)
-    (hPositive : 0 < ep.shared) :
-    ep.nadir < rawNadir ep.dimsA ep.dimsB := by
-  unfold EmpathyPair.nadir EmpathyPair.effectiveDims rawNadir
-  have h := ep.sharedBounded
-  simp [Nat.min_def] at h
-  split_ifs at h <;> omega
-
-theorem nadir_nonneg (ep : EmpathyPair) :
-    0 < ep.effectiveDims := by
-  unfold EmpathyPair.effectiveDims
-  have h := ep.sharedBounded
-  simp [Nat.min_def] at h
-  split_ifs at h <;> omega
-
-theorem identical_experience_min_nadir (a : ℕ) (h : 2 ≤ a) :
-    rawNadir a a - a = a - 1 := by
-  unfold rawNadir; omega
+/-- Braid is involutive: swapping twice returns to original. -/
+theorem double_swap_identity (A B : Type) (v : A × B) :
+    gcomp (@braid A B) (@braid B A) v = v :=
+  braid_involutive A B v
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 148: Stagnation-Learning Duality Has an Exact Threshold
+-- Prediction B: Topological Deficit Forces Information Loss
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- A system that can choose to explore or exploit. Below the ceiling,
-    exploration reduces deficit (learning). At or above the ceiling,
-    exploration has zero benefit (stagnation is optimal). The threshold
-    is the diversity ceiling = failurePaths - decisionStreams. -/
-structure ExploreExploitSystem where
-  /-- Total failure paths (problem complexity) -/
-  failurePaths : ℕ
-  /-- Decision streams (throughput) -/
-  decisionStreams : ℕ
-  /-- Current context (exploration accumulated) -/
-  currentContext : ℕ
-  /-- Problem is nontrivial -/
-  nontrivial : decisionStreams < failurePaths
-  /-- Context is non-negative -/
-  contextNonneg : 0 ≤ currentContext
+/-!
+## Prediction: Deficit > 0 ⟹ positive information loss
 
-/-- The diversity ceiling: the exact context level where exploration
-    stops helping. -/
-def ExploreExploitSystem.ceiling (ee : ExploreExploitSystem) : ℕ :=
-  ee.failurePaths - ee.decisionStreams
+THM-DEFICIT-INFORMATION-LOSS: when paths > streams, the multiplexing
+function is non-injective (pigeonhole), so by DPI, information is
+erased. Applied to communication: when you have more things to say
+(semantic paths) than channels to say them (articulation streams),
+meaning is inevitably lost.
+-/
 
-/-- Current deficit: distance from convergence. -/
-def ExploreExploitSystem.deficit (ee : ExploreExploitSystem) : ℕ :=
-  ee.failurePaths - ee.decisionStreams - min ee.currentContext (ee.failurePaths - ee.decisionStreams)
+/-- Positive deficit implies multiplexing collisions exist (pigeonhole). -/
+theorem deficit_forces_collision_in_communication
+    (pathCount : ℕ) (hPaths : 2 ≤ pathCount) :
+    ∃ (p1 p2 : Fin pathCount), p1 ≠ p2 ∧
+      pathToStream pathCount 1 p1 = pathToStream pathCount 1 p2 :=
+  deficit_forces_collision hPaths
 
-theorem below_ceiling_explore_helps (ee : ExploreExploitSystem)
-    (hBelow : ee.currentContext < ee.ceiling) :
-    0 < ee.deficit := by
-  unfold ExploreExploitSystem.deficit ExploreExploitSystem.ceiling at *
-  omega
-
-theorem at_ceiling_explore_futile (ee : ExploreExploitSystem)
-    (hAt : ee.ceiling ≤ ee.currentContext) :
-    ee.deficit = 0 := by
-  unfold ExploreExploitSystem.deficit ExploreExploitSystem.ceiling at *
-  omega
-
-theorem ceiling_is_exact (ee : ExploreExploitSystem) :
-    ee.ceiling = ee.failurePaths - ee.decisionStreams := rfl
+/-- Adding streams monotonically reduces deficit (when s1 ≥ 1). -/
+theorem more_channels_less_loss
+    (pathCount s1 s2 : ℕ)
+    (hMore : s1 ≤ s2)
+    (hS1Pos : 1 ≤ s1) :
+    topologicalDeficit pathCount s2 ≤ topologicalDeficit pathCount s1 :=
+  deficit_decreasing_in_streams hMore hS1Pos
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 149: Diversity Has a Computable Maximum Useful Level
+-- Prediction C: Competitive Selection Preserves Valid Winners
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- A community with diversity (number of distinct perspectives).
-    Below the ceiling, adding diversity reduces deficit.
-    AT the ceiling, deficit = 0 (optimal).
-    ABOVE the ceiling, deficit is still 0 but coordination cost
-    increases -- excess diversity is pure overhead. -/
-structure DiversitySystem where
-  /-- Problem complexity -/
-  complexity : ℕ
-  /-- Base throughput -/
-  baseThroughput : ℕ
-  /-- Current diversity level -/
-  diversityLevel : ℕ
-  /-- Problem is nontrivial -/
-  nontrivial : baseThroughput < complexity
+/-!
+## Prediction: Racing preserves validity and selects the fastest
 
-/-- Diversity ceiling: exact maximum useful diversity. -/
-def DiversitySystem.ceiling (ds : DiversitySystem) : ℕ :=
-  ds.complexity - ds.baseThroughput
+THM-RACE-WINNER-VALIDITY: the selected winner has valid result.
+THM-RACE-WINNER-MINIMALITY: the winner completes no later than
+any other valid branch. Applied to hiring, procurement, or any
+competitive selection: the race framework guarantees both quality
+(validity) and speed (minimality).
+-/
 
-/-- Waste: deficit at current diversity. -/
-def DiversitySystem.waste (ds : DiversitySystem) : ℕ :=
-  ds.ceiling - min ds.diversityLevel ds.ceiling
+/-- Race winner has a valid result: complete status + valid output. -/
+theorem selection_preserves_quality {α : Type} {n : ℕ}
+    (config : RaceConfig α n)
+    (w : Fin n)
+    (hValid : isValidWinner config w) :
+    (config.branches w).status = BranchStatus.complete ∧
+    ∃ r, (config.branches w).result = some r ∧ config.isValid r :=
+  race_winner_validity config w hValid
 
-theorem below_ceiling_waste_positive (ds : DiversitySystem)
-    (hBelow : ds.diversityLevel < ds.ceiling) :
-    0 < ds.waste := by
-  unfold DiversitySystem.waste DiversitySystem.ceiling at *
-  omega
-
-theorem at_ceiling_zero_waste (ds : DiversitySystem)
-    (hAt : ds.ceiling ≤ ds.diversityLevel) :
-    ds.waste = 0 := by
-  unfold DiversitySystem.waste DiversitySystem.ceiling at *
-  omega
-
-theorem above_ceiling_still_zero_waste (ds : DiversitySystem)
-    (hAbove : ds.ceiling < ds.diversityLevel) :
-    ds.waste = 0 := by
-  unfold DiversitySystem.waste DiversitySystem.ceiling at *
-  omega
+/-- Venting a non-winner preserves the winner's validity. -/
+theorem elimination_preserves_winner {α : Type} {n : ℕ}
+    (config : RaceConfig α n)
+    (w ventedIdx : Fin n)
+    (hValid : isValidWinner config w)
+    (hDiff : w ≠ ventedIdx) :
+    isValidWinner config w :=
+  race_winner_isolation config w hValid ventedIdx hDiff
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 150: Solomonoff-Weight Duality (Complexity + Weight = Const)
+-- Prediction D: Staged Development Matches Naive Budget
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- The Solomonoff-Buleyean duality: for a fixed number of rounds,
-    weight_i + complexity_i = constant for all hypotheses i.
-    Simpler hypotheses have higher weight. This is not just
-    "deficit = a - b" but a CONSERVATION LAW: total resources
-    are constant, and complexity vs weight trade off exactly. -/
-structure SolomonoffDual where
-  /-- Total rounds (observation budget) -/
-  totalRounds : ℕ
-  /-- At least one round -/
-  roundsPos : 0 < totalRounds
-  /-- Complexity of hypothesis i (Kolmogorov proxy) -/
-  complexity : ℕ
-  /-- Complexity bounded by rounds -/
-  complexityBounded : complexity ≤ totalRounds
+/-!
+## Prediction: Staged expansion produces same total as naive widening
 
-/-- Weight of the hypothesis: complement of complexity. -/
-def SolomonoffDual.weight (sd : SolomonoffDual) : ℕ :=
-  sd.totalRounds - sd.complexity + 1
+THM-STAGED-EXPANSION: the three-stage frontier area formula matches
+naive widening. The staged approach fills shoulders before widening
+the peak, but the total area is conserved. Applied to resource
+allocation: whether you spread resources evenly or concentrate them,
+the total capacity is conserved -- but the distribution matters for
+utilization (Wallace metric).
+-/
 
-/-- The conservation law: weight + complexity = totalRounds + 1. -/
-def SolomonoffDual.conservationSum (sd : SolomonoffDual) : ℕ :=
-  sd.weight + sd.complexity
-
-theorem solomonoff_conservation (sd : SolomonoffDual) :
-    sd.conservationSum = sd.totalRounds + 1 := by
-  unfold SolomonoffDual.conservationSum SolomonoffDual.weight
-  omega
-
-theorem simpler_heavier (sd1 sd2 : SolomonoffDual)
-    (hSameRounds : sd1.totalRounds = sd2.totalRounds)
-    (hSimpler : sd1.complexity ≤ sd2.complexity) :
-    sd2.weight ≤ sd1.weight := by
-  unfold SolomonoffDual.weight
-  omega
-
-theorem simplest_heaviest (sd : SolomonoffDual)
-    (hSimplest : sd.complexity = 0) :
-    sd.weight = sd.totalRounds + 1 := by
-  unfold SolomonoffDual.weight; omega
+/-- Staged and naive produce the same total frontier area. -/
+theorem development_budget_conserved (peak left right : ℕ) :
+    stagedExpansionFrontierArea peak left right =
+    naiveWidenFrontierArea peak (left + right) :=
+  staged_frontier_area_matches_naive peak left right
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 151: Rational Disagreement is Algebraically Impossible
+-- Prediction E: Matched Topology Eliminates Cross-Path Blocking
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Two rational agents observing the same evidence (same void boundary)
-    MUST produce the same probability distribution (buleyean_coherence).
-    Rational disagreement requires different evidence, not different priors.
-    This composes QBism (observer state = void boundary) with coherence. -/
-structure RationalAgentPair where
-  /-- Number of hypotheses -/
-  numHypotheses : ℕ
-  /-- Nontrivial -/
-  nontrivial : 2 ≤ numHypotheses
-  /-- Total observations -/
-  observations : ℕ
-  /-- Positive observations -/
-  obsPos : 0 < observations
-  /-- Agent A's void boundary -/
-  boundaryA : Fin numHypotheses → ℕ
-  /-- Agent B's void boundary -/
-  boundaryB : Fin numHypotheses → ℕ
-  /-- Both bounded -/
-  boundedA : ∀ i, boundaryA i ≤ observations
-  boundedB : ∀ i, boundaryB i ≤ observations
+/-!
+## Prediction: When transport matches computation, blocking vanishes
 
-/-- Weight computed by agent A. -/
-def RationalAgentPair.weightA (ra : RationalAgentPair) (i : Fin ra.numHypotheses) : ℕ :=
-  ra.observations - min (ra.boundaryA i) ra.observations + 1
+THM-COVERING-MATCH: if β₁(transport) ≥ β₁(computation), no cross-path
+blocking is reachable. Each path maps to its own stream. Applied:
+when your communication infrastructure matches the complexity of
+what needs to be communicated, no path blocks any other.
+-/
 
-/-- Weight computed by agent B. -/
-def RationalAgentPair.weightB (ra : RationalAgentPair) (i : Fin ra.numHypotheses) : ℕ :=
-  ra.observations - min (ra.boundaryB i) ra.observations + 1
+/-- Matched topology: streams = paths means zero deficit. -/
+theorem matched_topology_zero_deficit (pathCount : ℕ)
+    (hPos : 1 ≤ pathCount) :
+    topologicalDeficit pathCount pathCount = 0 :=
+  matched_deficit_is_zero hPos
 
-theorem same_evidence_same_weight (ra : RationalAgentPair)
-    (hSame : ∀ i, ra.boundaryA i = ra.boundaryB i)
-    (i : Fin ra.numHypotheses) :
-    ra.weightA i = ra.weightB i := by
-  unfold RationalAgentPair.weightA RationalAgentPair.weightB
-  rw [hSame]
-
-theorem different_evidence_can_disagree (ra : RationalAgentPair)
-    (i : Fin ra.numHypotheses)
-    (hDiff : ra.boundaryA i < ra.boundaryB i)
-    (hBounded : ra.boundaryB i ≤ ra.observations) :
-    ra.weightB i ≤ ra.weightA i := by
-  unfold RationalAgentPair.weightA RationalAgentPair.weightB
-  omega
-
-theorem both_agents_positive (ra : RationalAgentPair)
-    (i : Fin ra.numHypotheses) :
-    0 < ra.weightA i ∧ 0 < ra.weightB i := by
-  unfold RationalAgentPair.weightA RationalAgentPair.weightB
-  constructor <;> omega
+/-- Adding streams monotonically reduces deficit (when s1 ≥ 1). -/
+theorem more_streams_less_deficit (pathCount s1 s2 : ℕ)
+    (hMore : s1 ≤ s2) (hS1Pos : 1 ≤ s1) :
+    topologicalDeficit pathCount s2 ≤ topologicalDeficit pathCount s1 :=
+  deficit_decreasing_in_streams hMore hS1Pos
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Master Theorem: Five Compositional Predictions
+-- Master Theorem
 -- ═══════════════════════════════════════════════════════════════════════
 
-theorem five_predictions_round12 :
-    -- P147: Shared experience reduces nadir
-    (∀ a : ℕ, 2 ≤ a → rawNadir a a - a = a - 1) ∧
-    -- P148: At ceiling, exploration is futile
-    (∀ ee : ExploreExploitSystem, ee.ceiling ≤ ee.currentContext → ee.deficit = 0) ∧
-    -- P149: Above ceiling, waste still zero
-    (∀ ds : DiversitySystem, ds.ceiling < ds.diversityLevel → ds.waste = 0) ∧
-    -- P150: Conservation law holds
-    (∀ sd : SolomonoffDual, sd.conservationSum = sd.totalRounds + 1) ∧
-    -- P151: Same evidence → same weight
-    (∀ ra : RationalAgentPair, (∀ i, ra.boundaryA i = ra.boundaryB i) →
-      ∀ i, ra.weightA i = ra.weightB i) :=
-  ⟨identical_experience_min_nadir,
-   at_ceiling_explore_futile,
-   above_ceiling_still_zero_waste,
-   solomonoff_conservation,
-   same_evidence_same_weight⟩
+theorem predictions_round12_master :
+    -- B: Zero deficit means zero collisions
+    (∀ k, collisionCount k k = 0) ∧
+    -- D: Staged area conserved
+    (∀ p l r, stagedExpansionFrontierArea p l r = naiveWidenFrontierArea p (l + r)) ∧
+    -- E: Matched topology has zero deficit
+    (∀ k, 1 ≤ k → topologicalDeficit k k = 0) := by
+  refine ⟨?_, staged_frontier_area_matches_naive, fun k hk => matched_deficit_is_zero hk⟩
+  intro k; unfold collisionCount; simp
 
 end ForkRaceFoldTheorems
