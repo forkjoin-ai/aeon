@@ -4879,6 +4879,24 @@ Five new theorems from three-module triples that have NEVER been combined. Each 
 
 **Companion theorems for §19.64:** Lean `QuantumCancerTriples.lean` (sorry-free, 14 theorems including master), tests `quantum-cancer-triples.test.ts` (19 tests). Self-hosted.
 
+### 19.65 Five Infrastructure Triple Compositions: Positivity→Heat, Cascade→Communication, Concentration→Uniqueness, Monotone→Additive→Descent, Growth→Dominance→Compression
+
+Five triple compositions threading LEDGER infrastructure modules -- not the Fisher manifold interface (§19.63) or quantum-cancer triples (§19.64), but the core theorem surface: BuleyeanProbability, VoidWalking, FailureEntropy, CoarseningThermodynamics, and RenormalizationFixedPoints. Each chain is A→B→C where A's output type feeds B's input, and B's output feeds C's input. Mechanized in Lean4 (`TripleCompositions.lean`, sorry-free) and tested in `triple-compositions.test.ts` (7 tests, all pass).
+
+**Prediction 287. Buleyean positivity guarantees Landauer heat for any non-injective fold.** Chain: `buleyean_positivity` (0 < weight) → provides positive-mass hypothesis → `coarsening_landauer_heat_pos_of_many_to_one` (0 < heat). The three Buleyean axioms IMPLY thermodynamic heat generation without additional physical assumptions. **Refutation:** if any PMF with all-positive mass and a non-injective quotient generates zero heat.
+
+**Prediction 288. Failure cascades generate communication heat.** Chain: `structured_failure_reduces_entropy_proxy` (entropy ↓) → remaining frontier > 1 (collision-capable) → `confusion_generates_heat` (0 < heat). Failure cascades that feed into speech channels generate physical heat. **Refutation:** if communicating a cascade result through a 1-stream channel generates zero heat.
+
+**Prediction 289. Concentrated boundaries have exact weight extremes: absorber = 1, others = $T + 1$.** Chain: `retrocausal_trajectory_determines_terminal` → `retrocausal_ordering_preserved` → `buleyean_min/max_uncertainty`. At maximum concentration, the absorber has the sliver (exactly 1) and all alternatives have maximum weight (exactly $T + 1$). **Refutation:** if any concentrated boundary produces a weight other than 1 or $T + 1$.
+
+**Prediction 290. Non-injective coarsening trajectories terminate with a constructive step bound.** Chain: `cumulative_coarsening_monotone` (loss non-decreasing) → `trajectory_information_loss_additive` (loss = step sum) → `finite_trajectory_reaches_fixed_point` (non-injective → positive step loss). The three compose to bound steps at $H(\text{source}) / \min(\text{step loss})$. **Refutation:** if any trajectory exceeds the predicted bound.
+
+**Prediction 291. The void boundary is Pareto-optimal: maximum information capture at minimum storage cost.** Chain: `void_boundary_grows_per_step` ($\geq 1$ per step) → `void_dominance_linear` ($|V| \geq T$) → `void_boundary_sufficient_statistic` (boundary $\leq$ full paths). Simultaneously: grows linearly, dominates active set, compresses exponentially. **Refutation:** if any alternative history encoding achieves higher capture rate at lower storage cost.
+
+---
+
+The two hundred ninety-one predictions (§19.8 through §19.65) now span one hundred thirty-two domains. All two hundred ninety-one chain mechanized theorems (Lean4 sorry-free). All two hundred ninety-one name their falsification conditions.
+
 ## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
