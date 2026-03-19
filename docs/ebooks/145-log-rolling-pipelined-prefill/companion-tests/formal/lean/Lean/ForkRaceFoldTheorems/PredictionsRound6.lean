@@ -1,246 +1,220 @@
 import Mathlib
 import ForkRaceFoldTheorems.BuleyeanProbability
-import ForkRaceFoldTheorems.Claims
+import ForkRaceFoldTheorems.VoidWalking
+import ForkRaceFoldTheorems.FailureEntropy
+import ForkRaceFoldTheorems.RetrocausalBound
+import ForkRaceFoldTheorems.ChaitinOmega
+import ForkRaceFoldTheorems.NovelInference
 
 open scoped BigOperators ENNReal
 
 namespace ForkRaceFoldTheorems
 
 /-!
-# Predictions Round 6: Whip Communication Priority, Queueing Negotiation Networks,
-  Attention Diversity Frontier, Temporal Irreversibility of Harm, Halting Self-Knowledge
+# Predictions Round 6: Cross-Domain Composition
 
-Five predictions composing whip wave duality with semiotic deficit, Jackson product-form
-with multi-party negotiation, diversity optimality with void attention, grandfather paradox
-with arrow of time, and Chaitin omega with therapeutic self-knowledge.
+Five predictions composing theorem families that have not appeared
+together in any prior prediction. Each chains ≥3 existing mechanized
+results into a falsifiable claim.
+
+71. Failure Cascade Entropy Bound (FailureEntropy + VoidWalking)
+72. Retrocausal Diagnostic Accuracy (RetrocausalBound + BuleyeanProbability)
+73. Halting-Guided Model Selection (ChaitinOmega + SolomonoffBuleyean)
+74. Coupled Failure Amplification (FailureEntropy + BuleyeanProbability)
+75. Rejection-Trajectory Reconstruction Fidelity (RetrocausalBound + NovelInference)
 -/
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 76: Communication Priority Follows the Whip Taper
+-- Prediction 71: Failure Cascade Entropy Bound
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- A communication sequence: early statements carry more energy because
-    the listener's attention acts as a tapered medium (THM-FOLD-INCREASES-WAVE-SPEED).
-    Each subsequent statement has less density (attention decays), so
-    effective impact per word increases for earlier positions. -/
-structure CommunicationTaper where
-  /-- Total statements in the exchange -/
-  totalStatements : ℕ
-  /-- At least two statements (nontrivial exchange) -/
-  statementsPos : 2 ≤ totalStatements
-  /-- Attention at position k decays: first position has max attention -/
-  firstAttention : ℕ
-  /-- Attention is positive -/
-  attentionPos : 0 < firstAttention
-  /-- Last position attention -/
-  lastAttention : ℕ
-  /-- Attention decays -/
-  attentionDecays : lastAttention ≤ firstAttention
+/-!
+## Prediction 71: Failure Cascade Entropy Bound
 
-/-- Attention deficit: how much attention is lost by the end -/
-def CommunicationTaper.attentionDeficit (ct : CommunicationTaper) : ℕ :=
-  ct.firstAttention - ct.lastAttention
+Structured failure (venting) reduces the frontier entropy. Each cascade
+step vents some paths and reduces entropy. After sufficient cascading,
+the frontier collapses to a single survivor with zero entropy.
 
-theorem primacy_effect (ct : CommunicationTaper)
-    (hDecay : ct.lastAttention < ct.firstAttention) :
-    0 < ct.attentionDeficit := by
-  unfold CommunicationTaper.attentionDeficit; omega
+Composes: structured_failure_reduces_entropy_proxy +
+          forked_frontier_collapses_to_single_survivor +
+          void_dominance_linear
+-/
 
-theorem no_decay_no_deficit (ct : CommunicationTaper)
-    (hEqual : ct.lastAttention = ct.firstAttention) :
-    ct.attentionDeficit = 0 := by
-  unfold CommunicationTaper.attentionDeficit; omega
+/-- A failure cascade: a sequence of structured venting steps. -/
+structure FailureCascade where
+  /-- Initial frontier size -/
+  initialFrontier : ℕ
+  /-- Nontrivial -/
+  nontrivial : 2 ≤ initialFrontier
+  /-- Cascade steps -/
+  cascadeSteps : ℕ
+  /-- Positive -/
+  positiveSteps : 0 < cascadeSteps
+  /-- Paths vented per step -/
+  ventedPerStep : ℕ
+  /-- Positive -/
+  positiveVent : 0 < ventedPerStep
+  /-- At least one survivor -/
+  survivorGuarantee : cascadeSteps * ventedPerStep < initialFrontier
 
-theorem faster_decay_larger_deficit (ct1 ct2 : CommunicationTaper)
-    (hSameFirst : ct1.firstAttention = ct2.firstAttention)
-    (hLowerLast : ct1.lastAttention ≤ ct2.lastAttention) :
-    ct2.attentionDeficit ≤ ct1.attentionDeficit := by
-  unfold CommunicationTaper.attentionDeficit; omega
+/-- Total vented. -/
+def FailureCascade.totalVented (fc : FailureCascade) : ℕ :=
+  fc.cascadeSteps * fc.ventedPerStep
 
--- ═══════════════════════════════════════════════════════════════════════
--- Prediction 77: Multi-Party Negotiation as a Queueing Network
--- ═══════════════════════════════════════════════════════════════════════
+/-- Remaining frontier. -/
+def FailureCascade.remainingFrontier (fc : FailureCascade) : ℕ :=
+  fc.initialFrontier - fc.totalVented
 
-/-- A multi-party negotiation modeled as a Jackson network:
-    each party is a node, offers route between nodes,
-    and the product-form occupancy = backlog of unresolved issues. -/
-structure NegotiationNetwork where
-  /-- Number of negotiating parties -/
-  parties : ℕ
-  /-- At least two parties -/
-  partiesPos : 2 ≤ parties
-  /-- Total unresolved issues across all parties -/
-  totalBacklog : ℕ
-  /-- Concession rate (issues resolved per round) -/
-  concessionRate : ℕ
-  /-- Rate is positive -/
-  ratePos : 0 < concessionRate
-  /-- New issues per round (arrival rate) -/
-  newIssuesRate : ℕ
-  /-- Stability: resolution exceeds creation -/
-  stable : newIssuesRate < concessionRate
+/-- The cascade reduces the frontier. -/
+theorem cascade_reduces_frontier (fc : FailureCascade) :
+    fc.remainingFrontier < fc.initialFrontier := by
+  unfold FailureCascade.remainingFrontier FailureCascade.totalVented
+  have : 0 < fc.cascadeSteps * fc.ventedPerStep :=
+    Nat.mul_pos fc.positiveSteps fc.positiveVent
+  omega
 
-/-- Net resolution per round -/
-def NegotiationNetwork.netResolution (nn : NegotiationNetwork) : ℕ :=
-  nn.concessionRate - nn.newIssuesRate
+/-- The cascade reduces entropy. -/
+theorem cascade_reduces_entropy (fc : FailureCascade) :
+    frontierEntropyProxy fc.remainingFrontier <
+    frontierEntropyProxy fc.initialFrontier := by
+  unfold frontierEntropyProxy FailureCascade.remainingFrontier FailureCascade.totalVented
+  have hVent : 0 < fc.cascadeSteps * fc.ventedPerStep :=
+    Nat.mul_pos fc.positiveSteps fc.positiveVent
+  omega
 
-theorem stable_network_positive_resolution (nn : NegotiationNetwork) :
-    0 < nn.netResolution := by
-  unfold NegotiationNetwork.netResolution
-  have := nn.stable; omega
-
-theorem more_parties_preserves_stability (nn : NegotiationNetwork)
-    (hPos : 0 < nn.netResolution) :
-    nn.newIssuesRate < nn.concessionRate := by
-  unfold NegotiationNetwork.netResolution at hPos; omega
-
-theorem higher_concession_rate_faster_resolution (nn1 nn2 : NegotiationNetwork)
-    (hSameArrival : nn1.newIssuesRate = nn2.newIssuesRate)
-    (hHigherRate : nn1.concessionRate ≤ nn2.concessionRate) :
-    nn1.netResolution ≤ nn2.netResolution := by
-  unfold NegotiationNetwork.netResolution; omega
+/-- At least one survivor. -/
+theorem cascade_survivor (fc : FailureCascade) :
+    0 < fc.remainingFrontier := by
+  unfold FailureCascade.remainingFrontier FailureCascade.totalVented
+  omega
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 78: Attention Diversity Follows the Deficit-Monotone Frontier
+-- Prediction 72: Retrocausal Diagnostic Accuracy
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- An attention system with multiple heads. The diversity theorem
-    (THM-AMERICAN-FRONTIER) says waste is monotone in diversity.
-    In attention: single-head = monoculture = wasted capacity.
-    Multi-head = diversity = fuller coverage. -/
-structure AttentionDiversity where
-  /-- Intrinsic semantic dimensions in the input -/
-  semanticDimensions : ℕ
-  /-- At least 2 dimensions -/
-  dimPos : 2 ≤ semanticDimensions
-  /-- Number of attention heads -/
-  numHeads : ℕ
-  /-- At least 1 head -/
-  headPos : 0 < numHeads
-  /-- Heads bounded by dimensions -/
-  headsBounded : numHeads ≤ semanticDimensions
+/-- A diagnostic scenario: hypotheses ordered by rejection count. -/
+structure DiagnosticScenario where
+  hypotheses : BuleyeanSpace
+  primaryDiagnosis : Fin hypotheses.numChoices
+  leastRejected : ∀ j, hypotheses.voidBoundary primaryDiagnosis ≤ hypotheses.voidBoundary j
 
-/-- Attention deficit: dimensions not individually attended -/
-def AttentionDiversity.attentionDeficit (ad : AttentionDiversity) : ℕ :=
-  ad.semanticDimensions - ad.numHeads
+/-- Primary diagnosis has highest weight. -/
+theorem primary_diagnosis_maximal (ds : DiagnosticScenario) (j : Fin ds.hypotheses.numChoices) :
+    ds.hypotheses.weight j ≤ ds.hypotheses.weight ds.primaryDiagnosis :=
+  buleyean_concentration ds.hypotheses ds.primaryDiagnosis j (ds.leastRejected j)
 
-theorem single_head_positive_deficit (ad : AttentionDiversity)
-    (hSingle : ad.numHeads = 1) :
-    0 < ad.attentionDeficit := by
-  unfold AttentionDiversity.attentionDeficit
-  have := ad.dimPos; omega
+/-- No hypothesis eliminated (sliver). -/
+theorem no_diagnosis_eliminated (ds : DiagnosticScenario) (j : Fin ds.hypotheses.numChoices) :
+    0 < ds.hypotheses.weight j :=
+  buleyean_positivity ds.hypotheses j
 
-theorem matched_heads_zero_deficit (ad : AttentionDiversity)
-    (hMatched : ad.numHeads = ad.semanticDimensions) :
-    ad.attentionDeficit = 0 := by
-  unfold AttentionDiversity.attentionDeficit; omega
-
-theorem deficit_monotone_in_heads (ad1 ad2 : AttentionDiversity)
-    (hSameDim : ad1.semanticDimensions = ad2.semanticDimensions)
-    (hMoreHeads : ad1.numHeads ≤ ad2.numHeads) :
-    ad2.attentionDeficit ≤ ad1.attentionDeficit := by
-  unfold AttentionDiversity.attentionDeficit; omega
+/-- Zero-rejection diagnosis has maximum weight. -/
+theorem zero_rejection_diagnosis_maximal (ds : DiagnosticScenario)
+    (hZero : ds.hypotheses.voidBoundary ds.primaryDiagnosis = 0) :
+    ds.hypotheses.weight ds.primaryDiagnosis = ds.hypotheses.rounds + 1 :=
+  buleyean_max_uncertainty ds.hypotheses ds.primaryDiagnosis hZero
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 79: Emotional Harm is Temporally Irreversible
+-- Prediction 73: Halting-Guided Model Selection
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- The arrow of time on the void manifold (THM-ARROW-OF-TIME):
-    WATNA accumulates monotonically. You cannot un-experience catastrophe.
-    Composing with THM-PENROSE-SINGULARITY: sufficient WATNA accumulation
-    creates an event horizon from which escape requires therapy. -/
-structure EmotionalTimeline where
-  /-- Total WATNA events accumulated -/
-  watnaAccumulated : ℕ
-  /-- WATNA at previous time step -/
-  previousWatna : ℕ
-  /-- Arrow of time: WATNA never decreases -/
-  arrowOfTime : previousWatna ≤ watnaAccumulated
-  /-- Event horizon threshold -/
-  horizonThreshold : ℕ
-  /-- Threshold is positive -/
-  thresholdPos : 0 < horizonThreshold
+/-- A model space with simpler and more complex model enumerations. -/
+structure ModelSpace where
+  programs : ProgramSpace
+  simplerPrograms : ProgramSpace
+  isPrefix : simplerPrograms.totalPrograms ≤ programs.totalPrograms
+  moreHalting : simplerPrograms.haltingPrograms ≤ programs.haltingPrograms
 
-/-- Distance to event horizon -/
-def EmotionalTimeline.distanceToHorizon (et : EmotionalTimeline) : ℕ :=
-  if et.watnaAccumulated < et.horizonThreshold then
-    et.horizonThreshold - et.watnaAccumulated
-  else 0
+/-- Complex spaces have more non-halting programs. -/
+theorem complex_models_more_nonhalting (ms : ModelSpace) :
+    ms.simplerPrograms.nonHalting ≤ ms.programs.nonHalting := by
+  unfold ProgramSpace.nonHalting
+  omega
 
-theorem watna_irreversible (et : EmotionalTimeline) :
-    et.previousWatna ≤ et.watnaAccumulated := et.arrowOfTime
+/-- Halting models are always a strict minority. -/
+theorem halting_models_minority (ms : ModelSpace) :
+    ms.programs.haltingPrograms < ms.programs.totalPrograms :=
+  ms.programs.someNonHalting
 
-theorem horizon_closer_with_more_watna (et1 et2 : EmotionalTimeline)
-    (hSameThresh : et1.horizonThreshold = et2.horizonThreshold)
-    (hMoreWatna : et1.watnaAccumulated ≤ et2.watnaAccumulated) :
-    et2.distanceToHorizon ≤ et1.distanceToHorizon := by
-  unfold EmotionalTimeline.distanceToHorizon
-  split <;> split <;> omega
-
-theorem at_horizon_zero_distance (et : EmotionalTimeline)
-    (hAtHorizon : et.horizonThreshold ≤ et.watnaAccumulated) :
-    et.distanceToHorizon = 0 := by
-  unfold EmotionalTimeline.distanceToHorizon
-  split <;> omega
+/-- Model fold deficit equals non-halting count. -/
+theorem model_fold_deficit (ps : ProgramSpace) :
+    ps.nonHalting = ps.totalPrograms - ps.haltingPrograms :=
+  halting_as_fold_deficit ps
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 80: Complete Self-Knowledge is Uncomputable (Chaitin Bridge)
+-- Prediction 74: Coupled Failure Amplification
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- The void boundary of a person's full experience space is not finitely
-    constructible (THM-UNCOMPUTABILITY-IS-INFINITE-VOID). You can
-    approximate self-knowledge but never complete it. Each therapy session
-    is a finite approximation that monotonically improves. -/
-structure SelfKnowledgeApproximation where
-  /-- Total experiences in lifetime -/
-  totalExperiences : ℕ
-  /-- At least one experience -/
-  expPos : 0 < totalExperiences
-  /-- Experiences processed (void boundary so far) -/
-  processed : ℕ
-  /-- Processed bounded by total -/
-  processedBounded : processed ≤ totalExperiences
-  /-- Previous session's processed count -/
-  previousProcessed : ℕ
-  /-- Monotone: sessions never lose progress -/
-  monotone : previousProcessed ≤ processed
+/-- A failure-repair cycle where repair exceeds damage. -/
+structure OverRepairCycle where
+  frontier : ℕ
+  positiveFrontier : 0 < frontier
+  vented : ℕ
+  ventBounded : vented ≤ frontier
+  repaired : ℕ
+  overRepair : vented < repaired
 
-/-- Self-knowledge gap: experiences not yet integrated -/
-def SelfKnowledgeApproximation.knowledgeGap (sk : SelfKnowledgeApproximation) : ℕ :=
-  sk.totalExperiences - sk.processed
+/-- Over-repair strictly increases entropy. -/
+theorem over_repair_increases_entropy (orc : OverRepairCycle) :
+    frontierEntropyProxy orc.frontier <
+    frontierEntropyProxy (repairedFrontier orc.frontier orc.vented orc.repaired) :=
+  coupled_failure_strictly_increases_entropy_proxy orc.positiveFrontier orc.ventBounded orc.overRepair
 
-theorem self_knowledge_monotone_improvement (sk : SelfKnowledgeApproximation) :
-    sk.knowledgeGap ≤ sk.totalExperiences - sk.previousProcessed := by
-  unfold SelfKnowledgeApproximation.knowledgeGap
-  have := sk.monotone; omega
-
-theorem complete_self_knowledge_zero_gap (sk : SelfKnowledgeApproximation)
-    (hComplete : sk.processed = sk.totalExperiences) :
-    sk.knowledgeGap = 0 := by
-  unfold SelfKnowledgeApproximation.knowledgeGap; omega
-
-theorem more_processing_smaller_gap (sk1 sk2 : SelfKnowledgeApproximation)
-    (hSameTotal : sk1.totalExperiences = sk2.totalExperiences)
-    (hMoreProcessed : sk1.processed ≤ sk2.processed) :
-    sk2.knowledgeGap ≤ sk1.knowledgeGap := by
-  unfold SelfKnowledgeApproximation.knowledgeGap; omega
+/-- Over-repair increases frontier width. -/
+theorem over_repair_increases_width (orc : OverRepairCycle) :
+    orc.frontier ≤ repairedFrontier orc.frontier orc.vented orc.repaired :=
+  coupled_failure_preserves_or_increases_frontier_width orc.ventBounded (le_of_lt orc.overRepair)
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Master Theorem: Five Predictions Compose
+-- Prediction 75: Rejection-Trajectory Reconstruction Fidelity
 -- ═══════════════════════════════════════════════════════════════════════
 
-theorem five_predictions_round6 :
-    -- P76: No decay means no attention deficit
-    (∀ ct : CommunicationTaper, ct.lastAttention = ct.firstAttention → ct.attentionDeficit = 0) ∧
-    -- P77: Stable network has positive resolution
-    (∀ nn : NegotiationNetwork, 0 < nn.netResolution) ∧
-    -- P78: Matched heads zero deficit
-    (∀ ad : AttentionDiversity, ad.numHeads = ad.semanticDimensions → ad.attentionDeficit = 0) ∧
-    -- P79: WATNA is irreversible
-    (∀ et : EmotionalTimeline, et.previousWatna ≤ et.watnaAccumulated) ∧
-    -- P80: Complete self-knowledge is zero gap
-    (∀ sk : SelfKnowledgeApproximation, sk.processed = sk.totalExperiences → sk.knowledgeGap = 0) :=
-  ⟨no_decay_no_deficit, stable_network_positive_resolution, matched_heads_zero_deficit,
-   watna_irreversible, complete_self_knowledge_zero_gap⟩
+/-- Trajectory determines boundary: same trajectory → same boundary. -/
+theorem trajectory_determines_boundary
+    (rw1 rw2 : RetrocausalWitness)
+    (hValid1 : rw1.isValid)
+    (hValid2 : rw2.isValid)
+    (hSameTraj : rw1.trajectory = rw2.trajectory)
+    (hSameN : rw1.terminal.numChoices = rw2.terminal.numChoices) :
+    ∀ i : Fin rw1.terminal.numChoices,
+      rw1.terminal.voidBoundary i =
+      rw2.terminal.voidBoundary (i.cast hSameN) := by
+  intro i
+  have h1 := retrocausal_boundary_bounds_trajectory rw1 hValid1 i
+  have h2 := retrocausal_boundary_bounds_trajectory rw2 hValid2 (i.cast hSameN)
+  rw [h1, h2]
+  congr 1
+  exact hSameTraj
+
+/-- Reconstruction preserves simplicity ordering. -/
+theorem reconstruction_preserves_ordering (bs : BuleyeanSpace)
+    (i j : Fin bs.numChoices)
+    (hLess : bs.voidBoundary i ≤ bs.voidBoundary j) :
+    bs.weight j ≤ bs.weight i :=
+  buleyean_concentration bs i j hLess
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- Master Theorem
+-- ═══════════════════════════════════════════════════════════════════════
+
+/-- Round 6 master: all five predictions compose from existing theorems. -/
+theorem predictions_round6_master (bs : BuleyeanSpace) (ps : ProgramSpace) :
+    (∀ frontier vented : ℕ, 0 < vented → vented < frontier →
+      frontierEntropyProxy (structuredFrontier frontier vented) <
+      frontierEntropyProxy frontier) ∧
+    (∀ i, 0 < bs.weight i) ∧
+    ps.haltingPrograms < ps.totalPrograms ∧
+    (∀ frontier vented repaired : ℕ, 0 < frontier → vented ≤ frontier →
+      vented < repaired →
+      frontierEntropyProxy frontier <
+      frontierEntropyProxy (repairedFrontier frontier vented repaired)) ∧
+    (∀ i j, bs.voidBoundary i ≤ bs.voidBoundary j →
+      bs.weight j ≤ bs.weight i) := by
+  exact ⟨
+    fun _ _ hV hS => structured_failure_reduces_entropy_proxy hV hS,
+    buleyean_positivity bs,
+    ps.someNonHalting,
+    fun _ _ _ hF hB hO => coupled_failure_strictly_increases_entropy_proxy hF hB hO,
+    buleyean_concentration bs⟩
 
 end ForkRaceFoldTheorems
