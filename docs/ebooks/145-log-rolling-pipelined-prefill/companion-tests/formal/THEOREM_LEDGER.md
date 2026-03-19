@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 340 across 37 topical sections (all mechanized, zero open)
-- **TLA+ specifications:** 85 (all with matching .cfg files)
-- **Lean theorem modules:** 92 (all sorry-free)
+- **Theorem table entries:** 336 across 37 topical sections (all mechanized, zero open)
+- **TLA+ specifications:** 86 (all with matching .cfg files)
+- **Lean theorem modules:** 93 (all sorry-free)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
@@ -626,6 +626,24 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 | ID | Claim (paper-level) | Explicit assumptions | Mechanization | Status |
 |---|---|---|---|---|
 | `THM-REYNOLDS-BFT` | Reynolds-BFT correspondence: Reynolds number Re = N/C (stages/chunks). Idle fraction = max(0, 1 - 1/Re). BFT thresholds derived from fork/race/fold framework: Re < 3/2 (quorum-safe), Re < 2 (majority-safe) | positive stages N; positive chunks C | Lean theorems in `ReynoldsBFT.lean` | Mechanized |
+
+### Buleyean Evidence Standards (§28)
+
+*The topological theory of legal proof: β₁ = 0 as the only formally defensible evidence standard for criminal conviction, removing the prior entirely and replacing "proof beyond a reasonable doubt" with a computable, observer-independent, auditable topological invariant.*
+
+| ID | Claim (paper-level) | Explicit assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| `THM-EVIDENCE-DEFICIT` | The evidentiary deficit is positive for any nontrivial case with a single verdict stream. The deficit equals evidentiaryThreads - 1. This is the topological cost of folding multi-threaded evidence into a single binary verdict | EvidenceTopology with evidentiaryThreads >= 2, verdictStreams = 1 | Lean theorems `evidence_deficit_positive` and `evidence_deficit_value` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-PRESUMPTION-OF-INNOCENCE` | Before any evidence is examined, the Buleyean verdict is "insufficient data." The initial Bule equals the total number of evidentiary threads and is at least 2. This IS the presumption of innocence -- not a procedural default but a topological invariant. You cannot compute guilt from an uncovered topology | EvidenceTopology with evidentiaryThreads >= 2 | Lean theorems `presumption_of_innocence`, `initial_bule_maximal`, and `initial_bule_positive` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-EVIDENCE-MONOTONE` | Each piece of admissible evidence can only reduce the evidentiary deficit, never increase it. Strictly: covering one additional thread strictly reduces the Bule. This gives a mathematical definition of "admissible": evidence that reduces deficit. Evidence that increases deficit is formally prejudicial (FRE 403) | EvidenceTopology; two EvidenceStates with monotone coverage | Lean theorems `evidence_monotone` and `evidence_strictly_reduces` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-GUILTY-IFF-ZERO-DEFICIT` | A guilty verdict is returned if and only if the evidentiary deficit is exactly zero. Equivalently, the verdict is "insufficient data" if and only if the deficit is positive. β₁ = 0 is the evidence standard. No other threshold is formally defensible | EvidenceTopology; EvidenceState | Lean theorems `guilty_iff_zero_deficit` and `insufficient_data_iff_positive_deficit` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-VERDICT-DETERMINISTIC` | The verdict is a deterministic function of thread coverage. Two evidence states with identical coverage produce identical verdicts. No randomness, no judgment calls on the standard itself -- only on the classification of evidence within threads | EvidenceTopology; two EvidenceStates with equal coveredThreads | Lean theorem `verdict_deterministic` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-COVERAGE-EVENTUALLY-SUFFICIENT` | If the prosecution covers one thread per round, the deficit reaches zero after exactly evidentiaryThreads rounds. The deficit at round k equals evidentiaryThreads - k | EvidenceTopology; round count k <= evidentiaryThreads | Lean theorems `coverage_eventually_sufficient` and `coverage_deficit_at_round` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-DISCOVERY-REDUCES-DEFICIT` | Full discovery (all evidence disclosed) provides maximum context and prevents Brady violations. Withholding evidence maintains deficit by reducing available context. More disclosure means more context, monotonically | DiscoveryState with disclosed bounded by total | Lean theorems `full_discovery_maximum_context`, `brady_violation_withholds_context`, and `more_discovery_more_context` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-DEFENSE-INCREASES-TOPOLOGY` | The defense's role is to identify uncovered evidentiary threads, increasing β₁(E) and requiring more prosecution coverage. Each new thread strictly increases the evidentiary deficit | EvidenceTopology; newThreads >= 1; verdictStreams = 1 | Lean theorems `defenseIdentifiesThread` and `defense_increases_deficit` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-APPEAL-GROUND` | A conviction with an uncovered thread has positive residual deficit, contradicts the guilty standard, and is formally reversible. The appellate question is computable: does the recorded void boundary satisfy β₁ = 0? | EvidenceTopology; AppealChallenge with uncovered thread witness | Lean theorems `appeal_ground_exists`, `appeal_contradicts_verdict`, and `appeal_reversible` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-BULEYEAN-EVIDENCE-MASTER` | Complete evidence standard theorem: (1) presumption of innocence (initial verdict = insufficient data), (2) initial deficit at least 2, (3) evidence deficit positive for single-verdict topology, (4) full coverage yields guilty, (5) deficit at full coverage is zero. Composes all individual evidence standard theorems | EvidenceTopology with verdictStreams = 1 | Lean theorem `buleyean_evidence_master` in `BuleyeanEvidence.lean` | Mechanized |
+| `THM-BULEYEAN-EVIDENCE-MODEL` | Model-checked five-phase trial protocol: safety (no premature conviction, presumption of innocence, deficit nonneg/bounded/formula, coverage bounded, discovery bounded, guilty only in verdict phase), liveness (eventually verdict, eventually covered). Defense can increase topology. Prosecution rests trigger insufficiency | 3 evidentiary threads; 6 max rounds; 5 total evidence items | TLA+ `BuleyeanEvidence.tla` + `BuleyeanEvidence.cfg` with 9 invariants and 2 temporal properties | Model-checked |
 
 ## Interpretation
 
