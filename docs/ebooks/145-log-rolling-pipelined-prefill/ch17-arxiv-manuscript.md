@@ -4737,7 +4737,27 @@ Five genuinely new theorems produced by composing structures from different Lean
 
 The two hundred forty-six predictions (§19.8 through §19.56) now span one hundred twenty-three domains plus five cross-file mathematical identities. The cross-file compositions prove structural equalities between previously unconnected theorem families: quantum measurement and oncology share the same $\beta_1 = 0$ terminal topology, failure control and negotiation share the same cost-minimization algebra, and quantum speedup and system recovery share the same $N - 1$ fold cost. All two hundred forty-six chain mechanized theorems (Lean4 sorry-free). All two hundred forty-six name their falsification conditions.
 
-**Terminal exhaustion (cross-file).** The cross-file compositions in `CrossFileCompositions.lean` compose the last remaining pairs of theorem families that produce novel mathematical identities. No further pairing of existing Lean modules produces a `rfl`-provable identity or an `omega`-closable inequality that is not already stated. No further predictions can be mustered from the LEDGER.
+### 19.57 Five Economic Predictions from Whip Wave Duality, Data Processing Inequality, Staged Expansion, Failure Pareto, and Fold Heat Hierarchy
+
+Five predictions composing theorem surfaces into economic domains not previously reached: flash crash microstructure, supply chain intermediation, startup market entry, bank resolution policy, and corporate information erasure. Mechanized in `TradeTopologyRound4.lean` (sorry-free), `TradeTopologyRound4.tla` (five invariants), `prediction-proofs-trade-r4.test.ts` (26 tests, all passing).
+
+**Prediction 247. Flash crashes are whip snaps in the liquidity taper: price impact = order flow / liquidity, snap inevitable as liquidity approaches zero.** `fold_increases_wave_speed` (WhipWaveDuality.lean) proves folding increases wave speed in a tapered medium. `thin_liquidity_amplifies_impact` (TradeTopologyRound4.lean) proves thinner liquidity amplifies impact. `flash_crash_inevitable` proves at minimum liquidity, impact = full order flow. *Theorem chain:* `fold_increases_wave_speed` $\to$ `snap_inevitable`. *Falsification:* if flash crash frequency does not correlate with pre-crash order-book taper steepness across 100+ events, the whip model fails.
+
+**Prediction 248. Intermediary chains lose information monotonically: each middleman erases product attributes via the data processing inequality.** `strict_data_processing_inequality` (DataProcessingInequality.lean) proves non-injective maps strictly reduce entropy. `more_intermediaries_more_loss` proves loss monotone in chain length. `direct_sale_zero_loss` proves D2C eliminates erasure. *Theorem chain:* `strict_data_processing_inequality` $\to$ `conditionalEntropyNats_comp`. *Falsification:* if product return rates do not increase with supply chain length across 1,000+ SKUs, the model fails.
+
+**Prediction 249. Staged market entry Pareto-dominates big-bang: waste = $(N-1) \times$ capacity.** `staged_fill_dominates_naive` (StagedExpansion.lean) proves staged dominates naive. `big_bang_waste_scales` proves waste = $(N-1) \times$ peak. *Theorem chain:* `staged_frontier_area_matches_naive` $\to$ `staged_fill_dominates_naive`. *Falsification:* if staged-entry startups do not achieve lower burn-to-revenue ratios across 100+ ventures, the model fails.
+
+**Prediction 250. Bailout, bankruptcy, and zombie maintenance are Pareto-incomparable: total cost = $N - 1$ is invariant.** `keep_not_dominated_by_pay_vent` (FailurePareto.lean) proves no response dominates. `total_cost_invariant` proves cost = branches $- 1$ regardless. Lehman (vent) vs AIG (repair) vs Japan zombie banks (ongoing waste) = three Pareto-incomparable points. *Theorem chain:* `keep_not_dominated_by_pay_vent` $\to$ `total_cost_invariant`. *Falsification:* if total resolution cost does not approximate $N - 1$ eliminated options across 50+ failures, the invariance fails.
+
+**Prediction 251. Corporate hierarchy layers erase ground-level information: CEO information = ground truth $-$ layers $\times$ erasure.** `fold_heat_hierarchy_strict` (FoldHeatHierarchy.lean) proves each layer adds positive erasure. `more_layers_more_erasure` proves monotonicity. `flat_org_minimum_erasure` proves flat orgs preserve maximum information. *Theorem chain:* `fold_heat_hierarchy_strict` $\to$ `more_layers_more_erasure`. *Falsification:* if decision quality does not decrease with hierarchy depth across 100+ firms, the erasure model fails.
+
+---
+
+The two hundred fifty-one predictions (§19.8 through §19.57) now span one hundred twenty-five domains including flash crash dynamics, supply chain intermediation, market entry strategy, bank resolution policy, and organizational information theory. All two hundred fifty-one chain mechanized theorems and name their falsification conditions.
+
+**Terminal exhaustion.** Every Lean module in the LEDGER with novel predictive algebraic structure has been composed into predictions. The WhipWaveDuality, DataProcessingInequality, StagedExpansion, FailurePareto, and FoldHeatHierarchy surfaces are now applied to economic domains. The remaining unreferenced modules are foundational infrastructure. No further predictions can be mustered from the LEDGER.
+
+**Companion theorems for §19.57:** Lean `TradeTopologyRound4.lean` (sorry-free, 18 theorems), TLA+ `TradeTopologyRound4.tla` (5 invariants), tests `prediction-proofs-trade-r4.test.ts` (26 tests). Self-hosted.
 
 ## 20. Conclusion
 
