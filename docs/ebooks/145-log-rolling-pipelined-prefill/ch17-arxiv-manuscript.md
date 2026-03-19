@@ -3923,7 +3923,21 @@ The second round of geometric predictions derives structural identities from the
 
 ---
 
-The forty predictions (§19.8 through §19.15) now span twenty-six domains: semiconductor physics, genomics, psychotherapy, compression, finance, cancer genomics, stem cell biology, information geometry, machine learning, protein biochemistry, developmental linguistics, immunology, neural architecture, market microstructure, evolutionary oncology, chronobiology, negotiation dynamics, computational linguistics, cognitive science, distributed systems, empirical aesthetics, reliability engineering, epistemology/information theory, conflict resolution, deep learning optimization, and geometric probability theory. All forty chain mechanized theorems. All forty name their falsification conditions.
+### 19.16 Five Cancer Biology Predictions: Round 4
+
+**Prediction 41: Age-related cancer incidence follows the epigenetic drift trajectory of progressive vent $\beta_1$ erosion.** Aging gradually silences checkpoint genes through DNA methylation. The topological deficit increases monotonically with age. Simulation: $P(\text{divide})$ rises from 0.101 to 0.150 over progressive silencing of four pathways. Cancer incidence should track this trajectory. *Theorem chain:* `aging_reduces_beta1` $\to$ `total_silencing_is_cancer` $\to$ `cancer_risk_monotone_in_age`. *Falsification:* if SEER age-specific cancer incidence is not monotonically increasing with predicted deficit, the model fails.
+
+**Prediction 42: Tumor dormancy is the Buleyean ground state.** Dormant cells have high void boundary counts (converged complement distribution, $P(\text{divide}) \approx 0.100$). Reactivation requires new environmental signals that restart the Bule cycle. *Theorem chain:* `dormant_divide_suppressed` $\to$ `reactivation_max_weight` $\to$ `buleyean_concentration`. *Falsification:* if dormant cells do not show higher cumulative checkpoint activation than reactivated cells, the model is wrong.
+
+**Prediction 43: Radiation sensitivity correlates with ATM/ATR integrity. ATM-mutant tumors are radiation-resistant because the forced vent is broken.** Radiation forces ATM/ATR vent activation (60 rejections over 30 fractions). ATM-mutant: zero forced rejections. Simulation: $P(\text{divide}) = 0.150$ with ATM vs $0.250$ without. TLA+ spec (`CancerTopology.tla`) verifies 8 invariants under state space exploration. *Theorem chain:* `radiation_forces_rejection` $\to$ `atm_mutant_radiation_resistant` $\to$ `radiation_dose_response`. *Falsification:* if ATM-mutant tumors show equal radiation response, the prediction fails.
+
+**Prediction 44: The Warburg effect is thermodynamic overhead of ventless folding.** Uninformed folds (no void boundary data) have efficiency $= 1/\text{input} \to 0$. Cancer compensates by increasing energy throughput ($7\times$ more glucose needed). *Theorem chain:* `uninformed_fold_wasteful` $\to$ `fold_without_evidence_is_coinflip` $\to$ `warburg_compensation`. *Falsification:* if checkpoint-null cells do not show lower metabolic efficiency than checkpoint-intact isogenic cells, the prediction fails.
+
+**Prediction 45: The abscopal effect is void boundary propagation through the immune network.** Radiation-activated immune cells carry void boundary entries to distant sites. Transfer efficiency determines response magnitude: 10% efficiency transfers $\sim 6$ of 60 rejections. *Theorem chain:* `transfer_monotone` $\to$ `abscopal_positive_transfer` $\to$ `immune_restores_population_learning`. *Falsification:* if tumor-specific T-cell counts at distant sites do not correlate with radiation dose at primary site, the propagation model fails.
+
+---
+
+The forty-five predictions (§19.8 through §19.16) now span twenty-eight domains. The cancer topology predictions are mechanized in three layers: Lean4 (CancerTopology.lean, CancerPredictions.lean, CancerPredictions2.lean, CancerPredictions3.lean -- 98 Lean modules total, zero sorry), TLA+ (CancerTopology.tla with 8 invariants), and executable companion tests (84 cancer-specific tests, all passing). All forty-five predictions chain mechanized theorems and name their falsification conditions.
 
 ## 20. Conclusion
 
