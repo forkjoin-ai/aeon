@@ -4355,6 +4355,24 @@ Five predictions composing the Skyrms nadir identification (SkyrmsNadirBule.lean
 
 The one hundred forty-one predictions (§19.8 through §19.35) now span sixty-five domains including negotiation theory, community scheduling, failure engineering, and computational void structure. All one hundred forty-one chain mechanized theorems (Lean4 sorry-free). All one hundred forty-one name their falsification conditions.
 
+### 19.36 Five Cross-Domain Predictions from Student Learning, Epidemic Immunity, Code Review, Battery Degradation, and Brainstorming
+
+Five predictions composing void walking with student learning curves, convergence with herd immunity, semiotic deficit with code review, append-only void with battery degradation, and complement concentration with brainstorming quality. Each is mechanized in Lean4 (`PredictionsRound11.lean`, sorry-free).
+
+**Prediction 142. Student learning follows the Buleyean weight formula: the sliver ensures no student is ever "zero knowledge" on any topic.** `learning_never_zero` proves learning strength $\geq 1$. `more_failures_weaker_knowledge` proves failed quizzes reduce strength monotonically. `mastery_at_zero_failures` proves maximum strength at perfect recall. *Falsification:* if students test at exactly zero knowledge (all assessment modalities including recognition fail) on any topic they have previously encountered, the sliver is wrong.
+
+**Prediction 143. Epidemic herd immunity follows convergence: the immunity deficit decreases monotonically toward the threshold.** `immunity_positive` proves the immune count is non-negative. `more_immune_less_susceptible` proves monotonicity. `herd_immunity_at_threshold` proves deficit = 0 at the critical threshold. The sliver: some susceptible individuals always remain. *Falsification:* if herd immunity can be achieved with zero remaining susceptible individuals (100% immunity), the sliver model is wrong.
+
+**Prediction 144. Code review deficit equals reviewers minus one: the information lost in producing a single merge decision.** `review_deficit_positive` proves positive deficit for $k \geq 2$ reviewers. `more_reviewers_more_deficit` proves larger review teams lose more information. The tradeoff: more reviewers reduce bug escape (multiple perspectives) but increase information loss (more opinions discarded). *Falsification:* if code review quality does not exhibit diminishing returns with reviewer count across 200+ pull requests, the deficit model fails.
+
+**Prediction 145. Battery degradation is irreversible void accumulation: each cycle adds permanent capacity loss.** `battery_never_zero` proves capacity never reaches exactly zero. `degradation_monotone` proves capacity loss is monotonically increasing. `fresh_battery_max_capacity` proves maximum capacity at zero cycles. *Falsification:* if battery capacity spontaneously increases without external intervention, the append-only model is wrong.
+
+**Prediction 146. Brainstorming quality follows complement concentration: the complement distribution ranks ideas by rejection count.** `idea_never_eliminated` proves no idea reaches zero weight. `less_rejected_higher_weight` proves the ranking is monotone. `objective_ranking` proves two independent panels with same rejections produce the same ranking. *Falsification:* if independent brainstorming evaluations with identical rejection data produce different rankings, the coherence property fails.
+
+---
+
+The one hundred forty-six predictions (§19.8 through §19.36) now span seventy domains including education, epidemiology, software engineering process, electrochemistry, and group creativity. All one hundred forty-six chain mechanized theorems (Lean4 sorry-free). All one hundred forty-six name their falsification conditions.
+
 ## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
