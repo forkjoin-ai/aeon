@@ -63,4 +63,5 @@ import ForkRaceFoldTheorems.GrandfatherParadox
 import ForkRaceFoldTheorems.NovelPredictions
 import ForkRaceFoldTheorems.PredictionsRound2
 import ForkRaceFoldTheorems.PredictionsRound3
+import ForkRaceFoldTheorems.PredictionsRound4
 import ForkRaceFoldTheorems.SemioticPeace
