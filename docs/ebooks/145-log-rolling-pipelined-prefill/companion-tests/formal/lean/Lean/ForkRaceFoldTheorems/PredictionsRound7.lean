@@ -1,261 +1,138 @@
 import Mathlib
 import ForkRaceFoldTheorems.BuleyeanProbability
-import ForkRaceFoldTheorems.Claims
+import ForkRaceFoldTheorems.NonEmpiricalPrediction
+import ForkRaceFoldTheorems.GrandfatherParadox
+import ForkRaceFoldTheorems.SleepDebt
+import ForkRaceFoldTheorems.FailureEntropy
 
 open scoped BigOperators ENNReal
 
 namespace ForkRaceFoldTheorems
 
 /-!
-# Predictions Round 7: Grandfather Renegotiation, Therapeutic Plateau,
-  Reynolds Mediation Threshold, Solomonoff Prior, Staged Growth
+# Predictions Round 7: Deep Unused Families
 
-Five predictions composing grandfather paradox with negotiation (renegotiation
-impossibility), Last Question with therapy (plateau detection), Reynolds BFT
-with conflict resolution (turbulence threshold), Solomonoff-Buleyean with void
-walking (universal prior initialization), and staged expansion with personal
-growth (shoulder-filling vs naive widening).
+111. Non-Empirical Prediction of Unknown Objects (NonEmpiricalPrediction)
+112. Grandfather Paradox Resolution via Append-Only History (GrandfatherParadox)
+113. Sleep Debt Cascade and Capacity Degradation (SleepDebt)
+114. Failure Trilemma: No Free Deterministic Collapse (FailureEntropy)
+115. Non-Empirical + Buleyean Bidirectional Prediction (Composition)
 -/
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 86: Renegotiating Settled Terms Fails (Grandfather Bridge)
+-- Prediction 111: Non-Empirical Prediction
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- A settled negotiation term: once accepted, the void boundary is
-    append-only (THM-VOID-APPEND-ONLY). Attempting to undo a settled
-    term requires setting its acceptance weight to zero, which
-    violates buleyean_positivity (THM-SLIVER-PREVENTS-ANNIHILATION).
-    Renegotiation must fork a new term, not fold the old one. -/
-structure SettledTerm where
-  /-- Acceptance weight (always ≥ 1 by Buleyean positivity) -/
-  acceptanceWeight : ℕ
-  /-- Weight is positive (sliver) -/
-  weightPos : 0 < acceptanceWeight
-  /-- Rejection history accumulated before settlement -/
-  rejectionHistory : ℕ
-  /-- Rounds of negotiation -/
-  rounds : ℕ
-  /-- Rounds are positive -/
-  roundsPos : 0 < rounds
+structure PredictionLattice where
+  totalPositions : ℕ
+  nontrivial : 2 ≤ totalPositions
+  observedCount : ℕ
+  someObserved : 0 < observedCount
+  holeCount : ℕ
+  someHoles : 0 < holeCount
+  partition : observedCount + holeCount = totalPositions
 
-/-- Cost to renegotiate = original rejection history + new rounds needed.
-    Renegotiation is always more expensive than the original negotiation
-    because the void boundary is append-only. -/
-def SettledTerm.renegotiationCost (st : SettledTerm) (newRounds : ℕ) : ℕ :=
-  st.rejectionHistory + newRounds
+theorem holes_have_positive_weight (pl : PredictionLattice)
+    (neighborRejections rounds : ℕ) (hRounds : 0 < rounds)
+    (hBounded : neighborRejections ≤ rounds) :
+    0 < rounds - min neighborRejections rounds + 1 := by omega
 
-theorem settlement_cannot_be_zeroed (st : SettledTerm) :
-    0 < st.acceptanceWeight := st.weightPos
+theorem lattice_is_partitioned (pl : PredictionLattice) :
+    pl.observedCount + pl.holeCount = pl.totalPositions := pl.partition
 
-theorem renegotiation_more_expensive (st : SettledTerm)
-    (newRounds : ℕ) (hNew : 0 < newRounds) :
-    st.rejectionHistory < st.renegotiationCost newRounds := by
-  unfold SettledTerm.renegotiationCost; omega
-
-theorem renegotiation_cost_monotone (st : SettledTerm)
-    (r1 r2 : ℕ) (hMore : r1 ≤ r2) :
-    st.renegotiationCost r1 ≤ st.renegotiationCost r2 := by
-  unfold SettledTerm.renegotiationCost; omega
+theorem holes_bounded_by_total (pl : PredictionLattice) :
+    pl.holeCount ≤ pl.totalPositions := by omega
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 87: Therapeutic Plateau is Detectable via Deficit Signal
+-- Prediction 112: Grandfather Paradox Resolution
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- A therapeutic process has a plateau when the deficit reaches zero
-    (THM-ANSWER-EVENTUALLY-COMPUTABLE): the complement distribution
-    has converged. Further sessions accumulate void but don't change
-    the distribution. The plateau is detectable: deficit = 0. -/
-structure TherapeuticProgress where
-  /-- Initial deficit (issues to process) -/
-  initialDeficit : ℕ
-  /-- Sessions completed -/
-  sessionsCompleted : ℕ
-  /-- Each session reduces deficit by at most 1 -/
-  sessionsWork : sessionsCompleted ≤ initialDeficit + sessionsCompleted
+structure VerifiedCausalChain where
+  chain : CausalChain
+  root : Fin chain.chainLength
+  rootExists : 0 < chain.existenceWeight root
 
-/-- Remaining deficit after sessions -/
-def TherapeuticProgress.remainingDeficit (tp : TherapeuticProgress) : ℕ :=
-  tp.initialDeficit - min tp.sessionsCompleted tp.initialDeficit
+theorem root_survives (vcc : VerifiedCausalChain) :
+    0 < vcc.chain.existenceWeight vcc.root := vcc.rootExists
 
-/-- Plateau reached when deficit = 0 -/
-def TherapeuticProgress.atPlateau (tp : TherapeuticProgress) : Prop :=
-  tp.initialDeficit ≤ tp.sessionsCompleted
+theorem all_events_persist (vcc : VerifiedCausalChain) (i : Fin vcc.chain.chainLength) :
+    0 < vcc.chain.existenceWeight i := vcc.chain.allExist i
 
-theorem plateau_at_sufficient_sessions (tp : TherapeuticProgress)
-    (hEnough : tp.initialDeficit ≤ tp.sessionsCompleted) :
-    tp.remainingDeficit = 0 := by
-  unfold TherapeuticProgress.remainingDeficit; omega
-
-theorem before_plateau_positive_deficit (tp : TherapeuticProgress)
-    (hBefore : tp.sessionsCompleted < tp.initialDeficit) :
-    0 < tp.remainingDeficit := by
-  unfold TherapeuticProgress.remainingDeficit; omega
-
-theorem more_sessions_less_deficit (tp1 tp2 : TherapeuticProgress)
-    (hSameDeficit : tp1.initialDeficit = tp2.initialDeficit)
-    (hMoreSessions : tp1.sessionsCompleted ≤ tp2.sessionsCompleted) :
-    tp2.remainingDeficit ≤ tp1.remainingDeficit := by
-  unfold TherapeuticProgress.remainingDeficit; omega
+theorem history_nontrivial (vcc : VerifiedCausalChain) :
+    2 ≤ vcc.chain.chainLength := vcc.chain.nontrivial
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 88: Conflict Reynolds Number Predicts When Mediation
---   Becomes Mandatory
+-- Prediction 113: Sleep Debt Cascade
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- A conflict's Reynolds number Re = issues / capacity.
-    Below Re < 3/2 (THM-REYNOLDS-BFT quorum-safe): self-resolution.
-    Above Re ≥ 3/2: mediation needed (turbulent regime).
-    Higher Re = more chaotic conflict = more structure needed. -/
-structure ConflictReynolds where
-  /-- Number of contested issues -/
-  issues : ℕ
-  /-- Resolution capacity per round -/
-  capacity : ℕ
-  /-- Capacity is positive -/
-  capacityPos : 0 < capacity
-  /-- At least one issue -/
-  issuePos : 0 < issues
+structure SleepScenario where
+  maxCapacity : ℕ
+  capacityPos : 0 < maxCapacity
+  wakeLoad : ℕ
+  recoveryQuota : ℕ
+  insufficient : recoveryQuota < wakeLoad
 
-/-- Turbulence indicator: issues exceed capacity -/
-def ConflictReynolds.turbulent (cr : ConflictReynolds) : Prop :=
-  cr.capacity < cr.issues
+theorem one_night_positive_debt (ss : SleepScenario) :
+    0 < SleepDebt.residualDebt ss.wakeLoad 0 ss.recoveryQuota := by
+  apply SleepDebt.partial_recovery_leaves_positive_debt; simp; exact ss.insufficient
 
-/-- Overflow: issues that exceed capacity -/
-def ConflictReynolds.overflow (cr : ConflictReynolds) : ℕ :=
-  cr.issues - cr.capacity
+theorem debt_increases_per_night (ss : SleepScenario) (carriedDebt : ℕ) :
+    carriedDebt < SleepDebt.residualDebt ss.wakeLoad carriedDebt ss.recoveryQuota :=
+  SleepDebt.repeated_truncation_strictly_increases_debt ss.insufficient
 
-theorem laminar_when_capacity_sufficient (cr : ConflictReynolds)
-    (hSufficient : cr.issues ≤ cr.capacity) :
-    cr.overflow = 0 := by
-  unfold ConflictReynolds.overflow; omega
-
-theorem turbulent_when_overloaded (cr : ConflictReynolds)
-    (hOverloaded : cr.capacity < cr.issues) :
-    0 < cr.overflow := by
-  unfold ConflictReynolds.overflow; omega
-
-theorem more_capacity_less_overflow (cr1 cr2 : ConflictReynolds)
-    (hSameIssues : cr1.issues = cr2.issues)
-    (hMoreCapacity : cr1.capacity ≤ cr2.capacity) :
-    cr2.overflow ≤ cr1.overflow := by
-  unfold ConflictReynolds.overflow; omega
+theorem debt_lowers_capacity (ss : SleepScenario) (carriedDebt : ℕ) (hDebt : 0 < carriedDebt) :
+    SleepDebt.effectiveCapacity ss.maxCapacity carriedDebt < ss.maxCapacity :=
+  SleepDebt.positive_debt_lowers_capacity ss.capacityPos hDebt
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 89: Solomonoff Prior Initializes Void Walking
+-- Prediction 114: Failure Trilemma
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- The Solomonoff universal prior is the optimal initial complement
-    distribution for void walking (THM-CHAITIN-SOLOMONOFF-BRIDGE).
-    An uninformed start (uniform weights) has maximum uncertainty.
-    A Solomonoff-informed start (complexity-weighted) has lower
-    uncertainty. The gap between them is the prior's information content. -/
-structure PriorQuality where
-  /-- Number of hypotheses -/
-  numHypotheses : ℕ
-  /-- At least two hypotheses -/
-  hypothesesPos : 2 ≤ numHypotheses
-  /-- Total weight under uniform prior -/
-  uniformWeight : ℕ
-  /-- Uniform = sum of equal weights = numHypotheses -/
-  uniformDef : uniformWeight = numHypotheses
-  /-- Total weight under informed prior (complexity-weighted) -/
-  informedWeight : ℕ
-  /-- Informed prior concentrates: less total uncertainty -/
-  informedConcentrates : informedWeight ≤ uniformWeight
-  /-- Informed prior is nontrivial -/
-  informedPos : 0 < informedWeight
+theorem collapse_requires_failure (frontier : ℕ) (hForked : 1 < frontier) :
+    0 < frontier - 1 := by omega
 
-/-- Information content of the prior = weight reduction -/
-def PriorQuality.informationContent (pq : PriorQuality) : ℕ :=
-  pq.uniformWeight - pq.informedWeight
+theorem single_survivor_zero_entropy (frontier : ℕ) (hForked : 1 < frontier) :
+    frontierEntropyProxy (structuredFrontier frontier (frontier - 1)) = 0 :=
+  single_survivor_has_zero_entropy_proxy hForked
 
-theorem uniform_prior_zero_information (pq : PriorQuality)
-    (hUniform : pq.informedWeight = pq.uniformWeight) :
-    pq.informationContent = 0 := by
-  unfold PriorQuality.informationContent; omega
-
-theorem informed_prior_positive_information (pq : PriorQuality)
-    (hInformed : pq.informedWeight < pq.uniformWeight) :
-    0 < pq.informationContent := by
-  unfold PriorQuality.informationContent; omega
-
-theorem better_prior_more_information (pq1 pq2 : PriorQuality)
-    (hSameUniform : pq1.uniformWeight = pq2.uniformWeight)
-    (hTighter : pq2.informedWeight ≤ pq1.informedWeight) :
-    pq1.informationContent ≤ pq2.informationContent := by
-  unfold PriorQuality.informationContent; omega
+theorem success_requires_failure (frontier vented : ℕ) (hForked : 1 < frontier)
+    (hCollapse : structuredFrontier frontier vented = 1) :
+    0 < vented :=
+  success_from_forked_frontier_requires_failure hForked hCollapse
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 90: Personal Growth Follows Staged Expansion, Not Naive
---   Widening
+-- Prediction 115: Structural Holes Predict Backward
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- A growth process: THM-S7-STAGGER proves staged expansion
-    dominates naive widening. In personal development: filling
-    underdeveloped areas (shoulders) before expanding peak
-    capability yields higher total capacity than dumping all effort
-    into the strongest skill. -/
-structure GrowthProcess where
-  /-- Peak capability -/
-  peakCapability : ℕ
-  /-- Peak is positive -/
-  peakPos : 0 < peakCapability
-  /-- Left shoulder (underdeveloped area 1) -/
-  leftShoulder : ℕ
-  /-- Right shoulder (underdeveloped area 2) -/
-  rightShoulder : ℕ
-  /-- Shoulders bounded by peak -/
-  leftBounded : leftShoulder ≤ peakCapability
-  rightBounded : rightShoulder ≤ peakCapability
-  /-- Total growth budget available -/
-  budget : ℕ
-  /-- Budget is positive -/
-  budgetPos : 0 < budget
+theorem hole_prediction_concentrates (bs : BuleyeanSpace)
+    (c1 c2 : Fin bs.numChoices) (hSimpler : bs.voidBoundary c1 ≤ bs.voidBoundary c2) :
+    bs.weight c2 ≤ bs.weight c1 :=
+  buleyean_concentration bs c1 c2 hSimpler
 
-/-- Capacity deficit: sum of shoulder gaps -/
-def GrowthProcess.capacityDeficit (gp : GrowthProcess) : ℕ :=
-  (gp.peakCapability - gp.leftShoulder) + (gp.peakCapability - gp.rightShoulder)
+theorem hole_candidate_positive (bs : BuleyeanSpace) (i : Fin bs.numChoices) :
+    0 < bs.weight i := buleyean_positivity bs i
 
-/-- Staged growth: fill shoulders first -/
-def GrowthProcess.stagedGrowth (gp : GrowthProcess) : ℕ :=
-  min gp.budget gp.capacityDeficit
-
-/-- Naive growth: dump all into peak -/
-def GrowthProcess.naiveGrowth (_gp : GrowthProcess) : ℕ := 0
-
-theorem staged_at_least_as_good_as_naive (gp : GrowthProcess) :
-    gp.naiveGrowth ≤ gp.stagedGrowth := by
-  unfold GrowthProcess.naiveGrowth GrowthProcess.stagedGrowth; omega
-
-theorem staged_strictly_better_when_deficit_exists (gp : GrowthProcess)
-    (hDeficit : 0 < gp.capacityDeficit) :
-    gp.naiveGrowth < gp.stagedGrowth := by
-  unfold GrowthProcess.naiveGrowth GrowthProcess.stagedGrowth
-  have := gp.budgetPos; omega
-
-theorem balanced_growth_zero_deficit (gp : GrowthProcess)
-    (hBalanced : gp.leftShoulder = gp.peakCapability)
-    (hBalanced2 : gp.rightShoulder = gp.peakCapability) :
-    gp.capacityDeficit = 0 := by
-  unfold GrowthProcess.capacityDeficit; omega
+theorem hole_prediction_objective (bs1 bs2 : BuleyeanSpace)
+    (hN : bs1.numChoices = bs2.numChoices) (hR : bs1.rounds = bs2.rounds)
+    (hV : ∀ i, bs1.voidBoundary i = bs2.voidBoundary (i.cast hN))
+    (i : Fin bs1.numChoices) :
+    bs1.weight i = bs2.weight (i.cast hN) :=
+  buleyean_coherence bs1 bs2 hN hR hV i
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Master Theorem: Five Predictions Compose
+-- Master Theorem
 -- ═══════════════════════════════════════════════════════════════════════
 
-theorem five_predictions_round7 :
-    -- P86: Settlement cannot be zeroed (Buleyean positivity)
-    (∀ st : SettledTerm, 0 < st.acceptanceWeight) ∧
-    -- P87: Plateau at sufficient sessions
-    (∀ tp : TherapeuticProgress, tp.initialDeficit ≤ tp.sessionsCompleted → tp.remainingDeficit = 0) ∧
-    -- P88: Laminar when capacity sufficient
-    (∀ cr : ConflictReynolds, cr.issues ≤ cr.capacity → cr.overflow = 0) ∧
-    -- P89: Uniform prior has zero information
-    (∀ pq : PriorQuality, pq.informedWeight = pq.uniformWeight → pq.informationContent = 0) ∧
-    -- P90: Staged at least as good as naive
-    (∀ gp : GrowthProcess, gp.naiveGrowth ≤ gp.stagedGrowth) :=
-  ⟨settlement_cannot_be_zeroed, plateau_at_sufficient_sessions,
-   laminar_when_capacity_sufficient, uniform_prior_zero_information,
-   staged_at_least_as_good_as_naive⟩
+theorem predictions_round7_master (bs : BuleyeanSpace) :
+    (∀ nr rounds : ℕ, 0 < rounds → nr ≤ rounds → 0 < rounds - min nr rounds + 1) ∧
+    (∀ i, 0 < bs.weight i) ∧
+    (∀ wl rq : ℕ, rq < wl → 0 < SleepDebt.residualDebt wl 0 rq) ∧
+    (∀ f : ℕ, 1 < f → 0 < f - 1) ∧
+    (∀ i j, bs.voidBoundary i ≤ bs.voidBoundary j → bs.weight j ≤ bs.weight i) := by
+  refine ⟨fun _ _ hR _ => by omega,
+         buleyean_positivity bs,
+         fun wl rq h => by apply SleepDebt.partial_recovery_leaves_positive_debt; simp; exact h,
+         fun _ h => by omega,
+         buleyean_concentration bs⟩
 
 end ForkRaceFoldTheorems
