@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 362 across 40 topical sections (all mechanized, zero open)
+- **Theorem table entries:** 377 across 41 topical sections (all mechanized, zero open)
 - **TLA+ specifications:** 87 (all with matching .cfg files)
-- **Lean theorem modules:** 96 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean)
+- **Lean theorem modules:** 97 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
@@ -655,6 +655,26 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 | `THM-RETROCAUSAL-CONSISTENCY` | The retrocausal bound excludes paradoxical terminal states: a state where the traveler exists but the ancestor doesn't has no consistent trajectory | CausalChain with root and tip | Lean theorem `retrocausal_consistency` in `GrandfatherParadox.lean` | Mechanized |
 | `THM-TIME-TRAVEL-IS-TOPOLOGY` | Time travel is a topology change: adding a cycle to the causal graph increases beta1 by one. The original chain is preserved. The paradox asks to fold the new cycle, but the sliver prevents it | TemporalBranch | Lean theorem `time_travel_is_topology` in `GrandfatherParadox.lean` | Mechanized |
 | `THM-GRANDFATHER-PARADOX-MASTER` | Complete resolution: append-only void, no annihilation, self-referential fold impossible, branching is fork, original preserved. The grandfather paradox is an algebraic impossibility, not a physical one | BuleyeanSpace, SelfReferentialFold, TemporalBranch | TLA+ `GrandfatherParadox.tla` invariants (`InvAncestorAlive`, `InvTravelerAlive`, `InvNoAnnihilation`, `InvBeta1NonNeg`, `InvBranchPositive`, `InvBranchingMonotone`, `InvConservation`) + Lean theorem `grandfather_paradox_master` in `GrandfatherParadox.lean` | Mechanized |
+
+### Novel Cross-Domain Predictions (§19.11)
+
+| Theorem ID | Claim | Assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| `THM-MISFOLDING-ZERO-DEFICIT` | Correct protein folding reaches beta1 = 0 (native state). Zero misfolding deficit | ProteinFolding with foldedBeta1 = 0 | Lean theorem `correct_folding_zero_deficit` in `NovelPredictions.lean` | Mechanized |
+| `THM-MISFOLDING-POSITIVE-DEFICIT` | Misfolded proteins have positive deficit (trapped in non-native state with unresolved cycles) | ProteinFolding with foldedBeta1 > 0 | Lean theorem `misfolding_positive_deficit` in `NovelPredictions.lean` | Mechanized |
+| `THM-MISFOLDING-DEFICIT-BOUNDED` | Misfolding deficit is bounded by conformational complexity (conformations - 1) | ProteinFolding | Lean theorem `misfolding_deficit_bounded` in `NovelPredictions.lean` | Mechanized |
+| `THM-LANGUAGE-CONVERGENCE-MIN` | Language acquisition requires at least spaceSize - 1 convergence rounds. Void walking over the phoneme space | LanguageAcquisition with nontrivial space | Lean theorem `language_convergence_minimum` in `NovelPredictions.lean` | Mechanized |
+| `THM-LARGER-LANGUAGE-SLOWER` | Larger phoneme inventories require more convergence rounds. Hawaiian < English < Mandarin < !Xoo | Two LanguageAcquisition systems with different space sizes | Lean theorem `larger_language_slower` in `NovelPredictions.lean` | Mechanized |
+| `THM-BABBLING-UNIFORM` | Pre-convergence babbling phase is uniform distribution (all-zero void boundary, all weights equal) | BuleyeanSpace with all-zero voidBoundary | Lean theorem `babbling_is_uniform` in `NovelPredictions.lean`, delegating to `fold_without_evidence_is_coinflip` | Mechanized |
+| `THM-IMMUNE-NEVER-ZERO` | No pathogen's threat weight ever reaches zero. The immune sliver: even maximally encountered pathogens retain weight >= 1 | ImmuneMemory | Lean theorem `immune_never_zero_threat` in `NovelPredictions.lean`, delegating to `buleyean_positivity` | Mechanized |
+| `THM-LESS-REJECTED-MORE-THREATENING` | Pathogens with fewer failed antibody bindings (less rejected) have higher threat weight. Novel pathogens most dangerous | ImmuneMemory, two pathogen indices | Lean theorem `less_rejected_more_threatening` in `NovelPredictions.lean`, delegating to `buleyean_concentration` | Mechanized |
+| `THM-NOVEL-PATHOGEN-MAX-THREAT` | Never-encountered pathogen has maximum threat weight = rounds + 1 (max uncertainty) | ImmuneMemory with zero void boundary for pathogen i | Lean theorem `novel_pathogen_max_threat` in `NovelPredictions.lean`, delegating to `buleyean_max_uncertainty` | Mechanized |
+| `THM-PRUNING-DEFICIT-EXACT` | Neural pruning deficit = sqrtParams - 1. Over-pruning creates classical deficit | NeuralPruning | Lean theorem `pruning_deficit_exact` in `NovelPredictions.lean` | Mechanized |
+| `THM-PRUNING-SPEEDUP` | Optimal neural pruning speedup = deficit + 1 = sqrtParams. Composes quantum_speedup_equals_classical_deficit_plus_one | NeuralPruning with sqrtParams >= 2 | Lean theorem `pruning_speedup_equals_deficit_plus_one` in `NovelPredictions.lean` | Mechanized |
+| `THM-FULL-MULTIPLEXING-LIQUIDITY` | Full trading path multiplexing = zero liquidity deficit = maximum market liquidity | MarketTopology with realizedPaths = tradingPaths | Lean theorem `full_multiplexing_max_liquidity` in `NovelPredictions.lean` | Mechanized |
+| `THM-SERIALIZED-MARKET-DEFICIT` | Single-path market has maximum deficit = tradingPaths - 1 = maximum illiquidity | MarketTopology with realizedPaths = 1 | Lean theorem `serialized_market_max_deficit` in `NovelPredictions.lean` | Mechanized |
+| `THM-DEFICIT-MONOTONE-REALIZATION` | Adding a trading venue reduces liquidity deficit. Deficit is monotone in realized paths | Two MarketTopologies with same available paths, different realized | Lean theorem `deficit_monotone_in_realization` in `NovelPredictions.lean` | Mechanized |
+| `THM-NOVEL-PREDICTIONS-MASTER` | All five predictions formally grounded: misfolding deficit bounded, language convergence positive, immune memory positive, pruning speedup = deficit + 1, full multiplexing = zero deficit | ProteinFolding, LanguageAcquisition, ImmuneMemory, NeuralPruning, MarketTopology | Lean theorem `novel_predictions_master` in `NovelPredictions.lean` | Mechanized |
 
 ### Metacognitive Walker & Void Attention
 

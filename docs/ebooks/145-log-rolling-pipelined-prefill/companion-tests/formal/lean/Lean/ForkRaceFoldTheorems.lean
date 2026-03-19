@@ -58,4 +58,5 @@ import ForkRaceFoldTheorems.QuantumObserver
 import ForkRaceFoldTheorems.ChaitinOmega
 import ForkRaceFoldTheorems.NonEmpiricalPrediction
 import ForkRaceFoldTheorems.GrandfatherParadox
+import ForkRaceFoldTheorems.NovelPredictions
 import ForkRaceFoldTheorems.SemioticPeace
