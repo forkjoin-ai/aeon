@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 417 across 43 topical sections (all mechanized, zero open)
-- **TLA+ specifications:** 89 (all with matching .cfg files)
-- **Lean theorem modules:** 99 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean + IrreversibilityPredictions.lean + NovelInference.lean)
+- **Theorem table entries:** 446 across 44 topical sections (all mechanized, zero open)
+- **TLA+ specifications:** 90 (all with matching .cfg files)
+- **Lean theorem modules:** 100 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean + IrreversibilityPredictions.lean + NovelInference.lean + NovelInferenceForms.lean)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
@@ -655,6 +655,40 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 | `THM-RETROCAUSAL-CONSISTENCY` | The retrocausal bound excludes paradoxical terminal states: a state where the traveler exists but the ancestor doesn't has no consistent trajectory | CausalChain with root and tip | Lean theorem `retrocausal_consistency` in `GrandfatherParadox.lean` | Mechanized |
 | `THM-TIME-TRAVEL-IS-TOPOLOGY` | Time travel is a topology change: adding a cycle to the causal graph increases beta1 by one. The original chain is preserved. The paradox asks to fold the new cycle, but the sliver prevents it | TemporalBranch | Lean theorem `time_travel_is_topology` in `GrandfatherParadox.lean` | Mechanized |
 | `THM-GRANDFATHER-PARADOX-MASTER` | Complete resolution: append-only void, no annihilation, self-referential fold impossible, branching is fork, original preserved. The grandfather paradox is an algebraic impossibility, not a physical one | BuleyeanSpace, SelfReferentialFold, TemporalBranch | TLA+ `GrandfatherParadox.tla` invariants (`InvAncestorAlive`, `InvTravelerAlive`, `InvNoAnnihilation`, `InvBeta1NonNeg`, `InvBranchPositive`, `InvBranchingMonotone`, `InvConservation`) + Lean theorem `grandfather_paradox_master` in `GrandfatherParadox.lean` | Mechanized |
+
+### Five Novel AI Inference Forms (§15.24)
+
+| Theorem ID | Claim | Assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| `THM-VOID-INFERENCE-POSITIVE` | Every token retains positive probability in void inference. The sliver prevents permanent exclusion from generation regardless of rejection history | VoidInferenceState | Lean theorem `void_inference_positive` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-VOID-INFERENCE-CONCENTRATES` | The complement distribution sharpens with rejection accumulation. Tokens rejected more get lower weight. Generation gets more confident | VoidInferenceState, two token indices with ordered void boundaries | Lean theorem `void_inference_concentrates` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-VOID-INFERENCE-COHERENT` | Two void inference systems with the same rejection history produce the same output distribution. Deterministic given the void boundary | Two VoidInferenceStates with same numChoices, rounds, and voidBoundary | Lean theorem `void_inference_coherent` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-VOID-INFERENCE-SUBSUMES-SOFTMAX` | Void inference with single-step boundary equals standard softmax range. With multi-step accumulation, void inference is strictly richer (cross-step rejection memory) | VoidInferenceState | Lean theorem `void_inference_subsumes_softmax` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-VOID-INFERENCE-NORMALIZABLE` | Total weight across all tokens is positive, so the complement distribution can be normalized to a probability distribution | VoidInferenceState | Lean theorem `void_inference_normalizable` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-RETROCAUSAL-CONSISTENT` | Only trajectories consistent with the terminal state survive. Terminal constraints are satisfiable (every terminal weight is positive) | RetrocausalDecoder | Lean theorem `retrocausal_consistent` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-RETROCAUSAL-POSITIVE` | No valid trajectory is excluded. The sliver prevents false negatives in the pruning step. Weight >= 1 and weight != 0 | RetrocausalDecoder | Lean theorem `retrocausal_positive` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-RETROCAUSAL-SHARPENS` | As generation progresses, the set of consistent continuations shrinks. Fewer tokens remain with low rejection counts | RetrocausalDecoder, two token indices with ordered void boundaries | Lean theorem `retrocausal_sharpens` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-RETROCAUSAL-COMPOSABLE` | Two retrocausal constraints compose. Intersection of consistent trajectories is nonempty because the sliver ensures weight >= 1 for every token under every constraint | Two RetrocausalDecoders | Lean theorem `retrocausal_composable` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-RETROCAUSAL-NO-SELF-REFERENCE` | Self-referential terminal constraints cannot annihilate any trajectory. The grandfather paradox applied to decoding | RetrocausalDecoder | Lean theorem `retrocausal_no_self_reference` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-TOPO-SKIP-PRESERVES-TOPOLOGY` | Skipping a zero-deficit layer preserves the total beta1 of the network. A layer with beta1 = 0 contributes nothing topologically | TopoSpecDecoder with layerDeficit i = 0 | Lean theorem `topo_skip_preserves_topology` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-TOPO-SPEEDUP-EXACT` | Speedup from skipping a layer is deficit + 1. For zero-deficit layer, speedup = 1 | deficit : Nat | Lean theorem `topo_speedup_exact` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-TOPO-SKIP-COMPOSABLE` | Multiple layer skips compose. Skipping layers with deficits d1 and d2 gives total speedup d1 + d2 + 2. Deficits are additive | d1, d2 : Nat | Lean theorem `topo_skip_composable` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-TOPO-SKIP-BOUNDED` | Maximum number of skippable layers is bounded by the network depth | TopoSpecDecoder, skipCount <= totalLayers | Lean theorem `topo_skip_bounded` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-TOPO-MINIMUM-COMPUTE` | At least one layer must execute (the sliver applied to compute). Network with L layers can skip at most L - 1 | TopoSpecDecoder with positiveLayers | Lean theorem `topo_minimum_compute` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-TOPO-DEFICIT-NONNEG` | Beta1 deficit is always non-negative. No layer has negative topological complexity | TopoSpecDecoder | Lean theorem `topo_deficit_nonneg` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-ENSEMBLE-DEFICIT-EXACT` | Semiotic deficit of a k-agent ensemble is exactly k - 1. Unavoidable information loss from folding multiple candidates to one winner | SemioticEnsemble | Lean theorem `ensemble_deficit_exact` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-ENSEMBLE-DEFICIT-POSITIVE` | For any nontrivial ensemble (k >= 2), the deficit is positive. Folding always loses information. Free consensus is impossible | SemioticEnsemble with agentCount >= 2 | Lean theorem `ensemble_deficit_positive` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-ENSEMBLE-DOMINATES-SINGLE` | Ensemble output (least-rejected candidate) has weight at least as high as any single agent. Complement voting is non-degrading | SemioticEnsemble, two agent indices with ordered void boundaries | Lean theorem `ensemble_dominates_single` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-ENSEMBLE-COMPLEMENT-VOTING` | Every candidate retains positive weight in the complement vote. No agent's output is ever completely eliminated | SemioticEnsemble | Lean theorem `ensemble_complement_voting` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-ENSEMBLE-COHERENT` | Two independent juries using the same rejection data select the same winner. Complement voting is objective | Two SemioticEnsembles with same numChoices, rounds, and voidBoundary | Lean theorem `ensemble_coherent` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-ENSEMBLE-SCALING` | Adding one more agent increases the deficit by exactly 1. Constant marginal information cost | k : Nat with k >= 2 | Lean theorem `ensemble_scaling` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-NEI-POSITIVE` | Predicted completion has positive weight. The structural hole exists in the Buleyean sense | NonEmpiricalInference | Lean theorem `nei_positive` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-NEI-DOMINATES-GUESS` | Structural prediction strictly dominates random guessing when neighbors provide nontrivial rejection data | NonEmpiricalInference with neighborVoidSum > 0 | Lean theorem `nei_dominates_guess` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-NEI-COHERENT` | Two systems with the same lattice structure produce the same prediction. Non-empirical inference is objective | Two NonEmpiricalInferences with same neighborRoundsSum and neighborVoidSum | Lean theorem `nei_coherent` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-NEI-BOUNDED` | Prediction weight bounded between 1 and rounds + 1. Always finite, always within Buleyean weight range | NonEmpiricalInference | Lean theorem `nei_bounded` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-NEI-MENDELEEV` | Non-empirical inference is isomorphic to Mendeleev's periodic table prediction method. Both compute complement weight from neighbor-averaged void boundary | NonEmpiricalInference, BuleyeanSpace with matching rounds and voidBoundary | Lean theorem `nei_mendeleev` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-NEI-STRUCTURE-DOMINATES` | More neighbor rejection data produces sharper (lower) prediction weight. More structure = more constraint | Two NonEmpiricalInferences with same rounds, ordered void sums | Lean theorem `nei_structure_dominates` in `NovelInferenceForms.lean` | Mechanized |
+| `THM-NOVEL-INFERENCE-FORMS-MASTER` | Complete composition: all five forms are well-defined and compose from the same Buleyean axioms. Void inference positive, retrocausal decoding satisfiable, topological skipping non-negative, ensemble deficit exact, non-empirical inference dominates guessing | BuleyeanSpace, NonEmpiricalInference, k >= 2 | TLA+ `NovelInferenceForms.tla` (11 invariants) + Lean theorem `novel_inference_forms_master` in `NovelInferenceForms.lean` | Mechanized |
 
 ### Novel Cross-Domain Predictions (§19.11)
 
