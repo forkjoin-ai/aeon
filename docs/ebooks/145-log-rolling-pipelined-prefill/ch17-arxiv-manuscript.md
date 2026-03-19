@@ -116,7 +116,7 @@ A triangle. The top has one chunk. Each row adds one more. At $t_4$ the pipeline
 
 This is not only a visualization choice. In this model, the triangle is the canonical shape of pipelined computation. It is the minimum-area region in time × stage space that achieves full occupancy while respecting dependency constraints. Broader regions waste slots; narrower regions violate ordering.
 
-The triangle also admits a **covering-space analogy** (§1.4). The diagonal – the moment when all children are busy – is the base space: one ordered sequence, 1-2-3-4. But each chunk arrived at the diagonal via a different path through the triangle. Chunk 1 took the longest path (entered first, fell through all four stages). Chunk 4 took the shortest (entered last, only at stage 1). Many local paths, one ordered output. That is the covering-map intuition used later in the paper.
+The triangle also admits a **covering-space analogy** (§2.4). The diagonal – the moment when all children are busy – is the base space: one ordered sequence, 1-2-3-4. But each chunk arrived at the diagonal via a different path through the triangle. Chunk 1 took the longest path (entered first, fell through all four stages). Chunk 4 took the shortest (entered last, only at stage 1). Many local paths, one ordered output. That is the covering-map intuition used later in the paper.
 
 A similar occupancy pattern also recurs across scales. If you bundle chunks into mega-chunks, each mega-chunk moves through a larger triangle the same way a single chunk moves through a small one. This recurrence is one reason later sections compare related scheduling shapes across different domains.
 
@@ -402,7 +402,7 @@ $$E_{\text{unwind}}(\ell) = D_e^{\text{strand}} + \sum_{j=1}^{\sigma(\ell)} D_e^
 
 where $D_e^{\text{strand}}$ is the dissociation energy for breaking the primary strand cycle and $D_e^{(j)}$ is the dissociation energy for each secondary-structure cycle that must be melted before the R-loop can form. The First Law (§3.10) guarantees $E_{\text{unwind}} = W_{\text{edit}} + Q_{\text{thermal}}$: the energy splits between useful editing work and thermal dissipation.
 
-*Step 4 (The filtration trajectory).* The complete CRISPR editing event traces a filtration on the local Betti numbers, exactly as §1.6 describes for pipeline computation:
+*Step 4 (The filtration trajectory).* The complete CRISPR editing event traces a filtration on the local Betti numbers, exactly as §2.6 describes for pipeline computation:
 
 - $t = 0$: Target locus at rest. $\beta_1(\ell) = 2 + \sigma(\ell)$.
 - $t = t_{\text{PAM}}$: Cas9 recognizes PAM. No topological change yet -- this is the fork decision point.
@@ -423,9 +423,9 @@ This is consistent with published observations: GC-rich regions (which form more
 
 The implication for CRISPR design is direct: *compute $\sigma(\ell)$ for candidate target sites and rank by ascending topological complexity*. The site with the lowest $\beta_1(\ell) = 2 + \sigma(\ell)$ requires the least unwinding energy and should yield the highest editing efficiency. This is not a replacement for existing guide RNA scoring algorithms -- it is a topological prior that those algorithms could incorporate. The Betti number at the target locus is a computable, sequence-derivable feature that captures the energetic cost of the topological surgery that CRISPR performs.
 
-**Proposition (PROP-GENOME-SELF-DESCRIBING).** The genome is a self-describing frame (§1.4) whose local Betti numbers encode its own editability map. No external information is required: the sequence alone determines $\sigma(\ell)$ at every locus, and therefore determines $E_{\text{unwind}}(\ell)$ and $\eta(\ell)$. The genome carries its own editing instructions in its topology.
+**Proposition (PROP-GENOME-SELF-DESCRIBING).** The genome is a self-describing frame (§2.4) whose local Betti numbers encode its own editability map. No external information is required: the sequence alone determines $\sigma(\ell)$ at every locus, and therefore determines $E_{\text{unwind}}(\ell)$ and $\eta(\ell)$. The genome carries its own editing instructions in its topology.
 
-*Proof.* The self-describing frame concept (§1.4) requires that each frame carry its own coordinates in the covering space -- `(stream_id, sequence)` -- so that reassembly requires no external ordering. The genome satisfies this requirement: each locus $\ell$ is identified by its chromosomal coordinate (the `stream_id` is the chromosome, the `sequence` is the base-pair position), and the local topology at $\ell$ is fully determined by the nucleotide sequence in a window around $\ell$.
+*Proof.* The self-describing frame concept (§2.4) requires that each frame carry its own coordinates in the covering space -- `(stream_id, sequence)` -- so that reassembly requires no external ordering. The genome satisfies this requirement: each locus $\ell$ is identified by its chromosomal coordinate (the `stream_id` is the chromosome, the `sequence` is the base-pair position), and the local topology at $\ell$ is fully determined by the nucleotide sequence in a window around $\ell$.
 
 Specifically, $\sigma(\ell)$ is computable from the sequence alone:
 
@@ -435,7 +435,7 @@ Specifically, $\sigma(\ell)$ is computable from the sequence alone:
 
 3. **Cruciform detection**: an inverted repeat within a window of $\ell$ can extrude into a four-way junction. Each cruciform contributes $+2$ to $\sigma(\ell)$. Detection requires only sequence symmetry analysis.
 
-Since $\sigma(\ell)$ is sequence-computable, and since COR-CRISPR-UNWINDING derives $E_{\text{unwind}}(\ell)$ and $\eta(\ell)$ from $\sigma(\ell)$ using only the axioms of §1.2 and §3.11, the entire editability map $\ell \mapsto \eta(\ell)$ is derivable from the genome sequence alone -- *from itself*.
+Since $\sigma(\ell)$ is sequence-computable, and since COR-CRISPR-UNWINDING derives $E_{\text{unwind}}(\ell)$ and $\eta(\ell)$ from $\sigma(\ell)$ using only the axioms of §2.2 and §3.11, the entire editability map $\ell \mapsto \eta(\ell)$ is derivable from the genome sequence alone -- *from itself*.
 
 This is the self-verification property (§6) applied to biology: the genome is a system that contains, in its own structure, the information needed to determine the difficulty of editing any part of itself. The Betti numbers are the metadata. The topology is the instruction set. The theory derives this without importing any biology beyond the base-pairing rules that define the simplicial complex -- the rest follows from the axioms of homological algebra and the First Law. $\square$
 
@@ -645,7 +645,7 @@ $$
 
 This is the Carnot limit: the theoretical maximum efficiency.
 
-The two-level stream race (§10.3) approaches this limit by selecting the smallest output among available codec paths. But “best available” is bounded by “best theoretically possible.” On the text-heavy workloads in this manuscript, brotli behaves as a near-ceiling baseline, so racing brotli against itself does not improve ratio. The topology’s value is reaching strong codec choices across diverse inputs without prior knowledge of which codec is optimal.
+The two-level stream race (§11.3) approaches this limit by selecting the smallest output among available codec paths. But “best available” is bounded by “best theoretically possible.” On the text-heavy workloads in this manuscript, brotli behaves as a near-ceiling baseline, so racing brotli against itself does not improve ratio. The topology’s value is reaching strong codec choices across diverse inputs without prior knowledge of which codec is optimal.
 
 ### 3.8 The Information-Theoretic Framing
 
@@ -661,7 +661,7 @@ The Shannon entropy connection is deeper than a Carnot analogy. Fork/race/fold m
 
 The First Law restated in bits: $H_{\text{fork}} = I_{\text{fold}} + H_{\text{vent}}$. The mutual information $I(X;Y)$ between the forked ensemble $X$ and the folded result $Y$ is the useful work. The conditional entropy $H(X|Y)$ – the uncertainty about the fork given the fold result – is the waste heat. This is Shannon’s source coding theorem applied to computation: you cannot fold to a result that contains more information than the mutual information between the problem and the solution.
 
-This links the thermodynamic framing (§2.1–§2.7) with the quantum framing (§4): amplitude interference can be interpreted as information compression, and vented paths carry the bits discarded at fold.
+This links the thermodynamic framing (§3.1–§3.7) with the quantum framing (§4): amplitude interference can be interpreted as information compression, and vented paths carry the bits discarded at fold.
 
 ### 3.9 The Pipeline as an Energy Diagram
 
@@ -700,7 +700,7 @@ The complete energy mapping:
 
 ### 3.11 Bond Dissociation as Whip Exhaustion
 
-Under the topological isomorphism $\varphi$ of THM-TOPO-MOLECULAR-ISO (§1.2), the energy conservation laws of fork/race/fold map directly to molecular bond energetics. The Whip Exhaustion theorem -- after the snap, $\beta_1 \to 0$ -- is bond dissociation.
+Under the topological isomorphism $\varphi$ of THM-TOPO-MOLECULAR-ISO (§2.2), the energy conservation laws of fork/race/fold map directly to molecular bond energetics. The Whip Exhaustion theorem -- after the snap, $\beta_1 \to 0$ -- is bond dissociation.
 
 **Theorem (THM-THERMO-BOND-DISSOCIATION).** Under the topological isomorphism $\varphi$, the energy required to break a molecular ring bond (dissociation energy $D_e$) equals the fold energy released at the Worthington convergence vertex. Specifically: when a fork/race/fold cycle completes and $\beta_1$ decrements by one, the energy budget $V_{\text{in}} = W_{\text{out}} + Q_{\text{dissipated}}$ (First Law, §3.10) maps to the bond energy equation $D_e = E_{\text{products}} - E_{\text{reactants}} + Q$.
 
@@ -718,7 +718,7 @@ The energy budget is conserved in both frames because both are instances of the 
 
 The discrete structure of pipeline stages has a molecular counterpart: electron shell quantization. The $\beta_2$ voids in the pipeline topology correspond to orbital shells in the molecular topology.
 
-**Theorem (THM-THERMO-ORBITAL-QUANTIZATION).** The discrete pipeline stages in a Wallington rotation are quantized: chunks can only exist at integer stage positions $k \in \{0, 1, \ldots, N-1\}$, never between stages. Under the topological isomorphism $\varphi$ (§1.2), this quantization is isomorphic to electron shell quantization -- $\beta_2$ voids in the pipeline topology correspond to orbital shells in the molecular topology.
+**Theorem (THM-THERMO-ORBITAL-QUANTIZATION).** The discrete pipeline stages in a Wallington rotation are quantized: chunks can only exist at integer stage positions $k \in \{0, 1, \ldots, N-1\}$, never between stages. Under the topological isomorphism $\varphi$ (§2.2), this quantization is isomorphic to electron shell quantization -- $\beta_2$ voids in the pipeline topology correspond to orbital shells in the molecular topology.
 
 *Proof.* The torus parametrization of a Wallington rotation places nodes at $t = k/N$ for $k = 0, 1, \ldots, N-1$. These are the only stable positions: a chunk at stage $k$ has completed processing at node $k$ and has not yet entered node $k+1$. Between stages, chunks are "in transit" -- superposed in the quantum vocabulary of §4.
 
@@ -730,7 +730,7 @@ The $\beta_2$ wireframe shells surrounding the torus at radii $r_0 < r_1 < r_2 <
 
 The quantization arises from the same topological constraint in both cases: the simplicial complex has discrete 0-simplices (pipeline nodes / atoms) connected by 1-simplices (data edges / bonds), and stable states exist only at the 0-simplices. The $\beta_2$ voids classify the nesting depth of enclosed regions, which indexes the energy levels in both the pipeline and molecular frames. $\square$
 
-The three theorems -- THM-TOPO-MOLECULAR-ISO (§1.2), THM-THERMO-BOND-DISSOCIATION (§3.11), and THM-THERMO-ORBITAL-QUANTIZATION (§3.12) -- form a coherent progression: topology establishes the equivalence class, thermodynamics maps the energy laws, and quantization maps the discrete structure. The pipeline *is* the molecule. The molecule *is* the pipeline. The Betti numbers do not care which one you are looking at.
+The three theorems -- THM-TOPO-MOLECULAR-ISO (§2.2), THM-THERMO-BOND-DISSOCIATION (§3.11), and THM-THERMO-ORBITAL-QUANTIZATION (§3.12) -- form a coherent progression: topology establishes the equivalence class, thermodynamics maps the energy laws, and quantization maps the discrete structure. The pipeline *is* the molecule. The molecule *is* the pipeline. The Betti numbers do not care which one you are looking at.
 
 ### 3.13 Transformers Under a Fork/Race/Fold Abstraction
 
@@ -926,7 +926,7 @@ Each level can be read as a fold/coarse-graining step. Each step discards inform
 
 This mirrors an information-discard perspective analogous to coarse-graining under the second-law lens used in this manuscript.
 
-**Band theory can also be described using covering-space language.** When the Schrödinger equation is solved for electrons in a periodic lattice (silicon, germanium), Bloch’s theorem states that solutions have the form $\psi_k(r) = e^{ik \cdot r} u_k(r)$ where $u_k$ has the periodicity of the lattice. The periodic lattice is the base space. The electron’s wave function in the full crystal is the covering space. Bloch’s theorem then plays the role of a covering map (§1.4) – it relates the global behavior (energy bands) to the local structure (unit cell). The band gap – the energy range where no electron states exist – is the void ($\beta_2 > 0$). Modern semiconductors, transistors and solar cells rely on this structure.
+**Band theory can also be described using covering-space language.** When the Schrödinger equation is solved for electrons in a periodic lattice (silicon, germanium), Bloch’s theorem states that solutions have the form $\psi_k(r) = e^{ik \cdot r} u_k(r)$ where $u_k$ has the periodicity of the lattice. The periodic lattice is the base space. The electron’s wave function in the full crystal is the covering space. Bloch’s theorem then plays the role of a covering map (§2.4) – it relates the global behavior (energy bands) to the local structure (unit cell). The band gap – the energy range where no electron states exist – is the void ($\beta_2 > 0$). Modern semiconductors, transistors and solar cells rely on this structure.
 
 #### The Virial Theorem (Grade A)
 
@@ -962,9 +962,9 @@ Supernovae are the extreme case: 99 percent of the gravitational binding energy 
 
 #### Color Confinement as Covering-Space Fold (Grade A)
 
-The strong force exhibits a property with no close analogue in the other correspondences, and the molecular topology theorem (§1.2) reveals it as a deeper structure than a simple anti-vent analogy. Quarks carry color charge -- red, green, or blue -- and the SU(3) color symmetry group has $\beta_1 = 3$: three independent color-charge cycles in the covering space. Confinement is the theorem that the fold *always* projects $\beta_1 \to 0$ at the observable level. You never see a bare color charge. Every observable hadron is color-neutral: the covering space has $\beta_1 = 3$, but the base space (what you measure) has $\beta_1 = 0$. The fold is mandatory and total.
+The strong force exhibits a property with no close analogue in the other correspondences, and the molecular topology theorem (§2.2) reveals it as a deeper structure than a simple anti-vent analogy. Quarks carry color charge -- red, green, or blue -- and the SU(3) color symmetry group has $\beta_1 = 3$: three independent color-charge cycles in the covering space. Confinement is the theorem that the fold *always* projects $\beta_1 \to 0$ at the observable level. You never see a bare color charge. Every observable hadron is color-neutral: the covering space has $\beta_1 = 3$, but the base space (what you measure) has $\beta_1 = 0$. The fold is mandatory and total.
 
-**Theorem (THM-TOPO-CONFINEMENT).** Color confinement is the covering-space fold of THM-TOPO-MOLECULAR-ISO applied to the quark scale. The color-charge topology lives in the covering space with $\beta_1 = 3$ (three independent color cycles). The observable hadron lives in the base space with $\beta_1 = 0$ (color-neutral). The fold $\varphi_{\text{confine}}: \beta_1 = 3 \to \beta_1 = 0$ is the covering map (§1.4) from quark-level topology to hadron-level observables.
+**Theorem (THM-TOPO-CONFINEMENT).** Color confinement is the covering-space fold of THM-TOPO-MOLECULAR-ISO applied to the quark scale. The color-charge topology lives in the covering space with $\beta_1 = 3$ (three independent color cycles). The observable hadron lives in the base space with $\beta_1 = 0$ (color-neutral). The fold $\varphi_{\text{confine}}: \beta_1 = 3 \to \beta_1 = 0$ is the covering map (§2.4) from quark-level topology to hadron-level observables.
 
 *Proof sketch.* The argument has three parts.
 
@@ -974,7 +974,7 @@ The strong force exhibits a property with no close analogue in the other corresp
 
 *Part 3 (Hadronization is the whip snap).* In high-energy collisions (electron-positron annihilation, proton-proton collisions at the LHC), quarks are produced with enormous kinetic energy. As they fly apart, the color field stretches like a whip. The energy concentrates -- exactly as in the Worthington whip (§3.9). At the snap point, the field energy converts to mass: new quark-antiquark pairs materialize, immediately forming color-neutral hadrons (pions, kaons, protons). This is hadronization -- the whip snap of the strong force. The covering-space energy ($\beta_1 = 3$ color field) is converted to base-space particles ($\beta_1 = 0$ hadrons) at the convergence vertex. The First Law (§3.10) is satisfied: $V_{\text{color field}} = W_{\text{hadron masses}} + Q_{\text{kinetic}}$.
 
-The molecular topology theorem (§1.2) now extends downward: a molecule is a folded atom, an atom is a folded nucleon, a nucleon is a folded quark topology. At each scale, the covering space carries the energy and the fold projects to the observable. The Betti numbers survive each fold because homology is functorial -- the covering map preserves the algebraic structure even as it hides the geometric detail. This is why a benzene ring ($\beta_1 = 1$) and a fork/race/fold cycle ($\beta_1 = 1$) and a confined quark loop ($\beta_1 = 1$ within the color manifold) are the same topological object: one cycle, classified by the same $H_1$, governed by the same conservation laws.
+The molecular topology theorem (§2.2) now extends downward: a molecule is a folded atom, an atom is a folded nucleon, a nucleon is a folded quark topology. At each scale, the covering space carries the energy and the fold projects to the observable. The Betti numbers survive each fold because homology is functorial -- the covering map preserves the algebraic structure even as it hides the geometric detail. This is why a benzene ring ($\beta_1 = 1$) and a fork/race/fold cycle ($\beta_1 = 1$) and a confined quark loop ($\beta_1 = 1$ within the color manifold) are the same topological object: one cycle, classified by the same $H_1$, governed by the same conservation laws.
 
 **The scale tower.** The molecular topology theorem is not a single-scale result. It is a covering-space tower:
 
@@ -1099,7 +1099,7 @@ The companion theorems also contain the prescription, stated without normativity
 
 **The next frontier.** The preceding argument applies to any channel with positive semiotic deficit: two people in a room, two nations across a border, two civilizations across a planet. The companion `WhipWaveDuality.lean` proves that the same structure extends further -- to any medium where fork distributes energy and fold concentrates it.
 
-The wave equation on a discrete tapered medium, $c^2(x) = T / \rho(x)$, governs the whip crack (§3.9.1): tension $T$ is conserved, mass density $\rho$ decreases along the taper, wave speed $c$ increases monotonically through nested folds (`fold_increases_wave_speed`). The snap at the tip is the moment the accumulated energy crosses a threshold -- the sonic boom, the decoded bit, the understood meaning.
+The wave equation on a discrete tapered medium, $c^2(x) = T / \rho(x)$, governs the whip crack (§1.8): tension $T$ is conserved, mass density $\rho$ decreases along the taper, wave speed $c$ increases monotonically through nested folds (`fold_increases_wave_speed`). The snap at the tip is the moment the accumulated energy crosses a threshold -- the sonic boom, the decoded bit, the understood meaning.
 
 The equation does not know whether the taper is rope, optical fiber, or the space between two people trying to understand each other. The peacemaking programme of §3.14 -- sit in the feedback loop, build context, close the deficit -- is the same operation as deep space communication: fork redundant signal paths across the hostile medium, race them through solar weather and interplanetary attenuation, fold the survivors at the receiver. The $\beta_1$ of the fork is the redundancy. The deficit at the fold is the paths lost to the channel. The Bule is the communication difficulty of the distance -- whether that distance is measured in light-minutes or in the semantic gap between two people who have not yet learned to hear each other.
 
@@ -1120,7 +1120,7 @@ This is the whip crack range equation. Every variable maps to a fork/race/fold p
 | $N$ | Redundant signal paths (frequencies, polarizations) | $\beta_1$ of the fork |
 | $P$ | Transmit power per path | Kinetic energy per forked branch |
 | $\rho$ | Channel noise density | Mass density of the tapered medium |
-| $c^{*2}$ | Minimum decodable SNR | Snap threshold (§3.9.1) |
+| $c^{*2}$ | Minimum decodable SNR | Snap threshold (§1.8) |
 | $d^2$ | Geometric spreading (inverse square) | Deficit accumulation over distance |
 
 Doubling the fork count ($N \to 2N$) increases range by $\sqrt{2}$. Each additional forked path is an insurance policy against the medium destroying one more signal copy. The deficit at the receiver -- the paths that did not survive the journey -- is the Bule of the distance:
@@ -1318,7 +1318,7 @@ The `TopologyAnalyzer` computes $\beta_0$, $\beta_1$, $\beta_2$ and detects fork
 
 ## 4. The Quantum Vocabulary Is Structural
 
-The following correspondences are heuristic structural mappings between quantum-mechanical operations and computational operations, with photosynthetic antenna complexes (§4.5) as the closest literal quantum case discussed here. In §3.14, I show that the Feynman path integral admits a fork/race/fold interpretation within this abstraction.
+The following correspondences are heuristic structural mappings between quantum-mechanical operations and computational operations, with photosynthetic antenna complexes (§5.5) as the closest literal quantum case discussed here. In §3.14, I show that the Feynman path integral admits a fork/race/fold interpretation within this abstraction.
 
 **Relation to prior formalisms.** The concurrent-computation literature offers several models with overlapping expressiveness. Petri nets (Petri, 1962 [25]) represent fork as transition firing and fold as place merging; they excel at deadlock analysis but lack native race and vent semantics. The $\pi$-calculus (Milnor, 1999 [26]) models dynamic channel creation (akin to fork) and synchronization (akin to fold) with full compositionality; it does not, however, expose the same topological characterization ($\beta_1$, covering spaces) or thermodynamic accounting language used here. Speculative execution in CPU microarchitectures (Tomasulo, 1967 [27]; Smith & Sohi, 1995 [28]) implements fork (issue multiple paths), race (retire the correct path first), and vent (flush mispredicted paths) at the hardware level – the closest engineering analogue to fork/race/fold, discovered independently by processor designers optimizing instruction-level parallelism. Byzantine fault-tolerant consensus protocols (Castro & Liskov, 1999 [29]; Yin et al., 2019 [30]) implement quorum fold under adversarial conditions, with explicit vent of Byzantine-faulty replicas. Fork/race/fold does not replace these formalisms. Its distinct role here is to provide a common descriptive vocabulary and a set of diagnostics – $\beta_1$, $\Delta_\beta$, and a conservation-style accounting lens – for comparing them inside one framework.
 
@@ -1335,7 +1335,7 @@ The following correspondences are heuristic structural mappings between quantum-
 
 After fork, a computation exists in $N$ simultaneous states – the outcome is undetermined until fold. This is computational superposition. It has a closely related structural form to quantum superposition: a quantum state $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$ is a superposition of basis states, and a forked computation $S = \{S_1, S_2, \ldots, S_N\}$ is a superposition of branch states. Fold then projects to a definite outcome in the computational model.
 
-In photosynthetic antenna complexes (§4.5), the underlying transport includes a genuinely quantum component. The `fork()` operation is only the computational analogue used in this framework.
+In photosynthetic antenna complexes (§5.5), the underlying transport includes a genuinely quantum component. The `fork()` operation is only the computational analogue used in this framework.
 
 ### 4.2 Tunneling
 
@@ -1343,7 +1343,7 @@ In quantum mechanics, tunneling allows a particle to pass through a potential ba
 
 A tunnel predicate fires when a single path’s result is conclusive enough that remaining paths are irrelevant. It’s worth reiterating here again that this is different from race (which picks the *fastest*) and different from fold (which waits for *all*). Tunneling picks the *first sufficient result* and vents everything else – it “tunnels through” the waiting barrier.
 
-Tunneling is not a fifth primitive. It is a composition: `race(predicate) + vent(losers)` – race with a quality predicate instead of a speed predicate. Topologically, tunneling operates on homotopy-equivalent paths (§1.2) but selects by a criterion other than arrival time. Where race exploits temporal homotopy (all paths reach the same destination, pick the fastest), tunneling exploits quality homotopy (all paths produce valid results, pick the first that’s sufficient). The fallback to race or fold when the predicate is too strict confirms this: tunneling degrades gracefully into its constituent primitives.
+Tunneling is not a fifth primitive. It is a composition: `race(predicate) + vent(losers)` – race with a quality predicate instead of a speed predicate. Topologically, tunneling operates on homotopy-equivalent paths (§2.3) but selects by a criterion other than arrival time. Where race exploits temporal homotopy (all paths reach the same destination, pick the fastest), tunneling exploits quality homotopy (all paths produce valid results, pick the first that’s sufficient). The fallback to race or fold when the predicate is too strict confirms this: tunneling degrades gracefully into its constituent primitives.
 
 Use case: a diagnostic pipeline forks blood test, MRI and genetic screening. The blood test returns a conclusive positive. Tunneling fires: the MRI and genetic screening are vented. No need to wait. The tunnel predicate evaluated quality, not speed.
 
@@ -1425,7 +1425,7 @@ DNA’s two strands run antiparallel. The leading strand synthesizes continuousl
 
 Each Okazaki fragment can be read as a **self-describing-frame analogue**: its genomic coordinate plays the role of `stream_id` + `sequence`. DNA ligase then acts as the **frame-reassembly analogue** – it joins fragments without requiring global ordering. The replication fork moves at ~1,000 nt/s in *E. coli*. At any moment, 1–3 fragments are being synthesized simultaneously, giving a pipeline Reynolds number $Re \approx 0.7$–$1.0$.
 
-**Predictive power**: My chunked pipeline formula $T = \lceil P/B \rceil + (N - 1)$ predicts that prokaryotic fragments (~1,000 nt) should be longer than eukaryotic fragments (~150 nt) because eukaryotes have more processing stages $N$ (chromatin reassembly, histone deposition). This is directionally consistent with reported fragment ranges. The framework also predicts that organisms with lower $Re$ (more exposed single-stranded DNA during lagging strand synthesis) should show stronger strand asymmetries. Directionally similar asymmetries are well documented in bacterial genomes [4]. This analogy is formalized as a topological isomorphism in §1.2 (THM-TOPO-MOLECULAR-ISO) and its corollary COR-DNA-HELIX: the replication fork has Betti signature $(1, 2, 0)$ and is in the same homology class as a Wallington rotation with $\beta_1 = 2$.
+**Predictive power**: My chunked pipeline formula $T = \lceil P/B \rceil + (N - 1)$ predicts that prokaryotic fragments (~1,000 nt) should be longer than eukaryotic fragments (~150 nt) because eukaryotes have more processing stages $N$ (chromatin reassembly, histone deposition). This is directionally consistent with reported fragment ranges. The framework also predicts that organisms with lower $Re$ (more exposed single-stranded DNA during lagging strand synthesis) should show stronger strand asymmetries. Directionally similar asymmetries are well documented in bacterial genomes [4]. This analogy is formalized as a topological isomorphism in §2.2 (THM-TOPO-MOLECULAR-ISO) and its corollary COR-DNA-HELIX: the replication fork has Betti signature $(1, 2, 0)$ and is in the same homology class as a Wallington rotation with $\beta_1 = 2$.
 
 ### 5.3 Saltatory Nerve Conduction: The Formula Tracks Measured Range (Grade A)
 
@@ -1455,7 +1455,7 @@ A so-called polysome consists of multiple ribosomes simultaneously translating t
 
 A back-of-envelope throughput illustration using nominal translation rates gives: without pipelining, 40 proteins from one mRNA is ~2,400 s; with polysome overlap, ~118 s (about 20x). This is an illustrative order-of-magnitude comparison, not a calibrated cross-lab benchmark.
 
-When $Re$ drops below ~0.6, the mRNA is targeted for degradation (no-go decay). The cell destroys underutilized pipelines and reallocates ribosomes – behavior that qualitatively aligns with turbulent-multiplexing intuition. Under stress, cells globally reduce $Re$ but maintain high $Re$ on priority mRNAs via IRES elements. Under the molecular topology theorem (§1.2), the polysome is a pipeline graph with the same Betti signature as the corresponding molecular assembly -- the topological isomorphism explains why biological and computational pipelining converge on the same structure.
+When $Re$ drops below ~0.6, the mRNA is targeted for degradation (no-go decay). The cell destroys underutilized pipelines and reallocates ribosomes – behavior that qualitatively aligns with turbulent-multiplexing intuition. Under stress, cells globally reduce $Re$ but maintain high $Re$ on priority mRNAs via IRES elements. Under the molecular topology theorem (§2.2), the polysome is a pipeline graph with the same Betti signature as the corresponding molecular assembly -- the topological isomorphism explains why biological and computational pipelining converge on the same structure.
 
 **Quantitative anchors.** Measured ribosome spacing on polysomes is 30-40 codons (~90-120 nt), corresponding to the chunk size $B$ in the Wallington formula [46]. Measured translation elongation rate is ~5-6 codons/second in eukaryotes [47], giving stage delay $t_{\text{stage}} \approx 6$-$8$ s per chunk. The pipeline formula $T = \lceil P/B \rceil + (N-1)$ predicts throughput of ~40 proteins per mRNA per ~120 s with a polysome of ~40 ribosomes, matching cryo-EM measurements of polysome occupancy [46]. The no-go decay threshold ($Re < 0.6$) is measurably real: Dom34/Hbs1 in yeast detects stalled ribosomes and triggers mRNA cleavage -- the cell measures its own pipeline Reynolds number and vents underperforming pipelines. The topological prediction (pipeline efficiency ∝ $Re$, degradation below threshold) is confirmed by measured no-go decay kinetics.
 
@@ -1602,7 +1602,7 @@ Offset  Size   Field
 [10..]  [u8]   payload      (zerocopy Uint8Array view)
 ```
 
-**10 bytes.** Every frame carries its own identity. Every frame is self-describing. No ordered delivery is required. The `stream_id` + `sequence` pair is the coordinate in the covering space (§1.4). Flags compose: `RACE  FIN` means “racing AND final frame.” The frame reassembler (§1.4) is the covering map back to sequential order. Payloads are zerocopy: the codec writes 10 bytes in front of the existing `ArrayBuffer` view.
+**10 bytes.** Every frame carries its own identity. Every frame is self-describing. No ordered delivery is required. The `stream_id` + `sequence` pair is the coordinate in the covering space (§2.4). Flags compose: `RACE  FIN` means “racing AND final frame.” The frame reassembler (§2.4) is the covering map back to sequential order. Payloads are zerocopy: the codec writes 10 bytes in front of the existing `ArrayBuffer` view.
 
 ### 7.2.1 The Self-Describing Frame as Pervasive Abstraction
 
@@ -1712,7 +1712,7 @@ The critical result is `c3_prevents_absorbing`: the highest layer ($C_3$, framew
 
 Applied to the Glossolalia Engine: $C_0$ is the Daisy Chain generating topology candidates. $C_1$ is the Betty compiler validating syntax. $C_2$ is the omega checker verifying formal properties ($\beta_1$ bounds, termination). $C_3$ is the bias detector that prevents the generator from collapsing to absorbing topologies. The neurosymbolic gate implements this as a generate-validate-retry loop where compilation errors feed back as context for the next attempt -- the traced monoidal feedback loop from the peacemaking analysis (§3.14) applied to topology generation.
 
-The metametacognitive framework is the Daisy Chain. The monitoring weight is the mixing coefficient. The control signal is the embedding. The four layers are four whip snaps (§3.9.1) on a cognitive taper. The theory that models itself.
+The metametacognitive framework is the Daisy Chain. The monitoring weight is the mixing coefficient. The control signal is the embedding. The four layers are four whip snaps (§1.8) on a cognitive taper. The theory that models itself.
 
 ### 8.3 Empirical Realization: The Glossolalia Engine on Cloudflare Workers and Cloud Run
 
@@ -2366,7 +2366,7 @@ In molecular biology, a polysome (also called a polyribosome) is a cluster of mu
 
 Think of it as a molecular assembly line: instead of one worker (ribosome) reading an instruction manual (mRNA) and finishing the product before the next one starts, multiple workers jump on the manual as soon as the first one moves out of the way. This allows the cell to mass-produce proteins with high throughput and efficiency.
 
-When $C \approx N$, 43 percent of node-slots are idle during ramp-up/ramp-down. Turbulent multiplexing fills idle slots with items from concurrent requests, maintaining per-request vent isolation (C2). This is analogous to polysome behavior: fill the mRNA pipeline with multiple ribosomes, degrade the mRNA when $Re$ drops below threshold, and reallocate to active pipelines. The molecular topology theorem (§1.2) makes this correspondence formal: polysome and pipeline share the same Betti signature and therefore the same homology class. The energy budget of ribosome allocation follows the same conservation law as pipeline stage allocation (§3.11).
+When $C \approx N$, 43 percent of node-slots are idle during ramp-up/ramp-down. Turbulent multiplexing fills idle slots with items from concurrent requests, maintaining per-request vent isolation (C2). This is analogous to polysome behavior: fill the mRNA pipeline with multiple ribosomes, degrade the mRNA when $Re$ drops below threshold, and reallocate to active pipelines. The molecular topology theorem (§2.2) makes this correspondence formal: polysome and pipeline share the same Betti signature and therefore the same homology class. The energy budget of ribosome allocation follows the same conservation law as pipeline stage allocation (§3.11).
 
 ### 13.3 Worthington Whip (Superposition Sharding)
 
@@ -3251,7 +3251,7 @@ The framework’s language was not invented from scratch. It was borrowed from p
 
 In selected analyzed examples, the pattern is observed repeatedly. Attention in transformers can be mapped to race-like scoring ($QK^T$), with softmax/selection and value projection as fold-like operations (§3.13). Hylomorphism (unfold/fold) aligns naturally with fork/fold structure. These are structural correspondences used to organize reasoning across domains in this manuscript’s modeled class, supported by executable simulations and formal schemas under explicit assumptions.
 
-**The molecular topology theorem and the scale tower.** The correspondences in this paper are not independent analogies. THM-TOPO-MOLECULAR-ISO (§1.2) proves that pipeline computation graphs and molecular graphs with identical Betti signatures are in the same equivalence class under simplicial homology. This is not a metaphor -- it is a classification theorem. The covering-space tower (§3.14) extends this downward through quarks, hadrons, nuclei, atoms, and molecules, and upward through proteins, cells, organisms, species, and ecosystems. At every scale, the energy lives in the covering space, the observation lives in the base space, and the fold (covering map) projects one to the other. The Betti numbers survive each fold because homology is functorial.
+**The molecular topology theorem and the scale tower.** The correspondences in this paper are not independent analogies. THM-TOPO-MOLECULAR-ISO (§2.2) proves that pipeline computation graphs and molecular graphs with identical Betti signatures are in the same equivalence class under simplicial homology. This is not a metaphor -- it is a classification theorem. The covering-space tower (§3.14) extends this downward through quarks, hadrons, nuclei, atoms, and molecules, and upward through proteins, cells, organisms, species, and ecosystems. At every scale, the energy lives in the covering space, the observation lives in the base space, and the fold (covering map) projects one to the other. The Betti numbers survive each fold because homology is functorial.
 
 Five additional correspondences follow from the molecular topology theorem, each with mechanized proofs (`MolecularTopology.lean`, `MolecularTopology.tla`, `molecular-connections.test.ts`, 37 tests):
 
@@ -3259,7 +3259,7 @@ Five additional correspondences follow from the molecular topology theorem, each
 
 - **Enzyme catalysis is $\beta_1$ modification.** An enzyme provides an alternative reaction path with lower activation energy: it raises $\beta_1$ by 1 (one fork), the reaction races through the lower-barrier path, and the product folds out. The enzyme is not consumed -- it is a reusable fork operator. After fold, $\beta_1$ returns to the uncatalyzed baseline. This is turbulent multiplexing (§13.2) applied to chemistry.
 
-- **Evolution is self-modifying fork/race/fold.** Mutation forks new variants ($\beta_1$ increases). Competition races them. Natural selection folds the survivors ($\beta_1$ decreases). Extinction is maximal vent ($\beta_1 \to 0$). The genome’s self-describing property (PROP-GENOME-SELF-DESCRIBING, §1.2) means evolution is a self-modifying pipeline that edits its own topology -- §6 (self-verification) at the species level.
+- **Evolution is self-modifying fork/race/fold.** Mutation forks new variants ($\beta_1$ increases). Competition races them. Natural selection folds the survivors ($\beta_1$ decreases). Extinction is maximal vent ($\beta_1 \to 0$). The genome’s self-describing property (PROP-GENOME-SELF-DESCRIBING, §2.2) means evolution is a self-modifying pipeline that edits its own topology -- §6 (self-verification) at the species level.
 
 - **Gravity is the self-referential fold.** Mass (congealed fold energy from THM-TOPO-CONFINEMENT, §3.14) modifies the simplicial complex that defines the fold. General relativity says mass curves spacetime; in the framework, the fold’s output feeds back as input to the next fold’s topology. The companion theorem proves: positive fold energy implies the topology changes ($\beta_1^{\text{after}} \neq \beta_1^{\text{before}}$), and zero fold energy implies flat spacetime ($\beta_1$ unchanged). This self-reference -- the fold acting on the space it lives in -- is why gravity resists quantization: it is not a force *within* the topology but a modification *of* the topology.
 
