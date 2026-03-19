@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 506 across 48 topical sections (all mechanized, zero open)
-- **TLA+ specifications:** 91 (all with matching .cfg files)
-- **Lean theorem modules:** 104 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean + IrreversibilityPredictions.lean + NovelInference.lean + NovelInferenceForms.lean + CancerTreatments.lean + PredictionsRound5.lean + PredictionsRound6.lean + PredictionsRound7.lean)
+- **Theorem table entries:** 521 across 49 topical sections (all mechanized, zero open)
+- **TLA+ specifications:** 93 (all with matching .cfg files)
+- **Lean theorem modules:** 105 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean + IrreversibilityPredictions.lean + NovelInference.lean + NovelInferenceForms.lean + CancerTreatments.lean + PredictionsRound5.lean + PredictionsRound6.lean + PredictionsRound7.lean + PredictionsRound8.lean)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
@@ -743,6 +743,26 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 | `THM-APPEAL-GROUND` | A conviction with an uncovered thread has positive residual deficit, contradicts the guilty standard, and is formally reversible. The appellate question is computable: does the recorded void boundary satisfy β₁ = 0? | EvidenceTopology; AppealChallenge with uncovered thread witness | Lean theorems `appeal_ground_exists`, `appeal_contradicts_verdict`, and `appeal_reversible` in `BuleyeanEvidence.lean` | Mechanized |
 | `THM-BULEYEAN-EVIDENCE-MASTER` | Complete evidence standard theorem: (1) presumption of innocence (initial verdict = insufficient data), (2) initial deficit at least 2, (3) evidence deficit positive for single-verdict topology, (4) full coverage yields guilty, (5) deficit at full coverage is zero. Composes all individual evidence standard theorems | EvidenceTopology with verdictStreams = 1 | Lean theorem `buleyean_evidence_master` in `BuleyeanEvidence.lean` | Mechanized |
 | `THM-BULEYEAN-EVIDENCE-MODEL` | Model-checked five-phase trial protocol: safety (no premature conviction, presumption of innocence, deficit nonneg/bounded/formula, coverage bounded, discovery bounded, guilty only in verdict phase), liveness (eventually verdict, eventually covered). Defense can increase topology. Prosecution rests trigger insufficiency | 3 evidentiary threads; 6 max rounds; 5 total evidence items | TLA+ `BuleyeanEvidence.tla` + `BuleyeanEvidence.cfg` with 9 invariants and 2 temporal properties | Model-checked |
+
+### Predictions Round 8: Memory, Ecology, Supply Chain, Jury, Skill Transfer (§19.27)
+
+| Theorem ID | Claim | Assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| `THM-MEMORY-NEVER-FORGOTTEN` | Memory strength is always positive (the sliver): no memory is ever fully forgotten regardless of failed retrieval count | MemoryTrace | Lean theorem `memory_never_fully_forgotten` in `PredictionsRound8.lean` | Mechanized |
+| `THM-MORE-FAILURES-WEAKER` | More failed retrievals produce weaker memory. The forgetting curve is monotone in void count | Two MemoryTraces with same opportunities, ordered failures | Lean theorem `more_failures_weaker_memory` in `PredictionsRound8.lean` | Mechanized |
+| `THM-PERFECT-RETRIEVAL-MAX` | Perfect retrieval (zero failures) gives maximum strength = opportunities + 1 | MemoryTrace with failedRetrievals = 0 | Lean theorem `perfect_retrieval_max_strength` in `PredictionsRound8.lean` | Mechanized |
+| `THM-CLIMAX-ZERO-DEFICIT` | Ecological climax community has zero succession deficit | EcologicalSuccession with currentDiversity = climaxDiversity | Lean theorem `climax_zero_deficit` in `PredictionsRound8.lean` | Mechanized |
+| `THM-SUCCESSION-MONOTONE` | Closer to climax means less succession deficit (monotone toward equilibrium) | Two EcologicalSuccessions with same climax, ordered diversity | Lean theorem `closer_to_climax_less_deficit` in `PredictionsRound8.lean` | Mechanized |
+| `THM-SINGLE-SOURCE-MAX-FRAGILITY` | Single-source supply chain has maximum fragility deficit = potential - 1 | SupplyChainNode with activeSuppliers = 1 | Lean theorem `single_source_max_fragility` in `PredictionsRound8.lean` | Mechanized |
+| `THM-FULL-DIVERSIFICATION-ZERO` | Full supplier diversification eliminates fragility deficit | SupplyChainNode with activeSuppliers = potentialSuppliers | Lean theorem `full_diversification_zero_fragility` in `PredictionsRound8.lean` | Mechanized |
+| `THM-MORE-SUPPLIERS-LESS-FRAGILITY` | More active suppliers monotonically reduces fragility deficit | Two SupplyChainNodes with same potential, ordered active | Lean theorem `more_suppliers_less_fragility` in `PredictionsRound8.lean` | Mechanized |
+| `THM-DELIBERATION-DEFICIT-POSITIVE` | Jury deliberation deficit is always positive for k >= 2 jurors. Free consensus is impossible | JuryDeliberation with jurorCount >= 2 | Lean theorem `deliberation_deficit_positive` in `PredictionsRound8.lean` | Mechanized |
+| `THM-UNANIMOUS-ZERO-GAP` | Unanimous verdict (votes >= threshold) has zero agreement gap | JuryDeliberation with unanimityThreshold <= convictVotes | Lean theorem `unanimous_verdict_zero_gap` in `PredictionsRound8.lean` | Mechanized |
+| `THM-LARGER-JURY-LARGER-DEFICIT` | Larger jury has larger deliberation deficit (more information lost in fold) | Two JuryDeliberations with ordered jurorCount | Lean theorem `larger_jury_larger_deficit` in `PredictionsRound8.lean` | Mechanized |
+| `THM-PERFECT-TRANSFER-ZERO` | Perfect skill transfer (all skills applicable) has zero transfer deficit | SkillTransfer with transferableSkills = sourceSkills | Lean theorem `perfect_transfer_zero_deficit` in `PredictionsRound8.lean` | Mechanized |
+| `THM-MORE-TRANSFERABLE-LESS-DEFICIT` | More transferable skills monotonically reduces transfer deficit | Two SkillTransfers with same source, ordered transferable | Lean theorem `more_transferable_less_deficit` in `PredictionsRound8.lean` | Mechanized |
+| `THM-NO-TRANSFER-MAX-DEFICIT` | Zero transferable skills gives maximum transfer deficit = source skills | SkillTransfer with transferableSkills = 0 | Lean theorem `no_transfer_max_deficit` in `PredictionsRound8.lean` | Mechanized |
+| `THM-PREDICTIONS-ROUND8-MASTER` | All five predictions compose: memory positive, climax zero deficit, full diversification zero fragility, deliberation positive, perfect transfer zero deficit | MemoryTrace, EcologicalSuccession, SupplyChainNode, JuryDeliberation, SkillTransfer | TLA+ `PredictionsRound8.tla` (7 invariants) + Lean theorem `five_predictions_round8` in `PredictionsRound8.lean` | Mechanized |
 
 ## Interpretation
 
