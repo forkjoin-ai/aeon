@@ -3745,7 +3745,51 @@ The Buleyean probability field (§15.17--§15.23), Solomonoff subsumption (§15.
 
 ---
 
-The twenty predictions (§19.8, §19.9, §19.10, and §19.11) now span fourteen domains: semiconductor physics, genomics, psychotherapy, compression, finance, cancer genomics, stem cell biology, information geometry, machine learning, protein biochemistry, developmental linguistics, immunology, neural architecture, and market microstructure. All twenty chain mechanized theorems. All twenty name their falsification conditions.
+### 19.12 Five Cancer Biology Predictions: Round 3
+
+**Prediction 21: Restoration order matters -- restore highest-$\beta_1$ pathway first.**
+
+*Theorem chain:* `earlier_restoration_more_rejections` $\to$ `higher_beta1_more_rejections` $\to$ `restore_p53_before_rb` $\to$ `checkpoint_monotone_shift`.
+
+*Claim:* In multi-pathway cancer therapy, the ORDER of checkpoint restoration affects outcome. Restoring p53 ($\beta_1 = 3$) first then Rb ($\beta_1 = 2$) produces lower $P(\text{divide})$ than the reverse sequence, because p53 contributes more rejections per cycle from the earliest point. The simulation verifies: p53-first yields $P(\text{divide}) = 0.131$ vs Rb-first at $0.135$. Optimal dosing: restore highest-$\beta_1$ pathway first. Rejections from early restoration ($75$) exceed late restoration ($30$) by $2.5\times$.
+
+*Falsification:* In cell lines with both p53 and Rb knockout, compare colony formation after sequential restoration (p53-first vs Rb-first by doxycycline-inducible expression). If restoration order does not affect clonogenic survival, the prediction fails.
+
+**Prediction 22: Tumor heterogeneity as evolutionary fork width, with residual clonality predicting relapse.**
+
+*Theorem chain:* `EvolutionaryGeneration.beta1` (MolecularTopology.lean) $\to$ `treatment_reduces_evolutionary_beta1` $\to$ `complete_response_no_escape` $\to$ `residual_clonality_predicts_relapse`.
+
+*Claim:* A tumor with $N$ clones has evolutionary $\beta_1 = N - 1$ (each clone is an independent evolutionary path). Treatment is a selection fold that reduces $\beta_1$. Complete response ($1$ survivor) yields $\beta_1 = 0$: no evolutionary escape routes. The prediction: post-treatment clonal diversity (measured by Shannon entropy of VAF distribution) should predict relapse probability. Residual $\beta_1 > 0$ means escape routes remain.
+
+*Falsification:* In $\geq 100$ patients with post-treatment ctDNA clonal analysis, correlate residual clonal diversity with relapse-free survival. If Spearman correlation is not significantly negative, the prediction fails.
+
+**Prediction 23: Apoptosis resistance (BCL-2) is topologically equivalent to checkpoint loss, but therapeutically distinct.**
+
+*Theorem chain:* `blocked_vent_zero_beta1` $\to$ `blocked_equals_destroyed_topologically` $\to$ `unblocking_restores_beta1` $\to$ `bcl2_inhibitor_is_restoration`.
+
+*Claim:* BCL-2 overexpression blocks the apoptosis vent without destroying the checkpoint sensor. Topologically, blocked = destroyed (both yield effective $\beta_1 = 0$). But therapeutically, blocked is easier to fix: venetoclax unblocks the vent, restoring $\beta_1 = 2$ without rebuilding the checkpoint. The prediction: venetoclax should produce topologically equivalent effects to p53 restoration ($\Delta\beta_1 = +2$) in BCL-2-overexpressing, checkpoint-intact tumors.
+
+*Falsification:* Compare cell-cycle arrest rates after venetoclax vs p53 restoration in matched cell lines. If venetoclax does not shift $P(\text{divide})$ comparably, the topological equivalence is wrong.
+
+**Prediction 24: Metastatic efficiency is inversely proportional to primary tumor $\beta_1$ (clonal diversity).**
+
+*Theorem chain:* `diverse_primary_harder_metastasis` $\to$ `single_clone_max_erasure` $\to$ `positive_erasure_positive_heat` (MolecularTopology.lean) $\to$ `scale_tower_additive`.
+
+*Claim:* Metastasis is a covering-space projection: the primary tumor ($\beta_1 = N - 1$) folds to a single-clone metastatic colony ($\beta_1 = 0$). This fold erases $N - 1$ bits of clonal information. More diverse primaries must erase more information, paying more Landauer heat. The prediction: metastatic efficiency $\propto 1/\beta_1(\text{primary})$. Homogeneous tumors ($\beta_1 \approx 0$) metastasize efficiently. Diverse tumors ($\beta_1 \gg 0$) metastasize inefficiently. The simulation shows: diverse tumor (49 clones) erases $24.5\times$ more information than homogeneous tumor (3 clones).
+
+*Falsification:* In pan-cancer datasets with both clonal architecture (from multi-region sequencing) and metastatic status, correlate clonal diversity with metastatic burden. If more diverse tumors show equal or higher metastatic rates, the prediction fails.
+
+**Prediction 25: The fork/vent ratio is a cell-cycle Reynolds number that predicts growth regime.**
+
+*Theorem chain:* `vent_loss_increases_imbalance` $\to$ `healthy_is_balanced` $\to$ `cancer_maximally_unbalanced` $\to$ the pipeline Reynolds number (§1.3).
+
+*Claim:* The ratio of total growth fork width to total vent $\beta_1$ is the cell-cycle analogue of the Reynolds number. Healthy cells: ratio = $3/9 = 0.33$ (laminar -- orderly checkpoint control). GBM Combined: $3/2 = 1.5$ (transitional). Cancer with no vents: $3/0 = \infty$ (turbulent -- chaotic division). The transition from laminar to turbulent occurs when fork/vent exceeds $1.0$. The simulation confirms strict monotonicity: $P(\text{divide})$ is $0.100$ at ratio $0.33$, $0.188$ at ratio $1.5$, and $0.249$ at ratio $\infty$.
+
+*Falsification:* Quantify growth factor receptor expression (fork width proxy) and tumor suppressor activity (vent proxy) across $\geq 200$ tumor samples. If the fork/vent ratio does not correlate with Ki-67 proliferation index more strongly than either measurement alone, the prediction fails.
+
+---
+
+The twenty-five predictions (§19.8, §19.9, §19.10, §19.11, and §19.12) now span fifteen domains: semiconductor physics, genomics, psychotherapy, compression, finance, cancer genomics, stem cell biology, information geometry, machine learning, protein biochemistry, developmental linguistics, immunology, neural architecture, market microstructure, and evolutionary oncology. All twenty-five chain mechanized theorems. All twenty-five name their falsification conditions.
 
 ## 20. Conclusion
 
