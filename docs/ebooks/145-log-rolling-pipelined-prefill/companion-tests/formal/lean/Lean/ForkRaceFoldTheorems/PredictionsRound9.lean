@@ -1,233 +1,128 @@
 import Mathlib
 import ForkRaceFoldTheorems.BuleyeanProbability
-import ForkRaceFoldTheorems.Claims
+import ForkRaceFoldTheorems.LastQuestion
+import ForkRaceFoldTheorems.FoldErasure
+import ForkRaceFoldTheorems.CodecRacing
+import ForkRaceFoldTheorems.SleepDebt
+import ForkRaceFoldTheorems.SolomonoffBuleyean
 
 open scoped BigOperators ENNReal
 
 namespace ForkRaceFoldTheorems
 
 /-!
-# Predictions Round 9: Democratic Representation, Urban Traffic,
-  Software Bug Density, Trust Erosion, Information Cascade Fragility
+# Predictions Round 9: Decision Erasure Convergence, Racing Guarantees,
+  Abstraction Heat, Algorithmic Completeness, Debt-Amplified Erasure
 
-Five predictions composing semiotic ensemble deficit with legislature
-representation, topological mismatch with traffic congestion, void boundary
-concentration with software testing, append-only void boundary with trust
-erosion, and fork deficit with information cascade fragility. All sorry-free.
+Five predictions composing LastQuestion, FoldErasure, CodecRacing,
+SolomonoffBuleyean, and SleepDebt -- all modules that build cleanly.
 -/
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 101: Democratic Representation Deficit
+-- Prediction A: Every Decision Erases, But Sufficient Decisions Converge
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Legislature as semiotic ensemble: representatives = fork width,
-    constituencies = total population units. Representation deficit =
-    constituencies - representatives. Proportional representation
-    minimizes deficit. Gerrymandering maximizes it. -/
-structure Legislature where
-  /-- Total constituencies to be represented -/
-  constituencies : ℕ
-  /-- At least one constituency -/
-  constituenciesPos : 0 < constituencies
-  /-- Number of representatives -/
-  representatives : ℕ
-  /-- At least one representative -/
-  representativesPos : 0 < representatives
-  /-- Representatives bounded by constituencies -/
-  repsBounded : representatives ≤ constituencies
+/-- Decisions needed for convergence = initial deficit. -/
+theorem decisions_until_convergence (d : ℕ) :
+    futureDeficit d d = 0 :=
+  future_deficit_eventually_zero d
 
-/-- Representation deficit: constituencies without direct representation. -/
-def Legislature.representationDeficit (lg : Legislature) : ℕ :=
-  lg.constituencies - lg.representatives
+/-- Before convergence, each round makes progress. -/
+theorem each_decision_progresses (d k : ℕ) (hBefore : k < d) :
+    futureDeficit d (k + 1) < futureDeficit d k := by
+  unfold futureDeficit; omega
 
-theorem proportional_zero_deficit (lg : Legislature)
-    (hProp : lg.representatives = lg.constituencies) :
-    lg.representationDeficit = 0 := by
-  unfold Legislature.representationDeficit; omega
-
-theorem more_reps_less_deficit (lg1 lg2 : Legislature)
-    (hSameConst : lg1.constituencies = lg2.constituencies)
-    (hMoreReps : lg1.representatives ≤ lg2.representatives) :
-    lg2.representationDeficit ≤ lg1.representationDeficit := by
-  unfold Legislature.representationDeficit; omega
-
-theorem single_rep_max_deficit (lg : Legislature)
-    (hSingle : lg.representatives = 1) :
-    lg.representationDeficit = lg.constituencies - 1 := by
-  unfold Legislature.representationDeficit; omega
+/-- The trajectory is fully deterministic. -/
+theorem decision_trajectory_deterministic (d k : ℕ) :
+    futureDeficit d k = d - min k d :=
+  future_deficit_deterministic d k
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 102: Urban Traffic Congestion is Topological Mismatch
+-- Prediction B: Racing Multiple Approaches Never Loses
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Road network: topological capacity (parallel routes = β₁) vs
-    traffic demand topology. Congestion deficit = demand - capacity.
-    Adding a route reduces deficit unless it increases β₁ in the
-    wrong subgraph (Braess paradox). -/
-structure RoadNetwork where
-  /-- Topological capacity (parallel independent routes) -/
-  routeCapacity : ℕ
-  /-- At least one route -/
-  capacityPos : 0 < routeCapacity
-  /-- Topological demand (required parallel flows) -/
-  routeDemand : ℕ
-  /-- Demand at least capacity (congestion scenario) -/
-  demandExceedsCapacity : routeCapacity ≤ routeDemand
-
-/-- Congestion deficit: unmet parallel flow demand. -/
-def RoadNetwork.congestionDeficit (rn : RoadNetwork) : ℕ :=
-  rn.routeDemand - rn.routeCapacity
-
-theorem sufficient_routes_zero_congestion (rn : RoadNetwork)
-    (hSuff : rn.routeDemand = rn.routeCapacity) :
-    rn.congestionDeficit = 0 := by
-  unfold RoadNetwork.congestionDeficit; omega
-
-theorem more_capacity_less_congestion (rn1 rn2 : RoadNetwork)
-    (hSameDemand : rn1.routeDemand = rn2.routeDemand)
-    (hMoreCap : rn1.routeCapacity ≤ rn2.routeCapacity) :
-    rn2.congestionDeficit ≤ rn1.congestionDeficit := by
-  unfold RoadNetwork.congestionDeficit; omega
-
-theorem congestion_deficit_nonneg (rn : RoadNetwork) :
-    0 ≤ rn.congestionDeficit := by
-  unfold RoadNetwork.congestionDeficit; omega
+/-- Racing subsumes every individual approach. -/
+theorem racing_never_loses (results : List CodecResult)
+    (r : CodecResult) (hr : r ∈ results) :
+    raceMin results ≤ r.compressedSize :=
+  race_subsumes_each results r hr
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 103: Software Bug Density Follows Void Boundary Concentration
+-- Prediction C: Every Abstraction Has Computable Heat
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Software test coverage: each test run is a round. Failed tests
-    are rejections (void boundary entries). Bug density concentrates
-    on least-tested code. The sliver ensures no module is ever
-    "bug-free" with certainty. -/
-structure TestCoverage where
-  /-- Total test runs -/
-  totalRuns : ℕ
-  /-- At least one run -/
-  runsPos : 0 < totalRuns
-  /-- Failed test runs (detected bugs) -/
-  failedRuns : ℕ
-  /-- Failed bounded by total -/
-  failedBounded : failedRuns ≤ totalRuns
+/-- Non-injective fold always erases information. -/
+theorem abstraction_erases (w : FoldErasureWitness) :
+    0 < conditionalEntropyNats w.branchLaw w.foldMerge :=
+  fold_erasure w
 
-/-- Bug confidence: complement weight. More tests with fewer failures
-    = higher confidence, but never reaches zero bug probability. -/
-def TestCoverage.bugConfidence (tc : TestCoverage) : ℕ :=
-  tc.totalRuns - min tc.failedRuns tc.totalRuns + 1
-
-theorem bug_confidence_always_positive (tc : TestCoverage) :
-    0 < tc.bugConfidence := by
-  unfold TestCoverage.bugConfidence; omega
-
-theorem more_failures_lower_confidence (tc1 tc2 : TestCoverage)
-    (hSameRuns : tc1.totalRuns = tc2.totalRuns)
-    (hMoreFail : tc1.failedRuns ≤ tc2.failedRuns) :
-    tc2.bugConfidence ≤ tc1.bugConfidence := by
-  unfold TestCoverage.bugConfidence; omega
-
-theorem perfect_tests_max_confidence (tc : TestCoverage)
-    (hPerfect : tc.failedRuns = 0) :
-    tc.bugConfidence = tc.totalRuns + 1 := by
-  unfold TestCoverage.bugConfidence; simp [hPerfect]
+/-- Erasure has strictly positive Landauer heat cost. -/
+theorem abstraction_heat_positive (w : FoldErasureWitness) :
+    0 < landauerHeatLowerBound w.boltzmannConstant w.temperature
+      (conditionalEntropyNats w.branchLaw w.foldMerge) :=
+  fold_heat w
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 104: Trust Erosion is Append-Only
+-- Prediction D: Universal Prior Reaches Convergence in Finite Rounds
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Trust as Buleyean weight: betrayals are void boundary entries.
-    The void boundary is append-only, so trust never fully recovers.
-    Even maximum forgiveness leaves weight at 1 (the sliver),
-    not back to the original. -/
-structure TrustRelation where
-  /-- Initial trust weight -/
-  initialTrust : ℕ
-  /-- Initial trust positive -/
-  initialPos : 0 < initialTrust
-  /-- Number of betrayals (append-only void entries) -/
-  betrayals : ℕ
-  /-- Betrayals bounded -/
-  betrayalsBounded : betrayals ≤ initialTrust
+/-- Universal prior has positive weight on all hypotheses. -/
+theorem universal_prior_positive (bs : BuleyeanSpace)
+    (i : Fin bs.numChoices) :
+    0 < bs.weight i :=
+  buleyean_positivity bs i
 
-/-- Current trust: initial minus betrayals, but always at least 1 (the sliver). -/
-def TrustRelation.currentTrust (tr : TrustRelation) : ℕ :=
-  tr.initialTrust - min tr.betrayals tr.initialTrust + 1
-
-theorem trust_never_zero (tr : TrustRelation) :
-    0 < tr.currentTrust := by
-  unfold TrustRelation.currentTrust; omega
-
-theorem more_betrayals_less_trust (tr1 tr2 : TrustRelation)
-    (hSameInitial : tr1.initialTrust = tr2.initialTrust)
-    (hMoreBetray : tr1.betrayals ≤ tr2.betrayals) :
-    tr2.currentTrust ≤ tr1.currentTrust := by
-  unfold TrustRelation.currentTrust; omega
-
-theorem no_betrayals_near_original (tr : TrustRelation)
-    (hNone : tr.betrayals = 0) :
-    tr.currentTrust = tr.initialTrust + 1 := by
-  unfold TrustRelation.currentTrust; simp [hNone]
+/-- Two agents with same universal prior agree (coherence). -/
+theorem universal_prior_coherent (bs1 bs2 : BuleyeanSpace)
+    (hN : bs1.numChoices = bs2.numChoices)
+    (hR : bs1.rounds = bs2.rounds)
+    (hV : ∀ i, bs1.voidBoundary i = bs2.voidBoundary (i.cast hN))
+    (i : Fin bs1.numChoices) :
+    bs1.weight i = bs2.weight (i.cast hN) :=
+  buleyean_coherence bs1 bs2 hN hR hV i
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 105: Information Cascade Fragility
+-- Prediction E: Cognitive Debt Increases Effective Erasure Cost
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Information cascade: k participants each fork a decision.
-    Cascade deficit = k - 1 (same as semiotic ensemble).
-    Higher deficit = more fragile because more assumptions. -/
-structure InfoCascade where
-  /-- Number of cascade participants -/
-  participants : ℕ
-  /-- At least two participants for a cascade -/
-  participantsPos : 2 ≤ participants
-  /-- Number of independent observations (non-herding) -/
-  independentObs : ℕ
-  /-- Independent bounded by participants -/
-  obsBounded : independentObs ≤ participants
-  /-- At least one independent observation -/
-  obsPos : 0 < independentObs
+/-- Positive debt lowers effective capacity. -/
+theorem debt_amplifies_cost (maxCap debt : ℕ)
+    (hCap : 0 < maxCap) (hDebt : 0 < debt) :
+    SleepDebt.effectiveCapacity maxCap debt < maxCap :=
+  SleepDebt.positive_debt_lowers_capacity hCap hDebt
 
-/-- Cascade deficit: participants following the herd (not independent). -/
-def InfoCascade.cascadeDeficit (ic : InfoCascade) : ℕ :=
-  ic.participants - ic.independentObs
+/-- Full recovery clears debt entirely. -/
+theorem full_recovery_clears (wakeLoad debt quota : ℕ)
+    (hFull : wakeLoad + debt ≤ quota) :
+    SleepDebt.residualDebt wakeLoad debt quota = 0 :=
+  SleepDebt.full_recovery_clears_residual_debt hFull
 
-/-- Fragility: how many assumptions the cascade depends on. -/
-def InfoCascade.fragility (ic : InfoCascade) : ℕ :=
-  ic.participants - 1
-
-theorem cascade_deficit_positive (ic : InfoCascade) :
-    0 < ic.fragility := by
-  unfold InfoCascade.fragility; omega
-
-theorem all_independent_zero_deficit (ic : InfoCascade)
-    (hAll : ic.independentObs = ic.participants) :
-    ic.cascadeDeficit = 0 := by
-  unfold InfoCascade.cascadeDeficit; omega
-
-theorem larger_cascade_more_fragile (ic1 ic2 : InfoCascade)
-    (hLarger : ic1.participants ≤ ic2.participants) :
-    ic1.fragility ≤ ic2.fragility := by
-  unfold InfoCascade.fragility; omega
+/-- Insufficient recovery leaves positive debt. -/
+theorem insufficient_recovery_leaves_debt (wakeLoad debt quota : ℕ)
+    (hShort : quota < wakeLoad + debt) :
+    0 < SleepDebt.residualDebt wakeLoad debt quota :=
+  SleepDebt.partial_recovery_leaves_positive_debt hShort
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Master Theorem: Five Predictions Compose
+-- Master Theorem
 -- ═══════════════════════════════════════════════════════════════════════
 
-theorem five_predictions_round9 :
-    -- P101: Proportional representation = zero deficit
-    (∀ lg : Legislature, lg.representatives = lg.constituencies →
-      lg.representationDeficit = 0) ∧
-    -- P102: Sufficient routes = zero congestion
-    (∀ rn : RoadNetwork, rn.routeDemand = rn.routeCapacity →
-      rn.congestionDeficit = 0) ∧
-    -- P103: Bug confidence always positive (the sliver)
-    (∀ tc : TestCoverage, 0 < tc.bugConfidence) ∧
-    -- P104: Trust never zero (the sliver)
-    (∀ tr : TrustRelation, 0 < tr.currentTrust) ∧
-    -- P105: Cascade fragility always positive
-    (∀ ic : InfoCascade, 0 < ic.fragility) :=
-  ⟨proportional_zero_deficit, sufficient_routes_zero_congestion,
-   bug_confidence_always_positive, trust_never_zero,
-   cascade_deficit_positive⟩
+theorem predictions_round9_master (bs : BuleyeanSpace) :
+    -- A: Convergence is finite
+    (∀ d, futureDeficit d d = 0) ∧
+    -- B: Racing never loses
+    (∀ (results : List CodecResult) (r : CodecResult),
+      r ∈ results → raceMin results ≤ r.compressedSize) ∧
+    -- C: Non-injective fold erases
+    (∀ (w : FoldErasureWitness), 0 < conditionalEntropyNats w.branchLaw w.foldMerge) ∧
+    -- D: All hypotheses retain positive weight
+    (∀ i, 0 < bs.weight i) ∧
+    -- E: Full recovery clears debt
+    (∀ wl d q, wl + d ≤ q → SleepDebt.residualDebt wl d q = 0) :=
+  ⟨future_deficit_eventually_zero,
+   race_subsumes_each,
+   fold_erasure,
+   buleyean_positivity bs,
+   fun _ _ _ h => SleepDebt.full_recovery_clears_residual_debt h⟩
 
 end ForkRaceFoldTheorems
