@@ -4863,6 +4863,22 @@ Five predictions chaining THREE LEDGER modules through the Buleyean formula. Eac
 
 The two hundred eighty-one predictions (§19.8 through §19.63) now span one hundred thirty-two domains. The `@a0n/maybe` package contains 188 tests across twelve test files with 2,552 assertions, backed by 14 Lean 4 theorems (FisherManifold.lean, zero sorry) and nine TLA+ invariants (FisherManifold.tla). The triple compositions (§19.63) represent the deepest cross-module chains in the LEDGER: each threads three distinct theorem families through the Buleyean formula to produce results that no pairwise composition yields.
 
+### 19.64 Five Untried Triple Compositions: Quantum-Cancer-Retrocausal, BATNA-Void-NEI, Grandfather-Quantum-Cancer, Retrocausal-Negotiation-Buleyean, NEI-Cancer-Void
+
+Five new theorems from three-module triples that have NEVER been combined. Each triple creates algebraic content that no pair of its constituents can state. Mechanized in Lean4 (`QuantumCancerTriples.lean`, sorry-free).
+
+**THM-QUANTUM-CANCER-RETROCAUSAL (QuantumObserver + CancerTopology + RetrocausalBound).** Quantum measurement and cancer collapse both produce terminal $\beta_1 = 0$. The retrocausal bound constrains the trajectory but cannot distinguish which process caused the collapse. `quantum_cancer_retrocausally_indistinguishable` proves both systems have identical terminal topology. `collapse_deficit_positive` proves something was lost. `retrocausal_terminal_positive` proves the terminal state has positive Buleyean weight. The theorem: measurement and disease are retrocausally indistinguishable when only the terminal topology is observed.
+
+**THM-BATNA-PREDICTS-HOLES (NegotiationEquilibrium + VoidWalking + NonEmpiricalPrediction).** The BATNA surface (rejected offers) is a void boundary. Structural holes in the negotiation lattice (untried offer configurations) are predicted by the complement distribution. `batna_predicts_holes` proves the structural hole has positive weight AND every tried offer retains positive weight. `concession_steers_toward_hole` proves the void gradient steers concession toward less-rejected terms. The theorem: the history of failure (BATNA) predicts where success (agreement) will be found.
+
+**THM-COLLAPSE-IRREVERSIBILITY (GrandfatherParadox + QuantumObserver + CancerTopology).** Neither quantum collapse nor cancer collapse is reversible. `collapse_irreversibility` proves both collapses happened, the sliver prevents annihilation, and no weight can reach zero. `branching_no_reversal` proves branching creates new timelines but does not undo the collapse in the original. The theorem: the grandfather paradox's append-only void boundary makes both measurement and cancer permanent -- therapy (for cancer) and the Many-Worlds interpretation (for quantum mechanics) create new branches, not reversals.
+
+**THM-SETTLEMENT-RETROCAUSAL (RetrocausalBound + NegotiationEquilibrium + BuleyeanProbability).** Observing the final settlement constrains which negotiation trajectories could have produced it. `settlement_retrocausal` proves both concession weights and settlement values are positive. `settlement_coherence` proves two observers with the same terminal state produce the same inferred trajectory. The theorem: settlements are retrocausal witnesses -- you can infer the negotiation process from the agreement.
+
+**THM-CANCER-HOLE-TREATMENT (NonEmpiricalPrediction + CancerTopology + VoidWalking).** Destroyed checkpoints are structural holes in the cancer topology. `cancer_hole_treatment` proves the hole has positive predicted impact, the treatment history retains all options, and the cancer cell has zero rejection capacity. `treatment_ordered` proves treatment targets are ordered by the void gradient -- less-rejected treatments are predicted to be more effective. The theorem: non-empirical inference predicts which checkpoint restorations would be most impactful, without training data on the specific cancer.
+
+**Companion theorems for §19.64:** Lean `QuantumCancerTriples.lean` (sorry-free, 14 theorems including master), tests `quantum-cancer-triples.test.ts` (19 tests). Self-hosted.
+
 ## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
