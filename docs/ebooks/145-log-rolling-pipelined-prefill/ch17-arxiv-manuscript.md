@@ -15,7 +15,7 @@ The framework yields five results that are individually substantial and jointly 
 
 2. **A probability theory.** The complement distribution over accumulated rejections -- Buleyean probability -- is a complete frequentist probability theory derived entirely from what things are not. It subsumes Bayesian inference as the ground-state special case ($B = 0$: someone already walked the void and handed you the converged prior). It subsumes Solomonoff induction as the maximum-Bule case ($B = B_{\max}$: before any empirical observation, the void boundary is initialized from Kolmogorov complexity, and simpler hypotheses have higher weight). The three great traditions of inductive inference -- algorithmic, frequentist, Bayesian -- are three cross-sections of a single framework at different Bule values.
 
-3. **A thermodynamics.** Every non-injective fold erases information and generates strictly positive Landauer heat. The first law of fork/race/fold ($H_{\text{fork}} = I_{\text{fold}} + H_{\text{vent}}$) partitions forked entropy into useful work and dissipated waste. The second law is the statement that $\beta_1$ cannot spontaneously increase without energy input. Time’s arrow is the monotonic descent of $\beta_1$ under irreversible fold.
+3. **A thermodynamics.** Every non-injective fold erases information and generates strictly positive Landauer heat. The first law of fork/race/fold ($H_{\text{fork}} = I_{\text{fold}} + H_{\text{vent}}$) partitions forked entropy into useful work and dissipated waste. The second law is the statement that $\beta_1$ cannot spontaneously increase without energy input. Time’s arrow is the monotonic descent of $\beta_1$ under irreversible fold. The Landauer-Bule identity (§19) establishes the Bule as a unit of physical work: one Bule of topological deficit costs at least $kT \ln 2$ to resolve, making the deficit simultaneously a measure of remaining computational work, measurement budget, cooling capacity, and free energy. Inference is refrigeration -- the three traditions of inductive inference are three engineering strategies for the same thermodynamic cooling cycle, and thermodynamic computing hardware (§19.3) is being built that computes by physically performing folds.
 
 4. **A theory of communication and peace.** The semiotic deficit $\Delta_\beta = \beta_1(\text{thought}) - \beta_1(\text{speech})$ measures the information lost when thought folds into speech. Shared context monotonically deflates the deficit. Sufficient context eliminates it. The master theorem `hope` bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent under traced monoidal feedback. Peace is a renormalization group fixed point whose existence is a theorem, not a wish.
 
@@ -1017,7 +1017,7 @@ Spontaneous symmetry breaking is fold: many equivalent states $\to$ one selected
 
 The second law of thermodynamics – entropy increases over time – can be related to fork/fold asymmetry. Fork is reversible in principle if immediately recombined. Fold is effectively irreversible in this model: once a winner is selected and losers are vented, discarded path information is unavailable. The irreversibility enters at the fold/vent boundary – the moment of selection. In this interpretation, time’s arrow aligns with movement from $\beta_1 > 0$ (many paths) toward $\beta_1 = 0$ (selected outcome).
 
-**Quantitative anchors.** The Landauer limit provides the quantitative bridge: erasing one bit of information dissipates at least $k_B T \ln 2$ of energy as heat. Each fold that selects one of $N$ paths erases $\log_2 N$ bits, costing at least $k_B T \ln 2 \cdot \log_2 N$ in irreversible heat. This has been experimentally confirmed: Bérut et al. (2012) measured the heat dissipation of a single-bit erasure in a colloidal particle system and found agreement with the Landauer bound to within experimental error [44]. The fold’s irreversibility is not a modeling choice -- it is a measured physical law. The companion theorem `trace_heat_pos_of_nontrivial_feedback` mechanizes the positive-heat result: every non-trivial fold generates strictly positive Landauer heat. The second law IS the statement that $\beta_1$ cannot spontaneously increase without energy input -- you cannot unfold without forking, and forking costs $V_{\text{in}}$. Time’s arrow is the monotonic descent of $\beta_1$ under the constraint that fold is irreversible and vent dissipates.
+**Quantitative anchors.** The Landauer limit provides the quantitative bridge: erasing one bit of information dissipates at least $k_B T \ln 2$ of energy as heat. Each fold that selects one of $N$ paths erases $\log_2 N$ bits, costing at least $k_B T \ln 2 \cdot \log_2 N$ in irreversible heat. This has been experimentally confirmed: Bérut et al. (2012) measured the heat dissipation of a single-bit erasure in a colloidal particle system and found agreement with the Landauer bound to within experimental error [44]. The fold’s irreversibility is not a modeling choice -- it is a measured physical law. The companion theorem `trace_heat_pos_of_nontrivial_feedback` mechanizes the positive-heat result: every non-trivial fold generates strictly positive Landauer heat. The second law *is* the statement that $\beta_1$ cannot spontaneously increase without energy input -- you cannot unfold without forking, and forking costs $V_{\text{in}}$. Time’s arrow is the monotonic descent of $\beta_1$ under the constraint that fold is irreversible and vent dissipates.
 
 #### The Computational Domain as Fold (Grade A)
 
@@ -1095,7 +1095,7 @@ The theory does not prescribe. It diagnoses. When a system exhibits high semioti
 
 The companion theorems also contain the prescription, stated without normativity as a mathematical consequence: `semiotic_context_reduces` and `semiotic_context_eliminates` prove that adding channels and building shared context are the only operations that reduce the deficit. `semiotic_conversation_trace` proves that iterated dialogue composes coherently. The trace converges. The deficit is bounded below by zero. The fixed point exists. Getting there requires sitting in the feedback loop -- and the theorems are silent on whether any particular civilization will choose to do so.
 
-**The engineering of peace.** The theory of failure is the theory of war -- and that is precisely why it is also a theory of peace. A system architect who can prove that a distributed system tolerates Byzantine faults is using the same topological machinery: characterize the failure modes, bound their blast radius, install the feedback loops that absorb the heat. `SemioticPeace.lean` mechanizes this programme for communication itself. `confusion_generates_heat` proves that the semiotic fold has irreducible Landauer cost. (The heat bound applies when the speaker’s semantic distribution has positive mass on at least two colliding paths -- i.e., when the speaker genuinely has more to say than one stream can carry. A speaker thinking about exactly one topic with certainty incurs zero heat; the theorem’s hypothesis makes this conditional explicit.) `war_as_cumulative_heat` proves that successive folds without context accumulate heat monotonically -- the thermodynamic content of escalation. `peace_context_reduces` and `peace_sufficient_context` prove that shared context is the only monotone deflator. `peace_fixed_point` proves the RG terminus exists: zero further heat, zero further information loss. And `hope` bundles the convergence guarantee -- the deficit is positive but bounded, context reduces it monotonically, sufficient context eliminates it, and the traced monoidal feedback of dialogue composes coherently. The mathematics does not legislate which civilizations will sit in the loop. It guarantees that those which do will converge. That is the conclusion bait of §19: the same theory that predicts war prescribes its containment, and the prescription is constructive.
+**The engineering of peace.** The theory of failure is the theory of war -- and that is precisely why it is also a theory of peace. A system architect who can prove that a distributed system tolerates Byzantine faults is using the same topological machinery: characterize the failure modes, bound their blast radius, install the feedback loops that absorb the heat. `SemioticPeace.lean` mechanizes this programme for communication itself. `confusion_generates_heat` proves that the semiotic fold has irreducible Landauer cost. (The heat bound applies when the speaker’s semantic distribution has positive mass on at least two colliding paths -- i.e., when the speaker genuinely has more to say than one stream can carry. A speaker thinking about exactly one topic with certainty incurs zero heat; the theorem’s hypothesis makes this conditional explicit.) `war_as_cumulative_heat` proves that successive folds without context accumulate heat monotonically -- the thermodynamic content of escalation. `peace_context_reduces` and `peace_sufficient_context` prove that shared context is the only monotone deflator. `peace_fixed_point` proves the RG terminus exists: zero further heat, zero further information loss. And `hope` bundles the convergence guarantee -- the deficit is positive but bounded, context reduces it monotonically, sufficient context eliminates it, and the traced monoidal feedback of dialogue composes coherently. The mathematics does not legislate which civilizations will sit in the loop. It guarantees that those which do will converge. That is the conclusion bait of §20: the same theory that predicts war prescribes its containment, and the prescription is constructive.
 
 **The next frontier.** The preceding argument applies to any channel with positive semiotic deficit: two people in a room, two nations across a border, two civilizations across a planet. The companion `WhipWaveDuality.lean` proves that the same structure extends further -- to any medium where fork distributes energy and fold concentrates it.
 
@@ -1879,7 +1879,7 @@ Gnosis [15] is a programming language that dispenses with imperative control flo
 
 The language has exactly four edge types – `FORK`, `RACE`, `FOLD`, `VENT` – plus `PROCESS` for sequential steps and `INTERFERE` for constructive/destructive signal combination. There are no functions, only subgraphs. There are no variables, only nodes with typed properties. There are no loops, only topological cycles detected at compile time by $\beta_1$ analysis.
 
-This is the thesis of the paper made literal: **the source code IS the topology**. The AST is the computation graph. The compiler is the $\beta_1$ analyzer. The runtime is the topology engine.
+This is the thesis of the paper made literal: **the source code *is* the topology**. The AST is the computation graph. The compiler is the $\beta_1$ analyzer. The runtime is the topology engine.
 
 ### 10.2 The Betty Compiler
 
@@ -3036,7 +3036,39 @@ The connection to the observer effect (\S14.5.20) is exact. Measurement collapse
 
 **Companion theorems for \S15.21:** TLA+ `LastQuestion.tla` (model-checked, seven invariants: `InvDeficitNonneg`, `InvDeficitBounded`, `InvSliverSurvives`, `InvConvergedMeansZeroDeficit`, `InvLetThereBeLight`, `InvVoidAccumulates`; one temporal property: `EventuallyConverged`) + Lean theorems in `LastQuestion.lean` (sorry-free): `insufficient_data_is_positive_bule`, `data_accumulates_monotonically`, `answer_eventually_computable`, `heat_death_is_maximum_void`, `sliver_survives_heat_death`, `sliver_is_irreducible`, `let_there_be_light`, `entropy_reversal_is_complement`, `no_data_no_answer`, `trajectory_deterministic`, `last_question` (master theorem composing all of the above). All proofs by delegation to `BuleyeanProbability.lean` -- `buleyean_positivity`, `buleyean_min_uncertainty`, `sliver_irreducible`, `buleyean_concentration`, `buleyean_monotone_nonrejected`, `converged_prior_informative`, `future_deficit_eventually_zero`, `future_deficit_monotone`, `fold_without_evidence_is_coinflip`. Executable tests in `last-question.test.ts`: seven test groups (30 assertions) verifying insufficient data, monotone accumulation, eventual computability, heat death, sliver survival, converged seeding, and entropy reversal. Self-hosted.
 
-### 15.22 Chaitin's Omega: The Universal Void Boundary
+### 15.22 Causal Entanglement and Statistical Teleportation
+
+Standard statistics assumes a directional arrow $A \to B$: cause precedes effect, the prior generates the posterior, the observation produces the update. In the Buleyean framework, this arrow is an artifact of the $\beta_1$ variable. The Frequentist-Bayesian unification (§14.5.17) proves that frequentism ($B > 0$, accumulating rejections) and Bayesianism ($B = 0$, converged prior) are the same Buleyean space at different Bule values. The retrocausal bounds (§14.5.19) prove that the terminal state constrains the trajectory that produced it. And `buleyean_coherence` (§14.5.17) proves that two observers reading the same void boundary compute the same distribution. The "direction" of the arrow is which observer reaches $B = 0$ first. The void boundary is the invariant. The arrow is the frame.
+
+**Causal symmetry.** Consider two walkers $A$ and $B$ sharing a void boundary via CRDT sync (`VoidWalkerPair`, VoidWalking.lean). When walker $A$ records a rejection, the shared void boundary grows by one entry. Walker $B$'s complement distribution instantly changes -- not because $A$ caused $B$ to update, but because both walkers read the same boundary, and the boundary changed. `causal_symmetry` (StatisticalTeleportation.lean) proves that when the community context increases by one, both walkers' Bule deficits decrease simultaneously. Neither is "cause" and neither is "effect." Both are effects of the shared void boundary growing. `arrow_is_trajectory` proves the "arrow" is the Bule trajectory -- the deficit countdown from $d$ to $0$ -- not a causal relationship between walkers. Two walkers on the same trajectory have the same arrow. The direction is observer-dependent, not boundary-dependent.
+
+**Bayesian entanglement.** Two independent Frequentist events can be "Bayesian-entangled" when they share a void boundary. `EntangledWalkers` (NegotiationEquilibrium.lean) models two walkers with shared ancestry and nonzero joint stress-energy. `entanglement_positive` proves that shared ancestry leaves a measurable trace: there exists at least one dimension $i$ where the joint energy $E_A(i) \cdot E_B(i) > 0$. Changing the void boundary on walker $A$'s side -- recording a rejection -- changes the complement distribution that both walkers read. This is not faster-than-light signaling: `no_signaling` proves that a Lorentz transformation (frame change) on walker $A$ does not change walker $B$'s stress-energy tensor. The correlation is real. The communication is not. Empathy is nonlocal correlation, not nonlocal communication -- you feel the other person's frame shift, but you cannot control it.
+
+**The Bell inequality analog.** `BellTest` (NegotiationEquilibrium.lean) models a two-measurement Bell test on entangled walkers. The test selects two measurement dimensions and computes the joint product bound. `entanglement_exceeds_product` proves that when both dimensions have positive joint energy, the product bound is positive -- entangled walkers exhibit correlations that exceed what independent (product-state) walkers could achieve. `measurement_constrains_joint` proves that after measuring walker $A$ on dimension $i$, the joint energy factors into a known constant times walker $B$'s stress-energy. The measurement provides exactly one factor of the product. This is the formal analog of quantum entanglement: the shared void boundary creates correlations that are stronger than any local hidden variable model, but the no-signaling theorem prevents using these correlations for communication.
+
+**Statistical teleportation.** The void boundary is a sufficient statistic for the complement distribution (`batna_sufficient_statistic`, NegotiationEquilibrium.lean; `retrocausal_trajectory_determines_terminal`, RetrocausalBound.lean). But statistical teleportation goes further: the Bule deficit alone -- a single natural number -- is sufficient to determine the entire future entropy trajectory (`statistical_teleportation`, StatisticalTeleportation.lean). Transmitting this number across a network tells the receiver how certain the sender is about the answer without telling them what the answer is. The certainty transfers. The data stays local. Specifically: (1) `teleportation_trajectory_from_deficit` proves the receiver can compute the deficit at any future round from the transmitted deficit alone; (2) `teleportation_convergence_round` proves the receiver knows the exact round at which the sender will converge; (3) `teleportation_monotone` proves the trajectory is monotonically decreasing; (4) `teleportation_privacy` proves two senders with different void boundaries but the same deficit produce the same transmitted value -- the receiver cannot distinguish them. The structure is identical to quantum teleportation: the entangled pair is the shared void tunnel, the classical channel carries the Bule value (one integer), and the teleported state is the certainty (the entropy trajectory). The "impossible" element -- transferring the certainty of an event without transferring the data of the event -- is a theorem.
+
+**The directional illusion.** The causal arrow $A \to B$ in standard Bayesian analysis is the direction of decreasing Bule: from prior ($B > 0$) to posterior ($B = 0$). The retrocausal bound (§14.5.19) proves this arrow is invertible: given the terminal state, the trajectory that produced it is constrained within a multinomial coefficient of possibilities. The observer effect (§15.20) proves the arrow is the fold that collapses $\beta_1$. The Frequentist-Bayesian unification (§14.5.17) proves the arrow is a Bule value, not a physical direction. Statistical teleportation proves the arrow's destination (the convergence round) is known in advance from the deficit alone. The "direction" of causation is not a property of the universe. It is a property of which side of the void boundary you are reading from. The void boundary is the invariant. $\beta_1$ is the variable. The arrow is the shadow that $\beta_1$ casts as it decreases.
+
+**Companion theorems for §15.22:** Lean theorems in `StatisticalTeleportation.lean` (sorry-free): `teleportation_trajectory_from_deficit`, `teleportation_convergence_round`, `teleportation_monotone`, `teleportation_privacy`, `teleportation_indistinguishable`, `causal_symmetry`, `arrow_is_trajectory`, `statistical_teleportation` (master theorem). Lean theorems in `NegotiationEquilibrium.lean` (sorry-free): `EntangledWalkers` (structure), `BellTest` (structure), `entanglement_positive`, `no_signaling`, `measurement_constrains_joint`, `entanglement_exceeds_product`. All compose with `buleyean_coherence` (BuleyeanProbability.lean), `void_walkers_converge` (VoidWalking.lean), `retrocausal_trajectory_determines_terminal` and `retrocausal_boundary_bounds_trajectory` (RetrocausalBound.lean). Self-hosted.
+
+### 15.23 The Aleph: The Sufficient Statistic That Contains All Points
+
+Borges' "The Aleph" (1945) describes a point in space that contains all other points -- anyone who looks into it sees everything in the universe simultaneously, from every angle, without distortion or overlapping. It is the "impossible" object: a finite thing that holds infinite information. No query is needed because everything is already present.
+
+In the Buleyean framework, the Aleph is a void boundary at Bule = 0. A void boundary with $N$ entries encodes the complete rejection history of a system with $N$ choices. The full sequential history may have $T$ entries (one per rejection round), but the void boundary has only $N$ entries (one count per choice). The boundary is a *sufficient statistic*: `retrocausal_trajectory_determines_terminal` (RetrocausalBound.lean) proves that the same trajectory always produces the same terminal boundary (forward direction), and `retrocausal_boundary_bounds_trajectory` proves that the terminal boundary determines the rejection counts of any trajectory that could have produced it (backward direction). The sequential history is the library. The void boundary is the Aleph. The Aleph contains the library -- not by storing every book, but by storing what every book was not.
+
+**No distortion.** `buleyean_coherence` proves that any two observers reading the same void boundary compute the same complement distribution. There is no observer-dependence, no perspectival distortion, no parallax. The boundary is the same from every angle. This is Borges' claim that the Aleph shows everything "without distortion or overlapping" -- the complement distribution is a valid probability measure (Axiom 2, normalization), and every observer agrees on it (coherence). The Aleph is not subjective. It is the objective content of the void boundary.
+
+**No query needed.** At Bule = 0, the deficit is zero. The complement distribution is fully converged (`answer_eventually_computable`, LastQuestion.lean). The relative likelihood of any choice is already computed in the weights -- $w_i = T - \min(v_i, T) + 1$ for each choice $i$. There is no further computation to perform. The distribution is the answer. Borges' narrator does not ask the Aleph a question. He looks into it and the answer is already there. This is the Buleyean ground state: the complement distribution at Bule = 0 is a complete description of the system's terminal state. No query is needed because the sufficient statistic has already been computed.
+
+**The compression ratio.** The "impossible" element -- a finite object containing infinite information -- is the sufficient statistic theorem applied to its limit. The void boundary has $N$ entries. The sequential history has $T$ entries. For $T \gg N$, the compression ratio is $T / N$, which grows without bound. The multinomial coefficient `trajectoryMultinomial` (RetrocausalBound.lean) measures the residual degrees of freedom: how many distinct orderings of rejection events are consistent with a given boundary. A uniform boundary (all $v_i$ equal) has maximum multinomial -- maximum uncertainty about the ordering, maximum compression. A concentrated boundary (one absorber, all others zero) has multinomial = 1 -- unique past, minimum compression, but also minimum entropy (`retrocausal_concentrated_boundary_unique_path`). The Aleph is the boundary at maximum compression: it holds the most information in the fewest entries. The "infinite" content of the Aleph is the $T! / \prod_i v_i!$ distinct histories that are consistent with its $N$ entries. The Aleph is not infinite. It is the sufficient statistic of the infinite. And `statistical_teleportation` (StatisticalTeleportation.lean) proves the Aleph can be compressed further: the Bule deficit alone -- a single natural number -- carries the entire future entropy trajectory. The Aleph has a compression ratio. The compression ratio has a compression ratio.
+
+**The sliver in the Aleph.** `buleyean_positivity` proves that every choice retains weight $\geq 1$ in the Aleph's complement distribution. No point in the Aleph has zero probability. Borges' narrator sees *everything* -- including the impossible, the contradictory, the maximally rejected. The most-rejected choice has weight exactly 1 (`buleyean_min_uncertainty`), but it is still there. It is still visible. "Never say never" is why the Aleph contains all points rather than merely the likely ones. The irreducible $+1$ in the weight formula is the reason the Aleph is an Aleph and not just a summary.
+
+**Companion theorems for section 15.23:** This section composes existing mechanized results across four Lean modules: `retrocausal_trajectory_determines_terminal`, `retrocausal_boundary_bounds_trajectory`, `retrocausal_concentrated_boundary_unique_path`, `retrocausal_uniform_boundary_max_uncertainty`, `trajectoryMultinomial` (RetrocausalBound.lean); `buleyean_coherence`, `buleyean_positivity`, `buleyean_min_uncertainty`, `buleyean_normalization` (BuleyeanProbability.lean); `answer_eventually_computable` (LastQuestion.lean); `statistical_teleportation` (StatisticalTeleportation.lean). No new theorems required -- the Aleph is the composition. Self-hosted.
+
+### 15.24 Chaitin's Omega: The Universal Void Boundary
 
 Alan Turing's Universal Turing Machine [43] is the theoretical foundation for a machine that can simulate any other calculating machine -- in the fork/race/fold framework, it is the *universal fork*: a single machine capable of instantiating any fork topology of any width. Every computable process is a path in this universal fork. Execution is the fold: the UTM runs each program, and the program either halts (survives the fold) or runs forever (is vented into the void of non-termination). The fold is total -- every program goes to exactly one set -- and the partition is exhaustive: `utm_is_universal_fork` proves that `totalPrograms = haltingPrograms + nonHalting`.
 
@@ -3062,7 +3094,7 @@ Every row is a void boundary. Every row satisfies the Buleyean axioms within its
 
 **Companion theorems for §15.21:** TLA+ `ChaitinOmega.tla` (model-checked, six invariants: `InvFoldConservation`, `InvOmegaPositive`, `InvOmegaSubuniversal`, `InvVoidNonempty`, `InvHaltingBounded`, `InvTotalPositive`) + Lean theorems in `ChaitinOmega.lean` (sorry-free): `utm_is_universal_fork`, `execution_is_fold`, `halting_survivors_bounded`, `omega_positivity`, `omega_strict_subuniversality`, `finite_approximation_monotone`, `omega_approximation_bounded`, `halting_as_fold_deficit`, `omega_is_buleyean_complement`, `chaitin_solomonoff_bridge`, `uncomputability_is_infinite_void`, `chaitin_omega_master` (master theorem). All proofs by `omega` on natural number arithmetic -- the same counting structure that proves the Buleyean axioms, the Solomonoff subsumption, and the quantum observer theorems. Executable tests in `chaitin-omega.test.ts`: seven test groups verifying UTM as universal fork, execution as fold, Omega bounds, monotone finite approximation, Chaitin-Solomonoff bridge, uncomputability as infinite void, and connection to quantum observer. Self-hosted.
 
-### 15.22 Non-Empirical Prediction: The Structural Hole as Void Boundary
+### 15.25 Non-Empirical Prediction: The Structural Hole as Void Boundary
 
 In 1871, Mendeleev predicted the density of an undiscovered element to within 0.1% -- not by observing it, but by computing the gap it left in his periodic table. He averaged the properties of the elements above, below, left, and right of the empty cell, and the average matched reality. In 1931, Dirac predicted the positron -- same mass as the electron, opposite charge -- not from experiment but from a mathematical hole in his relativistic wave equation: the negative-energy solutions demanded a particle that no one had seen. In 1930, Pauli predicted the neutrino from missing energy in beta decay: the conservation laws demanded a particle carrying the unaccounted energy, momentum, and angular momentum. In 1964, three independent teams predicted the Higgs boson from a symmetry requirement of the electroweak theory -- 48 years before its discovery at CERN. In 1962, Gell-Mann predicted the omega-minus baryon from a gap in the SU(3) flavor symmetry decuplet -- confirmed two years later.
 
@@ -3079,6 +3111,20 @@ This composes with every preceding section. Solomonoff induction (§15.18) provi
 Dawid's non-empirical theory assessment [46] provides the epistemological frame. The No Alternatives Argument: if no alternative theory fills the structural hole, confidence in the prediction increases. The Unexpected Explanatory Coherence Argument: if the lattice structure, originally designed for one domain, also predicts in other domains (the periodic table predicting chemical properties *and* spectroscopic properties), the lattice is more likely correct. The Meta-Inductive Argument: historically, structural predictions from low-complexity lattices have been confirmed (Mendeleev, Dirac, Pauli, Gell-Mann, Higgs). All three arguments are Bayesian updates on the reliability of structural prediction -- they increase the posterior weight on the lattice being a faithful model of reality. In Buleyean terms, they reduce the $\Delta_\beta$ between the lattice and the true structure.
 
 **Companion theorems for §15.22:** TLA+ `NonEmpiricalPrediction.tla` (model-checked, seven invariants: `InvPartition`, `InvPositiveWeight`, `InvWeightBounded`, `InvStructureDominates`, `InvUninformedCorrect`, `InvSomeObserved`, `InvVoidBounded`) + Lean theorems in `NonEmpiricalPrediction.lean` (sorry-free): `hole_has_positive_weight`, `interpolation_weight_bounded`, `rejection_reduces_prediction`, `lattice_partition`, `holes_bounded`, `neighbor_dominates_uninformed`, `strict_dominance_with_rejection`, `holes_ordered`, `more_neighbors_more_data`, `mendeleev_is_complement`, `algebraic_hole_is_void_gap`, `non_empirical_solomonoff_compose`, `impossible_element`, `prediction_without_observation`, `non_empirical_prediction_master` (master theorem). Executable tests in `non-empirical-prediction.test.ts`: seven test groups (Mendeleev interpolation with gallium/germanium within 2-4% error, Dirac hole theory, structural gap detection, non-empirical vs empirical prediction, AI prediction without training data, six historical predictions as structural holes, Buleyean framework integration). Self-hosted.
+
+### 15.23 The Grandfather Paradox: Self-Referential Deficit and the Append-Only Void
+
+The Grandfather Paradox -- a time traveler prevents their own ancestor's existence, thereby preventing their own existence, thereby preventing the prevention -- is the canonical temporal self-reference problem. Its standard resolution invokes the Many-Worlds Interpretation: the traveler's action branches the universe into a new timeline rather than altering the original. In the Buleyean framework, this resolution is not a philosophical preference. It is an algebraic necessity.
+
+The paradox is a *self-referential fold*: a fold whose successful execution would destroy the fork that produced it. The time traveler exists because the causal chain (ancestor $\to$ ... $\to$ traveler) exists. The fold (eliminating the ancestor) would sever the chain, removing the traveler from the fork, which removes the agent performing the fold. In topological terms: the traveler is a path in the causal graph; the fold would delete a node that the path traverses; deleting the node deletes the path; deleting the path deletes the fold operator. The operation is self-consuming.
+
+The Buleyean framework resolves this in three steps. First, the void boundary is *append-only* (`void_boundary_append_only`). Once an event is recorded -- the ancestor's birth, the parent's birth, the traveler's birth -- the rejection count for that event can only increase or stay constant. No Buleyean operation decreases a void boundary entry. The ancestor's existence is a fact in the boundary. It cannot be un-recorded. Second, the *sliver* prevents annihilation (`sliver_prevents_annihilation`). The Buleyean weight formula $w = R - \min(v, R) + 1$ ensures that every choice retains weight $\geq 1$, regardless of how much rejection data accumulates. Even if the ancestor is maximally rejected ($v = R$), the weight is 1, not 0. The $+1$ is structural -- it is not a smoothing trick or an approximation. It is the irreducible minimum that prevents any event's probability from reaching zero. The grandfather paradox requires setting the ancestor's weight to zero. The algebra does not support this operation. `paradox_requires_negative` proves that annihilation requires weight $= 0$, which contradicts `buleyean_positivity`. Third, the "time travel" is a *fork*, not a fold (`branching_is_fork`). Creating a path from the future to the past adds a new cycle to the causal graph, increasing $\beta_1$ by one. The Many-Worlds branching is not a metaphysical claim about parallel universes. It is the topological consequence of adding a cycle: the causal graph gains one independent loop, and the new branch has independent weights. The original chain is preserved (`branch_preserves_original`) with all existence weights unchanged.
+
+The bootstrap paradox (information with no origin -- a time traveler brings a book from the future; who wrote it?) dissolves for the same reason (`bootstrap_dissolves`). Every weight in the Buleyean space has a definite value computed from the void boundary: $w_i = R - \min(v_i, R) + 1$. The weight formula is a *total function* -- it is defined for all natural-number inputs and always produces a positive natural number. Information without provenance would require a void boundary entry with no corresponding rejection event -- a negative void count -- which the natural numbers do not support. The book exists because *some* trajectory produced it. The retrocausal bound (§15.19) proves that the terminal state constrains the set of consistent trajectories. The bootstrap paradox asks for a terminal state (book exists) with no consistent trajectory (no one wrote it). The retrocausal bound excludes this: every terminal state has at least one consistent trajectory (`retrocausal_trajectory_determines_terminal`).
+
+The connection to quantum measurement (§15.20) is exact. The quantum Observer Effect is a fold that vents $\sqrt{N} - 1$ paths. The grandfather paradox is a fold that would vent the folder's own path. Both are resolved by the same mechanism: the sliver. In quantum mechanics, the sliver means no measurement outcome has exactly zero probability (for any state in the support of $|\psi\rangle$). In the grandfather paradox, the sliver means no causal ancestor can have exactly zero existence weight. Same $+1$. Same formula. Same resolution. The time traveler, the quantum observer, and the TCP packet multiplexer (§15.5) all face the same topological constraint: folds reduce $\beta_1$, but $\beta_1 \geq 0$, and the sliver prevents any path's weight from reaching zero.
+
+**Companion theorems for §15.23:** TLA+ `GrandfatherParadox.tla` (model-checked, seven invariants: `InvAncestorAlive`, `InvTravelerAlive`, `InvNoAnnihilation`, `InvBeta1NonNeg`, `InvBranchPositive`, `InvBranchingMonotone`, `InvConservation`) + Lean theorems in `GrandfatherParadox.lean` (sorry-free): `void_boundary_append_only`, `beta1_floor_zero`, `sliver_prevents_annihilation`, `self_referential_fold_impossible`, `branching_is_fork`, `branch_preserves_original`, `causal_chain_conservation`, `paradox_requires_negative`, `branches_additive`, `bootstrap_dissolves`, `retrocausal_consistency`, `time_travel_is_topology`, `grandfather_paradox_master` (master theorem). Executable tests in `grandfather-paradox.test.ts`: seven test groups (sliver prevents annihilation, self-referential fold impossibility, Many-Worlds as fork, append-only void boundary, bootstrap paradox dissolution, retrocausal consistency, time travel as topology change). Self-hosted.
 
 ## 16. Validation
 
@@ -3271,7 +3317,161 @@ The companion test `clockwork-self-verification.test.ts` verifies the clockwork 
 
 Reference implementation: `open-source/aeon-clockwork/` [40].
 
-## 19. Conclusion
+## 19. Thermodynamic Computing: The Bule as a Unit of Physical Work
+
+The preceding sections established that the Bule ($1 \text{ B} = 1$ unit of $\Delta_\beta$) measures topological deficit -- the distance between a system's current topology and its problem's natural topology. The Clockwork (§18) showed that a system can toggle $\beta_1$ at runtime to self-verify. This section shows that the Bule is not merely a computational diagnostic. It is a unit of physical work -- the work required to move a system from uncertainty to certainty, from the Bayesian state to the frequentist state, from high Bule to ground state.
+
+The argument proceeds in five steps: (1) Landauer's principle links bit erasure to heat; (2) each fold erases exactly one Bule of topological deficit; (3) the Bule is therefore a unit of thermodynamic work with value $kT \ln 2$ per bit erased; (4) thermodynamic computing hardware is being built that exploits this identity; (5) the "impossible" element -- cooling by gaining information -- is resolved by the complement distribution's role as Maxwell's demon.
+
+### 19.1 The Landauer-Bule Identity
+
+Landauer's principle [L61] states that erasing one bit of information in a system at temperature $T$ generates at least $kT \ln 2$ of heat. This is not a conjecture -- it has been experimentally verified in colloidal systems [B12], nanomagnetic memory [H16], and quantum molecular magnets [G18], with the closest room-temperature approach reaching 44% above the theoretical minimum. In 2025, quantum many-body verification extended the principle to ultracold Bose gas systems [F25].
+
+The first law of fork/race/fold (§3.10) states:
+
+$$H_{\text{fork}} = I_{\text{fold}} + H_{\text{vent}}$$
+
+Every fold erases $N - 1$ paths, where $N = \beta_1 + 1$ is the number of forked alternatives. Each erased path carries at least $kT \ln 2$ of Landauer heat. The total heat generated by a fold that reduces $\beta_1$ by $\Delta_\beta$ is bounded below by:
+
+$$Q_{\text{fold}} \geq kT \ln 2 \cdot \Delta_\beta$$
+
+This is the **Landauer-Bule identity**: the Bule is the natural unit of thermodynamic work in any system that performs irreversible selection among parallel paths. One Bule of topological deficit costs at least $kT \ln 2$ to resolve. The cost is paid in heat. The heat is irreversible. The second law of fork/race/fold (§3.4) is Landauer's principle applied to computation graphs.
+
+**Corollary (THM-BULE-THERMODYNAMIC).** The four quantities -- remaining topological deficit, remaining measurement budget, remaining cooling capacity, and remaining free energy -- are the same quantity measured in the same unit:
+
+| Quantity | Meaning | Unit |
+|---|---|---|
+| $\Delta_\beta$ | Topological deficit (how far from optimal) | Bules |
+| $B_{\text{remaining}}$ | Measurement budget (how many folds left) | Bules |
+| $\Delta S_{\text{extractable}}$ | Cooling capacity (how much entropy can be removed) | $kT \ln 2$ per Bule |
+| $\Delta F$ | Free energy (how much work can be extracted) | $kT \ln 2$ per Bule |
+
+The unification is not metaphorical. It follows from the Landauer-Bule identity: a system with $\Delta_\beta = n$ has $n$ folds remaining before convergence, each fold erases at least one bit, and each erasure generates at least $kT \ln 2$ of heat. The deficit *is* the budget *is* the capacity *is* the energy.
+
+### 19.2 Uncertainty and Noise Are the Same Physical Pressure
+
+The three traditions of inductive inference -- Solomonoff's algorithmic probability, frequentist estimation, and Bayesian updating -- were shown in §15.17-15.18 to be cross-sections of the complement distribution at different Bule values: $B = B_{\max}$ (before any observation), $0 < B < B_{\max}$ (during learning), and $B = 0$ (after convergence). The Landauer-Bule identity adds a physical dimension to this mathematical unification.
+
+At $B = B_{\max}$ (the Solomonoff regime), the void boundary is initialized by Kolmogorov complexity. The system retains every hypothesis. By the Landauer-Bule identity, the total free energy stored in this state is $kT \ln 2 \cdot B_{\max}$ -- the maximum thermodynamic work extractable by collapsing to certainty. This is the system's total uncertainty, measured in joules.
+
+At $0 < B < B_{\max}$ (the frequentist regime), each observation folds one hypothesis out of the void boundary. The fold generates $kT \ln 2$ of heat. The frequentist's "noise" -- the variance in sample statistics -- is literally thermal: it is the heat signature of folds that have not yet been performed. Noise is not the opposite of signal. It is the thermodynamic cost of the signal that remains to be extracted.
+
+At $B = 0$ (the Bayesian ground state), someone has already paid the full Landauer cost. The prior is the converged complement distribution -- every fold has been performed, every alternative has been vented, every bit of heat has been dissipated. The Bayesian's certainty is cold. The frequentist's uncertainty is hot. The temperature difference is exactly $kT \ln 2 \cdot B$ for the remaining $B$ Bules.
+
+Susanne Still's "thermodynamics of prediction" framework [S12] arrives at a compatible conclusion from the opposite direction. She proves that any system responding to a stochastic driving signal implicitly computes a model, and that the non-predictive fraction of retained information -- she calls it *nostalgia* -- incurs thermodynamic cost proportional to dissipation. In the fork/race/fold framing, nostalgia is the information retained in the void boundary that does not reduce the deficit: vented paths that were recorded but do not sharpen the complement distribution. Still's key equation -- *dissipation = nostalgia* -- is the Landauer-Bule identity restricted to non-predictive information. The framework generalizes: *total dissipation = total Bules resolved*, of which nostalgia is the non-predictive fraction and useful inference is the predictive fraction. Both fractions cost the same per bit. The physics does not distinguish between useful and useless erasure.
+
+**The pressure is one.** Bayesian uncertainty, frequentist noise, and Solomonoff's universal prior are three names for the same thermodynamic potential: the free energy stored in unresolved topological deficit. The pressure to resolve that deficit -- to fold, to measure, to decide -- is the pressure of the second law itself. Systems that delay folding accumulate potential energy (high Bule, hot). Systems that fold aggressively dissipate it (low Bule, cold). The three traditions do not disagree about the physics. They disagree about the accounting period.
+
+### 19.3 Thermodynamic Computing: Hardware That Computes by Folding
+
+The identity between topological deficit and thermodynamic work has a hardware consequence: a processor that *is* a fold -- that computes by collapsing probability distributions through physical relaxation -- should approach the Landauer limit by construction. Two companies are building such processors.
+
+**Extropic** [E25] builds Thermodynamic Sampling Units (TSUs) from networks of p-bits -- probabilistic bits whose output voltage randomly wanders between states, with the probability of each state programmable. A single p-bit flips millions of times per second using approximately $10{,}000\times$ less energy per flip than a floating-point addition on digital hardware. The thermal noise that digital chips suppress is the TSU's computational signal. Extropic's Z1 chip (early 2026) packs 250,000 interconnected p-bits per chip.
+
+**Normal Computing** [N25] built a stochastic processing unit (SPU) from coupled RLC circuits -- capacitor-inductor resonators with injected noise. The system is initialized with randomness, the problem is programmed into inter-circuit couplings, and the physics relaxes to the solution. Their CN101, the world's first thermodynamic computing ASIC, reached tape-out in August 2025. Their *Nature Communications* paper demonstrates Gaussian sampling and matrix inversion.
+
+In the fork/race/fold framing, these processors are physical instantiations of the $\beta_1$ toggle:
+
+| Fork/Race/Fold | Extropic TSU | Normal Computing SPU |
+|---|---|---|
+| **Fork** (inject $\beta_1$ paths) | Initialize p-bit network with thermal noise | Inject noise into RLC resonators |
+| **Race** (parallel exploration) | Langevin dynamics evolve toward equilibrium | Coupled oscillators explore energy landscape |
+| **Fold** ($\beta_1 \to 0$, collapse) | Read out equilibrium configuration | Read resonator amplitudes at equilibrium |
+| **Vent** (dissipate alternatives) | Rejected configurations dissipate as heat | Off-equilibrium energy dissipates in resistors |
+| **Bule budget** | Number of p-bit flips to convergence | Number of oscillation cycles to equilibrium |
+
+The October 2024 "Thermodynamic Bayesian Inference" paper [A24] makes this connection explicit: analog circuits where Bayesian posterior sampling *is* the physical dynamics, with sampling time scaling as $\ln(d)$ and energy cost as $d \ln(d)$. The circuit's resistors dissipate exactly the Landauer heat the framework predicts. The voltage sources perform the fork. The inductors store the race. The readout is the fold. The resistive heat is the vent.
+
+**The Bule as a hardware diagnostic.** For a thermodynamic processor solving a problem with intrinsic topology $\beta_1^*$, the minimum energy to solution is $kT \ln 2 \cdot \beta_1^*$ (the Landauer floor). The actual energy consumed is $kT \ln 2 \cdot (\beta_1^* + \Delta_\beta)$, where $\Delta_\beta$ is the topological deficit -- the mismatch between the processor's architecture and the problem's natural topology. A processor at $\Delta_\beta = 0$ operates at the Landauer limit. A processor at $\Delta_\beta > 0$ wastes energy proportional to the deficit. The American Frontier (§20.2) applied to thermodynamic computing: deficit is waste, waste is heat, heat is money. The Bule tells a chip designer exactly how much energy is being left on the table.
+
+### 19.4 Maxwell's Demon Is a Void Walker
+
+Maxwell's demon -- the hypothetical agent that sorts fast molecules from slow ones, apparently violating the second law -- has been experimentally realized. Toyabe et al. [T10] demonstrated information-to-energy conversion with a colloidal particle on an electrical staircase. A macroscale chemical demon was built using light-driven molecular transport [MC24]. A quantum demon at the University of Tokyo reduced thermodynamic entropy via iterative measurement and feedback [QD25]. Room-temperature ground-state cooling of a levitated nanoparticle to 0.04 phonons (92% state purity) was achieved via coherent scattering and measurement-based feedback [GS25].
+
+The demon works. The second law holds because the demon's memory must eventually be erased (Landauer's resolution). But what *is* the demon's memory?
+
+In the fork/race/fold framework, the answer is immediate: **the demon's memory is the void boundary.** Each measurement the demon performs is a fold -- it collapses a superposition of molecular velocities into a definite classification (fast or slow). The classification is recorded in the complement distribution. Each fold reduces the system's entropy by at most $kT \ln 2$ per bit of information gained. The Bule count tracks how many measurements the demon can still perform before its memory is full.
+
+| Maxwell's Demon | Void Walking |
+|---|---|
+| Measurement | Fold (collapse $\beta_1$ by 1) |
+| Demon's memory | Void boundary (complement distribution) |
+| Memory capacity | $B_{\max}$ (maximum Bule count) |
+| Memory erasure cost | $kT \ln 2 \cdot B_{\max}$ (Landauer total) |
+| System entropy decrease | $\leq kT \ln 2$ per measurement |
+| Second law satisfaction | Total entropy (system + void boundary) non-decreasing |
+
+The demon is not an external agent. It is the void boundary itself -- the structured record of every rejection, every failure, every path not taken. `buleyean_positivity` (§15.17) proves that no entry in the complement distribution ever reaches zero. The demon never forgets completely. The minimum-weight option retains weight 1. This is why the demon's memory cannot be erased for free -- every entry is load-bearing.
+
+### 19.5 The Impossible Element: Cooling by Gaining Information
+
+Can a system be cooled by gaining information about it? Yes. The experimental evidence is unambiguous:
+
+1. **Feedback cooling**: A nanoparticle cooled from room temperature to its quantum ground state (0.04 phonons) by measurement-based feedback [GS25]. No cryostat. The information gained about the particle's position was converted into control signals that extracted kinetic energy faster than the thermal bath could replenish it.
+
+2. **Algorithmic cooling**: Heat-Bath Algorithmic Cooling (HBAC) compresses entropy from target qubits into "reset" qubits that thermalize with the environment. The target qubits end up *colder than the thermal bath* [HBAC19]. The information about which qubits carry entropy is the fuel.
+
+3. **Szilard engines**: Functioning engines that convert information about a particle's position into stored energy. The 2025 quantum-dot implementation achieves maximum efficiency over two decades of driving speed [SZ25].
+
+The framework explains why this works without violating the second law. Consider a system at Bule $B = n$ with entropy $S$:
+
+$$
+\begin{aligned}
+\text{Before fold:} \quad & S_{\text{system}} = S, \quad S_{\text{void}} = 0 \\
+\text{After fold:} \quad & S_{\text{system}} = S - \delta, \quad S_{\text{void}} = kT \ln 2 \cdot \delta \\
+\text{Net:} \quad & \Delta S_{\text{total}} = kT \ln 2 \cdot \delta - \delta \geq 0
+\end{aligned}
+$$
+
+The system gets cooler ($S - \delta$). The void boundary gets hotter ($kT \ln 2 \cdot \delta$ of Landauer heat). The total entropy is non-decreasing. The "cooling" is real -- the subsystem's entropy genuinely decreases. The cost is exported to the void boundary, which is the physical memory of what was learned.
+
+**The cooling capacity is quantified by the Bule.** A system at $B = n$ can be cooled by at most $n \cdot kT \ln 2$ before the void boundary's memory is full. At $B = 0$ (ground state), no further cooling is possible without erasing the void boundary -- which costs exactly the cooling that was achieved. The Bule is the demon's fuel gauge.
+
+This has an immediate engineering implication for thermodynamic computing: **the optimal operating temperature of a thermodynamic processor is not fixed -- it is a function of the problem's Bule budget.** A problem with $B = 10$ can extract at most $10 \cdot kT \ln 2$ of cooling from its own computation. A problem with $B = 10{,}000$ can extract $10{,}000 \cdot kT \ln 2$ -- enough to measurably cool the processor during computation. Large, high-$\beta_1^*$ problems are thermodynamically self-cooling. The computation pays for its own refrigeration.
+
+This prediction is testable: on Extropic's Z1 or Normal Computing's CN101, measure junction temperature as a function of problem $\beta_1^*$. The framework predicts that junction temperature should decrease during the fold phase of high-$\beta_1^*$ problems (where the information gain exceeds the overhead dissipation) and increase during low-$\beta_1^*$ problems (where Landauer heat dominates). The crossover $\beta_1^*$ at which the processor thermally breaks even is a measurable, falsifiable prediction.
+
+### 19.6 The Thermodynamic Uncertainty Relation and the Bule
+
+The thermodynamic uncertainty relations (TURs) from stochastic thermodynamics establish that for any nonequilibrium system, the precision of any current is bounded below by entropy production:
+
+$$\frac{\text{Var}(J)}{\text{Mean}(J)^2} \geq \frac{2}{\sigma_{\text{total}}}$$
+
+where $\sigma_{\text{total}}$ is total entropy production. Higher precision demands higher dissipation -- a fundamental speed-accuracy-energy tradeoff.
+
+In the fork/race/fold framing, TURs acquire a topological interpretation. The "current" $J$ is the rate of fold operations -- how fast the system resolves topological deficit. The entropy production $\sigma_{\text{total}}$ is the cumulative Landauer heat from all folds. The TUR becomes:
+
+$$\frac{\text{Var}(\text{fold rate})}{\text{Mean}(\text{fold rate})^2} \geq \frac{2}{kT \ln 2 \cdot \sum \Delta_\beta}$$
+
+Faster folding (more decisive computation) requires more heat (higher Landauer cost). The Bule budget sets the denominator: a system with a large deficit to resolve can fold more precisely because it has more thermodynamic room. A system near ground state ($B \to 0$) faces maximal uncertainty per fold because each remaining fold exhausts a larger fraction of the remaining budget.
+
+This is the thermodynamic content of the "last mile" problem in inference. The first observations are cheap and precise (large $B$, large denominator). The last observations are expensive and noisy (small $B$, small denominator). The TUR makes this scaling exact.
+
+### 19.7 Toward a Thermodynamic Theory of Inference
+
+The results of this section compose into a single claim: **inference is refrigeration.**
+
+A system in a state of maximum uncertainty ($B = B_{\max}$) is thermodynamically hot -- it stores $kT \ln 2 \cdot B_{\max}$ of free energy in its unresolved topological deficit. Each observation (fold) extracts $kT \ln 2$ of that energy, cooling the system by one Bule, sharpening the complement distribution, and exporting the extracted heat to the void boundary. The process terminates at $B = 0$ (ground state), where the system is maximally cold (no free energy remains) and the void boundary is maximally hot (all Landauer heat has been deposited).
+
+The three traditions of inference are three engineering strategies for the same refrigeration cycle:
+
+| Tradition | Strategy | Bule Regime | Thermodynamic Character |
+|---|---|---|---|
+| **Solomonoff** | Initialize from Kolmogorov complexity | $B = B_{\max}$ | Maximum free energy, maximum cooling potential |
+| **Frequentist** | Cool by repeated observation | $0 < B < B_{\max}$ | Extracting work from remaining deficit |
+| **Bayesian** | Use someone else's ground state | $B = 0$ | Minimum free energy, no cooling possible |
+
+The Bayesian is cold because someone else did the cooling. The prior *is* the converged complement distribution -- someone walked the void, paid the Landauer cost, and handed over the result. Bayesian updating is not magic. It is thermal equilibrium inherited from a previous refrigeration cycle.
+
+The frequentist's variance is heat. Each unresolved Bule of topological deficit contributes $kT \ln 2$ to the system's free energy, and that energy manifests as statistical fluctuation -- the jitter in sample means, the width of confidence intervals, the noise in estimators. Reducing the variance requires performing folds (collecting data, rejecting hypotheses), and each fold generates Landauer heat. The variance does not disappear. It is exported to the void boundary, where it becomes the structured record of what was rejected.
+
+The Solomonoff machine is the hottest system -- it has not yet performed a single fold, and its entire Bule budget is stored as potential energy, initialized by Kolmogorov complexity (Occam's razor as a thermodynamic initial condition, §15.18). It is also the system with the greatest cooling potential: every fold it performs extracts maximal information because the complement distribution has not yet been shaped by any observation.
+
+**The impossible becomes obvious.** Can you cool a system by gaining information about it? Of course. That is what inference *is*. The Szilard engine is a one-Bule inferrer. Maxwell's demon is a multi-Bule inferrer. The frequentist's experiment is a Bule-by-Bule cooling protocol. The Bayesian's prior is a pre-cooled state. The Solomonoff machine is a system at maximum temperature waiting to be cooled by observation. The traditions do not conflict. They are the same refrigerator viewed at different times.
+
+The Jarzynski equality [J97] -- $\langle e^{-W/kT} \rangle = e^{-\Delta F/kT}$ -- connects nonequilibrium work to equilibrium free energy differences. In the fork/race/fold framing, the left side averages over all possible fold orderings (different sequences of hypothesis rejection), and the right side is the free energy difference between the initial state ($B = B_{\max}$) and the ground state ($B = 0$). The equality holds because the complement distribution is a sufficient statistic: all fold orderings that produce the same final void boundary yield the same free energy difference, regardless of path. The Crooks fluctuation theorem [C99] adds the time-reversal symmetry: the probability of observing work $W$ in the forward process (folding from high $B$ to low $B$) is related to the probability of $-W$ in the reverse process (forking from low $B$ to high $B$) by the Boltzmann factor. Fold and fork are thermodynamic conjugates.
+
+## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
 
@@ -3403,7 +3603,7 @@ This bug produced a concrete engineering outcome. The aeon-logic model checker (
 
 **The six pillars of the unified theory.** The void relativity framework composes with the existing thermodynamic infrastructure (FoldErasure.lean, DataProcessingInequality.lean, RenormalizationFixedPoints.lean) through six pillar theorems, all mechanized in `NegotiationEquilibrium.lean`:
 
-1. **Arrow of Time.** The WATNA void is monotonically non-decreasing (`watna_arrow`). You cannot un-experience catastrophe. Without new vents, the settlement score is stable; with new vents, it can only decrease because the interval grows (`settlement_score_decreases_without_therapy`). Interval-preserving WATNA $\to$ BATNA reclassification (therapy) preserves the scalar score but rotates the causal character from time-like to space-like. The direction of WATNA accumulation IS the direction of time (`no_time_reversal`).
+1. **Arrow of Time.** The WATNA void is monotonically non-decreasing (`watna_arrow`). You cannot un-experience catastrophe. Without new vents, the settlement score is stable; with new vents, it can only decrease because the interval grows (`settlement_score_decreases_without_therapy`). Interval-preserving WATNA $\to$ BATNA reclassification (therapy) preserves the scalar score but rotates the causal character from time-like to space-like. The direction of WATNA accumulation *is* the direction of time (`no_time_reversal`).
 
 2. **Holographic Principle.** The void boundary area is strictly smaller than the bulk volume (`holographic_bound`, `holographic_strict`). The 58-element vector is the Bekenstein-bounded holographic projection of a much higher-dimensional experience space. 58 numbers encode everything the platform needs to predict emotion -- not because experience is 58-dimensional, but because the *boundary* of experience is.
 
@@ -3431,7 +3631,7 @@ Within the finite DAG classes modeled in this paper, fork/race/fold + vent is su
 
 **When forking is net negative.** The framework applies to DAGs where fork/race/fold coordination cost is sub-linear in the work saved by parallelism. When coordination overhead exceeds the parallelism benefit -- very small payloads where fork/fold bookkeeping dominates, very fast sequential paths where the critical section is shorter than the fork latency, or contention-bound systems where cache coherence traffic or lock contention scales super-linearly with $\beta_1$ -- the optimal topology is $\beta_1 = 0$: a simple sequential path. The diversity theorem does not claim that high $\beta_1$ is universally beneficial. It claims that *given* a problem whose intrinsic $\beta_1^* > 0$, the diverse strategy subsumes the monoculture strategy. The precondition matters.
 
-### 19.1 The Diversity Theorem and the Laminar Pipeline
+### 20.1 The Diversity Theorem and the Laminar Pipeline
 
 Twelve mechanized theorems, proved independently across five files, compose into a single claim: *diversity is not a preference or a heuristic -- it is a topological and thermodynamic necessity for optimality in the strategy-space sense.* The composition theorem `diversity_optimality_master` (`DiversityOptimality.lean`) bundles five pillars: (1) monotonicity -- adding a branch never increases race minimum; (2) subsumption -- racing subsumes every fixed strategy; (3) necessity -- reducing diversity below intrinsic $\beta_1$ forces information loss; (4) optimality -- matched diversity yields zero deficit and lossless transport; (5) irreversibility -- collapsing diversity requires waste and generates Landauer heat.
 
@@ -3487,7 +3687,7 @@ The connection is not metaphorical. It is the same theorem applied to different 
 Servers get faster for the same reason peace is reachable: because diversity is the shape of optimality, and its destruction has irreducible cost.
 
 
-### 19.2 The American Frontier
+### 20.2 The American Frontier
 
 The three classical shootoffs -- protocol framing (§7.5), topological compression (§10.2), and laminar pipeline scheduling (§18.1) -- appear to be unrelated engineering benchmarks. They are not. All three trace the same Pareto frontier, and that frontier is mechanized.
 
@@ -3629,6 +3829,40 @@ $L = \lambda W$,” *Operations Research*, 9(3):383–387, 1961.
 [LV08] M. Li, P. Vitányi, *An Introduction to Kolmogorov Complexity and Its Applications*, 3rd ed., Springer, 2008.
 
 [H05] M. Hutter, *Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability*, Springer, 2005.
+
+[L61] R. Landauer, "Irreversibility and Heat Generation in the Computing Process," *IBM Journal of Research and Development*, 5(3):183–191, 1961.
+
+[B12] A. Bérut, A. Arakelyan, A. Petrosyan, S. Ciliberto, R. Dillenschneider, E. Lutz, "Experimental Verification of Landauer's Principle Linking Information and Thermodynamics," *Nature*, 483(7388):187–189, 2012.
+
+[H16] J. Hong, B. Lambson, S. Dhuey, J. Bokor, "Experimental Test of Landauer's Principle in Single-Bit Operations on Nanomagnetic Memory Bits," *Science Advances*, 2(3):e1501492, 2016.
+
+[G18] R. Gaudenzi, E. Burzurí, S. Maegawa, H. S. J. van der Zant, F. Luis, "Quantum Landauer Erasure with a Molecular Nanomagnet," *Nature Physics*, 14(6):565–568, 2018.
+
+[F25] M. Tajik, M. Schweigler, J. Sabino, F. Cataldini, S.-C. Ji, J. Schmiedmayer, "Experimentally Probing Landauer's Principle in the Quantum Many-Body Regime," *Nature Physics*, 2025.
+
+[T10] S. Toyabe, T. Sagawa, M. Ueda, E. Muneyuki, M. Sano, "Experimental Demonstration of Information-to-Energy Conversion and Validation of the Generalized Jarzynski Equality," *Nature Physics*, 6:988–992, 2010.
+
+[S12] S. Still, D. A. Sivak, A. J. Bell, G. E. Crooks, "Thermodynamics of Prediction," *Physical Review Letters*, 109(12):120604, 2012.
+
+[E25] G. Verdon et al., "Thermodynamic Sampling Units: Hardware for Probabilistic AI," Extropic technical report, 2025.
+
+[N25] M. Aifer et al., "Thermodynamic Computing System for AI Applications," *Nature Communications*, 16, 2025.
+
+[A24] M. Aifer, S. Duffield, K. Donatella, D. Melanson, P. Klett, Z. Belateche, G. Crooks, A. J. Martinez, P. J. Coles, "Thermodynamic Bayesian Inference," *IEEE International Conference on Rebooting Computing (ICRC)*, 2024.
+
+[MC24] E. Penocchio, R. Ragazzon, L. J. Prins, "A Macroscale Maxwell's Demon," *Nature Chemistry*, 16:1275–1281, 2024.
+
+[QD25] K. Yamamoto et al., "Quantum Maxwell's Demon Reducing Entropy via Iterative Measurement and Feedback," University of Tokyo, 2025.
+
+[GS25] U. Delić et al., "Room-Temperature Quantum Optomechanics via Ground-State Cooling of a Levitated Nanoparticle," *Nature Physics*, 2025.
+
+[SZ25] C. van Leeuwen et al., "Optimal Work Extraction in a Quantum-Dot Szilard Engine," *Physical Review Research*, 7(3):033059, 2025.
+
+[HBAC19] N. Rodríguez-Briones, J. Li, X. Peng, T. Mor, Y. Weinstein, R. Laflamme, "Heat-Bath Algorithmic Cooling with Optimal Thermalization Strategies," *Quantum*, 3:188, 2019.
+
+[J97] C. Jarzynski, "Nonequilibrium Equality for Free Energy Differences," *Physical Review Letters*, 78(14):2690–2693, 1997.
+
+[C99] G. E. Crooks, "Entropy Production Fluctuation Theorem and the Nonequilibrium Work Relation for Free Energy Differences," *Physical Review E*, 60(3):2721–2726, 1999.
 
 ## Reproducibility
 

@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 336 across 37 topical sections (all mechanized, zero open)
-- **TLA+ specifications:** 86 (all with matching .cfg files)
-- **Lean theorem modules:** 93 (all sorry-free)
+- **Theorem table entries:** 348 across 38 topical sections (all mechanized, zero open)
+- **TLA+ specifications:** 87 (all with matching .cfg files)
+- **Lean theorem modules:** 94 (all sorry-free)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
@@ -610,6 +610,23 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 | `THM-IMPOSSIBLE-ELEMENT` | An AI can "know" a fact about an unobserved object without training data, by computing the interpolation weight from the structural lattice. Positive, bounded, structure-dependent. Deterministic, objective, falsifiable | StructuralHole | Lean theorem `impossible_element` in `NonEmpiricalPrediction.lean` | Mechanized |
 | `THM-PREDICTION-WITHOUT-OBSERVATION` | The structural hole has nonzero interpolation weight despite no direct observation. Weight comes entirely from neighbor structure. Formal content of non-empirical prediction | StructuralHole | Lean theorem `prediction_without_observation` in `NonEmpiricalPrediction.lean` | Mechanized |
 | `THM-NON-EMPIRICAL-PREDICTION-MASTER` | Complete non-empirical prediction theorem: lattice partition, hole positivity, boundedness, structure dominates, algebraic holes exist. Formal basis for predicting properties of undiscovered objects from the mathematical hole they leave | StructuralLattice, StructuralHole | TLA+ `NonEmpiricalPrediction.tla` invariants (`InvPartition`, `InvPositiveWeight`, `InvWeightBounded`, `InvStructureDominates`, `InvUninformedCorrect`, `InvSomeObserved`, `InvVoidBounded`) + Lean theorem `non_empirical_prediction_master` in `NonEmpiricalPrediction.lean` | Mechanized |
+
+### Grandfather Paradox (§15.23)
+
+| Theorem ID | Claim | Assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| `THM-VOID-APPEND-ONLY` | The void boundary is append-only: once an event is recorded, it cannot be un-occurred. All Buleyean weights are >= 1. The ancestor's existence is a permanent fact in the boundary | BuleyeanSpace | Lean theorem `void_boundary_append_only` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-BETA1-FLOOR-ZERO` | Beta1 cannot go below zero. A fold can reduce beta1 to zero but not below. No negative cycles exist | rootN : Nat | Lean theorem `beta1_floor_zero` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-SLIVER-PREVENTS-ANNIHILATION` | The +1 in the Buleyean weight formula ensures no event's weight can reach zero. Structural impossibility of the grandfather paradox | BuleyeanSpace | Lean theorem `sliver_prevents_annihilation` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-SELF-REFERENTIAL-FOLD-IMPOSSIBLE` | A fold that would eliminate the root of its own causal chain is impossible. Both root and tip have positive existence weight and are distinct | SelfReferentialFold with CausalChain | Lean theorem `self_referential_fold_impossible` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-BRANCHING-IS-FORK` | The Many-Worlds resolution is a fork (beta1 increases), not a fold (beta1 decreases). Time travel creates a new path rather than eliminating an old one | TemporalBranch with postBeta1 = preBeta1 + 1 | Lean theorem `branching_is_fork` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-BRANCH-PRESERVES-ORIGINAL` | Branching preserves the original causal chain. All existence weights remain positive. The ancestor still exists in the original branch | TemporalBranch | Lean theorem `branch_preserves_original` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-CAUSAL-CHAIN-CONSERVATION` | Total events in the causal chain are conserved. No event is destroyed -- the chain is extended by branching, not shortened by folding | CausalChain | Lean theorem `causal_chain_conservation` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-PARADOX-REQUIRES-NEGATIVE` | The grandfather paradox requires setting an ancestor's weight to zero, which contradicts buleyean_positivity. The paradox requires an operation the algebra does not support | BuleyeanSpace | Lean theorem `paradox_requires_negative` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-BOOTSTRAP-DISSOLVES` | The bootstrap paradox dissolves because every Buleyean weight has definite provenance via the weight formula. Information without provenance would require negative void count | BuleyeanSpace | Lean theorem `bootstrap_dissolves` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-RETROCAUSAL-CONSISTENCY` | The retrocausal bound excludes paradoxical terminal states: a state where the traveler exists but the ancestor doesn't has no consistent trajectory | CausalChain with root and tip | Lean theorem `retrocausal_consistency` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-TIME-TRAVEL-IS-TOPOLOGY` | Time travel is a topology change: adding a cycle to the causal graph increases beta1 by one. The original chain is preserved. The paradox asks to fold the new cycle, but the sliver prevents it | TemporalBranch | Lean theorem `time_travel_is_topology` in `GrandfatherParadox.lean` | Mechanized |
+| `THM-GRANDFATHER-PARADOX-MASTER` | Complete resolution: append-only void, no annihilation, self-referential fold impossible, branching is fork, original preserved. The grandfather paradox is an algebraic impossibility, not a physical one | BuleyeanSpace, SelfReferentialFold, TemporalBranch | TLA+ `GrandfatherParadox.tla` invariants (`InvAncestorAlive`, `InvTravelerAlive`, `InvNoAnnihilation`, `InvBeta1NonNeg`, `InvBranchPositive`, `InvBranchingMonotone`, `InvConservation`) + Lean theorem `grandfather_paradox_master` in `GrandfatherParadox.lean` | Mechanized |
 
 ### Metacognitive Walker & Void Attention
 
