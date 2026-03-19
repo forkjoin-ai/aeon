@@ -4897,6 +4897,22 @@ Five triple compositions threading LEDGER infrastructure modules -- not the Fish
 
 The two hundred ninety-one predictions (§19.8 through §19.65) now span one hundred thirty-two domains. All two hundred ninety-one chain mechanized theorems (Lean4 sorry-free). All two hundred ninety-one name their falsification conditions.
 
+### 19.66 Five Semiotic Triple Compositions: Confusion-Negotiation-Gradient, Arrow-Negotiation, War-Heat-Irreversibility, Arrow-Heat, BATNA-Append-Only
+
+Five new theorems from triples involving SemioticPeace, ArrowGodelConsciousness, and NegotiationEquilibrium -- modules never previously combined with each other or with VoidWalking/GrandfatherParadox. Mechanized in Lean4 (`SemioticTriples.lean`, sorry-free).
+
+**THM-NEGOTIATION-IS-DIALOGUE (SemioticPeace + NegotiationEquilibrium + VoidWalking).** Negotiation IS dialogue: the confusion deficit (total semantic dimensions $- 1$) drives rejections, and the void gradient steers concession toward less-confused terms. `negotiation_is_dialogue` proves both positive confusion deficit and positive concession weights simultaneously. Negotiations are hard not because people are irrational but because the semiotic channel has lower topology than the position spaces.
+
+**THM-ARROW-BOUNDS-NEGOTIATION (ArrowGodelConsciousness + NegotiationEquilibrium + BuleyeanProbability).** The Arrow deficit (opinions discarded in voting) is strictly less than the negotiation deficit (total confusion in multi-party bargaining). `arrow_bounds_negotiation` proves Arrow deficit $< $ negotiation deficit. `no_free_consensus` proves both are positive. Negotiation is strictly harder than voting because it has more dimensions of disagreement.
+
+**THM-WAR-HEAT-IRREVERSIBLE (SemioticPeace + GrandfatherParadox + BuleyeanProbability).** Cumulative war heat (Landauer heat from communication failures) is irreversible -- the grandfather paradox's append-only void boundary makes conflict permanent. `war_heat_irreversible` proves heat is monotone AND the sliver of hope persists: even in maximum conflict, peace retains positive Buleyean weight. `sliver_of_hope` proves no state ever reaches zero weight.
+
+**THM-ARROW-HEAT (ArrowGodelConsciousness + SemioticPeace + VoidWalking).** Voting with $\geq 3$ candidates and $\geq 2$ voters has positive semiotic deficit, which by Landauer generates positive thermodynamic heat. `arrow_heat` proves the deficit is positive for all nontrivial elections ($v \times c - 1 > 0$). Arrow's impossibility is the algebraic content; the heat is the thermodynamic cost of democratic decision-making.
+
+**THM-BATNA-APPEND-ONLY (NegotiationEquilibrium + GrandfatherParadox + VoidWalking).** The BATNA surface is append-only: rejected offers cannot be un-rejected. `batna_append_only` proves every term retains positive weight AND no weight can reach zero (the sliver prevents "writing off" any negotiation term). `rejection_history_monotone` proves more-rejected terms have lower weight. The grandfather paradox applied to negotiation: you cannot undo a rejection.
+
+**Companion theorems for §19.66:** Lean `SemioticTriples.lean` (sorry-free, 12 theorems including master), tests `semiotic-triples.test.ts` (13 tests). Self-hosted.
+
 ## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.

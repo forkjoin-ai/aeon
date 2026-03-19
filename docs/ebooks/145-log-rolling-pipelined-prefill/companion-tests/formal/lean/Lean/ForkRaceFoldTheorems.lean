@@ -83,3 +83,4 @@ import ForkRaceFoldTheorems.PredictionsRound14
 import ForkRaceFoldTheorems.NovelCompositions
 import ForkRaceFoldTheorems.DeepCompositions
 import ForkRaceFoldTheorems.QuantumCancerTriples
+import ForkRaceFoldTheorems.SemioticTriples
