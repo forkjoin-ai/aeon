@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 356 across 39 topical sections (all mechanized, zero open)
+- **Theorem table entries:** 362 across 40 topical sections (all mechanized, zero open)
 - **TLA+ specifications:** 87 (all with matching .cfg files)
-- **Lean theorem modules:** 95 (all sorry-free, includes CancerTopology.lean)
+- **Lean theorem modules:** 96 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
@@ -517,6 +517,19 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 | `THM-IMMUNE-CHECKPOINT-BRIDGE` | Checkpoint immunotherapy restores external vent β₁ > 0 even when all internal checkpoints are destroyed. Population-level therapeutic_restoration. | Immune vent (anti-PD-1, anti-CTLA-4) provides independent rejection mechanism. | Lean theorem `immune_restores_population_learning` in `CancerTopology.lean` + executable tests verify external vent reduces P(divide) | Mechanized |
 | `THM-GBM-SUBTYPE-ORDERING` | GBM subtypes ordered by deficit: Classical (2B) < Mesenchymal (3B) < Combined (7B). Higher deficit correlates with worse survival. | Pathway disruption data from Brennan et al., Cell 2013. β₁ values per pathway. | Lean theorems `gbm_classical_deficit`, `gbm_mesenchymal_deficit`, `gbm_combined_deficit`, `combined_more_aggressive_than_classical` in `CancerTopology.lean` + executable tests verify P(divide) ordering matches deficit ordering | Mechanized |
 | `THM-CANCER-MASTER` | Bundle: (1) Buleyean probability well-defined, (2) no failure = no learning, (3) deficit non-negative, (4) Combined > Classical, (5) Combined still has therapeutic target (β₁ = 2). | All prior assumptions compose. | Lean theorem `cancer_master_theorem` in `CancerTopology.lean` (0 sorry) | Mechanized |
+
+### Cancer Predictions (§19.9)
+
+*Five novel predictions from the cancer topology ledger: TMB-T, loss order, synthetic lethality, immunotherapy ratio, convergence bound.*
+
+| ID | Claim | Assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| `PRED-TMBT` | Topological Mutation Burden (TMB-T = Σ|Δσ|) discriminates tumors that raw TMB conflates. Two catalogs with same count but different severity have different TMB-T. | Mutations have computable σ(ℓ). Severity = |Δσ|. | Lean theorems `tmbt_discriminates_equal_tmb`, `disruptive_tumor_high_tmbt` in `CancerPredictions.lean` + executable `src/cancer-predictions.test.ts` (18 tests) | Mechanized |
+| `PRED-LOSS-ORDER` | Checkpoint loss ORDER produces different void boundaries. Earlier loss of high-β₁ pathway = fewer rejections accumulated = more aggressive trajectory. | Buleyean update is path-dependent. Rejections before loss = lossRound × β₁. | Lean theorems `earlier_loss_fewer_rejections`, `order_produces_different_boundaries` in `CancerPredictions.lean` + executable simulation confirms trajectory divergence | Mechanized |
+| `PRED-SYNTHETIC-LETHALITY` | Synthetic lethality is a topological phase transition: individual KO viable, combined KO crosses viability threshold. p53+Rb lethal at threshold 5B. Transition width = marginal gene β₁. | Viability threshold exists. Individual KO stays above, combined KO drops below. | Lean theorems `synthetic_lethality_is_phase_transition`, `transition_width_equals_marginal`, `p53_rb_is_lethal_pair` in `CancerPredictions.lean` + simulation | Mechanized |
+| `PRED-IMMUNO-RATIO` | Immunotherapy response ratio R = immune_β₁ / tumor_deficit predicts efficacy. Higher R = better response. Complete coverage at R ≥ 1. Classical R=1.0 > Combined R=0.29. | Immune vent provides external β₁. Deficit from CancerTopology. | Lean theorems `more_immune_better_ratio`, `lower_deficit_better_ratio`, `complete_coverage`, `classical_better_response` in `CancerPredictions.lean` + simulation | Mechanized |
+| `PRED-CONVERGENCE-BOUND` | Convergence bound C* = totalVentBeta1 - 1 predicts differentiation time. Stem (C*=8) > differentiated (C*=2). Higher β₁ = longer convergence = slower division. | Cell cycle modeled as Buleyean space. future_deficit_eventually_zero from BuleyeanProbability. | Lean theorems `convergence_round_positive`, `more_checkpoints_longer_convergence`, `differentiation_follows_convergence`, `healthy_convergence_bound` in `CancerPredictions.lean` + simulation | Mechanized |
+| `PRED-MASTER` | Bundle: all five predictions compose into `five_predictions_master` (0 sorry). | All prior assumptions. | Lean theorem `five_predictions_master` in `CancerPredictions.lean` | Mechanized |
 
 ### Quantum Observer
 

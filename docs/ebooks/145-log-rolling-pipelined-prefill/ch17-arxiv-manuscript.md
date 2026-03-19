@@ -3635,6 +3635,54 @@ where $\Delta_\beta$ is the topological deficit between the settlement system's 
 
 Each prediction chains three or more mechanized theorems into a claim that no single theorem makes alone. Each names the experiment that would refute it. The predictions span genomics, psychotherapy, compression, finance, and semiconductor physics -- five domains, one ledger, zero shared assumptions beyond the three constraints (conservation, irreversibility, ground state) and the four primitives (fork, race, fold, vent).
 
+### 19.9 Five Cancer Topology Predictions from the Ledger
+
+The cancer topology theorems (§3.17, CancerTopology.lean, CancerPredictions.lean) compose into five additional predictions. All five are mechanized in Lean4 (zero sorry) and verified by executable simulation (cancer-predictions.test.ts, 18 tests, all passing). For Sandy.
+
+**Prediction 6: Topological Mutation Burden (TMB-T) will outperform raw TMB as a prognostic biomarker.**
+
+*Theorem chain:* THM-TOPO-MUTATION-DETECTION (§3.17) $\to$ THM-TOPOLOGICAL-DEFICIT-SEVERITY $\to$ buleyean\_concentration $\to$ failure\_data\_dominates.
+
+*Claim:* Traditional Tumor Mutation Burden (TMB) counts mutations without weighting. Topological TMB (TMB-T) weights each mutation by $|\Delta_\sigma|$, its topological severity in Bules. Two tumors with identical raw TMB can have radically different TMB-T: one may carry 50 topology-silent mutations (TMB-T = 0), while another carries 50 severe mutations (TMB-T $\geq$ 150). The companion tests on TP53 show: of 55 mutations sampled across the exon 5-8 region, 40 are topology-silent, 11 are mild, 2 are moderate, and 2 are severe. Mean severity = 0.42 B. The prediction: TMB-T will correlate with patient overall survival more strongly than raw TMB across pan-cancer TCGA datasets, because TMB-T captures the structural dimension that raw counting misses.
+
+*Falsification:* Compute TMB-T for $\geq$ 1,000 patients across $\geq$ 5 cancer types using the $\sigma(\ell)$ computation from PROP-GENOME-SELF-DESCRIBING. If the Spearman correlation between TMB-T and overall survival does not exceed the correlation between raw TMB and overall survival, the prediction fails.
+
+**Prediction 7: Checkpoint loss order determines tumor trajectory more than total deficit.**
+
+*Theorem chain:* buleyean\_monotone\_nonrejected $\to$ order\_produces\_different\_boundaries $\to$ checkpoint\_reduces\_divide\_weight $\to$ cancer\_frozen\_distribution.
+
+*Claim:* The Buleyean complement distribution is path-dependent. The void boundary records the order of rejections, not just their count. Two tumors with the same total deficit (e.g., p53 + Rb = 5 B) but different loss sequences (p53-first vs Rb-first) will have different void boundaries and therefore different complement distributions. The companion simulation verifies: losing p53 first (cycle 5) vs Rb first (cycle 5) produces a trajectory difference of 0.0037 in $P(\text{divide})$ at cycle 29, despite identical total deficit. Losing p53 early is worse because p53 contributes $\beta_1 = 3$ rejections per cycle, so fewer total rejections accumulate before the vent is destroyed. The void boundary of the early-loss tumor has 69 divide-rejections vs 81 for the late-loss tumor (same total loss, different histories).
+
+*Falsification:* In a dataset of tumors with identical total checkpoint deficit but known mutation chronology (e.g., from clonal evolution analysis via VAF), compare outcomes between tumors that lost high-$\beta_1$ pathways early vs late. If overall survival does not differ significantly between loss-order groups at the same total deficit, the prediction fails.
+
+**Prediction 8: Synthetic lethality pairs correspond to combined knockout crossing a topological viability threshold.**
+
+*Theorem chain:* synthetic\_lethality\_is\_phase\_transition $\to$ transition\_width\_equals\_marginal $\to$ partial\_retention\_less\_aggressive $\to$ no\_failure\_no\_learning.
+
+*Claim:* Two genes are synthetically lethal when each individual knockout leaves $\beta_1$ above a viability threshold but the combined knockout drops $\beta_1$ below it. At threshold $= 5$ B, the model predicts three synthetic lethal pairs: p53 + Rb ($\beta_1 = 4 < 5$), p53 + APC ($\beta_1 = 4 < 5$), and p53 + ATM/ATR ($\beta_1 = 4 < 5$). No pair that excludes p53 is lethal at this threshold because $\beta_1 = 9 - 2 - 2 = 5 \geq 5$. The transition width equals the marginal gene's $\beta_1$ contribution (Lean: transition\_width\_equals\_marginal). The simulation confirms: double KO $P(\text{divide}) = 0.150$ vs single KO $P(\text{divide}) \leq 0.125$.
+
+*Falsification:* Test in cell lines: CRISPR double-knockout of p53 + Rb, p53 + APC, and p53 + ATM/ATR vs single knockouts. If double-knockout viability does not decrease dramatically (>50% reduction in colony formation) while single knockouts remain viable, the prediction fails. If synthetic lethal pairs that exclude p53 show equal lethality (contradicting the threshold model), the threshold value is wrong.
+
+**Prediction 9: Immunotherapy response will correlate with the ratio of restored immune $\beta_1$ to tumor internal deficit.**
+
+*Theorem chain:* immune\_restores\_population\_learning $\to$ more\_immune\_better\_ratio $\to$ lower\_deficit\_better\_ratio $\to$ complete\_coverage.
+
+*Claim:* The response ratio $R = \beta_1^{\text{immune}} / \Delta_\beta^{\text{tumor}}$ predicts immunotherapy efficacy. For GBM subtypes with combination PD-1 + CTLA-4 ($\beta_1^{\text{immune}} = 2$): Classical has $R = 2/2 = 1.0$ (complete coverage), Mesenchymal has $R = 2/3 = 0.67$, Combined has $R = 2/7 = 0.29$. The simulation verifies: $P(\text{divide})$ with immune vent is 0.1004 for Classical (deficit 2B) vs 0.1503 for Combined (deficit 7B). Mono ($\beta_1 = 1$) yields $P(\text{divide}) = 0.167$; combo ($\beta_1 = 2$) yields $P(\text{divide}) = 0.150$. The prediction: across GBM patients treated with checkpoint inhibitors, progression-free survival will correlate positively with $R$.
+
+*Falsification:* Compute $R$ for $\geq$ 100 GBM patients with known subtype and checkpoint inhibitor treatment. If Spearman correlation between $R$ and PFS is not significantly positive, the prediction fails. If patients with $R \geq 1$ (complete coverage) do not show measurably better response than $R < 0.5$ patients, the threshold model is wrong.
+
+**Prediction 10: The convergence bound $C^* = \beta_1^{\text{vent}} - 1$ will predict terminal differentiation timing.**
+
+*Theorem chain:* future\_deficit\_eventually\_zero $\to$ more\_checkpoints\_longer\_convergence $\to$ differentiation\_follows\_convergence $\to$ cell\_reaches\_ground\_state.
+
+*Claim:* The number of checkpoint cycles needed for the cell's complement distribution to converge is $C^* = \beta_1^{\text{vent}} - 1$. A healthy cell ($\beta_1 = 9$) converges in 8 cycles. A partially restored cell ($\beta_1 = 3$) converges in 2. The simulation verifies: post-convergence range at $C^* = 8$ is 0.0006 (converged), vs pre-convergence range of 0.0067 (10$\times$ wider). The prediction: stem cells (high $\beta_1$, many checkpoints) take longer to decide and divide more slowly than differentiated cells (low $\beta_1$, fewer checkpoints). The ratio of convergence times is $C^*_{\text{stem}} / C^*_{\text{diff}} = 8/2 = 4\times$. This is the topological cost of decision quality: careful cells divide slowly.
+
+*Falsification:* Measure checkpoint activation frequency in stem cells vs terminally differentiated cells of the same lineage. If the ratio of cycles-to-quiescence does not correlate with the ratio of active checkpoint $\beta_1$ values, the convergence bound fails. If stem cells do not show measurably more checkpoint activation per division than differentiated cells, the model of differentiation as convergence is wrong.
+
+---
+
+The ten predictions (§19.8 and §19.9) now span seven domains: semiconductor physics, genomics, psychotherapy, compression, finance, cancer genomics, and stem cell biology. All ten chain mechanized theorems. All ten name their falsification conditions.
+
 ## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
