@@ -158,8 +158,6 @@ Three bodies of existing theory provided the language for this correction.
 
 I drew heavily from **quantum physics**, using selected terms as computational correspondences: superposition is fork, measurement is observation, collapse is fold, tunneling is early exit, interference is consensus, entanglement is shared state (§4). These are structural mappings used for description and hypothesis formation, with photosynthetic antenna complexes as the closest literal quantum case discussed here (§5.5).
 
-The quantum-mechanical vocabulary describes the mapped computational operations with structural precision in this paper’s scope. It is a modeling lens, not an exclusive language claim.
-
 The second muse is **fluid dynamics**, whose Reynolds number I purloin wholesale into computation as the pipeline Reynolds number $Re = N/C$ (§1.3). Fluid dynamics provides more than vocabulary – it provides a useful intuition for *when* fork/race/fold matters in this model. Just as the Reynolds number predicts when laminar flow becomes turbulent, $Re$ indicates when sequential processing should yield to multiplexed scheduling and when the system begins to lose its laminar ability to recover from local drops.
 
 ![Inverted scaling and Reynolds number regimes](companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.png)
@@ -206,11 +204,11 @@ $$
 \text{Speedup} \xrightarrow{P \to \infty} \frac{P \cdot N}{P/B} = B \cdot N
 $$
 
-Under A1-A2, the speedup approaches $B \times N$ – the product of chunk size and stage count. The pipeline is fully occupied. The kids all have balls. Idle fraction approaches zero. The kids are all juggling.
+Under A1-A2, the speedup approaches $B \times N$ – the product of chunk size and stage count. The pipeline is fully occupied. The kids are all juggling.
 
 The technique gets *faster and faster* as the work at hand grows.
 
-This is a profoundly inverted scaling property, which is a useful and unusual feature of the algorithm. In most engineering contexts, the hard problem is scale – systems that work beautifully on small inputs collapse under large ones. Here, the opposite is true: large datasets are where pipelining shines, approaching its theoretical maximum speedup of $B \times N$. Small datasets are where the overhead hurts.
+This is a profoundly inverted scaling property. In most engineering contexts, the hard problem is scale – systems that work beautifully on small inputs collapse under large ones. Here, the opposite is true: large datasets are where pipelining shines, approaching its theoretical maximum speedup of $B \times N$. Small datasets are where the overhead hurts.
 
 The optimization challenge in fork/race/fold-based pipelines is not “how do I survive at scale?” but “how do I avoid overpaying on small workloads?” – a far more pleasant problem. Trivial solutions for such trivial concerns are panoply – early exit, dynamic chunk sizing and adaptive scheduling, for example – but speedups are more precious when they arrive in abundance.
 
@@ -311,7 +309,7 @@ This is a vocabulary layer, not an automatic guarantee. It does not make a race 
 
 The current formal companion already proves one sharp boundary behind this language: from a nontrivial fork, a deterministic single-survivor collapse cannot occur with both zero vent and zero repair debt, and over the normalized failure trajectories studied there the exact minimum collapse cost is `initialLive - 1`. That is the narrow formal content behind phrases like “the price of determinism” in this manuscript’s scope.
 
-Implicit in this is the fact that failure is a necessary component of any robust system. Failure modes are handled by the vent primitive, which propagates down the tree but never across branches. This ensures that a failure in one branch does not cascade to other branches, maintaining the isolation property required for correctness. A system that cannot fail gracefully is not robust.
+Failure is a necessary component of any robust system. The vent primitive handles failure modes by propagating down the tree but never across branches, maintaining the isolation property (C2) required for correctness.
 
 ### 1.7 Vent Propagation
 
@@ -546,8 +544,6 @@ The evolution of $\beta_1$ over a computation’s lifetime forms a *filtration* 
 The filtration diagram encodes: how much parallelism was used (features born at fork), how quickly bad paths were pruned (short persistence = speculation), how much redundancy survived to fold (long persistence = consensus). A well-optimized system has short vent persistence (release early) and long fold persistence (exploit parallelism fully).
 
 ### 2.7 Category-Theoretic Framing
-
-In category theory, a so-called monoidal category is a mathematical system consisting of a collection of objects and morphisms, or a way to combine objects in a way similar to multiplication.
 
 Fork/race/fold forms a **monoidal category**:
 
@@ -861,13 +857,13 @@ $$
 
 where $S$ is the action along each path. For comparison with the present framework, the path-integral calculation is interpreted here in four phases:
 
-1. **Fork analogue.** The particle enters all possible trajectories simultaneously. Each trajectory is a path with phase $e^{iS/\hbar}$. In the comparison used here, this plays the role of fork: one input $\to$ innumerable paths. $\beta_1 \to \infty$.
+1. **Fork analogue.** The particle enters all possible trajectories simultaneously. Each trajectory is a path with phase $e^{iS/\hbar}$. One input $\to$ innumerable paths. $\beta_1 \to \infty$.
 
-2. **Race analogue.** Each path propagates with its own phase accumulation. No path “knows” about the others during propagation (allowing for transport gains). In the comparison used here, this plays the role of race: parallel, independent, timeless (unitary evolution is time-reversible).
+2. **Race analogue.** Each path propagates with its own phase accumulation. No path “knows” about the others during propagation. Parallel, independent, timeless (unitary evolution is time-reversible).
 
-3. **Fold analogue.** The amplitudes sum. Constructive interference concentrates amplitude on the classical path (stationary phase). In the comparison used here, this plays the role of fold: many paths $\to$ one probability amplitude. $\beta_1 \to 0$.
+3. **Fold analogue.** The amplitudes sum. Constructive interference concentrates amplitude on the classical path (stationary phase). Many paths $\to$ one probability amplitude. $\beta_1 \to 0$.
 
-4. **Vent analogue.** Destructive interference eliminates non-classical paths. Their amplitudes cancel to zero. In the comparison used here, this plays the role of vent: paths that contribute no useful work are dissipated.
+4. **Vent analogue.** Destructive interference eliminates non-classical paths. Their amplitudes cancel to zero. Paths that contribute no useful work are dissipated.
 
 The classical limit ($\hbar \to 0$) recovers the path of stationary action – the unique classical trajectory. In the comparison used here, that behaves like a $\beta_1 = 0$ boundary case: one path, no fork, no race, no vent. It is analogous to the sequential limit of the Wallington Rotation rather than formally identical to it.
 
@@ -897,11 +893,9 @@ $$
 i\hbar \frac{\partial \psi}{\partial t} = \hat{H}\psi
 $$
 
-In this framing, this is what happens when the path-integral evolution is expressed as a *local* differential equation in the standard derivation. The wave function $\psi$ is the bookkeeping device that tracks the superposition of all racing paths at each instant. $|\psi|^2$ is the probability density – the energy distribution across surviving paths.
+The path-integral evolution, expressed as a local differential equation, recovers the Schrödinger equation. The wave function $\psi$ tracks the superposition of all racing paths at each instant. $|\psi|^2$ is the probability density -- the energy distribution across surviving paths.
 
-In physics and mathematics, the Hamiltonian is a mathematical operator that represents the total energy of a system. It’s a function that sums up all the energy “bank accounts” of a particle or system. In this mapping, the Hamiltonian $\hat{H}$ is interpreted as the race operator: it governs how potential converts to kinetic at each infinitesimal step.
-
-In this mapping, the Schrödinger equation is a race-like local dynamics equation. It is treated as a local form of global path exploration in this abstraction. The wave function $\psi$ carries information about which paths are still active and with what amplitude.
+The Hamiltonian $\hat{H}$ -- the total-energy operator of the system -- is the race operator: it governs how potential converts to kinetic at each infinitesimal step. The Schrödinger equation is thus a race-like local dynamics equation -- a local form of global path exploration. The wave function $\psi$ carries information about which paths are still active and with what amplitude.
 
 **Quantized energy levels are fold constraints.** For bound systems (electrons in atoms, particles in wells), the Schrödinger equation admits only discrete solutions – specific energy eigenvalues. These are not inputs to the equation; they *emerge* from the fold boundary conditions. The requirement that $\psi \to 0$ at infinity (the wave function must be normalizable) is a fold constraint: it eliminates all solutions that don’t converge. The surviving eigenvalues are the fold results. Lasers, LEDs, atomic clocks and MRI machines all depend on these quantized fold outputs.
 
@@ -913,7 +907,7 @@ $$
 \delta S = 0 \implies \text{Euler-Lagrange equations} \implies F = ma
 $$
 
-The stationary phase approximation acts like a maximal vent operator in this mapping. It destroys most path information except near-classical trajectories. $\beta_1 \to 0$. The void ($\beta_2$) grows as many quantum paths are canceled.
+The stationary phase approximation acts as a maximal vent operator. It destroys most path information except near-classical trajectories. $\beta_1 \to 0$. The void ($\beta_2$) grows as quantum paths are canceled.
 
 **Level 3: Newton’s Laws ($\beta_1 = 0$, fully folded).** One path. Deterministic. No fork, no race, no vent. $F = ma$ is the maximally folded result of the path integral. Classical mechanics is not “wrong” – it is the $\beta_1 = 0$ degenerate case, just as sequential pipelines are the degenerate case of the Wallington Rotation.
 
@@ -927,8 +921,6 @@ The hierarchy:
 | 4 | Newton's laws | Fully folded | $0$ | One path, deterministic |
 
 Each level can be read as a fold/coarse-graining step. Each step discards information and increases abstraction. In that sense, the classical tower can be interpreted as nested fold operations on path-integral structure. Reconstructing finer levels requires reintroducing information.
-
-This mirrors an information-discard perspective analogous to coarse-graining under the second-law lens used in this manuscript.
 
 **Band theory can also be described using covering-space language.** When the Schrödinger equation is solved for electrons in a periodic lattice (silicon, germanium), Bloch’s theorem states that solutions have the form $\psi_k(r) = e^{ik \cdot r} u_k(r)$ where $u_k$ has the periodicity of the lattice. The periodic lattice is the base space. The electron’s wave function in the full crystal is the covering space. Bloch’s theorem then plays the role of a covering map (§2.4) – it relates the global behavior (energy bands) to the local structure (unit cell). The band gap – the energy range where no electron states exist – is the void ($\beta_2 > 0$). Modern semiconductors, transistors and solar cells rely on this structure.
 
@@ -1150,6 +1142,8 @@ Now imagine two children standing on opposite sides of a galaxy. One hundred bal
 The chunked pipeline is the same at both scales. $T = \lceil P/B \rceil + (N - 1)$. The child passing balls to a friend. The Worthington Whip sharding a signal across redundant paths. The Vickrey Table precomputing the fold so the receiver only needs to look up the answer. The number of balls is the information. The chunk size is the fork count. The number of children in the line is the number of fold stages between here and there.
 
 How many children does it take to pass a hundred balls across the universe? The same formula. The same seven handoffs. The same chunked pipeline. The distance is in the taper. The message is in the balls. The miracle is that the child on the other side can catch them at all -- and the theorems say she can, if enough are thrown.
+
+![Astronomic Metronomic -- $d_{\max} = \sqrt{N \cdot P / (\rho \cdot c^{*2})}$. Seven scales from across a table ($N=1$) to across the galaxy ($N=10^{15}$). Points above the diagonal reach their target; points below fall short. Fork more paths to push points upward. The child passing balls in §0 and the child juggling across the galaxy are the same formula.](figures/astronomic-metronomic.svg)
 
 ### 3.15 The Optimality Diagnostic
 
@@ -1382,7 +1376,7 @@ In photosynthetic antenna complexes (§5.5), the underlying transport includes a
 
 In quantum mechanics, tunneling allows a particle to pass through a potential barrier that classical physics says is impassable. In fork/race/fold, tunneling allows a computation to bypass the “barrier” of waiting for all paths to complete.
 
-A tunnel predicate fires when a single path’s result is conclusive enough that remaining paths are irrelevant. It’s worth reiterating here again that this is different from race (which picks the *fastest*) and different from fold (which waits for *all*). Tunneling picks the *first sufficient result* and vents everything else – it “tunnels through” the waiting barrier.
+A tunnel predicate fires when a single path’s result is conclusive enough that remaining paths are irrelevant. This is different from race (which picks the *fastest*) and from fold (which waits for *all*). Tunneling picks the *first sufficient result* and vents everything else – it “tunnels through” the waiting barrier.
 
 Tunneling is not a fifth primitive. It is a composition: `race(predicate) + vent(losers)` – race with a quality predicate instead of a speed predicate. Topologically, tunneling operates on homotopy-equivalent paths (§2.3) but selects by a criterion other than arrival time. Where race exploits temporal homotopy (all paths reach the same destination, pick the fastest), tunneling exploits quality homotopy (all paths produce valid results, pick the first that’s sufficient). The fallback to race or fold when the predicate is too strict confirms this: tunneling degrades gracefully into its constituent primitives.
 
@@ -1472,7 +1466,7 @@ Each Okazaki fragment can be read as a **self-describing-frame analogue**: its g
 
 In myelinated neurons, action potentials jump between nodes of Ranvier (~1–2 mm apart) instead of propagating continuously. Multiple action potentials are in-flight simultaneously across different internodal segments.
 
-Perhaps you picture biological denial of service-style “packet overload”? The biology includes refractory dynamics that suppress re-firing for a short window after a node activates. This acts like a one-way valve/buffer so that, at the modeled level, in-flight action potentials remain directionally separated.
+Refractory dynamics suppress re-firing for a short window after each node activates, acting as a one-way valve that keeps in-flight action potentials directionally separated.
 
 This is chunked pipelining. The “chunking” allows the brain to receive a high-frequency stream of data rather than a single pulse. It allows for more nuanced signaling – the frequency of the spikes (the “bitrate”) conveys the intensity of the stimulus.
 
@@ -1861,15 +1855,7 @@ The pipeline Reynolds number $Re = N/C$ is used here as a complementary topology
 | Service rate $\mu$ | Fold rate |
 | Queue discipline (FIFO, priority) | Fold strategy (quorum, weighted, consensus) |
 
-In queueing theory, an M/M/1 queue represents the simplest non-trivial model of a waiting line. It describes a memoryless system with a single server where arrivals and service times are essentially random. Its notation follows Kendall’s Notation, where each letter defines a specific characteristic of the system:
-
-- M (Markovian/Memoryless) Arrival: Customers arrive according to a Poisson process. This means the time between arrivals follows an Exponential distribution. It is “memoryless” because the time until the next arrival doesn’t depend on how much time has already passed.
-
-- M (Markovian/Memoryless) Service: The time it takes to serve a customer also follows an Exponential distribution.
-
-- 1 (Single Server): There is only one station or person processing the queue.
-
-In this modeling language, the canonical M/M/1 queue is represented as a $\beta_1 = 0$ pipeline with one stage and Poisson arrivals. The companion formal package now closes that canonical witness constructively: the one-path boundary is packaged with `β₁ = 0`, capacity `β₁ + 1 = 1`, and the stationary mean occupancy law $\lambda / (\mu - \lambda)$ for the stable regime $\lambda < \mu$. The $Re$ framework does not contradict queueing theory – it embeds canonical one-path constructions in that scoped sense. When $\beta_1 = 0$, $Re$ reduces to utilization. When $\beta_1 > 0$, $Re$ adds topology-aware vocabulary for sequential-to-multiplexed transition, fork-width tuning and topological mismatch cost.
+In this modeling language, the canonical M/M/1 queue (Poisson arrivals, exponential service, single server) is represented as a $\beta_1 = 0$ pipeline with one stage and Poisson arrivals. The companion formal package now closes that canonical witness constructively: the one-path boundary is packaged with `β₁ = 0`, capacity `β₁ + 1 = 1`, and the stationary mean occupancy law $\lambda / (\mu - \lambda)$ for the stable regime $\lambda < \mu$. The $Re$ framework does not contradict queueing theory – it embeds canonical one-path constructions in that scoped sense. When $\beta_1 = 0$, $Re$ reduces to utilization. When $\beta_1 > 0$, $Re$ adds topology-aware vocabulary for sequential-to-multiplexed transition, fork-width tuning and topological mismatch cost.
 
 ### 9.2 Erlang’s Formula as Fold Without Fork
 
@@ -1881,13 +1867,9 @@ $$
 
 In fork/race/fold terms, Erlang’s system is a race over $c$ servers – but without fork. Arrivals are not forked; they are routed to a single server. The system cannot exploit parallelism because it has no fork operation. Blocking occurs when all $c$ paths are occupied – but there is no mechanism to create *new* paths on demand.
 
-While Agner Krarup Erlang provided the mathematical logic that allows us to build networks that don’t collapse under pressure, he didn’t have fork/race/fold.
-
 Fork/race/fold can reduce blocking pressure by making path creation dynamic. When demand exceeds capacity, fork creates new paths ($\beta_1$ increases). When demand subsides, fold and venting remove paths ($\beta_1$ decreases). The topology adapts to load. Erlang’s formula describes a *static* case; fork/race/fold models a *dynamic* case.
 
 ### 9.3 Jackson Networks as Fixed-Topology Pipelines
-
-James R. Jackson was a mathematician at UCLA who, by 1963, realized that, in the real world, queues don’t exist in isolation: a factory floor, a hospital, or a data center are all complex networks, not simple conveyer belts.
 
 Jackson’s theorem [7] proves that open networks of M/M/c queues have product-form stationary distributions. But Jackson networks have **fixed topology** – the routing matrix is constant. Fork/race/fold has **dynamic topology** – fork creates paths, venting removes them, fold merges them. The topology is the control variable, not a parameter.
 
@@ -2172,7 +2154,7 @@ I implement this with eight codecs:
 | 6   | Huffman        | Pure JS              | Skewed byte distributions          |
 | 7   | Dictionary     | Pure JS              | Web content (HTML/CSS/JS keywords) |
 
-Before any excitement takes hold, it is important to state a boundary: fork/race/fold provides a container for adaptive codec selection, not a guaranteed ratio improvement over the best standalone codec on homogeneous payloads. Its value here is strategy selection, composability and bounded framing overhead.
+A boundary: fork/race/fold provides a container for adaptive codec selection, not a guaranteed ratio improvement over the best standalone codec on homogeneous payloads. Its value is strategy selection, composability and bounded framing overhead.
 
 ### 11.2 What the Benchmarks Actually Show
 
@@ -2405,9 +2387,7 @@ The table below reports modeled step-count speedups only (not wall-clock through
 
 ### 13.2 Turbulent Multiplexing
 
-In molecular biology, a polysome (also called a polyribosome) is a cluster of multiple ribosomes that are simultaneously translating a single mRNA strand into proteins.
-
-Think of it as a molecular assembly line: instead of one worker (ribosome) reading an instruction manual (mRNA) and finishing the product before the next one starts, multiple workers jump on the manual as soon as the first one moves out of the way. This allows the cell to mass-produce proteins with high throughput and efficiency.
+A polysome is a cluster of ribosomes simultaneously translating the same mRNA -- a molecular assembly line where multiple workers read the same manual in overlapping sequence.
 
 When $C \approx N$, 43 percent of node-slots are idle during ramp-up/ramp-down. Turbulent multiplexing fills idle slots with items from concurrent requests, maintaining per-request vent isolation (C2). This is analogous to polysome behavior: fill the mRNA pipeline with multiple ribosomes, degrade the mRNA when $Re$ drops below threshold, and reallocate to active pipelines. The molecular topology theorem (§2.2) makes this correspondence formal: polysome and pipeline share the same Betti signature and therefore the same homology class. The energy budget of ribosome allocation follows the same conservation law as pipeline stage allocation (§3.11).
 
