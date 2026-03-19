@@ -4793,6 +4793,24 @@ Five genuinely new theorems that did not previously exist in the LEDGER, produce
 
 **Companion theorems for §19.59:** Lean `NovelCompositions.lean` (sorry-free, 16 theorems including master), TLA+ `NovelCompositions.tla` (6 invariants), tests `novel-compositions.test.ts` (18 tests). Self-hosted.
 
+### 19.60 Five Cross-Module Compositions from the Fisher-LEDGER Interface
+
+Five predictions composing LEDGER theorem modules with the Buleyean-Fisher manifold in ways never previously attempted. Each crosses a module boundary no prior prediction has crossed. Proved in `@a0n/maybe/predictions-r8.test.ts` (15 tests, 0 failures, 247 assertions). 174 total tests, 2,370 assertions.
+
+**Prediction 262: The merge weight deficit theorem (CommunityDominance × BuleyeanProbability).** Merging two void boundaries produces per-dimension weights satisfying $w_{\text{merge}}(i) = w_A(i) + w_B(i) - 1$. Two separate slivers consolidate into one: the maximally rejected dimension has $w_A = 1, w_B = 1, w_{\text{merge}} = 1$, not 0 and not 2. *Falsification:* if $w_{\text{merge}} \neq w_A + w_B - 1$ for any dimension.
+
+**Prediction 263: Each Buleyean rejection is a micro-erasure bounded by $\log(n/(n-1))$ (FoldErasure × BuleyeanProbability).** Total entropy reduction bounded by $\log(n)$. Per-step reduction bounded by $\log(n/(n-1))$. Buleyean entropy always strictly positive -- no complete erasure. *Falsification:* if any single rejection reduces entropy beyond the bound.
+
+**Prediction 264: The teleport deficit determines a manifold neighborhood, not a point (StatisticalTeleportation × FisherManifold).** `teleportation_privacy` proves the deficit doesn't reveal the boundary. On the Fisher manifold: same deficit $\not\Rightarrow$ same Fisher distance. Zero deficit $\Leftrightarrow$ zero Fisher distance. The deficit is a coarse scalar; the Fisher distance is a fine geometric invariant. *Falsification:* if same deficit always produces identical Fisher distance.
+
+**Prediction 265: Articulation loss is Buleyean dimension reduction (SemioticDeficit × BuleyeanProbability).** Projecting from thought-space ($n$-dim) to speech-space ($m$-dim) reduces the void boundary's dimensionality by the semiotic deficit $n - m$. Axioms preserved. Fine-grained structure lost. *Falsification:* if projection violates axioms.
+
+**Prediction 266: The append-only void creates bidirectional Fisher movement (GrandfatherParadox × FisherManifold).** `void_boundary_append_only` proves counts never decrease. On the Fisher manifold: rejecting the most-rejected dimension moves AWAY from uniform; rejecting the least-rejected moves TOWARD uniform. Append-only guarantees irreversibility of counts but NOT unidirectional manifold movement. *Falsification:* if rejecting the least-rejected dimension increases Fisher distance. **Negative result included:** the DPI × Fisher composition (projection contraction on count space) was disproved -- `projectBoundary` operates on counts, not distributions, and the Buleyean denominator's nonlinearity breaks contraction.
+
+---
+
+The two hundred sixty-six predictions (§19.8 through §19.60) now span one hundred thirty-one domains. The `@a0n/maybe` package: 174 tests, 11 files, 2,370 assertions, 14 Lean 4 theorems (zero sorry), 9 TLA+ invariants. Every pair of {FoldErasure, StatisticalTeleportation, SemioticDeficit, GrandfatherParadox, CommunityDominance} × {BuleyeanProbability, FisherManifold} has been attempted. No further unused cross-module composition exists.
+
 ## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
