@@ -3657,6 +3657,20 @@ This registry is not exhaustive -- the full set of mechanized predictions (inclu
 
 **Mechanization.** 14 Lean 4 theorems in `FisherManifold.lean` (zero sorry, builds clean). 9 TLA+ invariants in `FisherManifold.tla`. 188 tests across 12 files in `@a0n/maybe` with 2,552 assertions, all passing. The Fisher manifold predictions compose with the existing 128 Lean modules in the companion `ForkRaceFoldTheorems` library.
 
+### Five Predictions from the Repaired Diversity Optimality Surface
+
+Five predictions composing the newly repaired DiversityOptimality module (fix: `race_monotone_on_add` now receives its non-emptiness witness; `diversity_optimality` receives its positivity witness) with AmericanFrontier, StagedExpansion, DeficitCapacity, and RenormalizationFixedPoints. Each is mechanized in Lean4 (`PredictionsRound14.lean`, sorry-free).
+
+**Prediction: Racing multiple strategies achieves zero compression deficit.** THM-DIVERSITY-SUBSUMPTION (DiversityOptimality.lean) proves that the race minimum across any set of codec results achieves zero compression deficit: `compressionDeficit (raceMin results) results = 0`. Applied beyond codecs: in any domain where parallel exploration selects the best outcome, the diverse strategy has zero deficit relative to the option set. *Theorem chain:* `diversity_racing_zero_deficit` (delegates to `diversity_subsumption`). *Falsification:* if a racing selector shows nonzero deficit (selected outcome is worse than some available option), the subsumption property fails.
+
+**Prediction: Matched diversity is both deficit-free and lossless.** THM-DIVERSITY-OPTIMALITY composes `zero_deficit_preserves_information` from DeficitCapacity.lean: when streams equal paths, the deficit is zero AND the path-to-stream mapping is injective (no information loss). Not merely "low waste" but provably lossless. *Theorem chain:* `matched_diversity_optimal`. *Falsification:* if a matched-diversity system (dedicated channel per semantic dimension) shows measurable information loss, the injectivity claim fails.
+
+**Prediction: Staged and naive resource allocation produce identical total capacity.** THM-STAGED-EXPANSION proves `stagedExpansionFrontierArea = naiveWidenFrontierArea` for the same budget. Whether resources fill underdeveloped areas first or widen the peak, total capacity is conserved. The difference is utilization (Wallace metric), not total output. *Theorem chain:* `staged_equals_naive`. *Falsification:* if staged allocation produces different total output than concentrated allocation with the same budget, conservation fails.
+
+**Prediction: Any system with more semantic paths than communication channels has provable information loss via pigeonhole.** THM-DEFICIT-FORCES-COLLISION (DeficitCapacity.lean) proves that with $k \geq 2$ paths and 1 stream, there exist two distinct paths that map to the same stream. This is constructive: the witness is produced, not just asserted to exist. *Theorem chain:* `deficit_forces_pigeonhole`. *Falsification:* if a single-channel communication system can transmit $k \geq 2$ independent semantic streams without loss, the pigeonhole model is wrong.
+
+**Prediction: The Buleyean sliver ensures no option is ever fully eliminated from consideration.** THM-BULEYEAN-POSITIVITY proves `weight i ≥ 1` for all choices regardless of rejection history. THM-BULEYEAN-CONCENTRATION proves the less-rejected option always has higher weight. Together: the weight ranking is monotone in rejection count, but the floor is structural -- no amount of rejection drives any option to zero. *Theorem chain:* `all_choices_survive` $\to$ `less_rejected_preferred`. *Falsification:* if a Buleyean-weighted system assigns zero probability to any option after finite rejections, the positivity axiom is violated.
+
 ## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
