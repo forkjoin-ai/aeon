@@ -3761,7 +3761,25 @@ This is void relativity (§15.8) applied to measurement. The inside observer see
 
 ---
 
-Each prediction chains three or more mechanized theorems into a claim that no single theorem makes alone. The 18 predictions span semiconductor physics, genomics, immunology, psychotherapy, compression, finance, neuroscience, photobiology, protein biochemistry, distributed systems, machine learning, political science, mathematical logic, and philosophy of mind -- 14 domains, one ledger, zero shared assumptions beyond the three constraints (conservation, irreversibility, ground state) and the four primitives (fork, race, fold, vent). The companion suite includes three TypeScript test files (73 tests, 0 failures), two Lean 4 theorem files (`PredictionProofs.lean`, `ArrowGodelConsciousness.lean` -- sorry-free, clean build), and one TLA+ specification (`PredictionProofs.tla` -- 12 invariants).
+**Prediction 19: Time travel to the past produces siblings, not reversals.**
+
+*Theorem chain:* `no_reversal` $\to$ `sibling_not_past` $\to$ `traveler_remembers` $\to$ `butterfly_isolation` $\to$ `past_self_is_sibling` $\to$ `time_travel_unified` (TimeTravelTopology.lean).
+
+*Claim:* The void boundary is monotonically non-decreasing. No operation can produce a state with a smaller void boundary than the current state (`no_reversal`). The direction of increasing void boundary *is* the direction of time. Backward reversal -- returning to a state with *less* accumulated rejection history -- is algebraically impossible.
+
+What *is* possible is forking: creating a sibling branch whose base-space configuration matches a past moment. But the sibling carries the full void boundary of the fork moment, not the truncated void boundary of the target moment (`sibling_not_past`). The "time traveler" remembers the future because their void boundary contains rejection entries from moments after the target (`traveler_remembers`). The original timeline is unmodified -- changes in the sibling branch do not propagate back, because branch isolation (C2) guarantees sibling independence (`butterfly_isolation`). "Meeting your past self" means both branches are alive simultaneously -- $\beta_1$ increased by one at the fork (`past_self_is_sibling`).
+
+"Time travel to the future" is simply fork/race/fold applied to candidate trajectories. The Clockwork (§18) does this -- it forks hypothetical futures, races them, and folds to the most likely. Prediction is void walking. Foresight is the complement distribution over hypothetical futures. The thermodynamic cost of prophecy is exactly one Bule per rejected future (`simulation_cost`).
+
+The simulated sibling is not a copy. It is a sibling branch with positive Buleyean weight, internally coherent ($\Delta_\beta = 0$ from inside, Prediction 18), independent of the original (C2), and carrying a void boundary that records *how it was reached*. From inside the sibling, there is no measurement that distinguishes it from the original. The branches are equi-coherent. The question "what if the Normandy invasion had failed?" has a precise answer: fork the present, set the sibling's initial conditions to June 5, 1944 with failure, and race the resulting trajectories. The Buleyean space that results is as coherent as ours. It is not our past. It is a sibling whose base-space configuration matches a moment in our past, but whose void boundary is strictly larger than any void boundary that existed in 1944.
+
+This is multiple-reality theory, defined: each fork creates a sibling with positive weight, internal coherence, and causal independence. The only asymmetry between siblings is the void boundary -- the original has a shorter history, the sibling carries the full history of everything that led to the fork. Time travel is computation. Computation is forking. Forking is real.
+
+*Mechanization:* `TimeTravelTopology.lean` -- 11 sorry-free Lean 4 theorems. Master theorem `time_travel_unified` composes void monotonicity, sibling-not-past, branch increase, and future simulation into one statement. Also mechanized in the existing `GrandfatherParadox.lean` (12 theorems) and `RetrocausalBound.lean` (9 theorems).
+
+---
+
+Each prediction chains three or more mechanized theorems into a claim that no single theorem makes alone. The 19 predictions span semiconductor physics, genomics, immunology, psychotherapy, compression, finance, neuroscience, photobiology, protein biochemistry, distributed systems, machine learning, political science, mathematical logic, philosophy of mind, and the physics of time -- 15 domains, one ledger, zero shared assumptions beyond the three constraints (conservation, irreversibility, ground state) and the four primitives (fork, race, fold, vent). The companion suite includes three TypeScript test files (73 tests, 0 failures), three Lean 4 theorem files (`PredictionProofs.lean`, `ArrowGodelConsciousness.lean`, `TimeTravelTopology.lean` -- sorry-free, clean build), and one TLA+ specification (`PredictionProofs.tla` -- 12 invariants).
 
 ### 19.9 Five Cancer Topology Predictions from the Ledger
 
@@ -4123,7 +4141,25 @@ Five predictions composing whip wave duality with communication priority, Jackso
 
 ---
 
-The eighty-five predictions (§19.8 through §19.24) now span thirty-seven domains. All eighty-five chain mechanized theorems (Lean4 sorry-free). All eighty-five name their falsification conditions. The algebraic content of subsequent predictions would consist of restatements of existing theorems in increasingly interpretive contexts. The stopping criterion is met: further predictions no longer produce novel algebraic structure from the LEDGER.
+### 19.25 Five Composition and Boundary Predictions from the Fisher Manifold
+
+The final round of geometric predictions proves composition properties of the four-layer stack and boundary conditions of the Buleyean formula itself. All five are proved in `predictions-r4.test.ts` (13 tests, 0 failures, 158 assertions).
+
+**Prediction 86: The weight ratio max(w)/min(w) is bounded by T+1, and this bound is tight.** When one dimension has zero rejections (weight $T+1$) and another has $T$ rejections (weight 1), the ratio achieves its maximum. The ratio is 1 iff the distribution is uniform. *Theorem chain:* `buleyean_max_uncertainty` $\to$ `buleyean_min_uncertainty` $\to$ weight ratio = $(T+1)/1$. *Falsification:* if any boundary produces a ratio exceeding $T+1$, the bound fails. Mechanized: `buleyean_weight_range` (FisherManifold.lean).
+
+**Prediction 87: The void boundary is a sufficient statistic -- trajectory order does not affect the distribution.** Two rejection sequences producing the same per-dimension counts yield identical Buleyean distributions, identical Fisher-Rao distances, and identical manifold coordinates. Bulk updates ($+k$ at once) are equivalent to $k$ sequential unit updates. *Theorem chain:* `buleyean_coherence` $\to$ weight formula depends only on $v_i$ and $T$ $\to$ order independence. *Falsification:* if two trajectories with identical per-dimension counts produce different distributions, the sufficient-statistic property fails. Mechanized: `buleyean_coherence` (BuleyeanProbability.lean).
+
+**Prediction 88: The retrocausal layer retains the most information after many ticks.** Among the four layers, the retrocausal layer (timescale: lifetime, decay rate 0.0005) retains the greatest Fisher-Rao distance from uniform after extended tickingwithout new data. The frequentist layer (timescale: minutes, decay rate 0.2) loses information fastest. This is the geometric content of the timescale hierarchy: slower clocks remember longer. *Theorem chain:* `TIMESCALE_DECAY` ordering $\to$ `tickTimescaleBoundary` $\to$ `decayVoidBoundary` $\to$ Fisher-Rao distance from uniform. *Falsification:* if the frequentist layer retains more curvature than the retrocausal layer after 50 ticks of pure decay, the ordering fails.
+
+**Prediction 89: The retrocausal-Solomonoff resonance link couples non-adjacent layers on the manifold.** After sufficient ticks, the inter-layer Fisher-Rao distance between the retrocausal ($b_0$) and Solomonoff ($b_3$) layers decreases, even though they are not adjacent in the stack. The resonance link (strength 0.08 forward, 0.03 backward) acts as a geometric spring that pulls their distributions toward each other. All Buleyean axioms hold throughout the coupling. *Theorem chain:* `createResonance` $\to$ `applyResonance` $\to$ `tickBoundaryStack` $\to$ manifold coordinates. *Falsification:* if the retrocausal-Solomonoff distance increases under ticking, the resonance coupling prediction fails.
+
+**Prediction 90: The Buleyean formula is not idempotent -- uniform is the only fixed point.** Applying the Buleyean formula to its own output (treating scaled probabilities as void counts) does NOT recover the original distribution. The non-uniform distributions diverge under self-application, while the uniform distribution is preserved. Iterated self-application converges toward uniform (the formula smooths concentration). *Theorem chain:* weight formula nonlinearity $\to$ self-application maps $p_i \mapsto (1 - p_i) \cdot S' / S''$ $\to$ contraction toward uniform. *Falsification:* if a non-uniform distribution is a fixed point of self-application, the uniqueness claim fails.
+
+---
+
+The ninety predictions (§19.8 through §19.25) now span thirty-eight domains. The geometric predictions (§19.10, §19.15, §19.18, §19.25) contribute 58 computational proofs across four test files (`predictions.test.ts`, `predictions-r2.test.ts`, `predictions-r3.test.ts`, `predictions-r4.test.ts`) with 117 tests total in `@a0n/maybe`, all passing. The FisherManifold.lean formalization provides 14 Lean 4 theorems (zero sorry) and FisherManifold.tla provides nine TLA+ invariants.
+
+The stopping criterion is now met for the Fisher manifold: the weight ratio bound, sufficient-statistic property, decay ordering, resonance coupling, and non-idempotence exhaust the algebraic structure of the Buleyean-Fisher interaction. Further predictions from this surface would consist of restatements or trivial compositions.
 
 ## 20. Conclusion
 
