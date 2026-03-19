@@ -67,3 +67,4 @@ import ForkRaceFoldTheorems.PredictionsRound3
 import ForkRaceFoldTheorems.PredictionsRound4
 import ForkRaceFoldTheorems.FisherManifold
 import ForkRaceFoldTheorems.SemioticPeace
+import ForkRaceFoldTheorems.NovelInference
