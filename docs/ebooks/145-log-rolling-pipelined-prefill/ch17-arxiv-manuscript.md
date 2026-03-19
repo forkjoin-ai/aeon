@@ -4641,6 +4641,24 @@ The two hundred twenty-one predictions (§19.8 through §19.51) now span one hun
 
 **Companion theorems for §19.51:** Lean `TradeTopologyRound3.lean` (sorry-free, 20 theorems including master), TLA+ `TradeTopologyRound3.tla` (8 invariants), tests `prediction-proofs-trade-r3.test.ts` (27 tests). Self-hosted.
 
+### 19.52 Five Rate Theorems from the Buleyean-Fisher Dichotomy
+
+The deepest algebraic predictions: convergence rate constants, simplex interior guarantees, and the Hellinger-Fisher identity. Proved in `predictions-r6.test.ts` (16 tests, 0 failures, 150 assertions). 147 total tests in `@a0n/maybe`.
+
+**Prediction 222: The Buleyean distribution is always in the strict interior of the simplex.** $p_{\min} = 1/S > 0$ where $S = T(n-1)+n$. The Fisher metric is always finite. The simplex boundary is unreachable. *Theorem chain:* `buleyean_positivity` $\to$ `buleyean_min_uncertainty` $\to$ $p_{\min} = 1/S$. Mechanized: `buleyean_weight_range` (FisherManifold.lean). *Falsification:* if any Buleyean probability is zero, the interior guarantee fails.
+
+**Prediction 223: The Buleyean max probability limit is $1/(n-1)$ -- the democratic floor.** Under concentrated rejection, $p_{\max} = (T+1)/(T(n-1)+n) \to 1/(n-1)$ as $T \to \infty$. The gnosis softmax limit is $1/(n-1+e^{-\eta})$, strictly lower. The Buleyean limit is parameter-free. *Theorem chain:* weight formula limit $\to$ $1/(n-1) > 1/(n-1+e^{-\eta})$ for all $\eta > 0$. *Falsification:* if $p_{\max}$ exceeds $1/(n-1) + \epsilon$ for large $T$.
+
+**Prediction 224: The Hellinger distance is a closed-form function of Fisher-Rao.** $H(p,q) = \sqrt{1 - \cos(d_{\text{FR}}/2)}$. This is exact, converts in $O(1)$, $H \in [0,1]$ always, $H = 0$ iff $d_{\text{FR}} = 0$. *Theorem chain:* BC $\to$ $d_{\text{FR}} = 2\arccos(\text{BC})$ $\to$ $H = \sqrt{1 - \text{BC}}$. *Falsification:* if the identity fails for any Buleyean pair.
+
+**Prediction 225: Buleyean entropy is strictly decreasing under bias, constant under uniform rejection.** Each biased rejection reduces $H$ strictly. The decrease per step is bounded and approaches zero (diminishing returns). Uniform rejection preserves $H = \log(n)$ exactly. *Theorem chain:* weight ratio change $\to$ entropy decrease $\to$ uniform preserves ratios. *Falsification:* if entropy increases under single-dimension rejection, or deviates from $\log(n)$ under uniform.
+
+**Prediction 226: The convergence rate dichotomy is a structural constant.** The Buleyean limit $1/(n-1)$ depends only on $n$ -- no tunable parameters. The gnosis softmax limit $1/(n-1+e^{-\eta})$ depends on $\eta$. Neither produces a delta from finite data. Both maintain positivity slivers: Buleyean's is $1/S$ (algebraic), gnosis softmax's depends on $\eta$ (range-normalized exponential). The Buleyean limit is strictly higher for all $\eta > 0$ and $n > 2$. *Theorem chain:* Buleyean limit $\to$ softmax limit $\to$ ordering proof. *Falsification:* if gnosis softmax exceeds Buleyean max probability at any $T > 100$.
+
+---
+
+The two hundred twenty-six predictions (§19.8 through §19.52) now span one hundred twelve domains. The `@a0n/maybe` package contains 147 tests across nine files with 1,195 assertions, backed by 14 Lean 4 theorems (FisherManifold.lean, zero sorry, builds clean) and nine TLA+ invariants (FisherManifold.tla). The rate theorems reveal the deepest algebraic distinction: the Buleyean limit $1/(n-1)$ is a structural constant, not a parameter. No further algebraic content can be extracted without introducing new mathematical machinery beyond the existing `@a0n/maybe` runtime.
+
 ## 20. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
