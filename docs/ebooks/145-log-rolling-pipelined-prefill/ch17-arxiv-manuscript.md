@@ -4929,9 +4929,29 @@ Five genuinely new theorems from composing three LEDGER modules whose triple has
 
 ---
 
-The two hundred ninety-six predictions (§19.8 through §19.67) now span one hundred thirty-five domains. All two hundred ninety-six chain mechanized theorems (Lean4 sorry-free). All two hundred ninety-six name their falsification conditions. The novel triple compositions (§19.67) compose three-module chains that have never been attempted despite each constituent pair existing in the codebase, producing genuinely new algebraic results.
+The two hundred ninety-six predictions (§19.8 through §19.67) now span one hundred thirty-five domains. All two hundred ninety-six chain mechanized theorems (Lean4 sorry-free). All two hundred ninety-six name their falsification conditions.
 
 **Companion theorems for §19.67:** Lean `NovelTripleCompositions.lean` (sorry-free, 16 theorems including master), tests `novel-triple-compositions.test.ts` (25 tests). Self-hosted.
+
+### 19.68 Five Deeper Triple Compositions: Communication Trilemma, Codec Selection, Protocol Turbulence, Failure RG Flow, and Hierarchical Mediation
+
+Second round of novel triple compositions from the 25 Category 1 untried triples. Each composes three modules whose pairs exist but whose triple has never been chained.
+
+**Prediction 297. Communication through a deficit-positive channel faces a trilemma: you cannot be simultaneously lossless, cheap, and deterministic.** *Triple: CoveringSpaceCausality $\times$ FailureTrilemma $\times$ SemioticDeficit.* The failure trilemma (THM-FAIL-TRILEMMA: zero vent + zero debt + deterministic collapse is impossible for nontrivial forks) applied to speech: the semiotic deficit IS the fork's nontrivial $\beta_1$. `communication_trilemma` proves the deficit is positive. `deficit_forces_cost` proves at least one cost (erasure, delay, or non-determinism) must be paid. *Falsification:* if any communication channel with positive semiotic deficit achieves lossless, real-time, deterministic transmission.
+
+**Prediction 298. Racing codecs selects the one that minimizes semiotic deficit: the winner matches transport topology to content topology.** *Triple: CodecRacing $\times$ CoveringSpaceCausality $\times$ SemioticDeficit.* `winner_minimizes_deficit` proves the winner has deficit $\leq$ every loser. `perfect_codec_zero_deficit` proves a topology-matched codec achieves zero deficit. `racing_vents_losers` proves $k - 1$ codecs are eliminated, producing evidence for the winner's quality. *Falsification:* if a codec race selects a higher-deficit codec over a lower-deficit one in a fair benchmark.
+
+**Prediction 299. Protocol turbulence threshold depends on the monoidal coherence of the transport layer.** *Triple: CoveringSpaceCausality $\times$ MonoidalCoherence $\times$ ReynoldsBFT.* The Reynolds number Re $=$ issues/capacity determines laminar vs turbulent regimes (THM-REYNOLDS-BFT). Monoidal coherence (THM-COHERENCE) increases effective capacity. `turbulence_when_overloaded` proves the threshold. `coherence_increases_capacity` proves the coherence bonus. *Falsification:* if protocol composition does not increase the turbulence threshold in network benchmarks.
+
+**Prediction 300. Failure entropy has renormalization fixed points: coarsening failure modes terminates when only one failure class remains.** *Triple: FailureEntropy $\times$ RenormalizationFixedPoints $\times$ ThermodynamicTracedMonoidal.* Iterated coarsening of failure modes (RG flow) reduces the number of distinct failure classes. Each step generates Landauer heat (ThermodynamicTracedMonoidal). The trajectory terminates at modes $= 1$ (single failure class). `coarsening_reduces_modes` proves monotone decrease. `failure_rg_fixed_point` proves the terminal condition. `failure_coarsening_heat` proves per-step heat. *Falsification:* if coarsening failure modes produces more classes than it started with for any system.
+
+**Prediction 301. Hierarchical mediation is renormalization group flow: each level coarsens the dispute, and settlement is the deficit-zero fixed point.** *Triple: NegotiationEquilibrium $\times$ RenormalizationFixedPoints $\times$ SemioticDeficit.* Each mediation level reduces the semiotic deficit by some amount. `mediation_monotone_deficit` proves monotone decrease. `mediation_reaches_settlement` proves sufficient levels yield zero deficit. `settlement_is_rg_fixed_point` proves once deficit reaches zero, it stays zero (fixed point). *Falsification:* if adding a mediation level increases the deficit in a controlled mediation experiment ($N > 50$).
+
+---
+
+The three hundred one predictions (§19.8 through §19.68) now span one hundred thirty-eight domains. All three hundred one chain mechanized theorems (Lean4 sorry-free). All three hundred one name their falsification conditions.
+
+**Companion theorems for §19.68:** Lean `NovelTripleCompositions2.lean` (sorry-free, 16 theorems including master), tests `novel-triple-compositions2.test.ts` (21 tests). Self-hosted.
 
 ## 20. Conclusion
 
