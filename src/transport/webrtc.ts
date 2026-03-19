@@ -197,7 +197,9 @@ export class WebRTCFlowTransport implements FlowTransport {
       return;
     }
 
-    this.dc.send(data);
+    const payload = new Uint8Array(data.byteLength);
+    payload.set(data);
+    this.dc.send(payload);
   }
 
   onReceive(handler: (data: Uint8Array) => void): void {

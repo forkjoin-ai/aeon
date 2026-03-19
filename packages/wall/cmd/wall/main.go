@@ -42,7 +42,10 @@ Output:
 package main
 
 import (
+	"context"
+	"crypto/tls"
 	"encoding/binary"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -54,6 +57,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
+	webtransport "github.com/quic-go/webtransport-go"
 )
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -61,15 +67,17 @@ import (
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const (
-	HeaderSize   = 10
-	MaxPayload   = 0xFFFFFF
-	MaxDatagram  = 65536
-	UDPBufBytes  = 4 * 1024 * 1024
-	FlagFork     = 0x01
-	FlagRace     = 0x02
-	FlagCollapse = 0x04
-	FlagPoison   = 0x08
-	FlagFIN      = 0x10
+	HeaderSize               = 10
+	MaxPayload               = 0xFFFFFF
+	MaxDatagram              = 65536
+	UDPBufBytes              = 4 * 1024 * 1024
+	SingleRequestReadTimeout = 10 * time.Second
+	FlagFork                 = 0x01
+	FlagRace                 = 0x02
+	FlagCollapse             = 0x04
+	FlagPoison               = 0x08
+	FlagFIN                  = 0x10
+	FlagVent                 = 0x40
 )
 
 // Frame is a single Aeon Flow protocol frame.
@@ -109,6 +117,99 @@ type propagatedAuthOptions struct {
 	flags         string
 	requestPID    string
 	supervisorPID string
+}
+
+type flowDuplexConn interface {
+	io.ReadWriteCloser
+	SetReadDeadline(time.Time) error
+	SetWriteDeadline(time.Time) error
+}
+
+type discoveredFlowTarget struct {
+	requestURL           *url.URL
+	requestPath          string
+	websocketEndpoint    string
+	websocketStatus      string
+	webtransportEndpoint string
+	webtransportStatus   string
+}
+
+type websocketNetConn struct {
+	conn    *websocket.Conn
+	readBuf []byte
+	readPos int
+}
+
+func (c *websocketNetConn) Read(p []byte) (int, error) {
+	for c.readPos >= len(c.readBuf) {
+		messageType, data, err := c.conn.ReadMessage()
+		if err != nil {
+			return 0, err
+		}
+		if messageType != websocket.BinaryMessage {
+			continue
+		}
+		c.readBuf = data
+		c.readPos = 0
+	}
+
+	n := copy(p, c.readBuf[c.readPos:])
+	c.readPos += n
+	if c.readPos >= len(c.readBuf) {
+		c.readBuf = nil
+		c.readPos = 0
+	}
+	return n, nil
+}
+
+func (c *websocketNetConn) Write(p []byte) (int, error) {
+	if err := c.conn.WriteMessage(websocket.BinaryMessage, p); err != nil {
+		return 0, err
+	}
+	return len(p), nil
+}
+
+func (c *websocketNetConn) Close() error {
+	return c.conn.Close()
+}
+
+func (c *websocketNetConn) SetReadDeadline(deadline time.Time) error {
+	return c.conn.SetReadDeadline(deadline)
+}
+
+func (c *websocketNetConn) SetWriteDeadline(deadline time.Time) error {
+	return c.conn.SetWriteDeadline(deadline)
+}
+
+type webTransportStreamConn struct {
+	session   *webtransport.Session
+	stream    *webtransport.Stream
+	closeOnce sync.Once
+}
+
+func (c *webTransportStreamConn) Read(p []byte) (int, error) {
+	return c.stream.Read(p)
+}
+
+func (c *webTransportStreamConn) Write(p []byte) (int, error) {
+	return c.stream.Write(p)
+}
+
+func (c *webTransportStreamConn) Close() error {
+	var closeErr error
+	c.closeOnce.Do(func() {
+		_ = c.stream.Close()
+		closeErr = c.session.CloseWithError(0, "wall closed")
+	})
+	return closeErr
+}
+
+func (c *webTransportStreamConn) SetReadDeadline(deadline time.Time) error {
+	return c.stream.SetReadDeadline(deadline)
+}
+
+func (c *webTransportStreamConn) SetWriteDeadline(deadline time.Time) error {
+	return c.stream.SetWriteDeadline(deadline)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -161,7 +262,7 @@ func DecodeFrame(buf []byte) (Frame, int, error) {
 
 // AeonConn wraps a TCP or UDP connection to an Aeon Flow server.
 type AeonConn struct {
-	conn         net.Conn
+	conn         flowDuplexConn
 	udp          bool
 	nextStreamID uint16
 	events       []FrameEvent
@@ -215,6 +316,93 @@ func DialUDP(addr string) (*AeonConn, error) {
 		recordEvents: true,
 		recvBuf:      make([]byte, MaxDatagram),
 	}, nil
+}
+
+func DialWebSocket(rawURL string, headers map[string]string) (*AeonConn, error) {
+	requestHeaders := make(http.Header, len(headers))
+	for key, value := range headers {
+		requestHeaders.Set(key, value)
+	}
+
+	wsConn, resp, err := websocket.DefaultDialer.Dial(rawURL, requestHeaders)
+	if err != nil {
+		if resp != nil && resp.Body != nil {
+			defer resp.Body.Close()
+			body, _ := io.ReadAll(resp.Body)
+			return nil, fmt.Errorf("connect websocket %s: %w (%s)", rawURL, err, strings.TrimSpace(string(body)))
+		}
+		return nil, fmt.Errorf("connect websocket %s: %w", rawURL, err)
+	}
+
+	return &AeonConn{
+		conn:         &websocketNetConn{conn: wsConn},
+		nextStreamID: 0,
+		startTime:    time.Now(),
+		recordEvents: true,
+	}, nil
+}
+
+func DialWebTransport(rawURL string, headers map[string]string) (*AeonConn, error) {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return nil, fmt.Errorf("parse webtransport URL %s: %w", rawURL, err)
+	}
+	if _, _, splitErr := net.SplitHostPort(u.Host); splitErr != nil {
+		defaultPort := "443"
+		if u.Scheme == "http" {
+			defaultPort = "80"
+		}
+		u.Host = net.JoinHostPort(u.Hostname(), defaultPort)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	requestHeaders := make(http.Header, len(headers))
+	for key, value := range headers {
+		requestHeaders.Set(key, value)
+	}
+
+	var tlsConfig *tls.Config
+	if isLoopbackHost(u.Hostname()) {
+		tlsConfig = &tls.Config{InsecureSkipVerify: true}
+	}
+
+	dialer := webtransport.Dialer{
+		TLSClientConfig: tlsConfig,
+	}
+
+	resp, session, err := dialer.Dial(ctx, u.String(), requestHeaders)
+	if err != nil {
+		if resp != nil {
+			return nil, fmt.Errorf("connect webtransport %s: %w (HTTP %s)", rawURL, err, resp.Status)
+		}
+		return nil, fmt.Errorf("connect webtransport %s: %w", rawURL, err)
+	}
+
+	stream, err := session.OpenStreamSync(ctx)
+	if err != nil {
+		_ = session.CloseWithError(0, "stream open failed")
+		return nil, fmt.Errorf("open webtransport stream %s: %w", rawURL, err)
+	}
+
+	return &AeonConn{
+		conn: &webTransportStreamConn{
+			session: session,
+			stream:  stream,
+		},
+		nextStreamID: 0,
+		startTime:    time.Now(),
+		recordEvents: true,
+	}, nil
+}
+
+func isLoopbackHost(host string) bool {
+	if host == "localhost" {
+		return true
+	}
+	ip := net.ParseIP(host)
+	return ip != nil && ip.IsLoopback()
 }
 
 func appendFramePayload(dst []byte, f Frame) []byte {
@@ -316,9 +504,123 @@ func buildRequestPayload(method, path string, headers map[string]string) []byte 
 
 func benchmarkAeonPayload(path string, headers map[string]string, rawPath bool) []byte {
 	if rawPath {
-		return []byte(path)
+		if len(headers) == 0 {
+			return []byte(path)
+		}
+
+		keys := make([]string, 0, len(headers))
+		for key := range headers {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+
+		var sb strings.Builder
+		sb.Grow(len(path) + len(headers)*32)
+		sb.WriteString(path)
+		for _, key := range keys {
+			sb.WriteByte('\n')
+			sb.WriteString(key)
+			sb.WriteString(": ")
+			sb.WriteString(headers[key])
+		}
+		return []byte(sb.String())
 	}
 	return buildRequestPayload("GET", path, headers)
+}
+
+func discoverFlowTarget(rawURL string, headers map[string]string, verbose bool) (discoveredFlowTarget, error) {
+	requestURL, err := url.Parse(rawURL)
+	if err != nil {
+		return discoveredFlowTarget{}, fmt.Errorf("parse request URL: %w", err)
+	}
+	if requestURL.Scheme != "http" && requestURL.Scheme != "https" {
+		return discoveredFlowTarget{}, fmt.Errorf("browser flow discovery requires http(s) URL, got %s://", requestURL.Scheme)
+	}
+
+	resp, err := inspectFlowHeaders(http.MethodHead, rawURL, headers)
+	if err != nil {
+		return discoveredFlowTarget{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusMethodNotAllowed {
+		resp, err = inspectFlowHeaders(http.MethodGet, rawURL, headers)
+		if err != nil {
+			return discoveredFlowTarget{}, err
+		}
+		defer resp.Body.Close()
+	}
+
+	websocketEndpoint := strings.TrimSpace(resp.Header.Get("X-Aeon-WebSocket-Endpoint"))
+	legacyEndpoint := strings.TrimSpace(resp.Header.Get("X-Aeon-Flow-Endpoint"))
+	if websocketEndpoint == "" && (strings.HasPrefix(legacyEndpoint, "ws://") || strings.HasPrefix(legacyEndpoint, "wss://")) {
+		websocketEndpoint = legacyEndpoint
+	}
+
+	websocketStatus := strings.ToLower(strings.TrimSpace(resp.Header.Get("X-Aeon-WebSocket-Status")))
+	if websocketStatus == "" && websocketEndpoint != "" {
+		switch strings.ToLower(strings.TrimSpace(resp.Header.Get("X-Aeon-Flow"))) {
+		case "disabled":
+			websocketStatus = "disabled"
+		case "reserved":
+			websocketStatus = "reserved"
+		default:
+			websocketStatus = "available"
+		}
+	}
+
+	webtransportEndpoint := strings.TrimSpace(resp.Header.Get("X-Aeon-WebTransport-Endpoint"))
+	if webtransportEndpoint == "" {
+		webtransportEndpoint = requestURL.ResolveReference(&url.URL{Path: "/.aeon/udp"}).String()
+	}
+	webtransportStatus := strings.ToLower(strings.TrimSpace(resp.Header.Get("X-Aeon-WebTransport-Status")))
+	if webtransportStatus == "" {
+		webtransportStatus = "unknown"
+	}
+
+	target := discoveredFlowTarget{
+		requestURL:           requestURL,
+		requestPath:          requestPath(requestURL),
+		websocketEndpoint:    websocketEndpoint,
+		websocketStatus:      websocketStatus,
+		webtransportEndpoint: webtransportEndpoint,
+		webtransportStatus:   webtransportStatus,
+	}
+
+	if verbose {
+		fmt.Fprintf(os.Stderr, "discovered request path: %s\n", target.requestPath)
+		if target.websocketEndpoint != "" {
+			fmt.Fprintf(os.Stderr, "discovered websocket endpoint: %s (%s)\n", target.websocketEndpoint, transportStatusLabel(target.websocketStatus))
+		}
+		if target.webtransportEndpoint != "" {
+			fmt.Fprintf(os.Stderr, "discovered webtransport endpoint: %s (%s)\n", target.webtransportEndpoint, transportStatusLabel(target.webtransportStatus))
+		}
+	}
+
+	return target, nil
+}
+
+func inspectFlowHeaders(method, rawURL string, headers map[string]string) (*http.Response, error) {
+	req, err := http.NewRequest(method, rawURL, nil)
+	if err != nil {
+		return nil, fmt.Errorf("create discovery request: %w", err)
+	}
+	for key, value := range headers {
+		req.Header.Set(key, value)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("discover flow headers: %w", err)
+	}
+	return resp, nil
+}
+
+func transportStatusLabel(status string) string {
+	if strings.TrimSpace(status) == "" {
+		return "unknown"
+	}
+	return status
 }
 
 // Close closes the connection.
@@ -492,18 +794,8 @@ func (c *AeonConn) Poison(streamID uint16, seq uint32) error {
 // Request Modes
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// doSingleRequest performs a single Aeon Flow request.
-func doSingleRequest(addr, path string, headers map[string]string, verbose bool, udp ...bool) ([]byte, []FrameEvent, error) {
-	var conn *AeonConn
-	var err error
-	if len(udp) > 0 && udp[0] {
-		conn, err = DialUDP(addr)
-	} else {
-		conn, err = Dial(addr)
-	}
-	if err != nil {
-		return nil, nil, err
-	}
+// doSingleRequestWithConn performs a single Aeon Flow request on an existing transport.
+func doSingleRequestWithConn(conn *AeonConn, path string, headers map[string]string, verbose bool) ([]byte, []FrameEvent, error) {
 	defer conn.Close()
 	conn.verbose = verbose
 
@@ -516,6 +808,10 @@ func doSingleRequest(addr, path string, headers map[string]string, verbose bool,
 	// Read response frames until FIN or POISON
 	var body []byte
 	for {
+		if err := conn.conn.SetReadDeadline(time.Now().Add(SingleRequestReadTimeout)); err != nil {
+			return nil, conn.events, fmt.Errorf("set read deadline: %w", err)
+		}
+
 		f, err := conn.Recv()
 		if err != nil {
 			if err == io.EOF {
@@ -538,12 +834,23 @@ func doSingleRequest(addr, path string, headers map[string]string, verbose bool,
 	return body, conn.events, nil
 }
 
-// doForkRequest performs a FORK request with multiple child paths.
-func doForkRequest(addr, rootPath string, childPaths []string, headers map[string]string, verbose bool) (map[string][]byte, []FrameEvent, error) {
-	conn, err := Dial(addr)
+// doSingleRequest performs a single Aeon Flow request.
+func doSingleRequest(addr, path string, headers map[string]string, verbose bool, udp ...bool) ([]byte, []FrameEvent, error) {
+	var conn *AeonConn
+	var err error
+	if len(udp) > 0 && udp[0] {
+		conn, err = DialUDP(addr)
+	} else {
+		conn, err = Dial(addr)
+	}
 	if err != nil {
 		return nil, nil, err
 	}
+	return doSingleRequestWithConn(conn, path, headers, verbose)
+}
+
+// doForkRequestWithConn performs a FORK request with multiple child paths on an existing transport.
+func doForkRequestWithConn(conn *AeonConn, childPaths []string, headers map[string]string, verbose bool) (map[string][]byte, []FrameEvent, error) {
 	defer conn.Close()
 	conn.verbose = verbose
 
@@ -574,6 +881,10 @@ func doForkRequest(addr, rootPath string, childPaths []string, headers map[strin
 	finished := 0
 
 	for finished < len(children) {
+		if err := conn.conn.SetReadDeadline(time.Now().Add(SingleRequestReadTimeout)); err != nil {
+			return results, conn.events, fmt.Errorf("set read deadline: %w", err)
+		}
+
 		f, err := conn.Recv()
 		if err != nil {
 			if err == io.EOF {
@@ -602,6 +913,15 @@ func doForkRequest(addr, rootPath string, childPaths []string, headers map[strin
 	}
 
 	return results, conn.events, nil
+}
+
+// doForkRequest performs a FORK request with multiple child paths.
+func doForkRequest(addr, rootPath string, childPaths []string, headers map[string]string, verbose bool) (map[string][]byte, []FrameEvent, error) {
+	conn, err := Dial(addr)
+	if err != nil {
+		return nil, nil, err
+	}
+	return doForkRequestWithConn(conn, childPaths, headers, verbose)
 }
 
 // doHTTPRequest performs a standard HTTP request (for comparison).
@@ -640,6 +960,440 @@ func doHTTPRequest(rawURL string, headers map[string]string, verbose bool) ([]by
 	return body, elapsed, err
 }
 
+func serializeBrowserFlowRequest(method, rawURL string, headers map[string]string, body []byte) []byte {
+	methodBytes := []byte(method)
+	urlBytes := []byte(rawURL)
+	headerMap := headers
+	if headerMap == nil {
+		headerMap = map[string]string{}
+	}
+	headersJSON, err := json.Marshal(headerMap)
+	if err != nil {
+		headersJSON = []byte("{}")
+	}
+
+	totalSize :=
+		1 + len(methodBytes) +
+			2 + len(urlBytes) +
+			4 + len(headersJSON) +
+			len(body)
+
+	buf := make([]byte, totalSize)
+	view := buf
+	offset := 0
+
+	view[offset] = byte(len(methodBytes))
+	offset++
+	copy(view[offset:], methodBytes)
+	offset += len(methodBytes)
+
+	binary.BigEndian.PutUint16(view[offset:offset+2], uint16(len(urlBytes)))
+	offset += 2
+	copy(view[offset:], urlBytes)
+	offset += len(urlBytes)
+
+	binary.BigEndian.PutUint32(view[offset:offset+4], uint32(len(headersJSON)))
+	offset += 4
+	copy(view[offset:], headersJSON)
+	offset += len(headersJSON)
+
+	copy(view[offset:], body)
+	return buf
+}
+
+func deserializeBrowserFlowRequest(payload []byte) (string, string, map[string]string, []byte, error) {
+	if len(payload) < 7 {
+		return "", "", nil, nil, fmt.Errorf("browser flow request too short: %d", len(payload))
+	}
+
+	offset := 0
+	methodLen := int(payload[offset])
+	offset++
+	if len(payload) < offset+methodLen+2 {
+		return "", "", nil, nil, fmt.Errorf("browser flow request method truncated")
+	}
+	method := string(payload[offset : offset+methodLen])
+	offset += methodLen
+
+	urlLen := int(binary.BigEndian.Uint16(payload[offset : offset+2]))
+	offset += 2
+	if len(payload) < offset+urlLen+4 {
+		return "", "", nil, nil, fmt.Errorf("browser flow request url truncated")
+	}
+	rawURL := string(payload[offset : offset+urlLen])
+	offset += urlLen
+
+	headersLen := int(binary.BigEndian.Uint32(payload[offset : offset+4]))
+	offset += 4
+	if len(payload) < offset+headersLen {
+		return "", "", nil, nil, fmt.Errorf("browser flow request headers truncated")
+	}
+
+	headers := map[string]string{}
+	if headersLen > 0 {
+		if err := json.Unmarshal(payload[offset:offset+headersLen], &headers); err != nil {
+			return "", "", nil, nil, fmt.Errorf("decode browser flow request headers: %w", err)
+		}
+	}
+	offset += headersLen
+
+	body := append([]byte(nil), payload[offset:]...)
+	return method, rawURL, headers, body, nil
+}
+
+func deserializeBrowserFlowResponse(payload []byte) (int, map[string]string, []byte, error) {
+	if len(payload) < 6 {
+		return 0, nil, nil, fmt.Errorf("browser flow response too short: %d", len(payload))
+	}
+
+	view := payload
+	offset := 0
+	status := int(binary.BigEndian.Uint16(view[offset : offset+2]))
+	offset += 2
+
+	headersLen := int(binary.BigEndian.Uint32(view[offset : offset+4]))
+	offset += 4
+	if len(payload) < offset+headersLen {
+		return 0, nil, nil, fmt.Errorf("browser flow response headers truncated")
+	}
+
+	headersJSON := string(payload[offset : offset+headersLen])
+	offset += headersLen
+	headers := map[string]string{}
+	if headersLen > 0 {
+		if err := json.Unmarshal([]byte(headersJSON), &headers); err != nil {
+			return 0, nil, nil, fmt.Errorf("decode browser flow headers: %w", err)
+		}
+	}
+
+	body := append([]byte(nil), payload[offset:]...)
+	return status, headers, body, nil
+}
+
+func doBrowserRequestWithConn(
+	conn *AeonConn,
+	requestURL string,
+	headers map[string]string,
+	verbose bool,
+) ([]byte, []FrameEvent, error) {
+	defer conn.Close()
+	conn.verbose = verbose
+
+	streamID := conn.AllocStream()
+	payload := serializeBrowserFlowRequest(http.MethodGet, requestURL, headers, nil)
+	if err := conn.SendPayload(streamID, payload); err != nil {
+		return nil, nil, fmt.Errorf("send browser flow request: %w", err)
+	}
+
+	var responsePayload []byte
+	for {
+		if err := conn.conn.SetReadDeadline(time.Now().Add(SingleRequestReadTimeout)); err != nil {
+			return nil, conn.events, fmt.Errorf("set read deadline: %w", err)
+		}
+
+		frame, err := conn.Recv()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return nil, conn.events, fmt.Errorf("recv browser flow response: %w", err)
+		}
+		if frame.Flags&FlagPOISON != 0 {
+			return nil, conn.events, fmt.Errorf("stream %d poisoned by server", frame.StreamID)
+		}
+		responsePayload = appendFramePayload(responsePayload, frame)
+		if frame.Flags&FlagFIN != 0 {
+			break
+		}
+	}
+
+	status, responseHeaders, body, err := deserializeBrowserFlowResponse(responsePayload)
+	if err != nil {
+		return nil, conn.events, err
+	}
+	if verbose {
+		fmt.Fprintf(os.Stderr, "browser flow response: HTTP %d (%d headers)\n", status, len(responseHeaders))
+	}
+	return body, conn.events, nil
+}
+
+func doBrowserForkRequestWithConn(
+	conn *AeonConn,
+	baseURL *url.URL,
+	childPaths []string,
+	headers map[string]string,
+	verbose bool,
+) (map[string][]byte, []FrameEvent, error) {
+	defer conn.Close()
+	conn.verbose = verbose
+
+	rootStream := conn.AllocStream()
+	children, err := conn.Fork(rootStream, len(childPaths))
+	if err != nil {
+		return nil, conn.events, fmt.Errorf("fork: %w", err)
+	}
+
+	streamPaths := make(map[uint16]string, len(childPaths))
+	for index, childPath := range childPaths {
+		streamPaths[children[index]] = childPath
+		childURLRef, err := url.Parse(childPath)
+		if err != nil {
+			return nil, conn.events, fmt.Errorf("parse child path %q: %w", childPath, err)
+		}
+		childURL := baseURL.ResolveReference(childURLRef)
+		payload := serializeBrowserFlowRequest(http.MethodGet, childURL.String(), headers, nil)
+		if err := conn.SendPayload(children[index], payload); err != nil {
+			return nil, conn.events, fmt.Errorf("send child %d: %w", index, err)
+		}
+	}
+
+	results := make(map[string][]byte, len(childPaths))
+	responsePayloads := make(map[uint16][]byte, len(childPaths))
+	finished := 0
+
+	for finished < len(childPaths) {
+		if err := conn.conn.SetReadDeadline(time.Now().Add(SingleRequestReadTimeout)); err != nil {
+			return results, conn.events, fmt.Errorf("set read deadline: %w", err)
+		}
+
+		frame, err := conn.Recv()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return results, conn.events, fmt.Errorf("recv: %w", err)
+		}
+		if frame.Flags&FlagPOISON != 0 {
+			finished++
+			continue
+		}
+
+		responsePayloads[frame.StreamID] = appendFramePayload(responsePayloads[frame.StreamID], frame)
+		if frame.Flags&FlagFIN != 0 {
+			_, _, body, err := deserializeBrowserFlowResponse(responsePayloads[frame.StreamID])
+			if err != nil {
+				return results, conn.events, err
+			}
+			results[streamPaths[frame.StreamID]] = body
+			finished++
+		}
+	}
+
+	return results, conn.events, nil
+}
+
+func doDiscoveredTransportRequest(
+	rawURL string,
+	headers map[string]string,
+	verbose bool,
+	transport string,
+) ([]byte, []FrameEvent, string, error) {
+	target, err := discoverFlowTarget(rawURL, headers, verbose)
+	if err != nil {
+		return nil, nil, "", err
+	}
+
+	conn, err := dialDiscoveredTransport(target, headers, transport)
+	if err != nil {
+		return nil, nil, "", err
+	}
+
+	body, events, err := doBrowserRequestWithConn(conn, target.requestURL.String(), headers, verbose)
+	return body, events, transport, err
+}
+
+func doDiscoveredForkRequest(
+	rawURL string,
+	childPaths []string,
+	headers map[string]string,
+	verbose bool,
+	transport string,
+) (map[string][]byte, []FrameEvent, string, error) {
+	target, err := discoverFlowTarget(rawURL, headers, verbose)
+	if err != nil {
+		return nil, nil, "", err
+	}
+
+	conn, err := dialDiscoveredTransport(target, headers, transport)
+	if err != nil {
+		return nil, nil, "", err
+	}
+
+	results, events, err := doBrowserForkRequestWithConn(conn, target.requestURL, childPaths, headers, verbose)
+	return results, events, transport, err
+}
+
+func doDiscoveredRaceRequest(
+	rawURL string,
+	headers map[string]string,
+	verbose bool,
+	useWebSocket bool,
+	useWebTransport bool,
+) ([]byte, []FrameEvent, string, error) {
+	target, err := discoverFlowTarget(rawURL, headers, verbose)
+	if err != nil {
+		return nil, nil, "", err
+	}
+
+	transports := make([]string, 0, 2)
+	if useWebSocket {
+		transports = append(transports, benchmarkTransportWebSocket)
+	}
+	if useWebTransport {
+		transports = append(transports, benchmarkTransportWebTransport)
+	}
+	if len(transports) == 0 {
+		return nil, nil, "", fmt.Errorf("no discovered browser transports selected")
+	}
+	if len(transports) == 1 {
+		conn, err := dialDiscoveredTransport(target, headers, transports[0])
+		if err != nil {
+			return nil, nil, "", err
+		}
+		body, events, err := doBrowserRequestWithConn(conn, target.requestURL.String(), headers, verbose)
+		return body, events, transports[0], err
+	}
+
+	type raceResult struct {
+		body      []byte
+		events    []FrameEvent
+		err       error
+		transport string
+	}
+
+	raceID := uint64(time.Now().UnixNano())
+	results := make(chan raceResult, len(transports))
+	var conns sync.Map
+
+	for _, transport := range transports {
+		go func(transport string) {
+			raceHeaders := benchmarkHeaders(headers, 1, raceID, transport)
+
+			conn, err := dialDiscoveredTransport(target, headers, transport)
+			if err != nil {
+				results <- raceResult{err: err, transport: transport}
+				return
+			}
+			conns.Store(transport, conn)
+
+			body, events, err := doBrowserRequestWithConn(conn, target.requestURL.String(), raceHeaders, verbose)
+			results <- raceResult{
+				body:      body,
+				events:    events,
+				err:       err,
+				transport: transport,
+			}
+		}(transport)
+	}
+
+	var failures []string
+	for range transports {
+		result := <-results
+		if result.err == nil {
+			conns.Range(func(key, value any) bool {
+				transport := key.(string)
+				if transport == result.transport {
+					return true
+				}
+				conn := value.(*AeonConn)
+				_ = conn.Poison(0, 0)
+				_ = conn.Close()
+				return true
+			})
+			return result.body, result.events, result.transport, nil
+		}
+		failures = append(failures, fmt.Sprintf("%s: %v", result.transport, result.err))
+	}
+
+	return nil, nil, "", fmt.Errorf("browser transport race failed: %s", strings.Join(failures, "; "))
+}
+
+func dialDiscoveredTransport(
+	target discoveredFlowTarget,
+	headers map[string]string,
+	transport string,
+) (*AeonConn, error) {
+	switch transport {
+	case benchmarkTransportWebSocket:
+		if target.websocketEndpoint == "" {
+			return nil, fmt.Errorf("no Aeon websocket endpoint advertised for %s", target.requestURL)
+		}
+		if target.websocketStatus == "disabled" {
+			return nil, fmt.Errorf("Aeon websocket transport is disabled for %s", target.requestURL)
+		}
+		return DialWebSocket(target.websocketEndpoint, headers)
+	case benchmarkTransportWebTransport:
+		if target.webtransportStatus == "disabled" {
+			return nil, fmt.Errorf("Aeon webtransport transport is disabled for %s", target.requestURL)
+		}
+		return DialWebTransport(target.webtransportEndpoint, headers)
+	default:
+		return nil, fmt.Errorf("unsupported discovered transport %q", transport)
+	}
+}
+
+func doFlowRequest(
+	rawURL string,
+	headers map[string]string,
+	verbose bool,
+	udp bool,
+	useWebSocket bool,
+	useWebTransport bool,
+) ([]byte, []FrameEvent, string, error) {
+	if useWebSocket || useWebTransport {
+		return doDiscoveredRaceRequest(rawURL, headers, verbose, useWebSocket, useWebTransport)
+	}
+
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return nil, nil, "", fmt.Errorf("invalid URL: %w", err)
+	}
+	if u.Scheme != "aeon" {
+		return nil, nil, "", fmt.Errorf("expected aeon:// URL scheme, got %s://", u.Scheme)
+	}
+
+	addr := u.Host
+	if !strings.Contains(addr, ":") {
+		addr += ":4001"
+	}
+	body, events, err := doSingleRequest(addr, requestPath(u), headers, verbose, udp)
+	return body, events, benchmarkTransportAeon, err
+}
+
+func doFlowForkRequest(
+	rawURL string,
+	childPaths []string,
+	headers map[string]string,
+	verbose bool,
+	useWebSocket bool,
+	useWebTransport bool,
+) (map[string][]byte, []FrameEvent, string, error) {
+	if useWebSocket && useWebTransport {
+		return nil, nil, "", fmt.Errorf("fork mode requires selecting exactly one browser transport")
+	}
+	if useWebSocket {
+		return doDiscoveredForkRequest(rawURL, childPaths, headers, verbose, benchmarkTransportWebSocket)
+	}
+	if useWebTransport {
+		return doDiscoveredForkRequest(rawURL, childPaths, headers, verbose, benchmarkTransportWebTransport)
+	}
+
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return nil, nil, "", fmt.Errorf("invalid URL: %w", err)
+	}
+	if u.Scheme != "aeon" {
+		return nil, nil, "", fmt.Errorf("expected aeon:// URL scheme, got %s://", u.Scheme)
+	}
+
+	addr := u.Host
+	if !strings.Contains(addr, ":") {
+		addr += ":4001"
+	}
+	results, events, err := doForkRequest(addr, requestPath(u), childPaths, headers, verbose)
+	return results, events, benchmarkTransportAeon, err
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // Output Formatting
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -660,6 +1414,9 @@ func flagNames(flags uint8) string {
 	}
 	if flags&FlagFIN != 0 {
 		parts = append(parts, "FIN")
+	}
+	if flags&FlagVent != 0 {
+		parts = append(parts, "VENT")
 	}
 	if flags == 0 {
 		parts = append(parts, "DATA")
@@ -875,24 +1632,71 @@ const httpBenchmarkReadBufSize = 256 * 1024
 const benchmarkSetupTimeout = 10 * time.Second
 
 const (
-	benchmarkTransportAeon = "aeon"
-	benchmarkTransportHTTP = "http"
+	benchmarkTransportAeon         = "aeon"
+	benchmarkTransportHTTP         = "http"
+	benchmarkTransportWebSocket    = "websocket"
+	benchmarkTransportWebTransport = "webtransport"
 )
 
 type benchCompletion struct {
 	raceID    uint64
 	transport string
 	bytes     int
+	vented    bool
 }
 
 type benchmarkRaceState struct {
-	startedAt      time.Time
-	winnerRecorded bool
+	startedAt       time.Time
+	winnerRecorded  bool
+	winnerTransport string
+	plannedHTTP     bool
+	plannedAeon     bool
+	completedHTTP   bool
+	completedAeon   bool
+	skippedHTTP     bool
+	skippedAeon     bool
+}
+
+func (s *benchmarkRaceState) markCompleted(transport string) {
+	switch transport {
+	case benchmarkTransportHTTP:
+		s.completedHTTP = true
+	case benchmarkTransportAeon:
+		s.completedAeon = true
+	}
+}
+
+func (s *benchmarkRaceState) markSkipped(transport string) {
+	switch transport {
+	case benchmarkTransportHTTP:
+		s.skippedHTTP = true
+	case benchmarkTransportAeon:
+		s.skippedAeon = true
+	}
+}
+
+func (s *benchmarkRaceState) transportPending(transport string) bool {
+	switch transport {
+	case benchmarkTransportHTTP:
+		return s.plannedHTTP && !s.completedHTTP && !s.skippedHTTP
+	case benchmarkTransportAeon:
+		return s.plannedAeon && !s.completedAeon && !s.skippedAeon
+	default:
+		return false
+	}
+}
+
+func (s *benchmarkRaceState) isClosed() bool {
+	httpDone := !s.plannedHTTP || s.completedHTTP || s.skippedHTTP
+	aeonDone := !s.plannedAeon || s.completedAeon || s.skippedAeon
+	return httpDone && aeonDone
 }
 
 type benchClientStats struct {
 	requests            uint64
 	bytes               uint64
+	winnerBytes         uint64
+	loserBytes          uint64
 	latencySum          time.Duration
 	latencyMax          time.Duration
 	latencySamples      []time.Duration
@@ -901,6 +1705,11 @@ type benchClientStats struct {
 	sequenceRegressions uint64
 	httpWins            uint64
 	aeonWins            uint64
+	loserCompletions    uint64
+	loserVents          uint64
+	winnerVents         uint64
+	skippedHTTP         uint64
+	skippedAeon         uint64
 }
 
 func (s *benchClientStats) recordCompletion(latency time.Duration) {
@@ -920,6 +1729,8 @@ type benchResult struct {
 	duration            time.Duration
 	requests            uint64
 	bytes               uint64
+	winnerBytes         uint64
+	loserBytes          uint64
 	requestsPerSecond   float64
 	throughputMBps      float64
 	avgLatency          time.Duration
@@ -933,6 +1744,11 @@ type benchResult struct {
 	sequenceRegressions uint64
 	httpWins            uint64
 	aeonWins            uint64
+	loserCompletions    uint64
+	loserVents          uint64
+	winnerVents         uint64
+	skippedHTTP         uint64
+	skippedAeon         uint64
 }
 
 func awaitBenchmarkStart(start <-chan struct{}, abort <-chan struct{}, ready chan<- struct{}, setupDeadline time.Time) bool {
@@ -990,8 +1806,9 @@ func percentileDuration(sorted []time.Duration, fraction float64) time.Duration 
 	return sorted[index]
 }
 
-func benchmarkHeaders(base map[string]string, raceID uint64, transport string) map[string]string {
+func benchmarkHeaders(base map[string]string, clientID int, raceID uint64, transport string) map[string]string {
 	headers := cloneHeaders(base)
+	headers["X-Laminar-Client-ID"] = fmt.Sprintf("%d", clientID)
 	headers["X-Laminar-Race-ID"] = fmt.Sprintf("%d", raceID)
 	headers["X-Laminar-Transport"] = transport
 	return headers
@@ -1079,10 +1896,10 @@ func findHTTPHeaderEnd(buf []byte) int {
 	return -1
 }
 
-func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
+func parseHTTPBenchmarkResponse(buf []byte) (int, int, int, bool, error) {
 	headerEnd := findHTTPHeaderEnd(buf)
 	if headerEnd < 0 {
-		return 0, 0, false, nil
+		return 0, 0, 0, false, nil
 	}
 
 	statusEnd := -1
@@ -1093,7 +1910,15 @@ func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
 		}
 	}
 	if statusEnd <= 0 {
-		return 0, 0, false, fmt.Errorf("malformed HTTP response status line")
+		return 0, 0, 0, false, fmt.Errorf("malformed HTTP response status line")
+	}
+	statusFields := strings.Fields(string(buf[:statusEnd]))
+	if len(statusFields) < 2 {
+		return 0, 0, 0, false, fmt.Errorf("malformed HTTP response status line")
+	}
+	statusCode, ok := parseDecimalBytes([]byte(statusFields[1]))
+	if !ok {
+		return 0, 0, 0, false, fmt.Errorf("invalid HTTP response status code")
 	}
 
 	contentLength := -1
@@ -1104,7 +1929,7 @@ func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
 			lineEnd++
 		}
 		if lineEnd+1 >= headerEnd {
-			return 0, 0, false, fmt.Errorf("malformed HTTP response header line")
+			return 0, 0, 0, false, fmt.Errorf("malformed HTTP response header line")
 		}
 		if lineEnd == lineStart {
 			break
@@ -1118,12 +1943,12 @@ func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
 			}
 		}
 		if colon < 0 {
-			return 0, 0, false, fmt.Errorf("malformed HTTP response header: missing colon")
+			return 0, 0, 0, false, fmt.Errorf("malformed HTTP response header: missing colon")
 		}
 		if headerNameEqual(buf[lineStart:colon], "Content-Length") {
 			length, ok := parseDecimalBytes(buf[colon+1 : lineEnd])
 			if !ok {
-				return 0, 0, false, fmt.Errorf("invalid Content-Length header")
+				return 0, 0, 0, false, fmt.Errorf("invalid Content-Length header")
 			}
 			contentLength = length
 		}
@@ -1131,15 +1956,15 @@ func parseHTTPBenchmarkResponse(buf []byte) (int, int, bool, error) {
 	}
 
 	if contentLength < 0 {
-		return 0, 0, false, fmt.Errorf("missing Content-Length header")
+		return 0, 0, 0, false, fmt.Errorf("missing Content-Length header")
 	}
 
 	totalLen := headerEnd + contentLength
 	if len(buf) < totalLen {
-		return 0, 0, false, nil
+		return statusCode, contentLength, 0, false, nil
 	}
 
-	return contentLength, totalLen, true, nil
+	return statusCode, contentLength, totalLen, true, nil
 }
 
 func readHTTPBenchmarkResponses(
@@ -1174,7 +1999,7 @@ func readHTTPBenchmarkResponses(
 		}
 
 		for {
-			bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(buf[:buffered])
+			statusCode, bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(buf[:buffered])
 			if err != nil {
 				select {
 				case <-stop:
@@ -1203,6 +2028,7 @@ func readHTTPBenchmarkResponses(
 				raceID:    raceID,
 				transport: benchmarkTransportHTTP,
 				bytes:     bodyBytes,
+				vented:    statusCode == http.StatusNoContent && bodyBytes == 0,
 			})
 
 			if consumed == buffered {
@@ -1335,6 +2161,7 @@ func readAeonBenchmarkResponses(
 			raceID:    raceID,
 			transport: benchmarkTransportAeon,
 			bytes:     totalBytes,
+			vented:    frame.Flags&FlagVent != 0 || totalBytes == 0,
 		})
 	}
 }
@@ -1365,27 +2192,36 @@ func sendAeonBenchmarkRequest(
 	return nil
 }
 
-func sendBenchmarkRaceRequest(
+type benchmarkRaceDispatch struct {
+	firstTransport  string
+	secondTransport string
+	gap             time.Duration
+	sendFirst       func() error
+	sendSecond      func() error
+}
+
+func buildBenchmarkRaceDispatch(
 	httpConn net.Conn,
 	httpHost string,
 	httpPath string,
 	aeonConn *AeonConn,
 	aeonPath string,
-	aeonPayload []byte,
+	aeonRawPath bool,
 	baseHeaders map[string]string,
+	clientID int,
 	pendingMu *sync.Mutex,
 	pending map[uint16]uint64,
 	httpQueue chan<- uint64,
 	raceID uint64,
 	tcpDelay time.Duration,
 	udpDelay time.Duration,
-) error {
+) benchmarkRaceDispatch {
 	sendHTTP := func() error {
 		if err := sendHTTPBenchmarkRequest(
 			httpConn,
 			httpHost,
 			httpPath,
-			benchmarkHeaders(baseHeaders, raceID, benchmarkTransportHTTP),
+			benchmarkHeaders(baseHeaders, clientID, raceID, benchmarkTransportHTTP),
 		); err != nil {
 			return err
 		}
@@ -1397,49 +2233,149 @@ func sendBenchmarkRaceRequest(
 		return sendAeonBenchmarkRequest(
 			aeonConn,
 			aeonPath,
-			aeonPayload,
+			nil,
 			baseHeaders,
 			pendingMu,
 			pending,
 			raceID,
 			func(streamID uint16) error {
-				if aeonPayload != nil {
-					return aeonConn.SendPayload(streamID, aeonPayload)
+				headers := benchmarkHeaders(baseHeaders, clientID, raceID, benchmarkTransportAeon)
+				if aeonRawPath {
+					return aeonConn.SendPayload(streamID, benchmarkAeonPayload(aeonPath, headers, true))
 				}
 				return aeonConn.SendRequest(
 					streamID,
 					"GET",
 					aeonPath,
-					benchmarkHeaders(baseHeaders, raceID, benchmarkTransportAeon),
+					headers,
 				)
 			},
 		)
 	}
 
-	sendInOrder := func(first func() error, second func() error, gap time.Duration) error {
-		if err := first(); err != nil {
-			return err
-		}
-		if gap > 0 {
-			time.Sleep(gap)
-		}
-		return second()
-	}
-
 	switch {
 	case tcpDelay < udpDelay:
-		return sendInOrder(sendHTTP, sendAeon, udpDelay-tcpDelay)
+		return benchmarkRaceDispatch{
+			firstTransport:  benchmarkTransportHTTP,
+			secondTransport: benchmarkTransportAeon,
+			gap:             udpDelay - tcpDelay,
+			sendFirst:       sendHTTP,
+			sendSecond:      sendAeon,
+		}
 	case udpDelay < tcpDelay:
-		return sendInOrder(sendAeon, sendHTTP, tcpDelay-udpDelay)
+		return benchmarkRaceDispatch{
+			firstTransport:  benchmarkTransportAeon,
+			secondTransport: benchmarkTransportHTTP,
+			gap:             tcpDelay - udpDelay,
+			sendFirst:       sendAeon,
+			sendSecond:      sendHTTP,
+		}
 	default:
 		if raceID%2 == 0 {
-			return sendInOrder(sendHTTP, sendAeon, 0)
+			return benchmarkRaceDispatch{
+				firstTransport:  benchmarkTransportHTTP,
+				secondTransport: benchmarkTransportAeon,
+				sendFirst:       sendHTTP,
+				sendSecond:      sendAeon,
+			}
 		}
-		return sendInOrder(sendAeon, sendHTTP, 0)
+		return benchmarkRaceDispatch{
+			firstTransport:  benchmarkTransportAeon,
+			secondTransport: benchmarkTransportHTTP,
+			sendFirst:       sendAeon,
+			sendSecond:      sendHTTP,
+		}
+	}
+}
+
+func processBenchmarkRaceCompletion(
+	stats *benchClientStats,
+	races map[uint64]*benchmarkRaceState,
+	completion benchCompletion,
+	activeWinners *int,
+) {
+	stats.bytes += uint64(completion.bytes)
+
+	state, ok := races[completion.raceID]
+	if !ok {
+		return
+	}
+
+	state.markCompleted(completion.transport)
+
+	switch {
+	case completion.vented:
+		stats.loserCompletions++
+		stats.loserBytes += uint64(completion.bytes)
+		stats.loserVents++
+	case !state.winnerRecorded:
+		state.winnerRecorded = true
+		state.winnerTransport = completion.transport
+		if *activeWinners > 0 {
+			*activeWinners--
+		}
+		stats.recordCompletion(time.Since(state.startedAt))
+		stats.winnerBytes += uint64(completion.bytes)
+		if completion.transport == benchmarkTransportHTTP {
+			stats.httpWins++
+		} else {
+			stats.aeonWins++
+		}
+	case completion.transport != state.winnerTransport:
+		stats.loserCompletions++
+		stats.loserBytes += uint64(completion.bytes)
+	}
+
+	if !state.isClosed() {
+		return
+	}
+
+	if !state.winnerRecorded {
+		if *activeWinners > 0 {
+			*activeWinners--
+		}
+		stats.droppedInflight++
+	}
+	delete(races, completion.raceID)
+}
+
+func waitBenchmarkHedgeGap(
+	raceID uint64,
+	gap time.Duration,
+	completions <-chan benchCompletion,
+	errors <-chan error,
+	stats *benchClientStats,
+	races map[uint64]*benchmarkRaceState,
+	activeWinners *int,
+) error {
+	if gap <= 0 {
+		return nil
+	}
+
+	timer := time.NewTimer(gap)
+	defer timer.Stop()
+
+	for {
+		state, ok := races[raceID]
+		if !ok || state.winnerRecorded {
+			return nil
+		}
+
+		select {
+		case err := <-errors:
+			if err != nil {
+				return err
+			}
+		case completion := <-completions:
+			processBenchmarkRaceCompletion(stats, races, completion, activeWinners)
+		case <-timer.C:
+			return nil
+		}
 	}
 }
 
 func doBenchmarkRaceClient(
+	clientID int,
 	aeonAddr string,
 	aeonPath string,
 	httpAddr string,
@@ -1504,10 +2440,6 @@ func doBenchmarkRaceClient(
 	nextRaceID := uint64(1)
 	activeWinners := 0
 	backlogLimit := depth * 2
-	var aeonPayload []byte
-	if aeonRawPath {
-		aeonPayload = benchmarkAeonPayload(aeonPath, nil, true)
-	}
 
 	if !awaitBenchmarkStart(start, abort, ready, setupDeadline) {
 		close(stop)
@@ -1520,25 +2452,67 @@ func doBenchmarkRaceClient(
 	sendRace := func() error {
 		raceID := nextRaceID
 		nextRaceID++
-		if err := sendBenchmarkRaceRequest(
+		dispatch := buildBenchmarkRaceDispatch(
 			httpConn,
 			httpAddr,
 			httpPath,
 			aeonConn,
 			aeonPath,
-			aeonPayload,
+			aeonRawPath,
 			headers,
+			clientID,
 			&pendingAeonMu,
 			pendingAeon,
 			httpQueue,
 			raceID,
 			tcpDelay,
 			udpDelay,
+		)
+
+		races[raceID] = &benchmarkRaceState{
+			startedAt:   time.Now(),
+			plannedHTTP: true,
+			plannedAeon: true,
+		}
+
+		if err := dispatch.sendFirst(); err != nil {
+			delete(races, raceID)
+			return err
+		}
+		activeWinners++
+
+		if err := waitBenchmarkHedgeGap(
+			raceID,
+			dispatch.gap,
+			completions,
+			errors,
+			&stats,
+			races,
+			&activeWinners,
 		); err != nil {
 			return err
 		}
-		races[raceID] = &benchmarkRaceState{startedAt: time.Now()}
-		activeWinners++
+
+		state, ok := races[raceID]
+		if !ok {
+			return nil
+		}
+		if state.winnerRecorded && state.transportPending(dispatch.secondTransport) {
+			state.markSkipped(dispatch.secondTransport)
+			if dispatch.secondTransport == benchmarkTransportHTTP {
+				stats.skippedHTTP++
+			} else {
+				stats.skippedAeon++
+			}
+			if state.isClosed() {
+				delete(races, raceID)
+			}
+			return nil
+		}
+
+		if err := dispatch.sendSecond(); err != nil {
+			return err
+		}
 		return nil
 	}
 
@@ -1567,23 +2541,7 @@ func doBenchmarkRaceClient(
 				return stats, err
 			}
 		case completion := <-completions:
-			stats.bytes += uint64(completion.bytes)
-			state, ok := races[completion.raceID]
-			if !ok {
-				continue
-			}
-
-			if !state.winnerRecorded {
-				state.winnerRecorded = true
-				activeWinners--
-				stats.recordCompletion(time.Since(state.startedAt))
-				if completion.transport == benchmarkTransportHTTP {
-					stats.httpWins++
-				} else {
-					stats.aeonWins++
-				}
-				delete(races, completion.raceID)
-			}
+			processBenchmarkRaceCompletion(&stats, races, completion, &activeWinners)
 		case <-time.After(readTimeout):
 			stats.timeouts++
 			if time.Now().After(drainDeadline) {
@@ -1629,9 +2587,10 @@ func doBenchmarkRace(
 
 	for client := 0; client < clients; client++ {
 		wg.Add(1)
-		go func() {
+		go func(clientID int) {
 			defer wg.Done()
 			stats, err := doBenchmarkRaceClient(
+				clientID,
 				aeonAddr,
 				aeonPath,
 				httpAddr,
@@ -1655,7 +2614,7 @@ func doBenchmarkRace(
 				return
 			}
 			results <- stats
-		}()
+		}(client + 1)
 	}
 
 	if err := waitForBenchmarkClients(ready, errors, clients, setupDeadline); err != nil {
@@ -1689,11 +2648,18 @@ func doBenchmarkRace(
 	for stats := range results {
 		result.requests += stats.requests
 		result.bytes += stats.bytes
+		result.winnerBytes += stats.winnerBytes
+		result.loserBytes += stats.loserBytes
 		result.timeouts += stats.timeouts
 		result.droppedInflight += stats.droppedInflight
 		result.sequenceRegressions += stats.sequenceRegressions
 		result.httpWins += stats.httpWins
 		result.aeonWins += stats.aeonWins
+		result.loserCompletions += stats.loserCompletions
+		result.loserVents += stats.loserVents
+		result.winnerVents += stats.winnerVents
+		result.skippedHTTP += stats.skippedHTTP
+		result.skippedAeon += stats.skippedAeon
 		totalLatency += stats.latencySum
 		if stats.latencyMax > result.maxLatency {
 			result.maxLatency = stats.latencyMax
@@ -1944,6 +2910,31 @@ func printBenchmark(result benchResult) {
 	if result.aeonWins > 0 || result.httpWins > 0 {
 		fmt.Fprintf(os.Stderr, "  Aeon wins:          %d\n", result.aeonWins)
 		fmt.Fprintf(os.Stderr, "  HTTP wins:          %d\n", result.httpWins)
+		fmt.Fprintf(os.Stderr, "  Winner bytes:       %d\n", result.winnerBytes)
+		if result.skippedHTTP > 0 || result.skippedAeon > 0 {
+			fmt.Fprintf(os.Stderr, "  Skipped HTTP hedges:%d\n", result.skippedHTTP)
+			fmt.Fprintf(os.Stderr, "  Skipped Aeon hedges:%d\n", result.skippedAeon)
+		}
+		fmt.Fprintf(os.Stderr, "  Loser completions:  %d\n", result.loserCompletions)
+		fmt.Fprintf(os.Stderr, "  Loser bytes:        %d\n", result.loserBytes)
+		if result.requests > 0 {
+			fmt.Fprintf(os.Stderr, "  Waste bytes/win:    %.2f\n", float64(result.loserBytes)/float64(result.requests))
+			fmt.Fprintf(
+				os.Stderr,
+				"  Loser completion%%:  %.2f%%\n",
+				100.0*float64(result.loserCompletions)/float64(result.requests),
+			)
+		}
+		if result.loserCompletions > 0 {
+			fmt.Fprintf(
+				os.Stderr,
+				"  Loser vent%%:        %.2f%%\n",
+				100.0*float64(result.loserVents)/float64(result.loserCompletions),
+			)
+		}
+		if result.winnerVents > 0 {
+			fmt.Fprintf(os.Stderr, "  Winner vents:       %d\n", result.winnerVents)
+		}
 	}
 }
 
@@ -1958,6 +2949,8 @@ func main() {
 	raceMode := flag.Bool("race", false, "race mode: send to multiple servers, first response wins")
 	httpMode := flag.Bool("http", false, "use HTTP instead of Aeon Flow")
 	httpFlowMode := flag.Bool("http-flow", false, "fetch Flow frames over HTTP (for Aeon Web Gateway)")
+	websocketMode := flag.Bool("websocket", false, "discover and use the Aeon websocket transport from an http(s) origin URL")
+	webtransportMode := flag.Bool("webtransport", false, "discover and use the Aeon WebTransport transport from an http(s) origin URL")
 	compareMode := flag.Bool("compare", false, "compare Aeon Flow vs HTTP side by side")
 	udpMode := flag.Bool("udp", false, "use UDP datagrams instead of TCP (each frame = one datagram)")
 	benchMode := flag.Bool("bench", false, "run a sustained benchmark instead of a single request")
@@ -1966,8 +2959,8 @@ func main() {
 	depth := flag.Int("depth", 1, "LAMINAR inflight request depth per client in benchmark mode")
 	readTimeout := flag.Duration("timeout", 250*time.Millisecond, "benchmark receive timeout before retrying")
 	rawPath := flag.Bool("raw-path", false, "benchmark Aeon using bare path payloads instead of HTTP-style request envelopes")
-	tcpDelay := flag.Duration("tcp-delay", 0, "delay the TCP/HTTP leg in mixed benchmark race mode")
-	udpDelay := flag.Duration("udp-delay", 0, "delay the UDP/Aeon leg in mixed benchmark race mode")
+	tcpDelay := flag.Duration("tcp-delay", 0, "hedge-delay the TCP/HTTP leg in mixed benchmark race mode; skipped if the other leg already produced a sufficient response")
+	udpDelay := flag.Duration("udp-delay", 0, "hedge-delay the UDP/Aeon leg in mixed benchmark race mode; skipped if the other leg already produced a sufficient response")
 	authToken := flag.String("auth", "", "Bearer token for Authorization header (ew_ API key or UCAN)")
 	aeonAuthVerified := flag.Bool("aeon-auth-verified", false, "send a trusted X-Aeon auth snapshot instead of only Authorization")
 	aeonAuthSource := flag.String("aeon-auth-source", "", "X-Aeon auth source: propagated, ucan, or did_bearer")
@@ -1988,6 +2981,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "  wall aeon://localhost:4001/api/users\n")
 		fmt.Fprintf(os.Stderr, "  wall --fork aeon://localhost:4001/ /css/app.css /js/app.js\n")
 		fmt.Fprintf(os.Stderr, "  wall --compare aeon://localhost:4001/data http://localhost:8080/data\n")
+		fmt.Fprintf(os.Stderr, "  wall --websocket https://forkracefold.com/\n")
+		fmt.Fprintf(os.Stderr, "  wall --websocket --webtransport https://forkracefold.com/\n")
 		fmt.Fprintf(os.Stderr, "  wall --bench --udp --raw-path --clients 64 --duration 15s --depth 16 aeon://localhost:4001/api/users\n")
 		fmt.Fprintf(os.Stderr, "  wall --bench --race --udp --raw-path --clients 64 --duration 15s --depth 16 aeon://localhost:9082/plaintext http://localhost:8080/plaintext\n")
 		fmt.Fprintf(os.Stderr, "  wall -v --waterfall aeon://localhost:4001/api/users\n")
@@ -2020,6 +3015,11 @@ func main() {
 		supervisorPID: *aeonSupervisorPID,
 	})
 
+	if *udpMode && (*websocketMode || *webtransportMode) {
+		fmt.Fprintln(os.Stderr, "error: --udp only applies to raw aeon:// transports")
+		os.Exit(1)
+	}
+
 	// ─── HTTP-Flow mode (Aeon Web Gateway) ──────────────────────────────
 	if *httpFlowMode {
 		body, events, err := doHTTPFlowRequest(args[0], headers, *verbose)
@@ -2051,24 +3051,20 @@ func main() {
 	// ─── Compare mode ───────────────────────────────────────────────────
 	if *compareMode {
 		if len(args) < 2 {
-			fmt.Fprintf(os.Stderr, "compare mode requires two URLs: aeon://... http://...\n")
+			fmt.Fprintf(os.Stderr, "compare mode requires two URLs: <flow-url> http://...\n")
 			os.Exit(1)
-		}
-
-		u, err := url.Parse(args[0])
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "invalid aeon URL: %v\n", err)
-			os.Exit(1)
-		}
-		aeonPath := requestPath(u)
-		aeonAddr := u.Host
-		if !strings.Contains(aeonAddr, ":") {
-			aeonAddr += ":4001"
 		}
 
 		fmt.Fprintf(os.Stderr, "─── Aeon Flow ──────────────────────────────────────\n")
 		aeonStart := time.Now()
-		aeonBody, aeonEvents, err := doSingleRequest(aeonAddr, aeonPath, headers, *verbose, *udpMode)
+		aeonBody, aeonEvents, aeonTransport, err := doFlowRequest(
+			args[0],
+			headers,
+			*verbose,
+			*udpMode,
+			*websocketMode,
+			*webtransportMode,
+		)
 		aeonElapsed := time.Since(aeonStart)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Aeon Flow error: %v\n", err)
@@ -2081,7 +3077,7 @@ func main() {
 		}
 
 		fmt.Fprintf(os.Stderr, "\n─── Comparison ─────────────────────────────────────\n")
-		fmt.Fprintf(os.Stderr, "%-15s %12s %12s\n", "", "Aeon Flow", "HTTP")
+		fmt.Fprintf(os.Stderr, "%-15s %12s %12s\n", "", strings.Title(aeonTransport), "HTTP")
 		fmt.Fprintf(os.Stderr, "%-15s %12d %12d\n", "Body bytes", len(aeonBody), len(httpBody))
 		fmt.Fprintf(os.Stderr, "%-15s %12s %12s\n", "Total time", aeonElapsed.Round(time.Microsecond), httpElapsed.Round(time.Microsecond))
 
@@ -2108,26 +3104,24 @@ func main() {
 		return
 	}
 
-	// ─── Parse Aeon Flow URL ────────────────────────────────────────────
-	u, err := url.Parse(args[0])
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "invalid URL: %v\n", err)
-		os.Exit(1)
-	}
-
-	if u.Scheme != "aeon" {
-		fmt.Fprintf(os.Stderr, "expected aeon:// URL scheme, got %s://\n", u.Scheme)
-		os.Exit(1)
-	}
-
-	addr := u.Host
-	if !strings.Contains(addr, ":") {
-		addr += ":4001" // default Aeon Flow port
-	}
-	path := requestPath(u)
-
 	// ─── Benchmark mode ────────────────────────────────────────────────
 	if *benchMode {
+		u, err := url.Parse(args[0])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "invalid URL: %v\n", err)
+			os.Exit(1)
+		}
+		if u.Scheme != "aeon" {
+			fmt.Fprintf(os.Stderr, "benchmark mode requires aeon:// URL scheme, got %s://\n", u.Scheme)
+			os.Exit(1)
+		}
+
+		addr := u.Host
+		if !strings.Contains(addr, ":") {
+			addr += ":4001"
+		}
+		path := requestPath(u)
+
 		if *clients < 1 {
 			fmt.Fprintf(os.Stderr, "clients must be >= 1\n")
 			os.Exit(1)
@@ -2240,7 +3234,14 @@ func main() {
 			os.Exit(1)
 		}
 
-		results, events, err := doForkRequest(addr, path, childPaths, headers, *verbose)
+		results, events, _, err := doFlowForkRequest(
+			args[0],
+			childPaths,
+			headers,
+			*verbose,
+			*websocketMode,
+			*webtransportMode,
+		)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
@@ -2285,14 +3286,29 @@ func main() {
 
 				switch ru.Scheme {
 				case "http", "https":
-					body, _, err := doHTTPRequest(rawURL, headers, *verbose)
-					results <- raceResult{body: body, err: err, idx: idx}
-				case "aeon":
-					rAddr := ru.Host
-					if !strings.Contains(rAddr, ":") {
-						rAddr += ":4001"
+					if *websocketMode || *webtransportMode {
+						body, events, _, err := doFlowRequest(
+							rawURL,
+							headers,
+							*verbose,
+							false,
+							*websocketMode,
+							*webtransportMode,
+						)
+						results <- raceResult{body: body, events: events, err: err, idx: idx}
+					} else {
+						body, _, err := doHTTPRequest(rawURL, headers, *verbose)
+						results <- raceResult{body: body, err: err, idx: idx}
 					}
-					body, events, err := doSingleRequest(rAddr, requestPath(ru), headers, *verbose, *udpMode)
+				case "aeon":
+					body, events, _, err := doFlowRequest(
+						rawURL,
+						headers,
+						*verbose,
+						*udpMode,
+						false,
+						false,
+					)
 					results <- raceResult{body: body, events: events, err: err, idx: idx}
 				default:
 					results <- raceResult{err: fmt.Errorf("unsupported race URL scheme: %s", ru.Scheme), idx: idx}
@@ -2318,13 +3334,23 @@ func main() {
 	}
 
 	// ─── Single request mode ────────────────────────────────────────────
-	body, events, err := doSingleRequest(addr, path, headers, *verbose, *udpMode)
+	body, events, winnerTransport, err := doFlowRequest(
+		args[0],
+		headers,
+		*verbose,
+		*udpMode,
+		*websocketMode,
+		*webtransportMode,
+	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 
 	os.Stdout.Write(body)
+	if *verbose {
+		fmt.Fprintf(os.Stderr, "\nTransport: %s\n", winnerTransport)
+	}
 
 	if *waterfall {
 		printWaterfall(events)

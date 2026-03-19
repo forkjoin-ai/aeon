@@ -10,6 +10,8 @@ This directory contains machine-checked formal artifacts used to mechanize the p
 
 The current compiler-side boundary has its own canonical note in [GNOSIS_COMPILER_BOUNDARY.md](./GNOSIS_COMPILER_BOUNDARY.md), so the emitted theorem family, rerun commands, and remaining open measurable-Harris gaps are stated in one place instead of scattered across the manuscript and reviewer notes.
 
+The logic-first Hetero MoA fabric surface now lives here too: four bounded TLA models (`HeteroMoAFabricLowering`, `HeteroMoAFabricCannon`, `HeteroMoAFabricPairing`, `HeteroMoAFabricWaste`) capture mirrored backend-layer lowering, `gnode`-style cannon/helix rotation, paired-kernel accept-or-escalate behavior, and Aeon's 10-byte binary stream accounting before the compiler starts emitting the new primitive.
+
 ## Files
 
 - `ForkRaceFoldC1C4.tla` / `.cfg`: pipeline locality, branch isolation, deterministic fold, bounded termination (C1–C4).
@@ -37,6 +39,10 @@ The current compiler-side boundary has its own canonical note in [GNOSIS_COMPILE
 - `RenormalizationCoarsening.tla` / `.cfg`: bounded genuinely many-to-one renormalization witness checking non-injective support collapse, aggregate `λ`/`μ`/`α` preservation, total-drift preservation, collapsed-node rate identification, negative-drift transfer, local coarse-certificate soundness, coarse-margin summation, and transfer of that total coarse margin back to both the fine graph and the collapsed node.
 - `RenormalizationComposition.tla` / `.cfg`: bounded recursive-renormalization witness checking that staged quotient reuse preserves intermediate aggregate `λ`/`μ`/`α`/drift data and matches direct composed collapse at the final measurable node.
 - `THM-GNOSIS-COUPLED` is currently exposed on the Lean side rather than as a standalone TLA module: `GnosisProofs.lean` packages `coupledArrivalCertificate`, `coupledCertifiedKernel`, and the tethered-kernel stability lemmas showing that nonnegative handoff pressure below downstream drift slack preserves the downstream spectral witness and the pair's geometric stability.
+- `HeteroMoAFabricLowering.tla` / `.cfg`: bounded lowering witness for mirrored CPU/GPU/NPU/WASM lane counts, active backend-layer diversity, and top-level laminar collapse shape.
+- `HeteroMoAFabricCannon.tla` / `.cfg`: bounded `gnode`-style cannon/helix scheduler witness for pre-arm-before-launch, rotating cursor advance, delayed shadow eligibility, and Aeon 10-byte binary frame headers.
+- `HeteroMoAFabricPairing.tla` / `.cfg`: bounded paired-kernel witness showing agreement acceptance, early sufficient-primary shadow skip, disagreement escalation, and single-decision safety.
+- `HeteroMoAFabricWaste.tla` / `.cfg`: bounded accounting witness for winner/loser/vent/skipped conservation and monotone framed stream order.
 - `FailureController.tla` / `.cfg`: bounded controller witness over the canonical failure actions `keep-multiplicity`, `pay-vent`, and `pay-repair`, showing that the score-minimizing choice is whichever weighted coefficient is smallest against the exact collapse floor `liveBranches - 1`.
 - `FailurePareto.tla` / `.cfg`: bounded Pareto witness over the same canonical failure-action family, showing that keep, vent, and repair are pairwise non-dominating when `liveBranches > 1`.
 - `StagedExpansion.tla` / `.cfg`: bounded staged-expansion witness showing that, under a positive topology-deficit budget, spending equal added frontier on underfilled shoulders beats naive peak widening in frontier fill and Wallace.
@@ -127,7 +133,7 @@ The current compiler-side boundary has its own canonical note in [GNOSIS_COMPILE
 
 ## Derived Vocabulary
 
-- The formal subtree now carries theorem-indexed definitions for `branch mass`, `collapse law`, `interference pattern`, `vented loss`, `optionality`, `structured ambiguity processor`, `Harrigan Margin`, `Harrigan Horizon`, `volatility budget`, `dynamic Harrigan Horizon`, `Harrigan Cascade`, `coherence field`, `coherence bandwidth`, `culture field`, `cultural memory`, `Brainwash Principle`, `forced amnesia`, `ancestry-preserving reconciliation`, and `void-preserving fold`; see [THEOREM_LEDGER.md](./THEOREM_LEDGER.md).
+- The formal subtree now carries theorem-indexed definitions for `branch mass`, `collapse law`, `interference pattern`, `vented loss`, `optionality`, `structured ambiguity processor`, `Harrigan Margin`, `Harrigan Horizon`, `volatility budget`, `dynamic Harrigan Horizon`, `Harrigan Cascade`, `coherence field`, `coherence bandwidth`, `culture field`, `cultural memory`, `Brainwash Principle`, `forced amnesia`, `cover-space corollary cracking`, `offline-risk negative control`, `recovery-trust surface`, `witness ancestry`, `ancestry-preserving reconciliation`, and `void-preserving fold`; see [THEOREM_LEDGER.md](./THEOREM_LEDGER.md).
 - These are documentation-layer summaries over existing theorem families, not new Lean/TLA objects.
 - The mapping is explicit: failure theorems supply `branch mass`, no-free-collapse, and collapse-cost floor; the Landauer bridge calibrates that floor against equiprobable frontier erasure, arbitrary finite-support branch-law entropy, Bernoulli binary erasure/heat, the countable-support entropy/heat shells, and the direct finite-type measurable entropy/heat lifts; monoidal and correspondence theorems supply `collapse law` and collapse-truthfulness boundaries; cancellation/partition/order witnesses supply `interference pattern`; vent/debt theorems supply `vented loss`.
 - The boundary is also explicit: this vocabulary does not by itself certify race-winner correctness or discharge measurable-limit / Harris-style claims without the witness structures already listed in the ledger.

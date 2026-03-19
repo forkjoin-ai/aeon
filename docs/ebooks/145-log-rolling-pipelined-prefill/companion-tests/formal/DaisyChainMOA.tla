@@ -13,7 +13,7 @@ EXTENDS Naturals, Integers, FiniteSets
 \* THM-DIVERSITY-NECESSARY:        identical agents = 1 effective agent
 
 CONSTANTS NumAgents, VocabSize, HiddenDim, TopK,
-          Alphas  \* Sequence of per-agent mixing coefficients (integer tenths)
+          Alpha1, Alpha2, Alpha3  \* Per-agent mixing coefficients (integer tenths)
 
 VARIABLES checked,
           identicalOk, divergenceOk, tableIndepOk,
@@ -27,6 +27,8 @@ vars == <<checked, identicalOk, divergenceOk, tableIndepOk,
 FoldDeficit == NumAgents - 1
 TableDeficit == VocabSize - TopK
 TotalDeficit == FoldDeficit + TableDeficit
+
+Alphas == <<Alpha1, Alpha2, Alpha3>>
 
 \* Are all agents identical (same alpha)?
 AllIdentical == \A i \in 1..NumAgents : \A j \in 1..NumAgents :

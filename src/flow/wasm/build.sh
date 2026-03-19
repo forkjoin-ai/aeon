@@ -39,8 +39,8 @@ $CLANG \
     -nostdlib \
     -Wl,--no-entry \
     -Wl,--export-dynamic \
-    -Wl,--initial-memory=16777216 \
-    -Wl,--max-memory=33554432 \
+    -Wl,--initial-memory=33554432 \
+    -Wl,--max-memory=67108864 \
     -o "$OUT" \
     "$SRC"
 

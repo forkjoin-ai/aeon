@@ -130,10 +130,11 @@ Spec ==
   Init
     /\ [][Next]_vars
     /\ WF_vars(Tick)
-    /\ \A w \in WorkFns: WF_vars(FrameRaceComplete(w))
-    /\ \A w \in WorkFns: WF_vars(StreamRaceComplete(w))
-    /\ \A w \in WorkFns: WF_vars(FrameFoldComplete(w))
-    /\ \A w \in WorkFns: WF_vars(StreamFoldComplete(w))
+    /\ \A w \in WorkFns:
+         /\ WF_vars(FrameRaceComplete(w))
+         /\ WF_vars(StreamRaceComplete(w))
+         /\ WF_vars(FrameFoldComplete(w))
+         /\ WF_vars(StreamFoldComplete(w))
 
 \* ─── Invariants ────────────────────────────────────────────────────────
 

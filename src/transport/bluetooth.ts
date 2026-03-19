@@ -270,7 +270,9 @@ export class BluetoothFlowTransport implements FlowTransport {
     if (!this.txChar) return;
 
     try {
-      await this.txChar.writeValueWithoutResponse(data);
+      const payload =
+        data.buffer instanceof ArrayBuffer ? data : Uint8Array.from(data);
+      await this.txChar.writeValueWithoutResponse(payload as BufferSource);
     } catch {
       // Write failed — BLE disconnected or busy
     }

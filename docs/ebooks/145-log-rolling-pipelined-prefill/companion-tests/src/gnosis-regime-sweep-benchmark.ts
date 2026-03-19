@@ -2,7 +2,7 @@ export {
   makeDefaultRegimeSweepConfig,
   renderGnosisFoldBoundaryRegimeSweepMarkdown,
   runGnosisFoldBoundaryRegimeSweep,
-} from '../../../../../../gnosis/src/benchmarks/regime-sweep-benchmark';
+} from '@a0n/gnosis/benchmarks/regime-sweep-benchmark';
 
 export type {
   GnosisFoldBoundaryRegimeSweepReport,
@@ -11,4 +11,4 @@ export type {
   RegimeSweepSeedMetrics,
   RegimeSweepStrategyReport,
   RegimeSweepTopologyMetrics,
-} from '../../../../../../gnosis/src/benchmarks/regime-sweep-benchmark';
+} from '@a0n/gnosis/benchmarks/regime-sweep-benchmark';

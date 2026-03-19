@@ -9,6 +9,7 @@ import {
   FOLD,
   VENT,
   FIN,
+  POISON,
 } from '../../flow';
 import type { FlowFrame, FlowTransport } from '../../flow';
 
@@ -170,6 +171,52 @@ describe('FlowCodec', () => {
       expect(decoded.payload[0]).toBe(0);
       expect(decoded.payload[255]).toBe(255);
       expect(decoded.payload[256]).toBe(0);
+    });
+  });
+
+  describe('poison handling', () => {
+    it('notifies poison handlers when a stream is poisoned', () => {
+      const transport = createLoopbackTransport();
+      const protocol = new AeonFlowProtocol(transport, { role: 'client' });
+      const codec = FlowCodec.createSync();
+      const poisoned = vi.fn();
+
+      protocol.onStreamPoisoned(2, poisoned);
+      transport.send(
+        codec.encode({
+          streamId: 2,
+          sequence: 0,
+          flags: POISON,
+          payload: new Uint8Array(0),
+        })
+      );
+
+      expect(poisoned).toHaveBeenCalledOnce();
+      expect(protocol.getStream(2)?.state).toBe('vented');
+    });
+
+    it('sends a poison frame when poisoning a local stream', () => {
+      const transport = createRecordingTransport();
+      const protocol = new AeonFlowProtocol(transport, { role: 'client' });
+      const codec = FlowCodec.createSync();
+      const poisoned = vi.fn();
+      const vented = vi.fn();
+
+      const streamId = protocol.openStream();
+      protocol.onStreamPoisoned(streamId, poisoned);
+      protocol.onStreamVented(streamId, vented);
+
+      protocol.poison(streamId);
+
+      expect(poisoned).toHaveBeenCalledOnce();
+      expect(vented).toHaveBeenCalledOnce();
+      expect(protocol.getStream(streamId)?.state).toBe('vented');
+      expect(transport.sent).toHaveLength(1);
+
+      const { frame } = codec.decode(transport.sent[0]);
+      expect(frame.streamId).toBe(streamId);
+      expect(frame.flags).toBe(POISON);
+      expect(frame.payload).toHaveLength(0);
     });
   });
 
@@ -355,6 +402,20 @@ describe('AeonFlowProtocol — stream lifecycle', () => {
     expect(protocol.getStream(id)?.state).toBe('open');
 
     protocol.destroy();
+  });
+
+  it('should skip background codec upgrades when codecWasmMode is off', () => {
+    const transport = createRecordingTransport();
+    const createSpy = vi.spyOn(FlowCodec, 'create');
+    const protocol = new AeonFlowProtocol(transport, {
+      codecWasmMode: 'off',
+      role: 'client',
+    });
+
+    expect(createSpy).not.toHaveBeenCalled();
+
+    protocol.destroy();
+    createSpy.mockRestore();
   });
 
   it('should open a stream with server-initiated odd ID', () => {

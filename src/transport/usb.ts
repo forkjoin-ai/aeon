@@ -1,3 +1,5 @@
+/// <reference path="../../../../types/webusb.d.ts" />
+
 /**
  * USB Flow Transport
  *

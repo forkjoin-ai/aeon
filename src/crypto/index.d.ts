@@ -26,7 +26,9 @@
  * ```
  */
 export type { DID, SigningAlgorithm, KeyPair, Identity, Capability, UCANPayload, UCANToken, VerificationResult, EncryptionAlgorithm, DomainCategory, ECKeyPair, EncryptedPayload, DecryptionResult, AeonEncryptionMode, AeonCapability, AeonCryptoConfig, AuthenticatedMessageFields, SecureSyncSession, SecureNodeInfo, AeonCapabilityResult, SignedSyncData, } from './types';
+export type { AeonCryptoManifestClaim, AeonCryptoManifestFamily, AeonCryptoManifestWeakness, AeonCryptoMethodManifestEntry, } from './manifest';
 export { AEON_CAPABILITIES, DEFAULT_CRYPTO_CONFIG } from './types';
+export { AEON_CRYPTO_METHOD_MANIFEST } from './manifest';
 export type { ICryptoProvider } from './CryptoProvider';
 export { NullCryptoProvider } from './CryptoProvider';
 export type { ITransactionSigner, TransactionSignerErrorCode, TransactionSignerExecuteRequest, TransactionSignerExecuteResponse, TransactionSignerHealth, TransactionSignerMetadata, TransactionSignerPayloadMap, } from './transactionSigner';

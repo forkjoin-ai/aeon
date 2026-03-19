@@ -42,6 +42,7 @@ export declare class AeonFlowProtocol {
     private frameHandlers;
     private endHandlers;
     private ventHandlers;
+    private poisonHandlers;
     private raceGroups;
     private foldGroups;
     constructor(transport: FlowTransport, config?: Partial<FlowProtocolConfig>);
@@ -102,6 +103,13 @@ export declare class AeonFlowProtocol {
      */
     finish(streamId: number, finalPayload?: Uint8Array): void;
     /**
+     * Poison a stream. Sends a POISON frame and marks the stream as vented.
+     *
+     * This is used when a branch of work fails definitively and should lose a
+     * race without masquerading as a normal vent/cancel path.
+     */
+    poison(streamId: number): void;
+    /**
      * Vent a stream. Sends a VENT frame and propagates to all descendants.
      *
      * Venting is the protocol-level equivalent of NaN propagation,
@@ -120,6 +128,10 @@ export declare class AeonFlowProtocol {
      * Register a handler for when a stream is vented.
      */
     onStreamVented(streamId: number, handler: VoidHandler): () => void;
+    /**
+     * Register a handler for when a stream is poisoned.
+     */
+    onStreamPoisoned(streamId: number, handler: VoidHandler): () => void;
     /**
      * Close the protocol and underlying transport.
      * Vents all open streams first.

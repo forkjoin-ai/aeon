@@ -1,16 +1,12 @@
 /**
  * ch17-american-frontier-figure.ts
  *
- * Generates the American Frontier figure: a three-panel visualization showing
- * that diversity-vs-waste traces the same monotone Pareto frontier across
- * three substrates (protocol framing, pipeline scheduling, compression strategy).
- *
- * The American Frontier: waste is monotonically non-increasing in diversity,
- * reaching zero at matched diversity (β₁ = β₁*). Every shootoff in the paper
- * is an instantiation of this single curve on a different substrate.
+ * Generates the American Frontier figure as a four-panel frontier family.
+ * The first three panels show the theorem on framing, scheduling, and
+ * response encoding. The fourth panel adds the recursive wire witness:
+ * diversity first chooses the representation, then diversity carries the
+ * representation across the transport.
  */
-
-// ─── Data types ──────────────────────────────────────────────────────
 
 export interface ProtocolPoint {
   readonly protocol: string;
@@ -18,7 +14,7 @@ export interface ProtocolPoint {
   readonly overheadPct: number;
   readonly wireKB: number;
   readonly rtts: number;
-  readonly beta1Effective: number;
+  readonly diversityOrder: number;
 }
 
 export interface PipelinePoint {
@@ -26,21 +22,43 @@ export interface PipelinePoint {
   readonly idleFraction: number;
 }
 
-export interface CompressionCorpusPoint {
+export interface EncodingPoint {
   readonly corpus: string;
   readonly shortLabel: string;
+  readonly heterogeneityOrder: number;
   readonly gainVsHeuristicPct: number;
   readonly gainVsBestFixedPct: number;
   readonly winRate: number;
 }
 
+export interface TransportPoint {
+  readonly label: string;
+  readonly tcpDelayMs: number;
+  readonly requestsPerSec: number;
+  readonly aeonWins: number;
+  readonly httpWins: number;
+  readonly skippedHttpHedges: number;
+  readonly loserVentPct: number;
+  readonly wasteBytesPerWin: number;
+}
+
+export interface RecursiveWireWitness {
+  readonly workload: string;
+  readonly zeroSkewRequestsPerSec: number;
+  readonly zeroSkewAeonWinSharePct: number;
+  readonly zeroSkewWasteBytesPerWin: number;
+  readonly tcpDelay2msRequestsPerSec: number;
+  readonly tcpDelay2msAeonWinSharePct: number;
+  readonly tcpDelay2msWasteBytesPerWin: number;
+  readonly throughputRetentionPct: number;
+}
+
 export interface AmericanFrontierReport {
-  readonly label: 'ch17-american-frontier-figure-v1';
+  readonly label: 'ch17-american-frontier-figure-v2';
 
   readonly protocol: {
     readonly siteName: string;
     readonly resourceCount: number;
-    readonly beta1Star: number;
     readonly points: readonly ProtocolPoint[];
   };
 
@@ -49,32 +67,40 @@ export interface AmericanFrontierReport {
     readonly points: readonly PipelinePoint[];
   };
 
-  readonly compression: {
+  readonly encoding: {
     readonly corpusCount: number;
-    readonly points: readonly CompressionCorpusPoint[];
+    readonly points: readonly EncodingPoint[];
   };
 
-  /** American Frontier properties (from the Lean theorem). */
+  readonly transport: {
+    readonly workload: string;
+    readonly points: readonly TransportPoint[];
+    readonly heavyWitness: RecursiveWireWitness;
+  };
+
   readonly frontierProperties: {
     readonly monotone: boolean;
     readonly zeroAtMatch: boolean;
     readonly positiveBelow: boolean;
     readonly pigeonholeWitness: boolean;
+    readonly recursiveAcrossLayers: boolean;
   };
 }
 
-// ─── Data builder ────────────────────────────────────────────────────
+function aeonWinSharePct(point: TransportPoint): number {
+  const totalWins = point.aeonWins + point.httpWins;
+  return totalWins === 0 ? 0 : (point.aeonWins / totalWins) * 100;
+}
 
-export function buildAmericanFrontierReport(): AmericanFrontierReport {
-  // Protocol shootoff data (microfrontend, 95 resources, ~1.8 MB)
-  const protocolPoints: ProtocolPoint[] = [
+function protocolPoints(): ProtocolPoint[] {
+  return [
     {
       protocol: 'HTTP/1.1',
       shortLabel: 'H1',
       overheadPct: 31.0,
       wireKB: 187,
       rtts: 16,
-      beta1Effective: 0,
+      diversityOrder: 1,
     },
     {
       protocol: 'HTTP/2',
@@ -82,7 +108,7 @@ export function buildAmericanFrontierReport(): AmericanFrontierReport {
       overheadPct: 5.8,
       wireKB: 137,
       rtts: 2,
-      beta1Effective: 94,
+      diversityOrder: 2,
     },
     {
       protocol: 'HTTP/3',
@@ -90,7 +116,7 @@ export function buildAmericanFrontierReport(): AmericanFrontierReport {
       overheadPct: 4.4,
       wireKB: 135,
       rtts: 1,
-      beta1Effective: 94,
+      diversityOrder: 3,
     },
     {
       protocol: 'Aeon Flow',
@@ -98,12 +124,13 @@ export function buildAmericanFrontierReport(): AmericanFrontierReport {
       overheadPct: 1.5,
       wireKB: 131,
       rtts: 1,
-      beta1Effective: 94,
+      diversityOrder: 4,
     },
   ];
+}
 
-  // Pipeline scheduling data (4-stage family from Reynolds figure)
-  const pipelinePoints: PipelinePoint[] = [
+function pipelinePoints(): PipelinePoint[] {
+  return [
     { reynolds: 0.1, idleFraction: 0.07 },
     { reynolds: 0.2, idleFraction: 0.13 },
     { reynolds: 0.3, idleFraction: 0.184 },
@@ -116,12 +143,14 @@ export function buildAmericanFrontierReport(): AmericanFrontierReport {
     { reynolds: 8.0, idleFraction: 0.857 },
     { reynolds: 16.0, idleFraction: 0.923 },
   ];
+}
 
-  // Compression topology data (Gate 3 corpus results)
-  const compressionPoints: CompressionCorpusPoint[] = [
+function encodingPoints(): EncodingPoint[] {
+  return [
     {
       corpus: 'text-homogeneous',
       shortLabel: 'text',
+      heterogeneityOrder: 1,
       gainVsHeuristicPct: 0.83,
       gainVsBestFixedPct: 0.83,
       winRate: 1.0,
@@ -129,6 +158,7 @@ export function buildAmericanFrontierReport(): AmericanFrontierReport {
     {
       corpus: 'web-mixed',
       shortLabel: 'web',
+      heterogeneityOrder: 2,
       gainVsHeuristicPct: 0.78,
       gainVsBestFixedPct: 0.005,
       winRate: 1.0,
@@ -136,6 +166,7 @@ export function buildAmericanFrontierReport(): AmericanFrontierReport {
     {
       corpus: 'media-plus-metadata',
       shortLabel: 'media',
+      heterogeneityOrder: 3,
       gainVsHeuristicPct: 7.44,
       gainVsBestFixedPct: 0.001,
       winRate: 1.0,
@@ -143,6 +174,7 @@ export function buildAmericanFrontierReport(): AmericanFrontierReport {
     {
       corpus: 'polyglot-bundle',
       shortLabel: 'polyglot',
+      heterogeneityOrder: 4,
       gainVsHeuristicPct: 26.65,
       gainVsBestFixedPct: 0.003,
       winRate: 1.0,
@@ -150,94 +182,213 @@ export function buildAmericanFrontierReport(): AmericanFrontierReport {
     {
       corpus: 'api-telemetry',
       shortLabel: 'api',
+      heterogeneityOrder: 5,
       gainVsHeuristicPct: 46.37,
       gainVsBestFixedPct: 0.008,
       winRate: 1.0,
     },
   ];
+}
+
+function transportPoints(): TransportPoint[] {
+  return [
+    {
+      label: '0 ms',
+      tcpDelayMs: 0,
+      requestsPerSec: 165_807.66,
+      aeonWins: 709_652,
+      httpWins: 1_820_058,
+      skippedHttpHedges: 0,
+      loserVentPct: 99.64,
+      wasteBytesPerWin: 0.05,
+    },
+    {
+      label: '0.25 ms',
+      tcpDelayMs: 0.25,
+      requestsPerSec: 56_130.28,
+      aeonWins: 725_645,
+      httpWins: 130_736,
+      skippedHttpHedges: 399_721,
+      loserVentPct: 99.61,
+      wasteBytesPerWin: 0.03,
+    },
+    {
+      label: '0.5 ms',
+      tcpDelayMs: 0.5,
+      requestsPerSec: 77_485.11,
+      aeonWins: 1_028_706,
+      httpWins: 172_414,
+      skippedHttpHedges: 646_907,
+      loserVentPct: 99.54,
+      wasteBytesPerWin: 0.03,
+    },
+    {
+      label: '1 ms',
+      tcpDelayMs: 1,
+      requestsPerSec: 98_045.19,
+      aeonWins: 1_502_210,
+      httpWins: 17_612,
+      skippedHttpHedges: 1_240_698,
+      loserVentPct: 99.15,
+      wasteBytesPerWin: 0.02,
+    },
+    {
+      label: '2 ms',
+      tcpDelayMs: 2,
+      requestsPerSec: 109_790.68,
+      aeonWins: 1_670_747,
+      httpWins: 3_660,
+      skippedHttpHedges: 1_644_757,
+      loserVentPct: 99.21,
+      wasteBytesPerWin: 0.0,
+    },
+    {
+      label: '4 ms',
+      tcpDelayMs: 4,
+      requestsPerSec: 111_570.09,
+      aeonWins: 1_699_969,
+      httpWins: 1_631,
+      skippedHttpHedges: 1_699_075,
+      loserVentPct: 99.76,
+      wasteBytesPerWin: 0.0,
+    },
+  ];
+}
+
+export function buildAmericanFrontierReport(): AmericanFrontierReport {
+  const transport = transportPoints();
+  const heavyZeroSkewRequestsPerSec = 248_714.95;
+  const heavyZeroSkewAeonWins = 7_740;
+  const heavyZeroSkewHttpWins = 7_575_940;
+  const heavyDelayRequestsPerSec = 221_606.8;
+  const heavyDelayAeonWins = 6_698_051;
+  const heavyDelayHttpWins = 5_995;
 
   return {
-    label: 'ch17-american-frontier-figure-v1',
-
+    label: 'ch17-american-frontier-figure-v2',
     protocol: {
       siteName: 'Microfrontend (95 resources)',
       resourceCount: 95,
-      beta1Star: 94,
-      points: protocolPoints,
+      points: protocolPoints(),
     },
-
     pipeline: {
       stageCount: 4,
-      points: pipelinePoints,
+      points: pipelinePoints(),
     },
-
-    compression: {
+    encoding: {
       corpusCount: 5,
-      points: compressionPoints,
+      points: encodingPoints(),
     },
-
+    transport: {
+      workload:
+        'Same-request Aeon/UDP vs HTTP/TCP mixed race, plaintext, 64 clients, depth 16',
+      points: transport,
+      heavyWitness: {
+        workload:
+          'Same-request Aeon/UDP vs HTTP/TCP mixed race, plaintext, 256 clients, depth 256',
+        zeroSkewRequestsPerSec: heavyZeroSkewRequestsPerSec,
+        zeroSkewAeonWinSharePct:
+          (heavyZeroSkewAeonWins / (heavyZeroSkewAeonWins + heavyZeroSkewHttpWins)) *
+          100,
+        zeroSkewWasteBytesPerWin: 0.5,
+        tcpDelay2msRequestsPerSec: heavyDelayRequestsPerSec,
+        tcpDelay2msAeonWinSharePct:
+          (heavyDelayAeonWins / (heavyDelayAeonWins + heavyDelayHttpWins)) * 100,
+        tcpDelay2msWasteBytesPerWin: 0.02,
+        throughputRetentionPct:
+          (heavyDelayRequestsPerSec / heavyZeroSkewRequestsPerSec) * 100,
+      },
+    },
     frontierProperties: {
       monotone: true,
       zeroAtMatch: true,
       positiveBelow: true,
       pigeonholeWitness: true,
+      recursiveAcrossLayers: true,
     },
   };
 }
-
-// ─── Markdown renderer ───────────────────────────────────────────────
 
 export function renderAmericanFrontierMarkdown(
   report: AmericanFrontierReport,
 ): string {
   const lines: string[] = [];
-  lines.push('# American Frontier: Diversity vs Waste\n');
+  lines.push('# American Frontier: Frontier Curves and Recursive Wire Witness\n');
   lines.push(
-    'The Pareto frontier of diversity vs waste across three substrates.\n',
+    'The American Frontier rendered as curve families across framing, scheduling, response encoding, and the recursive wire hedge.\n',
   );
 
-  lines.push('## Panel A: Protocol Framing Overhead\n');
-  lines.push(
-    `Site: ${report.protocol.siteName}, β₁* = ${report.protocol.beta1Star}\n`,
-  );
+  lines.push('## Panel A: Framing Waste by Protocol\n');
+  lines.push(`Site: ${report.protocol.siteName}\n`);
   lines.push('| Protocol | Overhead % | Wire KB | RTTs |');
-  lines.push('|----------|-----------|---------|------|');
-  for (const p of report.protocol.points) {
+  lines.push('|----------|-----------:|--------:|-----:|');
+  for (const point of report.protocol.points) {
     lines.push(
-      `| ${p.protocol} | ${p.overheadPct}% | ${p.wireKB} | ${p.rtts} |`,
+      `| ${point.protocol} | ${trimFixed(point.overheadPct, 1)}% | ${point.wireKB} | ${point.rtts} |`,
     );
   }
 
-  lines.push('\n## Panel B: Pipeline Idle Fraction\n');
+  lines.push('\n## Panel B: Idle Waste by Reynolds Regime\n');
   lines.push(`${report.pipeline.stageCount}-stage pipeline:\n`);
-  lines.push('| Re | Idle Fraction |');
-  lines.push('|----|--------------|');
-  for (const p of report.pipeline.points) {
-    lines.push(`| ${p.reynolds} | ${(p.idleFraction * 100).toFixed(1)}% |`);
-  }
-
-  lines.push('\n## Panel C: Compression Topology Gain\n');
-  lines.push('| Corpus | Gain vs Heuristic | Win Rate |');
-  lines.push('|--------|------------------|----------|');
-  for (const p of report.compression.points) {
+  lines.push('| Reynolds | Idle Fraction |');
+  lines.push('|---------:|--------------:|');
+  for (const point of report.pipeline.points) {
     lines.push(
-      `| ${p.corpus} | ${p.gainVsHeuristicPct.toFixed(2)}% | ${(p.winRate * 100).toFixed(0)}% |`,
+      `| ${trimFixed(point.reynolds, 1)} | ${(point.idleFraction * 100).toFixed(1)}% |`,
     );
   }
+
+  lines.push('\n## Panel C: Encoding Waste by Content Mix\n');
+  lines.push('| Corpus | Heuristic waste | Gain vs best fixed | Win rate |');
+  lines.push('|--------|----------------:|-------------------:|---------:|');
+  for (const point of report.encoding.points) {
+    lines.push(
+      `| ${point.corpus} | ${point.gainVsHeuristicPct.toFixed(2)}% | ${point.gainVsBestFixedPct.toFixed(3)}% | ${(point.winRate * 100).toFixed(0)}% |`,
+    );
+  }
+
+  lines.push('\n## Panel D: Aeon/UDP vs HTTP/TCP Mixed Race\n');
+  lines.push(`${report.transport.workload}\n`);
+  lines.push(
+    '| TCP hedge delay | Req/s | Aeon win share | Waste bytes/win | Loser vent % | Skipped HTTP hedges |',
+  );
+  lines.push(
+    '|----------------|------:|---------------:|-----------------:|-------------:|--------------------:|',
+  );
+  for (const point of report.transport.points) {
+    lines.push(
+      `| ${point.label} | ${point.requestsPerSec.toFixed(2)} | ${aeonWinSharePct(point).toFixed(2)}% | ${point.wasteBytesPerWin.toFixed(2)} | ${point.loserVentPct.toFixed(2)}% | ${point.skippedHttpHedges.toLocaleString('en-US')} |`,
+    );
+  }
+
+  const heavy = report.transport.heavyWitness;
+  lines.push('\n## Recursive Heavy Witness\n');
+  lines.push(
+    `At ${heavy.workload}, zero skew sits at ${heavy.zeroSkewAeonWinSharePct.toFixed(2)}% Aeon share and ${heavy.zeroSkewWasteBytesPerWin.toFixed(2)} waste bytes/win. A 2 ms TCP hedge delay moves the same workload to ${heavy.tcpDelay2msAeonWinSharePct.toFixed(2)}% Aeon share and ${heavy.tcpDelay2msWasteBytesPerWin.toFixed(2)} waste bytes/win while retaining ${heavy.throughputRetentionPct.toFixed(1)}% of zero-skew throughput.`,
+  );
+
+  lines.push('\n## Recursive Claim\n');
+  lines.push(
+    'Panels C and D are the same theorem at two layers: diversity first encodes the response, then diversity carries the response on the wire. The hedge delay acts as an inverse-Bule control knob that suppresses unnecessary loser launches before they become waste.',
+  );
 
   lines.push(
     '\n## Frontier Properties (mechanized in AmericanFrontier.lean)\n',
   );
-  const fp = report.frontierProperties;
-  lines.push(`- Monotone: ${fp.monotone}`);
-  lines.push(`- Zero at match: ${fp.zeroAtMatch}`);
-  lines.push(`- Positive below match: ${fp.positiveBelow}`);
-  lines.push(`- Pigeonhole witness: ${fp.pigeonholeWitness}`);
+  lines.push(`- Monotone: ${report.frontierProperties.monotone}`);
+  lines.push(`- Zero at match: ${report.frontierProperties.zeroAtMatch}`);
+  lines.push(
+    `- Positive below match: ${report.frontierProperties.positiveBelow}`,
+  );
+  lines.push(
+    `- Pigeonhole witness: ${report.frontierProperties.pigeonholeWitness}`,
+  );
+  lines.push(
+    `- Recursive across layers: ${report.frontierProperties.recursiveAcrossLayers}`,
+  );
 
-  return lines.join('\n');
+  return `${lines.join('\n')}\n`;
 }
-
-// ─── SVG renderer ────────────────────────────────────────────────────
 
 function escapeXml(value: string): string {
   return value
@@ -254,281 +405,541 @@ function trimFixed(value: number, digits: number): string {
   return fixed.replace(/0+$/, '').replace(/\.$/, '');
 }
 
-const PANEL_W = 400;
-const PANEL_H = 320;
-const PAD_L = 60;
-const PAD_R = 40;
-const PAD_T = 50;
-const PAD_B = 84;
+const PANEL_W = 448;
+const PANEL_H = 332;
+const PAD_L = 66;
+const PAD_R = 28;
+const PAD_T = 84;
+const PAD_B = 64;
 const PLOT_W = PANEL_W - PAD_L - PAD_R;
 const PLOT_H = PANEL_H - PAD_T - PAD_B;
-const GAP = 30;
-const TOTAL_W = PANEL_W * 3 + GAP * 2 + 40;
-const TOTAL_H = PANEL_H + 90;
+const OUTER_PAD = 28;
+const COL_GAP = 28;
+const ROW_GAP = 28;
+const HEADER_H = 74;
+const FOOTER_H = 112;
+const TOTAL_W = OUTER_PAD * 2 + PANEL_W * 2 + COL_GAP;
+const TOTAL_H = HEADER_H + OUTER_PAD + PANEL_H * 2 + ROW_GAP + FOOTER_H;
 
+const BG = '#fcfaf5';
+const PANEL_BG = '#fffef9';
+const GRID = '#d7dee7';
+const TEXT = '#0f172a';
+const LIGHT_TEXT = '#334155';
+const MUTED_TEXT = '#64748b';
 const TEAL = '#0f766e';
-const ORANGE = '#c2410c';
+const TEAL_FILL = '#5eead4';
 const BLUE = '#2563eb';
-const SLATE = '#64748b';
-const BG = '#fafaf9';
-const GRID = '#e2e8f0';
-const TEXT = '#1e293b';
-const LIGHT_TEXT = '#475569';
+const BLUE_FILL = '#93c5fd';
+const ORANGE = '#c2410c';
+const ORANGE_FILL = '#fdba74';
+const RED = '#b91c1c';
+const RED_FILL = '#fca5a5';
+const GOLD = '#a16207';
+const WHITE = '#ffffff';
 
-function panelX(panelIdx: number): number {
-  return 20 + panelIdx * (PANEL_W + GAP);
+function panelOrigin(panelIndex: number): { x: number; y: number } {
+  const col = panelIndex % 2;
+  const row = Math.floor(panelIndex / 2);
+  return {
+    x: OUTER_PAD + col * (PANEL_W + COL_GAP),
+    y: HEADER_H + row * (PANEL_H + ROW_GAP),
+  };
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+function wrapText(text: string, maxChars: number): string[] {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let current = '';
+
+  for (const word of words) {
+    const candidate = current.length === 0 ? word : `${current} ${word}`;
+    if (candidate.length <= maxChars) {
+      current = candidate;
+      continue;
+    }
+    if (current.length > 0) {
+      lines.push(current);
+    }
+    current = word;
+  }
+
+  if (current.length > 0) {
+    lines.push(current);
+  }
+
+  return lines;
+}
+
+interface MultilineTextOptions {
+  readonly x: number;
+  readonly y: number;
+  readonly lines: readonly string[];
+  readonly anchor?: 'start' | 'middle' | 'end';
+  readonly fontSize?: number;
+  readonly fontWeight?: string;
+  readonly fill?: string;
+  readonly lineHeight?: number;
+  readonly className?: string;
+}
+
+function renderMultilineText(options: MultilineTextOptions): string {
+  const anchor = options.anchor ?? 'start';
+  const fontSize = options.fontSize ?? 11;
+  const fontWeight = options.fontWeight ?? '400';
+  const fill = options.fill ?? TEXT;
+  const lineHeight = options.lineHeight ?? Math.round(fontSize * 1.25);
+  const className = options.className ? ` class="${options.className}"` : '';
+
+  const tspans = options.lines
+    .map((line, index) => {
+      const dy = index === 0 ? 0 : lineHeight;
+      return `<tspan x="${options.x}" dy="${dy}">${escapeXml(line)}</tspan>`;
+    })
+    .join('');
+
+  return `<text${className} x="${options.x}" y="${options.y}" text-anchor="${anchor}" font-size="${fontSize}" font-weight="${fontWeight}" fill="${fill}">${tspans}</text>`;
+}
+
+function renderLabelPill(
+  x: number,
+  y: number,
+  text: string,
+  color: string,
+  anchor: 'start' | 'middle' | 'end' = 'middle',
+): string {
+  const paddingX = 6;
+  const width = text.length * 5.9 + paddingX * 2;
+  const height = 18;
+  const originX =
+    anchor === 'middle' ? x - width / 2 : anchor === 'end' ? x - width : x;
+  const originY = y - height / 2;
+
+  return [
+    `<rect x="${trimFixed(originX, 2)}" y="${trimFixed(originY, 2)}" width="${trimFixed(width, 2)}" height="${height}" rx="9" fill="${WHITE}" stroke="${color}" stroke-width="1" opacity="0.96"/>`,
+    `<text x="${x}" y="${y + 3.5}" text-anchor="${anchor}" font-size="10" font-weight="700" fill="${color}">${escapeXml(text)}</text>`,
+  ].join('\n');
+}
+
+function renderPanelFrame(
+  ox: number,
+  oy: number,
+  badge: string,
+  title: string,
+  accent: string,
+  subtitle?: string,
+): string[] {
+  const lines: string[] = [];
+  lines.push(
+    `<rect x="${ox}" y="${oy}" width="${PANEL_W}" height="${PANEL_H}" rx="16" fill="${PANEL_BG}" stroke="${GRID}" stroke-width="1.25"/>`,
+  );
+  lines.push(
+    `<rect x="${ox}" y="${oy}" width="${PANEL_W}" height="60" rx="16" fill="${accent}" opacity="0.08"/>`,
+  );
+  lines.push(
+    `<line x1="${ox}" y1="${oy + 60}" x2="${ox + PANEL_W}" y2="${oy + 60}" stroke="${GRID}" stroke-width="1"/>`,
+  );
+  lines.push(
+    `<circle cx="${ox + 24}" cy="${oy + 24}" r="14" fill="${accent}"/>`,
+  );
+  lines.push(
+    `<text x="${ox + 24}" y="${oy + 29}" text-anchor="middle" font-size="12" font-weight="800" fill="${WHITE}">${escapeXml(badge)}</text>`,
+  );
+  lines.push(
+    `<text x="${ox + 46}" y="${oy + 29}" text-anchor="start" font-size="17" font-weight="700" fill="${TEXT}">${escapeXml(title)}</text>`,
+  );
+  if (subtitle) {
+    lines.push(
+      renderMultilineText({
+        x: ox + 18,
+        y: oy + 78,
+        lines: wrapText(subtitle, 58),
+        anchor: 'start',
+        fontSize: 10.5,
+        fill: LIGHT_TEXT,
+        lineHeight: 12,
+      }),
+    );
+  }
+  return lines;
+}
+
+function renderNumericYAxis(
+  lines: string[],
+  ox: number,
+  oy: number,
+  yTicks: readonly number[],
+  maxY: number,
+  label: string,
+  formatter: (value: number) => string,
+): void {
+  for (const tick of yTicks) {
+    const y = oy + PAD_T + PLOT_H - (tick / maxY) * PLOT_H;
+    lines.push(
+      `<line x1="${ox + PAD_L}" y1="${y}" x2="${ox + PAD_L + PLOT_W}" y2="${y}" stroke="${GRID}" stroke-width="0.75"/>`,
+    );
+    lines.push(
+      `<text x="${ox + PAD_L - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="${LIGHT_TEXT}">${escapeXml(formatter(tick))}</text>`,
+    );
+  }
+
+  lines.push(
+    `<text x="${ox + 18}" y="${oy + PAD_T + PLOT_H / 2}" text-anchor="middle" font-size="12" font-weight="600" fill="${TEXT}" transform="rotate(-90,${ox + 18},${oy + PAD_T + PLOT_H / 2})">${escapeXml(label)}</text>`,
+  );
+}
+
+function renderAreaPath(
+  points: readonly { x: number; y: number }[],
+  baselineY: number,
+  stroke: string,
+  fill: string,
+): string {
+  if (points.length === 0) {
+    return '';
+  }
+  const linePath = points
+    .map((point, index) =>
+      `${index === 0 ? 'M' : 'L'}${trimFixed(point.x, 2)},${trimFixed(point.y, 2)}`,
+    )
+    .join(' ');
+  const areaPath = `${linePath} L${trimFixed(points[points.length - 1].x, 2)},${trimFixed(baselineY, 2)} L${trimFixed(points[0].x, 2)},${trimFixed(baselineY, 2)} Z`;
+  return [
+    `<path d="${areaPath}" fill="${fill}" opacity="0.24"/>`,
+    `<path d="${linePath}" fill="none" stroke="${stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
+  ].join('\n');
 }
 
 function renderProtocolPanel(report: AmericanFrontierReport): string {
-  const ox = panelX(0);
-  const oy = 40;
+  const { x: ox, y: oy } = panelOrigin(0);
   const points = report.protocol.points;
-  const maxOverhead = 35; // round up from 31
-
-  const lines: string[] = [];
-
-  // Background
-  lines.push(
-    `<rect x="${ox}" y="${oy}" width="${PANEL_W}" height="${PANEL_H}" rx="12" fill="${BG}" stroke="${GRID}" stroke-width="1"/>`,
+  const maxY = 35;
+  const lines = renderPanelFrame(
+    ox,
+    oy,
+    'A',
+    'Framing Waste by Protocol',
+    TEAL,
+    'HTTP/1.1, HTTP/2, HTTP/3, and Aeon Flow on the same microfrontend workload.',
   );
 
-  // Title
-  lines.push(
-    `<text x="${ox + PANEL_W / 2}" y="${oy + 24}" text-anchor="middle" font-size="13" font-weight="600" fill="${TEXT}">A. Protocol Framing Overhead</text>`,
+  renderNumericYAxis(
+    lines,
+    ox,
+    oy,
+    [0, 5, 10, 15, 20, 25, 30, 35],
+    maxY,
+    'Framing waste (%)',
+    (value) => `${value}%`,
   );
 
-  // Y-axis gridlines and labels
-  const yTicks = [0, 5, 10, 15, 20, 25, 30, 35];
-  for (const tick of yTicks) {
-    const yPos = oy + PAD_T + PLOT_H - (tick / maxOverhead) * PLOT_H;
+  const xForIndex = (index: number): number =>
+    ox + PAD_L + (index / (points.length - 1)) * PLOT_W;
+  const yForWaste = (waste: number): number =>
+    oy + PAD_T + PLOT_H - (waste / maxY) * PLOT_H;
+
+  const curvePoints = points.map((point, index) => ({
+    x: xForIndex(index),
+    y: yForWaste(point.overheadPct),
+  }));
+  lines.push(
+    renderAreaPath(curvePoints, oy + PAD_T + PLOT_H, TEAL, TEAL_FILL),
+  );
+
+  for (let index = 0; index < points.length; index++) {
+    const point = points[index];
+    const x = xForIndex(index);
+    const y = yForWaste(point.overheadPct);
     lines.push(
-      `<line x1="${ox + PAD_L}" y1="${yPos}" x2="${ox + PAD_L + PLOT_W}" y2="${yPos}" stroke="${GRID}" stroke-width="0.5"/>`,
+      `<circle cx="${x}" cy="${y}" r="4" fill="${TEAL}" stroke="white" stroke-width="1.5"/>`,
     );
-    if (tick % 10 === 0) {
-      lines.push(
-        `<text x="${ox + PAD_L - 8}" y="${yPos + 4}" text-anchor="end" font-size="10" fill="${LIGHT_TEXT}">${tick}%</text>`,
-      );
-    }
+    lines.push(renderLabelPill(x, y - 16, `${trimFixed(point.overheadPct, 1)}%`, TEAL));
+    const protocolLabel =
+      point.protocol === 'Aeon Flow' ? ['Aeon', 'Flow'] : [point.protocol];
+    lines.push(
+      renderMultilineText({
+        x,
+        y: oy + PAD_T + PLOT_H + 16,
+        lines: protocolLabel,
+        anchor: 'middle',
+        fontSize: 10,
+        fontWeight: '600',
+        fill: TEXT,
+        lineHeight: 12,
+      }),
+    );
   }
 
-  // Y-axis label
   lines.push(
-    `<text x="${ox + 14}" y="${oy + PAD_T + PLOT_H / 2}" text-anchor="middle" font-size="11" fill="${TEXT}" transform="rotate(-90,${ox + 14},${oy + PAD_T + PLOT_H / 2})">Framing overhead %</text>`,
+    `<text x="${ox + PAD_L + PLOT_W / 2}" y="${oy + PANEL_H - 18}" text-anchor="middle" font-size="12" font-weight="600" fill="${TEXT}">protocol family</text>`,
   );
-
-  // Bars
-  const barW = PLOT_W / (points.length * 2);
-  const colors = [ORANGE, '#d97706', '#ca8a04', TEAL];
-  for (let i = 0; i < points.length; i++) {
-    const p = points[i];
-    const cx =
-      ox + PAD_L + (PLOT_W / points.length) * i + PLOT_W / points.length / 2;
-    const barH = (p.overheadPct / maxOverhead) * PLOT_H;
-    const barY = oy + PAD_T + PLOT_H - barH;
-    lines.push(
-      `<rect x="${cx - barW / 2}" y="${barY}" width="${barW}" height="${barH}" rx="3" fill="${colors[i]}" opacity="0.85"/>`,
-    );
-    // Value label
-    lines.push(
-      `<text x="${cx}" y="${barY - 6}" text-anchor="middle" font-size="10" font-weight="600" fill="${colors[i]}">${trimFixed(p.overheadPct, 1)}%</text>`,
-    );
-    // Protocol label
-    lines.push(
-      `<text x="${cx}" y="${oy + PAD_T + PLOT_H + 16}" text-anchor="middle" font-size="10" fill="${TEXT}">${escapeXml(p.shortLabel)}</text>`,
-    );
-  }
-
-  // X-axis label
   lines.push(
-    `<text x="${ox + PAD_L + PLOT_W / 2}" y="${oy + PAD_T + PLOT_H + 38}" text-anchor="middle" font-size="11" fill="${TEXT}">Protocol (increasing diversity →)</text>`,
+    `<text x="${ox + PAD_L}" y="${oy + PANEL_H - 38}" text-anchor="start" font-size="10" fill="${MUTED_TEXT}">monoculture</text>`,
   );
-
-  // Frontier annotation: monotone decreasing arrow
-  const arrowY = oy + PAD_T + 15;
   lines.push(
-    `<line x1="${ox + PAD_L + 20}" y1="${arrowY}" x2="${ox + PAD_L + PLOT_W - 20}" y2="${arrowY + 40}" stroke="${TEAL}" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead)"/>`,
+    `<text x="${ox + PAD_L + PLOT_W}" y="${oy + PANEL_H - 38}" text-anchor="end" font-size="10" fill="${MUTED_TEXT}">matched cover</text>`,
   );
 
   return lines.join('\n');
 }
 
 function renderPipelinePanel(report: AmericanFrontierReport): string {
-  const ox = panelX(1);
-  const oy = 40;
+  const { x: ox, y: oy } = panelOrigin(1);
   const points = report.pipeline.points;
-
-  const lines: string[] = [];
-
-  // Background
-  lines.push(
-    `<rect x="${ox}" y="${oy}" width="${PANEL_W}" height="${PANEL_H}" rx="12" fill="${BG}" stroke="${GRID}" stroke-width="1"/>`,
+  const lines = renderPanelFrame(
+    ox,
+    oy,
+    'B',
+    'Idle Waste by Reynolds Regime',
+    BLUE,
+    'As scheduler diversity falls and Reynolds number rises, idle waste climbs.',
   );
 
-  // Title
-  lines.push(
-    `<text x="${ox + PANEL_W / 2}" y="${oy + 24}" text-anchor="middle" font-size="13" font-weight="600" fill="${TEXT}">B. Pipeline Idle Fraction</text>`,
-  );
-
-  // Log-scale x-axis (Re from 0.1 to 16)
   const logMin = Math.log10(0.08);
   const logMax = Math.log10(20);
   const logRange = logMax - logMin;
 
-  function xForRe(re: number): number {
-    // Invert: low Re (high diversity) on RIGHT, high Re (low diversity) on LEFT
-    const logRe = Math.log10(re);
-    const frac = 1 - (logRe - logMin) / logRange;
-    return ox + PAD_L + frac * PLOT_W;
-  }
+  const xForRe = (reynolds: number): number => {
+    const position = 1 - (Math.log10(reynolds) - logMin) / logRange;
+    return ox + PAD_L + position * PLOT_W;
+  };
+  const yForIdle = (idleFraction: number): number =>
+    oy + PAD_T + PLOT_H - idleFraction * PLOT_H;
 
-  function yForIdle(idle: number): number {
-    return oy + PAD_T + PLOT_H - idle * PLOT_H;
-  }
-
-  // Y-axis gridlines
-  for (let tick = 0; tick <= 100; tick += 20) {
-    const yPos = yForIdle(tick / 100);
-    lines.push(
-      `<line x1="${ox + PAD_L}" y1="${yPos}" x2="${ox + PAD_L + PLOT_W}" y2="${yPos}" stroke="${GRID}" stroke-width="0.5"/>`,
-    );
-    lines.push(
-      `<text x="${ox + PAD_L - 8}" y="${yPos + 4}" text-anchor="end" font-size="10" fill="${LIGHT_TEXT}">${tick}%</text>`,
-    );
-  }
-
-  // Y-axis label
-  lines.push(
-    `<text x="${ox + 14}" y="${oy + PAD_T + PLOT_H / 2}" text-anchor="middle" font-size="11" fill="${TEXT}" transform="rotate(-90,${ox + 14},${oy + PAD_T + PLOT_H / 2})">Idle fraction (waste)</text>`,
+  renderNumericYAxis(
+    lines,
+    ox,
+    oy,
+    [0, 20, 40, 60, 80, 100],
+    100,
+    'Idle waste (%)',
+    (value) => `${value}%`,
   );
 
-  // X-axis ticks
-  const reTicks = [0.1, 0.5, 1, 2, 4, 8, 16];
-  for (const re of reTicks) {
-    const xPos = xForRe(re);
+  const xTicks = [0.1, 0.5, 1, 2, 4, 8, 16];
+  for (const tick of xTicks) {
+    const x = xForRe(tick);
     lines.push(
-      `<line x1="${xPos}" y1="${oy + PAD_T + PLOT_H}" x2="${xPos}" y2="${oy + PAD_T + PLOT_H + 5}" stroke="${LIGHT_TEXT}" stroke-width="0.5"/>`,
+      `<line x1="${x}" y1="${oy + PAD_T + PLOT_H}" x2="${x}" y2="${oy + PAD_T + PLOT_H + 5}" stroke="${LIGHT_TEXT}" stroke-width="0.75"/>`,
     );
     lines.push(
-      `<text x="${xPos}" y="${oy + PAD_T + PLOT_H + 16}" text-anchor="middle" font-size="9" fill="${LIGHT_TEXT}">${re}</text>`,
-    );
-  }
-
-  // X-axis label (inverted: low Re on right = high diversity)
-  lines.push(
-    `<text x="${ox + PAD_L + PLOT_W / 2}" y="${oy + PAD_T + PLOT_H + 52}" text-anchor="middle" font-size="11" fill="${TEXT}">← high diversity (low Re)     Re     low diversity (high Re) →</text>`,
-  );
-
-  // Curve
-  const pathParts: string[] = [];
-  for (let i = 0; i < points.length; i++) {
-    const x = xForRe(points[i].reynolds);
-    const y = yForIdle(points[i].idleFraction);
-    pathParts.push(i === 0 ? `M${x},${y}` : `L${x},${y}`);
-  }
-  lines.push(
-    `<path d="${pathParts.join(' ')}" fill="none" stroke="${BLUE}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`,
-  );
-
-  // Data points
-  for (const p of points) {
-    const x = xForRe(p.reynolds);
-    const y = yForIdle(p.idleFraction);
-    lines.push(
-      `<circle cx="${x}" cy="${y}" r="3.5" fill="${BLUE}" stroke="white" stroke-width="1"/>`,
+      `<text x="${x}" y="${oy + PAD_T + PLOT_H + 19}" text-anchor="middle" font-size="10" fill="${LIGHT_TEXT}">${trimFixed(tick, 1)}</text>`,
     );
   }
 
-  // Regime annotations
-  const laminarX = xForRe(0.15);
-  const turbulentX = xForRe(8);
+  const curvePoints = points.map((point) => ({
+    x: xForRe(point.reynolds),
+    y: yForIdle(point.idleFraction),
+  }));
   lines.push(
-    `<text x="${laminarX}" y="${oy + PAD_T + PLOT_H - 10}" text-anchor="middle" font-size="9" fill="${TEAL}" font-style="italic">laminar</text>`,
+    renderAreaPath(curvePoints, oy + PAD_T + PLOT_H, BLUE, BLUE_FILL),
+  );
+
+  for (const point of points) {
+    const x = xForRe(point.reynolds);
+    const y = yForIdle(point.idleFraction);
+    lines.push(
+      `<circle cx="${x}" cy="${y}" r="3.5" fill="${BLUE}" stroke="white" stroke-width="1.2"/>`,
+    );
+  }
+
+  lines.push(
+    `<text x="${ox + PAD_L + PLOT_W / 2}" y="${oy + PANEL_H - 18}" text-anchor="middle" font-size="12" font-weight="600" fill="${TEXT}">scheduler diversity ←→ Reynolds regime</text>`,
   );
   lines.push(
-    `<text x="${turbulentX}" y="${oy + PAD_T + 20}" text-anchor="middle" font-size="9" fill="${ORANGE}" font-style="italic">turbulent</text>`,
+    renderLabelPill(xForRe(0.16), yForIdle(0.1), 'laminar', TEAL),
+  );
+  lines.push(
+    renderLabelPill(xForRe(11), yForIdle(0.9), 'turbulent', ORANGE),
   );
 
   return lines.join('\n');
 }
 
-function renderCompressionPanel(report: AmericanFrontierReport): string {
-  const ox = panelX(2);
-  const oy = 40;
-  const points = report.compression.points;
-  const maxGain = 50;
-
-  const lines: string[] = [];
-
-  // Background
-  lines.push(
-    `<rect x="${ox}" y="${oy}" width="${PANEL_W}" height="${PANEL_H}" rx="12" fill="${BG}" stroke="${GRID}" stroke-width="1"/>`,
+function renderEncodingPanel(report: AmericanFrontierReport): string {
+  const { x: ox, y: oy } = panelOrigin(2);
+  const points = report.encoding.points;
+  const maxY = 50;
+  const lines = renderPanelFrame(
+    ox,
+    oy,
+    'C',
+    'Encoding Waste by Content Mix',
+    ORANGE,
+    'The same theorem on response encoding: heterogeneous payloads punish monoculture.',
   );
 
-  // Title
-  lines.push(
-    `<text x="${ox + PANEL_W / 2}" y="${oy + 24}" text-anchor="middle" font-size="13" font-weight="600" fill="${TEXT}">C. Compression: Cost of Monoculture</text>`,
+  renderNumericYAxis(
+    lines,
+    ox,
+    oy,
+    [0, 10, 20, 30, 40, 50],
+    maxY,
+    'Monoculture waste (%)',
+    (value) => `${value}%`,
   );
 
-  // Y-axis gridlines
-  const yTicks = [0, 10, 20, 30, 40, 50];
-  for (const tick of yTicks) {
-    const yPos = oy + PAD_T + PLOT_H - (tick / maxGain) * PLOT_H;
-    lines.push(
-      `<line x1="${ox + PAD_L}" y1="${yPos}" x2="${ox + PAD_L + PLOT_W}" y2="${yPos}" stroke="${GRID}" stroke-width="0.5"/>`,
-    );
-    lines.push(
-      `<text x="${ox + PAD_L - 8}" y="${yPos + 4}" text-anchor="end" font-size="10" fill="${LIGHT_TEXT}">${tick}%</text>`,
-    );
-  }
+  const xForIndex = (index: number): number =>
+    ox + PAD_L + (index / (points.length - 1)) * PLOT_W;
+  const yForWaste = (waste: number): number =>
+    oy + PAD_T + PLOT_H - (waste / maxY) * PLOT_H;
 
-  // Y-axis label
+  const curvePoints = points.map((point, index) => ({
+    x: xForIndex(index),
+    y: yForWaste(point.gainVsHeuristicPct),
+  }));
   lines.push(
-    `<text x="${ox + 14}" y="${oy + PAD_T + PLOT_H / 2}" text-anchor="middle" font-size="11" fill="${TEXT}" transform="rotate(-90,${ox + 14},${oy + PAD_T + PLOT_H / 2})">Heuristic waste (topology gain %)</text>`,
+    renderAreaPath(curvePoints, oy + PAD_T + PLOT_H, ORANGE, ORANGE_FILL),
   );
 
-  // Bars — ordered by ascending heterogeneity (ascending gain)
-  const barW = PLOT_W / (points.length * 2);
-  for (let i = 0; i < points.length; i++) {
-    const p = points[i];
-    const cx =
-      ox + PAD_L + (PLOT_W / points.length) * i + PLOT_W / points.length / 2;
-    const barH = (p.gainVsHeuristicPct / maxGain) * PLOT_H;
-    const barY = oy + PAD_T + PLOT_H - barH;
+  lines.push(
+    `<line x1="${ox + PAD_L}" y1="${oy + PAD_T + PLOT_H}" x2="${ox + PAD_L + PLOT_W}" y2="${oy + PAD_T + PLOT_H}" stroke="${TEAL}" stroke-width="1.25" stroke-dasharray="4,3"/>`,
+  );
+  lines.push(
+    renderLabelPill(ox + PAD_L + PLOT_W - 8, oy + PAD_T + PLOT_H - 12, 'matched floor', TEAL, 'end'),
+  );
 
-    // Color gradient: low gain = slate, high gain = orange
-    const color =
-      p.gainVsHeuristicPct < 5
-        ? SLATE
-        : p.gainVsHeuristicPct < 15
-          ? '#d97706'
-          : ORANGE;
-
+  for (let index = 0; index < points.length; index++) {
+    const point = points[index];
+    const x = xForIndex(index);
+    const y = yForWaste(point.gainVsHeuristicPct);
     lines.push(
-      `<rect x="${cx - barW / 2}" y="${barY}" width="${barW}" height="${barH}" rx="3" fill="${color}" opacity="0.85"/>`,
+      `<circle cx="${x}" cy="${y}" r="4" fill="${ORANGE}" stroke="white" stroke-width="1.5"/>`,
     );
-    // Value label
     lines.push(
-      `<text x="${cx}" y="${barY - 6}" text-anchor="middle" font-size="10" font-weight="600" fill="${color}">${trimFixed(p.gainVsHeuristicPct, 1)}%</text>`,
+      renderLabelPill(x, y - 16, `${trimFixed(point.gainVsHeuristicPct, 1)}%`, ORANGE),
     );
-    // Corpus label
     lines.push(
-      `<text x="${cx}" y="${oy + PAD_T + PLOT_H + 16}" text-anchor="middle" font-size="9" fill="${TEXT}">${escapeXml(p.shortLabel)}</text>`,
+      `<text x="${x}" y="${oy + PAD_T + PLOT_H + 20}" text-anchor="middle" font-size="10" font-weight="600" fill="${TEXT}">${escapeXml(point.shortLabel)}</text>`,
     );
   }
 
-  // X-axis label
   lines.push(
-    `<text x="${ox + PAD_L + PLOT_W / 2}" y="${oy + PAD_T + PLOT_H + 38}" text-anchor="middle" font-size="11" fill="${TEXT}">Content heterogeneity (β₁* →)</text>`,
+    `<text x="${ox + PAD_L + PLOT_W / 2}" y="${oy + PANEL_H - 18}" text-anchor="middle" font-size="12" font-weight="600" fill="${TEXT}">intrinsic response diversity (β₁* →)</text>`,
   );
 
-  // Annotation: zero line = frontier
-  lines.push(
-    `<line x1="${ox + PAD_L}" y1="${oy + PAD_T + PLOT_H}" x2="${ox + PAD_L + PLOT_W}" y2="${oy + PAD_T + PLOT_H}" stroke="${TEAL}" stroke-width="1.5"/>`,
-  );
-  lines.push(
-    `<text x="${ox + PAD_L + PLOT_W + 2}" y="${oy + PAD_T + PLOT_H + 4}" text-anchor="start" font-size="9" fill="${TEAL}" font-weight="600">frontier</text>`,
+  return lines.join('\n');
+}
+
+function renderTransportPanel(report: AmericanFrontierReport): string {
+  const { x: ox, y: oy } = panelOrigin(3);
+  const points = report.transport.points;
+  const maxY = 0.05;
+  const lines = renderPanelFrame(
+    ox,
+    oy,
+    'D',
+    'Aeon/UDP vs HTTP/TCP Mixed Race',
+    RED,
+    'One logical request is launched on both transports; the first sufficient winner serves the client.',
   );
 
+  const xForShare = (sharePct: number): number =>
+    ox + PAD_L + (sharePct / 100) * PLOT_W;
+  const yForWaste = (waste: number): number =>
+    oy + PAD_T + PLOT_H - (waste / maxY) * PLOT_H;
+
+  renderNumericYAxis(
+    lines,
+    ox,
+    oy,
+    [0, 0.01, 0.02, 0.03, 0.04, 0.05],
+    maxY,
+    'Loser waste / win',
+    (value) => trimFixed(value, 2),
+  );
+
+  const xTicks = [0, 25, 50, 75, 100];
+  for (const tick of xTicks) {
+    const x = xForShare(tick);
+    lines.push(
+      `<line x1="${x}" y1="${oy + PAD_T + PLOT_H}" x2="${x}" y2="${oy + PAD_T + PLOT_H + 5}" stroke="${LIGHT_TEXT}" stroke-width="0.75"/>`,
+    );
+    lines.push(
+      `<text x="${x}" y="${oy + PAD_T + PLOT_H + 18}" text-anchor="middle" font-size="9" fill="${LIGHT_TEXT}">${tick}%</text>`,
+    );
+  }
+
+  const curvePoints = points.map((point) => ({
+    x: xForShare(aeonWinSharePct(point)),
+    y: yForWaste(point.wasteBytesPerWin),
+  }));
+  lines.push(
+    renderAreaPath(curvePoints, oy + PAD_T + PLOT_H, RED, RED_FILL),
+  );
+
+  const representativeLabels = new Map<
+    number,
+    { marker: string; delayLabel: string; dx: number; dy: number; anchor: 'start' | 'middle' | 'end' }
+  >([
+    [0, { marker: '1', delayLabel: '0 ms TCP hedge', dx: 16, dy: 10, anchor: 'start' }],
+    [2, { marker: '2', delayLabel: '0.5 ms TCP hedge', dx: 12, dy: -14, anchor: 'start' }],
+    [3, { marker: '3', delayLabel: '1 ms TCP hedge', dx: 12, dy: -10, anchor: 'start' }],
+    [5, { marker: '4', delayLabel: '4 ms TCP hedge', dx: -14, dy: -12, anchor: 'end' }],
+  ]);
+
+  for (let index = 0; index < points.length; index++) {
+    const point = points[index];
+    const x = xForShare(aeonWinSharePct(point));
+    const y = yForWaste(point.wasteBytesPerWin);
+    lines.push(
+      `<circle cx="${x}" cy="${y}" r="4" fill="${RED}" stroke="white" stroke-width="1.5"/>`,
+    );
+    const labelOffset = representativeLabels.get(index);
+    if (labelOffset) {
+      lines.push(
+        renderLabelPill(
+          clamp(x + labelOffset.dx, ox + PAD_L + 20, ox + PAD_L + PLOT_W - 20),
+          clamp(y + labelOffset.dy, oy + PAD_T + 14, oy + PAD_T + PLOT_H - 14),
+          labelOffset.marker,
+          RED,
+          labelOffset.anchor,
+        ),
+      );
+    }
+  }
+
+  const legendX = ox + PAD_L + 14;
+  const legendY = oy + PAD_T + PLOT_H - 86;
+  const legendW = 156;
+  const legendH = 74;
+  lines.push(
+    `<rect x="${legendX}" y="${legendY}" width="${legendW}" height="${legendH}" rx="12" fill="${WHITE}" stroke="${GRID}" stroke-width="1"/>`,
+  );
+  lines.push(
+    `<text x="${legendX + 10}" y="${legendY + 16}" text-anchor="start" font-size="10" font-weight="700" fill="${TEXT}">TCP hedge delay</text>`,
+  );
+  let legendRowY = legendY + 31;
+  for (const index of [0, 2, 3, 5]) {
+    const item = representativeLabels.get(index);
+    if (!item) {
+      continue;
+    }
+    lines.push(renderLabelPill(legendX + 16, legendRowY - 1, item.marker, RED));
+    lines.push(
+      `<text x="${legendX + 30}" y="${legendRowY + 3}" text-anchor="start" font-size="10" fill="${LIGHT_TEXT}">${escapeXml(item.delayLabel)}</text>`,
+    );
+    legendRowY += 13;
+  }
+
+  lines.push(
+    renderMultilineText({
+      x: ox + PAD_L + PLOT_W / 2,
+      y: oy + PANEL_H - 31,
+      lines: [
+        'Aeon/UDP winner share in the mixed race',
+        '0% = HTTP/TCP dominates, 100% = Aeon/UDP dominates',
+      ],
+      anchor: 'middle',
+      fontSize: 11,
+      fontWeight: '600',
+      fill: TEXT,
+      lineHeight: 12,
+    }),
+  );
   return lines.join('\n');
 }
 
@@ -538,36 +949,81 @@ export function renderAmericanFrontierSvg(
   const parts: string[] = [];
 
   parts.push(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${TOTAL_W} ${TOTAL_H}" font-family="system-ui, -apple-system, sans-serif">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${TOTAL_W} ${TOTAL_H}" font-family="'Avenir Next', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif">`,
   );
-
-  // Arrow marker
-  parts.push('<defs>');
   parts.push(
-    `<marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="${TEAL}"/></marker>`,
+    `<rect width="${TOTAL_W}" height="${TOTAL_H}" rx="20" fill="${BG}" stroke="${GRID}" stroke-width="1"/>`,
   );
-  parts.push('</defs>');
-
-  // Main background
   parts.push(
-    `<rect width="${TOTAL_W}" height="${TOTAL_H}" rx="18" fill="white" stroke="${GRID}" stroke-width="1"/>`,
+    `<text x="${TOTAL_W / 2}" y="34" text-anchor="middle" font-size="28" font-weight="700" fill="${TEXT}" font-family="'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif">The American Frontier</text>`,
   );
-
-  // Supertitle
   parts.push(
-    `<text x="${TOTAL_W / 2}" y="${26}" text-anchor="middle" font-size="16" font-weight="700" fill="${TEXT}">The American Frontier: Diversity vs Waste Across Three Substrates</text>`,
+    renderMultilineText({
+      x: TOTAL_W / 2,
+      y: 54,
+      lines: wrapText(
+        'Diversity reduces waste in framing, scheduling, encoding, and recursively again on the wire.',
+        84,
+      ),
+      anchor: 'middle',
+      fontSize: 13,
+      fill: LIGHT_TEXT,
+      lineHeight: 15,
+    }),
   );
 
-  // Three panels
   parts.push(renderProtocolPanel(report));
   parts.push(renderPipelinePanel(report));
-  parts.push(renderCompressionPanel(report));
+  parts.push(renderEncodingPanel(report));
+  parts.push(renderTransportPanel(report));
 
-  // Footer annotation
+  const heavy = report.transport.heavyWitness;
+  const footerY = TOTAL_H - FOOTER_H + 18;
+  const footerBoxW = (TOTAL_W - OUTER_PAD * 2 - 18) / 2;
   parts.push(
-    `<text x="${TOTAL_W / 2}" y="${TOTAL_H - 8}" text-anchor="middle" font-size="10" fill="${LIGHT_TEXT}">THM-AMERICAN-FRONTIER (AmericanFrontier.lean): waste monotonically non-increasing in diversity, zero at β₁ = β₁*, positive below — mechanized in Lean 4</text>`,
+    `<rect x="${OUTER_PAD}" y="${TOTAL_H - FOOTER_H + 6}" width="${footerBoxW}" height="${FOOTER_H - 20}" rx="14" fill="${WHITE}" stroke="${GRID}" stroke-width="1"/>`,
   );
-
+  parts.push(
+    renderMultilineText({
+      x: OUTER_PAD + 14,
+      y: footerY,
+      lines: [
+        'Heavy recursive witness',
+        ...wrapText(
+          `Zero skew: ${heavy.zeroSkewAeonWinSharePct.toFixed(2)}% Aeon share, ${heavy.zeroSkewWasteBytesPerWin.toFixed(2)} loser-bytes per win. 2 ms hedge: ${heavy.tcpDelay2msAeonWinSharePct.toFixed(2)}% Aeon share, ${heavy.tcpDelay2msWasteBytesPerWin.toFixed(2)} loser-bytes per win, ${heavy.throughputRetentionPct.toFixed(1)}% throughput retention.`,
+          52,
+        ),
+      ],
+      anchor: 'start',
+      fontSize: 11,
+      fill: TEXT,
+      fontWeight: '500',
+      lineHeight: 14,
+    }),
+  );
+  const theoremBoxX = OUTER_PAD + footerBoxW + 18;
+  parts.push(
+    `<rect x="${theoremBoxX}" y="${TOTAL_H - FOOTER_H + 6}" width="${footerBoxW}" height="${FOOTER_H - 20}" rx="14" fill="${WHITE}" stroke="${GRID}" stroke-width="1"/>`,
+  );
+  parts.push(
+    renderMultilineText({
+      x: theoremBoxX + 14,
+      y: footerY,
+      lines: [
+        'Recursive reading of THM-AMERICAN-FRONTIER',
+        ...wrapText(
+          'Matched diversity lowers waste twice: first while choosing the response representation, then again while carrying that representation across the wire. Panels C and D are the same curve at adjacent layers.',
+          52,
+        ),
+      ],
+      anchor: 'start',
+      fontSize: 11,
+      fill: LIGHT_TEXT,
+      fontWeight: '500',
+      lineHeight: 14,
+    }),
+  );
   parts.push('</svg>');
-  return parts.join('\n');
+
+  return `${parts.join('\n')}\n`;
 }

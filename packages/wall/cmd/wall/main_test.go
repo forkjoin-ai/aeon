@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/binary"
+	"encoding/json"
 	"io"
 	"net"
 	"net/http"
@@ -12,12 +13,35 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
+
+func serializeBrowserFlowResponseForTest(status int, headers map[string]string, body []byte) []byte {
+	headersJSON, err := json.Marshal(headers)
+	if err != nil {
+		panic(err)
+	}
+
+	buf := make([]byte, 2+4+len(headersJSON)+len(body))
+	offset := 0
+	binary.BigEndian.PutUint16(buf[offset:offset+2], uint16(status))
+	offset += 2
+	binary.BigEndian.PutUint32(buf[offset:offset+4], uint32(len(headersJSON)))
+	offset += 4
+	copy(buf[offset:], headersJSON)
+	offset += len(headersJSON)
+	copy(buf[offset:], body)
+	return buf
+}
 
 func TestBenchmarkHeadersAddRaceMetadata(t *testing.T) {
 	base := map[string]string{"Accept": "*/*"}
-	headers := benchmarkHeaders(base, 42, benchmarkTransportAeon)
+	headers := benchmarkHeaders(base, 7, 42, benchmarkTransportAeon)
 
+	if headers["X-Laminar-Client-ID"] != "7" {
+		t.Fatalf("expected client header 7, got %q", headers["X-Laminar-Client-ID"])
+	}
 	if headers["X-Laminar-Race-ID"] != "42" {
 		t.Fatalf("expected race header 42, got %q", headers["X-Laminar-Race-ID"])
 	}
@@ -29,6 +53,24 @@ func TestBenchmarkHeadersAddRaceMetadata(t *testing.T) {
 	}
 	if _, ok := base["X-Laminar-Race-ID"]; ok {
 		t.Fatalf("expected benchmarkHeaders to clone instead of mutating the base map")
+	}
+}
+
+func TestBenchmarkAeonPayloadEmbedsLaminarHeadersOnRawPath(t *testing.T) {
+	payload := benchmarkAeonPayload("/plaintext", map[string]string{
+		"X-Laminar-Race-ID":   "42",
+		"X-Laminar-Client-ID": "7",
+	}, true)
+
+	text := string(payload)
+	if !strings.HasPrefix(text, "/plaintext\n") {
+		t.Fatalf("expected raw payload path prefix, got %q", text)
+	}
+	if !strings.Contains(text, "\nX-Laminar-Client-ID: 7") {
+		t.Fatalf("expected raw payload client metadata, got %q", text)
+	}
+	if !strings.Contains(text, "\nX-Laminar-Race-ID: 42") {
+		t.Fatalf("expected raw payload race metadata, got %q", text)
 	}
 }
 
@@ -143,6 +185,134 @@ func TestDoHTTPRequestSendsPropagatedAuthHeaders(t *testing.T) {
 	}
 }
 
+func TestDiscoverFlowTargetUsesLegacyHeaders(t *testing.T) {
+	var flowURL string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Aeon-Flow", "supported")
+		w.Header().Set("X-Aeon-Flow-Endpoint", flowURL)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	flowURL = "ws" + strings.TrimPrefix(server.URL, "http") + "/.aeon/flow"
+
+	target, err := discoverFlowTarget(server.URL+"/paper", nil, false)
+	if err != nil {
+		t.Fatalf("discoverFlowTarget: %v", err)
+	}
+	if target.requestPath != "/paper" {
+		t.Fatalf("expected request path /paper, got %q", target.requestPath)
+	}
+	if target.websocketEndpoint != flowURL {
+		t.Fatalf("expected websocket endpoint %q, got %q", flowURL, target.websocketEndpoint)
+	}
+	if target.websocketStatus != "available" {
+		t.Fatalf("expected websocket status available, got %q", target.websocketStatus)
+	}
+	if target.webtransportEndpoint != server.URL+"/.aeon/udp" {
+		t.Fatalf("expected default webtransport endpoint %q, got %q", server.URL+"/.aeon/udp", target.webtransportEndpoint)
+	}
+}
+
+func TestDoFlowRequestDiscoversWebSocketTransport(t *testing.T) {
+	upgrader := websocket.Upgrader{}
+	var flowURL string
+	serverErrs := make(chan error, 1)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/.aeon/flow" {
+			conn, err := upgrader.Upgrade(w, r, nil)
+			if err != nil {
+				serverErrs <- err
+				return
+			}
+			defer conn.Close()
+
+			messageType, payload, err := conn.ReadMessage()
+			if err != nil {
+				serverErrs <- err
+				return
+			}
+			if messageType != websocket.BinaryMessage {
+				serverErrs <- io.ErrUnexpectedEOF
+				return
+			}
+
+			frame, _, err := DecodeFrame(payload)
+			if err != nil {
+				serverErrs <- err
+				return
+			}
+			method, rawURL, requestHeaders, _, err := deserializeBrowserFlowRequest(frame.Payload)
+			if err != nil {
+				serverErrs <- err
+				return
+			}
+			if method != http.MethodGet {
+				serverErrs <- io.ErrUnexpectedEOF
+				return
+			}
+			if !strings.HasSuffix(rawURL, "/paper") {
+				serverErrs <- io.ErrUnexpectedEOF
+				return
+			}
+			if requestHeaders["X-Test"] != "1" {
+				serverErrs <- io.ErrUnexpectedEOF
+				return
+			}
+
+			responsePayload := serializeBrowserFlowResponseForTest(http.StatusOK, map[string]string{
+				"content-type": "text/plain; charset=utf-8",
+			}, []byte("wallington"))
+			responseFrame := EncodeFrame(Frame{
+				StreamID: frame.StreamID,
+				Sequence: 0,
+				Flags:    FlagFIN,
+				Length:   uint32(len(responsePayload)),
+				Payload:  responsePayload,
+			})
+			if err := conn.WriteMessage(websocket.BinaryMessage, responseFrame); err != nil {
+				serverErrs <- err
+			}
+			return
+		}
+
+		w.Header().Set("X-Aeon-Flow", "supported")
+		w.Header().Set("X-Aeon-Flow-Endpoint", flowURL)
+		w.Header().Set("X-Aeon-WebSocket-Status", "available")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	flowURL = "ws" + strings.TrimPrefix(server.URL, "http") + "/.aeon/flow"
+
+	body, events, transport, err := doFlowRequest(
+		server.URL+"/paper",
+		map[string]string{"X-Test": "1"},
+		false,
+		false,
+		true,
+		false,
+	)
+	if err != nil {
+		t.Fatalf("doFlowRequest: %v", err)
+	}
+	if transport != benchmarkTransportWebSocket {
+		t.Fatalf("expected websocket transport, got %q", transport)
+	}
+	if string(body) != "wallington" {
+		t.Fatalf("expected body wallington, got %q", string(body))
+	}
+	if len(events) < 2 {
+		t.Fatalf("expected send and recv events, got %d", len(events))
+	}
+	select {
+	case err := <-serverErrs:
+		t.Fatalf("websocket server assertion failed: %v", err)
+	default:
+	}
+}
+
 func TestAwaitBenchmarkStartWaitsForRelease(t *testing.T) {
 	start := make(chan struct{})
 	abort := make(chan struct{})
@@ -247,12 +417,15 @@ func TestParseHTTPBenchmarkResponseParsesPipelinedResponses(t *testing.T) {
 	second := []byte("HTTP/1.1 200 OK\r\nServer: gnosis-uring\r\nContent-Length: 5\r\n\r\nhello")
 	buf := append(append([]byte{}, first...), second...)
 
-	bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(buf)
+	statusCode, bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(buf)
 	if err != nil {
 		t.Fatalf("parse first response: %v", err)
 	}
 	if !complete {
 		t.Fatalf("expected first response to be complete")
+	}
+	if statusCode != http.StatusOK {
+		t.Fatalf("expected first status 200, got %d", statusCode)
 	}
 	if bodyBytes != 4 {
 		t.Fatalf("expected 4-byte body, got %d", bodyBytes)
@@ -261,12 +434,15 @@ func TestParseHTTPBenchmarkResponseParsesPipelinedResponses(t *testing.T) {
 		t.Fatalf("expected to consume %d bytes, got %d", len(first), consumed)
 	}
 
-	bodyBytes, consumed, complete, err = parseHTTPBenchmarkResponse(buf[len(first):])
+	statusCode, bodyBytes, consumed, complete, err = parseHTTPBenchmarkResponse(buf[len(first):])
 	if err != nil {
 		t.Fatalf("parse second response: %v", err)
 	}
 	if !complete {
 		t.Fatalf("expected second response to be complete")
+	}
+	if statusCode != http.StatusOK {
+		t.Fatalf("expected second status 200, got %d", statusCode)
 	}
 	if bodyBytes != 5 {
 		t.Fatalf("expected 5-byte body, got %d", bodyBytes)
@@ -279,12 +455,36 @@ func TestParseHTTPBenchmarkResponseParsesPipelinedResponses(t *testing.T) {
 func TestParseHTTPBenchmarkResponseWaitsForCompleteBody(t *testing.T) {
 	incomplete := []byte("HTTP/1.1 200 OK\r\nContent-Length: 4\r\n\r\npo")
 
-	bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(incomplete)
+	statusCode, bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(incomplete)
 	if err != nil {
 		t.Fatalf("parse incomplete response: %v", err)
 	}
 	if complete {
 		t.Fatalf("expected incomplete response, got body=%d consumed=%d", bodyBytes, consumed)
+	}
+	if statusCode != http.StatusOK {
+		t.Fatalf("expected partial parse to retain status 200, got %d", statusCode)
+	}
+}
+
+func TestParseHTTPBenchmarkResponseParsesVentStatus(t *testing.T) {
+	response := []byte("HTTP/1.1 204 No Content\r\nContent-Length: 0\r\n\r\n")
+
+	statusCode, bodyBytes, consumed, complete, err := parseHTTPBenchmarkResponse(response)
+	if err != nil {
+		t.Fatalf("parse vent response: %v", err)
+	}
+	if !complete {
+		t.Fatalf("expected vent response to be complete")
+	}
+	if statusCode != http.StatusNoContent {
+		t.Fatalf("expected status 204, got %d", statusCode)
+	}
+	if bodyBytes != 0 {
+		t.Fatalf("expected empty vent body, got %d bytes", bodyBytes)
+	}
+	if consumed != len(response) {
+		t.Fatalf("expected to consume %d bytes, got %d", len(response), consumed)
 	}
 }
 
@@ -650,6 +850,401 @@ func TestDoBenchmarkRaceSmoke(t *testing.T) {
 	}
 	if result.aeonWins == 0 {
 		t.Fatalf("expected UDP Aeon leg to win at least one race")
+	}
+	if result.loserCompletions == 0 {
+		t.Fatalf("expected late loser completions to be retained for waste accounting")
+	}
+	if result.loserBytes == 0 {
+		t.Fatalf("expected loser bytes to be retained for waste accounting")
+	}
+}
+
+func TestDoBenchmarkRaceIgnoresVentAsWinner(t *testing.T) {
+	httpListener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen tcp: %v", err)
+	}
+	defer httpListener.Close()
+
+	httpDone := make(chan struct{})
+	go func() {
+		for {
+			conn, err := httpListener.Accept()
+			if err != nil {
+				select {
+				case <-httpDone:
+					return
+				default:
+					return
+				}
+			}
+
+			go func(conn net.Conn) {
+				defer conn.Close()
+				reader := bufio.NewReader(conn)
+				for {
+					requestLine, err := reader.ReadString('\n')
+					if err != nil {
+						return
+					}
+					if !strings.HasPrefix(requestLine, "GET /ping HTTP/1.1") {
+						return
+					}
+
+					for {
+						headerLine, err := reader.ReadString('\n')
+						if err != nil {
+							return
+						}
+						if headerLine == "\r\n" {
+							break
+						}
+					}
+
+					time.Sleep(2 * time.Millisecond)
+					if _, err := io.WriteString(conn, "HTTP/1.1 200 OK\r\nContent-Length: 4\r\nConnection: keep-alive\r\n\r\npong"); err != nil {
+						return
+					}
+				}
+			}(conn)
+		}
+	}()
+	defer close(httpDone)
+
+	udpServer, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 0})
+	if err != nil {
+		t.Fatalf("listen udp: %v", err)
+	}
+	defer udpServer.Close()
+
+	udpDone := make(chan struct{})
+	go func() {
+		buf := make([]byte, 4096)
+		for {
+			n, addr, err := udpServer.ReadFromUDP(buf)
+			if err != nil {
+				select {
+				case <-udpDone:
+					return
+				default:
+					return
+				}
+			}
+
+			frame, _, err := DecodeFrame(buf[:n])
+			if err != nil || frame.Length == 0 {
+				continue
+			}
+
+			response := EncodeFrame(Frame{
+				StreamID: frame.StreamID,
+				Sequence: 0,
+				Flags:    FlagFIN | FlagVent,
+				Length:   0,
+			})
+			if _, err := udpServer.WriteToUDP(response, addr); err != nil {
+				return
+			}
+		}
+	}()
+	defer close(udpDone)
+
+	result, err := doBenchmarkRace(
+		udpServer.LocalAddr().String(),
+		"/ping",
+		httpListener.Addr().String(),
+		"/ping",
+		nil,
+		true,
+		false,
+		1,
+		1,
+		120*time.Millisecond,
+		20*time.Millisecond,
+		0,
+		0,
+	)
+	if err != nil {
+		t.Fatalf("doBenchmarkRace: %v", err)
+	}
+	if result.requests == 0 {
+		t.Fatalf("expected benchmark to complete at least one request")
+	}
+	if result.httpWins == 0 {
+		t.Fatalf("expected HTTP full response to win when UDP only vents")
+	}
+	if result.aeonWins != 0 {
+		t.Fatalf("expected venting UDP leg not to count as a winner, got %d aeon wins", result.aeonWins)
+	}
+	if result.loserVents == 0 {
+		t.Fatalf("expected vented loser completions to be tracked")
+	}
+}
+
+func TestDoBenchmarkRaceSkipsDelayedHTTPHedgeAfterAeonWin(t *testing.T) {
+	httpListener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen tcp: %v", err)
+	}
+	defer httpListener.Close()
+
+	var httpRequests uint64
+	var httpRequestsMu sync.Mutex
+	httpDone := make(chan struct{})
+	go func() {
+		for {
+			conn, err := httpListener.Accept()
+			if err != nil {
+				select {
+				case <-httpDone:
+					return
+				default:
+					return
+				}
+			}
+
+			go func(conn net.Conn) {
+				defer conn.Close()
+				reader := bufio.NewReader(conn)
+				for {
+					requestLine, err := reader.ReadString('\n')
+					if err != nil {
+						return
+					}
+					if !strings.HasPrefix(requestLine, "GET /ping HTTP/1.1") {
+						return
+					}
+
+					httpRequestsMu.Lock()
+					httpRequests++
+					httpRequestsMu.Unlock()
+
+					for {
+						headerLine, err := reader.ReadString('\n')
+						if err != nil {
+							return
+						}
+						if headerLine == "\r\n" {
+							break
+						}
+					}
+
+					if _, err := io.WriteString(conn, "HTTP/1.1 200 OK\r\nContent-Length: 4\r\nConnection: keep-alive\r\n\r\npong"); err != nil {
+						return
+					}
+				}
+			}(conn)
+		}
+	}()
+	defer close(httpDone)
+
+	udpServer, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 0})
+	if err != nil {
+		t.Fatalf("listen udp: %v", err)
+	}
+	defer udpServer.Close()
+
+	udpDone := make(chan struct{})
+	go func() {
+		buf := make([]byte, 4096)
+		for {
+			n, addr, err := udpServer.ReadFromUDP(buf)
+			if err != nil {
+				select {
+				case <-udpDone:
+					return
+				default:
+					return
+				}
+			}
+
+			frame, _, err := DecodeFrame(buf[:n])
+			if err != nil || frame.Length == 0 {
+				continue
+			}
+
+			response := EncodeFrame(Frame{
+				StreamID: frame.StreamID,
+				Sequence: 0,
+				Flags:    FlagFIN,
+				Length:   4,
+				Payload:  []byte("pong"),
+			})
+			if _, err := udpServer.WriteToUDP(response, addr); err != nil {
+				return
+			}
+		}
+	}()
+	defer close(udpDone)
+
+	result, err := doBenchmarkRace(
+		udpServer.LocalAddr().String(),
+		"/ping",
+		httpListener.Addr().String(),
+		"/ping",
+		nil,
+		true,
+		true,
+		1,
+		1,
+		120*time.Millisecond,
+		20*time.Millisecond,
+		20*time.Millisecond,
+		0,
+	)
+	if err != nil {
+		t.Fatalf("doBenchmarkRace: %v", err)
+	}
+	if result.requests == 0 {
+		t.Fatalf("expected benchmark to complete at least one request")
+	}
+	if result.skippedHTTP == 0 {
+		t.Fatalf("expected delayed HTTP hedges to be skipped after fast Aeon wins")
+	}
+	if result.httpWins != 0 {
+		t.Fatalf("expected no HTTP wins when the delayed HTTP hedge is skipped, got %d", result.httpWins)
+	}
+
+	httpRequestsMu.Lock()
+	gotHTTPRequests := httpRequests
+	httpRequestsMu.Unlock()
+	if gotHTTPRequests != 0 {
+		t.Fatalf("expected no HTTP hedge launches, got %d requests", gotHTTPRequests)
+	}
+}
+
+func TestDoBenchmarkRaceDoesNotSkipDelayedHTTPAfterVent(t *testing.T) {
+	httpListener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatalf("listen tcp: %v", err)
+	}
+	defer httpListener.Close()
+
+	var httpRequests uint64
+	var httpRequestsMu sync.Mutex
+	httpDone := make(chan struct{})
+	go func() {
+		for {
+			conn, err := httpListener.Accept()
+			if err != nil {
+				select {
+				case <-httpDone:
+					return
+				default:
+					return
+				}
+			}
+
+			go func(conn net.Conn) {
+				defer conn.Close()
+				reader := bufio.NewReader(conn)
+				for {
+					requestLine, err := reader.ReadString('\n')
+					if err != nil {
+						return
+					}
+					if !strings.HasPrefix(requestLine, "GET /ping HTTP/1.1") {
+						return
+					}
+
+					httpRequestsMu.Lock()
+					httpRequests++
+					httpRequestsMu.Unlock()
+
+					for {
+						headerLine, err := reader.ReadString('\n')
+						if err != nil {
+							return
+						}
+						if headerLine == "\r\n" {
+							break
+						}
+					}
+
+					time.Sleep(2 * time.Millisecond)
+					if _, err := io.WriteString(conn, "HTTP/1.1 200 OK\r\nContent-Length: 4\r\nConnection: keep-alive\r\n\r\npong"); err != nil {
+						return
+					}
+				}
+			}(conn)
+		}
+	}()
+	defer close(httpDone)
+
+	udpServer, err := net.ListenUDP("udp", &net.UDPAddr{IP: net.ParseIP("127.0.0.1"), Port: 0})
+	if err != nil {
+		t.Fatalf("listen udp: %v", err)
+	}
+	defer udpServer.Close()
+
+	udpDone := make(chan struct{})
+	go func() {
+		buf := make([]byte, 4096)
+		for {
+			n, addr, err := udpServer.ReadFromUDP(buf)
+			if err != nil {
+				select {
+				case <-udpDone:
+					return
+				default:
+					return
+				}
+			}
+
+			frame, _, err := DecodeFrame(buf[:n])
+			if err != nil || frame.Length == 0 {
+				continue
+			}
+
+			response := EncodeFrame(Frame{
+				StreamID: frame.StreamID,
+				Sequence: 0,
+				Flags:    FlagFIN | FlagVent,
+				Length:   0,
+			})
+			if _, err := udpServer.WriteToUDP(response, addr); err != nil {
+				return
+			}
+		}
+	}()
+	defer close(udpDone)
+
+	result, err := doBenchmarkRace(
+		udpServer.LocalAddr().String(),
+		"/ping",
+		httpListener.Addr().String(),
+		"/ping",
+		nil,
+		true,
+		true,
+		1,
+		1,
+		120*time.Millisecond,
+		20*time.Millisecond,
+		20*time.Millisecond,
+		0,
+	)
+	if err != nil {
+		t.Fatalf("doBenchmarkRace: %v", err)
+	}
+	if result.requests == 0 {
+		t.Fatalf("expected benchmark to complete at least one request")
+	}
+	if result.httpWins == 0 {
+		t.Fatalf("expected delayed HTTP hedge to launch and win after Aeon only vents")
+	}
+	if result.skippedHTTP != 0 {
+		t.Fatalf("expected no skipped HTTP hedges when the first leg only vents, got %d", result.skippedHTTP)
+	}
+	if result.loserVents == 0 {
+		t.Fatalf("expected vented Aeon losers to be tracked")
+	}
+
+	httpRequestsMu.Lock()
+	gotHTTPRequests := httpRequests
+	httpRequestsMu.Unlock()
+	if gotHTTPRequests == 0 {
+		t.Fatalf("expected delayed HTTP hedge to actually launch after a vent-only Aeon leg")
 	}
 }
 

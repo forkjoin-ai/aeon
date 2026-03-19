@@ -1,18 +1,4 @@
-/**
- * USB Flow Transport
- *
- * FlowTransport adapter for WebUSB API.
- * Enables flow protocol between browser and USB devices —
- * the communication channel for Rabbit R1 and other
- * hardware endpoints.
- *
- * Uses bulk transfer endpoints for binary flow frame exchange.
- * Length-prefixed framing (u32) for message boundary detection
- * over the bulk pipe.
- *
- * The device must expose a vendor-specific interface with
- * IN and OUT bulk endpoints that speak Aeon flow frames.
- */
+/// <reference path="../../../../types/webusb.d.ts" />
 // ═══════════════════════════════════════════════════════════════════════════════
 // Constants
 // ═══════════════════════════════════════════════════════════════════════════════

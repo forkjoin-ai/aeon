@@ -13,13 +13,13 @@
  * - DID-based node identification
  * - Authenticated sync sessions
  */
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 import { logger } from '../utils/logger';
 /**
  * Sync Coordinator
  * Coordinates synchronization across distributed nodes
  */
-export class SyncCoordinator extends EventEmitter {
+export class SyncCoordinator extends AeonEventEmitter {
     static MAX_SYNC_EVENTS = 10000;
     nodes = new Map();
     sessions = new Map();

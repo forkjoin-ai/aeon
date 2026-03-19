@@ -31,6 +31,8 @@ export interface FragmentRuntimeTemplate {
   parentFragmentId?: string;
   childOfApp?: boolean;
   supervisorStrategy?: 'one_for_one' | 'one_for_all' | 'rest_for_one';
+  appAeonPid?: string;
+  fragmentAeonPid?: string;
 }
 
 export interface FragmentNode {
@@ -78,6 +80,7 @@ export interface ProjectionArtifact {
     generatedAt: string;
     ownerDid?: string;
     sourceRoot?: string;
+    appAeonPid?: string;
   };
   proofMetadata: {
     maxLevel: ProjectionProofLevel;

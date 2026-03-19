@@ -153,7 +153,8 @@ export class BluetoothFlowTransport {
         if (!this.txChar)
             return;
         try {
-            await this.txChar.writeValueWithoutResponse(data);
+            const payload = data.buffer instanceof ArrayBuffer ? data : Uint8Array.from(data);
+            await this.txChar.writeValueWithoutResponse(payload);
         }
         catch {
             // Write failed — BLE disconnected or busy

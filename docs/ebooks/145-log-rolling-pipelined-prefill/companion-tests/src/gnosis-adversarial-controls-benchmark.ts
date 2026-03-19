@@ -1,7 +1,7 @@
 export {
   renderGnosisAdversarialControlsBenchmarkMarkdown,
   runGnosisAdversarialControlsBenchmark,
-} from '../../../../../../gnosis/src/benchmarks/adversarial-controls-benchmark';
+} from '@a0n/gnosis/benchmarks/adversarial-controls-benchmark';
 
 export type {
   AdversarialCheckpointMetric,
@@ -10,4 +10,4 @@ export type {
   AdversarialTaskReport,
   AdversarialTopologyMetrics,
   GnosisAdversarialControlsBenchmarkReport,
-} from '../../../../../../gnosis/src/benchmarks/adversarial-controls-benchmark';
+} from '@a0n/gnosis/benchmarks/adversarial-controls-benchmark';

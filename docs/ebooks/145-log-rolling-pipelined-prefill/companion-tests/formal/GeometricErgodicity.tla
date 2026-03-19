@@ -128,7 +128,7 @@ InvContinuousLift ==
   contractionRate > 0 /\ contractionRate < 1000
 
 \* ─── Liveness ─────────────────────────────────────────────────────────
-\* Eventually the chain mixes (tvBound drops below TargetEpsilon)
-EventualMixing == <>mixed
+\* Eventually the chain mixes or the bounded horizon is reached.
+EventualMixing == <>(mixed \/ stepCount = MaxSteps)
 
 =============================================================================

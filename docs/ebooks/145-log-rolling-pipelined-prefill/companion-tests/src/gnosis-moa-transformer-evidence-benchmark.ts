@@ -2,7 +2,7 @@ export {
   makeDefaultMoaTransformerEvidenceConfig,
   renderGnosisMoaTransformerEvidenceMarkdown,
   runGnosisMoaTransformerEvidenceBenchmark,
-} from '../../../../../../gnosis/src/benchmarks/moa-transformer-evidence-benchmark';
+} from '@a0n/gnosis/benchmarks/moa-transformer-evidence-benchmark';
 
 export type {
   GnosisMoaTransformerEvidenceReport,
@@ -12,4 +12,4 @@ export type {
   MoaTransformerEvidenceFamilySummary,
   MoaTransformerEvidenceScaleConfig,
   MoaTransformerEvidenceScaleReport,
-} from '../../../../../../gnosis/src/benchmarks/moa-transformer-evidence-benchmark';
+} from '@a0n/gnosis/benchmarks/moa-transformer-evidence-benchmark';

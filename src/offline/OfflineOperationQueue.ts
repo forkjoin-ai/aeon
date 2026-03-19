@@ -5,7 +5,7 @@
  * Provides priority-based queuing, persistence, and retry logic.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 import { getLogger } from '../utils/logger';
 import type { Operation, OperationPriority } from '../core/types';
 import type {
@@ -72,7 +72,7 @@ export interface OfflineOperationQueueOptions {
 // Offline Operation Queue
 // ============================================================================
 
-export class OfflineOperationQueue extends EventEmitter<OfflineQueueEvents> {
+export class OfflineOperationQueue extends AeonEventEmitter<OfflineQueueEvents> {
   private static readonly DEFAULT_PERSIST_KEY = 'aeon:offline-queue:v1';
   private queue: Map<string, OfflineOperation> = new Map();
   private syncingIds: Set<string> = new Set();

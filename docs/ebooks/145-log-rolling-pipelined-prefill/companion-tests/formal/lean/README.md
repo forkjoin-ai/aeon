@@ -9,6 +9,8 @@ This directory contains a Lean 4 theorem package that encodes constructive and e
 
 The current compiler-facing boundary is still that bounded affine queue family: automatic synthesis of the measurable small set `C`, the continuous Lyapunov witness `V(x)`, and the full minorization package from arbitrary continuous `.gg` syntax remains open. The canonical summary of the emitted theorem family, rerun commands, and still-open gaps lives in [../GNOSIS_COMPILER_BOUNDARY.md](../GNOSIS_COMPILER_BOUNDARY.md).
 
+The in-tree package now also carries the logic-first `HeteroMoAFabric.lean` module: it closes the arithmetic surface for mirrored backend diversity, `gnode` cannon/helix cursor rotation, paired-kernel accept-or-escalate decisions, Aeon's 10-byte binary framing, and the top-level laminar-height bookkeeping that the later compiler/runtime work will target.
+
 The companion suite now exercises this package through `@a0n/aeon-logic`'s Lean sandbox for both inspection preflight and the actual mechanized build path.
 
 ## Modules
@@ -16,6 +18,7 @@ The companion suite now exercises this package through `@a0n/aeon-logic`'s Lean 
 - `Lean/ForkRaceFoldTheorems.lean`: library entrypoint.
 - Shared compiler workspace [`open-source/gnosis/GnosisProofs.lean`](../../../../../../../gnosis/GnosisProofs.lean): emitted-kernel monoidal, spectral, recurrence, geometric-stability, bounded affine measurable `continuousHarris`, and bounded coupled-kernel tethering theorems for generated Gnosis kernels.
 - `Lean/ForkRaceFoldTheorems/Claims.lean`: constructive proofs for quantitative claims and the §6.12 correspondence-boundary witnesses, including the cancellation-target-family theorems.
+- `Lean/ForkRaceFoldTheorems/HeteroMoAFabric.lean`: constructive arithmetic for backend-diverse mirrored lane counts, `gnode` cannon/helix cursor rotation, paired-kernel decision logic, Aeon 10-byte binary frame sizing, and laminar-height bookkeeping for the Hetero MoA fabric theorem family.
 - `Lean/ForkRaceFoldTheorems/MolecularTopology.lean`: constructive molecular-topology theorems, including identical-Betti-signature homological equivalence, the hole-invariance corollary for homology-preserving deformations, and the broader pipeline/molecule correspondence surface.
 - `Lean/ForkRaceFoldTheorems/FailureEntropy.lean`: constructive proofs that local venting reduces a live-frontier entropy proxy while coupled repair debt preserves or increases it.
 - `Lean/ForkRaceFoldTheorems/FailureDurability.lean`: constructive proofs that a bounded isolated-failure budget preserves quorum and that repair closure reaches the fully repaired state once failures are exhausted.

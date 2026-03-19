@@ -1,6 +1,6 @@
 {
   "name": "@a0n/aeon",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Distributed synchronization, schema versioning, and conflict resolution for real-time collaborative applications",
   "keywords": [
     "distributed",
@@ -35,114 +35,94 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
     },
     "./core": {
-      "import": {
-        "types": "./dist/core/index.d.ts",
-        "default": "./dist/core/index.js"
-      },
-      "require": {
-        "types": "./dist/core/index.d.cts",
-        "default": "./dist/core/index.cjs"
-      }
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js",
+      "require": "./dist/core/index.cjs",
+      "default": "./dist/core/index.js"
     },
     "./offline": {
-      "import": {
-        "types": "./dist/offline/index.d.ts",
-        "default": "./dist/offline/index.js"
-      },
-      "require": {
-        "types": "./dist/offline/index.d.cts",
-        "default": "./dist/offline/index.cjs"
-      }
+      "types": "./dist/offline/index.d.ts",
+      "import": "./dist/offline/index.js",
+      "require": "./dist/offline/index.cjs",
+      "default": "./dist/offline/index.js"
     },
     "./compression": {
-      "import": {
-        "types": "./dist/compression/index.d.ts",
-        "default": "./dist/compression/index.js"
-      },
-      "require": {
-        "types": "./dist/compression/index.d.cts",
-        "default": "./dist/compression/index.cjs"
-      }
+      "types": "./dist/compression/index.d.ts",
+      "import": "./dist/compression/index.js",
+      "require": "./dist/compression/index.cjs",
+      "default": "./dist/compression/index.js"
+    },
+    "./flow": {
+      "types": "./dist/flow/index.d.ts",
+      "import": "./dist/flow/index.js",
+      "require": "./dist/flow/index.cjs",
+      "default": "./dist/flow/index.js"
     },
     "./optimization": {
-      "import": {
-        "types": "./dist/optimization/index.d.ts",
-        "default": "./dist/optimization/index.js"
-      },
-      "require": {
-        "types": "./dist/optimization/index.d.cts",
-        "default": "./dist/optimization/index.cjs"
-      }
+      "types": "./dist/optimization/index.d.ts",
+      "import": "./dist/optimization/index.js",
+      "require": "./dist/optimization/index.cjs",
+      "default": "./dist/optimization/index.js"
     },
     "./presence": {
-      "import": {
-        "types": "./dist/presence/index.d.ts",
-        "default": "./dist/presence/index.js"
-      },
-      "require": {
-        "types": "./dist/presence/index.d.cts",
-        "default": "./dist/presence/index.cjs"
-      }
+      "types": "./dist/presence/index.d.ts",
+      "import": "./dist/presence/index.js",
+      "require": "./dist/presence/index.cjs",
+      "default": "./dist/presence/index.js"
     },
     "./versioning": {
-      "import": {
-        "types": "./dist/versioning/index.d.ts",
-        "default": "./dist/versioning/index.js"
-      },
-      "require": {
-        "types": "./dist/versioning/index.d.cts",
-        "default": "./dist/versioning/index.cjs"
-      }
+      "types": "./dist/versioning/index.d.ts",
+      "import": "./dist/versioning/index.js",
+      "require": "./dist/versioning/index.cjs",
+      "default": "./dist/versioning/index.js"
     },
     "./distributed": {
-      "import": {
-        "types": "./dist/distributed/index.d.ts",
-        "default": "./dist/distributed/index.js"
-      },
-      "require": {
-        "types": "./dist/distributed/index.d.cts",
-        "default": "./dist/distributed/index.cjs"
-      }
+      "types": "./dist/distributed/index.d.ts",
+      "import": "./dist/distributed/index.js",
+      "require": "./dist/distributed/index.cjs",
+      "default": "./dist/distributed/index.js"
+    },
+    "./topology": {
+      "types": "./dist/topology/index.d.ts",
+      "import": "./dist/topology/index.js",
+      "require": "./dist/topology/index.cjs",
+      "default": "./dist/topology/index.js"
+    },
+    "./topology/projection": {
+      "types": "./dist/topology/projection.d.ts",
+      "import": "./dist/topology/projection.js",
+      "require": "./dist/topology/projection.cjs",
+      "default": "./dist/topology/projection.js"
+    },
+    "./topology/object": {
+      "types": "./dist/topology/object.d.ts",
+      "import": "./dist/topology/object.js",
+      "require": "./dist/topology/object.cjs",
+      "default": "./dist/topology/object.js"
     },
     "./utils": {
-      "import": {
-        "types": "./dist/utils/index.d.ts",
-        "default": "./dist/utils/index.js"
-      },
-      "require": {
-        "types": "./dist/utils/index.d.cts",
-        "default": "./dist/utils/index.cjs"
-      }
+      "types": "./dist/utils/index.d.ts",
+      "import": "./dist/utils/index.js",
+      "require": "./dist/utils/index.cjs",
+      "default": "./dist/utils/index.js"
     },
     "./crypto": {
-      "import": {
-        "types": "./dist/crypto/index.d.ts",
-        "default": "./dist/crypto/index.js"
-      },
-      "require": {
-        "types": "./dist/crypto/index.d.cts",
-        "default": "./dist/crypto/index.cjs"
-      }
+      "types": "./dist/crypto/index.d.ts",
+      "import": "./dist/crypto/index.js",
+      "require": "./dist/crypto/index.cjs",
+      "default": "./dist/crypto/index.js"
     },
     "./persistence": {
-      "import": {
-        "types": "./dist/persistence/index.d.ts",
-        "default": "./dist/persistence/index.js"
-      },
-      "require": {
-        "types": "./dist/persistence/index.d.cts",
-        "default": "./dist/persistence/index.cjs"
-      }
+      "types": "./dist/persistence/index.d.ts",
+      "import": "./dist/persistence/index.js",
+      "require": "./dist/persistence/index.cjs",
+      "default": "./dist/persistence/index.js"
     }
   },
   "files": [
@@ -151,7 +131,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node ./scripts/copy-declarations.mjs",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -162,9 +142,6 @@
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
-  },
-  "dependencies": {
-    "eventemitter3": "^5.0.4"
   },
   "peerDependencies": {
     "@affectively/auth": "^0.1.0",

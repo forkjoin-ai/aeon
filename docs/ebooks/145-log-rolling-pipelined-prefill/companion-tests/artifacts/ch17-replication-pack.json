@@ -6,15 +6,15 @@
       "label": "Manuscript draft",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md",
-      "sizeBytes": 393981,
-      "sha256": "48b9af2582a75b446622f1031d2ade03378826bf60d0d939e93b8acdc2107c48"
+      "sizeBytes": 434495,
+      "sha256": "455e6cdc90cf0052fecb142727a10e0ce0de0c42690d99ce01427e32e4914873"
     },
     {
       "label": "Companion README",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md",
-      "sizeBytes": 40186,
-      "sha256": "148987cd64453af5773599e40cf5b4695041f039f957fce2d974cb2d46bc1782"
+      "sizeBytes": 42463,
+      "sha256": "7cd318a0563b0ec6a0ec35e2128624aa149a10a3db39ea3581ed86dff839a4fa"
     },
     {
       "label": "Evidence workflow",
@@ -167,8 +167,8 @@
       "label": "Gate 5 figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-gate5-bio-effect-size-figure.svg",
-      "sizeBytes": 9128,
-      "sha256": "aa93f1791843ee055527a9b1149f36f9d4e8ac6fc25589802e27c4350c29ba3d"
+      "sizeBytes": 9087,
+      "sha256": "46711c7c6ed774476aa46dd084257afd6f9ceab600cff283dfea65d21589b086"
     },
     {
       "label": "Inverted-scaling figure artifact",
@@ -204,6 +204,13 @@
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-whip-curvature-figure.svg",
       "sizeBytes": 27936,
       "sha256": "f5d42a16b9d8e45ec304dc74e89cc642492b117941daf3f0504636206c03b005"
+    },
+    {
+      "label": "Hetero MoA fabric curvature figure artifact",
+      "category": "artifact",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-hetero-moa-fabric-curvature-figure.svg",
+      "sizeBytes": 11720,
+      "sha256": "fdf83f9acce8507eeb55c658fd1cc4e5295ef729df2e058127acd6347456d15b"
     },
     {
       "label": "MoA figure artifact",
@@ -367,6 +374,13 @@
       "sha256": "07e71ba5e3267d73ecf0dd230d713cb057788cde6b8d2d054e878d4e2b44d77c"
     },
     {
+      "label": "Hetero MoA fabric curvature figure script",
+      "category": "script",
+      "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-hetero-moa-fabric-curvature-figure.ts",
+      "sizeBytes": 3550,
+      "sha256": "4611d7cb19d2acfca7eedeb5422928e66afcfcc4fbfc30fbfe55f519bfd36b33"
+    },
+    {
       "label": "MoA figure script",
       "category": "script",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-moa-transformer-figure.ts",
@@ -384,8 +398,8 @@
       "label": "Lean claims",
       "category": "formal",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/Claims.lean",
-      "sizeBytes": 15006,
-      "sha256": "6c426f5736691e81f4d199321d7d86b04240f45b9391cfe447c06763b441f3b1"
+      "sizeBytes": 15046,
+      "sha256": "a41b11dbabc9c2b51a27bb60884705644249aaffde103bc647322642698286a9"
     },
     {
       "label": "Lean witness catalog",
@@ -405,15 +419,15 @@
       "label": "Theorem ledger",
       "category": "formal",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md",
-      "sizeBytes": 239633,
-      "sha256": "4689dd6b8964dfbb15e727710d50217e1ae6542cb7cb5801427fbc1bb879da8c"
+      "sizeBytes": 270245,
+      "sha256": "1ca24ce74e34b01fb31d4653e42bda38da5d256f9ac92618ad4025f93df3fae1"
     },
     {
       "label": "Gnosis theorem workspace",
       "category": "formal",
       "path": "open-source/gnosis/GnosisProofs.lean",
-      "sizeBytes": 122667,
-      "sha256": "926450e9caa0f9fb1bac5547e7d817a58f49283d588931f1fc4990a8293b87cb"
+      "sizeBytes": 127815,
+      "sha256": "9694920dd7b608cfc717b2ecb62c956b707081db8c53429d791586e45b426d15"
     },
     {
       "label": "Sleep-debt TLA+ model",
@@ -486,7 +500,7 @@
       "sha256": "8509bfd80a9f4358f90eb7fcd341b741e21774b1835bf59410f276ab43b41940"
     }
   ],
-  "entryCount": 69,
-  "artifactCount": 27,
+  "entryCount": 71,
+  "artifactCount": 28,
   "complete": true
 }

@@ -6,10 +6,17 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "baseUrl": ".",
     "outDir": "dist",
     "rootDir": "src",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "@a0n/gnosis": ["../../../../../gnosis/src/lib.ts"],
+      "@a0n/gnosis/*": ["../../../../../gnosis/src/*"],
+      "@a0n/aeon/flow": ["../../../../../aeon/src/flow/index.ts"],
+      "@a0n/aeon/flow/*": ["../../../../../aeon/src/flow/*"]
+    }
   },
   "include": ["src"]
 }

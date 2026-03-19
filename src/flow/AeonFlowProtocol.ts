@@ -31,6 +31,7 @@ import {
   FOLD,
   VENT,
   FIN,
+  POISON,
   DEFAULT_FLOW_CONFIG,
 } from './types';
 import type {
@@ -66,6 +67,7 @@ export class AeonFlowProtocol {
   private frameHandlers: Map<number, Set<FrameHandler>> = new Map();
   private endHandlers: Map<number, Set<VoidHandler>> = new Map();
   private ventHandlers: Map<number, Set<VoidHandler>> = new Map();
+  private poisonHandlers: Map<number, Set<VoidHandler>> = new Map();
 
   // Race tracking
   private raceGroups: Map<string, {
@@ -330,6 +332,36 @@ export class AeonFlowProtocol {
   }
 
   /**
+   * Poison a stream. Sends a POISON frame and marks the stream as vented.
+   *
+   * This is used when a branch of work fails definitively and should lose a
+   * race without masquerading as a normal vent/cancel path.
+   */
+  poison(streamId: number): void {
+    const stream = this.streams.get(streamId);
+    if (!stream || stream.state === 'vented' || stream.state === 'closed') {
+      return;
+    }
+
+    stream.state = 'vented';
+    this.sendFrame(streamId, POISON, new Uint8Array(0));
+
+    const poisonHandlers = this.poisonHandlers.get(streamId);
+    if (poisonHandlers) {
+      for (const handler of poisonHandlers) {
+        handler();
+      }
+    }
+
+    const ventHandlers = this.ventHandlers.get(streamId);
+    if (ventHandlers) {
+      for (const handler of ventHandlers) {
+        handler();
+      }
+    }
+  }
+
+  /**
    * Vent a stream. Sends a VENT frame and propagates to all descendants.
    *
    * Venting is the protocol-level equivalent of NaN propagation,
@@ -401,6 +433,19 @@ export class AeonFlowProtocol {
     return () => { handlers!.delete(handler); };
   }
 
+  /**
+   * Register a handler for when a stream is poisoned.
+   */
+  onStreamPoisoned(streamId: number, handler: VoidHandler): () => void {
+    let handlers = this.poisonHandlers.get(streamId);
+    if (!handlers) {
+      handlers = new Set();
+      this.poisonHandlers.set(streamId, handlers);
+    }
+    handlers.add(handler);
+    return () => { handlers!.delete(handler); };
+  }
+
   // ═══════════════════════════════════════════════════════════════════════
   // Destroy
   // ═══════════════════════════════════════════════════════════════════════
@@ -419,6 +464,7 @@ export class AeonFlowProtocol {
     this.frameHandlers.clear();
     this.endHandlers.clear();
     this.ventHandlers.clear();
+    this.poisonHandlers.clear();
     this.raceGroups.clear();
     this.foldGroups.clear();
     this.transport.close();
@@ -455,6 +501,25 @@ export class AeonFlowProtocol {
     const stream = this.streams.get(streamId)!;
 
     // Handle control flags
+    if (flags & POISON) {
+      stream.state = 'vented';
+
+      const poisonHandlers = this.poisonHandlers.get(streamId);
+      if (poisonHandlers) {
+        for (const handler of poisonHandlers) {
+          handler();
+        }
+      }
+
+      const ventHandlers = this.ventHandlers.get(streamId);
+      if (ventHandlers) {
+        for (const handler of ventHandlers) {
+          handler();
+        }
+      }
+      return;
+    }
+
     if (flags & VENT) {
       this.vent(streamId);
       return;
@@ -647,7 +712,12 @@ export class AeonFlowProtocol {
    * JS codec remains the correctness path if WASM is unavailable.
    */
   private upgradeCodecInBackground(): void {
-    FlowCodec.create()
+    const wasmMode = this.config.codecWasmMode ?? 'auto';
+    if (wasmMode === 'off') {
+      return;
+    }
+
+    FlowCodec.create({ wasmMode })
       .then((codec) => {
         if (codec.isWasmAccelerated) {
           this.codec = codec;

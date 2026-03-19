@@ -12,6 +12,7 @@ This note is the canonical documentation surface for the current Betti-to-Lean c
 - `THM-GNOSIS-CONTINUOUS-HARRIS`: Betti can emit a bounded affine queue-family measurable continuous-Harris witness over the emitted `queueSupportKernel`.
 - `THM-GNOSIS-GEOMETRY`: the same emitted queue family can then be repackaged into the measurable/geometric queue endpoints.
 - `THM-GNOSIS-COUPLED`: bounded inter-app handoff pressure can be re-read as downstream arrival pressure without changing the downstream spectral certificate when drift slack remains positive.
+- `THM-MOA-FABRIC-COUPLED`: the shared compiler workspace now also exposes mirrored primary/shadow pair lemmas and paired downstream coupling lemmas for backend-diverse fabrics, but that theorem family is proof-only until `HeteroMoAFabric` lowering starts emitting it.
 
 ## What Betti Emits
 
@@ -22,6 +23,7 @@ This note is the canonical documentation surface for the current Betti-to-Lean c
   - `*_measurable_observable_drift`
   - `*_measurable_continuous_harris_certified`
 - Those theorems are backed by the shared Lean definitions `MeasurableContinuousHarrisWitness`, `natQueueAffineObservable`, `natQueueAffineExpectedObservable`, `natMeasurableLyapunovDriftWitness_of_queueStep_with_gap`, and `natMeasurableContinuousHarrisWitness_of_queueStep_with_gap`.
+- Betti does not yet emit the new Hetero MoA fabric theorem family. The logic-first surface exists today as local TLA/Lean artifacts plus shared `GnosisProofs.lean` pair/coupling lemmas; lowering that surface from first-class GG syntax is still the next compiler step.
 
 ## Rerun Surface
 
@@ -46,6 +48,7 @@ Both commands rerun the shared compiler-side theorem workspace rather than the i
 - Betti does not yet synthesize minorization data from that syntax.
 - Betti does not yet synthesize the continuous Lyapunov witness `V(x)` for richer observable families beyond the current affine queue family.
 - Betti does not yet emit non-queue measurable kernels carrying the same Harris package.
+- Betti does not yet lower `HeteroMoAFabric` into paired backend layers, `gnode` cannon/helix schedule metadata, or the paired/coupled theorem family now available in the shared proof workspace.
 - This closure does not also close `THM-RECURSIVE-COARSENING-SYNTHESIS`; recursive many-to-one quotient synthesis is a separate open compiler target.
 
 ## Next Honest Boundary

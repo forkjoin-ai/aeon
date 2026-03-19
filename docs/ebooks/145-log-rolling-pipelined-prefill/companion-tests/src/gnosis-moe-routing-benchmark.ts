@@ -3,7 +3,7 @@ export {
   makeDefaultMiniMoeRoutingConfig,
   renderGnosisMiniMoeRoutingBenchmarkMarkdown,
   runGnosisMiniMoeRoutingBenchmark,
-} from '../../../../../../gnosis/src/benchmarks/moe-routing-benchmark';
+} from '@a0n/gnosis/benchmarks/moe-routing-benchmark';
 
 export type {
   GnosisMiniMoeRoutingBenchmarkReport,
@@ -13,4 +13,4 @@ export type {
   MiniMoeRoutingStrategy,
   MiniMoeRoutingStrategyReport,
   MiniMoeRoutingTopologyMetrics,
-} from '../../../../../../gnosis/src/benchmarks/moe-routing-benchmark';
+} from '@a0n/gnosis/benchmarks/moe-routing-benchmark';

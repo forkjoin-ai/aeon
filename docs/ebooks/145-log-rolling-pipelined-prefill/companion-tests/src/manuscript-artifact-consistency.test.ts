@@ -872,6 +872,10 @@ describe('Manuscript artifact consistency', () => {
     );
     mustContain(manuscript, 'ch17-moa-topology-figure.{json,md,svg}');
     mustContain(manuscript, 'ch17-moa-whip-curvature-figure.{json,md,svg}');
+    mustContain(
+      manuscript,
+      'ch17-hetero-moa-fabric-curvature-figure.{json,md,svg}'
+    );
     mustContain(manuscript, 'ch17-moa-transformer-figure.{json,md,svg}');
     mustContain(manuscript, 'sleep-debt-bounded-witness.{json,md}');
     mustContain(manuscript, 'sleep-debt-schedule-threshold-witness.{json,md}');

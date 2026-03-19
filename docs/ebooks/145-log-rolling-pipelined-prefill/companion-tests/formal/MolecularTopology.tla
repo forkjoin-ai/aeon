@@ -21,6 +21,7 @@ CONSTANTS
   MaxBeta1,         \* maximum β₁ in the model
   MaxFunnelDepth,   \* maximum protein folding funnel depth
   MaxPopulation,    \* maximum evolutionary population
+  MaxSteps,         \* maximum action steps (bounds TLC state space)
   HeatPerBit        \* Landauer heat per erased bit (natural units)
 
 VARIABLES
@@ -81,6 +82,7 @@ Init ==
 
 \* Descend one level in the folding funnel (β₁ decreases)
 FunnelDescend ==
+  /\ step < MaxSteps
   /\ ~folded
   /\ ~misfolded
   /\ funnelBeta1 > 1
@@ -98,6 +100,7 @@ FunnelDescend ==
 
 \* Misfold: get stuck at a local minimum (β₁ > 1)
 Misfold ==
+  /\ step < MaxSteps
   /\ ~folded
   /\ ~misfolded
   /\ funnelBeta1 > 1
@@ -114,6 +117,7 @@ Misfold ==
 
 \* Enzyme binds: β₁ increases by 1, activation energy drops
 EnzymeBind ==
+  /\ step < MaxSteps
   /\ ~enzymePresent
   /\ beta1' = beta1 + 1
   /\ enzymePresent' = TRUE
@@ -125,6 +129,7 @@ EnzymeBind ==
 
 \* Reaction completes through catalyzed path: β₁ returns to baseline
 EnzymeRelease ==
+  /\ step < MaxSteps
   /\ enzymePresent
   /\ beta1' = beta1 - 1
   /\ enzymePresent' = FALSE
@@ -142,6 +147,7 @@ EnzymeRelease ==
 
 \* Selection (fold): reduce population to survivors
 SelectionFold ==
+  /\ step < MaxSteps
   /\ population > 1
   /\ \E s \in 1..population :
       /\ s < population
@@ -157,6 +163,7 @@ SelectionFold ==
 
 \* Mutation (fork): increase population diversity
 MutationFork ==
+  /\ step < MaxSteps
   /\ population < MaxPopulation
   /\ population' = population + 1
   /\ UNCHANGED <<beta1, beta0, beta2, funnelLevel, funnelBeta1, folded,
@@ -171,7 +178,9 @@ MutationFork ==
 
 \* A fold deposits energy, which modifies the topology
 GravitationalFold ==
+  /\ step < MaxSteps
   /\ beta1 > 0
+  /\ (~enzymePresent \/ beta1 > 1)
   /\ foldEnergy' = foldEnergy + beta1
   /\ topologyChanged' = TRUE
   /\ beta1' = beta1 - 1   \* fold reduces β₁

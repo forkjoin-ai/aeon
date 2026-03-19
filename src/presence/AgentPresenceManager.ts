@@ -5,7 +5,7 @@
  * Provides status updates, cursor tracking, and activity monitoring.
  */
 
-import { EventEmitter } from 'eventemitter3';
+import { AeonEventEmitter } from '../core/AeonEventEmitter';
 import { getLogger } from '../utils/logger';
 
 const logger = getLogger();
@@ -136,7 +136,7 @@ export interface PresenceEvents {
 // Agent Presence Manager
 // ============================================================================
 
-export class AgentPresenceManager extends EventEmitter<PresenceEvents> {
+export class AgentPresenceManager extends AeonEventEmitter<PresenceEvents> {
   private presences: Map<string, AgentPresence> = new Map();
   private sessionId: string;
   private heartbeatInterval: ReturnType<typeof setInterval> | null = null;

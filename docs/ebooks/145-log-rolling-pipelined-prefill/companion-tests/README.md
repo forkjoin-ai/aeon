@@ -12,6 +12,8 @@
 
 This package is the reproducibility and validation surface for the manuscript. The fair brag is not that it proves everything by existing. It is that the repo already contains a broad, explicit rerun surface: runtime tests, benchmark harnesses, formal artifacts, figure generation, and external-reviewer entry points.
 
+Adjacent to this companion package, the same repository now carries a bounded cover-space audit surface for the manuscript's theorem-indexed failure vocabulary: `open-source/aeon-logic/src/crypto-cover-space.ts`, the GG corpus in `open-source/gnosis/examples/crypto`, and the red/blue reporting wrapper in `open-source/aeon-crackerjack`. That surface is included here as a documentation-level corollary witness, not as a new mechanized theorem family. It treats `cracking` as metaphorical corollary extraction with preserved witness ancestry, and it calibrates two safe families: offline-risk password-digest negative controls and socio-technical recovery/trust topologies.
+
 For readers who want a tiny host-language sketch before they wade into the larger schedulers, the companion source tree now also includes `src/wallington-worthington-reference.ts`: a stripped-down Wallington Rotation / Worthington Whip implementation over plain arrays, paired with the minimal Gnosis examples in `open-source/gnosis/examples/transformer/wallington-rotation.gg` and `open-source/gnosis/examples/transformer/worthington-whip.gg`.
 
 The formal subtree also distinguishes mechanized theorems from theorem-indexed derived vocabulary such as `optionality` and `structured ambiguity processor`, and it now documents a finite/countable/measurable finite-type Landauer calibration boundary plus an observable-pushforward shell relating equiprobable frontier erasure, arbitrary finite-support branch-law entropy, the sharp finite equality cases, arbitrary Bernoulli binary erasure, the countable-support entropy/heat shells, coarse-grained finite/countable observable codomains for arbitrary source PMFs, finite-effective-support source-side monotonicity under deterministic observable coarsening, and the direct finite-type measurable entropy/heat lifts to the existing deterministic-collapse failure-tax floor and the beauty-side deficit/tax/observable bridge stack that isolates exactly what is still missing for the unconditional zero-deficit floor target; see [formal/THEOREM_LEDGER.md](./formal/THEOREM_LEDGER.md).
@@ -49,11 +51,13 @@ bun run test:adaptive-supremum-family-sweep
 bun run test:sleep-debt
 bun run test:sleep-debt-threshold
 bun run test:sleep-debt-weighted
+bun run test:ch17-american-frontier-figure
 bun run test:ch17-figure
 bun run test:ch17-boundary-expansion-figure
 bun run test:ch17-moa-figure
 bun run test:ch17-moa-topology-figure
 bun run test:ch17-moa-whip-curvature-figure
+bun run test:ch17-hetero-moa-fabric-curvature-figure
 bun run test:ch17-replication-pack
 bun run test:ch17-reproduction-surface
 bun run test:ch17-external-replication
@@ -106,11 +110,13 @@ Use that command when you want the shared compiler-facing theorem workspace itse
 | `ch17-gate4-rqr-holdout-figure.test.ts` + `scripts/ch17-gate4-rqr-holdout-figure.ts` | §6.14, §14.1 | Auto-generated Chapter 17 Gate 4 figure surface showing holdout decile calibration and interval-backed predictive-screening criteria for `R_qr` |
 | `ch17-gate5-bio-effect-size-figure.test.ts` + `scripts/ch17-gate5-bio-effect-size-figure.ts` | §2, §14.1 | Auto-generated Chapter 17 Gate 5 figure surface showing the biological pair ratios as a log-scale forest plot with a pooled geometric summary |
 | `ch17-inverted-scaling-reynolds-figure.test.ts` + `scripts/ch17-inverted-scaling-reynolds-figure.ts` | §2, §7 | Auto-generated Chapter 17 theory figure surface showing inverted scaling under balanced chunks and the Reynolds-number regime map with manuscript scenario overlays |
+| `ch17-american-frontier-figure.test.ts` + `scripts/ch17-american-frontier-figure.ts` | §15.2 | Auto-generated Chapter 17 American Frontier curve family showing framing waste by protocol, idle waste by Reynolds regime, encoding waste by content mix, and the explicit Aeon/UDP vs HTTP/TCP mixed-race witness |
 | `ch17-correspondence-boundary-figure.test.ts` + `scripts/ch17-correspondence-boundary-figure.ts` | §1.7, §6.12 | Auto-generated Chapter 17 figure surface built from the quantum ablation, toy-attention bootstrap intervals, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark |
 | `ch17-boundary-expansion-figure.test.ts` + `scripts/ch17-boundary-expansion-figure.ts` | §1.7, §6.12 | Auto-generated companion figure surface built from the near-control zoom, regime sweep, adversarial controls, and Lean-exported witness catalog so the expanded evidence boundary is visible as a single artifact |
 | `ch17-moa-transformer-figure.test.ts` + `scripts/ch17-moa-transformer-figure.ts` | §6.11, §1.7 | Auto-generated figure surface for the GG-backed `StructuredMoA` sweep/ablation result, showing speedup, closing eval-MSE gap, and sparsity-ablation frontier in one chart |
 | `ch17-moa-topology-figure.ts` / `.test.ts` | §6.11, §1.7 | Figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sparse-vs-dense topology diagram, exposing the routed blocks, live heads, and matched dense baseline as a manuscript artifact |
 | `ch17-moa-whip-curvature-figure.ts` / `.test.ts` | §6.11, companion supplement | Supplemental figure manifest/SVG renderer and tests for the curved wraparound `StructuredMoA` topology view, emphasizing the inner and outer Worthington whip geometry around the routed blocks |
+| `ch17-hetero-moa-fabric-curvature-figure.ts` / `.test.ts` | §6.11, companion supplement | Supplemental figure manifest/SVG renderer and tests for the backend-diverse `HeteroMoAFabric` curvature view, reusing the whipped MoA geometry so device-layer racing and paired-kernel snaps read as one curved spring |
 | `ch17-external-replication.test.ts` + `scripts/ch17-external-replication.ts` | Chapter 17 outside rerun | Executes the full outside-rerun command chain, verifies the refreshed replication manifest, and confirms that the checked-in evidence bundle hashes still match the files on disk |
 | `deficit-evidence.test.ts` | §6.12 evidence table, §8.3 | Protocol/settlement/healthcare deficits and entropy-vent trend checks |
 | `map-reduce-readiness.test.ts` | §6.14 heuristic | Executable checks for `Q_mr`, `O_beta`, `R_qr` bounds/monotonicity, necessity of nonzero topological opportunity in the migration simulator, independent rank correlation, and non-automatic-quantum-advantage counterexamples |
@@ -145,11 +151,13 @@ Use that command when you want the shared compiler-facing theorem workspace itse
 | `scripts/ch17-gate4-rqr-holdout-figure.ts` + `artifacts/ch17-gate4-rqr-holdout-figure.{json,md,svg}` | §6.14, §14.1 | Auto-generated Gate 4 figure showing holdout decile calibration and interval-backed screening criteria so the `R_qr` validation reads as a predictive surface instead of a table |
 | `scripts/ch17-gate5-bio-effect-size-figure.ts` + `artifacts/ch17-gate5-bio-effect-size-figure.{json,md,svg}` | §2, §14.1 | Auto-generated Gate 5 figure showing the biological pair ratios and pooled geometric summary on a shared log scale so the analogy section reads as an effect-size surface instead of prose examples |
 | `scripts/ch17-inverted-scaling-reynolds-figure.ts` + `artifacts/ch17-inverted-scaling-reynolds-figure.{json,md,svg}` | §2, §7 | Auto-generated theory figure showing the workload-speedup curve family and the Reynolds-number regime map so the inverted-scaling claim stays attached to explicit formulas and scenario overlays |
+| `scripts/ch17-american-frontier-figure.ts` + `artifacts/ch17-american-frontier-figure.{json,md,svg}` | §15.2 | Auto-generated American Frontier figure showing the curve family across framing, scheduling, response encoding, and the explicit same-request Aeon/UDP vs HTTP/TCP wire race |
 | `scripts/ch17-correspondence-boundary-figure.ts` + `artifacts/ch17-correspondence-boundary-figure.{json,md,svg}` | §1.7, §6.12 | Auto-generated manuscript figure combining the invariant-loss matrix, toy-attention interval chart, the seeded Gnosis cancellation benchmark, and the seeded Gnosis mini-MoE routing benchmark |
 | `scripts/ch17-boundary-expansion-figure.ts` + `artifacts/ch17-boundary-expansion-figure.{json,md,svg}` | §1.7, §6.12 | Auto-generated expansion figure combining the near-control zoom, regime sweep, adversarial controls, and Lean-originated witness bridge into one manuscript-ready surface |
 | `scripts/ch17-moa-transformer-figure.ts` + `artifacts/ch17-moa-transformer-figure.{json,md,svg}` | §6.11, §1.7 | Auto-generated manuscript figure for the GG-backed `StructuredMoA` sparse transformer result, combining scale sweep, accuracy-gap closure, and ablation frontier in one artifact |
 | `scripts/ch17-moa-topology-figure.ts` + `artifacts/ch17-moa-topology-figure.{json,md,svg}` | §6.11, §1.7 | Auto-generated topology figure for the sparse `StructuredMoA` GG surface, showing the 2-of-4 block routing, the 2-of-4 head routing inside each live block, and the dense rotated baseline in one artifact |
 | `scripts/ch17-moa-whip-curvature-figure.ts` + `artifacts/ch17-moa-whip-curvature-figure.{json,md,svg}` | §6.11, companion supplement | Auto-generated wraparound topology figure for the same sparse `StructuredMoA` GG surface, bending the routed paths into a curved envelope so the inner and outer Worthington whips read as enclosure geometry |
+| `scripts/ch17-hetero-moa-fabric-curvature-figure.ts` + `artifacts/ch17-hetero-moa-fabric-curvature-figure.{json,md,svg}` | §6.11, companion supplement | Auto-generated backend-diverse curvature figure for the `HeteroMoAFabric` surface, carrying the same wraparound grammar into CPU/GPU/NPU/WASM layer racing, mirrored pair lanes, and the global laminar collapse |
 | `scripts/ch17-external-replication.ts` + `artifacts/ch17-external-replication.{json,md}` | Chapter 17 outside rerun | Runs the full outside-rerun command surface and verifies that the refreshed replication-pack hashes still match the evidence bundle on disk |
 | `genomic-topology.test.ts` + `genomic-topology.ts` | §3.2 Molecular Topology | σ(ℓ) sequence-computability, Δσ mutation detection, CRISPR efficiency η ∝ 1/β₁, cancer hotspot topology (TP53/KRAS real sequences), driver vs passenger Bule severity, σ_ref + Δσ = σ_mutant accounting identity (28 tests) |
 | `confinement-topology.test.ts` | §6.14 Color Confinement | SU(3) β₁=3 covering space, mandatory fold to β₁=0, anti-vent property, whip-snap energy conservation, linear confinement potential (σ ≈ 1 GeV/fm), deconfinement transition (T_c ≈ 155 MeV), hadron multiplicity scaling, scale tower functoriality (31 tests) |
@@ -196,11 +204,13 @@ bun run test:adaptive-supremum-family-sweep # §5 raw-parameter family sweep for
 bun run test:sleep-debt # §14 bounded sleep-debt witness artifact generation
 bun run test:sleep-debt-threshold # §14 bounded schedule-threshold witness artifact generation
 bun run test:sleep-debt-weighted # §14 weighted schedule-threshold bridge artifact generation
+bun run test:ch17-american-frontier-figure # §15.2 artifact-generated American Frontier curve family + recursive wire witness
 bun run test:ch17-figure   # §1.7, §6.12 artifact-generated manuscript figure
 bun run test:ch17-boundary-expansion-figure # §1.7, §6.12 artifact-generated expanded boundary figure
 bun run test:ch17-moa-figure # §6.11, §1.7 artifact-generated StructuredMoA figure
 bun run test:ch17-moa-topology-figure # §6.11, §1.7 artifact-generated StructuredMoA topology diagram
 bun run test:ch17-moa-whip-curvature-figure # §6.11 companion supplemental curved-whip topology diagram
+bun run test:ch17-hetero-moa-fabric-curvature-figure # §6.11 companion supplemental hetero-fabric curvature diagram
 bun run test:ch17-replication-pack # Chapter 17 bundle hash manifest + rerun command
 bun run test:ch17-reproduction-surface # artifact/witness/manuscript reproduction surface without the separate full Lean gate
 bun run test:ch17-external-replication # one-command outside rerun + manifest/hash verification

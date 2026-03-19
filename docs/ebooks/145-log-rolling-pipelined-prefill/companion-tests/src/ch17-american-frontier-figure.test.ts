@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import {
   buildAmericanFrontierReport,
   renderAmericanFrontierMarkdown,
@@ -6,117 +7,102 @@ import {
 } from './ch17-american-frontier-figure';
 
 describe('ch17-american-frontier-figure', () => {
-  it('builds the American Frontier report with correct structure', () => {
+  it('builds the American Frontier report with recursive wire witness data', () => {
     const report = buildAmericanFrontierReport();
-    expect(report.label).toBe('ch17-american-frontier-figure-v1');
 
-    // Protocol panel: 4 protocols, monotonically decreasing overhead
+    expect(report.label).toBe('ch17-american-frontier-figure-v2');
     expect(report.protocol.points).toHaveLength(4);
-    expect(report.protocol.beta1Star).toBe(94);
-    const overheads = report.protocol.points.map((p) => p.overheadPct);
-    for (let i = 1; i < overheads.length; i++) {
-      expect(overheads[i]).toBeLessThan(overheads[i - 1]);
-    }
-
-    // Pipeline panel: idle fraction increases with Re (waste increases with less diversity)
     expect(report.pipeline.points.length).toBeGreaterThan(5);
-    const idles = report.pipeline.points.map((p) => p.idleFraction);
-    for (let i = 1; i < idles.length; i++) {
-      expect(idles[i]).toBeGreaterThan(idles[i - 1]);
-    }
-
-    // Compression panel: 5 corpus types, all 100% win rate
-    expect(report.compression.points).toHaveLength(5);
-    for (const p of report.compression.points) {
-      expect(p.winRate).toBe(1.0);
-    }
-
-    // Frontier properties: all true (mechanized)
+    expect(report.encoding.points).toHaveLength(5);
+    expect(report.transport.points.length).toBeGreaterThanOrEqual(5);
     expect(report.frontierProperties.monotone).toBe(true);
-    expect(report.frontierProperties.zeroAtMatch).toBe(true);
-    expect(report.frontierProperties.positiveBelow).toBe(true);
-    expect(report.frontierProperties.pigeonholeWitness).toBe(true);
+    expect(report.frontierProperties.recursiveAcrossLayers).toBe(true);
   });
 
-  it('protocol overhead is monotonically decreasing (American Frontier shape)', () => {
-    const report = buildAmericanFrontierReport();
-    const points = report.protocol.points;
+  it('protocol waste is strictly decreasing across the framing frontier', () => {
+    const overheads = buildAmericanFrontierReport().protocol.points.map(
+      (point) => point.overheadPct,
+    );
 
-    // HTTP/1.1 has highest overhead
-    expect(points[0].protocol).toBe('HTTP/1.1');
-    expect(points[0].overheadPct).toBe(31.0);
-
-    // Aeon Flow has lowest overhead
-    expect(points[3].protocol).toBe('Aeon Flow');
-    expect(points[3].overheadPct).toBe(1.5);
-
-    // Strictly decreasing
-    expect(points[1].overheadPct).toBeLessThan(points[0].overheadPct);
-    expect(points[2].overheadPct).toBeLessThan(points[1].overheadPct);
-    expect(points[3].overheadPct).toBeLessThan(points[2].overheadPct);
-  });
-
-  it('pipeline idle fraction increases with Reynolds number', () => {
-    const report = buildAmericanFrontierReport();
-    // Higher Re = less diversity relative to workload = more waste
-    // This is the American Frontier: waste monotonically non-increasing in diversity
-    const low = report.pipeline.points[0]; // Re = 0.1 (high diversity)
-    const high =
-      report.pipeline.points[report.pipeline.points.length - 1]; // Re = 16 (low diversity)
-
-    expect(low.idleFraction).toBeLessThan(0.1);
-    expect(high.idleFraction).toBeGreaterThan(0.9);
-  });
-
-  it('compression topology always wins (100% win rate across corpora)', () => {
-    const report = buildAmericanFrontierReport();
-    // The diverse strategy (topology) subsumes every fixed strategy
-    // Win rate = 1.0 is the frontier: racing achieves zero deficit
-    for (const p of report.compression.points) {
-      expect(p.winRate).toBe(1.0);
-      expect(p.gainVsHeuristicPct).toBeGreaterThan(0);
+    for (let index = 1; index < overheads.length; index++) {
+      expect(overheads[index]).toBeLessThan(overheads[index - 1]);
     }
   });
 
-  it('heterogeneous content benefits more from diversity', () => {
-    const report = buildAmericanFrontierReport();
-    const points = report.compression.points;
-    // api-telemetry (most heterogeneous) has highest gain
-    const apiGain = points.find(
-      (p) => p.corpus === 'api-telemetry',
-    )!.gainVsHeuristicPct;
-    const textGain = points.find(
-      (p) => p.corpus === 'text-homogeneous',
-    )!.gainVsHeuristicPct;
-    expect(apiGain).toBeGreaterThan(textGain);
-    expect(apiGain).toBeGreaterThan(40); // 46.4%
+  it('pipeline idle fraction rises as Reynolds number rises', () => {
+    const points = buildAmericanFrontierReport().pipeline.points;
+    expect(points[0].idleFraction).toBeLessThan(0.1);
+    expect(points[points.length - 1].idleFraction).toBeGreaterThan(0.9);
+
+    for (let index = 1; index < points.length; index++) {
+      expect(points[index].idleFraction).toBeGreaterThan(
+        points[index - 1].idleFraction,
+      );
+    }
   });
 
-  it('renders markdown output', () => {
-    const report = buildAmericanFrontierReport();
-    const md = renderAmericanFrontierMarkdown(report);
-    expect(md).toContain('American Frontier');
-    expect(md).toContain('Protocol Framing Overhead');
-    expect(md).toContain('Pipeline Idle Fraction');
-    expect(md).toContain('Compression Topology Gain');
-    expect(md).toContain('AmericanFrontier.lean');
-    expect(md).toContain('31');
-    expect(md).toContain('1.5');
+  it('encoding monoculture waste grows with heterogeneity', () => {
+    const points = buildAmericanFrontierReport().encoding.points;
+    const api = points.find((point) => point.corpus === 'api-telemetry');
+    const text = points.find((point) => point.corpus === 'text-homogeneous');
+
+    expect(api).toBeDefined();
+    expect(text).toBeDefined();
+    expect(api!.gainVsHeuristicPct).toBeGreaterThan(text!.gainVsHeuristicPct);
+    expect(api!.gainVsHeuristicPct).toBeGreaterThan(40);
   });
 
-  it('renders SVG output with three panels', () => {
-    const report = buildAmericanFrontierReport();
-    const svg = renderAmericanFrontierSvg(report);
+  it('recursive wire frontier reduces waste as effective Aeon share rises', () => {
+    const points = buildAmericanFrontierReport().transport.points;
+
+    let previousShare = -1;
+    let previousWaste = Number.POSITIVE_INFINITY;
+    for (const point of points) {
+      const share =
+        (point.aeonWins / (point.aeonWins + point.httpWins)) * 100;
+      expect(share).toBeGreaterThan(previousShare);
+      expect(point.wasteBytesPerWin).toBeLessThanOrEqual(previousWaste);
+      previousShare = share;
+      previousWaste = point.wasteBytesPerWin;
+    }
+  });
+
+  it('heavy recursive witness keeps most throughput while collapsing waste', () => {
+    const heavy = buildAmericanFrontierReport().transport.heavyWitness;
+
+    expect(heavy.zeroSkewWasteBytesPerWin).toBeGreaterThan(
+      heavy.tcpDelay2msWasteBytesPerWin,
+    );
+    expect(heavy.tcpDelay2msAeonWinSharePct).toBeGreaterThan(99);
+    expect(heavy.throughputRetentionPct).toBeGreaterThan(80);
+  });
+
+  it('renders markdown output with the recursive claim', () => {
+    const markdown = renderAmericanFrontierMarkdown(buildAmericanFrontierReport());
+
+    expect(markdown).toContain('American Frontier');
+    expect(markdown).toContain('Framing Waste by Protocol');
+    expect(markdown).toContain('Encoding Waste by Content Mix');
+    expect(markdown).toContain('Aeon/UDP vs HTTP/TCP Mixed Race');
+    expect(markdown).toContain('inverse-Bule control knob');
+    expect(markdown).toContain('AmericanFrontier.lean');
+  });
+
+  it('renders SVG output with four panels and recursive wire language', () => {
+    const svg = renderAmericanFrontierSvg(buildAmericanFrontierReport());
+
     expect(svg).toContain('<svg');
     expect(svg).toContain('</svg>');
-    expect(svg).toContain('American Frontier');
-    expect(svg).toContain('Protocol Framing Overhead');
-    expect(svg).toContain('Pipeline Idle Fraction');
-    expect(svg).toContain('Cost of Monoculture');
+    expect(svg).toContain('The American Frontier');
+    expect(svg).toContain('Framing Waste by Protocol');
+    expect(svg).toContain('Idle Waste by Reynolds Regime');
+    expect(svg).toContain('Encoding Waste by Content Mix');
+    expect(svg).toContain('Aeon/UDP vs HTTP/TCP Mixed Race');
+    expect(svg).toContain('HTTP/TCP dominates');
+    expect(svg).toContain('Aeon/UDP dominates');
+    expect(svg).toContain('TCP hedge delay');
     expect(svg).toContain('THM-AMERICAN-FRONTIER');
-    // Three panels present
-    expect(svg).toContain('A.');
-    expect(svg).toContain('B.');
-    expect(svg).toContain('C.');
+    expect(svg).toContain('Heavy recursive witness');
+    expect(svg).toContain('Recursive reading of THM-AMERICAN-FRONTIER');
   });
 });

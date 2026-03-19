@@ -79,6 +79,9 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `ch17-inverted-scaling-reynolds-figure.json`: machine-readable manifest for the Chapter 17 inverted-scaling and Reynolds-regime figure.
 - `ch17-inverted-scaling-reynolds-figure.md`: human-readable summary of the theory figure formulas, stage families, and scenario overlays.
 - `ch17-inverted-scaling-reynolds-figure.svg`: manuscript-ready theory figure pairing the workload-speedup curves with the laminar/transitional/turbulent Reynolds regime map.
+- `ch17-american-frontier-figure.json`: machine-readable manifest for the Chapter 17 American Frontier curve-family figure, including the recursive wire witness.
+- `ch17-american-frontier-figure.md`: human-readable summary of the American Frontier framing/scheduling/encoding curves and the explicit Aeon/UDP vs HTTP/TCP transport witness.
+- `ch17-american-frontier-figure.svg`: manuscript-ready four-panel figure showing the American Frontier as a curve family plus the explicit Aeon/UDP vs HTTP/TCP mixed-race panel.
 - `ch17-correspondence-boundary-figure.json`: machine-readable manifest for the Chapter 17 correspondence-boundary figure.
 - `ch17-correspondence-boundary-figure.md`: human-readable summary of the figure sources and aggregated metrics.
 - `ch17-correspondence-boundary-figure.svg`: manuscript-ready figure assembled from the quantum ablation, toy-attention interval chart, seeded Gnosis cancellation benchmark, and seeded Gnosis mini-MoE routing benchmark artifacts.
@@ -94,6 +97,9 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `ch17-moa-whip-curvature-figure.json`: machine-readable manifest for the curved wraparound `StructuredMoA` companion figure derived from the topology surface.
 - `ch17-moa-whip-curvature-figure.md`: human-readable summary of the same routed blocks/heads rendered as a curved whip enclosure view.
 - `ch17-moa-whip-curvature-figure.svg`: companion-ready curved topology figure showing the wraparound inner and outer Worthington whips around the routed blocks.
+- `ch17-hetero-moa-fabric-curvature-figure.json`: machine-readable manifest for the backend-diverse `HeteroMoAFabric` companion figure rendered with the same curved whip geometry.
+- `ch17-hetero-moa-fabric-curvature-figure.md`: human-readable summary of the CPU/GPU/NPU/WASM paired-lane fabric rendered as one curved meta-laminar spring.
+- `ch17-hetero-moa-fabric-curvature-figure.svg`: companion-ready curved topology figure showing device-layer racing, mirrored pair snaps, and the global laminar collapse.
 - `ch17-external-replication.json`: machine-readable outside-rerun report covering the end-to-end command plan and manifest/hash verification.
 - `ch17-external-replication.md`: human-readable outside-rerun summary for the same report.
 

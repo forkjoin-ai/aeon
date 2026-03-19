@@ -41,11 +41,13 @@ Vitest suites that provide executable claim coverage for the manuscript.
 - `ch17-gate4-rqr-holdout-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the Gate 4 `R_qr` holdout calibration-and-criteria chart.
 - `ch17-gate5-bio-effect-size-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the Gate 5 biological effect-size forest plot and pooled summary chart.
 - `ch17-inverted-scaling-reynolds-figure.ts` / `.test.ts`: analytic figure builder and tests for the inverted-scaling workload curves plus the Reynolds-number regime map.
+- `ch17-american-frontier-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the American Frontier curve family, including the explicit Aeon/UDP vs HTTP/TCP mixed-race witness that shows diversity selecting the response and then carrying it over the wire.
 - `ch17-correspondence-boundary-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the four-panel artifact-generated Chapter 17 correspondence-boundary chart.
 - `ch17-boundary-expansion-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the near-control/regime/adversarial expansion chart.
 - `ch17-moa-transformer-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sweep/ablation chart.
 - `ch17-moa-topology-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sparse-vs-dense topology chart.
 - `ch17-moa-whip-curvature-figure.ts` / `.test.ts`: supplemental figure manifest/SVG renderer and tests for the curved wraparound `StructuredMoA` topology view that makes the inner and outer Worthington whips read as enclosure geometry.
+- `ch17-hetero-moa-fabric-curvature-figure.ts` / `.test.ts`: supplemental figure manifest/SVG renderer and tests for the backend-diverse `HeteroMoAFabric` curvature view, reusing the wraparound whip grammar to show CPU/GPU/NPU/WASM layer racing and paired-kernel snaps as one stretched spring.
 - `wallington-worthington-reference.ts` / `.test.ts`: reader-facing reference implementation that expresses Wallington Rotation and Worthington Whip on plain arrays, including chunk/tick schedule emission and shard-collapse output.
 - `ch17-external-replication.ts` / `.test.ts`: outside-rerun executor and tests that verify the command plan plus manifest/hash stability checks.
 - `deficit-evidence.test.ts`: protocol/settlement/healthcare deficit evidence checks.
