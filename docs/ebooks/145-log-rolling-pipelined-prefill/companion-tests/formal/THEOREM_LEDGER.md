@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 325 across 36 topical sections (all mechanized, zero open)
-- **TLA+ specifications:** 84 (all with matching .cfg files)
-- **Lean theorem modules:** 91 (all sorry-free)
+- **Theorem table entries:** 340 across 37 topical sections (all mechanized, zero open)
+- **TLA+ specifications:** 85 (all with matching .cfg files)
+- **Lean theorem modules:** 92 (all sorry-free)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
@@ -592,6 +592,24 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 | `THM-CHAITIN-SOLOMONOFF-BRIDGE` | Chaitin's Omega and Solomonoff's Universal Prior share the same void boundary structure. Both partition the same program space. Both are strictly between 0 and 1. The non-halting deficit is positive. Omega conditions on termination; M(x) conditions on output; both are projections of the universal void boundary | ProgramSpace | Lean theorem `chaitin_solomonoff_bridge` in `ChaitinOmega.lean` | Mechanized |
 | `THM-UNCOMPUTABILITY-IS-INFINITE-VOID` | The uncomputability of Omega is the statement that the void boundary of all programs is not finitely constructible. The finite approximation is monotone, bounded, and positive at every stage. Buleyean axioms hold at every finite stage | ProgramSpaceExtension | Lean theorem `uncomputability_is_infinite_void` in `ChaitinOmega.lean` | Mechanized |
 | `THM-CHAITIN-OMEGA-MASTER` | Complete Chaitin-Omega theorem: UTM is universal fork, execution is fold, halting is bounded, Omega is positive, Omega is subuniversal, void is nonempty, Chaitin-Solomonoff bridge holds. Chaitin's Omega is the Buleyean complement distribution over program space conditioned on termination | ProgramSpace | TLA+ `ChaitinOmega.tla` invariants (`InvFoldConservation`, `InvOmegaPositive`, `InvOmegaSubuniversal`, `InvVoidNonempty`, `InvHaltingBounded`, `InvTotalPositive`) + Lean theorem `chaitin_omega_master` in `ChaitinOmega.lean` | Mechanized |
+
+### Non-Empirical Prediction (§15.22)
+
+| Theorem ID | Claim | Assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| `THM-HOLE-POSITIVE-WEIGHT` | A structural hole always has strictly positive interpolation weight. The complement distribution never assigns zero probability to any hole. Never say never in prediction | StructuralHole with neighborRoundsSum > 0 | Lean theorem `hole_has_positive_weight` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-INTERPOLATION-BOUNDED` | The interpolation weight is bounded between 1 and rounds + 1. The prediction is always finite and within the Buleyean weight range | StructuralHole | Lean theorem `interpolation_weight_bounded` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-REJECTION-REDUCES-PREDICTION` | More neighbor rejection = lower prediction weight. Structure constrains: neighbors' rejection data shapes the hole's complement distribution | Two StructuralHoles with same rounds, different void sums | Lean theorem `rejection_reduces_prediction` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-LATTICE-PARTITION` | The lattice is exactly partitioned into observed positions and holes. observedCount + holeCount = totalPositions. Conservation law of the structural lattice | StructuralLattice | Lean theorem `lattice_partition` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-NEIGHBOR-DOMINATES-UNINFORMED` | Structural prediction with neighbor data is at least as informative as uninformed guessing. Interpolation weight <= uninformed weight. Structure provides signal | StructuralHole | Lean theorem `neighbor_dominates_uninformed` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-STRICT-DOMINANCE` | With nontrivial neighbor rejection (neighborVoidSum > 0), structural prediction is strictly more informative than guessing. The gap equals min(voidSum, roundsSum) | StructuralHole with neighborVoidSum > 0 | Lean theorem `strict_dominance_with_rejection` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-HOLES-ORDERED` | Two holes with different neighbor rejection receive different predictions. The lattice differentiates. Formalizes: "gallium is more like aluminum than iron" | Two StructuralHoles with same rounds, different void sums | Lean theorem `holes_ordered` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-MENDELEEV-IS-COMPLEMENT` | Mendeleev's interpolation method is isomorphic to computing the Buleyean complement weight from neighbor-aggregated void boundary. Same formula: rounds - min(void, rounds) + 1 | StructuralHole, BuleyeanSpace with matching rounds and void boundary | Lean theorem `mendeleev_is_complement` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-ALGEBRAIC-HOLE-IS-VOID-GAP` | Algebraic holes (Dirac's positron, Pauli's neutrino) are positions demanded by lattice partition conservation. The lattice forces the hole to exist; the complement distribution predicts its properties | StructuralLattice with someHoles | Lean theorem `algebraic_hole_is_void_gap` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-NON-EMPIRICAL-SOLOMONOFF` | Non-empirical prediction composes with Solomonoff prediction. Holes in simpler lattices get higher weight. Simpler structures make stronger predictions about their gaps | SolomonoffSpace | Lean theorem `non_empirical_solomonoff_compose` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-IMPOSSIBLE-ELEMENT` | An AI can "know" a fact about an unobserved object without training data, by computing the interpolation weight from the structural lattice. Positive, bounded, structure-dependent. Deterministic, objective, falsifiable | StructuralHole | Lean theorem `impossible_element` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-PREDICTION-WITHOUT-OBSERVATION` | The structural hole has nonzero interpolation weight despite no direct observation. Weight comes entirely from neighbor structure. Formal content of non-empirical prediction | StructuralHole | Lean theorem `prediction_without_observation` in `NonEmpiricalPrediction.lean` | Mechanized |
+| `THM-NON-EMPIRICAL-PREDICTION-MASTER` | Complete non-empirical prediction theorem: lattice partition, hole positivity, boundedness, structure dominates, algebraic holes exist. Formal basis for predicting properties of undiscovered objects from the mathematical hole they leave | StructuralLattice, StructuralHole | TLA+ `NonEmpiricalPrediction.tla` invariants (`InvPartition`, `InvPositiveWeight`, `InvWeightBounded`, `InvStructureDominates`, `InvUninformedCorrect`, `InvSomeObserved`, `InvVoidBounded`) + Lean theorem `non_empirical_prediction_master` in `NonEmpiricalPrediction.lean` | Mechanized |
 
 ### Metacognitive Walker & Void Attention
 
