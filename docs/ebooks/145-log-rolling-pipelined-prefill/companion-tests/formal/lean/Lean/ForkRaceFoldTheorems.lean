@@ -84,3 +84,5 @@ import ForkRaceFoldTheorems.NovelCompositions
 import ForkRaceFoldTheorems.DeepCompositions
 import ForkRaceFoldTheorems.QuantumCancerTriples
 import ForkRaceFoldTheorems.SemioticTriples
+import ForkRaceFoldTheorems.TripleCompositions
+import ForkRaceFoldTheorems.GrandUnification
