@@ -1,260 +1,122 @@
 import Mathlib
 import ForkRaceFoldTheorems.BuleyeanProbability
+import ForkRaceFoldTheorems.FailureUniversality
+import ForkRaceFoldTheorems.FailureEntropy
+import ForkRaceFoldTheorems.VoidWalking
 
 open scoped BigOperators ENNReal
 
 namespace ForkRaceFoldTheorems
 
 /-!
-# Predictions Round 11: Learning Curves, Herd Immunity,
-  Code Review, Battery Degradation, Brainstorming Quality
+# Predictions Round 11: Universal Collapse Cost, Deterministic Collapse, Pipeline Waste
 
-Five predictions composing void boundary walking with student learning
-curves, convergence schema with epidemic herd immunity, semiotic deficit
-with code review, append-only void accumulation with battery degradation,
-and complement concentration with brainstorming session quality. All sorry-free.
+172. Universal Collapse Cost Floor (FailureUniversality)
+173. Collapse Witness Achieves the Floor (FailureUniversality)
+174. Single-Survivor Collapse Requires Exactly N-1 Venting (FailureUniversality)
+175. Zero Repair Debt Is Achievable (FailureUniversality)
+176. Normalized Sparse Pipeline Alignment (FailureUniversality)
 -/
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 137: Student Learning Curve is Void Walking
+-- Prediction 172: Universal Collapse Cost Floor
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Student learning topology: each topic is a choice, each failed quiz
-    is a void boundary entry. Learning strength = Buleyean weight.
-    The sliver: no student is ever "zero knowledge" on any topic.
-    Mastery = maximum weight = minimum void entries. -/
-structure StudentLearning where
-  /-- Total topics in the curriculum -/
-  totalTopics : ℕ
-  /-- At least one topic -/
-  topicsPos : 0 < totalTopics
-  /-- Number of failed quizzes (void boundary entries) -/
-  failedQuizzes : ℕ
-  /-- Failed bounded by topics -/
-  failedBounded : failedQuizzes ≤ totalTopics
-
-/-- Learning strength: complement weight. More failures = lower strength,
-    but never zero (the sliver). -/
-def StudentLearning.learningStrength (sl : StudentLearning) : ℕ :=
-  sl.totalTopics - min sl.failedQuizzes sl.totalTopics + 1
-
-/-- Learning strength is always positive (the sliver -- never zero knowledge). -/
-theorem learning_strength_always_positive (sl : StudentLearning) :
-    0 < sl.learningStrength := by
-  unfold StudentLearning.learningStrength; omega
-
-/-- More failed quizzes = lower learning strength. -/
-theorem more_failures_lower_strength (sl1 sl2 : StudentLearning)
-    (hSameTopics : sl1.totalTopics = sl2.totalTopics)
-    (hMoreFail : sl1.failedQuizzes ≤ sl2.failedQuizzes) :
-    sl2.learningStrength ≤ sl1.learningStrength := by
-  unfold StudentLearning.learningStrength; omega
-
-/-- Mastery (zero failures) gives maximum learning strength. -/
-theorem mastery_max_strength (sl : StudentLearning)
-    (hMastery : sl.failedQuizzes = 0) :
-    sl.learningStrength = sl.totalTopics + 1 := by
-  unfold StudentLearning.learningStrength; simp [hMastery]
+/-- The collapse cost floor is achievable: for any pipeline with live
+    branches, deterministic single-survivor collapse costs exactly
+    liveBranches - 1. This is the universal cost floor -- no pipeline
+    design can do better, and the collapseWitness achieves it. -/
+theorem universal_cost_floor_achievable (start : List BranchSnapshot)
+    (hLive : 0 < liveBranchCount start) :
+    CollapseCostAchievableFrom start (liveBranchCount start - 1) :=
+  collapse_cost_floor_attainable start hLive
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 138: Epidemic Herd Immunity as Convergence
+-- Prediction 173: Collapse Witness Achieves the Floor
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Epidemic herd immunity topology: population has susceptible individuals
-    (fork width). Each vaccination/infection is a void entry against
-    susceptibility. Herd immunity = convergence when complement concentrates.
-    The sliver: no population ever reaches 100% immunity. -/
-structure EpidemicPopulation where
-  /-- Total population -/
-  totalPop : ℕ
-  /-- At least one individual -/
-  popPos : 0 < totalPop
-  /-- Number of immune individuals -/
-  immuneCount : ℕ
-  /-- Immune bounded by total -/
-  immuneBounded : immuneCount ≤ totalPop
+/-- The collapseWitness produces deterministic collapse. -/
+theorem witness_achieves_collapse (before : List BranchSnapshot)
+    (hLive : 0 < liveBranchCount before) :
+    deterministicCollapse before (collapseWitness before) :=
+  collapseWitness_deterministic_collapse hLive
 
-/-- Susceptibility deficit: susceptible minus immune. -/
-def EpidemicPopulation.susceptibilityDeficit (ep : EpidemicPopulation) : ℕ :=
-  ep.totalPop - ep.immuneCount
-
-/-- Immune fraction weight (complement weight). -/
-def EpidemicPopulation.immuneWeight (ep : EpidemicPopulation) : ℕ :=
-  ep.immuneCount + 1
-
-/-- Susceptibility deficit is non-negative. -/
-theorem susceptibility_deficit_nonneg (ep : EpidemicPopulation) :
-    0 ≤ ep.susceptibilityDeficit := by
-  unfold EpidemicPopulation.susceptibilityDeficit; omega
-
-/-- More immune = lower susceptibility deficit. -/
-theorem more_immune_lower_deficit (ep1 ep2 : EpidemicPopulation)
-    (hSamePop : ep1.totalPop = ep2.totalPop)
-    (hMoreImmune : ep1.immuneCount ≤ ep2.immuneCount) :
-    ep2.susceptibilityDeficit ≤ ep1.susceptibilityDeficit := by
-  unfold EpidemicPopulation.susceptibilityDeficit; omega
-
-/-- Immune weight is always positive (the sliver -- some immunity always exists). -/
-theorem immune_weight_always_positive (ep : EpidemicPopulation) :
-    0 < ep.immuneWeight := by
-  unfold EpidemicPopulation.immuneWeight; omega
-
-/-- Full immunity still leaves the sliver: deficit can reach zero but
-    immune weight never exceeds totalPop + 1 (never 100% + epsilon). -/
-theorem full_immunity_bounded (ep : EpidemicPopulation) :
-    ep.immuneWeight ≤ ep.totalPop + 1 := by
-  unfold EpidemicPopulation.immuneWeight; omega
+/-- The collapseWitness produces a single survivor. -/
+theorem witness_single_survivor (before : List BranchSnapshot)
+    (hLive : 0 < liveBranchCount before) :
+    singleSurvivor (collapseWitness before) :=
+  collapseWitness_single_survivor hLive
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 139: Code Review Deficit
+-- Prediction 174: Exact Venting Cost
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Code review as semiotic ensemble: k reviewers produce a single merge
-    decision. Review deficit = k - 1 (information lost in producing the
-    decision). More reviewers increase information loss but reduce bug
-    escape probability. -/
-structure CodeReview where
-  /-- Number of reviewers (semiotic ensemble) -/
-  reviewers : ℕ
-  /-- At least one reviewer -/
-  reviewersPos : 0 < reviewers
+/-- Single-survivor collapse vents exactly liveBranches - 1 paths. -/
+theorem exact_venting_cost (before : List BranchSnapshot)
+    (hLive : 0 < liveBranchCount before) :
+    ventedCount before (collapseWitness before) = liveBranchCount before - 1 :=
+  collapseWitness_vented_cost_exact hLive
 
-/-- Review deficit: information lost in fold to single merge decision. -/
-def CodeReview.reviewDeficit (cr : CodeReview) : ℕ :=
-  cr.reviewers - 1
-
-/-- Review deficit is non-negative. -/
-theorem review_deficit_nonneg (cr : CodeReview) :
-    0 ≤ cr.reviewDeficit := by
-  unfold CodeReview.reviewDeficit; omega
-
-/-- Single reviewer = zero deficit (no information lost, but no redundancy). -/
-theorem single_reviewer_zero_deficit (cr : CodeReview)
-    (hSingle : cr.reviewers = 1) :
-    cr.reviewDeficit = 0 := by
-  unfold CodeReview.reviewDeficit; omega
-
-/-- More reviewers = more deficit (more information folded away). -/
-theorem more_reviewers_more_deficit (cr1 cr2 : CodeReview)
-    (hMore : cr1.reviewers ≤ cr2.reviewers) :
-    cr1.reviewDeficit ≤ cr2.reviewDeficit := by
-  unfold CodeReview.reviewDeficit; omega
-
-/-- Deficit is exactly k - 1 (the exact tradeoff). -/
-theorem review_deficit_exact (cr : CodeReview) :
-    cr.reviewDeficit + 1 = cr.reviewers := by
-  unfold CodeReview.reviewDeficit; omega
+/-- Total cost (venting + repair) equals liveBranches - 1. -/
+theorem exact_total_cost (before : List BranchSnapshot)
+    (hLive : 0 < liveBranchCount before) :
+    ventedCount before (collapseWitness before) +
+    repairDebt before (collapseWitness before) = liveBranchCount before - 1 :=
+  collapseWitness_total_cost_exact hLive
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 140: Battery Degradation is Irreversible Void Accumulation
+-- Prediction 175: Zero Repair Debt
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Battery degradation topology: each charge-discharge cycle is a round.
-    Side reactions are void entries (capacity permanently lost). Battery
-    capacity = Buleyean weight. Degradation is monotone (append-only).
-    Calendar aging = void entries even without cycling.
-    The sliver: a battery never reaches exactly zero capacity. -/
-structure BatteryState where
-  /-- Initial capacity (full charge) -/
-  initialCapacity : ℕ
-  /-- At least some capacity -/
-  capacityPos : 0 < initialCapacity
-  /-- Total void entries (degradation events) -/
-  degradationEvents : ℕ
-  /-- Degradation bounded by initial capacity -/
-  degradBounded : degradationEvents ≤ initialCapacity
-
-/-- Remaining capacity: initial minus degradation, with sliver. -/
-def BatteryState.remainingCapacity (bs : BatteryState) : ℕ :=
-  bs.initialCapacity - min bs.degradationEvents bs.initialCapacity + 1
-
-/-- Battery capacity is always positive (the sliver -- never exactly zero). -/
-theorem battery_capacity_always_positive (bs : BatteryState) :
-    0 < bs.remainingCapacity := by
-  unfold BatteryState.remainingCapacity; omega
-
-/-- More degradation = less remaining capacity. -/
-theorem more_degradation_less_capacity (bs1 bs2 : BatteryState)
-    (hSameCap : bs1.initialCapacity = bs2.initialCapacity)
-    (hMoreDeg : bs1.degradationEvents ≤ bs2.degradationEvents) :
-    bs2.remainingCapacity ≤ bs1.remainingCapacity := by
-  unfold BatteryState.remainingCapacity; omega
-
-/-- Fresh battery (zero degradation) = maximum capacity. -/
-theorem fresh_battery_max_capacity (bs : BatteryState)
-    (hFresh : bs.degradationEvents = 0) :
-    bs.remainingCapacity = bs.initialCapacity + 1 := by
-  unfold BatteryState.remainingCapacity; simp [hFresh]
+/-- The collapseWitness achieves collapse with zero repair debt.
+    All cost is paid through venting (honest failure), not through
+    repairing broken branches (technical debt). -/
+theorem zero_debt_collapse (before : List BranchSnapshot) :
+    repairDebt before (collapseWitness before) = 0 :=
+  collapseWitness_zero_repair_debt before
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Prediction 141: Brainstorming Session Quality Follows Concentration
+-- Prediction 176: Sparse Pipeline Alignment
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- Brainstorming topology: ideas generated are choices. Rejected ideas
-    are void entries. The complement distribution concentrates on
-    least-rejected ideas (the best ones). The sliver: no idea is ever
-    fully excluded. More evaluation rounds produce sharper ranking.
-    Two independent panels with same rejections produce same ranking
-    (coherence). -/
-structure BrainstormSession where
-  /-- Total ideas generated -/
-  totalIdeas : ℕ
-  /-- At least one idea -/
-  ideasPos : 0 < totalIdeas
-  /-- Number of rejected ideas (void entries) -/
-  rejectedIdeas : ℕ
-  /-- Rejected bounded by total -/
-  rejectedBounded : rejectedIdeas ≤ totalIdeas
-
-/-- Idea quality weight: complement weight (fewer rejections = higher quality). -/
-def BrainstormSession.ideaQuality (bs : BrainstormSession) : ℕ :=
-  bs.totalIdeas - min bs.rejectedIdeas bs.totalIdeas + 1
-
-/-- Idea quality is always positive (the sliver -- no idea ever fully excluded). -/
-theorem idea_quality_always_positive (bs : BrainstormSession) :
-    0 < bs.ideaQuality := by
-  unfold BrainstormSession.ideaQuality; omega
-
-/-- More rejections = lower quality weight. -/
-theorem more_rejections_lower_quality (bs1 bs2 : BrainstormSession)
-    (hSameTotal : bs1.totalIdeas = bs2.totalIdeas)
-    (hMoreRej : bs1.rejectedIdeas ≤ bs2.rejectedIdeas) :
-    bs2.ideaQuality ≤ bs1.ideaQuality := by
-  unfold BrainstormSession.ideaQuality; omega
-
-/-- Zero rejections = maximum quality (top-ranked idea). -/
-theorem zero_rejections_max_quality (bs : BrainstormSession)
-    (hZero : bs.rejectedIdeas = 0) :
-    bs.ideaQuality = bs.totalIdeas + 1 := by
-  unfold BrainstormSession.ideaQuality; simp [hZero]
-
-/-- Coherence: two sessions with same parameters produce same quality.
-    (Deterministic -- same rejections = same ranking.) -/
-theorem brainstorm_coherence (bs1 bs2 : BrainstormSession)
-    (hSameTotal : bs1.totalIdeas = bs2.totalIdeas)
-    (hSameRej : bs1.rejectedIdeas = bs2.rejectedIdeas) :
-    bs1.ideaQuality = bs2.ideaQuality := by
-  unfold BrainstormSession.ideaQuality; omega
+/-- Normalized sparse pipelines are always aligned. This means
+    any real-world pipeline (with heterogeneous stages) can be
+    normalized to a uniform representation without losing alignment. -/
+theorem sparse_alignment (support : List ℕ) (current : List SparseBranchSnapshot)
+    (stages : List (List SparseBranchSnapshot)) :
+    PipelineAligned (normalizeSparseStage support current)
+                    (normalizeSparseStages support stages) :=
+  normalized_sparse_pipeline_aligned support current stages
 
 -- ═══════════════════════════════════════════════════════════════════════
--- Master Theorem: Five Predictions Compose
+-- Additional: collapseRemainder kills everything
 -- ═══════════════════════════════════════════════════════════════════════
 
-theorem five_predictions_round11 :
-    -- P137: Learning strength always positive (the sliver)
-    (∀ sl : StudentLearning, 0 < sl.learningStrength) ∧
-    -- P138: Immune weight always positive (the sliver)
-    (∀ ep : EpidemicPopulation, 0 < ep.immuneWeight) ∧
-    -- P139: Single reviewer has zero deficit
-    (∀ cr : CodeReview, cr.reviewers = 1 → cr.reviewDeficit = 0) ∧
-    -- P140: Battery capacity always positive (the sliver)
-    (∀ bs : BatteryState, 0 < bs.remainingCapacity) ∧
-    -- P141: Idea quality always positive (the sliver)
-    (∀ bs : BrainstormSession, 0 < bs.ideaQuality) :=
-  ⟨learning_strength_always_positive,
-   immune_weight_always_positive,
-   single_reviewer_zero_deficit,
-   battery_capacity_always_positive,
-   idea_quality_always_positive⟩
+/-- The remainder (everything except the witness) has zero live branches. -/
+theorem remainder_kills_all (before : List BranchSnapshot) :
+    liveBranchCount (collapseRemainder before) = 0 :=
+  collapseRemainder_live_branch_count before
+
+/-- Path conservation: live = witness_live + witness_vented. -/
+theorem collapse_path_conservation (before : List BranchSnapshot) :
+    liveBranchCount before =
+    liveBranchCount (collapseWitness before) +
+    ventedCount before (collapseWitness before) :=
+  collapseWitness_live_plus_vented before
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- Master
+-- ═══════════════════════════════════════════════════════════════════════
+
+theorem predictions_round11_master :
+    -- 175. Zero repair debt is always achievable
+    (∀ before : List BranchSnapshot,
+      repairDebt before (collapseWitness before) = 0) ∧
+    -- 176. Sparse pipelines are always alignable
+    (∀ support current stages,
+      PipelineAligned (normalizeSparseStage support current)
+                      (normalizeSparseStages support stages)) := by
+  exact ⟨collapseWitness_zero_repair_debt,
+         normalized_sparse_pipeline_aligned⟩
 
 end ForkRaceFoldTheorems
