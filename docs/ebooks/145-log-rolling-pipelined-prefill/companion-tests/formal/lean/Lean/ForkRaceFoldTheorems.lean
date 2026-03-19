@@ -60,4 +60,5 @@ import ForkRaceFoldTheorems.ChaitinOmega
 import ForkRaceFoldTheorems.NonEmpiricalPrediction
 import ForkRaceFoldTheorems.GrandfatherParadox
 import ForkRaceFoldTheorems.NovelPredictions
+import ForkRaceFoldTheorems.PredictionsRound2
 import ForkRaceFoldTheorems.SemioticPeace
