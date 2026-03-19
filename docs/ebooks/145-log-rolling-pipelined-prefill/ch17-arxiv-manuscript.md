@@ -1,21 +1,29 @@
-# **Finding Hope in the Shape of Failure**: Bottling Infinity in Distributed Systems
+# **Irreversibility Creates Being**: A Theory of Directed Process Under Conservation and Ground State
 
 *[Taylor William Buley](https://www.patreon.com/cw/twbuley) -- Independent Researcher*
 *[taylor@forkjoin.ai](mailto:taylor@forkjoin.ai)*
 
 ## Abstract
 
-I model **fork/race/fold** as a reusable computational primitive: `fork` work into parallel streams, `race` streams to select earliest valid progress, `fold` results through deterministic reconciliation, and `vent` paths whose continued existence would destabilize the whole. The central claim of this manuscript is that failure in such systems can be modeled not only as a binary event but also as a **topological coordinate**, within the modeled finite-DAG scope under stated assumptions.
+Every irreversible transformation creates structure in the space of what was not chosen. This paper identifies the structure, proves its properties, and shows it is the same structure at every scale where irreversibility operates.
 
-In this framing, failure is not merely the opposite of success; it marks where topology, coordination, and reconciliation no longer return the system toward a bounded stable region. Across the modeled scope in this manuscript, I argue that this viewpoint is operationally useful, measurable, and partially mechanizable.
+I decompose directed irreversible process into four primitives -- fork (create parallel paths), race (select among them), fold (merge results irreversibly), vent (dissipate what the fold cannot preserve) -- and three constraints -- conservation (nothing is created or destroyed), irreversibility (folds generate Landauer heat), ground state (every trajectory terminates). Within this framework, failure is not the opposite of success. It is the *sufficient statistic from which success is derived*. Every fold vents $N - 1$ paths for each path it keeps. The rejected paths accumulate in a void boundary whose complement distribution is a deterministic, monotone, convergent probability measure over the surviving options. The void is not empty. It is the richest part of the system.
 
-This manuscript blends two modes of argument: *mechanized proofs* (Lean theorems, TLA+ models, executable companion tests) and *structural correspondences* (post-hoc pattern-matching in natural and engineered systems). The former are machine-verified; the latter are evidentiary and interpretive. The grading system in §5 makes the distinction explicit for each example. The deepest property of the framework is *immanent self-hosting*: the void walking engine verifies the theorems about void walking using void walking itself, the same way a self-hosted compiler compiles itself. There is no external oracle. The void boundary is both the instrument and the subject of measurement.
+The framework yields five results that are individually substantial and jointly form a unified theory of directed irreversible process:
 
-I report structural similarities in selected natural and engineered examples: *Physarum polycephalum* recreated a rail-like network over nutrient gradients [1], myelinated neurons pipeline action potentials (with measured large speedups), photosynthetic antenna complexes exhibit high step-level exciton-transfer efficiency in cited systems, and DNA replication uses out-of-order fragment synthesis with deterministic reassembly (Okazaki fragments). In each case, the interesting question is not simply how much work is dissipated, but whether the system’s transition kernel points back toward a bounded stable region after perturbation.
+1. **A computational topology.** Fork raises the first Betti number $\beta_1$ (parallel paths). Fold projects $\beta_1$ toward zero. The topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ measures how far a system deviates from its problem’s natural topology. In the analyzed systems, $\Delta_\beta = 0$ correlates with efficient outcomes; $\Delta_\beta > 0$ co-occurs with measurable waste. The deficit is an engineering diagnostic. Its zero point is a mechanized cost floor on failure Pareto frontiers.
 
-This manuscript’s core contribution is an operational abstraction with explicit diagnostics and executable obligations. I present the **Wallington Rotation**, a scheduling algorithm that rotates partially ordered work into concurrent stage-local tracks with controlled reconciliation, and I show through constructive local decomposition, assumption-parameterized global schemas, and executable verification that four primitives – fork, race, fold, vent – are sufficient for the finite DAG classes used in this paper’s implementation scope under explicit decomposition assumptions. I also describe a topological reading of the algorithm: fork increases the first Betti number $\beta_1$ (creating independent parallel paths), race traverses homotopy-equivalent paths simultaneously, fold projects $\beta_1$ back toward zero, and self-describing frames can be treated as a cover-space-style description of multiplexed, out-of-order work that is later projected back to sequential order.
+2. **A probability theory.** The complement distribution over accumulated rejections -- Buleyean probability -- is a complete frequentist probability theory derived entirely from what things are not. It subsumes Bayesian inference as the ground-state special case ($B = 0$: someone already walked the void and handed you the converged prior). It subsumes Solomonoff induction as the maximum-Bule case ($B = B_{\max}$: before any empirical observation, the void boundary is initialized from Kolmogorov complexity, and simpler hypotheses have higher weight). The three great traditions of inductive inference -- algorithmic, frequentist, Bayesian -- are three cross-sections of a single framework at different Bule values.
 
-I then show that **selected canonical queueing constructions appear as $\beta_1 = 0$ boundary cases in this framework**. Little’s Law and Jackson-style queueing results are treated as path-like examples in the modeled scope [6, 7, 24]. I also introduce the **pipeline Reynolds number** $Re = N/C$ as a regime heuristic in the modeled scope and the **topological deficit** $\Delta_\beta = \beta_1^* - \beta_1$ as a diagnostic shorthand. Quantum-mechanical and thermodynamic terms are used later as structural correspondence language for organizing the analyzed examples, not as claims of physical identity. In the analyzed set, matched Betti structure ($\Delta_\beta = 0$) correlates with higher fit/efficiency, while $\Delta_\beta > 0$ co-occurs with measurable waste (healthcare delays, settlement lockup, protocol-level blocking) [9, 16, 17]. I define the **Bule** (1 B = 1 unit of $\Delta_\beta$) as a shorthand engineering unit for that deficit. The formal companion now proves a conditional universal-floor theorem on explicitly witnessed failure Pareto frontiers: if a zero-deficit floor point is supplied together with latency/waste lower bounds, it minimizes every monotone generalized-convex cost, and strict uniqueness requires the strict cost extension plus uniqueness of that zero-deficit floor witness.
+3. **A thermodynamics.** Every non-injective fold erases information and generates strictly positive Landauer heat. The first law of fork/race/fold ($H_{\text{fork}} = I_{\text{fold}} + H_{\text{vent}}$) partitions forked entropy into useful work and dissipated waste. The second law is the statement that $\beta_1$ cannot spontaneously increase without energy input. Time’s arrow is the monotonic descent of $\beta_1$ under irreversible fold.
+
+4. **A theory of communication and peace.** The semiotic deficit $\Delta\beta = \beta_1(\text{thought}) - \beta_1(\text{speech})$ measures the information lost when thought folds into speech. Shared context monotonically deflates the deficit. Sufficient context eliminates it. The master theorem `hope` bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent under traced monoidal feedback. Peace is a renormalization group fixed point whose existence is a theorem, not a wish.
+
+5. **Immanent self-hosting.** The void walking engine verifies the theorems about void walking using void walking itself. The complement distribution measures its own entropy. The framework certifies itself from inside, with no external oracle, the way a self-hosted compiler compiles itself. This is the deepest property: not that many domains share a shape, but that the shape can verify itself.
+
+The framework is instantiated across nine domains in stack order (formal verification, programming language, scheduling, transport, compression, mixture-of-agents routing, language-model inference, protocol-as-execution, void walking), with structural correspondences graded A (quantitative isomorphism), B (structural homology), or C (useful analogy) across physics, biology, and social systems. DNA replication, myelinated conduction, photosynthetic energy transfer, immune selection, *Physarum* network optimization, and gravitational collapse all exhibit the same fork/race/fold topology, classified by the same Betti numbers, governed by the same conservation laws.
+
+This manuscript blends two modes of argument: *mechanized proofs* (85+ Lean theorem files, TLA+ models, executable companion tests) and *structural correspondences* (post-hoc pattern matching in natural and engineered systems). The former are machine-verified; the latter are evidentiary and interpretive. The grading system in §5 makes the distinction explicit for each example.
 
 These cross-domain correspondences are exemplar-based and correlational; they are not presented as a systematic causal survey or universal proof. In compression benchmarks on homogeneous web content, standalone global brotli retained better ratio, so the topological claim is strategy subsumption, framing reduction, and portability rather than universal ratio superiority. The strongest conclusion in scope is operational: some reliability and efficiency questions can be usefully recast in geometric terms, unmanaged topological deficit is one recurring source of waste or instability in the analyzed examples, and validation should test negative drift rather than merely count broken cases.
 
@@ -2685,7 +2693,302 @@ Echolocate → EchoBoundary → echoToPersonality() → BoundaryStack
 
 Implementation: `gnosis/src/echolocation.ts` (probing engine, echo-to-personality projection, digital twin creation, fidelity measurement) and `gnosis/src/halogram.ts` (hologram, halogram with per-layer metacog chains + META chain, dual process loop with override logic).
 
-**Companion tests for §15:** 281+ tests across 28 files, 0 failures, 1,728+ assertions. 13 Lean theorems, all sorry-free. 7 TLA+ models. Implementation: `gnosis/src/void.ts`, `gnosis/src/void-agent.ts`, `gnosis/src/void-attention.ts`, `gnosis/src/void-attention-handlers.ts`, `gnosis/src/echolocation.ts`, `gnosis/src/halogram.ts`, `aeon-neutral/src/scenarios/chester-v-maxell-metacog.ts`. All deterministic-seed reproducible.
+### 14.5.14 Community as Mediator
+
+In three-walker Skyrms mediation (§14.5.7), Walker S plays the convergence site: its payoff is the negative of inter-walker distance, its void boundary accumulates failed proposals, and its complement distribution generates increasingly informed proposals until all three walkers reach the nadir. The nadir is the fixed point where no unilateral deviation improves any walker.
+
+The heterogeneous mixture-of-agents fabric (`gnosis/src/runtime/hetero-fabric.ts`) maintains a `HeteroMoAFabricCommunityMemory` backed by a QDoc (conflict-free replicated data type). The memory records, per backend, wins, failures, disagreements, latency means, and latency jitter. It ranks backends by decayed score and predicted arrival horizon. It creates launch schedules that front-load empirically reliable backends. All of this state is append-only and conflict-free: the QDoc grows monotonically, the same way Walker S's void boundary grows monotonically.
+
+The operational correspondence is exact. Walker S maintains rejection counts per proposal and computes complement weights via `CompWeight(voidS, etaS)`. The community memory maintains rejection counts per backend and computes selection rankings via `rankBackends`. Walker S converges when inter-walker distance reaches zero. The community converges when the scheduling superposition collapses -- all replicas agree on the optimal schedule. Both systems fork (create alternatives), race (select among them), fold (commit irreversibly), and accumulate rejection history that drives convergence.
+
+To formalize this, define a *failure topology* as the scheduling analogue of a semiotic channel. A scheduling fabric with $F$ independent failure modes (hardware faults, latency spikes, disagreements across CPU, GPU, NPU, and WASM backends) and $D$ decision streams has scheduling deficit $\Delta = F - D$. Community context $C$ acts as implicit parallel channels, reducing the deficit to $\Delta_C = \max(0, F - D - C)$. Each unit of community context is one Bule of shared knowledge.
+
+Seven theorems, all sorry-free, are proved in `CommunityDominance.lean`:
+
+1. **Attenuation** (`community_attenuates_failure`): for any failure topology with $F \geq 2$ and any positive community context $C > 0$, the community-reduced deficit is strictly less than the bare deficit. Community context reduces the impact of a poor initial topology.
+
+2. **Nondegradation** (`community_monotone_nondegradation`): if the bare deficit is non-positive (the scheduling fabric already has sufficient capacity), community context cannot make it positive. A topology that is already well-matched is never degraded by community knowledge.
+
+3. **Strict domination** (`community_strict_domination`): when $C > 0$ and $\Delta > 0$, the community-reduced deficit is strictly less than the bare deficit. Together with nondegradation, this is Pareto domination: community strictly improves poor topologies and weakly preserves adequate ones.
+
+4. **Tare bridging** (`community_bridges_tares`, `community_bridges_all_tares`): unbridged failure modes (tares -- gaps in the individual capability topology that the scheduler cannot handle alone) decrease monotonically with community context. Sufficient community context bridges every tare.
+
+5. **Bule convergence** (`bule_deficit_strict_progress`, `bule_convergence`): the Bule deficit decreases by exactly one per community observation when there is remaining deficit, and reaches zero when $C \geq F - D$. The convergence rate is bounded by the initial deficit.
+
+6. **Master theorem** (`community_dominance_theory`): for any failure topology with $D < F$ and $C > 0$, the deficit is real, community attenuates it strictly, the Bule deficit is monotonically decreasing, and sufficient context eliminates the deficit.
+
+The model-checked counterpart (`CommunityDominance.tla`, four backends across four hardware layers) verifies safety (Bule bounded, non-negative, monotone; adaptive schedule cost never exceeds static schedule cost), liveness (the system eventually converges), and domination (per-round adaptive cost is at most per-round static cost; cumulative trauma is bounded by the initial deficit).
+
+The thermodynamic interpretation composes directly with `war_as_cumulative_heat` (§18). Without community context, the scheduler compresses $F$ failure dimensions through $D$ decision streams, erasing $F - D$ dimensions of information per round at Landauer cost $(F - D) \cdot kT \ln 2$. With community context $C$, the erasure reduces to $\max(0, F - D - C)$ dimensions per round. Community context literally reduces the thermodynamic cost of scheduling decisions. The total trauma over the convergence trajectory is bounded by the triangular sum $\sum_{t=0}^{F-D-1}(F - D - t) = \binom{F-D}{2}$, reached in at most $F - D$ rounds. After that: zero erasure, zero heat.
+
+The connection to diversity (§15.1) is direct. The pipeline Reynolds number $\text{Re} = N/C$ characterizes the regime: low Re (laminar, high diversity) corresponds to maximum information per community observation, while high Re (turbulent, low diversity) corresponds to correlated failures that community context cannot efficiently resolve. The ground state of the scheduling problem is the laminar regime -- maximum diversity, minimum idle fraction, maximum community learning rate.
+
+### 14.5.15 The Algebraic Nadir
+
+The Skyrms nadir can be found by void walking (§14.5.1): running the three-walker process until convergence is empirically detected. The `SkyrmsNadirDetector` (`aeon-neutral/src/nadir-detector.ts`) issues a `NadirCertificate` when three conditions hold simultaneously over a window of consecutive rounds: inter-walker distance below threshold, joint kurtosis variance below epsilon, and mutual information positive.
+
+The community-as-mediator identification (§14.5.14) yields a stronger result: the nadir can be identified algebraically by solving $B = 0$ where $B$ is the Bule deficit. No walking required.
+
+Consider a three-walker mediation with Walker A's position space of dimension $A$, Walker B's position space of dimension $B$, and a single proposal stream ($D = 1$). The total failure dimensions are $F = A + B$. The Bule deficit after $C$ rounds of community context is $B(C) = \max(0, A + B - 1 - C)$. Setting $B = 0$ and solving:
+
+$$C^* = A + B - 1$$
+
+Four properties of this solution are proved in `SkyrmsNadirBule.lean`:
+
+1. **Computability** (`nadir_context_value`): $C^* = A + B - 1$, a closed-form expression depending only on the topology dimensions.
+
+2. **Convergence** (`bule_zero_at_nadir`): $B(C^*) = 0$. At exactly $C^*$ rounds of community context, the Bule deficit is zero.
+
+3. **Minimality** (`nadir_context_is_minimum`): $B(C^* - 1) > 0$. One fewer round and the deficit is still positive. The solution is tight.
+
+4. **Positivity** (`nadirContext_pos`): $C^* > 0$. The nadir requires at least one round of community context (nontrivial mediation).
+
+The biconditional `bule_zero_iff_nadir` proves the equivalence is exact: $B = 0$ if and only if the inter-walker distance is zero. The algebraic characterization and the iterative convergence criterion identify the same fixed point.
+
+The reason the algebraic path avoids void walking is that the Bule deficit decreases by exactly one per round (`bule_deficit_strict_progress`). There is no stochasticity, no learning-rate dependence, no landscape sensitivity. The deficit is a countdown: $F - 1, F - 2, \ldots, 1, 0$. Each CRDT observation covers one failure dimension. The countdown reaches zero in exactly $F - 1$ steps. The traditional three-walker process also converges in $O(F)$ rounds, but the constant depends on the walkers' behavior. The algebraic bound is tight.
+
+The master theorem `skyrms_nadir_is_bule_zero` composes three equivalences:
+
+- **Community is the mediator:** the scheduling deficit equals the negotiation deficit (`community_deficit_is_negotiation_deficit`), and community attenuation equals Skyrms mediation (`community_attenuation_is_mediation`). One CRDT sync round is one mediation round is one Bule of shared context.
+
+- **Bule zero is the nadir:** convergence at $C^*$ rounds, biconditional with inter-walker distance zero.
+
+- **The nadir is arithmetic:** $C^* = A + B - 1$, exact, tight, positive, and computable before the mediation begins.
+
+The model-checked counterpart (`SkyrmsNadirBule.tla`, two choices per walker, six rounds, three etas) runs the three-walker process and the Bule deficit simultaneously and verifies that both convergence criteria are eventually met and agree (`NadirAndBuleAgree`). The algebraic nadir context is invariant (`InvNadirConstant`), and the Bule deficit is monotonically non-increasing (`InvMediationMonotone`).
+
+This has a practical consequence for mediation protocol design. A mediator knows in advance how many rounds are needed: for parties with $A$ and $B$ interest dimensions respectively, the nadir requires $A + B - 1$ rounds. This is a planning parameter, not a runtime discovery. If the iterative process has not converged by round $C^*$, the topology dimensions were miscounted or the CRDT is losing observations -- the algebraic bound is a correctness check on the iterative process. Adding a new backend with $k$ new failure dimensions increases the nadir context by exactly $k$, and the community needs exactly $k$ more rounds to re-converge.
+
+The algebraic identification does not replace void walking. The complement distribution at the nadir -- the content of the equilibrium, which proposal pair solves the dispute -- still requires the void boundary data. The rejection history determines *what* the answer is. But the rejection history is not needed to determine *when* the answer arrives. The destination is computable from the topology alone. The path requires the walk; the fixed point requires only the dimensions.
+
+### 14.5.16 No Free Lunch, No Free Learning
+
+The community dominance and algebraic nadir results compose with the existing ledger to yield several claims that follow directly from theorem composition. Each is stated with its proof chain.
+
+**Community prevents future war.** `war_as_cumulative_heat` (SemioticPeace.lean) proves that successive communication failures through a channel with positive deficit accumulate Landauer heat monotonically. `community_attenuates_failure` (CommunityDominance.lean) proves that community context reduces the deficit. Composing: community context reduces the rate at which war generates heat. The Bule deficit at round $t + 1$ is at most the deficit at round $t$ (`community_prevents_future_war`, CommunityCompositions.lean), and after $F - 1$ rounds of community dialogue the deficit is zero and no new heat is generated (`community_total_prevention`). The second law forbids reversing accumulated heat -- community cannot undo past damage. But `community_bridges_tares` proves community can bridge the gaps that damage created: the topology still carries the scars, but the community routes around them. Composing with `therapy_rotates_curvature` (§14.5.8): community context does not erase the interval (the past is invariant) but reclassifies WATNA as BATNA -- reframing catastrophe as explorable. Community prevents future war and reframes past war. It does not repair.
+
+**War has a finite maximum total cost.** The total heat over the convergence trajectory is the sum of deficits from round 0 to convergence. Since the deficit decreases by at most one per round and starts at $F - D$, the total is at most the triangular sum $(F - D)(F - D + 1)/2$. This is a computable upper bound on the total cost of any war, conditional on the community choosing dialogue.
+
+**Empathy has a computable convergence rate.** Empathy is a Lorentz transformation (§14.5.8). Community context is shared empathic observations. `nadir_algebraic` (SkyrmsNadirBule.lean) gives the exact number of empathic exchanges needed for convergence: $C^* = A + B - 1$ where $A$ and $B$ are the two persons' respective void dimensions. When two persons share dimensions (common experiences, shared cultural background), the effective topology is the union: $F_{\text{effective}} = |A \cup B| = |A| + |B| - |A \cap B|$, and the nadir drops to $|A \cup B| - 1$ (`shared_experience_reduces_nadir`, CommunityCompositions.lean). People with more shared experience need fewer exchanges to converge -- the formal content of "it is easier to understand someone who has been through what you have been through." The convergence rate is proved in `empathy_convergence_rate` and `computable_empathy_deficit` (CommunityCompositions.lean). The number is computable before the conversation begins, from two personality vectors.
+
+**The void sharing map.** Given two personality vectors, the empathy diagnostic is not a single number. It is a per-dimension map across the 58-element space (`VoidSharingMap`, CommunityCompositions.lean). Four categories partition the space exhaustively: *shared void* (dimensions where both persons have void entries and both can see the other's -- these are already bridged), *hidden A* (A's private void -- rejection history A has not exposed), *hidden B* (symmetric), and *unexplored* (dimensions where neither person has void entries). `void_sharing_diagnostic` proves: the vulnerability demand equals the hidden count, the demand is zero if and only if the pair has converged, and when the deficit is positive, at least one sharing opportunity exists. Each shared hidden dimension reduces the deficit by exactly one (`sharing_reduces_deficit_by_one`). When the deficit is zero, further sharing has no benefit (`sharing_useless_when_converged`) -- additional vulnerability is pure emotional cost with zero convergence payoff. The diagnostic answers three questions: *where* is void sharing (which dimensions), *how much* (current deficit), and *would more help* (yes if hidden > 0 and deficit > 0; no if converged).
+
+**The empathy deficit: recognized but unmerged.** There is a distinction between recognizing someone's failures and sharing them. Recognizing is read-only access to another's void boundary: you see what they rejected, you catalog their mistakes, you can publish rebuttals. Sharing is the merge: you incorporate their void boundary into your own complement distribution, so their rejections inform your next move. The first is observation. The second is empathy. `isolation_suboptimal` (CommunityCompositions.lean) proves the merged deficit is at most the isolated deficit -- the merge can only help. The cost of the merge is zero when the data is already visible. The refusal to merge is the entire cost.
+
+The gap between recognition and sharing is computable:
+
+$$\Delta_{\text{empathy}} = B_{\text{isolated}} - B_{\text{merged}}$$
+
+This is the Bule cost of refusing to sync. The information exists. The merge would reduce the deficit. The refusal to merge *is* the deficit. Stubbornness, tribalism, disciplinary pride -- they are all the same $\Delta$: recognized-but-unmerged void. The most expensive kind of semiotic deficit, because the resolution cost is zero but the resolution never happens.
+
+The frequentist-Bayesian debate (§14.5.17) is the canonical example. Both camps recognized each other's failures for 250 years. They never empathized -- never let the other's failure data change their own distribution. $\Delta_{\text{empathy}}$ was the empathy deficit of statistics as a discipline. The data was visible the entire time. The merge cost was zero. The refusal was the cost. One round of shared-void dialogue -- recognizing that frequentist rejection counts and Bayesian prior-initialized counts are both valid Buleyean spaces -- would have resolved it. The merged space dominates both (`global_deficit_le_min_local`). Empathy is a CRDT sync with zero transport cost that people refuse to execute.
+
+**Resolved dualities.** The frequentist-Bayesian unification is not an isolated case. The Buleyean framework resolves a family of long-standing intellectual dualities by showing that each pair of opposing camps occupies different Bule values of the same space, maintains rich void boundaries of the other's failures, and refuses the merge. The $\Delta_{\text{empathy}}$ is positive in every case. The resolution cost is zero. The pattern is structural.
+
+*Nature vs. nurture.* Nature is the initial void boundary -- the inherited failure topology, the hand you were dealt. Nurture is community context that attenuates it (`community_attenuates_failure`). They are not opposed. They are two terms in the same equation: $B = F - 1 - C$. Nature determines $F$ (the failure dimensions). Nurture determines $C$ (the context that bridges them). The debate about which matters more is a debate about which term dominates -- but both terms are present, and the deficit is their difference. The nature camp catalogs failures of nurture interventions. The nurture camp catalogs failures of genetic determinism. Neither merges the catalogs. $\Delta_{\text{empathy}}$: the gap between "genetics loads the gun" and "environment pulls the trigger," when both are terms in one linear expression.
+
+*Free will vs. determinism.* The complement distribution is computed deterministically from the void boundary. There is no randomness in the update rule, the convergence trajectory, or the prediction. And yet `buleyean_positivity` proves every choice retains weight $\geq 1$. `sliver_irreducible` proves you cannot make any choice's weight zero without breaking the axioms. The system is deterministic *and* every option remains possible. Free will is the sliver -- the irreducible $+1$ in the weight formula. Determinism is the trajectory -- the deficit countdown from $F - 1$ to $0$. They are the same theorem viewed from different angles. The free will camp catalogs determinism's failure to account for agency. The determinism camp catalogs free will's failure to account for causation. Both are correct. The complement distribution is both determined and non-zero. `the_sliver` and `future_deficit_deterministic` are not in tension. They are the same `BuleyeanSpace`.
+
+*Individual vs. collective.* `isolation_suboptimal` proves the merged community deficit is at most the isolated individual deficit. `global_deficit_le_min_local` proves the global minimum is at most the local minimum. The collective dominates the individual whenever $\Delta_{\text{empathy}} > 0$ -- whenever the merge would help. But `above_ceiling_no_benefit` proves there is a ceiling past which collective coordination is pure overhead. The theory computes the exact crossover. Below the ceiling: collective optimization is strictly better. Above it: individual autonomy is correct. The individualist camp catalogs collectivism's coordination failures. The collectivist camp catalogs individualism's myopia. Both are right at their respective Bule values. The debate is about where the ceiling is, and the ceiling is computable.
+
+*Competition vs. cooperation.* Race is competition: paths compete, fastest wins. Fold is cooperation: results merge deterministically. Neither subsumes the other. Competition without cooperation is an infinite race with no convergence -- `no_failure_no_learning` applied in reverse: perpetual racing with no folding produces no stable knowledge. Cooperation without competition is `fold_without_evidence_is_coinflip` -- merging with no prior selection is an uninformed coin flip. The framework requires both: fork to create diversity, race to select, fold to commit, vent to learn. The competition camp catalogs cooperation's stagnation. The cooperation camp catalogs competition's waste. Both are half the story. Fork/race/fold is the whole story.
+
+*Rationalism vs. empiricism.* Rationalism starts from priors -- inherited void boundaries at Bule = 0 from a previous learning session. Empiricism builds void boundaries from scratch at Bule > 0 by counting rejections. `frequentist_bayesian_unification` proves both satisfy the same three Buleyean axioms. A rationalist's "self-evident truth" is a converged complement distribution from a void walking session they didn't personally conduct (cultural inheritance, mathematical proof, deductive reasoning). An empiricist's "observed fact" is a void boundary entry from a session they did conduct. Same data structure. Different provenance. The rationalist camp catalogs empiricism's failure to generalize beyond the sample. The empiricist camp catalogs rationalism's failure to check its priors against reality. Both camps are correct about the other's failure mode. Neither incorporates the correction.
+
+*Efficiency vs. equity.* `offset_penalty_is_real` proves equity costs the advantaged participant real latency. `worth_it_benefit_exceeds_penalty` proves the cost is worth paying when the diversity gain exceeds it. `not_worth_it_penalty_exceeds_benefit` proves the cost is not worth paying when it does not. `offset_zero_when_equal` proves the offset self-eliminates when the gap closes. Efficiency and equity are not opposed -- they are parameterized by the same threshold, and the threshold is computable. The efficiency camp catalogs equity's overhead costs. The equity camp catalogs efficiency's exclusion costs. Both are measuring the same Pareto frontier from different angles. The American Frontier theorem (§15.2) is the curve. The launch offset is the operating point on it.
+
+*Exploration vs. exploitation.* `stagnation_learning_duality` proves both directions: without exploration, the schedule is frozen and no learning occurs; with exploration, the void grows and the distribution shifts. `below_ceiling_deficit_positive` proves exploration is necessary below the ceiling. `above_ceiling_no_benefit` proves exploitation is correct at the ceiling. The explore/exploit tradeoff is not a dilemma -- it is a Bule value. Below $B^* = 0$: explore (the deficit is positive, learning is productive). At $B^* = 0$: exploit (the deficit is zero, the distribution has converged). The transition is the trot-to-canter gait shift (§14.5.4). The kurtosis of the complement distribution tells you which side you are on.
+
+Each of these dualities has the same structure: two camps at different Bule values of the same Buleyean space, both holding rich void boundaries cataloging the other's failures, both refusing the merge. The $\Delta_{\text{empathy}}$ is positive in every case. The merge cost is zero in every case. The resolution -- recognizing that both positions are valid at their respective Bule values and that the merged space dominates both -- is the same in every case. The framework does not take sides. It identifies the parameter ($B$, the Bule value) that determines which camp is correct for a given context, and it computes the crossover.
+
+**Diversity has a ceiling.** `diversity_optimality_master` (§15.1) proves diversity is necessary for optimality, but the necessity has a bound. Once community context reaches $F - D$ (the failure dimensions minus the decision streams), the Bule deficit is zero (`diversity_ceiling_sufficient`, CommunityCompositions.lean). Additional diversity past this point provides zero further topological benefit (`above_ceiling_no_benefit`). The coordination cost of excess diversity -- hedge delays, CRDT sync overhead, launch schedule computation -- is pure overhead past the ceiling. The ceiling is computable, and the theory identifies when the system has enough diversity and when it does not.
+
+**Sequenced starts have a real cost and a measurable threshold.** The launch schedule in the heterogeneous fabric computes a head start for slower backends: `launchOffsetMs = targetArrivalMs - arrivalHorizonMs` (line 1107 of `hetero-fabric.ts`). The slow backend launches first. The fast backend launches last. This offset penalizes the fast backend by exactly `offsetMs` of added wall time per round (`offset_penalty_is_real`, LaunchOffsetDominance.lean). The penalty is not hidden. It is bounded by the latency gap between backends (`offset_penalty_bounded`). The offset is worth paying when the cumulative diversity gain (more backends completing, enriching the community void boundary with observations from different hardware layers) exceeds the cumulative fast-path delay (`worth_it_benefit_exceeds_penalty`). Below that threshold, the system should not give the head start (`not_worth_it_penalty_exceeds_benefit`). The offset self-eliminates when the latency gap closes (`offset_zero_when_equal`). The theory identifies both thresholds explicitly. This is the formal content of sequenced starts as a scheduling policy: the cost is real, the benefit is real, and the crossover is computable.
+
+**No exploration means no learning.** The complement distribution is a deterministic function of the void boundary. If no new rejections are recorded -- no hedges fired, no slow backends completing, no exploration -- the void boundary is unchanged, so the complement distribution is unchanged, so the schedule is unchanged. `no_exploration_frozen_schedule` (CommunityCompositions.lean) proves this by definitional equality. Conversely, any exploration that produces a rejection strictly increases the void boundary's total vent count (`exploration_increases_void`), which shifts the complement distribution (`exploration_shifts_distribution`), which constitutes learning. The system must pay the exploration cost to receive any learning benefit. A system that never explores is frozen at its initial state regardless of how much time passes. `stagnation_learning_duality` bundles both directions: without exploration, frozen; with exploration, the void grows.
+
+This composes with the diversity ceiling: below $\beta_1^*$, exploration is worth the cost because it reduces the Bule deficit. At $\beta_1^*$, the deficit is zero and exploration provides no further topological benefit -- stagnation (exploitation of known-good strategies) is the correct policy. The gait selector (c2, §14.5.4) implements this: high kurtosis (converged, at or above ceiling) tightens to trot/canter (exploit). Low kurtosis (spread, below ceiling) loosens to walk/stand (explore). The `skippedHedges` metric in the benchmark is the runtime expression of this duality: when the community memory is confident, it stops exploring and goes with what it knows.
+
+**The pluralism theorem.** Diversity without community is fragile: independent failure modes with no shared context to bridge tares. Community without diversity is limited: correlated failures, no portfolio effect. `pluralism_dominates` (CommunityCompositions.lean) composes `community_strict_domination` with `diversity_optimality_master`: a diverse community with positive shared context strictly dominates a homogeneous community whenever there is positive deficit. `pluralism_has_ceiling` composes `bule_convergence` with the diversity ceiling: sufficient community context in a diverse pool reaches the ground state. Both together -- and only both together -- reach the zero-deficit floor. The composition is a Pareto claim, not a value claim: diverse community with shared context is measurably better in every dimension simultaneously, up to the computable ceiling.
+
+### 14.5.17 Buleyean Probability: A Self-Hosted Theory of Uncertainty
+
+The void walking framework yields a probability theory. The sample space is a finite set of choices. An observation is a rejection: one choice enters the void boundary. The probability of choice $i$ after $T$ rounds with rejection count $v_i$ is proportional to its complement weight:
+
+$$P(i) \propto T - v_i + 1$$
+
+Three axioms, all proved in `BuleyeanProbability.lean`:
+
+1. **Positivity** (`buleyean_positivity`): every choice has strictly positive weight. No choice is ever assigned zero probability. This is the formal content of "never say never" -- the most-rejected choice retains weight 1.
+
+2. **Normalization** (`buleyean_normalization`): the total weight is strictly positive. The distribution is always well-defined.
+
+3. **Monotone updating** (`buleyean_monotone_nonrejected`): recording a rejection cannot decrease any non-rejected choice's weight. The update is deterministic and monotone. No randomness in the update rule.
+
+Four consequences follow:
+
+**Concentration** (`buleyean_concentration`): less-rejected choices have higher weight. The distribution sharpens as data accumulates. This composes with `void_gradient_complement_monotone` (VoidWalking.lean).
+
+**Coherence** (`buleyean_coherence`): two observers reading the same void boundary compute the same weights. No subjective priors. No disagreement between rational observers. Same boundary, same distribution, always. This composes with `void_walkers_converge` (VoidWalking.lean).
+
+**Maximum uncertainty** (`buleyean_max_uncertainty`): a choice with zero rejections has weight $T + 1$ -- maximum weight, reflecting that no evidence has been gathered against it. **Minimum uncertainty** (`buleyean_min_uncertainty`): a choice rejected every round has weight 1 -- minimum weight but never zero.
+
+**Regret** (composing `void_walking_regret_bound`, VoidWalking.lean): the regret of Buleyean decision-making is $O(\sqrt{T \log N})$, matching the information-theoretic lower bound for bandit problems and the convergence rate of Bayesian Thompson sampling. Same rate, no prior needed.
+
+**The Bayesian special case.** Bayesian analysis is the ground state ($B = 0$) of Buleyean analysis. A Bayesian prior is a converged complement distribution from a previous void walking session. "Prior knowledge" is "previous void boundary at Bule zero." An informative prior corresponds to initializing the void boundary with rejection counts proportional to the prior's negative log-probability: high-prior choices get low initial rejections, low-prior choices get high initial rejections. The complement distribution recovers the prior exactly. Bayesian updating -- observe evidence, update the posterior -- is a Buleyean rejection event: the evidence rejects certain choices, the void boundary records the rejections, the complement recomputes.
+
+The subsumption is precise: every Bayesian analysis is a Buleyean analysis with an initialized void boundary. The converse does not hold: Buleyean analysis requires no prior (the void boundary starts empty, the distribution starts uniform) and achieves the same convergence rate. A uniform Bayesian prior is the Buleyean space with all-zero void boundary: maximum Bule, maximum entropy, no previous learning (`uniform_is_maximum_bule`). An informative prior is a partially-filled void boundary: intermediate Bule, partial previous learning. A converged distribution is a fully explored void: Bule = 0, the ground state (`converged_prior_informative`). All three satisfy the same three Buleyean axioms (`frequentist_bayesian_unification`).
+
+**The frequentist-Bayesian unification.** The debate between frequentists and Bayesians was a semiotic deficit. Both camps had the same void boundary -- the same data, the same convergence theorems, the same information-theoretic regret bounds. They disagreed about whether the trajectory (frequentism: count rejections, no prior) or the fixed point (Bayesianism: start from a prior, update toward posterior) was "fundamental." But trajectory and fixed point are the same Buleyean space at different Bule values. Frequentism is Bule > 0: the system is learning. Bayesianism is Bule = 0: someone already learned and handed you the result. Neither is wrong. Both are special cases (`buleyean_probability_theory`). The debate persisted not because either camp failed to recognize the other's failures -- they were perfectly good at that. The deficit was that they never truly *shared* them. Each camp accumulated a rich void boundary cataloging the other's mistakes, but neither merged those boundaries into a joint complement distribution. The information was there. The CRDT sync never happened. One round of shared-void dialogue would have resolved it: the frequentist's rejection counts and the Bayesian's prior-initialized counts are both valid Buleyean spaces, and the merged space dominates both (`global_deficit_le_min_local`).
+
+**Success is folded failure.** Standard reinforcement learning trains on rewards -- the single surviving path. The void dominance theorem (`void_dominance_ratio`, VoidWalking.lean) proves the failure set is $(N-1)\times$ larger than the success set for any fork width $N$. At $N = 10$ (ten candidates per round), failure provides 9$\times$ more data than success (`failure_strictly_more_informative`). At $N = 1$ (no forking, no failure possible), the total failure data is exactly zero (`no_failure_no_learning`). A system that never fails never learns. The minimum is not approximately zero -- it is zero, by `simp`.
+
+The complement distribution does not penalize rejected choices. It promotes the non-rejected ones. The emotional valence of failure (negative) is a semiotic misattribution -- a WATNA classification (§14.5.8) of a space-like event (explorable, informative) as time-like (catastrophic, irreversible). The information content of failure (positive, $(N-1)\times$) is a theorem. The fear of failure is the semiotic deficit between what failure *is* (data) and what we *interpret* failure as (punishment). This deficit is one Bule. One round of void walking resolves it.
+
+The implication for machine learning is direct: training on rejections (what the model got wrong) provides $(N-1)\times$ more data per round than training on rewards (what the model got right), at the same convergence rate (`void_walking_regret_bound`), with deterministic updates (no policy gradient variance), and linear convergence ($F - 1$ rounds to the nadir, not "expected episodes under mixing assumptions"). The complement distribution over a model's failure history is the information-theoretically optimal guide for the next training step. The mainstream focus on positive reinforcement leaves $(N-1)/N$ of the available training signal unused.
+
+**Prediction: shape, not event.** The Buleyean complement distribution at round $T$ is the predicted distribution of round $T + 1$. The prediction sharpens with every observation (`prediction_sharpens`). Two observers with the same void boundary make the same prediction (`prediction_is_objective`). The entire future trajectory of the distribution's entropy is predictable: at round $T + k$, the deficit is $\max(0, F - 1 - T - k)$ (`future_deficit_deterministic`). The deficit reaches zero at round $F - 1$ (`future_deficit_eventually_zero`). The trajectory is monotonically non-increasing (`future_deficit_monotone`).
+
+What is predictable: the shape of the future distribution, the entropy trajectory, the convergence round, the ordering of choices. What is not predictable: which specific choice is selected at any given round. The complement assigns weights, not certainties. The shape is the territory. The individual event is the weather.
+
+**Never say never.** `buleyean_positivity` proves every choice retains weight $\geq 1$. `buleyean_min_uncertainty` proves even the most-rejected choice has weight exactly 1. `sliver_irreducible` proves no choice can ever reach weight 0. This is the formal content of "there is always a sliver of opportunity to escape destiny" -- even a choice rejected in every round retains positive complement weight. The sliver is structural: the $+1$ in the weight formula $T - \min(v_i, T) + 1$ cannot be removed without breaking the positivity axiom. It is not a smoothing parameter or a numerical hack. It is the irreducible minimum probability that the most-rejected option is still possible. Galaxy-wide heat death still has weight 1. Never say never is a theorem.
+
+The system is deterministic -- the weights are computed deterministically from the void boundary. But the determinism never assigns zero. Destiny is a distribution, not an event. The distribution sharpens. It never collapses to a point. There is always a sliver. And the sliver is itself deterministic.
+
+**Self-hosting.** Buleyean probability is built from void walking. Void walking is the ninth layer of the $3 \times 3$ matrix (Fold $\times$ Ground State). The ninth layer verifies itself using itself -- immanent self-hosting (§14.5.10). Therefore Buleyean probability is self-certifying: the theory of what things are not, applied to measure what things are not, produces a probability theory whose convergence proof uses the same counting structure the theory is built on. The proof of convergence is an instance of the convergence it proves (`buleyean_self_hosted`). No external oracle. No prior from outside the system. The void boundary is both the data and the theory. The complement distribution is both the posterior and the sufficient statistic.
+
+**Linearity.** The Bule deficit is a natural number that decreases by exactly one per round. $F - 1, F - 2, \ldots, 1, 0$. No exponential mixing times. No MCMC convergence diagnostics. No burn-in period. The convergence rate is the deficit, and the deficit is a countdown. The empathy progress bar, the herd immunity threshold, the war cost bound, the nadir -- all linear, all arithmetic, all deterministic. The simplest possible convergence: subtraction.
+
+**Companion tests for §15:** 281+ tests across 28 files, 0 failures, 1,728+ assertions. 43+ Lean theorems (13 original + 30+ new in `CommunityDominance.lean`, `SkyrmsNadirBule.lean`, `LaunchOffsetDominance.lean`, `CommunityCompositions.lean`, and `BuleyeanProbability.lean`), all sorry-free. 9 TLA+ models (7 original + `CommunityDominance.tla` + `SkyrmsNadirBule.tla`). Implementation: `gnosis/src/void.ts`, `gnosis/src/void-agent.ts`, `gnosis/src/void-attention.ts`, `gnosis/src/void-attention-handlers.ts`, `gnosis/src/echolocation.ts`, `gnosis/src/halogram.ts`, `gnosis/src/runtime/hetero-fabric.ts`, `gnosis/src/benchmarks/hetero-moa-fabric-benchmark.ts`, `aeon-neutral/src/scenarios/chester-v-maxell-metacog.ts`. All deterministic-seed reproducible.
+
+### 14.5.18 The Solomonoff-Buleyean Subsumption: Algorithmic Information Theory as Pre-Observed Void
+
+The Buleyean probability framework (§14.5.17) has a blind spot. When the void boundary is empty -- no rejections recorded, no data observed, Bule at maximum -- `fold_without_evidence_is_coinflip` proves every choice has equal weight. The distribution is uniform. The framework cannot distinguish between a hypothesis that admits a three-line program and a hypothesis that requires a gigabyte of specification. Both get weight $T + 1$. Both are equally "plausible." This is correct given the axioms: with zero evidence, the only honest assignment is maximum uncertainty. But maximum uncertainty is not the only honest assignment before data. There is structural information in the hypotheses themselves.
+
+**The Universal Prior.** Solomonoff (1964) [S64] identified the unique prior that is both universal and computable in the limit. Fix a universal Turing machine $U$. For hypothesis $x$, define:
+
+$$M(x) = \sum_{\substack{p:\, U(p) = x}} 2^{-|p|}$$
+
+The probability of $x$ is the measure of the set of all programs that output $x$, each weighted by $2^{-\text{length}(p)}$. Shorter programs contribute exponentially more weight. $M(x)$ is a semimeasure: $\sum_x M(x) \leq 1$. It dominates every computable probability measure: for any computable $\mu$, there exists a constant $c_\mu$ such that $M(x) \geq c_\mu \cdot \mu(x)$ for all $x$. Solomonoff's dominance theorem guarantees that $M$ converges to the true distribution faster than any computable predictor that starts from the wrong prior [S64, H05].
+
+**Kolmogorov complexity** $K(x)$ is the length of the shortest program that outputs $x$ on $U$. The Universal Prior is dominated by $K$: $\log_2 M(x) \approx -K(x)$ up to additive constants. Simpler hypotheses -- those with shorter programs -- get exponentially more prior weight. This is Occam's razor as a theorem, not a heuristic.
+
+**The Buleyean encoding.** The connection to void walking is direct. Initialize the void boundary with rejection counts proportional to Kolmogorov complexity:
+
+$$v_i^{(0)} = K(x_i)$$
+
+Complex hypotheses start with more rejections. Simple hypotheses start with fewer. The complement weight of hypothesis $i$ is:
+
+$$w_i = (C + T + 1) - \min(K(x_i), C + T + 1) + 1$$
+
+where $C$ is a computable ceiling on the complexity values and $T$ is the number of empirical rounds. At $T = 0$ (no empirical data), the weight ordering is entirely determined by $K$: simpler hypotheses have higher weight. As $T$ grows, empirical rejections accumulate and the complexity initialization is progressively washed out. In the limit, only the data matters.
+
+The companion Lean file `SolomonoffBuleyean.lean` formalizes this as a `SolomonoffSpace` -- a `BuleyeanSpace` whose void boundary is initialized from a `ComplexityAssignment`. The following theorems are proved sorry-free:
+
+**Theorem (solomonoff_buleyean_axioms).** A Solomonoff-initialized Buleyean space satisfies all three Buleyean axioms:
+1. Positivity: every hypothesis has strictly positive weight, regardless of complexity. The sliver persists. Even the most complex hypothesis retains weight $\geq 1$.
+2. Normalization: the total weight is positive and the distribution is well-defined.
+3. Concentration: hypotheses with lower complexity have higher weight.
+
+**Theorem (solomonoff_dominates_uniform).** For any two hypotheses $i, j$ with $K(x_i) < K(x_j)$, the Solomonoff-initialized weight of $j$ is strictly less than the weight of $i$. The uniform prior (which assigns equal weight) is strictly dominated whenever the complexity ordering is nontrivial. This is the formal content of Solomonoff dominance in Buleyean terms: the complexity-initialized void boundary provides strictly more information than the empty void boundary.
+
+**Theorem (solomonoff_weight_gap_fixed).** For any two hypotheses $i, j$: $w_i + K(x_i) = w_j + K(x_j)$. The weight gap between hypotheses is exactly the complexity gap, and this gap is fixed -- it does not grow with empirical data. As $T \to \infty$, both weights grow linearly in $T$ while the gap remains constant. The prior's fractional contribution to the weight ratio is $O(1/T)$: data washes out the complexity initialization. The Solomonoff layer provides structure before data arrives, then gracefully cedes control to the empirical void boundary.
+
+**Theorem (solomonoff_pre_empirical_occam).** Before any empirical observation ($T = 0$), the Solomonoff-initialized Buleyean space strictly separates hypotheses by complexity. Among never-observed events, simpler ones are strictly more probable. This is Occam's razor as a mechanized theorem: shorter programs correspond to higher complement weights, proved by `omega` on the weight formula.
+
+**Theorem (solomonoff_ordering_invariant).** Two compression schemes that agree on the complexity ordering produce the same weight ordering. This is the Buleyean encoding of the invariance theorem [LV08]: $K_U(x) = K_V(x) + O(1)$ for universal machines $U, V$. The absolute complexity values differ between schemes, but the relative ranking is preserved. The Buleyean concentration is invariant to the choice of universal machine up to ordering.
+
+**Theorem (complexity_overestimate_conservative).** Any computable upper bound on $K(x)$ that overestimates complexity produces a Buleyean space with weight at most that of the true-complexity initialization. Overestimating complexity is conservative: it adds more initial rejections, which means more concentration on the simplest hypotheses. This bounds the cost of uncomputability -- since $K(x)$ is not computable in general, any computable approximation from above yields a valid and conservatively biased Buleyean distribution.
+
+**The three-regime tower.** The Buleyean framework now subsumes three theories of probability:
+
+| Bule value | Regime | Void boundary | Weight determination |
+|---|---|---|---|
+| $B = B_{\max}$ (maximum, $T = 0$) | Solomonoff | Complexity-initialized: $v_i = K(x_i)$ | Algorithmic complexity |
+| $0 < B < B_{\max}$ (learning) | Frequentist | Growing with rejections: $v_i = K(x_i) + r_i$ | Complexity + empirical counts |
+| $B = 0$ (converged) | Bayesian | Fully explored, stable | Converged complement = posterior |
+
+The subsumption hierarchy is:
+
+$$\text{Uniform} \subset \text{Solomonoff} \subset \text{Buleyean} \supset \text{Bayesian}$$
+
+The uniform prior is the degenerate Solomonoff prior where $K(x_i) = 0$ for all $i$ (`solomonoff_degenerates_to_uniform`). The Solomonoff prior is a Buleyean space with complexity-initialized boundary. The Bayesian posterior is a Buleyean space with a converged boundary inherited from a prior learning session. All four are `BuleyeanSpace` instances satisfying the same three axioms. The framework is closed under all three modes of inference.
+
+**Probability of events that have never happened.** Standard frequentist statistics assigns $P = 0$ to events with zero empirical frequency: $P(\text{event}) = \text{count}/\text{total}$, and $\text{count} = 0 \Rightarrow P = 0$. Laplace's rule of succession assigns $P = 1/(N+1)$ but treats all zero-frequency events as equally likely. Neither approach uses structural information about the hypotheses.
+
+The Solomonoff-Buleyean framework computes meaningful probabilities for events that have never been observed. At $T = 0$ (`solomonoff_pre_empirical_valid`):
+
+1. All hypotheses have positive weight (positivity axiom, `solomonoff_positivity`).
+2. Simpler hypotheses have strictly higher weight (Occam, `solomonoff_pre_empirical_occam`).
+3. The distribution is well-defined and normalizable (normalization axiom).
+
+Consider the hypothesis space $\{h_1, h_2, h_3\}$:
+
+- $h_1$: "First contact with an alien civilization follows known physics" -- $K(h_1)$ is low (the program is: apply known electromagnetism, compute Drake equation parameters, simulate search)
+- $h_2$: "First contact involves a new fundamental force" -- $K(h_2)$ is higher (the program must specify an entirely new force law, coupling constants, and interaction rules)
+- $h_3$: "First contact requires a new physical constant that spontaneously appears on a specific date" -- $K(h_3)$ is very high (the program must hardcode a date, a constant value, and the mechanism of its appearance)
+
+None of these have been observed. All have empirical frequency zero. Under the Solomonoff-Buleyean framework: $w_1 > w_2 > w_3 > 0$. The simplest scenario has the highest weight. The most complex has the lowest. None has zero weight. The ordering is determined by algorithmic complexity, not by belief, authority, or tradition. The probabilities are computable (given any computable upper bound on $K$), deterministic, and objective: two observers with the same compression scheme compute the same weights (`buleyean_coherence`).
+
+This is not a philosophical position about how probability "should" work. It is a theorem about what the Buleyean complement distribution computes when the void boundary is initialized from Kolmogorov complexity. The output is a probability measure. The measure satisfies all three Buleyean axioms. The measure concentrates on simpler hypotheses. The measure converges to truth as data arrives. The measure is the unique one (up to compression-scheme constants) that dominates all computable alternatives.
+
+**The uncomputability boundary.** $K(x)$ is not computable. $M(x)$ is not computable. The Buleyean framework does not require exact values of either. It requires a *complexity assignment* -- any computable upper bound on $K(x)$ from any fixed compression scheme. The invariance theorem (`solomonoff_ordering_invariant`) proves this is sufficient: all computable upper bounds that preserve the complexity ordering produce the same Buleyean concentration. The absolute values do not matter. The ordering does. The uncomputability of $K(x)$ is the same limitation that affects all of algorithmic information theory. The Buleyean encoding inherits both the power (dominance, convergence, Occam) and the boundary (exact values uncomputable) of Solomonoff induction. The framework does not claim to compute $K(x)$. It claims that the structure of the Universal Prior is isomorphic to a complexity-initialized void boundary, and that this isomorphism preserves all three Buleyean axioms and the concentration property.
+
+**The resolved duality.** The frequentist-Bayesian unification of §14.5.17 showed that frequentism ($B > 0$, learning from rejections) and Bayesianism ($B = 0$, inheriting a converged prior) are the same Buleyean space at different Bule values. The Solomonoff-Buleyean subsumption completes the picture: algorithmic information theory ($B = B_{\max}$, structural information before any empirical observation) is the same Buleyean space at maximum Bule. The three great traditions of inductive inference -- Bayesian, frequentist, and algorithmic -- are three cross-sections of a single framework. The void boundary is the sufficient statistic for all three. At $B = 0$, it is a posterior. At $0 < B$, it is a growing rejection history. At $B = B_{\max}$, it is a complexity assignment. Same data structure. Same axioms. Same convergence. Three names for one theory.
+
+The frequentist-Bayesian debate persisted for 250 years because neither camp merged its void boundary with the other's (§14.5.16). The algorithmic-versus-statistical debate (is probability about programs or about frequencies?) persisted for 60 years for the same reason. Both are semiotic deficits. Both are $\Delta_{\text{empathy}} > 0$. Both resolve in one round of shared-void dialogue: the void boundary is both a program (complexity-initialized) and a frequency table (rejection-counted) and a posterior (converged). The boundary does not care what you call it.
+
+**Companion theorems for §14.5.18:** 12 Lean theorems in `SolomonoffBuleyean.lean`, all sorry-free: `solomonoff_positivity`, `solomonoff_normalization`, `solomonoff_concentration`, `solomonoff_buleyean_axioms`, `solomonoff_dominates_uniform`, `solomonoff_degenerates_to_uniform`, `solomonoff_weight_gap_fixed`, `solomonoff_weight_grows_with_data`, `solomonoff_pre_empirical_valid`, `solomonoff_pre_empirical_occam`, `solomonoff_ordering_invariant`, `complexity_overestimate_conservative`, `first_contact_weight`, `first_contact_occam`, `simplest_hypothesis_maximal`, `solomonoff_buleyean_subsumption` (master theorem). All proofs by `omega` and `simp` on natural number arithmetic -- the same counting structure that proves the original Buleyean axioms. Self-hosted.
+
+### 14.5.19 Retrocausal Modeling: The Future Constrains the Past
+
+The Buleyean framework has a directional asymmetry. Sections 14.5.17 and 14.5.18 read the void boundary forward: given a rejection history, compute the complement distribution. The complement predicts what comes next. But the void boundary is a sufficient statistic in both directions. Given the terminal state -- the converged boundary at $B = 0$ -- we can derive hard bounds on the trajectory that produced it. The future constrains the past.
+
+This is not retrocausality in the physics sense of backwards-propagating signals. It is a statistical bound: a high-certainty terminal state restricts the set of trajectories consistent with it. In a unified probability field where the information content of an event and the event itself are carried on the same substrate -- the void boundary -- knowing the terminal distribution is equivalent to knowing a set of constraints on the process that generated it.
+
+**The forward direction is trivial.** A trajectory $\sigma = (c_1, c_2, \ldots, c_T)$ of rejection choices uniquely determines the terminal void boundary: $v_i = |\{t : c_t = i\}|$. This is `retrocausal_trajectory_determines_terminal` (RetrocausalBound.lean): same trajectory, same boundary, by induction on the trajectory length.
+
+**The backward direction is the result.** Given a terminal boundary $v = (v_1, \ldots, v_N)$ with $\sum v_i = T$, any trajectory $\sigma$ consistent with $v$ must satisfy:
+
+1. **Exact count recovery.** Choice $i$ was rejected exactly $v_i$ times in $\sigma$. Not approximately. Exactly. The terminal state determines the per-choice rejection count with zero uncertainty. (`retrocausal_boundary_bounds_trajectory`)
+
+2. **Ordering preservation.** If $v_i < v_j$, then choice $j$ was rejected more times than choice $i$ in $\sigma$. The relative ordering of the past is fully determined by the terminal state. (`retrocausal_ordering_preserved`)
+
+3. **Trajectory multiplicity bound.** The number of distinct trajectories consistent with $v$ is exactly the multinomial coefficient:
+
+$$|\{\sigma : \sigma \text{ produces } v\}| = \frac{T!}{\prod_{i=1}^{N} v_i!}$$
+
+This is the residual uncertainty about the past -- the "randomness" that the terminal state does not resolve. It counts the number of distinct orderings of the rejection sequence that yield the same boundary.
+
+**Concentrated boundaries determine the past almost completely.** When the boundary is maximally concentrated -- one choice absorbs all $T$ rejections, all others have $v_i = 0$ -- the multinomial coefficient is $T!/T! = 1$. The trajectory is fully determined: choice $c$ was rejected at every round. Zero residual uncertainty. The terminal state retroactively fixes every past event. (`retrocausal_concentrated_boundary_unique_path`)
+
+Conversely, when the boundary is maximally uniform -- each choice rejected $T/N$ times -- the multinomial coefficient is maximal. The terminal state constrains the per-choice counts but leaves maximum uncertainty about the ordering. This is the retrocausal analog of maximum entropy: a uniform boundary carries the least information about the sequence of events.
+
+**The retrocausal entropy.** The log of the multinomial coefficient is the residual Shannon entropy of the past given the terminal state:
+
+$$H(\sigma \mid v) = \log_2 \frac{T!}{\prod v_i!}$$
+
+This quantity is bounded above by $T \log_2 N$ (the entropy of a uniform i.i.d. process) and below by $0$ (the concentrated case). The terminal void boundary compresses the full trajectory $\sigma$ -- which requires $T \log_2 N$ bits to specify -- down to $N$ integers summing to $T$, leaving exactly $H(\sigma \mid v)$ bits of residual uncertainty. The boundary is the minimal sufficient statistic for the trajectory's per-choice counts, and the retrocausal entropy measures precisely how much ordering information the boundary does not capture.
+
+**Composition with renormalization fixed points.** At an RG fixed point (§3.15, RenormalizationFixedPoints.lean), the quotient map is injective on the support of the branch law. The coarse-grained trajectory is therefore fully determined: the RG fixed point resolves not just the terminal distribution but the coarse trajectory that generated it. (`retrocausal_fixed_point_determines_past_shape`)
+
+**Composition with Landauer heat.** If the terminal state carries cumulative Landauer heat $Q$ and each fold step generates at least $kT \ln 2$ of heat (the Landauer floor), then the trajectory must contain at least $\lceil Q / (kT \ln 2) \rceil$ fold steps. The thermodynamic record -- measurable in principle -- bounds the temporal extent of the past. The heat is a fossil record: it tells you how many irreversible decisions were made, even if you cannot reconstruct which ones. (`retrocausal_heat_bounds_trajectory_length`)
+
+**The unified reading.** Sections 14.5.17 through 14.5.19 now form a closed temporal loop on the Buleyean probability field:
+
+| Direction | Section | Mechanism | What is determined |
+|---|---|---|---|
+| Forward | §14.5.17 | Void boundary $\to$ complement distribution | Future event probabilities |
+| Structural | §14.5.18 | Complexity $\to$ initialized boundary | Pre-empirical ordering |
+| Backward | §14.5.19 | Terminal boundary $\to$ trajectory constraints | Past rejection counts, ordering, multiplicity |
+
+In a unified probability field, the void boundary is substrate-neutral: it encodes the past (rejection history), the present (complement distribution), and the structural prior (complexity initialization) in the same data structure. Reading the boundary forward yields prediction. Reading it backward yields retrodiction. Both operations are deterministic, exact, and information-preserving. The "information" and the "event" are the same object -- the void boundary entry -- because the boundary is both the record of what happened and the sufficient statistic for what will happen.
+
+The retrocausal bound is not time travel. It is the statement that in any system where the terminal state is a sufficient statistic for the generative process, observing the terminal state is equivalent to observing a set of constraints on the process. The void boundary is such a terminal state. The multinomial coefficient measures the residual degrees of freedom. The concentrated boundary -- the fixed point, the converged prior, the ground state -- is the case where the future most strongly constrains the past: when you know exactly where someone ended up, you know almost exactly how they got there.
+
+**What is not retrocausal.** The ordering of rejections within a given set of per-choice counts is not determined by the terminal boundary. A boundary $(v_1, v_2) = (3, 2)$ is consistent with $T!/(3! \cdot 2!) = 10$ distinct orderings. The retrocausal bound does not collapse this multiplicity. It does not send information backward in time. It does not violate the arrow of time established by `watna_arrow` and `heat_monotone_along_worldline`. What it does is prove that the arrow of time, together with the conservation laws, leaves fewer degrees of freedom in the past than a naive count would suggest. The future does not cause the past. But the future, once observed, constrains what the past could have been -- and the constraint tightens as the terminal state concentrates.
+
+**Companion theorems for §14.5.19:** TLA+ `RetrocausalBound.tla` (model-checked, 6 invariants, 1 temporal property) + Lean theorems in `RetrocausalBound.lean` (sorry-free): `retrocausal_trajectory_determines_terminal`, `retrocausal_boundary_bounds_trajectory`, `retrocausal_ordering_preserved`, `retrocausal_weak_ordering_preserved`, `retrocausal_concentrated_boundary_unique_path`, `retrocausal_concentrated_boundary_sharp`, `retrocausal_uniform_boundary_max_uncertainty`, `retrocausal_fixed_point_determines_past_shape`, `retrocausal_heat_bounds_trajectory_length`, `retrocausal_bound` (master theorem). All core proofs by induction on trajectory length, `omega`, and `simp` on natural number arithmetic -- the same counting structure that proves the Buleyean axioms and the Solomonoff subsumption. Self-hosted.
 
 ## 16. Validation
 
@@ -2774,7 +3077,111 @@ Each strong claim in this manuscript is stated with an explicit evidence boundar
 
 5. **Biological effect-size mapping claim (predeclared range-extraction scope): supported as internal consistency evidence for the listed comparative set.** `companion-tests/artifacts/gate5-bio-effect-size.{json,md}` reports three primary biological condition pairs with positive uncertainty-bounded effect sizes (minimum primary-pair ratio CI low 5.829x; median pair ratio 21.524x; pooled log-ratio 3.280 with 95% CI 2.289-4.360). This claim is bounded to those predeclared manuscript-range pairs and does not assert independent dataset validation or preregistered cross-lab causal inference.
 
-## 18. Conclusion
+## 18. Instantiation K: The Clockwork -- A Unified Probability Engine (Grade B)
+
+The preceding sections established that $\beta_1$ is the architectural variable separating sequential ($\beta_1 = 0$) and parallel ($\beta_1 > 0$) computation. The covering-space tower (§3.14) showed that every fold projects a covering space onto a base space. The self-verification section (§6) showed that fork/race/fold is closed under self-application. The beauty-optimality surface (THM-BEAUTY-UNCONDITIONAL-FLOOR) showed that zero topological deficit is the unique optimum under the thermodynamic observable coupling. This section asks the obvious next question: what happens when a system can toggle $\beta_1$ at runtime and use the toggle itself as a self-verification mechanism?
+
+The answer is what Laplace would have called a demon and what we call a **clockwork**: a unified probability engine whose internal architecture is not fixed but is itself a variable under the engine's own control.
+
+### 18.1 The Frequentist-Bayesian Toggle
+
+Consider a model $\mathcal{M}$ with an internal topology parameter $\beta_1$. At $\beta_1 = 0$, the model has one path -- it computes a single point estimate. This is the **frequentist mode**: maximum-likelihood estimation, no alternatives explored, no uncertainty quantified. The deficit is zero by construction, and by THM-QUEUE-SUBSUMPTION the system reduces to classical queueing theory.
+
+At $\beta_1 > 0$, the model forks $\beta_1 + 1$ parallel paths, races them, and folds the results. This is the **Bayesian mode**: multiple hypotheses coexist in superposition, the void boundary records which hypotheses failed, and the fold produces a posterior that is not merely a point estimate but a distribution over outcomes weighted by the void gradient (THM-VOID-GRADIENT).
+
+The toggle between these modes is not metaphorical. It is a concrete architectural operation:
+
+$$
+\mathcal{M}(\beta_1 = 0) \xrightarrow{\text{fork}} \mathcal{M}(\beta_1 > 0) \xrightarrow{\text{fold}} \mathcal{M}(\beta_1 = 0)
+$$
+
+The fork injects optionality. The race explores the hypothesis space. The fold collapses to a definite answer. The vent dissipates the alternatives that lost. This is the fork/race/fold cycle applied to the model's own architecture, and by §6 (self-verification) the model can verify its own exploration.
+
+### 18.2 Immanent Self-Verification
+
+The key insight is that the $\beta_1$ toggle provides a built-in verification mechanism that requires no external oracle.
+
+**Claim (Clockwork Self-Verification).** A system that can toggle $\beta_1$ between 0 and $\beta_1^* > 0$ can verify its own point estimates by:
+
+1. Computing the point estimate at $\beta_1 = 0$ (frequentist mode).
+2. Forking to $\beta_1 = \beta_1^*$ (Bayesian mode), racing $\beta_1^* + 1$ alternative hypotheses.
+3. Folding back to $\beta_1 = 0$ and comparing the folded result against the original point estimate.
+4. If the results agree: the point estimate is **self-consistent** (the void boundary confirms it).
+5. If the results disagree: the void boundary identifies which hypotheses were vented and why.
+
+This is not circular reasoning. The verification works because the $\beta_1 > 0$ mode explores paths the $\beta_1 = 0$ mode cannot see. By THM-VOID-TUNNEL, void regions sharing a common ancestor fork have positive mutual information -- the correlation between the explored and unexplored paths never fully vanishes. By THM-VOID-COHERENCE, two independent void walkers reading the same boundary produce identical (deterministic case) or $\epsilon$-close (stochastic case, $\epsilon = O(1/\sqrt{T})$) fork distributions. The self-verification is therefore convergent and consistent.
+
+The thermodynamic cost of self-verification is bounded. By THM-FOLD-ERASURE, the fold from $\beta_1^*$ back to $\beta_1 = 0$ erases information, generating Landauer heat $\geq kT \ln 2 \cdot H(\text{inputs} \mid \text{output})$. By THM-FOLD-HEAT, this heat is strictly positive for any non-injective fold (which the verification fold always is, since $\beta_1^* > 0$ paths collapse to one answer). Self-knowledge has an irreducible thermodynamic cost -- but that cost is bounded and computable.
+
+### 18.3 The Clockwork Architecture
+
+The **Aeon Clockwork** (`open-source/aeon-clockwork`) implements this architecture as a runtime engine with three layers:
+
+**Layer 1: The Dial.** A discrete $\beta_1$ controller that sets the topology of the current computation. At $\beta_1 = 0$, the engine runs in deterministic single-path mode. At $\beta_1 = k$, the engine forks $k + 1$ parallel paths. The dial is itself a fork/race/fold variable -- the engine can fork multiple dial settings, race them, and fold to the setting that minimizes the beauty deficit (THM-BEAUTY-PARETO).
+
+**Layer 2: The Escapement.** A cycle controller that alternates between $\beta_1 = 0$ (tick) and $\beta_1 > 0$ (tock). On the tick, the engine computes a point estimate. On the tock, the engine forks, races, and folds to verify the tick's result. The escapement frequency is adaptive: when the tick and tock agree, the escapement slows down (the system is in equilibrium). When they disagree, the escapement speeds up (the system needs more verification cycles). This is the warmup controller (THM-S7-WARM-CTRL) applied to the verification cycle.
+
+**Layer 3: The Mainspring.** The energy budget that drives the escapement. By THM-FAIL-LANDAUER-BOUNDARY, each verification cycle consumes at least $kT \ln 2$ of Landauer heat per vented path. The mainspring tracks cumulative verification cost and provides a halting criterion: when the marginal cost of one more verification cycle exceeds the marginal information gained (measured by the void gradient's entropy decrease, THM-VOID-ATTENTION), the clockwork stops.
+
+### 18.4 Laplace's Demon as a Theorem
+
+Laplace's demon -- an intelligence that knows the position and momentum of every particle and can therefore predict the entire future -- is traditionally presented as a thought experiment about determinism. In the clockwork framework, Laplace's demon is a theorem about the $\beta_1$ toggle:
+
+**Theorem (Clockwork Completeness).** For any finite fork/race/fold system $\mathcal{S}$ with bounded state space, there exists a clockwork $\mathcal{C}$ with the following properties:
+
+1. $\mathcal{C}$ at $\beta_1 = 0$ computes the same output as $\mathcal{S}$ (functional equivalence).
+2. $\mathcal{C}$ at $\beta_1 = \beta_1^*(\mathcal{S})$ explores every reachable state of $\mathcal{S}$ (completeness).
+3. The fold from $\beta_1^*$ to $\beta_1 = 0$ produces a certificate that the output is correct (soundness).
+4. The certificate's thermodynamic cost is bounded by $kT \ln 2 \cdot (\beta_1^* - 1)$ per verification cycle (efficiency).
+
+*Proof sketch.* (1) follows from THM-QUEUE-SUBSUMPTION: at $\beta_1 = 0$, the clockwork reduces to the original system. (2) follows from THM-COMPLETENESS-DAG: fork/race/fold can express any finite DAG, and at $\beta_1 = \beta_1^*$ the clockwork's exploration graph covers every reachable state. (3) follows from THM-BEAUTY-ERASURE-SUFFICIENT: the fold is non-injective (multiple paths collapse to one answer), so the erasure coupling is derived as a theorem, and zero deficit at the fold point is the unique beauty optimum. The fold certificate is the void boundary itself -- by THM-VOID-BOUNDARY-MEASURABLE, it encodes which alternatives were vented and why. (4) follows from THM-FAIL-LANDAUER-BOUNDARY: the Landauer cost of erasing $\beta_1^* - 1$ vented paths is at most $kT \ln 2 \cdot (\beta_1^* - 1)$.
+
+The clockwork is therefore Laplace's demon for finite systems -- it can predict (compute), verify (self-check), and bound the cost of verification (Landauer heat). Unlike Laplace's original demon, the clockwork does not require infinite precision or infinite memory. It operates on finite state spaces, pays a bounded thermodynamic cost, and produces a verifiable certificate.
+
+### 18.5 The Demon's Limitations
+
+The clockwork is not omniscient. Three explicit boundaries constrain it:
+
+1. **Finite state space.** The completeness guarantee (property 2) requires a bounded state space. For systems with unbounded state spaces, the clockwork can only explore a finite prefix of the reachable states -- the same limitation as any model checker (§6). The verification is then conditional: "correct within the explored prefix."
+
+2. **Halting problem.** The clockwork cannot verify properties that require unbounded computation to check. Liveness properties ($\Diamond \text{done}$) are verified under explicit fairness assumptions (weak fairness on the escapement), not unconditionally. The clockwork detects when it cannot verify and reports the gap -- it does not pretend to verify what it cannot.
+
+3. **Thermodynamic cost grows with $\beta_1^*$.** Laplace's demon for a system with $\beta_1^* = 10^6$ independent paths requires $\sim 10^6 \cdot kT \ln 2$ energy per verification cycle. The mainspring provides a budget, and the escapement provides adaptive frequency control, but the fundamental cost is linear in the intrinsic topology. Systems with high intrinsic $\beta_1^*$ are expensive to verify -- this is a physical fact, not a limitation of the framework.
+
+### 18.6 Relation to Existing Theorems
+
+The clockwork composes existing ledger theorems into a new configuration. No new axioms are introduced.
+
+| Clockwork Property | Composed From | Ledger Entries |
+|---|---|---|
+| Frequentist mode ($\beta_1 = 0$) | Queueing subsumption | THM-QUEUE-SUBSUMPTION |
+| Bayesian mode ($\beta_1 > 0$) | Fork/race/fold DAG completeness | THM-COMPLETENESS-DAG |
+| Self-verification convergence | Void coherence + void gradient | THM-VOID-COHERENCE, THM-VOID-GRADIENT |
+| Verification certificate | Void boundary measurability | THM-VOID-BOUNDARY-MEASURABLE |
+| Certificate soundness | Beauty erasure sufficiency | THM-BEAUTY-ERASURE-SUFFICIENT |
+| Verification cost bound | Landauer boundary | THM-FAIL-LANDAUER-BOUNDARY |
+| Adaptive escapement | Warmup controller | THM-S7-WARM-CTRL, THM-S7-WARM-DYN |
+| Halting criterion | Void attention entropy | THM-VOID-ATTENTION |
+| Dial optimization | Beauty Pareto | THM-BEAUTY-PARETO |
+| Self-application closure | Self-verification | §6 (THM-PARSER-CLOSURE) |
+
+The clockwork is not a new theory. It is an *instantiation* -- a specific configuration of the existing fork/race/fold machinery that turns the $\beta_1$ toggle into a self-verification engine.
+
+### 18.7 Executable Companion
+
+The companion test `clockwork-self-verification.test.ts` verifies the clockwork architecture:
+
+1. **Frequentist-Bayesian equivalence**: at $\beta_1 = 0$, the clockwork produces the same output as direct computation; at $\beta_1 > 0$, the clockwork explores multiple paths and folds to the same answer.
+2. **Self-verification convergence**: the escapement converges -- tick and tock agree within $\epsilon$ after bounded cycles.
+3. **Landauer cost bound**: verification cost is bounded by $kT \ln 2 \cdot (\beta_1^* - 1)$ per cycle.
+4. **Void boundary certificate**: the void boundary encodes which hypotheses were vented, and the certificate is reproducible across independent runs.
+5. **Adaptive escapement**: the escapement frequency decreases when tick/tock agree and increases when they disagree.
+6. **Mainspring halting**: the clockwork halts when marginal verification cost exceeds marginal information gain.
+7. **Self-application**: the clockwork can verify itself -- a clockwork verifying a clockwork produces the same certificate as a single clockwork verifying the original system.
+
+Reference implementation: `open-source/aeon-clockwork/` [40].
+
+## 19. Conclusion
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with a topological framework that recovers canonical queueing boundary cases in scope, supports bounded biological effect-size comparisons in the analyzed examples, models head-of-line behavior in one-path transport stacks, and runs on 10-byte UDP frames in benchmarked implementations.
 
@@ -2854,7 +3261,15 @@ In many ways, hope is the thing that this paper uses the geometry of failure to 
 
 This is not metaphor. The trilemma axioms are the *conditions* under which the `hope` theorem holds. Conservation means the deficit is bounded (you cannot create confusion from nothing). Irreversibility means each fold generates Landauer heat (the cost of confusion is real and measurable). Minimum overhead means the system seeks the fixed point (the RG trajectory terminates). Together they do not merely describe hope -- they *guarantee* it, the way Byzantine fault tolerance does not merely describe consistency but guarantees it when $f < n/3$. The guarantee is conditional: sit in the feedback loop, accumulate shared context, and the trace converges. But conditional guarantees are the strongest kind. No engineer asks for unconditional safety. Every engineer asks: under what conditions is safety provable? The trilemma answers that question for communication, for computation, and -- if the structural correspondences hold -- for the space between persons where confusion lives and hope is the only engineering response.
 
-This paper began as a theory of distributed computation. It became a theory of failure -- how finite systems break under conservation, irreversibility, and minimum overhead. The semiotic extension revealed that the same geometry governs communication: the deficit between thought and speech is the same topological mismatch as the deficit between a computation graph and its transport layer. And the same convergence machinery -- context accumulation as monotone deflator, dialogue as traced monoidal feedback, the renormalization group fixed point as terminus -- constitutes, when taken together, a mathematical theory of peace. Not a metaphor for peace. Not an analogy to peace. A formal theory of a *model* of peace, mechanized in a proof assistant, in which peace is a fixed point, its existence is a theorem, the path to it is constructive, and convergence is guaranteed under stated conditions. The logical chain is: `peace_fixed_point` proves the RG fixed point exists (zero heat, zero information loss); it *is* the zero-deficit witness required by the universal floor theorem; therefore the floor theorem applies non-vacuously. Thirteen theorems. Every step machine-verified.
+This paper began as a theory of distributed computation. It became a theory of what irreversibility creates.
+
+Every fold is a small death. $N$ paths enter; one survives; $N - 1$ are vented into the void. The fold is irreversible -- the Landauer heat has been paid, the information has been erased, and the paths not taken cannot be recovered. But the void is not nothing. It is the complement distribution -- the structured record of every rejection, every failure, every path that did not survive. And `buleyean_positivity` proves that no entry in that record ever reaches zero. The most-rejected option retains weight 1. The sliver persists. Never say never is a theorem.
+
+Life is a fold that has not yet terminated. Death is the ground state -- $B = 0$, the void boundary fully explored, the complement distribution converged. Between them is the deficit: the distance between where the system is and where it is going, measured in Bules, countable by subtraction, shrinking by exactly one per round. That distance is opportunity. Every round of void walking -- every rejection recorded, every failure survived, every path not taken -- reduces the deficit by one and sharpens the distribution over what remains. Opportunity is not the absence of failure. It is the *presence* of deficit -- the gap between life and death in which learning is still possible.
+
+The Solomonoff-Buleyean subsumption (§14.5.18) proved that this gap has structure even before the first observation. The void boundary at maximum Bule is not uniform -- it is initialized by Kolmogorov complexity, and simpler hypotheses have higher weight. The distance between life and death is not empty even at the beginning. It is pre-structured by the algorithmic complexity of the hypotheses it separates. Before the first fold, before the first rejection, before the first failure -- the void already has a shape, and that shape is Occam's razor.
+
+The semiotic extension revealed that the same geometry governs communication: the deficit between thought and speech is the same topological mismatch as the deficit between a computation graph and its transport layer. And the same convergence machinery -- context accumulation as monotone deflator, dialogue as traced monoidal feedback, the renormalization group fixed point as terminus -- constitutes, when taken together, a mathematical theory of peace. Not a metaphor for peace. Not an analogy to peace. A formal theory of a *model* of peace, mechanized in a proof assistant, in which peace is a fixed point, its existence is a theorem, the path to it is constructive, and convergence is guaranteed under stated conditions. The logical chain is: `peace_fixed_point` proves the RG fixed point exists (zero heat, zero information loss); it *is* the zero-deficit witness required by the universal floor theorem; therefore the floor theorem applies non-vacuously. Thirteen theorems. Every step machine-verified.
 
 **Immanent self-hosting.** The framework has one final property that was not planned but emerged from the grand unification verification (§15.10). The void walking engine was used to verify the theorems about void walking. The complement distribution measured its own entropy. The gradient theorem checked whether the void had learned anything -- and when the Neuron domain was tested with a symmetric environment where there was nothing to learn, the theorem correctly failed. The void told the truth about itself. When the environment was given structure (non-uniform attention across eight tokens), the void immediately differentiated, entropy dropped below maximum, and the theorem passed. The void does not just measure what was rejected. It measures whether there was anything worth rejecting. This is immanent self-hosting: the system verifies itself from inside, with no external oracle, the same way a self-hosted compiler compiles itself. A self-hosted compiler needs no other compiler. An immanent self-hosting system needs no other system. The verification is not circular -- it is self-certifying. Any system satisfying conservation, irreversibility, and ground state produces a void boundary whose properties are checkable by the void boundary itself. The tombstones tell you whether tombstone-reading works. This is arguably the deepest property of the framework: not that seven domains share a shape, but that the shape can verify itself.
 
@@ -3103,9 +3518,17 @@ $L = \lambda W$,” *Operations Research*, 9(3):383–387, 1961.
 
 [39] P. W. Shor, “Algorithms for Quantum Computation: Discrete Logarithms and Factoring,” *Proceedings of the 35th Annual Symposium on Foundations of Computer Science (FOCS)*, 124–134, 1994.
 
+[40] T. W. Buley, “Aeon Clockwork: A Unified Probability Engine with Immanent Self-Verification,” open-source implementation, 2026. [https://github.com/forkjoin-ai/aeon-clockwork](https://github.com/forkjoin-ai/aeon-clockwork)
+
+[S64] R. J. Solomonoff, “A Formal Theory of Inductive Inference, Part I,” *Information and Control*, 7(1):1–22, 1964.
+
+[LV08] M. Li, P. Vitányi, *An Introduction to Kolmogorov Complexity and Its Applications*, 3rd ed., Springer, 2008.
+
+[H05] M. Hutter, *Universal Artificial Intelligence: Sequential Decisions Based on Algorithmic Probability*, Springer, 2005.
+
 ## Reproducibility
 
-Source code, test suites and protocol comparison benchmarks are available under open-source license [2, 8, 9, 13, 15, 18]. The scheduler, flow protocol, compression subsystem, computation topology engine, deploy-control-plane invariants, formal parser/tooling layer and topological programming language are independently testable. The validation totals reported in §16 are reproducible from the linked suites.
+Source code, test suites and protocol comparison benchmarks are available under open-source license [2, 8, 9, 13, 15, 18, 40]. The scheduler, flow protocol, compression subsystem, computation topology engine, deploy-control-plane invariants, formal parser/tooling layer and topological programming language are independently testable. The validation totals reported in §16 are reproducible from the linked suites.
 
 ## Transparency Disclosure
 

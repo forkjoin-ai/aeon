@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "../../../../../"
+  },
+  "include": [
+    "src/gnosis-aeon-framed-transformer-benchmark.ts",
+    "src/gnosis-moa-transformer-evidence-benchmark.ts"
+  ]
+}

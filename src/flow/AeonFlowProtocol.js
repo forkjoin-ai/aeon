@@ -565,7 +565,11 @@ export class AeonFlowProtocol {
      * JS codec remains the correctness path if WASM is unavailable.
      */
     upgradeCodecInBackground() {
-        FlowCodec.create()
+        const wasmMode = this.config.codecWasmMode ?? 'auto';
+        if (wasmMode === 'off') {
+            return;
+        }
+        FlowCodec.create({ wasmMode })
             .then((codec) => {
             if (codec.isWasmAccelerated) {
                 this.codec = codec;

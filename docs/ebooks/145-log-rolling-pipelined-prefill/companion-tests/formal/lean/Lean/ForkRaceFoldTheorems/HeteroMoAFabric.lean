@@ -94,10 +94,10 @@ theorem diverse_ready_backends_of_cpu_and_accelerator
     2 <= readyBackendCount cpuReady gpuReady npuReady wasmReady := by
   unfold readyBackendCount
   rcases h_accel with h_gpu | h_rest
-  · simp [h_cpu, h_gpu]
+  · simp [h_cpu, h_gpu]; omega
   · rcases h_rest with h_npu | h_wasm
-    · simp [h_cpu, h_npu]
-    · simp [h_cpu, h_wasm]
+    · simp [h_cpu, h_npu]; omega
+    · simp [h_cpu, h_wasm]; omega
 
 theorem cannonCursor_step_mod
     {laneCount cursor waveWidth : Nat}

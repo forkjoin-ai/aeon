@@ -3,7 +3,7 @@ export {
   makeDefaultFoldTrainingConfig,
   renderGnosisFoldTrainingBenchmarkMarkdown,
   runGnosisFoldTrainingBenchmark,
-} from '../../../../../../gnosis/src/benchmarks/fold-training-benchmark';
+} from '@a0n/gnosis/benchmarks/fold-training-benchmark';
 
 export type {
   FoldTrainingConfig,
@@ -13,4 +13,4 @@ export type {
   FoldTrainingStrategyReport,
   FoldTrainingTopologyMetrics,
   GnosisFoldTrainingBenchmarkReport,
-} from '../../../../../../gnosis/src/benchmarks/fold-training-benchmark';
+} from '@a0n/gnosis/benchmarks/fold-training-benchmark';

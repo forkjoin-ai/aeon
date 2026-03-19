@@ -3,7 +3,7 @@ export {
   makeDefaultAeonFramedTransformerConfig,
   renderGnosisAeonFramedTransformerBenchmarkMarkdown,
   runGnosisAeonFramedTransformerBenchmark,
-} from '../../../../../../gnosis/src/benchmarks/aeon-framed-transformer-benchmark';
+} from '@a0n/gnosis/benchmarks/aeon-framed-transformer-benchmark';
 
 export type {
   AeonFramedTransformerConfig,
@@ -13,4 +13,4 @@ export type {
   AeonFramedTransformerStrategyReport,
   AeonFramedTransformerTopologyMetrics,
   GnosisAeonFramedTransformerBenchmarkReport,
-} from '../../../../../../gnosis/src/benchmarks/aeon-framed-transformer-benchmark';
+} from '@a0n/gnosis/benchmarks/aeon-framed-transformer-benchmark';

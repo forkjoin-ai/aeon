@@ -404,6 +404,20 @@ describe('AeonFlowProtocol — stream lifecycle', () => {
     protocol.destroy();
   });
 
+  it('should skip background codec upgrades when codecWasmMode is off', () => {
+    const transport = createRecordingTransport();
+    const createSpy = vi.spyOn(FlowCodec, 'create');
+    const protocol = new AeonFlowProtocol(transport, {
+      codecWasmMode: 'off',
+      role: 'client',
+    });
+
+    expect(createSpy).not.toHaveBeenCalled();
+
+    protocol.destroy();
+    createSpy.mockRestore();
+  });
+
   it('should open a stream with server-initiated odd ID', () => {
     const transport = createRecordingTransport();
     const protocol = new AeonFlowProtocol(transport, { role: 'server' });

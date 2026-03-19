@@ -136,6 +136,13 @@ export interface FlowProtocolConfig {
    * @default 256
    */
   maxConcurrentStreams: number;
+
+  /**
+   * Optional FlowCodec WASM mode for background protocol upgrades.
+   * Service workers can force JS-only mode to avoid repeated WASM fetches.
+   * @default 'auto'
+   */
+  codecWasmMode?: 'auto' | 'off' | 'force';
 }
 
 /**
