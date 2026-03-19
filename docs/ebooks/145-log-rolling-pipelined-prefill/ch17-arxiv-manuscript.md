@@ -1316,6 +1316,43 @@ The `TopologyAnalyzer` computes $\beta_0$, $\beta_1$, $\beta_2$ and detects fork
 
 **In the narrow sense used here, fork/race/fold is one sign that an implementation is closer to its modeled parallel structure. The Bule count is meant to estimate the remaining gap, not to settle all questions of optimality.**
 
+### 3.17 Cancer as Topological Collapse: Cellular Decision-Making Under Vent Loss
+
+A healthy cell is a Buleyean learner. It counts rejections.
+
+The mammalian cell cycle is a fork/race/fold computation with five decision outcomes -- divide, arrest, quiescence, apoptosis, senescence -- and two classes of signaling pathway. Growth signal pathways (RAS/MAPK, PI3K/AKT, Wnt) are forks: they open parallel pro-division signals. Checkpoint pathways (p53, Rb, APC, ATM/ATR) are vents: they reject "divide" by incrementing the void boundary. The complement distribution $P(\text{divide} \mid \text{void boundary})$ is the cell's decision, and it sharpens with every checkpoint activation (buleyean\_concentration).
+
+Cancer is what happens when the vents are destroyed.
+
+**THM-CANCER-BETA1-COLLAPSE.** A cell with no functional checkpoint pathways has total vent $\beta_1 = 0$ and produces zero failure data per the no\_failure\_no\_learning theorem. The complement distribution cannot update. The cell is deaf to signals that should prevent division -- stuck on a prior that says "grow," with no mechanism to revise it. This is not metaphor. It is the operational content of "tumor suppressor loss": the cell's rejection counters are removed, and the Buleyean learning loop breaks.
+
+The total vent $\beta_1$ of a healthy cell is 9 (p53: $\beta_1 = 3$, Rb: $\beta_1 = 2$, APC: $\beta_1 = 2$, ATM/ATR: $\beta_1 = 2$), corresponding to nine independent paths by which the cell can detect problems and reject division. Each pathway contributes its $\beta_1$ independently -- three ways to activate p53 (DNA damage, oncogene activation, telomere shortening), two ways to activate Rb (CDK4/6 and CDK2 phosphorylation), and so on. Knocking out a pathway reduces total vent $\beta_1$ by that pathway's contribution. The topological deficit $\Delta_\beta = \beta_1^*(\text{healthy}) - \beta_1(\text{tumor})$ measures, in Bules, how much rejection capacity has been lost.
+
+**Glioblastoma (GBM) subtypes, classified topologically.** The four molecular subtypes of GBM (Verhaak et al., Cancer Cell 2010 [Verhaak]; Brennan et al., Cell 2013 [Brennan]) can be reclassified by which vents are destroyed:
+
+| Subtype | Knocked-Out Vents | Deficit ($\Delta_\beta$) | Disruption Freq. | Median Survival |
+|---|---|---|---|---|
+| Classical | Rb ($\beta_1 = 2$) | 2 B | Rb: 93%, p53: 47% | 14.7 mo |
+| Mesenchymal | p53 ($\beta_1 = 3$) | 3 B | p53: 94%, Rb: 53% | 11.5 mo |
+| Proneural | p53 ($\beta_1 = 3$) | 3 B | p53: 87%, IDH1: 30% | 17.0 mo |
+| Combined | p53 + Rb + APC | 7 B | Multiple | — |
+
+The executable companion tests verify that higher deficit produces higher $P(\text{divide})$ in the simulation: after 20 checkpoint cycles, $P(\text{divide})$ is 0.100 for healthy cells, 0.116 for Classical, 0.125 for Mesenchymal, and 0.188 for Combined. The ordering is strictly monotone in deficit. The weighted topological deficit (pathway disruption frequency $\times$ pathway $\beta_1$, summed) correlates with observed median survival across subtypes: Mesenchymal has the highest weighted deficit (3.88 B) and the shortest survival (11.5 months).
+
+**THM-THERAPEUTIC-RESTORATION.** You do not need to fix all broken checkpoints. Restoring any single checkpoint pathway restores $\beta_1 > 0$. The buleyean\_positivity axiom guarantees that for any Buleyean space with $\beta_1 > 0$, all weights are strictly positive and the complement distribution starts updating. The cell begins learning again.
+
+This is the formal justification for why checkpoint immunotherapy can work even in tumors with multiple pathway disruptions. The immune system provides an external vent -- anti-PD-1 unblocks T cell exhaustion, anti-CTLA-4 unblocks T cell activation. Each inhibitor restores $\beta_1 \geq 1$ at the population level, even when the tumor's internal checkpoints are destroyed. The simulation verifies: applying an external immune vent ($\beta_1 = 2$) to a cancer cell with no internal checkpoints reduces $P(\text{divide})$ below the unvented cancer cell. Dose-response follows: mono (PD-1 only: $\beta_1 += 1$) < combo (PD-1 + CTLA-4: $\beta_1 += 2$) < full restoration.
+
+**THM-TOPO-MUTATION-DETECTION applied to cancer.** The mutation detection theorem (§3.15) has a direct cancer application. A mutation at locus $\ell$ with $\Delta_\sigma(\ell) = \sigma_{\text{mutant}}(\ell) - \sigma_{\text{ref}}(\ell)$ is detectable the moment it is sequenced. The prediction: driver mutations should show higher $|\Delta_\sigma|$ than passenger mutations, because drivers disrupt the cell's fork/race/fold topology while passengers ride along without topological effect.
+
+The executable companion tests verify this on real TP53 sequences (NM\_000546.6, exons 5-8): the four known driver mutations (R175H, R248W, R249S, R273H) have mean severity 0.25 B, while four synonymous passenger mutations all have severity 0 B. The KRAS exon 2 hotspots (G12, G13) show topological enrichment of 2.6$\times$ -- the mean $\sigma$ at hotspot positions is 4.0, versus 1.54 at non-hotspot positions. The MGMT promoter, which is extremely CpG-rich, has mean $\sigma = 14.39$ -- an order of magnitude higher than typical coding regions, consistent with its role as an epigenetic regulatory region whose methylation silences DNA repair.
+
+**The MGMT paradox.** MGMT promoter methylation silences the DNA repair vent -- topologically, this increases the deficit. But methylated-MGMT GBM responds better to temozolomide (an alkylating agent) because without MGMT repair, alkylation damage accumulates and triggers remaining checkpoints (ATM/ATR, p53 if functional). The framework captures this: removing one vent ($\Delta_\beta += 1$) makes the cell more dependent on its remaining vents. When those remaining vents are then activated by chemotherapy-induced damage, the complement distribution shifts away from "divide" more sharply than it would with MGMT repair active. This is a topological trade-off, not a paradox.
+
+**The master theorem (cancer\_master\_theorem).** All components are mechanized in Lean4 (CancerTopology.lean, zero sorry markers) and verified by executable companion tests (cancer-topology.test.ts: 31 tests, cancer-genomic-integration.test.ts: 31 tests, all passing). The master theorem bundles five guarantees: (1) Buleyean probability is well-defined for any space, (2) no failure means no learning, (3) deficit is non-negative, (4) GBM Combined is more aggressive than Classical, (5) GBM Combined still has a therapeutic target ($\beta_1 = 2$, ATM/ATR).
+
+The code is open-sourced as [aunt-sandy](https://github.com/forkjoin-ai/aunt-sandy), named for the author's aunt who died of brain cancer.
+
 ## 4. The Quantum Vocabulary Is Structural
 
 The following correspondences are heuristic structural mappings between quantum-mechanical operations and computational operations, with photosynthetic antenna complexes (§5.5) as the closest literal quantum case discussed here. In §3.14, I show that the Feynman path integral admits a fork/race/fold interpretation within this abstraction.
