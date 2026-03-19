@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 607 across 55 topical sections (all mechanized, zero open)
+- **Theorem table entries:** 622 across 56 topical sections (all mechanized, zero open)
 - **TLA+ specifications:** 95 (all with matching .cfg files)
-- **Lean theorem modules:** 110 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean + IrreversibilityPredictions.lean + NovelInference.lean + NovelInferenceForms.lean + CancerTreatments.lean + PredictionsRound5.lean + PredictionsRound6.lean + PredictionsRound7.lean + PredictionsRound8.lean + CryptographicPredictions.lean + PredictionsRound9.lean + RaceWinnerPredictions.lean + FinalCompositions.lean + PredictionsRound12.lean + PredictionsRound13.lean)
+- **Lean theorem modules:** 111 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean + IrreversibilityPredictions.lean + NovelInference.lean + NovelInferenceForms.lean + CancerTreatments.lean + PredictionsRound5.lean + PredictionsRound6.lean + PredictionsRound7.lean + PredictionsRound8.lean + CryptographicPredictions.lean + PredictionsRound9.lean + RaceWinnerPredictions.lean + FinalCompositions.lean + PredictionsRound12.lean + PredictionsRound13.lean + TeleportationEvidencePredictions.lean)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
