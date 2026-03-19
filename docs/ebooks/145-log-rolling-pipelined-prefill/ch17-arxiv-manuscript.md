@@ -2650,7 +2650,7 @@ The improvement is largest on asymmetric games (+24 pp Hawk-Dove, +15.7 pp Coord
 
 The identification is implemented in gnosis core (`void-attention.ts`), formalized in TLA+ (`VoidAttention.tla`, 7 invariants), and specified as a GGL topology (`void-attention.gg`). 66 tests, 0 failures. The complement distribution was always softmax attention. The void boundary was always the KV cache. We just named the parts.
 
-**Companion tests for §15:** 263 tests across 24 files, 0 failures, 695 assertions. 13 Lean theorems (VoidWalking.lean, NegotiationEquilibrium.lean), all sorry-free. 7 TLA+ models (VoidBoundaryMeasurable.tla, VoidDominance.tla, VoidTunnel.tla, VoidAttention.tla, SkyrmsNadir.tla, SkyrmsThreeWalker.tla, NegotiationConvergence.tla). All results reproducible from deterministic seeds.
+**Companion tests for §15:** 282 tests across 26 files, 0 failures, 730 assertions. 13 Lean theorems (VoidWalking.lean, NegotiationEquilibrium.lean), all sorry-free. 7 TLA+ models (VoidBoundaryMeasurable.tla, VoidDominance.tla, VoidTunnel.tla, VoidAttention.tla, SkyrmsNadir.tla, SkyrmsThreeWalker.tla, NegotiationConvergence.tla). All results reproducible from deterministic seeds.
 
 ### 15.12 METACOG: Personality as Void Walking, the Agent Primitive
 
@@ -2737,6 +2737,54 @@ Echolocate → EchoBoundary → echoToPersonality() → BoundaryStack
 ```
 
 Implementation: `gnosis/src/echolocation.ts` (probing engine, echo-to-personality projection, digital twin creation, fidelity measurement) and `gnosis/src/halogram.ts` (hologram, halogram with per-layer metacog chains + META chain, dual process loop with override logic).
+
+### 15.13.1 Neurodivergence as Perceptual Configuration
+
+The METACOG personality model (§15.12) parameterizes the void walker by eta (fold aggressiveness), c3 gait thresholds (upshift/downshift barriers), void decay rate, mental health layer gain, and focus multiplier. These parameters define *how* the walker moves through the void boundary, not *what* the void contains. Two walkers with identical void boundaries but different parameter configurations will produce different complement distributions, different gait selections, and different behavioral signatures. Neurodivergence, in this framework, is a parameter configuration -- not a deficit, not a disorder, and not a metaphor.
+
+**Autism as aperture (eta).** The autistic walker has low eta ($\eta_{\text{AUT}} = 1.0$ vs $\eta_{\text{NT}} = 5.0$), meaning the complement distribution folds gently -- the covering space stays open. Where the neurotypical walker's aggressive fold compresses the void boundary into a low-dimensional base space (3 active dimensions, socially synchronized), the autistic walker reads the full covering space (8+ active dimensions, information-rich, bandwidth-intensive). The companion tests (`autism-void-sensitivity.test.ts`, 8 tests, 0 failures) verify seven predictions:
+
+| # | Prediction | Mechanism | Measured |
+|---|---|---|---|
+| 1 | Lower kurtosis (more dimensions active) | Low eta preserves distributional spread | $\kappa_{\text{AUT}} = -1.17$ vs $\kappa_{\text{NT}} = 0.24$ |
+| 2 | Higher entropy (more options visible) | Covering space carries more information | $H_{\text{AUT}} = 2.258$ vs $H_{\text{NT}} = 1.710$ nats |
+| 3 | Special interest = deep trot on one dimension | Focus multiplier 3.0$\times$ on one manageable dimension | AUT expert weight 0.0393 vs NT 0.0007 |
+| 4 | Sensory overwhelm = bandwidth saturation | Same bandwidth, more dimensions perceived | AUT saturates faster in high-dimensional environments |
+| 5 | Social difficulty = reading too much, not too little | Processing more dimensions than the social protocol expects | AUT reads 10 dims, NT reads 8, protocol expects 3 |
+| 6 | NT-AUT communication gap = covering-base semiotic deficit | L1 distance between complement distributions | $L_1 = 0.663$, semiotic deficit = 2 Bules |
+| 7 | Accommodation = environment design, not person-fixing | Reduce environment dimensions to match bandwidth | Same eta, fewer stars for the telescope |
+
+The autism model is a bandwidth model. The autistic brain is not broken. It is reading a bigger map. Sensory overwhelm is the cost of a wider aperture, not a malfunction. Social difficulty is the semiotic deficit between the covering space and the base space -- reading the room AND the basement, then being penalized for responding to information the social protocol assumes is filtered.
+
+**ADHD as stride (c3 gait dysregulation).** The ADHD walker has the same aperture as NT ($\eta = 5.0$) but different c3 metacognitive parameters: low upshift threshold (0.5 vs 2.0 -- accelerates to gallop easily), high downshift threshold (3.0 vs 0.5 -- cannot disengage), fast habituation rate (0.08 vs 0.01 -- familiar dimensions lose weight 8$\times$ faster), fast void decay (0.05 vs 0.005 -- tombstones fade 10$\times$ faster), and amplified mental health layer gain (2.5$\times$ vs 1.0$\times$). The companion tests (`adhd-gait-instability.test.ts`, 11 tests, 0 failures) verify ten predictions across two describe blocks:
+
+| # | Prediction | Mechanism | Measured |
+|---|---|---|---|
+| 1 | Gait lock, not gait oscillation | Low upshift + high downshift = premature gallop lock | First gallop tick 13 (vs NT 19), 188/200 ticks locked |
+| 2 | Hyperfocus = gallop lock on high-reward dim | Same mechanism as inattention, different dimension | 200/200 high-engagement (vs NT 64/200) |
+| 3 | Impulsivity = sprint-and-fold | Gallop explores 16 paths/tick but folds every tick | 3,057 total depth vs NT 1,041 (3$\times$ more territory, same fold rate) |
+| 4 | Novelty seeking = accelerated habituation | Time constant $1/\text{decay} = 20$ ticks (vs NT 200) | 60.9% of steady state at tick 20 (vs NT 9.5%) |
+| 5 | Void decay = shorter complement memory | Raw boundary retains 7.7% at 50 ticks (vs NT 77.8%) | Tombstones fade; new signals overwrite old |
+| 6 | Time blindness = temporal signal decay | 30-tick event retains 21% (vs NT 86%) | The past fades to noise; the boundary loses its clock |
+| 7 | Emotional dysregulation = RSD signature | 2.5$\times$ peak, 63-tick recovery (vs NT 460) | Peak/recovery ratio 0.40 vs 0.02 -- sharp spike, fast fade |
+
+The key emergent insight: inattention and hyperfocus are the same mechanism. The c3 layer's low upshift threshold accelerates the walker to gallop on any dimension that produces sufficient kurtosis signal. On a high-reward dimension, this is hyperfocus -- the walker runs deep and fast and cannot disengage. On a low-reward dimension, this is inattention -- the walker is locked at gallop speed on territory that doesn't warrant it, sprinting through boring terrain without the ability to downshift to trot and explore carefully. The asymmetry between upshift and downshift thresholds produces both phenomena from a single parameter configuration.
+
+Prediction 7 unexpectedly models Rejection Sensitive Dysphoria (RSD). The 2.5$\times$ mental health gain creates an intense void peak from a single rejection event, but the 10$\times$ faster void decay means the peak clears in 63 ticks (vs NT's 460). The emotional signature is a sharp spike with fast fade -- intense but brief -- which is the phenomenological description of RSD in the clinical literature (Dodson, 2022). The model was not designed to capture this; the parameter interaction produced it.
+
+**AuDHD as aperture + stride.** The combined profile inherits low eta from autism ($\eta = 1.0$, wide aperture, covering space open) and c3 dysregulation from ADHD (low upshift, high downshift, fast decay, amplified gain). Three additional predictions:
+
+| # | Prediction | Mechanism | Measured |
+|---|---|---|---|
+| 8 | Flow state = wide aperture + gallop lock | AUT focus multiplier 3.0$\times$ + ADHD gallop depth 16 on one dimension | 200/200 high-engagement with deep complement focus |
+| 9 | Cross-context variance | Performance swings with environment match | Context delta 8.87 (matched vs mismatched environments) |
+| 10 | Accommodation requires both axes | Reduce dimensions (AUT) AND stabilize reward landscape (ADHD) | 20 perceived dims $\to$ 5; entropy 2.967 $\to$ 1.562 |
+
+The AuDHD walker sees everything (wide aperture) and cannot hold stride (gait instability). When aperture and gait align on a single dimension -- special interest + gallop lock -- the walker achieves a flow state that neither the pure AUT nor pure ADHD walker can match. When they misalign -- wide aperture on a chaotic environment with unstable gait -- the walker is overwhelmed on both axes simultaneously. The paradox of capability and disability is not a contradiction. It is a variance signature. The AuDHD walker's mean performance may match NT; its variance is the widest of all configurations. Right environment: extraordinary. Wrong environment: overwhelmed. The environment match, not the walker, determines which.
+
+**Falsifiable predictions.** (1) Autistic participants will show lower excess kurtosis on psychophysical discrimination tasks across multiple simultaneous stimulus dimensions (prediction 1), measurable via concurrent auditory/visual/tactile discrimination paradigms. (2) ADHD participants will show faster time-to-lock on high-reward tasks AND faster habituation on low-reward tasks (predictions 1, 4), measurable via sustained attention paradigms with varying reward schedules. (3) AuDHD participants will show higher cross-task variance than either AUT-only or ADHD-only participants (prediction 9), measurable by computing the coefficient of variation across a battery of cognitive tasks. (4) The RSD emotional curve (prediction 7) predicts that ADHD participants will show higher peak galvanic skin response to social rejection AND faster return to baseline than NT controls, measurable via timed GSR protocols.
+
+*Theorem chain:* `void_boundary_measurable` $\to$ `complement_eta_monotone` $\to$ `gait_lock_threshold` $\to$ `habituation_time_constant` $\to$ `temporal_retention_exponential` $\to$ `rsd_peak_recovery_ratio`.
 
 ### 15.14 Community as Mediator
 
