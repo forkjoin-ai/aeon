@@ -52,4 +52,5 @@ import ForkRaceFoldTheorems.CommunityCompositions
 import ForkRaceFoldTheorems.BuleyeanProbability
 import ForkRaceFoldTheorems.SolomonoffBuleyean
 import ForkRaceFoldTheorems.RetrocausalBound
+import ForkRaceFoldTheorems.QuantumObserver
 import ForkRaceFoldTheorems.SemioticPeace
