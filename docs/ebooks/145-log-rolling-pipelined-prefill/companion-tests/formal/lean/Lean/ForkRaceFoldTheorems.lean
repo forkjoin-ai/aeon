@@ -53,4 +53,5 @@ import ForkRaceFoldTheorems.BuleyeanProbability
 import ForkRaceFoldTheorems.SolomonoffBuleyean
 import ForkRaceFoldTheorems.RetrocausalBound
 import ForkRaceFoldTheorems.QuantumObserver
+import ForkRaceFoldTheorems.ChaitinOmega
 import ForkRaceFoldTheorems.SemioticPeace

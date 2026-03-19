@@ -64,16 +64,19 @@ theorem void_boundary_rank_le_total_vented (vb : VoidBoundary) :
 
 /-- Each step contributes at least 1 to the void boundary (since N ≥ 2). -/
 theorem void_boundary_grows_per_step (step : FoldStep) :
-    1 ≤ step.forkWidth - 1 := by omega
+    1 ≤ step.forkWidth - 1 := by
+  have := step.nontrivial; omega
 
 /-- Boundary rank grows with each fold step. -/
 theorem void_boundary_monotone (steps : List FoldStep) (step : FoldStep) :
     steps.foldl (fun acc s => acc + (s.forkWidth - 1)) 0 ≤
     (steps ++ [step]).foldl (fun acc s => acc + (s.forkWidth - 1)) 0 := by
   induction steps with
-  | nil => simp [List.foldl]; omega
+  | nil =>
+    simp only [List.nil_append, List.foldl_cons, List.foldl_nil]
+    have := step.nontrivial; omega
   | cons hd tl ih =>
-    simp only [List.cons_append, List.foldl_cons]
+    simp only [List.cons_append, List.foldl_cons] at ih ⊢
     exact ih
 
 /-- Space efficiency: boundary needs only O(T * log N_max) space.
@@ -121,7 +124,7 @@ theorem void_dominance_ratio (c : ConstantWidthComputation) :
 theorem void_volume_positive (c : ConstantWidthComputation) :
     0 < c.voidVolume := by
   unfold ConstantWidthComputation.voidVolume
-  exact Nat.mul_pos c.positive_steps (by omega)
+  exact Nat.mul_pos c.positive_steps (by have := c.nontrivial; omega)
 
 /-- Void dominates: |V_T| ≥ T for N ≥ 2. -/
 theorem void_dominance_linear (c : ConstantWidthComputation) :
@@ -130,7 +133,7 @@ theorem void_dominance_linear (c : ConstantWidthComputation) :
   calc c.steps = c.steps * 1 := by ring
     _ ≤ c.steps * (c.forkWidth - 1) := by
         apply Nat.mul_le_mul_left
-        omega
+        have := c.nontrivial; omega
 
 /-- The void fraction |V|/(|V|+|A|) approaches 1.
     For T steps: fraction = T*(N-1) / (T*(N-1) + N).
@@ -140,7 +143,7 @@ theorem void_fraction_dominates (c : ConstantWidthComputation)
     (hT : 1 ≤ c.steps) :
     c.voidVolume * 1 ≤ c.voidVolume * (c.voidVolume + c.activePaths) := by
   apply Nat.mul_le_mul_left
-  omega
+  have := void_volume_positive c; omega
 
 /-- For nested depth d, void grows as Ω(T * N^d) while active paths remain
     bounded at N^d. This is computational dark energy. -/
@@ -155,8 +158,8 @@ def nestedVoidVolume (N d T : ℕ) : ℕ := T * (N ^ d - 1)
 theorem void_dominance_nested (N d T : ℕ) (hN : 2 ≤ N) (hd : 1 ≤ d) (hT : 1 ≤ T) :
     T ≤ nestedVoidVolume N d T + N ^ d := by
   unfold nestedVoidVolume
-  have hPow : 1 ≤ N ^ d := Nat.one_le_pow _ _ (by omega)
-  omega
+  have hPow : 1 ≤ N ^ d := Nat.one_le_pow _ _ (by linarith)
+  nlinarith [Nat.mul_le_mul_left T (Nat.sub_le (N ^ d) 1)]
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- §23.10 THM-VOID-MEMORY-EFFICIENCY: Boundary Encoding Is Exponentially Compact
@@ -179,20 +182,31 @@ theorem void_boundary_sufficient_statistic (N T payloadBits logN : ℕ)
     (hLog : 1 ≤ logN) (hLogBound : logN ≤ N) :
     boundaryStorage T logN ≤ fullPathStorage N T payloadBits := by
   unfold boundaryStorage fullPathStorage
-  calc T * logN ≤ T * N := by
-        apply Nat.mul_le_mul_left; exact hLogBound
-    _ = T * (1 * N) := by ring
-    _ ≤ T * (payloadBits * N) := by
-        apply Nat.mul_le_mul_left
-        exact Nat.mul_le_mul_right _ hPayload
-    _ = T * payloadBits * N := by ring
-    _ ≤ (N - 1) * T * payloadBits + T * payloadBits := by omega
-    _ = (N - 1) * T * payloadBits + 1 * (T * payloadBits) := by ring
-    _ ≤ (N - 1) * T * payloadBits + N * (T * payloadBits) := by
-        apply Nat.add_le_add_left
-        apply Nat.mul_le_mul_right; omega
-    _ = (N - 1 + N) * (T * payloadBits) := by ring
-    _ ≥ (N - 1) * T * payloadBits := by omega
+  -- Goal: T * logN ≤ (N - 1) * T * payloadBits
+  -- logN ≤ N, N - 1 ≥ 1, payloadBits ≥ 1, T ≥ 1
+  -- logN ≤ N ≤ N * 1 ≤ N * payloadBits
+  -- (N-1) * payloadBits = N * payloadBits - payloadBits ≥ N - 1 ≥ 1
+  -- For the bound to work we need logN ≤ (N-1) * payloadBits
+  -- which holds because logN ≤ N and (N-1)*payloadBits ≥ (N-1) ≥ N-1
+  -- and for N ≥ 2, payloadBits ≥ 1: (N-1)*payloadBits ≥ N-1 ≥ 1
+  -- Since logN ≤ N and N = (N-1)+1 ≤ (N-1)*payloadBits + 1 ≤ 2*(N-1)*payloadBits
+  -- Actually the cleanest: weaken to T*logN ≤ (N-1)*T*payloadBits
+  -- by showing logN ≤ (N-1)*payloadBits via omega after unfolding all bounds
+  have h : logN * 1 ≤ (N - 1) * payloadBits := by
+    calc logN * 1 = logN := by ring
+      _ ≤ N := hLogBound
+      _ ≤ (N - 1) + 1 := by omega
+      _ ≤ (N - 1) * payloadBits + 1 * payloadBits := by
+          apply Nat.add_le_add
+          · exact Nat.le_mul_of_pos_right _ (by omega)
+          · omega
+      _ = ((N - 1) + 1) * payloadBits := by ring
+      _ = N * payloadBits := by omega
+      _ ≤ (N - 1) * payloadBits + payloadBits := by omega
+  have h2 : T * logN ≤ T * ((N - 1) * payloadBits) := by
+    exact Nat.mul_le_mul_left T (by linarith)
+  calc T * logN ≤ T * ((N - 1) * payloadBits) := h2
+    _ = (N - 1) * T * payloadBits := by ring
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- §23.10 THM-VOID-TUNNEL: Cross-Void Mutual Information
@@ -239,25 +253,17 @@ theorem void_tunnel_mutual_information_positive (vt : VoidTunnel) :
 theorem void_tunnel_retention_positive (vt : VoidTunnel) :
     0 < vt.retentionProduct := by
   unfold VoidTunnel.retentionProduct
-  induction vt.retentionFactors with
-  | nil => simp [List.foldl]
+  suffices ∀ (l : List ℕ) (acc : ℕ), (∀ x ∈ l, 0 < x) → 0 < acc → 0 < l.foldl (· * ·) acc by
+    exact this vt.retentionFactors 1 vt.retentionFactors_pos (by omega)
+  intro l
+  induction l with
+  | nil => intro acc _ h; simpa
   | cons hd tl ih =>
+    intro acc hall hacc
     simp only [List.foldl_cons]
-    have hhd : 0 < hd := vt.retentionFactors_pos hd (List.mem_cons_self hd tl)
-    -- The foldl of positive multiplication starting from a positive accumulator
-    -- remains positive. We show this by noting the accumulator after the first
-    -- element is 1 * hd = hd > 0, and subsequent multiplications preserve positivity.
-    suffices h : 0 < List.foldl (· * ·) (1 * hd) tl by exact h
-    clear ih
-    induction tl with
-    | nil => simpa
-    | cons hd' tl' ih' =>
-      simp only [List.foldl_cons]
-      apply ih'
-      · intro r hr
-        exact vt.retentionFactors_pos r (List.mem_cons_of_mem hd (List.mem_cons_of_mem hd' hr))
-      · exact Nat.mul_pos (by simpa using hhd)
-          (vt.retentionFactors_pos hd' (List.mem_cons_of_mem hd (List.mem_cons_self hd' tl')))
+    apply ih
+    · intro x hx; exact hall x (List.mem_cons_of_mem _ hx)
+    · exact Nat.mul_pos hacc (hall hd (List.mem_cons_self _ _))
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- §23.10 THM-VOID-REGRET-BOUND: Void Walking Reduces Adversarial Regret
@@ -301,7 +307,7 @@ theorem void_walking_regret_bound (T N : ℕ) (hT : 0 < T) (hN : 2 ≤ N) :
   unfold voidWalkingRegretBound standardRegretBound
   -- √(T * log N) ≤ √(T * N) since log N ≤ N
   have hLog : Nat.log 2 N + 1 ≤ N := by
-    have := Nat.log_lt_self_of_pos (by omega : 0 < N)
+    have : Nat.log 2 N < N := Nat.log_lt (by omega) (by omega)
     omega
   have hMul : T * (Nat.log 2 N + 1) ≤ T * N := Nat.mul_le_mul_left _ hLog
   calc Nat.sqrt (T * (Nat.log 2 N + 1))
