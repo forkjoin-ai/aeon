@@ -71,3 +71,5 @@ import ForkRaceFoldTheorems.NovelInference
 import ForkRaceFoldTheorems.NovelInferenceForms
 import ForkRaceFoldTheorems.PredictionsRound5
 import ForkRaceFoldTheorems.PredictionsRound6
+import ForkRaceFoldTheorems.PredictionsRound7
+import ForkRaceFoldTheorems.PredictionsRound8
