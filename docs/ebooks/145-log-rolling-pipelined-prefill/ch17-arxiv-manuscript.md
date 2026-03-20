@@ -3400,6 +3400,125 @@ The Buleyean framework, having proved its structural completeness across queuein
 
 **Companion theorems for §15.24:** TLA+ `NovelInferenceForms.tla` (model-checked, eleven invariants: `InvVoidInferencePositive`, `InvVoidBoundaryMonotone`, `InvRetrocausalPositive`, `InvTopoMinimumCompute`, `InvTopoDeficitNonneg`, `InvEnsembleDeficit`, `InvEnsemblePositive`, `InvNEIPositive`, `InvNEIDominates`, `InvRoundsPositive`) + Lean theorems in `NovelInferenceForms.lean` (sorry-free): `void_inference_positive`, `void_inference_concentrates`, `void_inference_coherent`, `void_inference_subsumes_softmax`, `void_inference_normalizable`, `retrocausal_consistent`, `retrocausal_positive`, `retrocausal_sharpens`, `retrocausal_composable`, `retrocausal_no_self_reference`, `topo_skip_preserves_topology`, `topo_speedup_exact`, `topo_skip_composable`, `topo_skip_bounded`, `topo_minimum_compute`, `topo_deficit_nonneg`, `ensemble_deficit_exact`, `ensemble_deficit_positive`, `ensemble_dominates_single`, `ensemble_complement_voting`, `ensemble_coherent`, `ensemble_scaling`, `nei_positive`, `nei_dominates_guess`, `nei_coherent`, `nei_bounded`, `nei_mendeleev`, `nei_structure_dominates`, `novel_inference_forms_master` (master theorem). Executable tests in `novel-inference-forms.test.ts`: eight test groups (void inference generation, retrocausal decoding, topological speculative decoding, semiotic ensemble, non-empirical inference, Mendeleev example, cross-cutting axiom composition). Self-hosted.
 
+### 15.29 Buleyean Reinforcement Learning: Training Language Models from the Void
+
+The preceding sections proved that the complement distribution over rejection history is a sufficient statistic for decision-making (§15.1), converges to Nash equilibria (§15.2), and subsumes both Bayesian and Solomonoff inference (§15.17--15.18). Section 15.28 described five novel inference forms derived from the Buleyean axioms. This section takes the next step: using the complement distribution as a *training signal* for language models. Where RLHF requires a reward model and DPO requires preference pairs (chosen, rejected), Buleyean RL requires only rejections. The chosen column is discarded. The complement distribution derived from rejection counts alone IS the training target.
+
+#### 15.29.1 The Buleyean RL Loss Function
+
+Standard supervised fine-tuning minimizes cross-entropy against a one-hot positive label. DPO minimizes the log-ratio between chosen and rejected response probabilities. Buleyean RL minimizes KL divergence between the model's output distribution and the Buleyean complement distribution derived entirely from rejection data:
+
+$$L_{\text{Buleyean}} = D_{\text{KL}}(P_{\text{Bule}} \| P_{\text{model}}) = \sum_i P_{\text{Bule}}(i) \log \frac{P_{\text{Bule}}(i)}{P_{\text{model}}(i)}$$
+
+where $P_{\text{Bule}}(i) = (T - v_i + 1) / \sum_j (T - v_j + 1)$ is the complement distribution, $v_i$ is the rejection count for token $i$, and $T$ is the total rejection rounds. Forward KL is mode-covering: it forces the model to assign probability everywhere the Buleyean target does, preserving the sliver property (no token reaches zero probability).
+
+An auxiliary rejection contrast loss directly penalizes probability assigned to heavily-rejected tokens:
+
+$$L_{\text{contrast}} = -\sum_i \frac{v_i}{T} \log P_{\text{model}}(i)$$
+
+The combined loss is $L = \alpha \cdot L_{\text{Buleyean}} + (1 - \alpha) \cdot L_{\text{contrast}}$, with $\alpha = 0.7$ as default.
+
+**Algorithm 1: Buleyean Complement Distribution**
+
+```
+Input: rejection counts v[1..N], total rounds T
+Output: probability distribution P[1..N]
+
+for i = 1 to N:
+    w[i] = T - min(v[i], T) + 1    // the +1 is the sliver
+Z = sum(w)
+for i = 1 to N:
+    P[i] = w[i] / Z
+return P
+```
+
+**Algorithm 2: Buleyean RL Training Step**
+
+```
+Input: batch of prompts with per-token rejection counts
+for each position in sequence:
+    1. Build void boundary from rejected response tokens
+    2. Compute P_bule = BuleyeanComplement(void_boundary)
+    3. Forward pass: logits = model(input_ids)
+    4. P_model = softmax(logits)
+    5. L = alpha * KL(P_bule || P_model) + (1-alpha) * ContrastLoss
+    6. Backward pass, optimizer step
+```
+
+#### 15.29.2 Key Differences from DPO and RLHF
+
+| | RLHF | DPO | Buleyean RL |
+|---|---|---|---|
+| Requires reward model | Yes | No | No |
+| Requires chosen examples | Yes | Yes (pairs) | **No** |
+| Requires rejected examples | Yes | Yes (pairs) | Yes (only) |
+| Information per rejection | 1 bit | 1 bit | $N-1$ bits |
+| Exploration guarantee | Entropy bonus (tuned) | Implicit in $\beta$ | Structural (sliver $\geq 1$) |
+| Loss function | PPO on reward | Log-ratio of pairs | KL to complement distribution |
+
+The information-theoretic advantage is quantified by the failure information ratio (§15.17, `failure_strictly_more_informative`): a fork with $N$ parallel choices produces $N - 1$ bits of rejection information per fold versus 1 bit of selection information. For a 10-way fork, each rejection provides 9x more information than selection. Buleyean RL exploits this asymmetry: it trains on the information-dense side of the fold.
+
+#### 15.29.3 Implementation
+
+The Buleyean RL library (`@a0n/buleyean-rl`, open-source at `github.com/forkjoin-ai/buleyean-rl`) implements the complete training pipeline:
+
+- **TypeScript core**: rejection record types, per-token void boundary construction, complement distribution computation, inverse Bule metric, DPO-to-Buleyean data conversion (imports `VoidBoundary` from `@a0n/gnosis`, `buleyeanDistribution` from `@a0n/maybe`)
+- **Python training**: `BuleyeanKLLoss` and `RejectionContrastLoss` (PyTorch), `BuleyeanTrainer` (extends HuggingFace Trainer), `SparseRejectionDataset` (memory-efficient for 128k+ vocab models), `BuleyeanDataCollator`
+- **Cloud Build pipeline**: parallel fan-out training across 12 base models (SmolLM2-360M/1.7B, Qwen2.5-0.5B/1.5B/3B, Gemma3-1B/4B, Phi4-mini, Llama3.2-1B/3B, TinyLlama, StableLM2-1.6B), LoRA fine-tuning, GGUF conversion (F16/Q4_K_M/Q8_0), HuggingFace upload
+
+The sparse dataset representation stores rejection counts as `(seq_len, max_rejections_per_pos)` pairs rather than dense `(seq_len, vocab_size)` tensors. For Qwen2.5 (151k vocab), this is a ~1500x memory reduction per sample. Sparse-to-dense conversion via `scatter_add_` occurs at batch time in `compute_loss`.
+
+#### 15.29.4 Preliminary Training Results
+
+Training data: 63,506 rejection records from UltraFeedback binarized preferences (chosen column discarded). Base model: SmolLM2-360M-Instruct with LoRA (rank 16, $\alpha = 32$, 2.3% trainable parameters). Hardware: E2_HIGHCPU_32 (CPU, no GPU).
+
+| Step | Total Loss | Buleyean KL | Contrast Loss | Epoch |
+|------|-----------|-------------|---------------|-------|
+| 10 | 11.13 | 8.932 | 16.27 | 0.003 |
+| 20 | 9.38 | 7.212 | 14.44 | 0.006 |
+| 30 | 6.54 | 4.248 | 11.90 | 0.008 |
+| 40 | 4.83 | 2.568 | 10.11 | 0.011 |
+| 50 | 3.77 | 1.576 | 8.88 | 0.014 |
+
+The Buleyean KL loss decreases from 8.93 to 1.58 in 50 steps -- a 5.7x reduction. The model is converging toward the complement distribution derived from rejection data. The contrast loss decreases more slowly (16.27 to 8.88), indicating the model is gradually reducing probability mass on rejected tokens while the KL term drives the bulk of the learning signal.
+
+*Full training curves, evaluation metrics (Bule entropy, rejection avoidance rate, perplexity), baseline comparisons (SFT, DPO on the same data), hyperparameter ablations ($\alpha$, temperature, LoRA rank), and iterative void walking results will be reported upon completion of the ongoing training runs.*
+
+#### 15.29.5 Iterative Void Walking for Model Improvement
+
+The c0-c3 metacognitive architecture (§15.4) applies directly to iterative model improvement:
+
+**Algorithm 3: Iterative Void Walking for Language Models**
+
+```
+Input: base model M_0, prompt set P, judge J
+for iteration k = 0, 1, 2, ...:
+    c0 (Execute):  Generate N completions per prompt from M_k
+    c1 (Monitor):  J marks rejections, updates void boundary V_k
+    c2 (Evaluate): Compute B^{-1}_k = (H_max - H(complement(V_k))) / T_k
+    c3 (Adapt):    Train M_{k+1} on cumulative void boundary V_0 ∪ ... ∪ V_k
+
+    if B^{-1}_k - B^{-1}_{k-1} < epsilon:
+        break  // inverse Bule has plateaued
+return M_k
+```
+
+The void boundary accumulates across iterations -- each iteration adds new rejections to the existing boundary rather than replacing it. The inverse Bule metric $B^{-1}$ measures learning efficiency from rejection (nats per round). When the inverse Bule plateaus, the model has extracted all available information from the void boundary and further iteration is not productive.
+
+#### 15.29.6 Falsifiable Predictions
+
+1. **Rejection sufficiency**: Buleyean RL trained on rejection data alone will match or exceed DPO trained on the same data with preference pairs, on held-out prompt evaluation. *Falsification*: DPO win-rate exceeds Buleyean RL win-rate by more than 5 percentage points on 1,000+ held-out prompts with 95% CI excluding zero.
+
+2. **Bule entropy monotonicity**: Bule entropy of model output distributions will decrease monotonically across training steps. *Falsification*: Bule entropy increases for more than 100 consecutive steps during training.
+
+3. **Iterative improvement**: Each iteration of void walking will produce a model with lower Bule entropy than the previous iteration, for at least 3 iterations. *Falsification*: Bule entropy increases between consecutive void walking iterations within the first 5 iterations.
+
+4. **Sliver exploration**: The sliver (+1) guarantees that no token is permanently suppressed. Models trained with the sliver will exhibit higher diversity (measured by distinct-4 score) than models trained with a zero-floor variant. *Falsification*: Zero-floor variant achieves higher distinct-4 on 1,000+ generations.
+
+5. **Information asymmetry**: Per-rejection information gain (measured by Bule entropy reduction per rejection) will exceed per-selection information gain by a factor of at least $N/2$ for a vocabulary of size $N$ on the first 100 training steps. *Falsification*: Measured ratio falls below $N/4$.
+
+**Companion artifacts**: Open-source library at `github.com/forkjoin-ai/buleyean-rl`. Training data: 63,506 UltraFeedback rejection records at `gs://affectively-models/buleyean-rl/data/rejections.jsonl`. Cloud Build configs for reproducible training. Evaluation harness (`evaluate.py`), iterative void walking (`void_walk.py`), and hyperparameter sweep infrastructure (`launch-sweep.sh`).
+
 ## 16. Validation
 
 The claims are backed by executable tests across five primary, project-authored evidence suites:
