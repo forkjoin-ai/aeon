@@ -1,6 +1,6 @@
 # The Triangle as Fold: Three Traditions, One Topology
 
-*A companion essay to "Irreversibility Creates Being"*
+*A companion essay to "Being Irreversible"*
 
 ---
 

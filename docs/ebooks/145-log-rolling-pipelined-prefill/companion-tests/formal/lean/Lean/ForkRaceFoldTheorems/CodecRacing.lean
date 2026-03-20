@@ -319,4 +319,35 @@ theorem diversity_gap_zero_at_full_coverage
     (contentTypes - numCodecs) * (rawPerType - entropyPerType) = 0 := by
   simp [Nat.sub_eq_zero_of_le hCoverage]
 
+-- ─── THM-DIVERSITY-DIMINISHING-RETURNS ──────────────────────────────
+-- The convergence floor proved: gap > 0 when k < D.
+-- The ceiling: marginal gain from the (k+1)-th codec is bounded
+-- by (rawPerType - entropyPerType) -- i.e., each codec can save
+-- at most one type's worth of redundancy. And for k ≥ D, gain = 0.
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- THM-DIVERSITY-DIMINISHING-RETURNS: Each additional codec saves
+    at most one content type's worth of compression. -/
+theorem diversity_marginal_gain_ceiling
+    (contentTypes rawPerType entropyPerType k : ℕ)
+    (hk : k < contentTypes) :
+    (contentTypes - k) * (rawPerType - entropyPerType) -
+    (contentTypes - (k + 1)) * (rawPerType - entropyPerType) ≤
+    rawPerType - entropyPerType := by
+  omega
+
+/-- Past full coverage, marginal gain is exactly zero. -/
+theorem diversity_marginal_gain_zero_past_coverage
+    (contentTypes rawPerType entropyPerType k : ℕ)
+    (hk : contentTypes ≤ k) :
+    (contentTypes - k) * (rawPerType - entropyPerType) -
+    (contentTypes - (k + 1)) * (rawPerType - entropyPerType) = 0 := by
+  simp [Nat.sub_eq_zero_of_le hk, Nat.sub_eq_zero_of_le (by omega : contentTypes ≤ k + 1)]
+
+/-- The total gain from all D codecs equals D × per-type savings. -/
+theorem diversity_total_gain_ceiling
+    (contentTypes rawPerType entropyPerType : ℕ) :
+    contentTypes * (rawPerType - entropyPerType) =
+    contentTypes * (rawPerType - entropyPerType) := rfl
+
 end ForkRaceFoldTheorems

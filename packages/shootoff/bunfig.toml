@@ -1,0 +1,5 @@
+# Shootoff benchmark tests perform heavy compression (brotli, gzip, topological)
+# on MB-scale payloads across 9 protocols x 5 algorithms x multiple sites.
+# Individual tests can take 30-120s; the full suite can take 5+ minutes.
+[test]
+timeout = 600000

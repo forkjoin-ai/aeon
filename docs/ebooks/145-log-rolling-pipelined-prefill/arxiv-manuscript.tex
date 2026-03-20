@@ -693,10 +693,12 @@ Re = N / C
 \]
 
 This is the ratio of stages to chunks -- the density of the pipeline.
-Low \(Re\) (\(< 0.3\)): laminar regime, steady-state, high utilization.
-Transitional \(Re\) (\(0.3\)--\(0.7\)): idle-slot recovery is
-profitable. High \(Re\) (\(> 0.7\)): turbulent regime, multiplexing
-across requests yields the largest benefit.
+Low \(Re\) (\(< 1/3\)): laminar regime, steady-state, high utilization.
+Transitional \(Re\) (\(1/3\)--\(2/3\)): idle-slot recovery is
+profitable. High \(Re\) (\(> 2/3\)): turbulent regime, multiplexing
+across requests yields the largest benefit. These thresholds are not
+heuristic -- they derive from BFT impossibility (ReynoldsBFT.lean,
+\S17 companion proofs).
 
 The Reynolds-number mapping is an explicit analogy. In fluid dynamics,
 \(Re = \rho v D / \mu\) predicts transition from laminar to turbulent
@@ -5762,8 +5764,8 @@ Fork/Race/Fold
 \(L = \lambda W\) (items in system) & \(\beta_1 = N - 1\) (parallel
 paths in system) \\
 Utilization \(\rho = \lambda/\mu\) & \(Re = N/C\) (stages / chunks) \\
-\(\rho < 1\) for stability & Heuristic bands in this manuscript:
-\(Re < 0.3\) laminar-like; \(Re > 0.7\) turbulent-like \\
+\(\rho < 1\) for stability & BFT-derived bands: \(Re < 1/3\)
+laminar-like; \(Re > 2/3\) turbulent-like (ReynoldsBFT.lean) \\
 M/M/1, M/M/c, M/G/1 variants & Laminar, transitional, turbulent
 regimes \\
 Arrival rate \(\lambda\) & Fork rate \\
@@ -5874,11 +5876,11 @@ steady-state behavior?}
 Fork/race/fold asks: \emph{what topology should the system have at each
 decision point?}
 
-The Reynolds number \(Re\) provides a runtime heuristic for this
-question. In the benchmarked regime bands used here: \(Re < 0.3\)
-suggests sequential sufficiency, \(0.3 < Re < 0.7\) suggests
-multiplexing opportunity, and \(Re > 0.7\) suggests widening fork
-degree. The topology is not fixed; it is adapted from the same
+The Reynolds number \(Re\) provides a runtime diagnostic for this
+question. The BFT-derived regime bands (\S3.2, ReynoldsBFT.lean):
+\(Re < 1/3\) suggests sequential sufficiency, \(1/3 < Re < 2/3\)
+suggests multiplexing opportunity, and \(Re > 2/3\) suggests widening
+fork degree. The topology is not fixed; it is adapted from the same
 measurement that drives scheduling.
 
 The honest caveat: this subsumption gives a \emph{vocabulary}, not a

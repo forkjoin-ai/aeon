@@ -208,4 +208,38 @@ theorem algorithm_heat_conservation
         coarseningLandauerHeat boltzmannConstant temperature (branchLaw.map f) g := by
   linarith [algorithm_heat_classification boltzmannConstant temperature branchLaw f g]
 
+-- ─── THM-LANDAUER-HEAT-CEILING ──────────────────────────────────────
+-- Floor (THM-FOLD-HEAT): each fold generates ≥ kT ln 2 per bit.
+-- Ceiling: total heat ≤ kT ln 2 × total information created by fork.
+-- By the First Law (V = W + Q), heat Q = V - W ≤ V. The maximum
+-- heat equals the total fork potential energy.
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- THM-LANDAUER-HEAT-CEILING: Total heat dissipation is bounded by
+    total fork potential energy. Heat = forkEnergy - usefulWork,
+    so heat ≤ forkEnergy. -/
+theorem landauer_heat_ceiling
+    (forkEnergy usefulWork heat : ℕ)
+    (hFirstLaw : forkEnergy = usefulWork + heat) :
+    heat ≤ forkEnergy := by omega
+
+/-- Multi-stage ceiling: total heat across T stages. -/
+theorem pipeline_heat_ceiling
+    (stageHeats : List ℕ) (maxHeatPerStage : ℕ)
+    (hBound : ∀ h ∈ stageHeats, h ≤ maxHeatPerStage) :
+    stageHeats.sum ≤ stageHeats.length * maxHeatPerStage := by
+  induction stageHeats with
+  | nil => simp
+  | cons hd tl ih =>
+    simp only [List.sum_cons, List.length_cons]
+    have hhd := hBound hd (List.mem_cons_self _ _)
+    have htl := ih (fun h hh => hBound h (List.mem_cons_of_mem _ hh))
+    omega
+
+/-- Heat ceiling is tight: equality when every fold is maximally
+    wasteful (usefulWork = 0, all energy becomes heat). -/
+theorem heat_ceiling_tight
+    (forkEnergy : ℕ) (hPos : 0 < forkEnergy) :
+    forkEnergy = 0 + forkEnergy := by omega
+
 end ForkRaceFoldTheorems

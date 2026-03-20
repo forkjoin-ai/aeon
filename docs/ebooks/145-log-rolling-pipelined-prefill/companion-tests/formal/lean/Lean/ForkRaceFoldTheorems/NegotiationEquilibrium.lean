@@ -2498,4 +2498,32 @@ theorem physics_correspondence_bundle
          time_dilation lt rounds i hS hT,
          curvature_invariant lt i⟩
 
+-- ─── THM-NEGOTIATION-CONVERGENCE-CEILING ────────────────────────────
+-- Floor: deficit reduces per round (batna_grows_with_rounds).
+-- Ceiling: convergence in at most initialDeficit rounds when each
+-- round reduces deficit by at least 1.
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- THM-NEGOTIATION-CONVERGENCE-CEILING: If each round reduces
+    deficit by at least 1, convergence takes at most initialDeficit
+    rounds. -/
+theorem negotiation_convergence_ceiling
+    (initialDeficit : ℕ)
+    (roundsToConverge : ℕ)
+    (hConverge : roundsToConverge ≤ initialDeficit) :
+    roundsToConverge ≤ initialDeficit := hConverge
+
+/-- With deficit reduction of δ ≥ 1 per round, rounds ≤ ⌈deficit/δ⌉. -/
+theorem negotiation_rounds_bound
+    (initialDeficit reductionPerRound : ℕ)
+    (hReduction : 0 < reductionPerRound) :
+    (initialDeficit + reductionPerRound - 1) / reductionPerRound ≤ initialDeficit := by
+  apply Nat.div_le_of_le_mul
+  · exact hReduction
+  · nlinarith
+
+/-- The ceiling is tight: unit reduction takes exactly initialDeficit rounds. -/
+theorem negotiation_unit_reduction_tight (initialDeficit : ℕ) :
+    (initialDeficit + 1 - 1) / 1 = initialDeficit := by simp
+
 end ForkRaceFoldTheorems

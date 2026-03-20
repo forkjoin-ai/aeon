@@ -429,7 +429,7 @@ describe('Protocol Shootoff', () => {
       expect(aeonTopoFull.totalCompressedBytes).toBeLessThanOrEqual(aeonTopoFull.totalRawBytes);
       // Topo-full should be within 10% of brotli (9-byte per-chunk header overhead)
       expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonBrotli.totalCompressedBytes * 1.15);
-    });
+    }, 120_000);
 
     it('Microfrontend: brotli vs topo-pure vs topo-full across all protocols', () => {
       const results: SiteResult[] = [];
@@ -451,7 +451,7 @@ describe('Protocol Shootoff', () => {
       expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonTopoPure.totalCompressedBytes);
       // Topo-full trades 9-byte/chunk headers for per-chunk adaptivity — within 25% of brotli
       expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonBrotli.totalCompressedBytes * 1.25);
-    });
+    }, 120_000);
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -557,6 +557,6 @@ describe('Protocol Shootoff', () => {
       }
 
       console.log();
-    });
+    }, 300_000);
   });
 });
