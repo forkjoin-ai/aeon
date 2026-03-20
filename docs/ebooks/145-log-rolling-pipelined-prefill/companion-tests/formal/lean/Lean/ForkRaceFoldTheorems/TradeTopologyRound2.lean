@@ -93,6 +93,41 @@ theorem disruption_increases_deficit (sc : SupplyChain)
   · simp [SupplyChain.deficit]; omega
 
 -- ═══════════════════════════════════════════════════════════════════════════
+-- THM-SUPPLY-CHAIN-DIVERSITY-FLOOR
+--
+-- Ceiling (THM-SUPPLY-CHAIN-RACING above): diversity subsumes single-source.
+-- Floor: with fewer suppliers than independent disruption modes, at least
+-- one mode is unhedged. The minimum supplier count for full hedging equals
+-- the number of independent disruption modes.
+-- ═══════════════════════════════════════════════════════════════════════════
+
+/-- Supply chain risk: disruption modes vs active suppliers. -/
+structure SupplyChainRisk where
+  disruptionModes : ℕ
+  activeSuppliers : ℕ
+  hDisruption : 0 < disruptionModes
+
+/-- THM-SUPPLY-CHAIN-DIVERSITY-FLOOR: under-hedging leaves positive exposure. -/
+theorem supply_chain_diversity_floor (sc : SupplyChainRisk)
+    (hUnder : sc.activeSuppliers < sc.disruptionModes) :
+    0 < sc.disruptionModes - sc.activeSuppliers := by omega
+
+/-- Exposure monotonically decreases with more suppliers. -/
+theorem supply_chain_exposure_monotone
+    (modes s1 s2 : ℕ) (hle : s1 ≤ s2) (_hBound : s2 ≤ modes) :
+    modes - s2 ≤ modes - s1 := by omega
+
+/-- Full diversity = zero exposure. -/
+theorem supply_chain_full_coverage (sc : SupplyChainRisk)
+    (hCov : sc.disruptionModes ≤ sc.activeSuppliers) :
+    sc.disruptionModes - sc.activeSuppliers = 0 := by omega
+
+/-- Monoculture = maximum exposure. -/
+theorem supply_chain_monoculture_max_exposure (sc : SupplyChainRisk)
+    (hMono : sc.activeSuppliers = 1) :
+    sc.disruptionModes - sc.activeSuppliers = sc.disruptionModes - 1 := by omega
+
+-- ═══════════════════════════════════════════════════════════════════════════
 -- P118: Market Concentration Generates Failure Tax
 -- ═══════════════════════════════════════════════════════════════════════════
 

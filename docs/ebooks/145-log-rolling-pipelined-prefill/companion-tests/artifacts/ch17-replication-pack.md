@@ -8,7 +8,7 @@
 
 | Label | Category | Path | Bytes | SHA-256 |
 | --- | --- | --- | ---: | --- |
-| Manuscript draft | `document` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md` | 434495 | `455e6cdc90cf0052fecb142727a10e0ce0de0c42690d99ce01427e32e4914873` |
+| Manuscript draft | `document` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md` | 648201 | `c52a3b8dfb3e44123bce07cd188f14196ece52528845200fb3919f7d125e92a7` |
 | Companion README | `document` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md` | 42463 | `7cd318a0563b0ec6a0ec35e2128624aa149a10a3db39ea3581ed86dff839a4fa` |
 | Evidence workflow | `workflow` | `.github/workflows/ch17-evidence.yml` | 1945 | `737235df866defea29f4440f1cd5bcd6a065c776b51846472090ae21b653019f` |
 | Quantum ablation artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/quantum-recombination-ablation.json` | 1396 | `6920d51512b943fc9a5e1aa1292dcce92ef1a30f83be89392f929e2e8b336181` |
@@ -37,7 +37,7 @@
 | Expansion figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-boundary-expansion-figure.svg` | 20299 | `4dc8ba571ad5d32799c71bcde1da67a3f89d38027b39de3d03a0ea99a2114814` |
 | MoA topology figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-topology-figure.svg` | 34925 | `fc9025e2afde55e1ff4b6a194a5c08e550ff09bd27d9545139271694ced41022` |
 | MoA whip-curvature figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-whip-curvature-figure.svg` | 27936 | `f5d42a16b9d8e45ec304dc74e89cc642492b117941daf3f0504636206c03b005` |
-| Hetero MoA fabric curvature figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-hetero-moa-fabric-curvature-figure.svg` | 11720 | `fdf83f9acce8507eeb55c658fd1cc4e5295ef729df2e058127acd6347456d15b` |
+| Hetero MoA fabric curvature figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-hetero-moa-fabric-curvature-figure.svg` | 10971 | `a4f0088269e69ccf05a8f5ca99c54d513cfe21725a71192d68775e8c0c34f5e8` |
 | MoA figure artifact | `artifact` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-moa-transformer-figure.svg` | 7914 | `c917d1e073edfee224b8eafc023ef94e4397bfa59b523b7b1026566049a447df` |
 | Replication-pack script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-replication-pack.ts` | 2404 | `6f4a7adaa41f29430d08851aab7410fc63abe51502cc6b153734a45513030e58` |
 | Gate 1 figure script | `script` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/scripts/ch17-gate1-wallclock-figure.ts` | 3861 | `75e564d4428a0e14dce5802041d9de61d42bdb5c3f5c63f269c8ea1755c91705` |
@@ -67,8 +67,8 @@
 | Lean claims | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/Claims.lean` | 15046 | `a41b11dbabc9c2b51a27bb60884705644249aaffde103bc647322642698286a9` |
 | Lean witness catalog | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/Witnesses.lean` | 4748 | `3a10680a28eaab8ae9cba391848341bb1c167c41d9267a25ba65e26e9637f7d1` |
 | Lean adaptive witness catalog | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/AdaptiveWitnesses.lean` | 4125 | `6eafe2bb1078c82152b3c5010832eb20ba45de8522050c59a2eb586ad63668aa` |
-| Theorem ledger | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md` | 270245 | `1ca24ce74e34b01fb31d4653e42bda38da5d256f9ac92618ad4025f93df3fae1` |
-| Gnosis theorem workspace | `formal` | `open-source/gnosis/GnosisProofs.lean` | 127815 | `9694920dd7b608cfc717b2ecb62c956b707081db8c53429d791586e45b426d15` |
+| Theorem ledger | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md` | 347634 | `de5df666c7486f5bbbcd2e7e5aa4d6e2e99ace620179f9fc65f7e6c2ac35c3fd` |
+| Gnosis theorem workspace | `formal` | `open-source/gnosis/GnosisProofs.lean` | 193562 | `d7fe1898edd8e2245f015f4f81fb4d025f291cf199a58540f39be946082286a8` |
 | Sleep-debt TLA+ model | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebt.tla` | 3203 | `e99b5ea2e86101aa515b081686c02b79bf08b6c54f2748c5673732a97f177088` |
 | Sleep-debt schedule-threshold TLA+ model | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebtScheduleThreshold.tla` | 1615 | `ac8a4a88565fafabe5480fcb4a26e8a0f7c7048943c576799b853c96cb65ee78` |
 | Sleep-debt weighted-threshold TLA+ model | `formal` | `open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/SleepDebtWeightedThreshold.tla` | 2034 | `ae0cac6f4b4b7668f68bff0e9c05832e6dbbbb547d0e95846121d035c34a6814` |

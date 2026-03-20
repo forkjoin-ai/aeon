@@ -13,7 +13,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { TopologicalCompressor } from '@aeon/compression';
+import { TopologicalCompressor } from '@a0n/aeon/compression';
 import {
   RawCodec,
   RLECodec,
@@ -26,7 +26,7 @@ import {
   getCodecById,
   PURE_JS_CODECS,
   BUILTIN_CODECS,
-} from '@aeon/compression';
+} from '@a0n/aeon/compression';
 describe('Topological Compression (§8.6)', () => {
 
   describe('Core Claim: Per-Chunk Adaptive Codec Selection', () => {

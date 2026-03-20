@@ -6,8 +6,8 @@
       "label": "Manuscript draft",
       "category": "document",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md",
-      "sizeBytes": 434495,
-      "sha256": "455e6cdc90cf0052fecb142727a10e0ce0de0c42690d99ce01427e32e4914873"
+      "sizeBytes": 648201,
+      "sha256": "c52a3b8dfb3e44123bce07cd188f14196ece52528845200fb3919f7d125e92a7"
     },
     {
       "label": "Companion README",
@@ -209,8 +209,8 @@
       "label": "Hetero MoA fabric curvature figure artifact",
       "category": "artifact",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-hetero-moa-fabric-curvature-figure.svg",
-      "sizeBytes": 11720,
-      "sha256": "fdf83f9acce8507eeb55c658fd1cc4e5295ef729df2e058127acd6347456d15b"
+      "sizeBytes": 10971,
+      "sha256": "a4f0088269e69ccf05a8f5ca99c54d513cfe21725a71192d68775e8c0c34f5e8"
     },
     {
       "label": "MoA figure artifact",
@@ -419,15 +419,15 @@
       "label": "Theorem ledger",
       "category": "formal",
       "path": "open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md",
-      "sizeBytes": 270245,
-      "sha256": "1ca24ce74e34b01fb31d4653e42bda38da5d256f9ac92618ad4025f93df3fae1"
+      "sizeBytes": 347634,
+      "sha256": "de5df666c7486f5bbbcd2e7e5aa4d6e2e99ace620179f9fc65f7e6c2ac35c3fd"
     },
     {
       "label": "Gnosis theorem workspace",
       "category": "formal",
       "path": "open-source/gnosis/GnosisProofs.lean",
-      "sizeBytes": 127815,
-      "sha256": "9694920dd7b608cfc717b2ecb62c956b707081db8c53429d791586e45b426d15"
+      "sizeBytes": 193562,
+      "sha256": "d7fe1898edd8e2245f015f4f81fb4d025f291cf199a58540f39be946082286a8"
     },
     {
       "label": "Sleep-debt TLA+ model",

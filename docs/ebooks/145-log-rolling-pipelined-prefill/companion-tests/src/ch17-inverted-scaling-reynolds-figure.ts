@@ -440,9 +440,9 @@ function renderRegimePanel(
   const xRange = report.reynoldsRange;
 
   const bandSpecs = [
-    { low: 0.1, high: 0.3, fill: '#dcfce7', label: 'laminar' },
-    { low: 0.3, high: 0.7, fill: '#fef3c7', label: 'transitional' },
-    { low: 0.7, high: 20, fill: '#fee2e2', label: 'turbulent' },
+    { low: 0.1, high: 1/3, fill: '#dcfce7', label: 'laminar' },
+    { low: 1/3, high: 2/3, fill: '#fef3c7', label: 'transitional' },
+    { low: 2/3, high: 20, fill: '#fee2e2', label: 'turbulent' },
   ] as const;
 
   for (const band of bandSpecs) {

@@ -18,8 +18,8 @@ import {
   RawCodec,
   RLECodec,
   type CompressionCodec,
-} from '@aeon/compression';
-import { FlowCodec, HEADER_SIZE } from '@aeon/flow';
+} from '@a0n/aeon/compression';
+import { FlowCodec, HEADER_SIZE } from '@a0n/aeon/flow';
 
 function makeRng(seed: number): () => number {
   let state = seed >>> 0;

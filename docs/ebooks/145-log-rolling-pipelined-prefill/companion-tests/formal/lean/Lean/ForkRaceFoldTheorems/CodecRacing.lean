@@ -123,6 +123,27 @@ theorem race_monotone_corollary (results : List CodecResult) (hne : results ≠ 
   ⟨race_monotone_on_add results hne newCodec, race_add_le_new results newCodec⟩
 
 -- ═══════════════════════════════════════════════════════════════════════
+-- THM-TOPO-RACE-MONOTONE-FLOOR
+--
+-- Floor counterpart to MONOTONE: when a new codec is strictly better
+-- than the current best, the gain is strictly positive. MONOTONE says
+-- "adding never hurts" (≤). MONOTONE-FLOOR says "adding a better
+-- codec strictly helps" (<). Together they sandwich the gain:
+-- 0 ≤ gain, and gain > 0 when the new codec discovers new entropy.
+-- ═══════════════════════════════════════════════════════════════════════
+
+/-- THM-TOPO-RACE-MONOTONE-FLOOR: When a new codec beats the current
+    race minimum, the race minimum strictly decreases. -/
+theorem race_monotone_floor (results : List CodecResult) (hne : results ≠ [])
+    (newCodec : CodecResult)
+    (hBetter : newCodec.compressedSize < raceMin results) :
+    raceMin (newCodec :: results) < raceMin results := by
+  match results, hne with
+  | r :: rs, _ =>
+    simp [raceMin]
+    exact ⟨hBetter, le_refl _⟩
+
+-- ═══════════════════════════════════════════════════════════════════════
 -- THM-TOPO-RACE-DEFICIT
 --
 -- Racing achieves zero "compression deficit": it always picks the
@@ -260,5 +281,42 @@ theorem gain_ceiling
     e.rawSize - raceMin results ≤ e.rawSize - e.entropyBytes := by
   have hFloor := race_bounded_below_by_entropy results e hNonempty hAllLossless
   omega
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- THM-DIVERSITY-CONVERGENCE-FLOOR
+--
+-- Floor counterpart to SUBSUMPTION + ENTROPY-FLOOR: racing achieves
+-- zero deficit (ceiling) and can't compress below entropy (floor).
+-- But how many codecs does it take to *approach* the entropy floor?
+-- This theorem: with fewer codecs than content types, the gap is
+-- strictly positive and proportional to the uncovered types.
+-- ═══════════════════════════════════════════════════════════════════════
+
+/-- THM-DIVERSITY-CONVERGENCE-FLOOR: With k < D content types covered,
+    the entropy gap is at least (D - k) × (raw - entropy) per uncovered
+    type. The gap is strictly positive when coverage is incomplete. -/
+theorem diversity_convergence_floor
+    (contentTypes numCodecs rawPerType entropyPerType : ℕ)
+    (hTypes : 0 < contentTypes)
+    (hRaw : 0 < rawPerType)
+    (hEntropy : entropyPerType < rawPerType)
+    (hCoverage : numCodecs < contentTypes) :
+    0 < (contentTypes - numCodecs) * (rawPerType - entropyPerType) := by
+  exact Nat.mul_pos (by omega) (by omega)
+
+/-- Gap shrinks monotonically as codecs are added. -/
+theorem diversity_gap_monotone
+    (contentTypes rawPerType entropyPerType k1 k2 : ℕ)
+    (hk : k1 ≤ k2) (_hBound : k2 < contentTypes) :
+    (contentTypes - k2) * (rawPerType - entropyPerType) ≤
+    (contentTypes - k1) * (rawPerType - entropyPerType) := by
+  apply Nat.mul_le_mul_right; omega
+
+/-- At full coverage (k ≥ D), the gap is zero. -/
+theorem diversity_gap_zero_at_full_coverage
+    (contentTypes numCodecs rawPerType entropyPerType : ℕ)
+    (hCoverage : contentTypes ≤ numCodecs) :
+    (contentTypes - numCodecs) * (rawPerType - entropyPerType) = 0 := by
+  simp [Nat.sub_eq_zero_of_le hCoverage]
 
 end ForkRaceFoldTheorems

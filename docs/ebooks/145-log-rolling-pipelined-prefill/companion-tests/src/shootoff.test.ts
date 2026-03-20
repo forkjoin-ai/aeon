@@ -11,9 +11,9 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { HEADER_SIZE } from '@aeon/flow';
-import { TopologicalCompressor } from '@aeon/compression';
-import { PURE_JS_CODECS, BUILTIN_CODECS } from '@aeon/compression';
+import { HEADER_SIZE } from '@a0n/aeon/flow';
+import { TopologicalCompressor } from '@a0n/aeon/compression';
+import { PURE_JS_CODECS, BUILTIN_CODECS } from '@a0n/aeon/compression';
 import { brotliCompressSync, gzipSync, constants } from 'node:zlib';
 
 describe('Shootoff (§8.5)', () => {

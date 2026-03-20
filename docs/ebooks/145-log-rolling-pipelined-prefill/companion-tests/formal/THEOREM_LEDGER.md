@@ -8,9 +8,9 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-18)
 
-- **Theorem table entries:** 694 across 61 topical sections (all mechanized, zero open)
+- **Theorem table entries:** 701 across 62 topical sections (all mechanized, zero open)
 - **TLA+ specifications:** 95 (all with matching .cfg files)
-- **Lean theorem modules:** 116 (all sorry-free, includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean + IrreversibilityPredictions.lean + NovelInference.lean + NovelInferenceForms.lean + CancerTreatments.lean + PredictionsRound5.lean + PredictionsRound6.lean + PredictionsRound7.lean + PredictionsRound8.lean + CryptographicPredictions.lean + PredictionsRound9.lean + RaceWinnerPredictions.lean + FinalCompositions.lean + PredictionsRound12.lean + PredictionsRound13.lean + TeleportationEvidencePredictions.lean + AdaptiveBisimPredictions.lean + HeteroCompositionalPredictions.lean + NovelTripleCompositions.lean + NovelTripleCompositions2.lean + ComplementOscillation.lean)
+- **Lean theorem modules:** 116 (seven floor theorems integrated inline into CodecRacing.lean, FrameOverheadBound.lean, Multiplexing.lean, SolomonoffBuleyean.lean, TradeTopologyRound2.lean; all sorry-free; includes CancerTopology.lean + CancerPredictions.lean + NovelPredictions.lean + IrreversibilityPredictions.lean + NovelInference.lean + NovelInferenceForms.lean + CancerTreatments.lean + PredictionsRound5.lean + PredictionsRound6.lean + PredictionsRound7.lean + PredictionsRound8.lean + CryptographicPredictions.lean + PredictionsRound9.lean + RaceWinnerPredictions.lean + FinalCompositions.lean + PredictionsRound12.lean + PredictionsRound13.lean + TeleportationEvidencePredictions.lean + AdaptiveBisimPredictions.lean + HeteroCompositionalPredictions.lean + NovelTripleCompositions.lean + NovelTripleCompositions2.lean + ComplementOscillation.lean)
 - **External proof surface:** GnosisProofs.lean (Betti compiler proofs)
 - **Trace artifacts:** 4 TTrace files + 1 tmp file (retained for counterexample reference)
 
@@ -911,3 +911,17 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-INVERSE-FAVORS-SIMPLE | Least-rejected hypothesis has highest weight | InverseDistribution | `NovelInference.lean:inverse_favors_simple` via `buleyean_concentration` | Mechanized |
 | THM-INVERSE-POSITIVITY | No hypothesis reaches zero probability | InverseDistribution | `NovelInference.lean:inverse_positivity` via `sliver_irreducible` | Mechanized |
 | THM-NOVEL-INFERENCE-MASTER | All five mechanisms compose from three axioms + coherence | BuleyeanSpace | `NovelInference.lean:novel_inference_master` | Mechanized (refine) |
+
+### Floor Theorems: Missing Lower Bounds (§3, §7, §9, §12, §13, §15)
+
+*Seven floor theorems -- one for each subsumption ceiling that lacked a lower-bound counterpart. The sandwich pattern: floor ≤ achievable ≤ ceiling. Each floor integrated inline next to its ceiling in the ceiling's home Lean file. All sorry-free.*
+
+| ID | Claim (paper-level) | Explicit assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| THM-TOPO-RACE-MONOTONE-FLOOR | Adding a strictly better codec gives strictly positive wire reduction | non-empty race list; new codec compressedSize < raceMin | `CodecRacing.lean:race_monotone_floor` | Mechanized (min_le_left) |
+| THM-QUEUE-SEPARATION-FLOOR | For parallel workloads (β₁* > 0), fork/race/fold time < pipelined time. Sequential leaves strictly positive topological waste | ParallelWorkload with items > 1, intrinsicBeta1 > 0 | `Multiplexing.lean:queue_separation_floor` | Mechanized (Nat.div_lt_of_lt_mul, omega) |
+| THM-FRAME-HEADER-INFORMATION-FLOOR | Self-describing frame header ≥ ⌈log₂(N) + log₂(S)⌉/8 + 1 bytes. FlowFrame's 10 bytes satisfies this for 2³² streams/sequences | numStreams, maxSequence > 0; sufficient bits hypothesis | `FrameOverheadBound.lean:frame_header_information_floor` + `flowframe_satisfies_information_floor` + `frame_information_floor_positive` | Mechanized (omega, native_decide) |
+| THM-DIVERSITY-CONVERGENCE-FLOOR | With k < D content types, entropy gap > 0. Gap decreases monotonically in k. Zero at full coverage k ≥ D | contentTypes, rawPerType > 0; entropyPerType < rawPerType; numCodecs < contentTypes | `CodecRacing.lean:diversity_convergence_floor` + `diversity_gap_monotone` + `diversity_gap_zero_at_full_coverage` | Mechanized (Nat.mul_pos, omega) |
+| THM-SOLOMONOFF-VOID-GAIN-FLOOR | Non-zero void mass gives monotonically increasing information gain. Gain ≥ 1 bit when ≥ half options impossible | DecisionWithVoid; impossibleOptions ≥ totalOptions/2 for 1-bit floor | `SolomonoffBuleyean.lean:void_gain_monotone` + `void_gain_at_least_one_bit` | Mechanized (Nat.log2_mono, omega) |
+| THM-PIPELINE-SPEEDUP-FLOOR | Pipelined time ≤ sequential time (pipelining never hurts). Strict for N ≥ 2, P ≥ 2. Ramp-up waste bounded | PipelineParams with items, chunkSize, stages > 0 | `Multiplexing.lean:pipeline_speedup_floor` + `pipeline_strict_speedup` | Mechanized (Nat.div_le_of_le_mul, nlinarith, omega) |
+| THM-SUPPLY-CHAIN-DIVERSITY-FLOOR | With k < D suppliers for D disruption modes, exposure > 0. Monotone in k. Zero at full diversity k ≥ D. Monoculture = maximum exposure | SupplyChainRisk with activeSuppliers < disruptionModes | `TradeTopologyRound2.lean:supply_chain_diversity_floor` + `supply_chain_exposure_monotone` + `supply_chain_full_coverage` + `supply_chain_monoculture_max_exposure` | Mechanized (omega) |

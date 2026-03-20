@@ -16,15 +16,15 @@ import {
   HEADER_SIZE,
   MAX_PAYLOAD_LENGTH,
   FrameReassembler,
-} from '@aeon/flow';
+} from '@a0n/aeon/flow';
 import {
   FORK,
   RACE,
   FOLD,
   VENT,
   FIN,
-} from '@aeon/flow';
-import type { FlowFrame } from '@aeon/flow';
+} from '@a0n/aeon/flow';
+import type { FlowFrame } from '@a0n/aeon/flow';
 
 // FlowCodec uses instance methods — create once
 const codec = FlowCodec.createSync();

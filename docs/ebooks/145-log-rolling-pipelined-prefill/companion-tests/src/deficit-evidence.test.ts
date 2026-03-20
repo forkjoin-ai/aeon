@@ -10,7 +10,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { TopologicalCompressor, BUILTIN_CODECS } from '@aeon/compression';
+import { TopologicalCompressor, BUILTIN_CODECS } from '@a0n/aeon/compression';
 import { EVIDENCE_DATA } from './evidence-sources.js';
 
 function makeRng(seed: number): () => number {
