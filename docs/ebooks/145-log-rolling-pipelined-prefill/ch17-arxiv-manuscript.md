@@ -1,4 +1,4 @@
-# **Irreversibility Creates Being**: A Theory of Directed Process Under Conservation and Ground State
+# **Being Irreversible**: A Theory of Directed Process Under Conservation and Ground State
 
 *[Taylor William Buley](https://www.patreon.com/cw/twbuley) -- Independent Researcher*
 *[taylor@forkjoin.ai](mailto:taylor@forkjoin.ai)*
@@ -222,7 +222,7 @@ $$
 Re = N / C
 $$
 
-This is the ratio of stages to chunks – the density of the pipeline. Low $Re$ ($< 0.3$): laminar regime, steady-state, high utilization. Transitional $Re$ ($0.3$–$0.7$): idle-slot recovery is profitable. High $Re$ ($> 0.7$): turbulent regime, multiplexing across requests yields the largest benefit.
+This is the ratio of stages to chunks -- the density of the pipeline. Low $Re$ ($< 1/3$): laminar regime, steady-state, high utilization. Transitional $Re$ ($1/3$--$2/3$): idle-slot recovery is profitable. High $Re$ ($> 2/3$): turbulent regime, multiplexing across requests yields the largest benefit. These thresholds are not heuristic -- they derive from BFT impossibility (ReynoldsBFT.lean, §17 companion proofs).
 
 The Reynolds-number mapping is an explicit analogy. In fluid dynamics, $Re = \rho v D / \mu$ predicts transition from laminar to turbulent flow: inertial forces (numerator) versus viscous forces (denominator). In computation, the correspondence used here is: stages $N$ as inertial pressure (more stages = more work in flight), and chunks $C$ as viscous pressure (larger chunks = more resistance to context switching). Low $Re$ (large chunks, few stages) is laminar-like; high $Re$ (small chunks, many stages) is turbulent-like. The transition occurs when ramp-up/ramp-down idle cost exceeds multiplexing recovery benefit.
 
@@ -1534,7 +1534,7 @@ In this manuscript’s selected examples – spanning roughly seven orders of ma
 
 These three constraints make fork/race/fold a strong candidate for high efficiency within the class of finite DAG topologies examined in this paper. Systems lacking all three can still use fork/race/fold (transformers have synchronized SGD; photosynthesis has electromagnetic field synchronization). In the finite constructions evaluated here, when all three constraints bind simultaneously, no outperforming alternative was observed in the tested topology set on the measured criteria. Other concurrent models (gossip protocols, epidemic algorithms, eventually-consistent CRDTs) also operate under these constraints but make different tradeoffs – gossip sacrifices deterministic fold for probabilistic convergence, and CRDTs trade single-winner deterministic collapse for ancestry-preserving monotone reconciliation over shared causal history. The claim is not unique optimality; it is selective evidence for pressure toward this topology when systems require both parallelism and deterministic reconciliation. In this paper’s vocabulary, the conveyor belt is the canonical one-path boundary case.
 
-## 6. Instantiation A: Self-Verification (Stack Layer 1 – Foundation)
+## 6. Self-Verification
 
 A strong executable result for expressiveness in this scope: the model checker can verify a model of its own exploration.
 
@@ -1607,7 +1607,7 @@ The opening discussion (section 5) mapped four biological systems to fork/race/f
 
 Pooled log-ratio: **3.280** (95% CI 2.289--4.360). These are effect-size ratios between the fork/race/fold-exhibiting system and its sequential counterpart, confirming that the structural parallels identified in section 5 are backed by quantitative separation in the cited literature.
 
-## 7. Instantiation D: Aeon Flow Protocol (Stack Layer 4)
+## 7. The Aeon Flow Protocol
 
 ### 7.1 Design Principle
 
@@ -1849,7 +1849,7 @@ The pipeline Reynolds number $Re = N/C$ is used here as a complementary topology
 |---|---|
 | $L = \lambda W$ (items in system) | $\beta_1 = N - 1$ (parallel paths in system) |
 | Utilization $\rho = \lambda/\mu$ | $Re = N/C$ (stages / chunks) |
-| $\rho < 1$ for stability | Heuristic bands in this manuscript: $Re < 0.3$ laminar-like; $Re > 0.7$ turbulent-like |
+| $\rho < 1$ for stability | BFT-derived bands: $Re < 1/3$ laminar-like; $Re > 2/3$ turbulent-like (ReynoldsBFT.lean) |
 | M/M/1, M/M/c, M/G/1 variants | Laminar, transitional, turbulent regimes |
 | Arrival rate $\lambda$ | Fork rate |
 | Service rate $\mu$ | Fold rate |
@@ -1885,11 +1885,11 @@ Queueing theory asks: *given a fixed topology, what is the steady-state behavior
 
 Fork/race/fold asks: *what topology should the system have at each decision point?*
 
-The Reynolds number $Re$ provides a runtime heuristic for this question. In the benchmarked regime bands used here: $Re < 0.3$ suggests sequential sufficiency, $0.3 < Re < 0.7$ suggests multiplexing opportunity, and $Re > 0.7$ suggests widening fork degree. The topology is not fixed; it is adapted from the same measurement that drives scheduling.
+The Reynolds number $Re$ provides a runtime diagnostic for this question. The BFT-derived regime bands (§3.2, ReynoldsBFT.lean): $Re < 1/3$ suggests sequential sufficiency, $1/3 < Re < 2/3$ suggests multiplexing opportunity, and $Re > 2/3$ suggests widening fork degree. The topology is not fixed; it is adapted from the same measurement that drives scheduling.
 
 The honest caveat: this subsumption gives a *vocabulary*, not a *solver*. Product-form solutions, heavy-traffic limits, and matrix-analytic methods are additional structure within the fork/race/fold language -- the embedding does not conjure them automatically. What it does provide is a unified notation that covers both fixed-topology (queueing) and dynamic-topology (fork/race/fold) regimes, with $\beta_1$ as the bridge variable.
 
-## 10. Instantiation B: Formal Language Theory (Stack Layer 2)
+## 10. Formal Language Theory
 
 Although it appears fifth in the manuscript’s section order, formal language theory is the second stack layer: a programming language whose source code *is* the computation graph, whose compiler *is* a fork/race/fold pipeline, and whose self-hosting connects the verification foundation below to the scheduler, transport and compression layers above.
 
@@ -2068,6 +2068,32 @@ The same boundary appears from the other side when the wire is improved by share
 
 The effect is exactly where the transport story says it should be. Plaintext is unchanged because there is nothing to negotiate and almost no wire burden to remove. The 2.5 KB JSON fixture collapses from **2,500 B** to **81 B** on the wire yet shows essentially flat throughput, which is evidence that Cloud Run plus Google Frontend overhead dominates at that size. The large compressible assets are different: the 185 KB CSS fixture gains **36.4%** throughput and improves p99 from **328.16 ms** to **182.82 ms**, while the 750 KB JavaScript fixture gains **30.6%** throughput and improves p99 from **797.75 ms** to **317.14 ms**. The operational reading is simple and useful: a shared wire culture does not change the server theorem, but it can materially lower effective transport adversity by letting both ends converge on the same smaller descendant representation.
 
+**Laminar topo-full throughput -- local `x-gnosis`, `wrk -d10s`, Apple M-series / macOS, March 19, 2026**:
+
+The hella-whipped laminar pipeline (Level 8: double-Wallington-rotated, Worthington-whipped, MOA codec racing per chunk) was wired into the benchmark server, replacing static codec negotiation with `laminarPipeline()` backed by a shared void walker that learns codec preferences across requests. Assets are pre-compressed on startup; the void walker's complement distribution converges within the first few requests and prunes losing codecs for subsequent traffic (THM-VOID-GRADIENT).
+
+| Fixture | Threads | Connections | Req/sec | Transfer/sec | Avg latency |
+|---|---:|---:|---:|---:|---:|
+| 750 KB JS bundle | 1 | 1 | 1,196 | 856 MB/s | 1.37 ms |
+| 750 KB JS bundle | 1 | 10 | 1,807 | 1.26 GB/s | 6.1 ms |
+| 750 KB JS bundle | 4 | 100 | 3,841 | 2.68 GB/s | 26 ms |
+| 750 KB JS bundle | 8 | 256 | 5,909 | 4.13 GB/s | 44 ms |
+| 185 KB CSS | 8 | 256 | 13,701 | 2.36 GB/s | 19 ms |
+| 62 B HTML (root) | 8 | 256 | 31,366 | 11.7 MB/s | 8.8 ms |
+
+The small-response ceiling (31K req/sec) is within 6% of the pre-laminar static-variant server (33.5K req/sec), confirming that the laminar pipeline adds negligible overhead to responses that fall below the compression threshold. On large compressible assets, the throughput metric shifts from requests to bandwidth: at 8 threads and 256 connections, the 750 KB JS bundle sustains **4.13 GB/s** of pre-compressed transfer, meaning each of those 5,909 requests delivers approximately 700 KB of topo-raced compressed content. The per-chunk codec racing cost is fully amortized by the pre-warm cache; the steady-state overhead is a map lookup per request.
+
+**Wire byte shootoff -- local `x-gnosis` vs sendfile vs nginx, March 19, 2026**:
+
+| Server | Compress | Raw | Wire | Overhead | vs sendfile |
+|---|---|---:|---:|---:|---:|
+| sendfile() | none | 1.91 MB | 1.91 MB | 0 B (0%) | baseline |
+| nginx | brotli | 1.91 MB | 588.9 KB | 7.6 KB (1.29%) | -69.9% |
+| x-gnosis | brotli | 1.91 MB | 586.2 KB | 4.8 KB (0.83%) | -70.0% |
+| hella-whipped | topo-full | 1.91 MB | 587.0 KB | 370 B (0.06%) | -70.0% |
+
+On the 95-resource microfrontend site, the wire reduction is more dramatic: x-gnosis brotli achieves **-95.3%** and hella-whipped topo-full reaches **-98.0%** vs sendfile, both beating nginx's **-93.7%**. The gap widens with resource count because per-resource framing overhead (headers, chunked transfer boundaries) accumulates in HTTP/1.1 and HTTP/2 but is amortized in the Aeon Flow framing used by hella-whipped (370 B total overhead for 95 resources vs nginx's 54 KB).
+
 This boundary is useful enough to name. Let the **adversity vector** $a$ collect the transport-side harms injected into the wire -- latency floor, jitter scale, retransmit or loss pressure, burst constraint, bandwidth cap, and reset pressure. Let the **Harrigan Margin** be the remaining local recovery slack under that adversity:
 
 $$
@@ -2122,7 +2148,7 @@ The same theorem-indexed reading now gives a safe analysis surface for protocol 
 
 The proof chain closes a loop between formal mathematics and systems engineering. The theorem surface is not a post-hoc verification of code that was written intuitively. The code *follows from* the theorems: the compiler enforces zero deficit at every sink boundary (`ERR_DEFICIT_NONZERO`), the optimizer's passes are themselves structured as fork/race/fold (transform passes sequential, analysis passes forked), and the runtime's LAMINAR codec racing implements the very race that THM-TOPO-RACE-SUBSUMPTION proves optimal. The architecture is not inspired by the mathematics -- it is *derived from* it.
 
-## 11. Instantiation E: Topological Compression (Stack Layer 5 -- Capstone)
+## 11. Adaptive Codec Racing
 
 ### 11.1 The Claim and Its Limits
 
@@ -2335,7 +2361,7 @@ In `open-source/aeon-forge`, this deploy-control-plane surface is exercised by e
 
 The engine includes a wire format bridge to the Aeon Flow protocol. The same 10-byte frame header (§13.2) encodes `WorkFrame<T>` objects for network transmission. Frames encoded by Aeon Pipelines transcode into frames in Aeon Flow, and vice versa. The computation topology is independent of the transport topology.
 
-## 13. Instantiation C: Distributed Staged Computation (Stack Layer 3)
+## 13. Distributed Staged Computation
 
 I implement fork/race/fold in a distributed computation engine with processing stages partitioned across networked nodes – a domain of particular interest to the researcher.
 
@@ -2433,7 +2459,7 @@ The matrix has internal structure beyond the cells. **Rows** tell what each prim
 
 The stack is the paper’s clearest existence demonstration: one set of four primitives (fork, race, fold, vent) yields a scheduling algorithm, wire protocol, compression strategy, verification engine, programming language, sparse expert routing, precomputed inference, a frame-native execution model, and a self-verifying ground state. Each layer is independently useful. Together they form a computational ecosystem where topology, program structure, execution, protocol design, and self-certification are aligned.
 
-## 15. Instantiation I: Void Walking -- Negotiation, Game Theory, and the Shape of Irreversibility (Grade A)
+## 15. Void Walking
 
 I extend fork/race/fold to strategic interaction. Every negotiation, every game, every decision under conflict is a fork/race/fold process where rejected alternatives accumulate in a measurable void boundary. The complement distribution over this boundary is a novel equilibrium concept -- the **Skyrms equilibrium** -- that deviates from Nash by the information content of the rejection history.
 
@@ -3274,7 +3300,7 @@ A comparative analysis between a trusted reference trajectory $\gamma_{\text{ref
 
 **Companion tests for §15.26:** 34 unit tests in `manifold.test.ts` (Fisher metric positivity, inner product consistency, Bhattacharyya coefficient bounds, Fisher-Rao distance symmetry and triangle inequality, scalar curvature formula verification, geodesic curvature sign and magnitude, geodesic interpolation simplex membership and equidistance, manifold coordinate consistency, fraud detection zero for geodesics and high for zigzags, comparative fraud ranking correctness, geodesic path length convergence). Topologies: `curvature-detector.gg` (fraud detection pipeline), `curvature-detector.test.gg` (eight verification tests). Self-hosted: the Fisher metric on the Buleyean distribution composes with the same void boundary primitives from `void.ts` that the Buleyean formula and the four-layer system use.
 
-### 15.23 The Grandfather Paradox: Self-Referential Deficit and the Append-Only Void
+### 15.27 The Grandfather Paradox: Self-Referential Deficit and the Append-Only Void
 
 The Grandfather Paradox -- a time traveler prevents their own ancestor's existence, thereby preventing their own existence, thereby preventing the prevention -- is the canonical temporal self-reference problem. Its standard resolution invokes the Many-Worlds Interpretation: the traveler's action branches the universe into a new timeline rather than altering the original. In the Buleyean framework, this resolution is not a philosophical preference. It is an algebraic necessity.
 
@@ -3286,9 +3312,9 @@ The bootstrap paradox (information with no origin -- a time traveler brings a bo
 
 The connection to quantum measurement (§15.20) is exact. The quantum Observer Effect is a fold that vents $\sqrt{N} - 1$ paths. The grandfather paradox is a fold that would vent the folder's own path. Both are resolved by the same mechanism: the sliver. In quantum mechanics, the sliver means no measurement outcome has exactly zero probability (for any state in the support of $|\psi\rangle$). In the grandfather paradox, the sliver means no causal ancestor can have exactly zero existence weight. Same $+1$. Same formula. Same resolution. The time traveler, the quantum observer, and the TCP packet multiplexer (§15.5) all face the same topological constraint: folds reduce $\beta_1$, but $\beta_1 \geq 0$, and the sliver prevents any path's weight from reaching zero.
 
-**Companion theorems for §15.23:** TLA+ `GrandfatherParadox.tla` (model-checked, seven invariants: `InvAncestorAlive`, `InvTravelerAlive`, `InvNoAnnihilation`, `InvBeta1NonNeg`, `InvBranchPositive`, `InvBranchingMonotone`, `InvConservation`) + Lean theorems in `GrandfatherParadox.lean` (sorry-free): `void_boundary_append_only`, `beta1_floor_zero`, `sliver_prevents_annihilation`, `self_referential_fold_impossible`, `branching_is_fork`, `branch_preserves_original`, `causal_chain_conservation`, `paradox_requires_negative`, `branches_additive`, `bootstrap_dissolves`, `retrocausal_consistency`, `time_travel_is_topology`, `grandfather_paradox_master` (master theorem). Executable tests in `grandfather-paradox.test.ts`: seven test groups (sliver prevents annihilation, self-referential fold impossibility, Many-Worlds as fork, append-only void boundary, bootstrap paradox dissolution, retrocausal consistency, time travel as topology change). Self-hosted.
+**Companion theorems for §15.27:** TLA+ `GrandfatherParadox.tla` (model-checked, seven invariants: `InvAncestorAlive`, `InvTravelerAlive`, `InvNoAnnihilation`, `InvBeta1NonNeg`, `InvBranchPositive`, `InvBranchingMonotone`, `InvConservation`) + Lean theorems in `GrandfatherParadox.lean` (sorry-free): `void_boundary_append_only`, `beta1_floor_zero`, `sliver_prevents_annihilation`, `self_referential_fold_impossible`, `branching_is_fork`, `branch_preserves_original`, `causal_chain_conservation`, `paradox_requires_negative`, `branches_additive`, `bootstrap_dissolves`, `retrocausal_consistency`, `time_travel_is_topology`, `grandfather_paradox_master` (master theorem). Executable tests in `grandfather-paradox.test.ts`: seven test groups (sliver prevents annihilation, self-referential fold impossibility, Many-Worlds as fork, append-only void boundary, bootstrap paradox dissolution, retrocausal consistency, time travel as topology change). Self-hosted.
 
-### 15.24 Five Novel AI Inference Forms: Generation, Decoding, Routing, Ensemble, and Prediction from the Void
+### 15.28 Five Novel AI Inference Forms: Generation, Decoding, Routing, Ensemble, and Prediction from the Void
 
 The Buleyean framework, having proved its structural completeness across queueing, thermodynamics, quantum measurement, cancer genomics, and temporal paradox, now turns to its natural domain: AI inference itself. Five genuinely novel inference paradigms emerge from the mechanized theorem ledger, each composing existing proofs into a new computational mechanism. None appears in the existing literature. Each is proved before any implementation exists.
 
@@ -3391,7 +3417,7 @@ Each strong claim in this manuscript is stated with an explicit evidence boundar
 
 5. **Biological effect-size mapping claim (predeclared range-extraction scope): supported as internal consistency evidence for the listed comparative set.** `companion-tests/artifacts/gate5-bio-effect-size.{json,md}` reports three primary biological condition pairs with positive uncertainty-bounded effect sizes (minimum primary-pair ratio CI low 5.829x; median pair ratio 21.524x; pooled log-ratio 3.280 with 95% CI 2.289-4.360). This claim is bounded to those predeclared manuscript-range pairs and does not assert independent dataset validation or preregistered cross-lab causal inference.
 
-## 18. Instantiation K: The Clockwork -- A Unified Probability Engine (Grade B)
+## 18. The Clockwork
 
 The preceding sections established that $\beta_1$ is the architectural variable separating sequential ($\beta_1 = 0$) and parallel ($\beta_1 > 0$) computation. The covering-space tower (§3.14) showed that every fold projects a covering space onto a base space. The self-verification section (§6) showed that fork/race/fold is closed under self-application. The beauty-optimality surface (THM-BEAUTY-UNCONDITIONAL-FLOOR) showed that zero topological deficit is the unique optimum under the thermodynamic observable coupling. This section asks the obvious next question: what happens when a system can toggle $\beta_1$ at runtime and use the toggle itself as a self-verification mechanism?
 
