@@ -26,10 +26,24 @@ export interface SiteManifest {
 }
 
 /** Compression algorithm */
-export type CompressionAlgo = 'none' | 'gzip' | 'brotli' | 'topo-pure' | 'topo-full';
+export type CompressionAlgo =
+  | 'none'
+  | 'gzip'
+  | 'brotli'
+  | 'topo-pure'
+  | 'topo-full';
 
 /** Protocol under test */
-export type Protocol = 'http1' | 'http2' | 'http3' | 'aeon-flow' | 'aeon-flux-http' | 'aeon-flux-flow' | 'x-gnosis' | 'x-gnosis-topo' | 'hella-whipped';
+export type Protocol =
+  | 'http1'
+  | 'http2'
+  | 'http3'
+  | 'aeon-flow'
+  | 'aeon-flux-http'
+  | 'aeon-flux-flow'
+  | 'x-gnosis'
+  | 'x-gnosis-topo'
+  | 'hella-whipped';
 
 /** Result of serving a single resource through a protocol */
 export interface ResourceResult {

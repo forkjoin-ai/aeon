@@ -37,7 +37,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -54,7 +55,6 @@ function shannonEntropy(probs: number[]): number {
 // ============================================================================
 
 describe('Asymmetric Information: Private Voids', () => {
-
   it('1. one-sided asymmetry: seller knows quality, buyer uncertain', () => {
     const rng = makeRng(42);
     const BINS = 10;
@@ -76,7 +76,13 @@ describe('Asymmetric Information: Private Voids', () => {
       const rv = rng();
       let priceBin = BINS - 1;
       let cum = 0;
-      for (let i = 0; i < BINS; i++) { cum += sellerDist[i]; if (rv < cum) { priceBin = i; break; } }
+      for (let i = 0; i < BINS; i++) {
+        cum += sellerDist[i];
+        if (rv < cum) {
+          priceBin = i;
+          break;
+        }
+      }
 
       // Buyer evaluates: accept if price ≤ estimated quality
       const price = priceBin;
@@ -101,7 +107,9 @@ describe('Asymmetric Information: Private Voids', () => {
     // Buyer's estimate should drift toward true quality
     console.log(`\n  1. One-sided asymmetry:`);
     console.log(`     True quality: ${trueQuality}`);
-    console.log(`     Buyer estimate: ${buyerQualityEstimate.toFixed(1)} (started at 5.0)`);
+    console.log(
+      `     Buyer estimate: ${buyerQualityEstimate.toFixed(1)} (started at 5.0)`
+    );
     console.log(`     Seller void: [${sellerVoid.join(',')}]`);
     console.log(`     Buyer void:  [${buyerVoid.join(',')}]`);
 
@@ -138,15 +146,21 @@ describe('Asymmetric Information: Private Voids', () => {
       // Remaining sellers fulfill at their quality
       const activeSellers = sellers.filter((s) => s.active);
       if (activeSellers.length > 0) {
-        avgExperiencedQuality = activeSellers.reduce((s, a) => s + a.quality, 0) / activeSellers.length;
+        avgExperiencedQuality =
+          activeSellers.reduce((s, a) => s + a.quality, 0) /
+          activeSellers.length;
       }
     }
 
-    const remainingQualities = sellers.filter((s) => s.active).map((s) => s.quality);
+    const remainingQualities = sellers
+      .filter((s) => s.active)
+      .map((s) => s.quality);
     console.log(`  2. Adverse selection:`);
     console.log(`     Exits: ${exits}`);
     console.log(`     Remaining: quality=[${remainingQualities.join(',')}]`);
-    console.log(`     Average quality collapsed to: ${avgExperiencedQuality.toFixed(1)}`);
+    console.log(
+      `     Average quality collapsed to: ${avgExperiencedQuality.toFixed(1)}`
+    );
     console.log('     High-quality sellers exit → market quality degrades.');
 
     // High-quality seller (quality=9) should exit first (minPrice=8 > avgOffer)
@@ -176,8 +190,16 @@ describe('Asymmetric Information: Private Voids', () => {
     const lowSignals = lowNetPayoff > lowNoSignalPayoff; // 2 > 3 → no
 
     console.log(`  3. Costly signaling:`);
-    console.log(`     High type: signal cost=2, net=${highNetPayoff} → ${highSignals ? 'SIGNALS' : 'silent'}`);
-    console.log(`     Low type:  signal cost=8, net=${lowNetPayoff} → ${lowSignals ? 'signals' : 'SILENT'}`);
+    console.log(
+      `     High type: signal cost=2, net=${highNetPayoff} → ${
+        highSignals ? 'SIGNALS' : 'silent'
+      }`
+    );
+    console.log(
+      `     Low type:  signal cost=8, net=${lowNetPayoff} → ${
+        lowSignals ? 'signals' : 'SILENT'
+      }`
+    );
     console.log('     Separating equilibrium: cost difference reveals type.');
 
     expect(highSignals).toBe(true);
@@ -200,18 +222,26 @@ describe('Asymmetric Information: Private Voids', () => {
       // Cheap talk: sender always claims high (no cost to lying)
       const signal = rng() < 0.8 ? 'high' : 'low'; // 80% claim high regardless
 
-      if (signal === 'high' && actualQuality === 'high') highSignalHighQuality++;
+      if (signal === 'high' && actualQuality === 'high')
+        highSignalHighQuality++;
       if (signal === 'high' && actualQuality === 'low') highSignalLowQuality++;
       if (signal === 'low' && actualQuality === 'high') lowSignalHighQuality++;
       if (signal === 'low' && actualQuality === 'low') lowSignalLowQuality++;
     }
 
     // "High" signal carries no information (both types send it)
-    const highSignalAccuracy = highSignalHighQuality / (highSignalHighQuality + highSignalLowQuality);
+    const highSignalAccuracy =
+      highSignalHighQuality / (highSignalHighQuality + highSignalLowQuality);
 
     console.log(`  4. Cheap talk:`);
-    console.log(`     "High" signal: ${highSignalHighQuality} true, ${highSignalLowQuality} false → accuracy=${(highSignalAccuracy * 100).toFixed(1)}%`);
-    console.log(`     Costless signals are babbling: accuracy ≈ base rate (50%).`);
+    console.log(
+      `     "High" signal: ${highSignalHighQuality} true, ${highSignalLowQuality} false → accuracy=${(
+        highSignalAccuracy * 100
+      ).toFixed(1)}%`
+    );
+    console.log(
+      `     Costless signals are babbling: accuracy ≈ base rate (50%).`
+    );
 
     // Accuracy should be near 50% (no better than random)
     expect(highSignalAccuracy).toBeGreaterThan(0.3);
@@ -233,7 +263,7 @@ describe('Asymmetric Information: Private Voids', () => {
       const proposal = Math.floor(rng() * BINS);
 
       // A accepts/rejects based on private void (high void = reject)
-      const acceptProb = 1 - (privateVoid[proposal] / 20);
+      const acceptProb = 1 - privateVoid[proposal] / 20;
       if (rng() > acceptProb) {
         // REJECTION: B observes which bin was rejected
         observedRejections[proposal]++;
@@ -243,12 +273,26 @@ describe('Asymmetric Information: Private Voids', () => {
     // B's observed rejections should correlate with A's private void
     // (bins with high private void should have more observed rejections)
     const privateArgmax = privateVoid.indexOf(Math.max(...privateVoid));
-    const observedArgmax = observedRejections.indexOf(Math.max(...observedRejections));
+    const observedArgmax = observedRejections.indexOf(
+      Math.max(...observedRejections)
+    );
 
     console.log(`  5. Information leakage:`);
-    console.log(`     Private void: [${privateVoid.join(',')}] (peak at bin ${privateArgmax})`);
-    console.log(`     Observed:     [${observedRejections.join(',')}] (peak at bin ${observedArgmax})`);
-    console.log(`     Match: ${privateArgmax === observedArgmax ? 'YES' : 'NO'} -- private void leaked through rejections.`);
+    console.log(
+      `     Private void: [${privateVoid.join(
+        ','
+      )}] (peak at bin ${privateArgmax})`
+    );
+    console.log(
+      `     Observed:     [${observedRejections.join(
+        ','
+      )}] (peak at bin ${observedArgmax})`
+    );
+    console.log(
+      `     Match: ${
+        privateArgmax === observedArgmax ? 'YES' : 'NO'
+      } -- private void leaked through rejections.`
+    );
 
     // The observed rejection pattern should reveal the private void's peak
     expect(observedArgmax).toBe(privateArgmax);
@@ -268,7 +312,10 @@ describe('Asymmetric Information: Private Voids', () => {
       let cum = 0;
       for (let i = 0; i < BINS; i++) {
         cum += honestDist[i];
-        if (rv < cum) { honestActions[i]++; break; }
+        if (rv < cum) {
+          honestActions[i]++;
+          break;
+        }
       }
     }
 
@@ -282,7 +329,10 @@ describe('Asymmetric Information: Private Voids', () => {
       let cum = 0;
       for (let i = 0; i < BINS; i++) {
         cum += actualDist[i];
-        if (rv < cum) { bluffActions[i]++; break; }
+        if (rv < cum) {
+          bluffActions[i]++;
+          break;
+        }
       }
     }
 
@@ -291,16 +341,26 @@ describe('Asymmetric Information: Private Voids', () => {
     const bluffActionDist = bluffActions.map((a) => a / 200);
 
     const honestConsistency = honestActionDist.reduce(
-      (s, v, i) => s + Math.abs(v - honestDist[i]), 0,
+      (s, v, i) => s + Math.abs(v - honestDist[i]),
+      0
     );
     const bluffConsistency = bluffActionDist.reduce(
-      (s, v, i) => s + Math.abs(v - honestDist[i]), 0, // comparing to CLAIMED void
+      (s, v, i) => s + Math.abs(v - honestDist[i]),
+      0 // comparing to CLAIMED void
     );
 
     console.log(`  6. Bluffing detection:`);
-    console.log(`     Honest L1 (claimed vs actual): ${honestConsistency.toFixed(3)}`);
-    console.log(`     Bluffer L1 (claimed vs actual): ${bluffConsistency.toFixed(3)}`);
-    console.log(`     Bluffer detected: ${bluffConsistency > honestConsistency ? 'YES' : 'NO'}`);
+    console.log(
+      `     Honest L1 (claimed vs actual): ${honestConsistency.toFixed(3)}`
+    );
+    console.log(
+      `     Bluffer L1 (claimed vs actual): ${bluffConsistency.toFixed(3)}`
+    );
+    console.log(
+      `     Bluffer detected: ${
+        bluffConsistency > honestConsistency ? 'YES' : 'NO'
+      }`
+    );
 
     // Bluffer's actions should be MORE inconsistent with claimed void
     expect(bluffConsistency).toBeGreaterThan(honestConsistency * 0.5);
@@ -337,8 +397,12 @@ describe('Asymmetric Information: Private Voids', () => {
     console.log(`  7. Vickrey auction (${trials} trials):`);
     console.log(`     Truthful wins: ${truthfulWins}`);
     console.log(`     Strategic (shade 0.8) wins: ${strategicWins}`);
-    console.log(`     Truthful dominates: ${truthfulWins >= strategicWins ? 'YES' : 'NO'}`);
-    console.log('     Second-price auction = mechanism that makes void-sharing dominant.');
+    console.log(
+      `     Truthful dominates: ${truthfulWins >= strategicWins ? 'YES' : 'NO'}`
+    );
+    console.log(
+      '     Second-price auction = mechanism that makes void-sharing dominant.'
+    );
 
     // Truthful should win at least as often (dominant strategy)
     expect(truthfulWins).toBeGreaterThanOrEqual(strategicWins);

@@ -21,12 +21,15 @@ mkdirSync(artifactsDir, { recursive: true });
 
 writeFileSync(
   join(artifactsDir, 'ch17-american-frontier-figure.json'),
-  JSON.stringify(report, null, 2) + '\n',
+  JSON.stringify(report, null, 2) + '\n'
 );
-writeFileSync(join(artifactsDir, 'ch17-american-frontier-figure.svg'), svg + '\n');
+writeFileSync(
+  join(artifactsDir, 'ch17-american-frontier-figure.svg'),
+  svg + '\n'
+);
 writeFileSync(
   join(artifactsDir, 'ch17-american-frontier-figure.md'),
-  markdown + '\n',
+  markdown + '\n'
 );
 
 console.log('Artifacts written to', artifactsDir);

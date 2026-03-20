@@ -50,12 +50,12 @@ function circle(
   radius: number,
   fill: string,
   stroke: string,
-  dashed = false,
+  dashed = false
 ): void {
   svg.push(
     `<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"${
       dashed ? ' stroke-dasharray="7 6"' : ''
-    }/>`,
+    }/>`
   );
 }
 
@@ -67,12 +67,12 @@ function rect(
   height: number,
   fill: string,
   stroke: string,
-  dashed = false,
+  dashed = false
 ): void {
   svg.push(
     `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" ry="18" fill="${fill}" stroke="${stroke}" stroke-width="2"${
       dashed ? ' stroke-dasharray="8 7"' : ''
-    }/>`,
+    }/>`
   );
 }
 
@@ -86,7 +86,7 @@ function label(
     readonly color?: string;
     readonly size?: number;
     readonly weight?: number;
-  } = {},
+  } = {}
 ): void {
   svg.push(
     `<text x="${x}" y="${y}" text-anchor="${
@@ -95,7 +95,7 @@ function label(
       options.size ?? 15
     }" font-weight="${options.weight ?? 400}" fill="${
       options.color ?? '#334155'
-    }">${escapeXml(text)}</text>`,
+    }">${escapeXml(text)}</text>`
   );
 }
 
@@ -110,9 +110,10 @@ function multilineLabel(
     readonly size?: number;
     readonly weight?: number;
     readonly lineHeight?: number;
-  } = {},
+  } = {}
 ): void {
-  const lineHeight = options.lineHeight ?? Math.round((options.size ?? 15) * 1.3);
+  const lineHeight =
+    options.lineHeight ?? Math.round((options.size ?? 15) * 1.3);
   const tspans = lines
     .map((line, index) => {
       const dy = index === 0 ? '0' : String(lineHeight);
@@ -126,7 +127,7 @@ function multilineLabel(
       options.size ?? 15
     }" font-weight="${options.weight ?? 400}" fill="${
       options.color ?? '#334155'
-    }">${tspans}</text>`,
+    }">${tspans}</text>`
   );
 }
 
@@ -146,7 +147,7 @@ function badge(
     readonly size?: number;
     readonly paddingX?: number;
     readonly paddingY?: number;
-  } = {},
+  } = {}
 ): void {
   const size = options.size ?? 14;
   const paddingX = options.paddingX ?? 14;
@@ -161,7 +162,7 @@ function badge(
     width,
     height,
     options.fill ?? '#fff7ed',
-    options.stroke ?? '#f59e0b',
+    options.stroke ?? '#f59e0b'
   );
   label(svg, x, y + size * 0.28, text, {
     size,
@@ -178,7 +179,7 @@ function curve(
     readonly width?: number;
     readonly opacity?: number;
     readonly marker?: 'active' | 'suppressed' | 'guide' | 'none';
-  } = {},
+  } = {}
 ): void {
   const marker =
     options.marker === undefined || options.marker === 'none'
@@ -191,7 +192,7 @@ function curve(
       options.dashed ? ' stroke-dasharray="8 7"' : ''
     }${
       options.opacity === undefined ? '' : ` opacity="${options.opacity}"`
-    }${marker}/>`,
+    }${marker}/>`
   );
 }
 
@@ -208,29 +209,31 @@ function blockAngles(blocks: number, activeBlocks: number): readonly number[] {
     return [150, 30, 330, 210];
   }
 
-  const activeAngles = Array.from({ length: activeBlocks }, (_, index) =>
-    150 - (120 * index) / Math.max(activeBlocks - 1, 1),
+  const activeAngles = Array.from(
+    { length: activeBlocks },
+    (_, index) => 150 - (120 * index) / Math.max(activeBlocks - 1, 1)
   );
   const suppressedCount = Math.max(blocks - activeBlocks, 0);
-  const suppressedAngles = Array.from({ length: suppressedCount }, (_, index) =>
-    330 - (120 * index) / Math.max(suppressedCount - 1, 1),
+  const suppressedAngles = Array.from(
+    { length: suppressedCount },
+    (_, index) => 330 - (120 * index) / Math.max(suppressedCount - 1, 1)
   );
   return [...activeAngles, ...suppressedAngles];
 }
 
-function buildBlocks(report: Ch17MoaWhipCurvatureFigureReport): CurvatureBlock[] {
+function buildBlocks(
+  report: Ch17MoaWhipCurvatureFigureReport
+): CurvatureBlock[] {
   const center = { x: 680, y: 560 };
   const radius = 275;
-  const labels = [
-    ...report.activeBlockLabels,
-    ...report.suppressedBlockLabels,
-  ];
+  const labels = [...report.activeBlockLabels, ...report.suppressedBlockLabels];
   const angles = blockAngles(report.blocks, report.activeBlocks);
 
   return labels.map((labelText, index) => ({
     label: labelText,
     active: index < report.activeBlocks,
-    activeHeads: index < report.activeBlocks ? report.activeHeadsPerLiveBlock : 0,
+    activeHeads:
+      index < report.activeBlocks ? report.activeHeadsPerLiveBlock : 0,
     center: polar(center, radius, angles[index] ?? 0),
   }));
 }
@@ -238,7 +241,7 @@ function buildBlocks(report: Ch17MoaWhipCurvatureFigureReport): CurvatureBlock[]
 function drawCurvedBlock(
   svg: string[],
   block: CurvatureBlock,
-  report: Ch17MoaWhipCurvatureFigureReport,
+  report: Ch17MoaWhipCurvatureFigureReport
 ): { readonly inlet: Point; readonly outlet: Point } {
   const width = 184;
   const height = 176;
@@ -272,9 +275,11 @@ function drawCurvedBlock(
   });
   curve(
     svg,
-    `M ${innerRotation.x + 12} ${innerRotation.y} C ${x + width / 2 - 18} ${y + 18} ${x + width / 2 + 18} ${y + 18} ${innerRouter.x - 12} ${innerRouter.y}`,
+    `M ${innerRotation.x + 12} ${innerRotation.y} C ${x + width / 2 - 18} ${
+      y + 18
+    } ${x + width / 2 + 18} ${y + 18} ${innerRouter.x - 12} ${innerRouter.y}`,
     '#64748b',
-    { marker: 'guide' },
+    { marker: 'guide' }
   );
 
   for (let headIndex = 0; headIndex < report.headsPerBlock; headIndex++) {
@@ -293,36 +298,49 @@ function drawCurvedBlock(
     });
     curve(
       svg,
-      `M ${innerRouter.x} ${innerRouter.y + 12} C ${innerRouter.x - 12} ${head.y - 26} ${head.x + 12} ${head.y - 28} ${head.x} ${head.y - 13}`,
+      `M ${innerRouter.x} ${innerRouter.y + 12} C ${innerRouter.x - 12} ${
+        head.y - 26
+      } ${head.x + 12} ${head.y - 28} ${head.x} ${head.y - 13}`,
       headActive ? '#0f766e' : '#94a3b8',
       {
         dashed: !headActive,
         marker,
-      },
+      }
     );
     curve(
       svg,
-      `M ${head.x} ${head.y + 13} C ${head.x} ${head.y + 30} ${innerWhip.x + (head.x < innerWhip.x ? -18 : 18)} ${innerWhip.y - 24} ${innerWhip.x} ${innerWhip.y - 16}`,
+      `M ${head.x} ${head.y + 13} C ${head.x} ${head.y + 30} ${
+        innerWhip.x + (head.x < innerWhip.x ? -18 : 18)
+      } ${innerWhip.y - 24} ${innerWhip.x} ${innerWhip.y - 16}`,
       headActive ? '#0f766e' : '#94a3b8',
       {
         dashed: !headActive,
         marker,
-      },
+      }
     );
   }
 
   circle(svg, innerWhip.x, innerWhip.y, 16, '#fff7ed', '#c2410c', dashed);
   // Offset "inner whip" label below the dashed block border to avoid overlap
   const innerWhipLabelY = innerWhip.y + 46;
-  const innerWhipLabelWidth = estimateTextWidth(report.curvatureView.innerEnvelopeLabel, 12) + 12;
+  const innerWhipLabelWidth =
+    estimateTextWidth(report.curvatureView.innerEnvelopeLabel, 12) + 12;
   const innerWhipLabelHeight = 18;
   svg.push(
-    `<rect x="${innerWhip.x - innerWhipLabelWidth / 2}" y="${innerWhipLabelY - innerWhipLabelHeight / 2 - 2}" width="${innerWhipLabelWidth}" height="${innerWhipLabelHeight}" fill="${fill}" rx="4" ry="4"/>`,
+    `<rect x="${innerWhip.x - innerWhipLabelWidth / 2}" y="${
+      innerWhipLabelY - innerWhipLabelHeight / 2 - 2
+    }" width="${innerWhipLabelWidth}" height="${innerWhipLabelHeight}" fill="${fill}" rx="4" ry="4"/>`
   );
-  label(svg, innerWhip.x, innerWhipLabelY, report.curvatureView.innerEnvelopeLabel, {
-    size: 12,
-    color: '#7c2d12',
-  });
+  label(
+    svg,
+    innerWhip.x,
+    innerWhipLabelY,
+    report.curvatureView.innerEnvelopeLabel,
+    {
+      size: 12,
+      color: '#7c2d12',
+    }
+  );
 
   return {
     inlet: { x: x + width / 2, y: y },
@@ -331,7 +349,7 @@ function drawCurvedBlock(
 }
 
 export function buildCh17MoaWhipCurvatureFigureReport(
-  topology: Ch17MoaTopologyFigureReport,
+  topology: Ch17MoaTopologyFigureReport
 ): Ch17MoaWhipCurvatureFigureReport {
   return {
     label: 'ch17-moa-whip-curvature-figure-v1',
@@ -357,7 +375,7 @@ export function buildCh17MoaWhipCurvatureFigureReport(
 }
 
 export function renderCh17MoaWhipCurvatureFigureMarkdown(
-  report: Ch17MoaWhipCurvatureFigureReport,
+  report: Ch17MoaWhipCurvatureFigureReport
 ): string {
   const lines: string[] = [];
   lines.push('# Chapter 17 MoA Whip Curvature Figure');
@@ -367,27 +385,31 @@ export function renderCh17MoaWhipCurvatureFigureMarkdown(
   lines.push(`- Primitive: \`${report.primitive}\``);
   lines.push(`- Sparse GG topology: \`${report.sparseTopologyPath}\``);
   lines.push(
-    `- Outer Wallington stages/chunks: \`${report.stages}\` / \`${report.chunks}\``,
+    `- Outer Wallington stages/chunks: \`${report.stages}\` / \`${report.chunks}\``
   );
   lines.push(
-    `- Live blocks: \`${report.activeBlockLabels.join(', ')}\`; suppressed blocks: \`${report.suppressedBlockLabels.join(', ')}\``,
+    `- Live blocks: \`${report.activeBlockLabels.join(
+      ', '
+    )}\`; suppressed blocks: \`${report.suppressedBlockLabels.join(', ')}\``
   );
   lines.push(
-    `- Live heads per live block: \`${report.activeHeadLabels.join(', ')}\`; suppressed heads: \`${report.suppressedHeadLabels.join(', ')}\``,
+    `- Live heads per live block: \`${report.activeHeadLabels.join(
+      ', '
+    )}\`; suppressed heads: \`${report.suppressedHeadLabels.join(', ')}\``
   );
   lines.push(
-    `- Curvature view: \`${report.curvatureView.outerEnvelopeLabel}\`, \`${report.curvatureView.innerEnvelopeLabel}\`, \`${report.curvatureView.foldSnapLabel}\``,
+    `- Curvature view: \`${report.curvatureView.outerEnvelopeLabel}\`, \`${report.curvatureView.innerEnvelopeLabel}\`, \`${report.curvatureView.foldSnapLabel}\``
   );
   lines.push('');
   lines.push(
-    'Interpretation: this supplemental view keeps the same sparse `StructuredMoA` topology but bends the paths into a wraparound composition, so the Worthington whip reads as a curved enclosure around the routed blocks rather than a straight up-down collapse.',
+    'Interpretation: this supplemental view keeps the same sparse `StructuredMoA` topology but bends the paths into a wraparound composition, so the Worthington whip reads as a curved enclosure around the routed blocks rather than a straight up-down collapse.'
   );
   lines.push('');
   return `${lines.join('\n')}\n`;
 }
 
 export function renderCh17MoaWhipCurvatureFigureSvg(
-  report: Ch17MoaWhipCurvatureFigureReport,
+  report: Ch17MoaWhipCurvatureFigureReport
 ): string {
   const width = 1360;
   const height = 960;
@@ -406,18 +428,22 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
   const svg: string[] = [];
 
   svg.push(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`
   );
   svg.push('<title id="title">Chapter 17 MoA whip curvature figure</title>');
   svg.push(
-    '<desc id="desc">Supplemental artifact-generated MoA architecture figure that bends the sparse StructuredMoA paths into a wraparound whip envelope around the routed blocks.</desc>',
+    '<desc id="desc">Supplemental artifact-generated MoA architecture figure that bends the sparse StructuredMoA paths into a wraparound whip envelope around the routed blocks.</desc>'
   );
   svg.push(
-    '<defs><marker id="arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/></marker><marker id="arrow-suppressed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker><marker id="arrow-guide" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c2410c"/></marker></defs>',
+    '<defs><marker id="arrow-active" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/></marker><marker id="arrow-suppressed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker><marker id="arrow-guide" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c2410c"/></marker></defs>'
   );
   svg.push('<rect width="1360" height="960" fill="#f3efe5"/>');
-  svg.push('<rect x="22" y="22" width="1316" height="916" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>');
-  svg.push('<rect x="52" y="142" width="1256" height="770" rx="24" fill="#fffdfa" stroke="#d6d3c7"/>');
+  svg.push(
+    '<rect x="22" y="22" width="1316" height="916" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>'
+  );
+  svg.push(
+    '<rect x="52" y="142" width="1256" height="770" rx="24" fill="#fffdfa" stroke="#d6d3c7"/>'
+  );
   label(svg, 680, 72, 'Whip-Wrapped StructuredMoA', {
     size: 34,
     weight: 700,
@@ -428,52 +454,53 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
     680,
     102,
     'Supplemental curvature view of the sparse 2-of-4 MoA architecture',
-    { size: 17, color: '#475569' },
+    { size: 17, color: '#475569' }
   );
   label(
     svg,
     panelX + panelWidth - 28,
     panelY + 34,
     `source ${report.sourceLabel}`,
-    { anchor: 'end', size: 13, color: '#64748b' },
+    { anchor: 'end', size: 13, color: '#64748b' }
   );
 
   curve(
     svg,
-    `M ${outerRouter.x - 26} ${outerRouter.y + 4} C 458 344 336 452 338 654 C 344 722 420 766 610 716`,
+    `M ${outerRouter.x - 26} ${
+      outerRouter.y + 4
+    } C 458 344 336 452 338 654 C 344 722 420 766 610 716`,
     '#f59e0b',
-    { width: 18, opacity: 0.18, marker: 'none' },
+    { width: 18, opacity: 0.18, marker: 'none' }
   );
   curve(
     svg,
-    `M ${outerRouter.x + 26} ${outerRouter.y + 4} C 902 344 1024 452 1022 654 C 1016 722 940 766 750 716`,
+    `M ${outerRouter.x + 26} ${
+      outerRouter.y + 4
+    } C 902 344 1024 452 1022 654 C 1016 722 940 766 750 716`,
     '#f59e0b',
-    { width: 18, opacity: 0.18, marker: 'none' },
+    { width: 18, opacity: 0.18, marker: 'none' }
   );
-  curve(
-    svg,
-    `M 390 244 C 502 178 860 178 970 244`,
-    '#f59e0b',
-    { width: 10, opacity: 0.14, marker: 'none' },
-  );
-  curve(
-    svg,
-    `M 356 670 C 452 814 908 814 1004 670`,
-    '#f59e0b',
-    { width: 10, opacity: 0.12, marker: 'none' },
-  );
+  curve(svg, `M 390 244 C 502 178 860 178 970 244`, '#f59e0b', {
+    width: 10,
+    opacity: 0.14,
+    marker: 'none',
+  });
+  curve(svg, `M 356 670 C 452 814 908 814 1004 670`, '#f59e0b', {
+    width: 10,
+    opacity: 0.12,
+    marker: 'none',
+  });
   badge(svg, 220, 300, report.curvatureView.outerEnvelopeLabel, {
     size: 15,
     fill: '#fff7ed',
     stroke: '#f59e0b',
     textColor: '#92400e',
   });
-  curve(
-    svg,
-    'M 305 300 C 326 298 340 286 350 270',
-    '#f59e0b',
-    { width: 2.5, opacity: 0.72, marker: 'none' },
-  );
+  curve(svg, 'M 305 300 C 326 298 340 286 350 270', '#f59e0b', {
+    width: 2.5,
+    opacity: 0.72,
+    marker: 'none',
+  });
 
   circle(svg, input.x, input.y, 15, '#fffdf8', '#334155');
   label(svg, input.x, input.y + 38, 'input', { size: 14 });
@@ -488,7 +515,9 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
   const outerRouterLabelWidth = 96;
   const outerRouterLabelHeight = 20;
   svg.push(
-    `<rect x="${outerRouter.x - outerRouterLabelWidth / 2}" y="${outerRouterLabelY - outerRouterLabelHeight / 2 - 2}" width="${outerRouterLabelWidth}" height="${outerRouterLabelHeight}" fill="#fffdfa" rx="4" ry="4"/>`,
+    `<rect x="${outerRouter.x - outerRouterLabelWidth / 2}" y="${
+      outerRouterLabelY - outerRouterLabelHeight / 2 - 2
+    }" width="${outerRouterLabelWidth}" height="${outerRouterLabelHeight}" fill="#fffdfa" rx="4" ry="4"/>`
   );
   label(svg, outerRouter.x, outerRouter.y + 40, 'outer router', {
     size: 13,
@@ -496,15 +525,21 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
   });
   curve(
     svg,
-    `M ${input.x} ${input.y + 15} C ${input.x - 8} ${input.y + 42} ${outerRotation.x - 8} ${outerRotation.y - 34} ${outerRotation.x} ${outerRotation.y - 16}`,
+    `M ${input.x} ${input.y + 15} C ${input.x - 8} ${input.y + 42} ${
+      outerRotation.x - 8
+    } ${outerRotation.y - 34} ${outerRotation.x} ${outerRotation.y - 16}`,
     '#64748b',
-    { marker: 'guide' },
+    { marker: 'guide' }
   );
   curve(
     svg,
-    `M ${outerRotation.x} ${outerRotation.y + 16} C ${outerRotation.x + 12} ${outerRotation.y + 50} ${outerRouter.x + 12} ${outerRouter.y - 40} ${outerRouter.x} ${outerRouter.y - 16}`,
+    `M ${outerRotation.x} ${outerRotation.y + 16} C ${outerRotation.x + 12} ${
+      outerRotation.y + 50
+    } ${outerRouter.x + 12} ${outerRouter.y - 40} ${outerRouter.x} ${
+      outerRouter.y - 16
+    }`,
     '#2563eb',
-    { marker: 'guide' },
+    { marker: 'guide' }
   );
 
   const blockOutputs: Array<{
@@ -518,12 +553,16 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
     const marker = block.active ? 'active' : 'suppressed';
     curve(
       svg,
-      `M ${outerRouter.x} ${outerRouter.y + 16} C ${outerRouter.x} ${outerRouter.y + 72} ${blockGeometry.inlet.x} ${blockGeometry.inlet.y - 54} ${blockGeometry.inlet.x} ${blockGeometry.inlet.y}`,
+      `M ${outerRouter.x} ${outerRouter.y + 16} C ${outerRouter.x} ${
+        outerRouter.y + 72
+      } ${blockGeometry.inlet.x} ${blockGeometry.inlet.y - 54} ${
+        blockGeometry.inlet.x
+      } ${blockGeometry.inlet.y}`,
       block.active ? '#0f766e' : '#94a3b8',
       {
         dashed: !block.active,
         marker,
-      },
+      }
     );
     blockOutputs.push({
       inlet: blockGeometry.inlet,
@@ -533,21 +572,31 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
   }
 
   circle(svg, outerWhip.x, outerWhip.y, 18, '#fff7ed', '#c2410c');
-  label(svg, outerWhip.x, outerWhip.y + 42, report.curvatureView.foldSnapLabel, {
-    size: 14,
-    color: '#7c2d12',
-  });
+  label(
+    svg,
+    outerWhip.x,
+    outerWhip.y + 42,
+    report.curvatureView.foldSnapLabel,
+    {
+      size: 14,
+      color: '#7c2d12',
+    }
+  );
 
   for (const blockOutput of blockOutputs) {
     const marker = blockOutput.active ? 'active' : 'suppressed';
     curve(
       svg,
-      `M ${blockOutput.outlet.x} ${blockOutput.outlet.y} C ${blockOutput.outlet.x} ${blockOutput.outlet.y + 32} ${outerWhip.x + (blockOutput.outlet.x < outerWhip.x ? -86 : 86)} ${outerWhip.y - 60} ${outerWhip.x} ${outerWhip.y - 18}`,
+      `M ${blockOutput.outlet.x} ${blockOutput.outlet.y} C ${
+        blockOutput.outlet.x
+      } ${blockOutput.outlet.y + 32} ${
+        outerWhip.x + (blockOutput.outlet.x < outerWhip.x ? -86 : 86)
+      } ${outerWhip.y - 60} ${outerWhip.x} ${outerWhip.y - 18}`,
       blockOutput.active ? '#0f766e' : '#94a3b8',
       {
         dashed: !blockOutput.active,
         marker,
-      },
+      }
     );
   }
 
@@ -555,9 +604,11 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
   label(svg, output.x, output.y + 36, 'output', { size: 14 });
   curve(
     svg,
-    `M ${outerWhip.x} ${outerWhip.y + 18} C ${outerWhip.x} ${outerWhip.y + 52} ${output.x} ${output.y - 56} ${output.x} ${output.y - 15}`,
+    `M ${outerWhip.x} ${outerWhip.y + 18} C ${outerWhip.x} ${
+      outerWhip.y + 52
+    } ${output.x} ${output.y - 56} ${output.x} ${output.y - 15}`,
     '#c2410c',
-    { marker: 'guide' },
+    { marker: 'guide' }
   );
 
   rect(svg, 202, 818, 956, 66, '#fffdf8', '#d6d3c7');
@@ -574,7 +625,7 @@ export function renderCh17MoaWhipCurvatureFigureSvg(
       size: 15,
       color: '#475569',
       lineHeight: 18,
-    },
+    }
   );
 
   circle(svg, 442, 900, 10, '#dcfce7', '#0f766e');

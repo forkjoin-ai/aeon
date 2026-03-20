@@ -11,13 +11,29 @@
 import { describe, expect, it } from 'bun:test';
 
 // Buleyean Engine
-interface BuleyeanSpace { numChoices: number; rounds: number; voidBoundary: number[]; }
-function createSpace(n: number): BuleyeanSpace { return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) }; }
-function weight(s: BuleyeanSpace, i: number): number { return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1; }
-function reject(s: BuleyeanSpace, r: number): BuleyeanSpace { const b = [...s.voidBoundary]; b[r]! += 1; return { numChoices: s.numChoices, rounds: s.rounds + 1, voidBoundary: b }; }
+interface BuleyeanSpace {
+  numChoices: number;
+  rounds: number;
+  voidBoundary: number[];
+}
+function createSpace(n: number): BuleyeanSpace {
+  return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) };
+}
+function weight(s: BuleyeanSpace, i: number): number {
+  return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1;
+}
+function reject(s: BuleyeanSpace, r: number): BuleyeanSpace {
+  const b = [...s.voidBoundary];
+  b[r]! += 1;
+  return { numChoices: s.numChoices, rounds: s.rounds + 1, voidBoundary: b };
+}
 
-function futureDeficit(d: number, k: number): number { return d - Math.min(k, d); }
-function buleDeficit(F: number, D: number, ctx: number): number { return Math.max(0, F - D - ctx); }
+function futureDeficit(d: number, k: number): number {
+  return d - Math.min(k, d);
+}
+function buleDeficit(F: number, D: number, ctx: number): number {
+  return Math.max(0, F - D - ctx);
+}
 
 describe('Deep Composition 1: Tunnel + Concentration → Ordered Branches', () => {
   it('branches with shared ancestor have ordered weights', () => {
@@ -46,13 +62,15 @@ describe('Deep Composition 1: Tunnel + Concentration → Ordered Branches', () =
 
 describe('Deep Composition 2: Coarsening + Fixed Point → Bounded Dialogue', () => {
   it('semiotic deficit is positive for speech channels', () => {
-    const semanticPaths = 5, articulationStreams = 1;
+    const semanticPaths = 5,
+      articulationStreams = 1;
     const deficit = semanticPaths - articulationStreams;
     expect(deficit).toBeGreaterThan(0);
   });
 
   it('context reduces deficit monotonically to zero', () => {
-    const F = 8, D = 1;
+    const F = 8,
+      D = 1;
     const trajectory: number[] = [];
     for (let ctx = 0; ctx <= F; ctx++) {
       trajectory.push(buleDeficit(F, D, ctx));
@@ -66,7 +84,8 @@ describe('Deep Composition 2: Coarsening + Fixed Point → Bounded Dialogue', ()
   });
 
   it('sufficient context eliminates deficit entirely', () => {
-    const F = 10, D = 2;
+    const F = 10,
+      D = 2;
     expect(buleDeficit(F, D, F - D)).toBe(0);
     expect(buleDeficit(F, D, F - D + 10)).toBe(0);
   });
@@ -74,19 +93,21 @@ describe('Deep Composition 2: Coarsening + Fixed Point → Bounded Dialogue', ()
 
 describe('Deep Composition 3: War Heat + Community → Tightening Budget', () => {
   it('war total cost bounded by triangular sum of deficit trajectory', () => {
-    const F = 8, D = 1;
+    const F = 8,
+      D = 1;
     let totalCost = 0;
     for (let ctx = 0; ctx < F - D; ctx++) {
       totalCost += buleDeficit(F, D, ctx);
     }
     // Triangular: 7+6+5+4+3+2+1 = 28
     expect(totalCost).toBe(28);
-    const triangular = (F - D) * (F - D + 1) / 2;
+    const triangular = ((F - D) * (F - D + 1)) / 2;
     expect(totalCost).toBeLessThanOrEqual(triangular);
   });
 
   it('with early context, total cost decreases', () => {
-    const F = 8, D = 1;
+    const F = 8,
+      D = 1;
     // Start with 3 units of free context
     let totalCostFree = 0;
     for (let ctx = 3; ctx < F - D; ctx++) {
@@ -139,7 +160,9 @@ describe('Deep Composition 5: Universal Convergence Formula', () => {
   it('deficit is monotonically decreasing', () => {
     const N = 10;
     for (let k = 0; k < N; k++) {
-      expect(futureDeficit(N - 1, k + 1)).toBeLessThanOrEqual(futureDeficit(N - 1, k));
+      expect(futureDeficit(N - 1, k + 1)).toBeLessThanOrEqual(
+        futureDeficit(N - 1, k)
+      );
     }
   });
 

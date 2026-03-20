@@ -11,7 +11,9 @@ describe('Prediction 101: Hash collision thermodynamic floor', () => {
     const domainSize = 2 ** 256; // all 256-bit inputs (subset)
     const rangeSize = 2 ** 128; // 128-bit hash output
     expect(domainSize).toBeGreaterThan(rangeSize);
-    console.log(`Domain ${domainSize} > Range ${rangeSize}: pigeonhole guarantees collisions`);
+    console.log(
+      `Domain ${domainSize} > Range ${rangeSize}: pigeonhole guarantees collisions`
+    );
   });
 
   it('each hash evaluation dissipates minimum Landauer heat', () => {
@@ -20,7 +22,9 @@ describe('Prediction 101: Hash collision thermodynamic floor', () => {
     const bitsErased = 128; // H(input|output) for 256->128 bit hash
     const perEvalHeat = kT * ln2 * bitsErased;
     expect(perEvalHeat).toBeGreaterThan(0);
-    console.log(`Per-eval Landauer heat floor: ${perEvalHeat.toExponential(3)} J`);
+    console.log(
+      `Per-eval Landauer heat floor: ${perEvalHeat.toExponential(3)} J`
+    );
   });
 
   it('collision search cumulative heat = evaluations * per-eval heat', () => {
@@ -29,7 +33,9 @@ describe('Prediction 101: Hash collision thermodynamic floor', () => {
     const totalHeat = evaluations * perEvalHeat;
     expect(totalHeat).toBeGreaterThan(0);
     expect(totalHeat).toBe(evaluations * perEvalHeat);
-    console.log(`Birthday attack (2^64 evals): ${totalHeat.toExponential(3)} J total heat`);
+    console.log(
+      `Birthday attack (2^64 evals): ${totalHeat.toExponential(3)} J total heat`
+    );
   });
 
   it('more evaluations monotonically increase cumulative heat', () => {
@@ -58,7 +64,11 @@ describe('Prediction 102: One-way functions require side-information for inversi
     const conditionalEntropy = Math.log2(preimageSize / imageSize);
     expect(conditionalEntropy).toBeGreaterThan(0);
     expect(preimageSize).toBeGreaterThan(imageSize);
-    console.log(`H(X|f(X)) >= ${conditionalEntropy.toFixed(3)} bits for ${preimageSize}-to-${imageSize} function`);
+    console.log(
+      `H(X|f(X)) >= ${conditionalEntropy.toFixed(
+        3
+      )} bits for ${preimageSize}-to-${imageSize} function`
+    );
   });
 
   it('bijective function permits free inversion (zero conditional entropy)', () => {
@@ -73,7 +83,11 @@ describe('Prediction 102: One-way functions require side-information for inversi
     const small = Math.log2(100 / 50); // 2:1
     const large = Math.log2(1000 / 50); // 20:1
     expect(large).toBeGreaterThan(small);
-    console.log(`2:1 ratio: ${small.toFixed(3)} bits, 20:1 ratio: ${large.toFixed(3)} bits`);
+    console.log(
+      `2:1 ratio: ${small.toFixed(3)} bits, 20:1 ratio: ${large.toFixed(
+        3
+      )} bits`
+    );
   });
 
   it('holds even in Algorithmica (P=NP): thermodynamic, not computational', () => {
@@ -82,16 +96,28 @@ describe('Prediction 102: One-way functions require side-information for inversi
     const sideInfoNeeded = Math.log2(10);
     expect(sideInfoNeeded).toBeGreaterThan(3);
     expect(sideInfoNeeded).toBeLessThan(4);
-    console.log(`Even in Algorithmica: ${sideInfoNeeded.toFixed(3)} bits needed per 10-to-1 inversion`);
+    console.log(
+      `Even in Algorithmica: ${sideInfoNeeded.toFixed(
+        3
+      )} bits needed per 10-to-1 inversion`
+    );
   });
 
   it('Impagliazzo five-worlds: thermodynamic component survives all five', () => {
-    const worlds = ['Algorithmica', 'Heuristica', 'Pessiland', 'Minicrypt', 'Cryptomania'];
+    const worlds = [
+      'Algorithmica',
+      'Heuristica',
+      'Pessiland',
+      'Minicrypt',
+      'Cryptomania',
+    ];
     const thermoFloor = Math.log2(2); // minimum: 2-to-1 function
-    worlds.forEach(world => {
+    worlds.forEach((world) => {
       expect(thermoFloor).toBeGreaterThan(0);
     });
-    console.log(`Thermodynamic floor ${thermoFloor} bit(s) survives all five worlds`);
+    console.log(
+      `Thermodynamic floor ${thermoFloor} bit(s) survives all five worlds`
+    );
   });
 });
 
@@ -110,7 +136,9 @@ describe('Prediction 103: Zero-knowledge = deficit-zero evidence transport', () 
     const deficit = Math.max(0, transcriptStreams - claimDimensions);
     expect(deficit).toBeGreaterThan(0);
     expect(deficit).toBe(2);
-    console.log(`Deficit = ${deficit}: transcript leaks ${deficit} dimensions beyond claim`);
+    console.log(
+      `Deficit = ${deficit}: transcript leaks ${deficit} dimensions beyond claim`
+    );
   });
 
   it('Schnorr nonce reuse: deficit becomes positive', () => {
@@ -120,12 +148,16 @@ describe('Prediction 103: Zero-knowledge = deficit-zero evidence transport', () 
     const reuseDeficit = 1; // reveals one extra dimension (the private key)
     expect(normalDeficit).toBe(0);
     expect(reuseDeficit).toBeGreaterThan(0);
-    console.log('Schnorr: fresh nonce → deficit=0, reuse → deficit=1 (key leaked)');
+    console.log(
+      'Schnorr: fresh nonce → deficit=0, reuse → deficit=1 (key leaked)'
+    );
   });
 
   it('deficit is monotone: more transcript streams, more leakage risk', () => {
     const claim = 2;
-    const deficits = [1, 2, 3, 4, 5].map(streams => Math.max(0, streams - claim));
+    const deficits = [1, 2, 3, 4, 5].map((streams) =>
+      Math.max(0, streams - claim)
+    );
     for (let i = 1; i < deficits.length; i++) {
       expect(deficits[i]).toBeGreaterThanOrEqual(deficits[i - 1]!);
     }
@@ -138,7 +170,7 @@ describe('Prediction 103: Zero-knowledge = deficit-zero evidence transport', () 
       { streams: 3, claim: 2, simulable: false },
       { streams: 5, claim: 3, simulable: false },
     ];
-    testCases.forEach(tc => {
+    testCases.forEach((tc) => {
       const deficit = Math.max(0, tc.streams - tc.claim);
       const isSimulable = deficit === 0;
       expect(isSimulable).toBe(tc.simulable);
@@ -206,7 +238,9 @@ describe('Prediction 104: Commitment schemes = semiotic folds', () => {
     // (known result, but derived here from thermodynamics)
     expect(perfectHiding && perfectBinding).toBe(true); // computationally possible
     // but informationally: one must be computational, not unconditional
-    console.log('Hiding-binding tradeoff: at most one unconditional (from thermodynamics)');
+    console.log(
+      'Hiding-binding tradeoff: at most one unconditional (from thermodynamics)'
+    );
   });
 });
 
@@ -215,7 +249,9 @@ describe('Prediction 105: Password hashing irreducible side-channel floor', () =
     const passwordSpace = 2 ** 40; // ~1 trillion passwords
     const hashSpace = 2 ** 32; // 32-byte hash
     expect(passwordSpace).toBeGreaterThan(hashSpace);
-    console.log(`Password space ${passwordSpace} > hash space ${hashSpace}: intentional coarsening`);
+    console.log(
+      `Password space ${passwordSpace} > hash space ${hashSpace}: intentional coarsening`
+    );
   });
 
   it('per-evaluation side-channel floor is positive (Landauer)', () => {
@@ -224,7 +260,11 @@ describe('Prediction 105: Password hashing irreducible side-channel floor', () =
     const bitsErased = 8; // H(password|hash) lower bound
     const sideChannelFloor = kT * ln2 * bitsErased;
     expect(sideChannelFloor).toBeGreaterThan(0);
-    console.log(`Side-channel floor: ${sideChannelFloor.toExponential(3)} J per evaluation`);
+    console.log(
+      `Side-channel floor: ${sideChannelFloor.toExponential(
+        3
+      )} J per evaluation`
+    );
   });
 
   it('more stretch rounds increase cumulative erasure monotonically', () => {
@@ -240,7 +280,9 @@ describe('Prediction 105: Password hashing irreducible side-channel floor', () =
     // Adding more rounds increases total cost but not per-eval floor
     for (const rounds of [1, 10, 100, 1000, 10000]) {
       const totalCost = rounds * sideChannelFloor;
-      expect(Math.abs(totalCost / rounds - sideChannelFloor)).toBeLessThan(1e-35);
+      expect(Math.abs(totalCost / rounds - sideChannelFloor)).toBeLessThan(
+        1e-35
+      );
     }
     console.log('Per-eval floor is invariant under stretch round count');
   });
@@ -253,14 +295,16 @@ describe('Prediction 105: Password hashing irreducible side-channel floor', () =
     if (!requiresReproof) {
       expect(recoveryBypassCost).toBeLessThan(hashAttackCost);
     }
-    console.log(`Recovery bypass: ${recoveryBypassCost} << hash attack: ${hashAttackCost}`);
+    console.log(
+      `Recovery bypass: ${recoveryBypassCost} << hash attack: ${hashAttackCost}`
+    );
   });
 
   it('side-channel shadow is scale-invariant (fractal, THM-INTERFERE-FRACTAL)', () => {
     // At any measurement scale, the per-evaluation floor remains
     const floor = 1; // abstract unit
     const scales = [1, 10, 100, 1000];
-    scales.forEach(scale => {
+    scales.forEach((scale) => {
       // Floor persists regardless of measurement granularity
       expect(floor).toBeGreaterThan(0);
     });
@@ -270,7 +314,9 @@ describe('Prediction 105: Password hashing irreducible side-channel floor', () =
 
 describe('Master: Predictions 101-105 all verified (Cryptographic Security)', () => {
   it('all five cryptographic predictions compose', () => {
-    [101, 102, 103, 104, 105].forEach(id => console.log(`Prediction ${id}: PROVEN`));
+    [101, 102, 103, 104, 105].forEach((id) =>
+      console.log(`Prediction ${id}: PROVEN`)
+    );
     console.log('\n--- FIVE CRYPTOGRAPHIC PREDICTIONS ---');
     console.log('105 predictions total across §19.8-§19.28.');
     console.log('45 domains including cryptographic security.');

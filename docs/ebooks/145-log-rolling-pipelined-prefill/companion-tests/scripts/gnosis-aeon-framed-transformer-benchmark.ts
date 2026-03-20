@@ -15,8 +15,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gnosis-aeon-framed-transformer-benchmark.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gnosis-aeon-framed-transformer-benchmark.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gnosis-aeon-framed-transformer-benchmark.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gnosis-aeon-framed-transformer-benchmark.md'
+  );
 
   let assertRanking = false;
   let jsonPath = defaultJsonPath;
@@ -61,15 +67,21 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderGnosisAeonFramedTransformerBenchmarkMarkdown(report),
-    'utf8',
+    'utf8'
   );
 
   process.stdout.write(
-    `gnosis-aeon-framed-transformer-benchmark: ${report.predictedRankingMatches ? 'MATCH' : 'MISMATCH'}\n`,
+    `gnosis-aeon-framed-transformer-benchmark: ${
+      report.predictedRankingMatches ? 'MATCH' : 'MISMATCH'
+    }\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
@@ -77,7 +89,13 @@ async function main(): Promise<void> {
   for (const strategy of report.rankingByEvalMeanSquaredError) {
     const metrics = report.strategies[strategy];
     process.stdout.write(
-      `- ${strategy}: eval-mse=${metrics.meanEvalMeanSquaredError.toFixed(3)}, exact=${metrics.meanExactWithinToleranceFraction.toFixed(3)}, codec=${metrics.meanCodecRoundTripExactFraction.toFixed(3)}, reassembly=${metrics.meanReassemblyExactFraction.toFixed(3)}\n`,
+      `- ${strategy}: eval-mse=${metrics.meanEvalMeanSquaredError.toFixed(
+        3
+      )}, exact=${metrics.meanExactWithinToleranceFraction.toFixed(
+        3
+      )}, codec=${metrics.meanCodecRoundTripExactFraction.toFixed(
+        3
+      )}, reassembly=${metrics.meanReassemblyExactFraction.toFixed(3)}\n`
     );
   }
 
@@ -100,6 +118,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

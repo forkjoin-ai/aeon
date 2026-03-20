@@ -21,9 +21,18 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/ch17-correspondence-boundary-figure.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/ch17-correspondence-boundary-figure.md');
-  const defaultSvgPath = resolve(moduleDir, '../artifacts/ch17-correspondence-boundary-figure.svg');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-correspondence-boundary-figure.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-correspondence-boundary-figure.md'
+  );
+  const defaultSvgPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-correspondence-boundary-figure.svg'
+  );
 
   let assertSurface = false;
   let jsonPath = defaultJsonPath;
@@ -80,56 +89,76 @@ async function main(): Promise<void> {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const artifactsDir = resolve(moduleDir, '../artifacts');
   const quantum = loadJson<QuantumRecombinationAblationFigureInput>(
-    resolve(artifactsDir, 'quantum-recombination-ablation.json'),
+    resolve(artifactsDir, 'quantum-recombination-ablation.json')
   );
   const toyAttention = loadJson<ToyAttentionFoldAblationFigureInput>(
-    resolve(artifactsDir, 'toy-attention-fold-ablation.json'),
+    resolve(artifactsDir, 'toy-attention-fold-ablation.json')
   );
   const gnosisTraining = loadJson<GnosisFoldTrainingBenchmarkFigureInput>(
-    resolve(artifactsDir, 'gnosis-fold-training-benchmark.json'),
+    resolve(artifactsDir, 'gnosis-fold-training-benchmark.json')
   );
   const gnosisMiniMoe = loadJson<GnosisMiniMoeRoutingBenchmarkFigureInput>(
-    resolve(artifactsDir, 'gnosis-moe-routing-benchmark.json'),
+    resolve(artifactsDir, 'gnosis-moe-routing-benchmark.json')
   );
 
   const report = buildCh17CorrespondenceBoundaryFigureReport(
     quantum,
     toyAttention,
     gnosisTraining,
-    gnosisMiniMoe,
+    gnosisMiniMoe
   );
 
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderCh17CorrespondenceBoundaryFigureMarkdown(report),
-    'utf8',
+    'utf8'
   );
-  writeFileSync(options.svgPath, renderCh17CorrespondenceBoundaryFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.svgPath,
+    renderCh17CorrespondenceBoundaryFigureSvg(report),
+    'utf8'
+  );
 
-  process.stdout.write(`ch17-correspondence-boundary-figure: ${report.label}\n`);
+  process.stdout.write(
+    `ch17-correspondence-boundary-figure: ${report.label}\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
-    `- learned ranking: linear=${report.gnosisTraining.evalMse.linear.toFixed(3)}, winner=${report.gnosisTraining.evalMse['winner-take-all'].toFixed(3)}, early=${report.gnosisTraining.evalMse['early-stop'].toFixed(3)}\n`,
+    `- learned ranking: linear=${report.gnosisTraining.evalMse.linear.toFixed(
+      3
+    )}, winner=${report.gnosisTraining.evalMse['winner-take-all'].toFixed(
+      3
+    )}, early=${report.gnosisTraining.evalMse['early-stop'].toFixed(3)}\n`
   );
   process.stdout.write(
-    `- mini-moe ranking: linear=${report.gnosisMiniMoe.evalMse.linear.toFixed(3)}, winner=${report.gnosisMiniMoe.evalMse['winner-take-all'].toFixed(3)}, early=${report.gnosisMiniMoe.evalMse['early-stop'].toFixed(3)}\n`,
+    `- mini-moe ranking: linear=${report.gnosisMiniMoe.evalMse.linear.toFixed(
+      3
+    )}, winner=${report.gnosisMiniMoe.evalMse['winner-take-all'].toFixed(
+      3
+    )}, early=${report.gnosisMiniMoe.evalMse['early-stop'].toFixed(3)}\n`
   );
 
   if (
     options.assertSurface &&
     !(
       report.quantum.matrix.linear.kernelAgreement &&
-      report.gnosisTraining.evalMse.linear < report.gnosisTraining.evalMse['winner-take-all'] &&
+      report.gnosisTraining.evalMse.linear <
+        report.gnosisTraining.evalMse['winner-take-all'] &&
       report.gnosisTraining.evalMse['winner-take-all'] <
         report.gnosisTraining.evalMse['early-stop'] &&
-      report.gnosisMiniMoe.evalMse.linear < report.gnosisMiniMoe.evalMse['winner-take-all'] &&
+      report.gnosisMiniMoe.evalMse.linear <
+        report.gnosisMiniMoe.evalMse['winner-take-all'] &&
       report.gnosisMiniMoe.evalMse['winner-take-all'] <
         report.gnosisMiniMoe.evalMse['early-stop']
     )
@@ -139,6 +168,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

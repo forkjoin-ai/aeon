@@ -33,13 +33,21 @@ function isConverged(vd: VulnerabilityDiagnostic): boolean {
 describe('P162: vulnerability demand is per-dimension computable', () => {
   it('zero demand ↔ converged (biconditional)', () => {
     const converged: VulnerabilityDiagnostic = {
-      totalDims: 10, shared: 6, hiddenA: 0, hiddenB: 0, unexplored: 4,
+      totalDims: 10,
+      shared: 6,
+      hiddenA: 0,
+      hiddenB: 0,
+      unexplored: 4,
     };
     expect(demand(converged)).toBe(0);
     expect(isConverged(converged)).toBe(true);
 
     const notConverged: VulnerabilityDiagnostic = {
-      totalDims: 10, shared: 3, hiddenA: 2, hiddenB: 3, unexplored: 2,
+      totalDims: 10,
+      shared: 3,
+      hiddenA: 2,
+      hiddenB: 3,
+      unexplored: 2,
     };
     expect(demand(notConverged)).toBeGreaterThan(0);
     expect(isConverged(notConverged)).toBe(false);
@@ -47,17 +55,29 @@ describe('P162: vulnerability demand is per-dimension computable', () => {
 
   it('sharing one hidden dimension reduces demand by exactly 1', () => {
     const before: VulnerabilityDiagnostic = {
-      totalDims: 10, shared: 3, hiddenA: 3, hiddenB: 2, unexplored: 2,
+      totalDims: 10,
+      shared: 3,
+      hiddenA: 3,
+      hiddenB: 2,
+      unexplored: 2,
     };
     const after: VulnerabilityDiagnostic = {
-      totalDims: 10, shared: 4, hiddenA: 2, hiddenB: 2, unexplored: 2,
+      totalDims: 10,
+      shared: 4,
+      hiddenA: 2,
+      hiddenB: 2,
+      unexplored: 2,
     };
     expect(demand(after)).toBe(demand(before) - 1);
   });
 
   it('positive demand implies hidden dimensions exist', () => {
     const vd: VulnerabilityDiagnostic = {
-      totalDims: 10, shared: 3, hiddenA: 0, hiddenB: 4, unexplored: 3,
+      totalDims: 10,
+      shared: 3,
+      hiddenA: 0,
+      hiddenB: 4,
+      unexplored: 3,
     };
     expect(demand(vd)).toBeGreaterThan(0);
     expect(vd.hiddenA > 0 || vd.hiddenB > 0).toBe(true);
@@ -66,7 +86,11 @@ describe('P162: vulnerability demand is per-dimension computable', () => {
   it('models real therapeutic relationships', () => {
     // Therapist-client: client has 8 hidden trauma dimensions
     const therapy: VulnerabilityDiagnostic = {
-      totalDims: 58, shared: 5, hiddenA: 8, hiddenB: 2, unexplored: 43,
+      totalDims: 58,
+      shared: 5,
+      hiddenA: 8,
+      hiddenB: 2,
+      unexplored: 43,
     };
     expect(demand(therapy)).toBe(10); // 10 vulnerability steps needed
   });
@@ -113,20 +137,30 @@ function localDeficit(complexity: number, context: number): number {
   return complexity - 1 - Math.min(context, complexity - 1);
 }
 
-function mergedDeficit(complexity: number, contextA: number, contextB: number): number {
-  return complexity - 1 - Math.min(Math.max(contextA, contextB), complexity - 1);
+function mergedDeficit(
+  complexity: number,
+  contextA: number,
+  contextB: number
+): number {
+  return (
+    complexity - 1 - Math.min(Math.max(contextA, contextB), complexity - 1)
+  );
 }
 
 describe('P164: merging communities reduces global deficit', () => {
   it('merged deficit ≤ both local deficits', () => {
-    const c = 10, cA = 3, cB = 6;
+    const c = 10,
+      cA = 3,
+      cB = 6;
     const merged = mergedDeficit(c, cA, cB);
     expect(merged).toBeLessThanOrEqual(localDeficit(c, cA));
     expect(merged).toBeLessThanOrEqual(localDeficit(c, cB));
   });
 
   it('isolation is suboptimal', () => {
-    const c = 10, cA = 2, cB = 7;
+    const c = 10,
+      cA = 2,
+      cB = 7;
     expect(mergedDeficit(c, cA, cB)).toBeLessThanOrEqual(localDeficit(c, cA));
   });
 
@@ -218,7 +252,15 @@ describe('P166: cultural controversy resolution = A + B - 1 rounds', () => {
 describe('Round 13: deep compositional predictions compose', () => {
   it('vulnerability + curvature + merge + attenuation + culture', () => {
     // P162: demand = hidden
-    expect(demand({ totalDims: 10, shared: 3, hiddenA: 2, hiddenB: 3, unexplored: 2 })).toBe(5);
+    expect(
+      demand({
+        totalDims: 10,
+        shared: 3,
+        hiddenA: 2,
+        hiddenB: 3,
+        unexplored: 2,
+      })
+    ).toBe(5);
     // P163: sufficient context stops curvature
     expect(growthRate(8, 7)).toBe(0);
     // P164: merged ≤ both

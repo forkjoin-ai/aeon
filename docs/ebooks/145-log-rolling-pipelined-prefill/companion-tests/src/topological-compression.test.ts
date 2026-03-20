@@ -28,7 +28,6 @@ import {
   BUILTIN_CODECS,
 } from '@a0n/aeon/compression';
 describe('Topological Compression (§8.6)', () => {
-
   describe('Core Claim: Per-Chunk Adaptive Codec Selection', () => {
     it('different chunks select different codecs', () => {
       // Create data with mixed content: repeated bytes + random bytes
@@ -36,12 +35,12 @@ describe('Topological Compression (§8.6)', () => {
 
       // First 4096 bytes: highly repetitive (RLE-friendly)
       for (let i = 0; i < 4096; i++) {
-        data[i] = i < 2048 ? 0xAA : 0xBB;
+        data[i] = i < 2048 ? 0xaa : 0xbb;
       }
 
       // Second 4096 bytes: sequential (delta-friendly)
       for (let i = 4096; i < 8192; i++) {
-        data[i] = i & 0xFF;
+        data[i] = i & 0xff;
       }
 
       const compressor = new TopologicalCompressor({
@@ -82,10 +81,10 @@ describe('Topological Compression (§8.6)', () => {
     it('random data: raw should win (all codecs vented)', () => {
       // Pseudo-random data — incompressible
       const data = new Uint8Array(4096);
-      let seed = 0xDEADBEEF;
+      let seed = 0xdeadbeef;
       for (let i = 0; i < data.length; i++) {
-        seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF;
-        data[i] = (seed >>> 24) & 0xFF;
+        seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+        data[i] = (seed >>> 24) & 0xff;
       }
 
       const compressor = new TopologicalCompressor({
@@ -107,7 +106,7 @@ describe('Topological Compression (§8.6)', () => {
     it('each compressed chunk is independently decompressible', () => {
       const data = new Uint8Array(12288); // 3 chunks at 4096
       for (let i = 0; i < data.length; i++) {
-        data[i] = (i * 7 + 13) & 0xFF;
+        data[i] = (i * 7 + 13) & 0xff;
       }
 
       const compressor = new TopologicalCompressor({ chunkSize: 4096 });
@@ -139,7 +138,11 @@ describe('Topological Compression (§8.6)', () => {
       expect(codecId).toBe(result.chunks[0].codecId);
 
       // Bytes 1-4: original size (u32 big-endian)
-      const view = new DataView(result.data.buffer, result.data.byteOffset + 1, 8);
+      const view = new DataView(
+        result.data.buffer,
+        result.data.byteOffset + 1,
+        8
+      );
       const originalSize = view.getUint32(0);
       expect(originalSize).toBe(100);
 
@@ -149,7 +152,9 @@ describe('Topological Compression (§8.6)', () => {
     });
 
     it('single chunk can be decoded independently via its 9-byte header', () => {
-      const data = new TextEncoder().encode('alpha beta gamma delta '.repeat(400));
+      const data = new TextEncoder().encode(
+        'alpha beta gamma delta '.repeat(400)
+      );
       const compressor = new TopologicalCompressor({
         chunkSize: 2048,
         codecs: BUILTIN_CODECS,
@@ -158,7 +163,11 @@ describe('Topological Compression (§8.6)', () => {
 
       // Parse first chunk frame directly.
       const codecId = result.data[0];
-      const view = new DataView(result.data.buffer, result.data.byteOffset + 1, 8);
+      const view = new DataView(
+        result.data.buffer,
+        result.data.byteOffset + 1,
+        8
+      );
       const originalSize = view.getUint32(0);
       const compressedSize = view.getUint32(4);
       const chunkPayload = result.data.subarray(9, 9 + compressedSize);
@@ -199,7 +208,9 @@ describe('Topological Compression (§8.6)', () => {
       const fullResult = fullPipeline.compress(data);
 
       // Full (with brotli) should achieve better ratio
-      expect(fullResult.compressedSize).toBeLessThanOrEqual(pureResult.compressedSize);
+      expect(fullResult.compressedSize).toBeLessThanOrEqual(
+        pureResult.compressedSize
+      );
 
       // β₁ increases with more codecs
       expect(fullResult.bettiNumber).toBeGreaterThan(pureResult.bettiNumber);
@@ -232,7 +243,7 @@ describe('Topological Compression (§8.6)', () => {
 
       // β₁ values
       expect(brotliResult.bettiNumber).toBe(1); // 2 codecs - 1
-      expect(fullResult.bettiNumber).toBe(7);   // 8 codecs - 1
+      expect(fullResult.bettiNumber).toBe(7); // 8 codecs - 1
 
       // On homogeneous text, brotli wins every chunk in both configs
       // So results should be similar (full might have slightly more header overhead
@@ -248,7 +259,7 @@ describe('Topological Compression (§8.6)', () => {
     it('adding a new codec improves ratio without changing topology', () => {
       const data = new Uint8Array(8192);
       for (let i = 0; i < data.length; i++) {
-        data[i] = (i * 3 + 7) & 0xFF;
+        data[i] = (i * 3 + 7) & 0xff;
       }
 
       // Start with 2 codecs
@@ -260,14 +271,21 @@ describe('Topological Compression (§8.6)', () => {
       // Add more codecs
       const medium = new TopologicalCompressor({
         chunkSize: 4096,
-        codecs: [new RawCodec(), new RLECodec(), new DeltaCodec(), new LZ77Codec()],
+        codecs: [
+          new RawCodec(),
+          new RLECodec(),
+          new DeltaCodec(),
+          new LZ77Codec(),
+        ],
       });
 
       const smallResult = small.compress(data);
       const mediumResult = medium.compress(data);
 
       // More codecs → same or better ratio
-      expect(mediumResult.compressedSize).toBeLessThanOrEqual(smallResult.compressedSize);
+      expect(mediumResult.compressedSize).toBeLessThanOrEqual(
+        smallResult.compressedSize
+      );
 
       // Topology grew (β₁ increased) but structure is identical
       expect(smallResult.bettiNumber).toBe(1);
@@ -283,10 +301,10 @@ describe('Topological Compression (§8.6)', () => {
     it('codecs whose output >= input are vented', () => {
       // Random data — most codecs will expand it
       const data = new Uint8Array(4096);
-      let seed = 0xCAFEBABE;
+      let seed = 0xcafebabe;
       for (let i = 0; i < data.length; i++) {
-        seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF;
-        data[i] = (seed >>> 24) & 0xFF;
+        seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+        data[i] = (seed >>> 24) & 0xff;
       }
 
       const compressor = new TopologicalCompressor({
@@ -311,8 +329,8 @@ describe('Topological Compression (§8.6)', () => {
       const data = new Uint8Array(4096);
       let seed = 42;
       for (let i = 0; i < data.length; i++) {
-        seed = (seed * 1103515245 + 12345) & 0x7FFFFFFF;
-        data[i] = (seed % 10) < 9 ? 0x41 : (seed & 0xFF);
+        seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+        data[i] = seed % 10 < 9 ? 0x41 : seed & 0xff;
       }
 
       const huffman = new HuffmanCodec();
@@ -335,10 +353,10 @@ describe('Topological Compression (§8.6)', () => {
 
     it('Huffman bails on random data (260-byte overhead not worth it)', () => {
       const data = new Uint8Array(4096);
-      let seed = 0xDEADBEEF;
+      let seed = 0xdeadbeef;
       for (let i = 0; i < data.length; i++) {
-        seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF;
-        data[i] = (seed >>> 24) & 0xFF;
+        seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+        data[i] = (seed >>> 24) & 0xff;
       }
 
       const huffman = new HuffmanCodec();
@@ -406,7 +424,7 @@ describe('Topological Compression (§8.6)', () => {
       const result = compressor.compress(data);
 
       // Verify at least one chunk used dictionary or another advanced codec
-      const codecIds = new Set(result.chunks.map(c => c.codecId));
+      const codecIds = new Set(result.chunks.map((c) => c.codecId));
       expect(codecIds.size).toBeGreaterThanOrEqual(1);
 
       // Roundtrip
@@ -418,16 +436,19 @@ describe('Topological Compression (§8.6)', () => {
   describe('Expanded Race: 8 Codecs (β₁ = 7)', () => {
     it('BUILTIN_CODECS has 8 codecs', () => {
       expect(BUILTIN_CODECS.length).toBe(8);
-      expect(BUILTIN_CODECS.map(c => c.id)).toEqual([0, 1, 2, 3, 6, 7, 4, 5]);
+      expect(BUILTIN_CODECS.map((c) => c.id)).toEqual([0, 1, 2, 3, 6, 7, 4, 5]);
     });
 
     it('PURE_JS_CODECS has 6 codecs', () => {
       expect(PURE_JS_CODECS.length).toBe(6);
-      expect(PURE_JS_CODECS.map(c => c.id)).toEqual([0, 1, 2, 3, 6, 7]);
+      expect(PURE_JS_CODECS.map((c) => c.id)).toEqual([0, 1, 2, 3, 6, 7]);
     });
 
     it('full race with 8 codecs achieves β₁ = 7', () => {
-      const text = 'export default function Component() { return this.props.children; }\n'.repeat(100);
+      const text =
+        'export default function Component() { return this.props.children; }\n'.repeat(
+          100
+        );
       const data = new TextEncoder().encode(text);
 
       const compressor = new TopologicalCompressor({
@@ -449,14 +470,23 @@ describe('Topological Compression (§8.6)', () => {
       { name: 'empty', data: new Uint8Array(0) },
       { name: 'single byte', data: new Uint8Array([42]) },
       { name: 'all zeros', data: new Uint8Array(10000).fill(0) },
-      { name: 'sequential', data: Uint8Array.from({ length: 1000 }, (_, i) => i & 0xFF) },
-      { name: 'text', data: new TextEncoder().encode('Hello, World! '.repeat(500)) },
+      {
+        name: 'sequential',
+        data: Uint8Array.from({ length: 1000 }, (_, i) => i & 0xff),
+      },
+      {
+        name: 'text',
+        data: new TextEncoder().encode('Hello, World! '.repeat(500)),
+      },
     ];
 
     for (const { name, data } of testCases) {
       it(`roundtrip: ${name}`, () => {
         for (const codecs of [PURE_JS_CODECS, BUILTIN_CODECS]) {
-          const compressor = new TopologicalCompressor({ chunkSize: 4096, codecs });
+          const compressor = new TopologicalCompressor({
+            chunkSize: 4096,
+            codecs,
+          });
           const compressed = compressor.compress(data);
           const decompressed = compressor.decompress(compressed.data);
           expect(decompressed).toEqual(data);
@@ -506,7 +536,7 @@ describe('Topological Compression (§8.6)', () => {
 
       // Two-level should beat or match per-chunk.
       expect(twoLevelResult.compressedSize).toBeLessThanOrEqual(
-        chunkedResult.compressedSize,
+        chunkedResult.compressedSize
       );
 
       // Strategy should be global brotli (cross-chunk dictionary wins on homogeneous text).
@@ -534,13 +564,15 @@ describe('Topological Compression (§8.6)', () => {
     it('two-level race roundtrips correctly for mixed content', () => {
       // 50% text, 50% pseudo-random
       const textPart = new TextEncoder().encode(
-        'export default function Component() { return this.props.children; }\n'.repeat(40),
+        'export default function Component() { return this.props.children; }\n'.repeat(
+          40
+        )
       );
       const randomPart = new Uint8Array(textPart.length);
-      let seed = 0xDEADBEEF;
+      let seed = 0xdeadbeef;
       for (let i = 0; i < randomPart.length; i++) {
-        seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF;
-        randomPart[i] = (seed >>> 24) & 0xFF;
+        seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+        randomPart[i] = (seed >>> 24) & 0xff;
       }
       const mixed = new Uint8Array(textPart.length + randomPart.length);
       mixed.set(textPart, 0);
@@ -580,7 +612,9 @@ describe('Topological Compression (§8.6)', () => {
       expect(singleResult.bettiNumber).toBe(7);
 
       // Two level: β₁ = inner + outer > 7
-      expect(twoLevelResult.bettiNumber).toBeGreaterThan(singleResult.bettiNumber);
+      expect(twoLevelResult.bettiNumber).toBeGreaterThan(
+        singleResult.bettiNumber
+      );
     });
 
     it('streamRace=false is backward compatible', () => {
@@ -614,7 +648,7 @@ describe('Topological Compression (§8.6)', () => {
       const originalSize = new DataView(
         result.data.buffer,
         result.data.byteOffset + 1,
-        4,
+        4
       ).getUint32(0);
 
       expect(originalSize).toBe(data.length);

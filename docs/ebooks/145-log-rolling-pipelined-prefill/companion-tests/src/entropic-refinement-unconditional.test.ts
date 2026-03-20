@@ -51,7 +51,7 @@ function coarsen(dist: Distribution, partition: Partition): Distribution {
 /** Conditional entropy H(fine | coarse) = H(fine) - H(coarse) */
 function conditionalEntropy(
   fineDist: Distribution,
-  coarsePartition: Partition,
+  coarsePartition: Partition
 ): number {
   const coarseDist = coarsen(fineDist, coarsePartition);
   return shannonEntropy(fineDist) - shannonEntropy(coarseDist);
@@ -64,7 +64,7 @@ function conditionalEntropy(
  */
 function fiberEntropy(
   fineDist: Distribution,
-  coarsePartition: Partition,
+  coarsePartition: Partition
 ): { total: number; fibers: number[] } {
   const coarseDist = coarsen(fineDist, coarsePartition);
   const fibers: number[] = [];
@@ -166,15 +166,41 @@ const EPS = 1e-10;
 // ============================================================================
 
 describe('Entropic Refinement Calculus -- Unconditional', () => {
-
   // ── Chain Rule ────────────────────────────────────────────────────
 
   describe('chain rule: H(X,Y) = H(X) + H(Y|X)', () => {
     const testCases = [
-      { name: 'uniform n=4', dist: uniformDist(4), partition: [[0, 1], [2, 3]] as Partition },
-      { name: 'uniform n=8', dist: uniformDist(8), partition: [[0, 1], [2, 3], [4, 5], [6, 7]] as Partition },
-      { name: 'Zipf n=5', dist: zipfDist(5), partition: [[0, 1, 2], [3, 4]] as Partition },
-      { name: 'geometric n=6', dist: geometricDist(6), partition: [[0], [1, 2], [3, 4, 5]] as Partition },
+      {
+        name: 'uniform n=4',
+        dist: uniformDist(4),
+        partition: [
+          [0, 1],
+          [2, 3],
+        ] as Partition,
+      },
+      {
+        name: 'uniform n=8',
+        dist: uniformDist(8),
+        partition: [
+          [0, 1],
+          [2, 3],
+          [4, 5],
+          [6, 7],
+        ] as Partition,
+      },
+      {
+        name: 'Zipf n=5',
+        dist: zipfDist(5),
+        partition: [
+          [0, 1, 2],
+          [3, 4],
+        ] as Partition,
+      },
+      {
+        name: 'geometric n=6',
+        dist: geometricDist(6),
+        partition: [[0], [1, 2], [3, 4, 5]] as Partition,
+      },
     ];
 
     for (const tc of testCases) {
@@ -195,16 +221,28 @@ describe('Entropic Refinement Calculus -- Unconditional', () => {
   describe('conditional entropy H(Y|X) >= 0', () => {
     it('holds for all test distributions and partitions', () => {
       const distributions = [
-        uniformDist(4), uniformDist(8), uniformDist(16),
-        zipfDist(4), zipfDist(8), zipfDist(16),
-        geometricDist(4), geometricDist(8),
+        uniformDist(4),
+        uniformDist(8),
+        uniformDist(16),
+        zipfDist(4),
+        zipfDist(8),
+        zipfDist(16),
+        geometricDist(4),
+        geometricDist(8),
       ];
 
       const partitions: Partition[] = [
-        [[0, 1], [2, 3]],
+        [
+          [0, 1],
+          [2, 3],
+        ],
         [[0, 1, 2, 3]],
         [[0], [1], [2], [3]],
-        [[0, 1, 2], [3, 4, 5], [6, 7]],
+        [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7],
+        ],
       ];
 
       for (const dist of distributions) {
@@ -237,8 +275,16 @@ describe('Entropic Refinement Calculus -- Unconditional', () => {
 
       // Finest → coarser → coarsest
       const finest: Partition = discretePartition(8);
-      const medium: Partition = [[0, 1], [2, 3], [4, 5], [6, 7]];
-      const coarsest: Partition = [[0, 1, 2, 3], [4, 5, 6, 7]];
+      const medium: Partition = [
+        [0, 1],
+        [2, 3],
+        [4, 5],
+        [6, 7],
+      ];
+      const coarsest: Partition = [
+        [0, 1, 2, 3],
+        [4, 5, 6, 7],
+      ];
       const terminal: Partition = terminalPartition(8);
 
       const hFinest = shannonEntropy(coarsen(dist, finest));
@@ -258,7 +304,11 @@ describe('Entropic Refinement Calculus -- Unconditional', () => {
   describe('fiber induction: H(fine|coarse) = sum P(cell) * H(fine|cell)', () => {
     it('fiber decomposition matches conditional entropy', () => {
       const dist = zipfDist(8);
-      const partition: Partition = [[0, 1, 2], [3, 4], [5, 6, 7]];
+      const partition: Partition = [
+        [0, 1, 2],
+        [3, 4],
+        [5, 6, 7],
+      ];
 
       const hCond = conditionalEntropy(dist, partition);
       const fiber = fiberEntropy(dist, partition);
@@ -269,8 +319,16 @@ describe('Entropic Refinement Calculus -- Unconditional', () => {
     it('each fiber entropy is non-negative', () => {
       const distributions = [uniformDist(8), zipfDist(8), geometricDist(8)];
       const partitions: Partition[] = [
-        [[0, 1], [2, 3], [4, 5], [6, 7]],
-        [[0, 1, 2, 3], [4, 5, 6, 7]],
+        [
+          [0, 1],
+          [2, 3],
+          [4, 5],
+          [6, 7],
+        ],
+        [
+          [0, 1, 2, 3],
+          [4, 5, 6, 7],
+        ],
         [[0], [1, 2, 3, 4, 5, 6, 7]],
       ];
 
@@ -316,14 +374,14 @@ describe('Entropic Refinement Calculus -- Unconditional', () => {
         expect(hTerminal).toBeCloseTo(0, 10);
 
         // Test against multiple partitions
-        const partitions = [
-          discretePartition(n),
-          terminalPartition(n),
-        ];
+        const partitions = [discretePartition(n), terminalPartition(n)];
 
         // Add some random intermediate partitions
         if (n >= 4) {
-          partitions.push([[0, 1], ...Array.from({ length: n - 2 }, (_, i) => [i + 2])]);
+          partitions.push([
+            [0, 1],
+            ...Array.from({ length: n - 2 }, (_, i) => [i + 2]),
+          ]);
         }
 
         for (const part of partitions) {
@@ -363,7 +421,9 @@ describe('Entropic Refinement Calculus -- Unconditional', () => {
         }
 
         // Terminal entropy is 0
-        const hTerminal = shannonEntropy(coarsen(dist, chain[chain.length - 1]!));
+        const hTerminal = shannonEntropy(
+          coarsen(dist, chain[chain.length - 1]!)
+        );
         expect(hTerminal).toBeCloseTo(0, 5);
       }
     });

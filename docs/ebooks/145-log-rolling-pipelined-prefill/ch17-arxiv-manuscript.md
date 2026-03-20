@@ -1657,7 +1657,7 @@ Offset  Size   Field
 
 **10 bytes.** Every frame carries its own identity. Every frame is self-describing. No ordered delivery is required. The `stream_id` + `sequence` pair is the coordinate in the covering space (§2.4). Flags compose: `RACE  FIN` means “racing AND final frame.” The frame reassembler (§2.4) is the covering map back to sequential order. Payloads are zerocopy: the codec writes 10 bytes in front of the existing `ArrayBuffer` view.
 
-### 7.2.1 The Self-Describing Frame as Pervasive Abstraction
+#### 7.2.1 The Self-Describing Frame as Pervasive Abstraction
 
 The self-describing frame is not specific to the wire protocol. It is the unifying data structure across both the transport layer and the computation engine.
 
@@ -2810,7 +2810,7 @@ Echolocate → EchoBoundary → echoToPersonality() → BoundaryStack
 
 Implementation: `gnosis/src/echolocation.ts` (probing engine, echo-to-personality projection, digital twin creation, fidelity measurement) and `gnosis/src/halogram.ts` (hologram, halogram with per-layer metacog chains + META chain, dual process loop with override logic).
 
-### 15.13.1 Neurodivergence as Perceptual Configuration
+#### 15.13.1 Neurodivergence as Perceptual Configuration
 
 The METACOG personality model (§15.12) parameterizes the void walker by eta (fold aggressiveness), c3 gait thresholds (upshift/downshift barriers), void decay rate, mental health layer gain, and focus multiplier. These parameters define *how* the walker moves through the void boundary, not *what* the void contains. Two walkers with identical void boundaries but different parameter configurations will produce different complement distributions, different gait selections, and different behavioral signatures. Neurodivergence, in this framework, is a parameter configuration -- not a deficit, not a disorder, and not a metaphor.
 
@@ -3785,7 +3785,7 @@ This registry is not exhaustive -- the full set of mechanized predictions (inclu
 
 **Mechanization.** 14 Lean 4 theorems in `FisherManifold.lean` (zero sorry, builds clean). 9 TLA+ invariants in `FisherManifold.tla`. 188 tests across 12 files in `@a0n/maybe` with 2,552 assertions, all passing. The Fisher manifold predictions compose with the existing 128 Lean modules in the companion `ForkRaceFoldTheorems` library.
 
-### Five Predictions from the Repaired Diversity Optimality Surface
+### 19.9 Five Predictions from the Repaired Diversity Optimality Surface
 
 Five predictions composing the newly repaired DiversityOptimality module (fix: `race_monotone_on_add` now receives its non-emptiness witness; `diversity_optimality` receives its positivity witness) with AmericanFrontier, StagedExpansion, DeficitCapacity, and RenormalizationFixedPoints. Each is mechanized in Lean4 (`PredictionsRound14.lean`, sorry-free).
 

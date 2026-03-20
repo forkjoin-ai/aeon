@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { makeDefaultGate4Config, renderGate4Markdown, runGate4Holdout } from './gate4-rqr-holdout';
+import {
+  makeDefaultGate4Config,
+  renderGate4Markdown,
+  runGate4Holdout,
+} from './gate4-rqr-holdout';
 
 describe('Gate 4 out-of-sample holdout harness', () => {
   it('is deterministic for fixed seeds and thresholds', () => {
@@ -16,10 +20,22 @@ describe('Gate 4 out-of-sample holdout harness', () => {
     const reportB = runGate4Holdout(config);
 
     expect(reportA.gate.pass).toBe(reportB.gate.pass);
-    expect(reportA.holdout.spearman.value).toBeCloseTo(reportB.holdout.spearman.value, 12);
-    expect(reportA.holdout.slope.value).toBeCloseTo(reportB.holdout.slope.value, 12);
-    expect(reportA.holdout.quartileDelta.value).toBeCloseTo(reportB.holdout.quartileDelta.value, 12);
-    expect(reportA.holdout.predictedPearson.value).toBeCloseTo(reportB.holdout.predictedPearson.value, 12);
+    expect(reportA.holdout.spearman.value).toBeCloseTo(
+      reportB.holdout.spearman.value,
+      12
+    );
+    expect(reportA.holdout.slope.value).toBeCloseTo(
+      reportB.holdout.slope.value,
+      12
+    );
+    expect(reportA.holdout.quartileDelta.value).toBeCloseTo(
+      reportB.holdout.quartileDelta.value,
+      12
+    );
+    expect(reportA.holdout.predictedPearson.value).toBeCloseTo(
+      reportB.holdout.predictedPearson.value,
+      12
+    );
   });
 
   it('fails when a predeclared threshold is set above measured evidence', () => {
@@ -36,7 +52,9 @@ describe('Gate 4 out-of-sample holdout harness', () => {
     };
 
     const report = runGate4Holdout(config);
-    const criterion = report.gate.criteria.find((entry) => entry.id === 'spearman_ci_low');
+    const criterion = report.gate.criteria.find(
+      (entry) => entry.id === 'spearman_ci_low'
+    );
 
     expect(criterion).toBeDefined();
     expect(criterion?.pass).toBe(false);

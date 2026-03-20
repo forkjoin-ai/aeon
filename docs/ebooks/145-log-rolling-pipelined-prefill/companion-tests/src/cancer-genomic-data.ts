@@ -137,7 +137,8 @@ export const TP53_DRIVERS: MutationEntry[] = [
     isDriver: true,
     cancerTypes: ['breast', 'colorectal', 'ovarian', 'glioblastoma'],
     cosmicFrequency: 0.046,
-    topologicalRole: 'Destroys DNA-binding: p53 cannot read damage signals. Vent beta-1 drops by 3.',
+    topologicalRole:
+      'Destroys DNA-binding: p53 cannot read damage signals. Vent beta-1 drops by 3.',
   },
   {
     gene: 'TP53',
@@ -148,7 +149,8 @@ export const TP53_DRIVERS: MutationEntry[] = [
     isDriver: true,
     cancerTypes: ['colorectal', 'esophageal', 'gastric', 'glioblastoma'],
     cosmicFrequency: 0.038,
-    topologicalRole: 'Disrupts DNA contact: p53 cannot bind target sequences. Vent inactivated.',
+    topologicalRole:
+      'Disrupts DNA contact: p53 cannot bind target sequences. Vent inactivated.',
   },
   {
     gene: 'TP53',
@@ -159,7 +161,8 @@ export const TP53_DRIVERS: MutationEntry[] = [
     isDriver: true,
     cancerTypes: ['hepatocellular'],
     cosmicFrequency: 0.031,
-    topologicalRole: 'Aflatoxin signature: specific vent destruction by environmental carcinogen.',
+    topologicalRole:
+      'Aflatoxin signature: specific vent destruction by environmental carcinogen.',
   },
   {
     gene: 'TP53',
@@ -170,7 +173,8 @@ export const TP53_DRIVERS: MutationEntry[] = [
     isDriver: true,
     cancerTypes: ['colorectal', 'breast', 'pancreatic', 'glioblastoma'],
     cosmicFrequency: 0.035,
-    topologicalRole: 'Disrupts DNA contact at a different face. Vent inactivated.',
+    topologicalRole:
+      'Disrupts DNA contact at a different face. Vent inactivated.',
   },
 ];
 
@@ -237,7 +241,8 @@ export const KRAS_DRIVERS: MutationEntry[] = [
     isDriver: true,
     cancerTypes: ['pancreatic', 'lung', 'colorectal'],
     cosmicFrequency: 0.089,
-    topologicalRole: 'Locks GTPase in ON state: growth fork permanently activated, bypasses fold.',
+    topologicalRole:
+      'Locks GTPase in ON state: growth fork permanently activated, bypasses fold.',
   },
   {
     gene: 'KRAS',
@@ -324,7 +329,7 @@ export const GBM_GENOMIC_PROFILES: Record<string, GBMGenomicProfile> = {
       p53Pathway: 0.87,
       rbPathway: 0.35,
       rtkPi3kPathway: 0.87,
-      idh1Mutation: 0.30,
+      idh1Mutation: 0.3,
       mgmtMethylation: 0.49,
     },
     medianSurvival: 17.0,
@@ -370,7 +375,8 @@ export const CHECKPOINT_INHIBITORS: CheckpointInhibitor[] = [
     name: 'Nivolumab',
     target: 'PD-1',
     restoredBeta1: 1,
-    topologicalRole: 'Unblocks T cell exhaustion pathway: restores immune vent against tumor cells.',
+    topologicalRole:
+      'Unblocks T cell exhaustion pathway: restores immune vent against tumor cells.',
     approvedForGBM: false,
   },
   {
@@ -384,7 +390,8 @@ export const CHECKPOINT_INHIBITORS: CheckpointInhibitor[] = [
     name: 'Ipilimumab',
     target: 'CTLA-4',
     restoredBeta1: 1,
-    topologicalRole: 'Unblocks T cell activation pathway: restores a different immune vent.',
+    topologicalRole:
+      'Unblocks T cell activation pathway: restores a different immune vent.',
     approvedForGBM: false,
   },
 ];

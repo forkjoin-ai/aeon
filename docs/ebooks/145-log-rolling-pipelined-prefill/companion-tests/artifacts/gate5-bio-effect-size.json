@@ -31,10 +31,7 @@
       "denominatorLabel": "unmyelinated conduction velocity",
       "unit": "m/s",
       "source": "Conduction-velocity ranges from cited neurophysiology literature.",
-      "citationIds": [
-        32,
-        46
-      ],
+      "citationIds": [32, 46],
       "primary": true,
       "medianRatio": 79.49371354359806,
       "meanLogRatio": 4.441758409069085,
@@ -51,10 +48,7 @@
       "denominatorLabel": "whole-plant photosynthetic yield",
       "unit": "ratio",
       "source": "Step-level and system-level efficiency ranges from cited literature.",
-      "citationIds": [
-        6,
-        44
-      ],
+      "citationIds": [6, 44],
       "primary": true,
       "medianRatio": 21.52368981193996,
       "meanLogRatio": 3.090493590899362,
@@ -71,9 +65,7 @@
       "denominatorLabel": "eukaryotic Okazaki fragment length",
       "unit": "nt",
       "source": "Okazaki-fragment length ranges from cited molecular biology literature.",
-      "citationIds": [
-        45
-      ],
+      "citationIds": [45],
       "primary": true,
       "medianRatio": 10.060703065602162,
       "meanLogRatio": 2.306657338166928,

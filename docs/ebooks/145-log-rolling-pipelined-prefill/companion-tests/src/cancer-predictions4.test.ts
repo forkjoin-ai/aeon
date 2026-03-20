@@ -32,7 +32,9 @@ describe('Prediction 31: Oncogene addiction = single-fork dependence', () => {
 describe('Prediction 32: Telomere shortening = convergence countdown', () => {
   it('remaining divisions = (current - critical) / lossPerDivision', () => {
     const telomere = { current: 10000, critical: 5000, loss: 100 };
-    const remaining = Math.floor((telomere.current - telomere.critical) / telomere.loss);
+    const remaining = Math.floor(
+      (telomere.current - telomere.critical) / telomere.loss
+    );
     expect(remaining).toBe(50);
     console.log('Telomere countdown:', remaining, 'divisions remaining');
   });
@@ -41,12 +43,15 @@ describe('Prediction 32: Telomere shortening = convergence countdown', () => {
     const critical = 5000;
     const loss = 100;
     const lengths = [10000, 8000, 6000, 5500, 5000];
-    const remaining = lengths.map(l => Math.floor((l - critical) / loss));
+    const remaining = lengths.map((l) => Math.floor((l - critical) / loss));
 
     for (let i = 1; i < remaining.length; i++) {
       expect(remaining[i]!).toBeLessThanOrEqual(remaining[i - 1]!);
     }
-    console.log('Telomere countdown:', lengths.map((l, i) => ({ length: l, remaining: remaining[i] })));
+    console.log(
+      'Telomere countdown:',
+      lengths.map((l, i) => ({ length: l, remaining: remaining[i] }))
+    );
   });
 
   it('at critical length: 0 remaining (p53 activates)', () => {
@@ -132,14 +137,26 @@ describe('Prediction 35: Combination therapy index = total restored β₁ / defi
     const regimens = [
       { name: 'Anti-PD-1 only', contributions: [1], total: 1 },
       { name: 'Anti-PD-1 + anti-CTLA-4', contributions: [1, 1], total: 2 },
-      { name: 'Chemo + immunotherapy + radiation', contributions: [1, 2, 2], total: 5 },
-      { name: 'Kitchen sink (all modalities)', contributions: [1, 1, 2, 2, 3], total: 9 },
+      {
+        name: 'Chemo + immunotherapy + radiation',
+        contributions: [1, 2, 2],
+        total: 5,
+      },
+      {
+        name: 'Kitchen sink (all modalities)',
+        contributions: [1, 1, 2, 2, 3],
+        total: 9,
+      },
     ];
 
     const deficit = 7; // GBM Combined
     for (const r of regimens) {
       const index = r.total / deficit;
-      console.log(`${r.name}: restored=${r.total}, index=${index.toFixed(2)}, coverage=${index >= 1 ? 'complete' : 'partial'}`);
+      console.log(
+        `${r.name}: restored=${r.total}, index=${index.toFixed(2)}, coverage=${
+          index >= 1 ? 'complete' : 'partial'
+        }`
+      );
     }
 
     // Kitchen sink achieves complete coverage
@@ -165,7 +182,9 @@ describe('Prediction 35: Combination therapy index = total restored β₁ / defi
 
 describe('Master: Predictions 31-35 all verified (Final Round)', () => {
   it('all pass', () => {
-    [31, 32, 33, 34, 35].forEach(id => console.log(`Prediction ${id}: PROVEN`));
+    [31, 32, 33, 34, 35].forEach((id) =>
+      console.log(`Prediction ${id}: PROVEN`)
+    );
     console.log('\n--- NO MORE NOVEL THEOREMS TO MUSTER ---');
     console.log('25 cancer predictions total across 5 rounds.');
     console.log('All mechanized in Lean4 (0 sorry) + TLA+ + executable tests.');

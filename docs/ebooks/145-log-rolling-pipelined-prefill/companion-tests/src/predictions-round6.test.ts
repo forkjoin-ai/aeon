@@ -49,7 +49,11 @@ function structuredFrontier(frontier: number, vented: number): number {
   return frontier - vented;
 }
 
-function repairedFrontier(frontier: number, vented: number, repaired: number): number {
+function repairedFrontier(
+  frontier: number,
+  vented: number,
+  repaired: number
+): number {
   return structuredFrontier(frontier, vented) + repaired;
 }
 
@@ -66,13 +70,18 @@ describe('Prediction 71: Failure Cascade Entropy Bound', () => {
     const initial = 20;
     const ventPerStep = 3;
     let frontier = initial;
-    const trajectory: { step: number; frontier: number; entropy: number }[] = [];
+    const trajectory: { step: number; frontier: number; entropy: number }[] =
+      [];
 
     for (let step = 0; frontier > ventPerStep; step++) {
       trajectory.push({ step, frontier, entropy: entropyProxy(frontier) });
       frontier = structuredFrontier(frontier, ventPerStep);
     }
-    trajectory.push({ step: trajectory.length, frontier, entropy: entropyProxy(frontier) });
+    trajectory.push({
+      step: trajectory.length,
+      frontier,
+      entropy: entropyProxy(frontier),
+    });
 
     // Verify monotone decrease
     for (let i = 0; i < trajectory.length - 1; i++) {
@@ -120,12 +129,15 @@ describe('Prediction 72: Retrocausal Diagnostic Accuracy', () => {
       expect(weight(s, 0)).toBeGreaterThan(weight(s, j));
     }
 
-    console.log('Diagnostic weights:', Array.from({ length: 5 }, (_, i) => ({
-      hypothesis: i,
-      rejections: s.voidBoundary[i],
-      weight: weight(s, i),
-      probability: probability(s, i).toFixed(4),
-    })));
+    console.log(
+      'Diagnostic weights:',
+      Array.from({ length: 5 }, (_, i) => ({
+        hypothesis: i,
+        rejections: s.voidBoundary[i],
+        weight: weight(s, i),
+        probability: probability(s, i).toFixed(4),
+      }))
+    );
   });
 
   it('no hypothesis is ever eliminated (sliver)', () => {
@@ -270,11 +282,14 @@ describe('Prediction 75: Rejection-Trajectory Reconstruction', () => {
     expect(weight(s, 0)).toBeGreaterThan(weight(s, 1));
     expect(weight(s, 1)).toBeGreaterThan(weight(s, 2));
 
-    console.log('Reconstruction ordering:', Array.from({ length: 4 }, (_, i) => ({
-      hypothesis: i,
-      rejections: s.voidBoundary[i],
-      weight: weight(s, i),
-    })));
+    console.log(
+      'Reconstruction ordering:',
+      Array.from({ length: 4 }, (_, i) => ({
+        hypothesis: i,
+        rejections: s.voidBoundary[i],
+        weight: weight(s, i),
+      }))
+    );
   });
 
   it('round-trip: forward → boundary → inverse is consistent', () => {
@@ -306,7 +321,9 @@ describe('Prediction 75: Rejection-Trajectory Reconstruction', () => {
 describe('Round 6 Master: Five Cross-Domain Predictions', () => {
   it('all five derive from disjoint theorem families', () => {
     // 71: FailureEntropy (cascade)
-    expect(entropyProxy(structuredFrontier(10, 3))).toBeLessThan(entropyProxy(10));
+    expect(entropyProxy(structuredFrontier(10, 3))).toBeLessThan(
+      entropyProxy(10)
+    );
 
     // 72: BuleyeanProbability (diagnostic)
     const s = createSpace(3);
@@ -316,7 +333,9 @@ describe('Round 6 Master: Five Cross-Domain Predictions', () => {
     expect(100).toBeLessThan(256); // halting < total
 
     // 74: FailureEntropy (over-repair)
-    expect(entropyProxy(repairedFrontier(10, 3, 5))).toBeGreaterThan(entropyProxy(10));
+    expect(entropyProxy(repairedFrontier(10, 3, 5))).toBeGreaterThan(
+      entropyProxy(10)
+    );
 
     // 75: RetrocausalBound (reconstruction)
     let r = createSpace(3);

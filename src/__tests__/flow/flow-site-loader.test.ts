@@ -153,9 +153,10 @@ function encodeSiteFlow(
 }
 
 /** Decode a site flow back into manifest + content map */
-function decodeSiteFlow(
-  data: Uint8Array
-): { manifest: FlowSiteManifest; contents: Map<string, Uint8Array> } {
+function decodeSiteFlow(data: Uint8Array): {
+  manifest: FlowSiteManifest;
+  contents: Map<string, Uint8Array>;
+} {
   const codec = FlowCodec.createSync();
   const frames = codec.decodeBatch(data);
 
@@ -278,9 +279,7 @@ describe('Flow Site Loader', () => {
           new TextDecoder().decode(page.html)
         );
 
-        const session = contents.get(
-          `/.aeon/sessions/${page.sessionId}.json`
-        );
+        const session = contents.get(`/.aeon/sessions/${page.sessionId}.json`);
         expect(session).toBeDefined();
         expect(new TextDecoder().decode(session!)).toBe(
           new TextDecoder().decode(page.sessionData)

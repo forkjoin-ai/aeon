@@ -39,9 +39,8 @@ function complementDist(counts: number[], eta: number): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -81,7 +80,7 @@ function sparkline(values: number[]): string {
 type Gait = 'stand' | 'trot' | 'canter' | 'gallop';
 
 const GAIT_DEPTH: Record<Gait, number> = {
-  stand: 1,  // null hypothesis: do nothing (but still process 1 round for measurement)
+  stand: 1, // null hypothesis: do nothing (but still process 1 round for measurement)
   trot: 1,
   canter: 4,
   gallop: 16,
@@ -121,16 +120,26 @@ function initGaitState(numChoices: number): GaitState {
   };
 }
 
-function selectGait(kurtosis: number, prevGait: Gait, totalRounds: number): Gait {
+function selectGait(
+  kurtosis: number,
+  prevGait: Gait,
+  totalRounds: number
+): Gait {
   // First round: always stand (null hypothesis, zero velocity)
   if (totalRounds === 0) return 'stand';
   // Kurtosis-based gait selection with hysteresis to prevent thrashing
   // Stand → Trot: any data at all (round > 0)
   if (prevGait === 'stand') return 'trot';
   // Trot → Canter: any nonzero kurtosis OR enough rounds to have data
-  if ((kurtosis > -1.5 || totalRounds > 20) && prevGait === 'trot' && totalRounds > 10) return 'canter';
+  if (
+    (kurtosis > -1.5 || totalRounds > 20) &&
+    prevGait === 'trot' &&
+    totalRounds > 10
+  )
+    return 'canter';
   // Canter → Gallop: kurtosis shows crystallization
-  if (kurtosis >= 0.5 && prevGait === 'canter' && totalRounds > 50) return 'gallop';
+  if (kurtosis >= 0.5 && prevGait === 'canter' && totalRounds > 50)
+    return 'gallop';
   // Downshift: gallop → canter if kurtosis drops
   if (kurtosis < 0.0 && prevGait === 'gallop') return 'canter';
   // Downshift: canter → trot if kurtosis drops below exploration threshold
@@ -143,7 +152,7 @@ function runGaitRounds(
   depth: number,
   opponents: number[],
   payoffFn: PayoffFn,
-  rng: () => number,
+  rng: () => number
 ): void {
   const N = state.voidCounts.length;
 
@@ -159,7 +168,13 @@ function runGaitRounds(
       const r = rng();
       let cum = 0;
       choice = N - 1;
-      for (let i = 0; i < N; i++) { cum += dist[i]; if (r < cum) { choice = i; break; } }
+      for (let i = 0; i < N; i++) {
+        cum += dist[i];
+        if (r < cum) {
+          choice = i;
+          break;
+        }
+      }
     }
 
     // Evaluate
@@ -180,7 +195,7 @@ function runAdaptiveGait(
   totalRounds: number,
   opponentFn: (round: number, rng: () => number) => number,
   payoffFn: PayoffFn,
-  rng: () => number,
+  rng: () => number
 ): GaitState {
   const state = initGaitState(numChoices);
   let round = 0;
@@ -223,7 +238,7 @@ function runAdaptiveGait(
     const remaining = totalRounds - round;
     const batch = Math.min(depth, remaining);
     const opponents = Array.from({ length: batch }, (_, i) =>
-      opponentFn(round + i, rng),
+      opponentFn(round + i, rng)
     );
 
     const payoffBefore = state.totalPayoff;
@@ -242,12 +257,22 @@ function runAdaptiveGait(
 // ============================================================================
 
 const HAWK_DOVE: PayoffFn = (my, opp) => {
-  const m = [[2, 2], [0, 4], [4, 0], [-1, -1]];
+  const m = [
+    [2, 2],
+    [0, 4],
+    [4, 0],
+    [-1, -1],
+  ];
   return m[my * 2 + opp] as [number, number];
 };
 
 const PD: PayoffFn = (my, opp) => {
-  const m = [[3, 3], [0, 5], [5, 0], [1, 1]];
+  const m = [
+    [3, 3],
+    [0, 5],
+    [5, 0],
+    [1, 1],
+  ];
   return m[my * 2 + opp] as [number, number];
 };
 
@@ -266,34 +291,69 @@ const COORDINATION_5: PayoffFn = (my, opp) => {
 // ============================================================================
 
 describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
-
   it('starts in trot, transitions through gaits as learning progresses', () => {
     const rng = makeRng(42);
     const state = runAdaptiveGait(
-      2, 2000,
-      (_r, rng) => rng() < 0.5 ? 0 : 1, // random opponent
-      HAWK_DOVE, rng,
+      2,
+      2000,
+      (_r, rng) => (rng() < 0.5 ? 0 : 1), // random opponent
+      HAWK_DOVE,
+      rng
     );
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════╗');
-    console.log('  ║  TROT → CANTER → GALLOP: Adaptive Gait (Hawk-Dove)       ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════╣');
-    console.log(`  ║  Total rounds: ${state.totalRounds}                                     ║`);
-    console.log(`  ║  Transitions:  ${state.gaitTransitions}                                       ║`);
-    console.log(`  ║  Payoff:       ${state.totalPayoff} (avg ${(state.totalPayoff / state.totalRounds).toFixed(3)})                ║`);
-    console.log('  ╠───────────────────────────────────────────────────────────╣');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  TROT → CANTER → GALLOP: Adaptive Gait (Hawk-Dove)       ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║  Total rounds: ${state.totalRounds}                                     ║`
+    );
+    console.log(
+      `  ║  Transitions:  ${state.gaitTransitions}                                       ║`
+    );
+    console.log(
+      `  ║  Payoff:       ${state.totalPayoff} (avg ${(
+        state.totalPayoff / state.totalRounds
+      ).toFixed(3)})                ║`
+    );
+    console.log(
+      '  ╠───────────────────────────────────────────────────────────╣'
+    );
     for (const g of ['stand', 'trot', 'canter', 'gallop'] as Gait[]) {
       const rounds = state.roundsInGait[g];
       const payoff = state.payoffInGait[g];
       const avg = rounds > 0 ? (payoff / rounds).toFixed(2) : 'N/A';
-      console.log(`  ║  ${g.padEnd(8)} ${String(rounds).padStart(5)} rounds  payoff ${String(payoff).padStart(6)}  avg ${avg.padStart(5)}     ║`);
+      console.log(
+        `  ║  ${g.padEnd(8)} ${String(rounds).padStart(
+          5
+        )} rounds  payoff ${String(payoff).padStart(6)}  avg ${avg.padStart(
+          5
+        )}     ║`
+      );
     }
-    console.log('  ╠───────────────────────────────────────────────────────────╣');
+    console.log(
+      '  ╠───────────────────────────────────────────────────────────╣'
+    );
     const gaitStr = state.gaitHistory.map((g) => g[0]).join('');
     console.log(`  ║  Gait: ${gaitStr.substring(0, 55).padEnd(55)}║`);
-    console.log(`  ║  κ:    ${sparkline(state.kurtosisHistory).substring(0, 55).padEnd(55)}║`);
-    console.log(`  ║  pay:  ${sparkline(state.payoffHistory).substring(0, 55).padEnd(55)}║`);
-    console.log('  ╚═══════════════════════════════════════════════════════════╝');
+    console.log(
+      `  ║  κ:    ${sparkline(state.kurtosisHistory)
+        .substring(0, 55)
+        .padEnd(55)}║`
+    );
+    console.log(
+      `  ║  pay:  ${sparkline(state.payoffHistory)
+        .substring(0, 55)
+        .padEnd(55)}║`
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════╝'
+    );
 
     // Should start standing (null hypothesis, zero velocity)
     expect(state.gaitHistory[0]).toBe('stand');
@@ -306,9 +366,11 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
   it('gallop phase has highest throughput per wall-tick', () => {
     const rng = makeRng(42);
     const state = runAdaptiveGait(
-      2, 5000,
-      (_r, rng) => rng() < 0.5 ? 0 : 1,
-      HAWK_DOVE, rng,
+      2,
+      5000,
+      (_r, rng) => (rng() < 0.5 ? 0 : 1),
+      HAWK_DOVE,
+      rng
     );
 
     // Gallop processes 16 rounds per tick, trot processes 1
@@ -334,9 +396,11 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
     const rng = makeRng(42);
     // Opponent cooperates for 1000 rounds then defects
     const state = runAdaptiveGait(
-      2, 2000,
-      (r, rng) => r < 1000 ? 0 : 1, // regime change at round 1000
-      PD, rng,
+      2,
+      2000,
+      (r, rng) => (r < 1000 ? 0 : 1), // regime change at round 1000
+      PD,
+      rng
     );
 
     // Should have at least one transition (stand → trot, possibly more)
@@ -354,16 +418,29 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
   it('3-choice coordination: full gait evolution', () => {
     const rng = makeRng(42);
     const state = runAdaptiveGait(
-      3, 3000,
+      3,
+      3000,
       (_r, rng) => Math.floor(rng() * 3),
-      COORDINATION_3, rng,
+      COORDINATION_3,
+      rng
     );
 
     console.log('\n  3-Choice Coordination (3000 rounds):');
-    console.log(`  Gait: ${state.gaitHistory.map((g) => g[0]).join('').substring(0, 60)}`);
+    console.log(
+      `  Gait: ${state.gaitHistory
+        .map((g) => g[0])
+        .join('')
+        .substring(0, 60)}`
+    );
     console.log(`  κ:    ${sparkline(state.kurtosisHistory).substring(0, 60)}`);
-    console.log(`  Trot: ${state.roundsInGait.trot}  Canter: ${state.roundsInGait.canter}  Gallop: ${state.roundsInGait.gallop}`);
-    console.log(`  Payoff: ${state.totalPayoff} (avg ${(state.totalPayoff / state.totalRounds).toFixed(3)})`);
+    console.log(
+      `  Trot: ${state.roundsInGait.trot}  Canter: ${state.roundsInGait.canter}  Gallop: ${state.roundsInGait.gallop}`
+    );
+    console.log(
+      `  Payoff: ${state.totalPayoff} (avg ${(
+        state.totalPayoff / state.totalRounds
+      ).toFixed(3)})`
+    );
 
     expect(state.totalRounds).toBe(3000);
   });
@@ -371,9 +448,11 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
   it('5-choice negotiation: gait-aware convergence', () => {
     const rng = makeRng(42);
     const state = runAdaptiveGait(
-      5, 5000,
+      5,
+      5000,
       (_r, rng) => Math.floor(rng() * 5),
-      COORDINATION_5, rng,
+      COORDINATION_5,
+      rng
     );
 
     const maxH = Math.log(5);
@@ -382,12 +461,27 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
     const inverseBule = (maxH - finalH) / state.totalRounds;
 
     console.log('\n  5-Choice Negotiation (5000 rounds, gait-aware):');
-    console.log(`  Gait: ${state.gaitHistory.map((g) => g[0]).join('').substring(0, 60)}`);
+    console.log(
+      `  Gait: ${state.gaitHistory
+        .map((g) => g[0])
+        .join('')
+        .substring(0, 60)}`
+    );
     console.log(`  κ:    ${sparkline(state.kurtosisHistory).substring(0, 60)}`);
-    console.log(`  Trot: ${state.roundsInGait.trot}  Canter: ${state.roundsInGait.canter}  Gallop: ${state.roundsInGait.gallop}`);
-    console.log(`  Payoff: ${state.totalPayoff} (avg ${(state.totalPayoff / state.totalRounds).toFixed(3)})`);
+    console.log(
+      `  Trot: ${state.roundsInGait.trot}  Canter: ${state.roundsInGait.canter}  Gallop: ${state.roundsInGait.gallop}`
+    );
+    console.log(
+      `  Payoff: ${state.totalPayoff} (avg ${(
+        state.totalPayoff / state.totalRounds
+      ).toFixed(3)})`
+    );
     console.log(`  B⁻¹: ${(inverseBule * 1000).toFixed(3)} mB⁻¹`);
-    console.log(`  Final η: ${state.eta.toFixed(1)}  exploration: ${state.exploration.toFixed(3)}`);
+    console.log(
+      `  Final η: ${state.eta.toFixed(
+        1
+      )}  exploration: ${state.exploration.toFixed(3)}`
+    );
 
     expect(state.totalRounds).toBe(5000);
     expect(inverseBule).toBeGreaterThanOrEqual(0);
@@ -397,7 +491,7 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
     const T = 5000;
 
     // Same game, same opponents, three strategies
-    const opponents = (r: number, rng: () => number) => rng() < 0.5 ? 0 : 1;
+    const opponents = (r: number, rng: () => number) => (rng() < 0.5 ? 0 : 1);
 
     // Fixed trot (always depth 1)
     const rng1 = makeRng(42);
@@ -419,7 +513,9 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
     let r2 = 0;
     while (r2 < T) {
       const batch = Math.min(16, T - r2);
-      const opps = Array.from({ length: batch }, (_, i) => opponents(r2 + i, rng2));
+      const opps = Array.from({ length: batch }, (_, i) =>
+        opponents(r2 + i, rng2)
+      );
       runGaitRounds(gallopOnly, batch, opps, HAWK_DOVE, rng2);
       r2 += batch;
     }
@@ -442,15 +538,45 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
     const gallopAvg = gallopOnly.totalPayoff / gallopOnly.totalRounds;
     const adaptiveAvg = adaptive.totalPayoff / adaptive.totalRounds;
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════╗');
-    console.log('  ║  Stand-Trot-Canter-Gallop vs Adaptive (5000 rds H-D)      ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════╣');
-    console.log(`  ║  Stand (null):   avg=${standAvg.toFixed(3)}  total=${standOnly.totalPayoff}${''.padEnd(20)}║`);
-    console.log(`  ║  Fixed trot:     avg=${trotAvg.toFixed(3)}  total=${trotOnly.totalPayoff}${''.padEnd(20)}║`);
-    console.log(`  ║  Fixed gallop:   avg=${gallopAvg.toFixed(3)}  total=${gallopOnly.totalPayoff}${''.padEnd(20)}║`);
-    console.log(`  ║  Adaptive:       avg=${adaptiveAvg.toFixed(3)}  total=${adaptive.totalPayoff}${''.padEnd(20)}║`);
-    console.log(`  ║  Gait mix: S=${adaptive.roundsInGait.stand} T=${adaptive.roundsInGait.trot} C=${adaptive.roundsInGait.canter} G=${adaptive.roundsInGait.gallop}${''.padEnd(18)}║`);
-    console.log('  ╚═══════════════════════════════════════════════════════════╝');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  Stand-Trot-Canter-Gallop vs Adaptive (5000 rds H-D)      ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║  Stand (null):   avg=${standAvg.toFixed(3)}  total=${
+        standOnly.totalPayoff
+      }${''.padEnd(20)}║`
+    );
+    console.log(
+      `  ║  Fixed trot:     avg=${trotAvg.toFixed(3)}  total=${
+        trotOnly.totalPayoff
+      }${''.padEnd(20)}║`
+    );
+    console.log(
+      `  ║  Fixed gallop:   avg=${gallopAvg.toFixed(3)}  total=${
+        gallopOnly.totalPayoff
+      }${''.padEnd(20)}║`
+    );
+    console.log(
+      `  ║  Adaptive:       avg=${adaptiveAvg.toFixed(3)}  total=${
+        adaptive.totalPayoff
+      }${''.padEnd(20)}║`
+    );
+    console.log(
+      `  ║  Gait mix: S=${adaptive.roundsInGait.stand} T=${
+        adaptive.roundsInGait.trot
+      } C=${adaptive.roundsInGait.canter} G=${
+        adaptive.roundsInGait.gallop
+      }${''.padEnd(18)}║`
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════╝'
+    );
 
     // All active gaits should beat standing (null hypothesis)
     // Void reading beats not reading
@@ -464,24 +590,60 @@ describe('Trot-Canter-Gallop: Adaptive Gait Void Walking', () => {
 
     const start = performance.now();
     const state = runAdaptiveGait(
-      5, T,
+      5,
+      T,
       (_r, rng) => Math.floor(rng() * 5),
-      COORDINATION_5, rng,
+      COORDINATION_5,
+      rng
     );
     const elapsed = performance.now() - start;
 
     const roundsPerMs = state.totalRounds / elapsed;
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════╗');
-    console.log('  ║  SPEED BENCHMARK: 10K rounds, 5 choices, gait-adaptive    ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════╣');
-    console.log(`  ║  Wall-clock:  ${elapsed.toFixed(1).padStart(6)}ms                                    ║`);
-    console.log(`  ║  Throughput:  ${roundsPerMs.toFixed(0).padStart(6)} rounds/ms                            ║`);
-    console.log(`  ║  Transitions: ${String(state.gaitTransitions).padStart(6)}                                    ║`);
-    console.log(`  ║  Trot:   ${String(state.roundsInGait.trot).padStart(6)}  Canter: ${String(state.roundsInGait.canter).padStart(6)}  Gallop: ${String(state.roundsInGait.gallop).padStart(6)}    ║`);
-    console.log(`  ║  Payoff: ${String(state.totalPayoff).padStart(6)}  (avg ${(state.totalPayoff / state.totalRounds).toFixed(3)})                     ║`);
-    console.log(`  ║  Final gait: ${state.gait.padEnd(8)} η=${state.eta.toFixed(1)} ε=${state.exploration.toFixed(3)}              ║`);
-    console.log('  ╚═══════════════════════════════════════════════════════════╝');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  SPEED BENCHMARK: 10K rounds, 5 choices, gait-adaptive    ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║  Wall-clock:  ${elapsed
+        .toFixed(1)
+        .padStart(6)}ms                                    ║`
+    );
+    console.log(
+      `  ║  Throughput:  ${roundsPerMs
+        .toFixed(0)
+        .padStart(6)} rounds/ms                            ║`
+    );
+    console.log(
+      `  ║  Transitions: ${String(state.gaitTransitions).padStart(
+        6
+      )}                                    ║`
+    );
+    console.log(
+      `  ║  Trot:   ${String(state.roundsInGait.trot).padStart(
+        6
+      )}  Canter: ${String(state.roundsInGait.canter).padStart(
+        6
+      )}  Gallop: ${String(state.roundsInGait.gallop).padStart(6)}    ║`
+    );
+    console.log(
+      `  ║  Payoff: ${String(state.totalPayoff).padStart(6)}  (avg ${(
+        state.totalPayoff / state.totalRounds
+      ).toFixed(3)})                     ║`
+    );
+    console.log(
+      `  ║  Final gait: ${state.gait.padEnd(8)} η=${state.eta.toFixed(
+        1
+      )} ε=${state.exploration.toFixed(3)}              ║`
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════╝'
+    );
 
     expect(elapsed).toBeLessThan(500);
     expect(state.totalRounds).toBe(T);

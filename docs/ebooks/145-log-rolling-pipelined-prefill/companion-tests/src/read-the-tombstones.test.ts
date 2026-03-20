@@ -34,9 +34,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -107,7 +106,8 @@ describe("Newcomb's Problem: Read the Predictor's Void", () => {
     expect(oneBoxAvg).toBeGreaterThan(twoBoxAvg);
 
     // The predictor's void is sparse: very few wrong predictions
-    const totalErrors = predictorVoid.wrongAboutOneBox + predictorVoid.wrongAboutTwoBox;
+    const totalErrors =
+      predictorVoid.wrongAboutOneBox + predictorVoid.wrongAboutTwoBox;
     expect(totalErrors).toBeLessThan(trials * 0.02);
 
     // Complement distribution over "predictor is wrong about me":
@@ -118,17 +118,27 @@ describe("Newcomb's Problem: Read the Predictor's Void", () => {
     console.log(`\n  Newcomb's Problem (${trials} trials):`);
     console.log(`  One-box avg payoff:  $${oneBoxAvg.toFixed(0)}`);
     console.log(`  Two-box avg payoff:  $${twoBoxAvg.toFixed(0)}`);
-    console.log(`  Predictor errors: ${totalErrors} (${(errorRate * 100).toFixed(1)}%)`);
-    console.log(`  Void walking says: ONE-BOX (read the predictor's tombstones)`);
+    console.log(
+      `  Predictor errors: ${totalErrors} (${(errorRate * 100).toFixed(1)}%)`
+    );
+    console.log(
+      `  Void walking says: ONE-BOX (read the predictor's tombstones)`
+    );
   });
 
   it('as predictor accuracy drops, advantage of one-boxing decreases', () => {
     const accuracies = [1.0, 0.99, 0.9, 0.75, 0.6, 0.51];
-    const results: Array<{ accuracy: number; oneBoxAvg: number; twoBoxAvg: number; verdict: string }> = [];
+    const results: Array<{
+      accuracy: number;
+      oneBoxAvg: number;
+      twoBoxAvg: number;
+      verdict: string;
+    }> = [];
 
     for (const acc of accuracies) {
       const rng = makeRng(42);
-      let oneBox = 0, twoBox = 0;
+      let oneBox = 0,
+        twoBox = 0;
       const N = 10000;
 
       for (let t = 0; t < N; t++) {
@@ -155,12 +165,22 @@ describe("Newcomb's Problem: Read the Predictor's Void", () => {
     console.log('  ' + '─'.repeat(55));
     for (const r of results) {
       console.log(
-        `  Accuracy ${(r.accuracy * 100).toFixed(0).padStart(3)}%: one=$${(r.oneBoxAvg / 1000).toFixed(0).padStart(5)}K  two=$${(r.twoBoxAvg / 1000).toFixed(0).padStart(5)}K  → ${r.verdict}`,
+        `  Accuracy ${(r.accuracy * 100).toFixed(0).padStart(3)}%: one=$${(
+          r.oneBoxAvg / 1000
+        )
+          .toFixed(0)
+          .padStart(5)}K  two=$${(r.twoBoxAvg / 1000)
+          .toFixed(0)
+          .padStart(5)}K  → ${r.verdict}`
       );
     }
     console.log('  ' + '─'.repeat(55));
-    console.log('  Crossover at ~50%: when predictor is random, two-box dominates.');
-    console.log('  The void boundary (predictor accuracy) IS the decision criterion.\n');
+    console.log(
+      '  Crossover at ~50%: when predictor is random, two-box dominates.'
+    );
+    console.log(
+      '  The void boundary (predictor accuracy) IS the decision criterion.\n'
+    );
 
     // At 99% accuracy, one-box wins
     expect(results[1].verdict).toBe('ONE-BOX');
@@ -229,7 +249,7 @@ describe('Monty Hall Problem: The Host Vents a Path', () => {
 
       // Switch door: the remaining door that isn't player's pick or host's open
       const switchDoor = [0, 1, 2].find(
-        (d) => d !== playerPick && d !== hostOpen,
+        (d) => d !== playerPick && d !== hostOpen
       )!;
 
       if (switchDoor === carDoor) switchWins++;
@@ -240,15 +260,17 @@ describe('Monty Hall Problem: The Host Vents a Path', () => {
     const stayRate = stayWins / trials;
 
     expect(switchRate).toBeGreaterThan(0.63);
-    expect(switchRate).toBeLessThan(0.70);
-    expect(stayRate).toBeGreaterThan(0.30);
+    expect(switchRate).toBeLessThan(0.7);
+    expect(stayRate).toBeGreaterThan(0.3);
     expect(stayRate).toBeLessThan(0.37);
 
     console.log(`\n  Monty Hall (${trials} trials):`);
     console.log(`  Switch wins: ${(switchRate * 100).toFixed(1)}%`);
     console.log(`  Stay wins:   ${(stayRate * 100).toFixed(1)}%`);
     console.log(`  The tombstone of the opened door IS the information.`);
-    console.log(`  THM-VOID-BOUNDARY-MEASURABLE: 3-way fork, 1 vent, boundary rank = 2.`);
+    console.log(
+      `  THM-VOID-BOUNDARY-MEASURABLE: 3-way fork, 1 vent, boundary rank = 2.`
+    );
   });
 
   it('void boundary explanation: the vent is constrained information', () => {
@@ -275,7 +297,7 @@ describe('Monty Hall Problem: The Host Vents a Path', () => {
     // When player picked goat (2/3 of time), host was FORCED
     // This constraint is the information content of the tombstone
     expect(hostVoidByPlayerChoice.pickedGoat).toBeGreaterThan(
-      hostVoidByPlayerChoice.pickedCar,
+      hostVoidByPlayerChoice.pickedCar
     );
 
     // The ratio is ~2:1
@@ -286,13 +308,15 @@ describe('Monty Hall Problem: The Host Vents a Path', () => {
 
     console.log('\n  Void boundary of Monty Hall:');
     console.log(
-      `  Player picked car  (host free):     ${hostVoidByPlayerChoice.pickedCar} times`,
+      `  Player picked car  (host free):     ${hostVoidByPlayerChoice.pickedCar} times`
     );
     console.log(
-      `  Player picked goat (host forced):   ${hostVoidByPlayerChoice.pickedGoat} times`,
+      `  Player picked goat (host forced):   ${hostVoidByPlayerChoice.pickedGoat} times`
     );
     console.log(
-      `  Ratio: ${ratio.toFixed(2)} (≈2:1 -- the host's constraint IS the information)`,
+      `  Ratio: ${ratio.toFixed(
+        2
+      )} (≈2:1 -- the host's constraint IS the information)`
     );
   });
 });
@@ -432,10 +456,10 @@ describe("Arrow's Impossibility: Navigated by Iterated Void", () => {
     console.log(`  B wins: ${(winRates[1] * 100).toFixed(1)}%`);
     console.log(`  C wins: ${(winRates[2] * 100).toFixed(1)}%`);
     console.log(
-      '  The cycle is broken by void accumulation: each round adds tombstones',
+      '  The cycle is broken by void accumulation: each round adds tombstones'
     );
     console.log(
-      '  that bias future votes. Democracy navigates Arrow by reading history.',
+      '  that bias future votes. Democracy navigates Arrow by reading history.'
     );
 
     // All candidates should win some rounds (no dictatorship)
@@ -492,7 +516,12 @@ describe('The Cooperation Puzzle: Void Walkers Are More Peaceful Than Nash', () 
       if (c2 === 0) p2DoveCount++;
 
       // Hawk-dove payoffs: dove/dove=2,2  dove/hawk=0,4  hawk/dove=4,0  hawk/hawk=-1,-1
-      const payoffs = [[2, 2], [0, 4], [4, 0], [-1, -1]];
+      const payoffs = [
+        [2, 2],
+        [0, 4],
+        [4, 0],
+        [-1, -1],
+      ];
       const [pay1, pay2] = payoffs[c1 * 2 + c2];
 
       // Update void: penalize choices that lost or went negative
@@ -509,11 +538,21 @@ describe('The Cooperation Puzzle: Void Walkers Are More Peaceful Than Nash', () 
     expect(p1DoveRate).toBeGreaterThan(nashDoveRate);
 
     console.log(`\n  The Cooperation Puzzle:`);
-    console.log(`  Nash says:         p(dove) = ${(nashDoveRate * 100).toFixed(1)}%`);
-    console.log(`  Void walker plays: p(dove) = ${(p1DoveRate * 100).toFixed(1)}%`);
-    console.log(`  Difference: +${((p1DoveRate - nashDoveRate) * 100).toFixed(1)} percentage points more peaceful`);
+    console.log(
+      `  Nash says:         p(dove) = ${(nashDoveRate * 100).toFixed(1)}%`
+    );
+    console.log(
+      `  Void walker plays: p(dove) = ${(p1DoveRate * 100).toFixed(1)}%`
+    );
+    console.log(
+      `  Difference: +${((p1DoveRate - nashDoveRate) * 100).toFixed(
+        1
+      )} percentage points more peaceful`
+    );
     console.log(`  Why? The hawk/hawk void (-1,-1) is denser than any other.`);
-    console.log(`  THE TOMBSTONES OF WAR ARE DENSER THAN THE TOMBSTONES OF PEACE.`);
+    console.log(
+      `  THE TOMBSTONES OF WAR ARE DENSER THAN THE TOMBSTONES OF PEACE.`
+    );
   });
 });
 
@@ -549,7 +588,7 @@ describe('The Fermi Paradox: The Silence IS the Void Boundary', () => {
     // Each civilization has a strategy and a survival probability per period
     // Broadcasting increases detection but also attracts threats
     const survivalRates: Record<CivStrategy, number> = {
-      broadcast: 0.990, // 1% chance of destruction per period (from attention)
+      broadcast: 0.99, // 1% chance of destruction per period (from attention)
       quiet: 0.999, // 0.1% chance (random disaster only)
       moderate: 0.995, // 0.5% chance (some attention, some caution)
     };
@@ -561,7 +600,11 @@ describe('The Fermi Paradox: The Silence IS the Void Boundary', () => {
       deathPeriod: -1,
     }));
 
-    const voidByStrategy: Record<CivStrategy, number> = { broadcast: 0, quiet: 0, moderate: 0 };
+    const voidByStrategy: Record<CivStrategy, number> = {
+      broadcast: 0,
+      quiet: 0,
+      moderate: 0,
+    };
 
     for (let t = 0; t < T; t++) {
       for (const civ of civs) {
@@ -575,16 +618,26 @@ describe('The Fermi Paradox: The Silence IS the Void Boundary', () => {
     }
 
     // Count survivors
-    const survivorsByStrategy: Record<CivStrategy, number> = { broadcast: 0, quiet: 0, moderate: 0 };
+    const survivorsByStrategy: Record<CivStrategy, number> = {
+      broadcast: 0,
+      quiet: 0,
+      moderate: 0,
+    };
     for (const civ of civs) {
       if (civ.alive) survivorsByStrategy[civ.strategy]++;
     }
 
     // The void (tombstones) should be densest for broadcasters
-    const voidCounts = [voidByStrategy.broadcast, voidByStrategy.quiet, voidByStrategy.moderate];
+    const voidCounts = [
+      voidByStrategy.broadcast,
+      voidByStrategy.quiet,
+      voidByStrategy.moderate,
+    ];
     const dist = complementDist(voidCounts);
 
-    console.log(`\n  Fermi Paradox Simulation (${N} civilizations, ${T} periods):`);
+    console.log(
+      `\n  Fermi Paradox Simulation (${N} civilizations, ${T} periods):`
+    );
     console.log('  ' + '─'.repeat(50));
     console.log(`  Strategy    Survived  Extinct  Void%    Complement`);
     for (const s of strategies) {
@@ -593,7 +646,9 @@ describe('The Fermi Paradox: The Silence IS the Void Boundary', () => {
       const dead = voidByStrategy[s];
       const idx = strategies.indexOf(s);
       console.log(
-        `  ${s.padEnd(12)} ${String(surv).padStart(5)}/${total}    ${String(dead).padStart(5)}    ${(dist[idx] * 100).toFixed(1).padStart(5)}%`,
+        `  ${s.padEnd(12)} ${String(surv).padStart(5)}/${total}    ${String(
+          dead
+        ).padStart(5)}    ${(dist[idx] * 100).toFixed(1).padStart(5)}%`
       );
     }
     console.log('  ' + '─'.repeat(50));
@@ -602,7 +657,9 @@ describe('The Fermi Paradox: The Silence IS the Void Boundary', () => {
 
     // Quiet civilizations should have the highest survival rate
     const quietTotal = civs.filter((c) => c.strategy === 'quiet').length;
-    const broadcastTotal = civs.filter((c) => c.strategy === 'broadcast').length;
+    const broadcastTotal = civs.filter(
+      (c) => c.strategy === 'broadcast'
+    ).length;
     if (quietTotal > 0 && broadcastTotal > 0) {
       const quietSurvRate = survivorsByStrategy.quiet / quietTotal;
       const broadcastSurvRate = survivorsByStrategy.broadcast / broadcastTotal;
@@ -671,7 +728,9 @@ describe('St. Petersburg Paradox: The Void of Tails Bounds the Value', () => {
     console.log(`  Raw average payout:       $${avgPayout.toFixed(2)}`);
     console.log(`  Void-weighted value:      $${voidWeightedValue.toFixed(2)}`);
     console.log(`  The void of tails bounds the "infinite" expected value.`);
-    console.log(`  THM-VOID-DOMINANCE: the tails void grows as Ω(T), bounding payoff.`);
+    console.log(
+      `  THM-VOID-DOMINANCE: the tails void grows as Ω(T), bounding payoff.`
+    );
   });
 });
 
@@ -720,15 +779,23 @@ describe('Sleeping Beauty: Void Structure Resolves the Debate', () => {
     const pHeadsGivenWaking = headsWakings / totalWakings;
 
     // Should be ~1/3
-    expect(pHeadsGivenWaking).toBeGreaterThan(0.30);
+    expect(pHeadsGivenWaking).toBeGreaterThan(0.3);
     expect(pHeadsGivenWaking).toBeLessThan(0.37);
 
     console.log(`\n  Sleeping Beauty (${trials} experiments):`);
-    console.log(`  Total wakings: ${totalWakings} (heads: ${headsWakings}, tails: ${tailsWakings})`);
-    console.log(`  P(heads | waking) = ${(pHeadsGivenWaking * 100).toFixed(1)}%`);
+    console.log(
+      `  Total wakings: ${totalWakings} (heads: ${headsWakings}, tails: ${tailsWakings})`
+    );
+    console.log(
+      `  P(heads | waking) = ${(pHeadsGivenWaking * 100).toFixed(1)}%`
+    );
     console.log(`  Void walking says: THIRDER.`);
-    console.log(`  The tails branch has 2x the void boundary (2 waking-events).`);
-    console.log(`  The complement distribution is uniform over waking-events: 1/3.\n`);
+    console.log(
+      `  The tails branch has 2x the void boundary (2 waking-events).`
+    );
+    console.log(
+      `  The complement distribution is uniform over waking-events: 1/3.\n`
+    );
   });
 });
 
@@ -736,7 +803,7 @@ describe('Sleeping Beauty: Void Structure Resolves the Debate', () => {
 // 8. Condorcet Jury Theorem + Paradox Unified
 // ============================================================================
 
-describe("Condorcet: Jury Theorem and Paradox Unified by Void", () => {
+describe('Condorcet: Jury Theorem and Paradox Unified by Void', () => {
   /**
    * Condorcet's Jury Theorem (1785): if each juror is >50% accurate,
    * majority rule converges to truth as jury size grows.
@@ -782,7 +849,9 @@ describe("Condorcet: Jury Theorem and Paradox Unified by Void", () => {
     for (const r of results) {
       const bar = '█'.repeat(Math.round(r.majorityCorrect * 40));
       console.log(
-        `  n=${String(r.n).padStart(3)}: ${(r.majorityCorrect * 100).toFixed(1).padStart(5)}% ${bar}`,
+        `  n=${String(r.n).padStart(3)}: ${(r.majorityCorrect * 100)
+          .toFixed(1)
+          .padStart(5)}% ${bar}`
       );
     }
 
@@ -791,11 +860,11 @@ describe("Condorcet: Jury Theorem and Paradox Unified by Void", () => {
     // Monotonically increasing
     for (let i = 1; i < results.length; i++) {
       expect(results[i].majorityCorrect).toBeGreaterThanOrEqual(
-        results[i - 1].majorityCorrect - 0.02,
+        results[i - 1].majorityCorrect - 0.02
       );
     }
 
-    console.log('  Each juror\'s void has density < 0.5.');
+    console.log("  Each juror's void has density < 0.5.");
     console.log('  The complement distribution over "truth" has weight > 0.5.');
     console.log('  As N grows, the product of complements → 1. QED.\n');
   });

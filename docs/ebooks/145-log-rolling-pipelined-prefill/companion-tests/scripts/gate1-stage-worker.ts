@@ -1,4 +1,8 @@
-import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import {
+  createServer,
+  type IncomingMessage,
+  type ServerResponse,
+} from 'node:http';
 
 interface StageRequest {
   readonly chunkId: number;
@@ -36,7 +40,11 @@ async function readBody(request: IncomingMessage): Promise<string> {
   return Buffer.concat(chunks).toString('utf8');
 }
 
-function sendJson(response: ServerResponse, statusCode: number, payload: unknown): void {
+function sendJson(
+  response: ServerResponse,
+  statusCode: number,
+  payload: unknown
+): void {
   response.statusCode = statusCode;
   response.setHeader('content-type', 'application/json');
   response.end(JSON.stringify(payload));
@@ -114,7 +122,7 @@ function parseCli(argv: readonly string[]): WorkerOptions {
 async function handler(
   options: WorkerOptions,
   request: IncomingMessage,
-  response: ServerResponse,
+  response: ServerResponse
 ): Promise<void> {
   if (request.method !== 'POST' || request.url !== '/stage') {
     sendJson(response, 404, { error: 'not-found' });
@@ -158,7 +166,7 @@ function main(): void {
 
   server.listen(options.port, options.host, () => {
     process.stdout.write(
-      `gate1-stage-worker ready stage=${options.stageIndex} endpoint=http://${options.host}:${options.port}/stage serviceMsPerToken=${options.serviceMsPerToken}\n`,
+      `gate1-stage-worker ready stage=${options.stageIndex} endpoint=http://${options.host}:${options.port}/stage serviceMsPerToken=${options.serviceMsPerToken}\n`
     );
   });
 
@@ -173,6 +181,8 @@ function main(): void {
 try {
   main();
 } catch (error) {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 }

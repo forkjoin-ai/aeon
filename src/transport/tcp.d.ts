@@ -14,25 +14,25 @@
  */
 import type { FlowTransport } from '../flow/types';
 export interface TCPFlowConfig {
-    /** Host to connect to (client) or bind to (server) */
-    host?: string;
-    /** Port number */
-    port: number;
-    /** Connection timeout in ms (default: 10000) */
-    connectTimeout?: number;
-    /** Keep-alive interval in ms (default: 30000) */
-    keepAliveMs?: number;
+  /** Host to connect to (client) or bind to (server) */
+  host?: string;
+  /** Port number */
+  port: number;
+  /** Connection timeout in ms (default: 10000) */
+  connectTimeout?: number;
+  /** Keep-alive interval in ms (default: 30000) */
+  keepAliveMs?: number;
 }
 /** Minimal TCP socket interface — works with Node net.Socket and Bun */
 interface TCPSocket {
-    write(data: Uint8Array): boolean;
-    on(event: 'data', handler: (data: Buffer | Uint8Array) => void): void;
-    on(event: 'close', handler: () => void): void;
-    on(event: 'error', handler: (err: Error) => void): void;
-    end(): void;
-    destroy(): void;
-    setKeepAlive?(enable: boolean, initialDelay?: number): void;
-    setNoDelay?(noDelay?: boolean): void;
+  write(data: Uint8Array): boolean;
+  on(event: 'data', handler: (data: Buffer | Uint8Array) => void): void;
+  on(event: 'close', handler: () => void): void;
+  on(event: 'error', handler: (err: Error) => void): void;
+  end(): void;
+  destroy(): void;
+  setKeepAlive?(enable: boolean, initialDelay?: number): void;
+  setNoDelay?(noDelay?: boolean): void;
 }
 /**
  * FlowTransport over TCP with length-prefixed framing.
@@ -42,18 +42,18 @@ interface TCPSocket {
  * to read for each flow frame.
  */
 export declare class TCPFlowTransport implements FlowTransport {
-    private socket;
-    private receiveHandler;
-    private closed;
-    /** Reassembly buffer for TCP stream → discrete messages */
-    private rxBuffer;
-    constructor(socket: TCPSocket, config?: Partial<TCPFlowConfig>);
-    send(data: Uint8Array): void;
-    onReceive(handler: (data: Uint8Array) => void): void;
-    close(): void;
-    /** Whether the transport is still open */
-    get isOpen(): boolean;
-    private onData;
+  private socket;
+  private receiveHandler;
+  private closed;
+  /** Reassembly buffer for TCP stream → discrete messages */
+  private rxBuffer;
+  constructor(socket: TCPSocket, config?: Partial<TCPFlowConfig>);
+  send(data: Uint8Array): void;
+  onReceive(handler: (data: Uint8Array) => void): void;
+  close(): void;
+  /** Whether the transport is still open */
+  get isOpen(): boolean;
+  private onData;
 }
 /**
  * Create a TCP FlowTransport by connecting to a remote host.
@@ -65,7 +65,11 @@ export declare class TCPFlowTransport implements FlowTransport {
  * @param port - Remote port
  * @param config - Optional TCP configuration
  */
-export declare function connectTCPFlow(host: string, port: number, config?: Partial<TCPFlowConfig>): Promise<TCPFlowTransport>;
+export declare function connectTCPFlow(
+  host: string,
+  port: number,
+  config?: Partial<TCPFlowConfig>
+): Promise<TCPFlowTransport>;
 /**
  * Create a TCP flow server that accepts incoming connections.
  *
@@ -75,7 +79,11 @@ export declare function connectTCPFlow(host: string, port: number, config?: Part
  * @param host - Host to bind to (default: '0.0.0.0')
  * @param onConnection - Called for each new flow transport connection
  */
-export declare function listenTCPFlow(port: number, host: string, onConnection: (transport: TCPFlowTransport) => void): Promise<{
-    close: () => void;
+export declare function listenTCPFlow(
+  port: number,
+  host: string,
+  onConnection: (transport: TCPFlowTransport) => void
+): Promise<{
+  close: () => void;
 }>;
 export {};

@@ -18,12 +18,18 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/ch17-gate1-wallclock-figure.json');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-gate1-wallclock-figure.json'
+  );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate1-wallclock-figure.md',
+    '../artifacts/ch17-gate1-wallclock-figure.md'
   );
-  const defaultSvgPath = resolve(moduleDir, '../artifacts/ch17-gate1-wallclock-figure.svg');
+  const defaultSvgPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-gate1-wallclock-figure.svg'
+  );
 
   let assertSurface = false;
   let jsonPath = defaultJsonPath;
@@ -80,7 +86,7 @@ function main(): void {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const artifactsDir = resolve(moduleDir, '../artifacts');
   const gate1 = loadJson<Gate1Report>(
-    resolve(artifactsDir, 'gate1-wallclock-external-multihost.json'),
+    resolve(artifactsDir, 'gate1-wallclock-external-multihost.json')
   );
   const report = buildCh17Gate1WallclockFigureReport(gate1);
 
@@ -88,22 +94,38 @@ function main(): void {
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  writeFileSync(options.markdownPath, renderCh17Gate1WallclockFigureMarkdown(report), 'utf8');
-  writeFileSync(options.svgPath, renderCh17Gate1WallclockFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
+  writeFileSync(
+    options.markdownPath,
+    renderCh17Gate1WallclockFigureMarkdown(report),
+    'utf8'
+  );
+  writeFileSync(
+    options.svgPath,
+    renderCh17Gate1WallclockFigureSvg(report),
+    'utf8'
+  );
 
   process.stdout.write(`ch17-gate1-wallclock-figure: ${report.label}\n`);
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
-    `- primary cells: ${report.primaryPassed}/${report.primaryTotal}\n`,
+    `- primary cells: ${report.primaryPassed}/${report.primaryTotal}\n`
   );
   process.stdout.write(
-    `- speedup range: ${report.speedupMedianRange.low.toFixed(3)}x to ${report.speedupMedianRange.high.toFixed(3)}x\n`,
+    `- speedup range: ${report.speedupMedianRange.low.toFixed(
+      3
+    )}x to ${report.speedupMedianRange.high.toFixed(3)}x\n`
   );
   process.stdout.write(
-    `- minimum CI lows: ${report.minSpeedupCiLow.toFixed(3)}x and ${report.minImprovementCiLowMs.toFixed(2)} ms\n`,
+    `- minimum CI lows: ${report.minSpeedupCiLow.toFixed(
+      3
+    )}x and ${report.minImprovementCiLowMs.toFixed(2)} ms\n`
   );
 
   if (

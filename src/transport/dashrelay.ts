@@ -41,9 +41,15 @@ export interface DashRelayLike {
   /** Broadcast binary data to all peers in the room */
   broadcast(payload: Uint8Array): void;
   /** Register handler for incoming messages */
-  on(event: 'message', handler: (senderId: string, payload: Uint8Array) => void): void;
+  on(
+    event: 'message',
+    handler: (senderId: string, payload: Uint8Array) => void
+  ): void;
   /** Unregister handler */
-  off(event: 'message', handler: (senderId: string, payload: Uint8Array) => void): void;
+  off(
+    event: 'message',
+    handler: (senderId: string, payload: Uint8Array) => void
+  ): void;
   /** Peer events */
   on(event: 'peerJoined', handler: (peerId: string) => void): void;
   on(event: 'peerLeft', handler: (peerId: string) => void): void;
@@ -91,7 +97,9 @@ function encodeEnvelope(
   channel?: string
 ): Uint8Array {
   const encoder = new TextEncoder();
-  const targetBytes = targetPeerId ? encoder.encode(targetPeerId) : new Uint8Array(0);
+  const targetBytes = targetPeerId
+    ? encoder.encode(targetPeerId)
+    : new Uint8Array(0);
   const channelBytes = channel ? encoder.encode(channel) : new Uint8Array(0);
 
   let flags = 0;
@@ -99,7 +107,11 @@ function encodeEnvelope(
   if (channel) flags |= FLAG_HAS_CHANNEL;
 
   const headerSize = 10; // version(1) + flags(1) + targetLen(4) + channelLen(4)
-  const totalSize = headerSize + targetBytes.byteLength + channelBytes.byteLength + payload.byteLength;
+  const totalSize =
+    headerSize +
+    targetBytes.byteLength +
+    channelBytes.byteLength +
+    payload.byteLength;
   const envelope = new Uint8Array(totalSize);
   const view = new DataView(envelope.buffer);
 
@@ -139,14 +151,16 @@ function decodeEnvelope(data: Uint8Array): {
   const decoder = new TextDecoder();
   let offset = headerSize;
 
-  const target = (flags & FLAG_DIRECTED)
-    ? decoder.decode(data.subarray(offset, offset + targetLen))
-    : null;
+  const target =
+    flags & FLAG_DIRECTED
+      ? decoder.decode(data.subarray(offset, offset + targetLen))
+      : null;
   offset += targetLen;
 
-  const channel = (flags & FLAG_HAS_CHANNEL)
-    ? decoder.decode(data.subarray(offset, offset + channelLen))
-    : null;
+  const channel =
+    flags & FLAG_HAS_CHANNEL
+      ? decoder.decode(data.subarray(offset, offset + channelLen))
+      : null;
   offset += channelLen;
 
   const payload = data.subarray(offset);
@@ -173,7 +187,9 @@ export class DashRelayFlowTransport implements FlowTransport {
   private receiveHandler: ((data: Uint8Array) => void) | null = null;
   private closed = false;
   private config: DashRelayFlowConfig;
-  private peerHandler: ((senderId: string, payload: Uint8Array) => void) | null = null;
+  private peerHandler:
+    | ((senderId: string, payload: Uint8Array) => void)
+    | null = null;
 
   /** Connected peers observed via relay events */
   private peers = new Set<string>();
@@ -193,14 +209,19 @@ export class DashRelayFlowTransport implements FlowTransport {
       if (!this.receiveHandler) return;
 
       // Ignore own messages
-      if (this.config.localPeerId && senderId === this.config.localPeerId) return;
+      if (this.config.localPeerId && senderId === this.config.localPeerId)
+        return;
 
       // Decode envelope
       const envelope = decodeEnvelope(payload);
       if (!envelope) return;
 
       // Check if directed to us
-      if (envelope.target && this.config.localPeerId && envelope.target !== this.config.localPeerId) {
+      if (
+        envelope.target &&
+        this.config.localPeerId &&
+        envelope.target !== this.config.localPeerId
+      ) {
         return; // Not for us
       }
 

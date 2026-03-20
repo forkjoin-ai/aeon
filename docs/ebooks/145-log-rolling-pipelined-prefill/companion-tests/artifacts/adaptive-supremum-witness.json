@@ -41,9 +41,7 @@
     {
       "id": "always-uncongested",
       "description": "Ceiling never activates, so the right node stays at its direct arrival baseline.",
-      "congestionPattern": [
-        false
-      ],
+      "congestionPattern": [false],
       "approximants": [
         {
           "left": 0.25,
@@ -85,9 +83,7 @@
     {
       "id": "always-congested",
       "description": "Ceiling activates on every step, so the right node reaches the closed-form reroute bound immediately.",
-      "congestionPattern": [
-        true
-      ],
+      "congestionPattern": [true],
       "approximants": [
         {
           "left": 0.25,
@@ -129,10 +125,7 @@
     {
       "id": "alternating",
       "description": "Congestion toggles, so the right coordinate oscillates below the same schedule-uniform ceiling.",
-      "congestionPattern": [
-        false,
-        true
-      ],
+      "congestionPattern": [false, true],
       "approximants": [
         {
           "left": 0.25,
@@ -174,12 +167,7 @@
     {
       "id": "delayed-reroute",
       "description": "The ceiling is dormant first and then activates, showing that the constructive supremum picks up the first congested branch without overshooting.",
-      "congestionPattern": [
-        false,
-        false,
-        true,
-        true
-      ],
+      "congestionPattern": [false, false, true, true],
       "approximants": [
         {
           "left": 0.25,

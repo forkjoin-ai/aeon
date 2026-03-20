@@ -29,7 +29,10 @@
 export { AEON_CAPABILITIES, DEFAULT_CRYPTO_CONFIG } from './types';
 export { AEON_CRYPTO_METHOD_MANIFEST } from './manifest';
 export { NullCryptoProvider } from './CryptoProvider';
-export { NullTransactionSigner, createTransactionSignerAdapter, } from './transactionSigner';
+export {
+  NullTransactionSigner,
+  createTransactionSignerAdapter,
+} from './transactionSigner';
 // Default Implementation - Requires @affectively/auth and @affectively/auth
 // Uncomment when these packages are available
 // export { AeonCryptoProvider } from './AeonCryptoProvider';

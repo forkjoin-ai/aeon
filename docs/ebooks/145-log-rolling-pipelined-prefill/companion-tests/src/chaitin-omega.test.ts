@@ -209,7 +209,9 @@ describe('monotone finite approximation', () => {
       totalPrograms: 30,
       haltingPrograms: 9,
     };
-    expect(longer.haltingPrograms).toBeGreaterThanOrEqual(shorter.haltingPrograms);
+    expect(longer.haltingPrograms).toBeGreaterThanOrEqual(
+      shorter.haltingPrograms
+    );
     expect(longer.totalPrograms).toBeGreaterThanOrEqual(shorter.totalPrograms);
   });
 

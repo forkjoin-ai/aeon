@@ -31,12 +31,17 @@ export interface FormalAdaptiveWitnessCatalogReport {
 }
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
-const defaultArtifactPath = resolve(moduleDir, '../artifacts/formal-adaptive-witness-catalog.json');
+const defaultArtifactPath = resolve(
+  moduleDir,
+  '../artifacts/formal-adaptive-witness-catalog.json'
+);
 
 export function loadCheckedInFormalAdaptiveWitnessCatalog(
-  artifactPath = defaultArtifactPath,
+  artifactPath = defaultArtifactPath
 ): FormalAdaptiveWitnessCatalogReport {
-  return JSON.parse(readFileSync(artifactPath, 'utf8')) as FormalAdaptiveWitnessCatalogReport;
+  return JSON.parse(
+    readFileSync(artifactPath, 'utf8')
+  ) as FormalAdaptiveWitnessCatalogReport;
 }
 
 export function parseRationalLiteral(literal: string): number {
@@ -56,7 +61,7 @@ export function parseRationalLiteral(literal: string): number {
 }
 
 export function renderFormalAdaptiveWitnessCatalogMarkdown(
-  report: FormalAdaptiveWitnessCatalogReport,
+  report: FormalAdaptiveWitnessCatalogReport
 ): string {
   const lines: string[] = [];
   lines.push('# Formal Adaptive Witness Catalog');
@@ -64,16 +69,18 @@ export function renderFormalAdaptiveWitnessCatalogMarkdown(
   lines.push(`- Label: \`${report.label}\``);
   lines.push(`- Witness count: \`${report.witnesses.length}\``);
   lines.push('');
-  lines.push('| Witness | Alpha | Drift gap | Spectral radius | Bounded states | Theorem |');
+  lines.push(
+    '| Witness | Alpha | Drift gap | Spectral radius | Bounded states | Theorem |'
+  );
   lines.push('| --- | --- | --- | --- | ---: | --- |');
   for (const witness of report.witnesses) {
     lines.push(
-      `| \`${witness.id}\` | \`(${witness.alphaLeft}, ${witness.alphaRight})\` | \`${witness.driftGap}\` | \`${witness.spectralRadius}\` | ${witness.stateCount} | \`${witness.theoremRef}\` |`,
+      `| \`${witness.id}\` | \`(${witness.alphaLeft}, ${witness.alphaRight})\` | \`${witness.driftGap}\` | \`${witness.spectralRadius}\` | ${witness.stateCount} | \`${witness.theoremRef}\` |`
     );
   }
   lines.push('');
   lines.push(
-    'Interpretation: this catalog is emitted from the Lean theorem package and pins the concrete adaptive rerouting alpha witness that the runtime adaptive-supremum artifact must match.',
+    'Interpretation: this catalog is emitted from the Lean theorem package and pins the concrete adaptive rerouting alpha witness that the runtime adaptive-supremum artifact must match.'
   );
   lines.push('');
   return `${lines.join('\n')}\n`;

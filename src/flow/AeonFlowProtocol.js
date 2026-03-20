@@ -111,7 +111,7 @@ export class AeonFlowProtocol {
             childIds.push(childId);
         }
         // Send FORK frame on parent to notify remote
-        this.sendFrame(parentStreamId, FORK, new Uint8Array(childIds.flatMap((id) => [(id >>> 8) & 0xFF, id & 0xFF])));
+        this.sendFrame(parentStreamId, FORK, new Uint8Array(childIds.flatMap((id) => [(id >>> 8) & 0xff, id & 0xff])));
         return childIds;
     }
     // ═══════════════════════════════════════════════════════════════════════
@@ -136,7 +136,7 @@ export class AeonFlowProtocol {
         // Send RACE frame on each stream
         for (const id of streamIds) {
             const peerIds = streamIds.filter((sid) => sid !== id);
-            this.sendFrame(id, RACE, new Uint8Array(peerIds.flatMap((pid) => [(pid >>> 8) & 0xFF, pid & 0xFF])));
+            this.sendFrame(id, RACE, new Uint8Array(peerIds.flatMap((pid) => [(pid >>> 8) & 0xff, pid & 0xff])));
         }
         const groupId = `race-${streamIds.join('-')}-${Date.now()}`;
         return new Promise((resolve) => {
@@ -304,7 +304,9 @@ export class AeonFlowProtocol {
             this.frameHandlers.set(streamId, handlers);
         }
         handlers.add(handler);
-        return () => { handlers.delete(handler); };
+        return () => {
+            handlers.delete(handler);
+        };
     }
     /**
      * Register a handler for when a stream ends (FIN received).
@@ -316,7 +318,9 @@ export class AeonFlowProtocol {
             this.endHandlers.set(streamId, handlers);
         }
         handlers.add(handler);
-        return () => { handlers.delete(handler); };
+        return () => {
+            handlers.delete(handler);
+        };
     }
     /**
      * Register a handler for when a stream is vented.
@@ -328,7 +332,9 @@ export class AeonFlowProtocol {
             this.ventHandlers.set(streamId, handlers);
         }
         handlers.add(handler);
-        return () => { handlers.delete(handler); };
+        return () => {
+            handlers.delete(handler);
+        };
     }
     /**
      * Register a handler for when a stream is poisoned.
@@ -340,7 +346,9 @@ export class AeonFlowProtocol {
             this.poisonHandlers.set(streamId, handlers);
         }
         handlers.add(handler);
-        return () => { handlers.delete(handler); };
+        return () => {
+            handlers.delete(handler);
+        };
     }
     // ═══════════════════════════════════════════════════════════════════════
     // Destroy
@@ -525,8 +533,7 @@ export class AeonFlowProtocol {
         if (!stream) {
             throw new Error(`Stream ${streamId} does not exist`);
         }
-        if (allowedStates.length > 0 &&
-            !allowedStates.includes(stream.state)) {
+        if (allowedStates.length > 0 && !allowedStates.includes(stream.state)) {
             throw new Error(`Stream ${streamId} is in state '${stream.state}', expected one of: ${allowedStates.join(', ')}`);
         }
         return stream;

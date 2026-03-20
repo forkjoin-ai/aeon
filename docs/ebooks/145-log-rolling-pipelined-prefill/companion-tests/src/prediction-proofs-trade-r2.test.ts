@@ -148,7 +148,9 @@ describe('Prediction 193: Market concentration generates failure tax (merger hea
 
   it('failure tax monotone in firm count', () => {
     for (let n = 2; n < 10; n++) {
-      expect(failureTax({ firms: n + 1 })).toBeGreaterThan(failureTax({ firms: n }));
+      expect(failureTax({ firms: n + 1 })).toBeGreaterThan(
+        failureTax({ firms: n })
+      );
     }
   });
 
@@ -233,7 +235,7 @@ describe('Prediction 194: Trade negotiation cost bounded by void walking regret'
 
   it('WTO rounds as void walking: 160+ members, thousands of terms', () => {
     const wtoTerms = 1000; // thousands of tariff lines
-    const wtoRounds = 50;  // years of negotiation
+    const wtoRounds = 50; // years of negotiation
     const savings = savingsRatio(wtoTerms, wtoRounds);
     expect(savings).toBeGreaterThan(0.5); // >50% savings from rejection memory
   });
@@ -253,7 +255,7 @@ describe('Prediction 194: Trade negotiation cost bounded by void walking regret'
     const terms = 50;
     const rounds = 100;
     const fullHistory = rounds * terms; // 5000 entries
-    const batnaSize = terms;            // 50 counters
+    const batnaSize = terms; // 50 counters
     const compressionRatio = fullHistory / batnaSize;
     expect(compressionRatio).toBe(rounds); // T:1 compression
   });
@@ -300,15 +302,15 @@ describe('Prediction 195: Bid-ask spread as semiotic deficit of price communicat
   });
 
   it('commodity has smallest deficit (simplest transaction)', () => {
-    const commodity = transactions.find(t => t.name.includes('commodity'))!;
-    const equity = transactions.find(t => t.name.includes('equity'))!;
+    const commodity = transactions.find((t) => t.name.includes('commodity'))!;
+    const equity = transactions.find((t) => t.name.includes('equity'))!;
     expect(semioticDeficit(commodity)).toBeLessThan(semioticDeficit(equity));
   });
 
   it('complex transactions have larger deficits (wider spreads)', () => {
     // Sort by deficit
     const sorted = [...transactions]
-      .filter(t => t.priceStreams === 1)
+      .filter((t) => t.priceStreams === 1)
       .sort((a, b) => semioticDeficit(a) - semioticDeficit(b));
 
     for (let i = 1; i < sorted.length; i++) {
@@ -319,12 +321,18 @@ describe('Prediction 195: Bid-ask spread as semiotic deficit of price communicat
   });
 
   it('multi-attribute auction eliminates deficit', () => {
-    const auction = transactions.find(t => t.name.includes('multi-attribute'))!;
+    const auction = transactions.find((t) =>
+      t.name.includes('multi-attribute')
+    )!;
     expect(semioticDeficit(auction)).toBe(0);
   });
 
   it('adding RFQ dimensions reduces deficit', () => {
-    const base: Transaction = { name: 'base', valueDimensions: 10, priceStreams: 1 };
+    const base: Transaction = {
+      name: 'base',
+      valueDimensions: 10,
+      priceStreams: 1,
+    };
     for (let streams = 1; streams <= 10; streams++) {
       const t: Transaction = { ...base, priceStreams: streams };
       expect(semioticDeficit(t)).toBe(10 - streams);
@@ -334,12 +342,12 @@ describe('Prediction 195: Bid-ask spread as semiotic deficit of price communicat
   it('spread prediction: real estate > equity > commodity', () => {
     // More complex transactions should have wider relative spreads
     const deficits = transactions
-      .filter(t => t.priceStreams === 1)
-      .map(t => ({ name: t.name, deficit: semioticDeficit(t) }));
+      .filter((t) => t.priceStreams === 1)
+      .map((t) => ({ name: t.name, deficit: semioticDeficit(t) }));
 
-    const commodity = deficits.find(d => d.name.includes('commodity'))!;
-    const equity = deficits.find(d => d.name.includes('equity'))!;
-    const realEstate = deficits.find(d => d.name.includes('real estate'))!;
+    const commodity = deficits.find((d) => d.name.includes('commodity'))!;
+    const equity = deficits.find((d) => d.name.includes('equity'))!;
+    const realEstate = deficits.find((d) => d.name.includes('real estate'))!;
 
     expect(realEstate.deficit).toBeGreaterThan(equity.deficit);
     expect(equity.deficit).toBeGreaterThan(commodity.deficit);
@@ -378,23 +386,23 @@ describe('Prediction 196: Currency union increases Tinbergen deficit', () => {
   ];
 
   it('independent monetary policy can match Tinbergen (deficit = 0)', () => {
-    const fed = policies.find(p => p.name.includes('US'))!;
+    const fed = policies.find((p) => p.name.includes('US'))!;
     expect(tinbergenDeficit(fed)).toBe(0);
   });
 
   it('currency union has massive Tinbergen deficit', () => {
-    const eurozone = policies.find(p => p.name.includes('eurozone'))!;
+    const eurozone = policies.find((p) => p.name.includes('eurozone'))!;
     expect(tinbergenDeficit(eurozone)).toBe(92);
     expect(tinbergenDeficit(eurozone)).toBeGreaterThan(0);
   });
 
   it('gold standard has maximum Tinbergen deficit', () => {
-    const gold = policies.find(p => p.name.includes('gold'))!;
+    const gold = policies.find((p) => p.name.includes('gold'))!;
     expect(tinbergenDeficit(gold)).toBe(49);
   });
 
   it('over-instrumented policy has zero deficit', () => {
-    const overInstrumented = policies.find(p => p.name.includes('floating'))!;
+    const overInstrumented = policies.find((p) => p.name.includes('floating'))!;
     expect(tinbergenDeficit(overInstrumented)).toBe(0);
   });
 
@@ -424,7 +432,11 @@ describe('Prediction 196: Currency union increases Tinbergen deficit', () => {
   });
 
   it('eurozone optimal policy: 95 instruments for 95 sectors', () => {
-    const optimal: MonetaryPolicy = { name: 'optimal eurozone', sectors: 95, instruments: 95 };
+    const optimal: MonetaryPolicy = {
+      name: 'optimal eurozone',
+      sectors: 95,
+      instruments: 95,
+    };
     expect(tinbergenDeficit(optimal)).toBe(0);
     // But this requires fiscal union -- 95 independent fiscal tools
   });

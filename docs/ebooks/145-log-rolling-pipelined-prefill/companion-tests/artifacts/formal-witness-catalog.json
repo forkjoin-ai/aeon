@@ -6,10 +6,7 @@
       "theoremRef": "Claims.linear_fold_preserves_cancellation_target_family",
       "kind": "cancellation",
       "fold": "linear",
-      "inputs": [
-        1,
-        -1
-      ],
+      "inputs": [1, -1],
       "observed": 0,
       "alternate": null,
       "note": "Linear fold realizes the cancellation witness exactly."
@@ -19,10 +16,7 @@
       "theoremRef": "Claims.winner_selection_misses_cancellation_target_family",
       "kind": "cancellation",
       "fold": "winner-by-magnitude",
-      "inputs": [
-        1,
-        -1
-      ],
+      "inputs": [1, -1],
       "observed": 1,
       "alternate": 0,
       "note": "Winner selection misses the same x + (-x) witness that linear fold cancels."
@@ -32,10 +26,7 @@
       "theoremRef": "Claims.early_stop_misses_cancellation_target_family",
       "kind": "cancellation",
       "fold": "early-stop",
-      "inputs": [
-        1,
-        -1
-      ],
+      "inputs": [1, -1],
       "observed": 1,
       "alternate": 0,
       "note": "Early stop returns the first branch instead of cancelling the pair."
@@ -45,11 +36,7 @@
       "theoremRef": "Claims.winner_selection_not_partition_additive",
       "kind": "partition",
       "fold": "winner-by-magnitude",
-      "inputs": [
-        2,
-        1,
-        -2
-      ],
+      "inputs": [2, 1, -2],
       "observed": 2,
       "alternate": 0,
       "note": "Winner selection is not partition additive on the (2,1,-2) witness."
@@ -59,11 +46,7 @@
       "theoremRef": "Claims.early_stop_not_partition_additive",
       "kind": "partition",
       "fold": "early-stop",
-      "inputs": [
-        1,
-        0,
-        -1
-      ],
+      "inputs": [1, 0, -1],
       "observed": 1,
       "alternate": 0,
       "note": "Early stop is not partition additive on the (1,0,-1) witness."
@@ -73,10 +56,7 @@
       "theoremRef": "Claims.winner_selection_not_order_invariant",
       "kind": "order",
       "fold": "winner-by-magnitude",
-      "inputs": [
-        1,
-        -1
-      ],
+      "inputs": [1, -1],
       "observed": 1,
       "alternate": -1,
       "note": "Winner selection depends on input order when magnitudes tie."
@@ -86,10 +66,7 @@
       "theoremRef": "Claims.early_stop_not_order_invariant",
       "kind": "order",
       "fold": "early-stop",
-      "inputs": [
-        1,
-        -1
-      ],
+      "inputs": [1, -1],
       "observed": 1,
       "alternate": -1,
       "note": "Early stop depends on which branch arrives first."

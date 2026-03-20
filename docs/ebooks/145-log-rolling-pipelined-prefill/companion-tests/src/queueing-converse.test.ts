@@ -180,7 +180,12 @@ function simulateGGc(
   serviceSampler: (rng: () => number) => number,
   numArrivals: number,
   numServers: number
-): { avgInSystem: number; throughput: number; avgWait: number; blocked: number } {
+): {
+  avgInSystem: number;
+  throughput: number;
+  avgWait: number;
+  blocked: number;
+} {
   const arrivals: number[] = [];
   let clock = 0;
   for (let i = 0; i < numArrivals; i++) {
@@ -230,10 +235,7 @@ function simulateGGc(
 // Fork/race/fold embedding constructors
 // ---------------------------------------------------------------------------
 
-function embedGG1(
-  arrivalType: string,
-  serviceType: string
-): FRFEmbedding {
+function embedGG1(arrivalType: string, serviceType: string): FRFEmbedding {
   return {
     beta1: 0,
     forkDistribution: `single-path (${arrivalType} arrivals)`,
@@ -268,10 +270,7 @@ function embedMMc(c: number): FRFEmbedding {
   };
 }
 
-function embedNetwork(
-  nodes: number,
-  routingType: string
-): FRFEmbedding {
+function embedNetwork(nodes: number, routingType: string): FRFEmbedding {
   return {
     beta1: nodes - 1,
     forkDistribution: `routing matrix fork (${routingType})`,
@@ -392,8 +391,8 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
   // Section 1: C3' Axiom Verification
   // =========================================================================
 
-  describe('C3\' axiom: probabilistic fold generalizes deterministic fold', () => {
-    it('deterministic fold is the Dirac special case of C3\'', () => {
+  describe("C3' axiom: probabilistic fold generalizes deterministic fold", () => {
+    it("deterministic fold is the Dirac special case of C3'", () => {
       const detFold = deterministicFold(42);
       expect(isDiracSpecialCase(detFold)).toBe(true);
       expect(foldExpectation(detFold)).toBe(42);
@@ -411,14 +410,14 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       expect(foldVariance(probFold)).toBeGreaterThan(0);
     });
 
-    it('C3\' preserves C1 (fork creates paths)', () => {
+    it("C3' preserves C1 (fork creates paths)", () => {
       // Under C3', fork still creates beta_1 + 1 paths
       // The fold distribution doesn't affect fork semantics
       const embedding = embedMMc(3);
       expect(embedding.beta1).toBe(2); // 3 servers = 3 paths = beta_1 = 2
     });
 
-    it('C3\' preserves C2 (race selects earliest)', () => {
+    it("C3' preserves C2 (race selects earliest)", () => {
       // Race semantics are unchanged: select earliest valid progress
       // Probabilistic fold only affects what happens AFTER race resolution
       const rng = makeRng(42);
@@ -432,7 +431,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       expect(times[winner]).toBe(Math.min(...times));
     });
 
-    it('C3\' preserves C4 (finite termination)', () => {
+    it("C3' preserves C4 (finite termination)", () => {
       // Finite termination: every path eventually folds or vents
       // Probabilistic fold still terminates (each sample is finite)
       const rng = makeRng(42);
@@ -450,7 +449,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       expect(frac0).toBeCloseTo(0.6, 1);
     });
 
-    it('C3\' + ergodicity implies conservation in expectation', () => {
+    it("C3' + ergodicity implies conservation in expectation", () => {
       // Under ergodicity, E[V_fork] = E[W_fold] + E[Q_vent]
       // For a stable M/M/1: E[V_fork] = lambda, E[W_fold] = lambda (no vent)
       const lambda = 0.7;
@@ -502,7 +501,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       expect(arrivalRate).toBeCloseTo(departureRate, 1);
     });
 
-    it('deterministic fold is strictly stronger than C3\' (zero variance)', () => {
+    it("deterministic fold is strictly stronger than C3' (zero variance)", () => {
       const det = deterministicFold(10);
       const prob = probabilisticFold([
         { value: 8, probability: 0.5 },
@@ -523,7 +522,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
   // =========================================================================
 
   describe('G/G/1 queue family embeds as fork/race/fold at beta_1=0', () => {
-    it('M/M/1 embeds and Little\'s Law holds in both representations', () => {
+    it("M/M/1 embeds and Little's Law holds in both representations", () => {
       const rng = makeRng(12345);
       const lambda = 0.6;
       const mu = 1.0;
@@ -563,7 +562,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       // M/D/1 has lower variance than M/M/1 at same load
       // Theoretical: L_MD1 = rho^2 / (2(1-rho)) + rho
       const rho = lambda * serviceTime;
-      const theoreticalL = rho * rho / (2 * (1 - rho)) + rho;
+      const theoreticalL = (rho * rho) / (2 * (1 - rho)) + rho;
       expect(result.avgInSystem).toBeCloseTo(theoreticalL, 0);
     });
 
@@ -593,8 +592,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       const result = simulateGG1(
         rng,
         (r) => uniformSample(r, 1.0, 3.0), // mean = 2
-        (r) =>
-          hyperexponentialSample(r, [2.0, 0.5], [0.5, 0.5]), // mean = 0.5*0.5 + 0.5*2 = 1.25
+        (r) => hyperexponentialSample(r, [2.0, 0.5], [0.5, 0.5]), // mean = 0.5*0.5 + 0.5*2 = 1.25
         SIM_ARRIVALS
       );
 
@@ -603,7 +601,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       expect(result.avgInSystem).toBeGreaterThan(0);
     });
 
-    it('all G/G/1 variants satisfy sample-path Little\'s identity', () => {
+    it("all G/G/1 variants satisfy sample-path Little's identity", () => {
       // Run multiple variants and verify Little's Law L = lambda * W
       const variants: {
         name: string;
@@ -759,7 +757,9 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
           // Find next preemption point
           const nextArrival = remaining.find(
             (j) =>
-              !done.has(j.idx) && j.arrival > time && j.priority < current!.priority
+              !done.has(j.idx) &&
+              j.arrival > time &&
+              j.priority < current!.priority
           );
 
           const serviceEnd = time + current.serviceLeft;
@@ -802,7 +802,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       expect(result.order[0]).toBe(0);
     });
 
-    it('preemptive priority embeds as vent-and-refork (C3\')', () => {
+    it("preemptive priority embeds as vent-and-refork (C3')", () => {
       const jobs = [
         { arrival: 0, service: 5, priority: 2 }, // low priority, long
         { arrival: 1, service: 1, priority: 0 }, // high priority, arrives at t=1
@@ -991,7 +991,10 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       const W = 1 / (mu1 - lambda) + 1 / (mu2 - lambda);
       const L = lambda * W; // Little's Law on the whole network
       expect(L).toBeGreaterThan(0);
-      expect(L).toBeCloseTo(lambda / (mu1 - lambda) + lambda / (mu2 - lambda), 10);
+      expect(L).toBeCloseTo(
+        lambda / (mu1 - lambda) + lambda / (mu2 - lambda),
+        10
+      );
     });
 
     it('Jackson network embeds with routing-matrix fork', () => {
@@ -1068,7 +1071,9 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
         beta1: 0,
         forkDistribution: `Poisson + feedback refork (p=${p})`,
         raceOutcome: 'single-server race',
-        foldPolicy: `probabilistic: depart with prob ${1 - p}, refork with prob ${p}`,
+        foldPolicy: `probabilistic: depart with prob ${
+          1 - p
+        }, refork with prob ${p}`,
         usesC3Prime: true,
       };
 
@@ -1221,7 +1226,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       }
     });
 
-    it('the embedding is structure-preserving (Little\'s Law in both)', () => {
+    it("the embedding is structure-preserving (Little's Law in both)", () => {
       // For any queueing system Q with arrival rate lambda and mean sojourn W:
       //   L_Q = lambda * W  (Little's Law in queueing representation)
       //
@@ -1277,7 +1282,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       // and shows it maps to fork/race/fold -- it doesn't prove ergodicity
     });
 
-    it('C3\' is strictly weaker than C3', () => {
+    it("C3' is strictly weaker than C3", () => {
       // C3 (deterministic fold): entropy of fold outcome is 0
       // C3' (probabilistic fold): entropy of fold outcome may be > 0
       // but conservation holds in expectation
@@ -1302,7 +1307,9 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
       const detEntropy = 0; // Dirac delta
       // Shannon entropy of probabilistic fold > 0
       const probEntropy = -probFold.outcomes.reduce(
-        (s, o) => s + (o.probability > 0 ? o.probability * Math.log2(o.probability) : 0),
+        (s, o) =>
+          s +
+          (o.probability > 0 ? o.probability * Math.log2(o.probability) : 0),
         0
       );
       expect(detEntropy).toBe(0);
@@ -1377,15 +1384,7 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
           'general',
           'phase-type',
         ],
-        disciplines: [
-          'FIFO',
-          'LIFO',
-          'SRTF',
-          'PS',
-          'RR',
-          'priority',
-          'EDF',
-        ],
+        disciplines: ['FIFO', 'LIFO', 'SRTF', 'PS', 'RR', 'priority', 'EDF'],
         routingRules: [
           'none',
           'deterministic',
@@ -1416,7 +1415,10 @@ describe('Queueing Theory Converse -- fork/race/fold subsumption', () => {
 
       const caveats = [
         // Product-form: requires independence + Markov, not derived from FRF
-        { technique: 'product-form', status: 'additional structure within FRF' },
+        {
+          technique: 'product-form',
+          status: 'additional structure within FRF',
+        },
         // Heavy-traffic: requires diffusion limits, continuous state
         {
           technique: 'heavy-traffic diffusion limits',

@@ -82,7 +82,9 @@ const totalSize = prerendered.size + PRODUCTION_FONT_OVERHEAD;
 
 export const microfrontendFluxSite: SiteManifest = {
   name: 'microfrontend-flux',
-  description: `Aeon-Flux: React→prerenderPage() with ESI + moderation + presence + TTS + skeletons (${(totalSize / 1024).toFixed(0)} KB, 1 resource)`,
+  description: `Aeon-Flux: React→prerenderPage() with ESI + moderation + presence + TTS + skeletons (${(
+    totalSize / 1024
+  ).toFixed(0)} KB, 1 resource)`,
   resources: [
     {
       path: '/index.html',

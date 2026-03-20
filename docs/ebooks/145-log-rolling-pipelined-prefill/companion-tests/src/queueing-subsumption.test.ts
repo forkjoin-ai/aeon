@@ -180,17 +180,19 @@ interface NetworkDisciplineState {
 }
 
 type NetworkNodeSelection = ReadonlyMap<number, string>;
-type NetworkDisciplineSelector = (state: NetworkDisciplineState) => NetworkNodeSelection;
+type NetworkDisciplineSelector = (
+  state: NetworkDisciplineState
+) => NetworkNodeSelection;
 type ProbabilisticServiceSelector = (state: ProbabilisticQueueState) => 1 | 2;
 type ProbabilisticNetworkServiceSelector = (
   state: ProbabilisticNetworkState,
   node: 1 | 2,
-  candidates: readonly (1 | 2)[],
+  candidates: readonly (1 | 2)[]
 ) => 1 | 2;
 type LargeProbabilisticNetworkServiceSelector = (
   state: LargeProbabilisticNetworkState,
   node: 1 | 2 | 3,
-  candidates: readonly (1 | 2 | 3)[],
+  candidates: readonly (1 | 2 | 3)[]
 ) => 1 | 2 | 3;
 
 function makeRng(seed: number): () => number {
@@ -218,7 +220,10 @@ function discretizeServiceTime(sample: number): number {
   return Math.max(1, Math.min(3, Math.ceil(sample)));
 }
 
-function compareTickJobs(a: Pick<TickJob, 'arrivalTick' | 'id'>, b: Pick<TickJob, 'arrivalTick' | 'id'>): number {
+function compareTickJobs(
+  a: Pick<TickJob, 'arrivalTick' | 'id'>,
+  b: Pick<TickJob, 'arrivalTick' | 'id'>
+): number {
   if (a.arrivalTick !== b.arrivalTick) {
     return a.arrivalTick - b.arrivalTick;
   }
@@ -236,7 +241,7 @@ function materializeArrivals(
   jobs: readonly TickJob[],
   nextArrivalIndex: number,
   timeTick: number,
-  activeJobs: readonly ActiveTickJob[],
+  activeJobs: readonly ActiveTickJob[]
 ): { nextArrivalIndex: number; activeJobs: readonly ActiveTickJob[] } {
   const nextActiveJobs = [...activeJobs];
   let nextIndex = nextArrivalIndex;
@@ -258,7 +263,9 @@ function materializeArrivals(
   };
 }
 
-function enumerateAllWorkConservingSchedules(jobs: readonly TickJob[]): readonly TickSchedule[] {
+function enumerateAllWorkConservingSchedules(
+  jobs: readonly TickJob[]
+): readonly TickSchedule[] {
   const sortedJobs = [...jobs].sort(compareTickJobs);
   const schedules: TickSchedule[] = [];
 
@@ -267,7 +274,7 @@ function enumerateAllWorkConservingSchedules(jobs: readonly TickJob[]): readonly
     nextArrivalIndex: number,
     activeJobs: readonly ActiveTickJob[],
     serviceOrder: readonly string[],
-    completedJobs: readonly CompletedTickJob[],
+    completedJobs: readonly CompletedTickJob[]
   ): void => {
     let currentTimeTick = timeTick;
     let currentNextArrivalIndex = nextArrivalIndex;
@@ -277,7 +284,7 @@ function enumerateAllWorkConservingSchedules(jobs: readonly TickJob[]): readonly
       sortedJobs,
       currentNextArrivalIndex,
       currentTimeTick,
-      currentActiveJobs,
+      currentActiveJobs
     );
     currentNextArrivalIndex = materialized.nextArrivalIndex;
     currentActiveJobs = [...materialized.activeJobs];
@@ -286,7 +293,9 @@ function enumerateAllWorkConservingSchedules(jobs: readonly TickJob[]): readonly
       if (currentNextArrivalIndex >= sortedJobs.length) {
         schedules.push({
           serviceOrder: [...serviceOrder],
-          completedJobs: [...completedJobs].sort((a, b) => a.id.localeCompare(b.id)),
+          completedJobs: [...completedJobs].sort((a, b) =>
+            a.id.localeCompare(b.id)
+          ),
         });
         return;
       }
@@ -296,7 +305,7 @@ function enumerateAllWorkConservingSchedules(jobs: readonly TickJob[]): readonly
         sortedJobs,
         currentNextArrivalIndex,
         currentTimeTick,
-        currentActiveJobs,
+        currentActiveJobs
       );
       currentNextArrivalIndex = jumped.nextArrivalIndex;
       currentActiveJobs = [...jumped.activeJobs];
@@ -336,7 +345,7 @@ function enumerateAllWorkConservingSchedules(jobs: readonly TickJob[]): readonly
         currentNextArrivalIndex,
         nextActiveJobs,
         [...serviceOrder, candidate.id],
-        nextCompletedJobs,
+        nextCompletedJobs
       );
     }
   };
@@ -347,7 +356,7 @@ function enumerateAllWorkConservingSchedules(jobs: readonly TickJob[]): readonly
 
 function simulateDiscipline(
   jobs: readonly TickJob[],
-  selectJobId: DisciplineSelector,
+  selectJobId: DisciplineSelector
 ): TickSchedule {
   const sortedJobs = [...jobs].sort(compareTickJobs);
   const completedJobs: CompletedTickJob[] = [];
@@ -358,7 +367,12 @@ function simulateDiscipline(
   let activeJobs: ActiveTickJob[] = [];
 
   while (completedJobs.length < sortedJobs.length) {
-    const materialized = materializeArrivals(sortedJobs, nextArrivalIndex, timeTick, activeJobs);
+    const materialized = materializeArrivals(
+      sortedJobs,
+      nextArrivalIndex,
+      timeTick,
+      activeJobs
+    );
     nextArrivalIndex = materialized.nextArrivalIndex;
     activeJobs = [...materialized.activeJobs];
 
@@ -412,21 +426,25 @@ function simulateDiscipline(
 }
 
 function analyzeTickSchedule(schedule: TickSchedule): QueueMetrics {
-  const startTick = Math.min(...schedule.completedJobs.map((job) => job.arrivalTick));
-  const finalDepartureTick = Math.max(...schedule.completedJobs.map((job) => job.finishTick));
+  const startTick = Math.min(
+    ...schedule.completedJobs.map((job) => job.arrivalTick)
+  );
+  const finalDepartureTick = Math.max(
+    ...schedule.completedJobs.map((job) => job.finishTick)
+  );
   const horizonTicks = finalDepartureTick - startTick;
   let areaInSystem = 0;
 
   for (let tick = startTick; tick < finalDepartureTick; tick += 1) {
     const jobsInSystem = schedule.completedJobs.filter(
-      (job) => job.arrivalTick <= tick && job.finishTick > tick,
+      (job) => job.arrivalTick <= tick && job.finishTick > tick
     ).length;
     areaInSystem += jobsInSystem;
   }
 
   const totalSojourn = schedule.completedJobs.reduce(
     (sum, job) => sum + (job.finishTick - job.arrivalTick),
-    0,
+    0
   );
 
   return {
@@ -455,7 +473,7 @@ function lastActiveJob(activeJobs: readonly ActiveTickJob[]): ActiveTickJob {
 
 function compareNetworkJobs(
   a: Pick<NetworkJob, 'arrivalTick' | 'id'>,
-  b: Pick<NetworkJob, 'arrivalTick' | 'id'>,
+  b: Pick<NetworkJob, 'arrivalTick' | 'id'>
 ): number {
   if (a.arrivalTick !== b.arrivalTick) {
     return a.arrivalTick - b.arrivalTick;
@@ -463,7 +481,10 @@ function compareNetworkJobs(
   return a.id.localeCompare(b.id);
 }
 
-function compareActiveNetworkByQueueOrder(a: ActiveNetworkJob, b: ActiveNetworkJob): number {
+function compareActiveNetworkByQueueOrder(
+  a: ActiveNetworkJob,
+  b: ActiveNetworkJob
+): number {
   if (a.queueOrder !== b.queueOrder) {
     return a.queueOrder - b.queueOrder;
   }
@@ -482,10 +503,15 @@ function initialNetworkStageQuanta(job: NetworkJob): number {
   return firstQuanta;
 }
 
-function nextNetworkStageQuanta(job: ActiveNetworkJob, nextStageIndex: number): number {
+function nextNetworkStageQuanta(
+  job: ActiveNetworkJob,
+  nextStageIndex: number
+): number {
   const nextQuanta = job.serviceQuantaByStage[nextStageIndex];
   if (nextQuanta === undefined) {
-    throw new Error(`Missing stage ${nextStageIndex} service quanta for job ${job.id}`);
+    throw new Error(
+      `Missing stage ${nextStageIndex} service quanta for job ${job.id}`
+    );
   }
   return nextQuanta;
 }
@@ -494,7 +520,7 @@ function materializeNetworkArrivals(
   jobs: readonly NetworkJob[],
   nextArrivalIndex: number,
   timeTick: number,
-  activeJobs: readonly ActiveNetworkJob[],
+  activeJobs: readonly ActiveNetworkJob[]
 ): { nextArrivalIndex: number; activeJobs: readonly ActiveNetworkJob[] } {
   const nextActiveJobs = [...activeJobs];
   let nextIndex = nextArrivalIndex;
@@ -517,8 +543,12 @@ function materializeNetworkArrivals(
   };
 }
 
-function activeNodes(activeJobs: readonly ActiveNetworkJob[]): readonly number[] {
-  return [...new Set(activeJobs.map((job) => activeNetworkNode(job)))].sort((left, right) => left - right);
+function activeNodes(
+  activeJobs: readonly ActiveNetworkJob[]
+): readonly number[] {
+  return [...new Set(activeJobs.map((job) => activeNetworkNode(job)))].sort(
+    (left, right) => left - right
+  );
 }
 
 function selectionTimelineLabel(selection: NetworkNodeSelection): string {
@@ -533,7 +563,7 @@ function enumerateNodeSelections(
   nodes: readonly number[],
   nodeIndex = 0,
   currentSelection: Map<number, string> = new Map<number, string>(),
-  selections: Array<ReadonlyMap<number, string>> = [],
+  selections: Array<ReadonlyMap<number, string>> = []
 ): Array<ReadonlyMap<number, string>> {
   if (nodeIndex >= nodes.length) {
     selections.push(new Map(currentSelection));
@@ -541,10 +571,18 @@ function enumerateNodeSelections(
   }
 
   const node = nodes[nodeIndex];
-  const candidates = activeJobs.filter((job) => activeNetworkNode(job) === node);
+  const candidates = activeJobs.filter(
+    (job) => activeNetworkNode(job) === node
+  );
   for (const candidate of candidates) {
     currentSelection.set(node, candidate.id);
-    enumerateNodeSelections(activeJobs, nodes, nodeIndex + 1, currentSelection, selections);
+    enumerateNodeSelections(
+      activeJobs,
+      nodes,
+      nodeIndex + 1,
+      currentSelection,
+      selections
+    );
     currentSelection.delete(node);
   }
 
@@ -554,7 +592,7 @@ function enumerateNodeSelections(
 function applyNetworkSelection(
   activeJobs: readonly ActiveNetworkJob[],
   selection: NetworkNodeSelection,
-  timeTick: number,
+  timeTick: number
 ): {
   readonly nextActiveJobs: readonly ActiveNetworkJob[];
   readonly completedJobs: readonly CompletedNetworkJob[];
@@ -606,7 +644,7 @@ function applyNetworkSelection(
 }
 
 function enumerateAllWorkConservingNetworkSchedules(
-  jobs: readonly NetworkJob[],
+  jobs: readonly NetworkJob[]
 ): readonly NetworkSchedule[] {
   const sortedJobs = [...jobs].sort(compareNetworkJobs);
   const schedules: NetworkSchedule[] = [];
@@ -616,7 +654,7 @@ function enumerateAllWorkConservingNetworkSchedules(
     nextArrivalIndex: number,
     activeJobs: readonly ActiveNetworkJob[],
     serviceTimeline: readonly string[],
-    completedJobs: readonly CompletedNetworkJob[],
+    completedJobs: readonly CompletedNetworkJob[]
   ): void => {
     let currentTimeTick = timeTick;
     let currentNextArrivalIndex = nextArrivalIndex;
@@ -626,7 +664,7 @@ function enumerateAllWorkConservingNetworkSchedules(
       sortedJobs,
       currentNextArrivalIndex,
       currentTimeTick,
-      currentActiveJobs,
+      currentActiveJobs
     );
     currentNextArrivalIndex = materialized.nextArrivalIndex;
     currentActiveJobs = [...materialized.activeJobs];
@@ -635,7 +673,9 @@ function enumerateAllWorkConservingNetworkSchedules(
       if (currentNextArrivalIndex >= sortedJobs.length) {
         schedules.push({
           serviceTimeline: [...serviceTimeline],
-          completedJobs: [...completedJobs].sort((a, b) => a.id.localeCompare(b.id)),
+          completedJobs: [...completedJobs].sort((a, b) =>
+            a.id.localeCompare(b.id)
+          ),
         });
         return;
       }
@@ -645,7 +685,7 @@ function enumerateAllWorkConservingNetworkSchedules(
         sortedJobs,
         currentNextArrivalIndex,
         currentTimeTick,
-        currentActiveJobs,
+        currentActiveJobs
       );
       currentNextArrivalIndex = jumped.nextArrivalIndex;
       currentActiveJobs = [...jumped.activeJobs];
@@ -655,13 +695,17 @@ function enumerateAllWorkConservingNetworkSchedules(
     const selections = enumerateNodeSelections(currentActiveJobs, nodes);
 
     for (const selection of selections) {
-      const advanced = applyNetworkSelection(currentActiveJobs, selection, currentTimeTick);
+      const advanced = applyNetworkSelection(
+        currentActiveJobs,
+        selection,
+        currentTimeTick
+      );
       explore(
         currentTimeTick + 1,
         currentNextArrivalIndex,
         advanced.nextActiveJobs,
         [...serviceTimeline, selectionTimelineLabel(selection)],
-        [...completedJobs, ...advanced.completedJobs],
+        [...completedJobs, ...advanced.completedJobs]
       );
     }
   };
@@ -672,7 +716,7 @@ function enumerateAllWorkConservingNetworkSchedules(
 
 function simulateNetworkDiscipline(
   jobs: readonly NetworkJob[],
-  selector: NetworkDisciplineSelector,
+  selector: NetworkDisciplineSelector
 ): NetworkSchedule {
   const sortedJobs = [...jobs].sort(compareNetworkJobs);
   const completedJobs: CompletedNetworkJob[] = [];
@@ -683,7 +727,12 @@ function simulateNetworkDiscipline(
   let activeJobs: ActiveNetworkJob[] = [];
 
   while (completedJobs.length < sortedJobs.length) {
-    const materialized = materializeNetworkArrivals(sortedJobs, nextArrivalIndex, timeTick, activeJobs);
+    const materialized = materializeNetworkArrivals(
+      sortedJobs,
+      nextArrivalIndex,
+      timeTick,
+      activeJobs
+    );
     nextArrivalIndex = materialized.nextArrivalIndex;
     activeJobs = [...materialized.activeJobs];
 
@@ -703,7 +752,7 @@ function simulateNetworkDiscipline(
     for (const node of nodes) {
       const selectedJobId = selection.get(node);
       const selectedJob = activeJobs.find(
-        (job) => activeNetworkNode(job) === node && job.id === selectedJobId,
+        (job) => activeNetworkNode(job) === node && job.id === selectedJobId
       );
       expect(selectedJob).toBeDefined();
     }
@@ -722,21 +771,25 @@ function simulateNetworkDiscipline(
 }
 
 function analyzeNetworkSchedule(schedule: NetworkSchedule): NetworkMetrics {
-  const startTick = Math.min(...schedule.completedJobs.map((job) => job.arrivalTick));
-  const finalDepartureTick = Math.max(...schedule.completedJobs.map((job) => job.finishTick));
+  const startTick = Math.min(
+    ...schedule.completedJobs.map((job) => job.arrivalTick)
+  );
+  const finalDepartureTick = Math.max(
+    ...schedule.completedJobs.map((job) => job.finishTick)
+  );
   const horizonTicks = finalDepartureTick - startTick;
   let areaInSystem = 0;
 
   for (let tick = startTick; tick < finalDepartureTick; tick += 1) {
     const jobsInSystem = schedule.completedJobs.filter(
-      (job) => job.arrivalTick <= tick && job.finishTick > tick,
+      (job) => job.arrivalTick <= tick && job.finishTick > tick
     ).length;
     areaInSystem += jobsInSystem;
   }
 
   const totalSojourn = schedule.completedJobs.reduce(
     (sum, job) => sum + (job.finishTick - job.arrivalTick),
-    0,
+    0
   );
   return {
     areaInSystem,
@@ -751,7 +804,7 @@ function analyzeNetworkSchedule(schedule: NetworkSchedule): NetworkMetrics {
 
 function analyzeWeightedNetworkMixture(
   scenarios: readonly WeightedNetworkScenario[],
-  selector: NetworkDisciplineSelector,
+  selector: NetworkDisciplineSelector
 ): WeightedNetworkExpectation {
   let totalMass = 0;
   let weightedAreaInSystem = 0;
@@ -787,9 +840,12 @@ function probabilisticStateKey(state: ProbabilisticQueueState): string {
 }
 
 function probabilisticStateFromKey(key: string): ProbabilisticQueueState {
-  const [remainingJob1, remainingJob2, cumulativeAreaInSystem, cumulativeDepartedSojourn] = key
-    .split(',')
-    .map((value) => Number.parseInt(value, 10));
+  const [
+    remainingJob1,
+    remainingJob2,
+    cumulativeAreaInSystem,
+    cumulativeDepartedSojourn,
+  ] = key.split(',').map((value) => Number.parseInt(value, 10));
   return {
     remainingJob1,
     remainingJob2,
@@ -798,7 +854,9 @@ function probabilisticStateFromKey(key: string): ProbabilisticQueueState {
   };
 }
 
-function probabilisticArrivalBranches(timeTick: number): readonly ProbabilisticArrivalBranch[] {
+function probabilisticArrivalBranches(
+  timeTick: number
+): readonly ProbabilisticArrivalBranch[] {
   if (timeTick >= 2) {
     return [{ arrivingServiceQuanta: 0, mass: 1 }];
   }
@@ -813,7 +871,7 @@ function probabilisticArrivalBranches(timeTick: number): readonly ProbabilisticA
 function applyProbabilisticArrival(
   state: ProbabilisticQueueState,
   timeTick: number,
-  branch: ProbabilisticArrivalBranch,
+  branch: ProbabilisticArrivalBranch
 ): ProbabilisticQueueState {
   if (timeTick === 0) {
     return {
@@ -849,7 +907,7 @@ function probabilisticOccupancy(state: ProbabilisticQueueState): number {
 
 function chooseProbabilisticService(
   state: ProbabilisticQueueState,
-  selector: ProbabilisticServiceSelector,
+  selector: ProbabilisticServiceSelector
 ): 0 | 1 | 2 {
   if (state.remainingJob1 > 0 && state.remainingJob2 > 0) {
     const selectedJob = selector(state);
@@ -871,8 +929,11 @@ function chooseProbabilisticService(
 function serveProbabilisticState(
   preServiceState: ProbabilisticQueueState,
   timeTick: number,
-  selector: ProbabilisticServiceSelector,
-): { readonly nextState: ProbabilisticQueueState; readonly departedSojournIncrement: number } {
+  selector: ProbabilisticServiceSelector
+): {
+  readonly nextState: ProbabilisticQueueState;
+  readonly departedSojournIncrement: number;
+} {
   const selectedJob = chooseProbabilisticService(preServiceState, selector);
 
   if (selectedJob === 1) {
@@ -881,12 +942,14 @@ function serveProbabilisticState(
         remainingJob1: preServiceState.remainingJob1 - 1,
         remainingJob2: preServiceState.remainingJob2,
         cumulativeAreaInSystem:
-          preServiceState.cumulativeAreaInSystem + probabilisticOccupancy(preServiceState),
+          preServiceState.cumulativeAreaInSystem +
+          probabilisticOccupancy(preServiceState),
         cumulativeDepartedSojourn:
           preServiceState.cumulativeDepartedSojourn +
           (preServiceState.remainingJob1 === 1 ? timeTick + 1 : 0),
       },
-      departedSojournIncrement: preServiceState.remainingJob1 === 1 ? timeTick + 1 : 0,
+      departedSojournIncrement:
+        preServiceState.remainingJob1 === 1 ? timeTick + 1 : 0,
     };
   }
 
@@ -896,12 +959,14 @@ function serveProbabilisticState(
         remainingJob1: preServiceState.remainingJob1,
         remainingJob2: preServiceState.remainingJob2 - 1,
         cumulativeAreaInSystem:
-          preServiceState.cumulativeAreaInSystem + probabilisticOccupancy(preServiceState),
+          preServiceState.cumulativeAreaInSystem +
+          probabilisticOccupancy(preServiceState),
         cumulativeDepartedSojourn:
           preServiceState.cumulativeDepartedSojourn +
           (preServiceState.remainingJob2 === 1 ? timeTick : 0),
       },
-      departedSojournIncrement: preServiceState.remainingJob2 === 1 ? timeTick : 0,
+      departedSojournIncrement:
+        preServiceState.remainingJob2 === 1 ? timeTick : 0,
     };
   }
 
@@ -910,7 +975,8 @@ function serveProbabilisticState(
       remainingJob1: preServiceState.remainingJob1,
       remainingJob2: preServiceState.remainingJob2,
       cumulativeAreaInSystem:
-        preServiceState.cumulativeAreaInSystem + probabilisticOccupancy(preServiceState),
+        preServiceState.cumulativeAreaInSystem +
+        probabilisticOccupancy(preServiceState),
       cumulativeDepartedSojourn: preServiceState.cumulativeDepartedSojourn,
     },
     departedSojournIncrement: 0,
@@ -919,7 +985,7 @@ function serveProbabilisticState(
 
 function probabilisticOpenAgeContribution(
   state: ProbabilisticQueueState,
-  timeTick: number,
+  timeTick: number
 ): number {
   let openAge = 0;
   if (state.remainingJob1 > 0) {
@@ -933,16 +999,23 @@ function probabilisticOpenAgeContribution(
 
 function weightedProbabilisticOpenAge(
   distribution: ReadonlyMap<string, number>,
-  timeTick: number,
+  timeTick: number
 ): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
-    total += mass * probabilisticOpenAgeContribution(probabilisticStateFromKey(key), timeTick);
+    total +=
+      mass *
+      probabilisticOpenAgeContribution(
+        probabilisticStateFromKey(key),
+        timeTick
+      );
   }
   return total;
 }
 
-function weightedProbabilisticAreaInSystem(distribution: ReadonlyMap<string, number>): number {
+function weightedProbabilisticAreaInSystem(
+  distribution: ReadonlyMap<string, number>
+): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
     total += mass * probabilisticStateFromKey(key).cumulativeAreaInSystem;
@@ -950,7 +1023,9 @@ function weightedProbabilisticAreaInSystem(distribution: ReadonlyMap<string, num
   return total;
 }
 
-function weightedProbabilisticDepartedSojourn(distribution: ReadonlyMap<string, number>): number {
+function weightedProbabilisticDepartedSojourn(
+  distribution: ReadonlyMap<string, number>
+): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
     total += mass * probabilisticStateFromKey(key).cumulativeDepartedSojourn;
@@ -958,7 +1033,9 @@ function weightedProbabilisticDepartedSojourn(distribution: ReadonlyMap<string, 
   return total;
 }
 
-function isProbabilisticQueueDone(distribution: ReadonlyMap<string, number>): boolean {
+function isProbabilisticQueueDone(
+  distribution: ReadonlyMap<string, number>
+): boolean {
   for (const key of distribution.keys()) {
     const state = probabilisticStateFromKey(key);
     if (state.remainingJob1 > 0 || state.remainingJob2 > 0) {
@@ -969,7 +1046,7 @@ function isProbabilisticQueueDone(distribution: ReadonlyMap<string, number>): bo
 }
 
 function simulateProbabilisticQueueKernel(
-  selector: ProbabilisticServiceSelector,
+  selector: ProbabilisticServiceSelector
 ): readonly ProbabilisticQueueStep[] {
   const steps: ProbabilisticQueueStep[] = [
     {
@@ -982,26 +1059,48 @@ function simulateProbabilisticQueueKernel(
     },
   ];
 
-  while (!isProbabilisticQueueDone(steps[steps.length - 1]!.distribution) || steps[steps.length - 1]!.timeTick < 4) {
+  while (
+    !isProbabilisticQueueDone(steps[steps.length - 1]!.distribution) ||
+    steps[steps.length - 1]!.timeTick < 4
+  ) {
     const current = steps[steps.length - 1]!;
     const nextDistribution = new Map<string, number>();
 
     for (const [key, stateMass] of current.distribution.entries()) {
       const state = probabilisticStateFromKey(key);
       for (const branch of probabilisticArrivalBranches(current.timeTick)) {
-        const preServiceState = applyProbabilisticArrival(state, current.timeTick, branch);
+        const preServiceState = applyProbabilisticArrival(
+          state,
+          current.timeTick,
+          branch
+        );
         const advancedMass = stateMass * branch.mass;
-        const served = serveProbabilisticState(preServiceState, current.timeTick, selector);
+        const served = serveProbabilisticState(
+          preServiceState,
+          current.timeTick,
+          selector
+        );
         const nextKey = probabilisticStateKey(served.nextState);
-        nextDistribution.set(nextKey, (nextDistribution.get(nextKey) ?? 0) + advancedMass);
+        nextDistribution.set(
+          nextKey,
+          (nextDistribution.get(nextKey) ?? 0) + advancedMass
+        );
       }
     }
 
     const nextTimeTick = current.timeTick + 1;
-    const totalMass = [...nextDistribution.values()].reduce((sum, mass) => sum + mass, 0);
-    const weightedAreaInSystem = weightedProbabilisticAreaInSystem(nextDistribution);
-    const weightedDepartedSojourn = weightedProbabilisticDepartedSojourn(nextDistribution);
-    const weightedOpenAge = weightedProbabilisticOpenAge(nextDistribution, nextTimeTick);
+    const totalMass = [...nextDistribution.values()].reduce(
+      (sum, mass) => sum + mass,
+      0
+    );
+    const weightedAreaInSystem =
+      weightedProbabilisticAreaInSystem(nextDistribution);
+    const weightedDepartedSojourn =
+      weightedProbabilisticDepartedSojourn(nextDistribution);
+    const weightedOpenAge = weightedProbabilisticOpenAge(
+      nextDistribution,
+      nextTimeTick
+    );
 
     steps.push({
       timeTick: nextTimeTick,
@@ -1021,7 +1120,7 @@ function simulateProbabilisticQueueKernel(
 }
 
 function enumerateProbabilisticLeafExpectation(
-  selector: ProbabilisticServiceSelector,
+  selector: ProbabilisticServiceSelector
 ): {
   readonly totalMass: number;
   readonly weightedAreaInSystem: number;
@@ -1030,7 +1129,7 @@ function enumerateProbabilisticLeafExpectation(
   const explore = (
     timeTick: number,
     state: ProbabilisticQueueState,
-    branchMass: number,
+    branchMass: number
   ): {
     readonly totalMass: number;
     readonly weightedAreaInSystem: number;
@@ -1049,9 +1148,21 @@ function enumerateProbabilisticLeafExpectation(
     let weightedDepartedSojourn = 0;
 
     for (const branch of probabilisticArrivalBranches(timeTick)) {
-      const preServiceState = applyProbabilisticArrival(state, timeTick, branch);
-      const served = serveProbabilisticState(preServiceState, timeTick, selector);
-      const leaf = explore(timeTick + 1, served.nextState, branchMass * branch.mass);
+      const preServiceState = applyProbabilisticArrival(
+        state,
+        timeTick,
+        branch
+      );
+      const served = serveProbabilisticState(
+        preServiceState,
+        timeTick,
+        selector
+      );
+      const leaf = explore(
+        timeTick + 1,
+        served.nextState,
+        branchMass * branch.mass
+      );
       totalMass += leaf.totalMass;
       weightedAreaInSystem += leaf.weightedAreaInSystem;
       weightedDepartedSojourn += leaf.weightedDepartedSojourn;
@@ -1064,15 +1175,21 @@ function enumerateProbabilisticLeafExpectation(
     };
   };
 
-  return explore(0, {
-    remainingJob1: 0,
-    remainingJob2: 0,
-    cumulativeAreaInSystem: 0,
-    cumulativeDepartedSojourn: 0,
-  }, 1);
+  return explore(
+    0,
+    {
+      remainingJob1: 0,
+      remainingJob2: 0,
+      cumulativeAreaInSystem: 0,
+      cumulativeDepartedSojourn: 0,
+    },
+    1
+  );
 }
 
-function probabilisticNetworkStateKey(state: ProbabilisticNetworkState): string {
+function probabilisticNetworkStateKey(
+  state: ProbabilisticNetworkState
+): string {
   return [
     state.job1Phase,
     state.job2Phase,
@@ -1081,10 +1198,15 @@ function probabilisticNetworkStateKey(state: ProbabilisticNetworkState): string 
   ].join(',');
 }
 
-function probabilisticNetworkStateFromKey(key: string): ProbabilisticNetworkState {
-  const [job1Phase, job2Phase, cumulativeAreaInSystem, cumulativeDepartedSojourn] = key
-    .split(',')
-    .map((value) => Number.parseInt(value, 10));
+function probabilisticNetworkStateFromKey(
+  key: string
+): ProbabilisticNetworkState {
+  const [
+    job1Phase,
+    job2Phase,
+    cumulativeAreaInSystem,
+    cumulativeDepartedSojourn,
+  ] = key.split(',').map((value) => Number.parseInt(value, 10));
   return {
     job1Phase,
     job2Phase,
@@ -1094,7 +1216,7 @@ function probabilisticNetworkStateFromKey(key: string): ProbabilisticNetworkStat
 }
 
 function probabilisticNetworkArrivalBranches(
-  timeTick: number,
+  timeTick: number
 ): readonly ProbabilisticNetworkArrivalBranch[] {
   if (timeTick >= 2) {
     return [{ arrivingPhase: 0, mass: 1 }];
@@ -1176,7 +1298,7 @@ function probabilisticNetworkAdvancePhase(phase: number): number {
 function applyProbabilisticNetworkArrival(
   state: ProbabilisticNetworkState,
   timeTick: number,
-  branch: ProbabilisticNetworkArrivalBranch,
+  branch: ProbabilisticNetworkArrivalBranch
 ): ProbabilisticNetworkState {
   if (timeTick === 0) {
     return {
@@ -1199,7 +1321,9 @@ function applyProbabilisticNetworkArrival(
   return state;
 }
 
-function probabilisticNetworkActiveJobCount(state: ProbabilisticNetworkState): number {
+function probabilisticNetworkActiveJobCount(
+  state: ProbabilisticNetworkState
+): number {
   let activeJobs = 0;
   if (probabilisticNetworkPhaseIsActive(state.job1Phase)) {
     activeJobs += 1;
@@ -1212,7 +1336,7 @@ function probabilisticNetworkActiveJobCount(state: ProbabilisticNetworkState): n
 
 function probabilisticNetworkSlotPhase(
   state: ProbabilisticNetworkState,
-  slot: 1 | 2,
+  slot: 1 | 2
 ): number {
   return slot === 1 ? state.job1Phase : state.job2Phase;
 }
@@ -1223,7 +1347,7 @@ function probabilisticNetworkArrivalTick(slot: 1 | 2): number {
 
 function probabilisticNetworkActiveSlotsAtNode(
   state: ProbabilisticNetworkState,
-  node: 1 | 2,
+  node: 1 | 2
 ): readonly (1 | 2)[] {
   const candidates: Array<1 | 2> = [];
   if (probabilisticNetworkPhaseNode(state.job1Phase) === node) {
@@ -1238,12 +1362,15 @@ function probabilisticNetworkActiveSlotsAtNode(
 function serveProbabilisticNetworkState(
   preServiceState: ProbabilisticNetworkState,
   timeTick: number,
-  selector: ProbabilisticNetworkServiceSelector,
+  selector: ProbabilisticNetworkServiceSelector
 ): ProbabilisticNetworkState {
   const selectedSlots = new Set<1 | 2>();
 
   for (const node of [1, 2] as const) {
-    const candidates = probabilisticNetworkActiveSlotsAtNode(preServiceState, node);
+    const candidates = probabilisticNetworkActiveSlotsAtNode(
+      preServiceState,
+      node
+    );
     if (candidates.length === 1) {
       selectedSlots.add(candidates[0]!);
       continue;
@@ -1259,27 +1386,36 @@ function serveProbabilisticNetworkState(
   let nextState: ProbabilisticNetworkState = {
     ...preServiceState,
     cumulativeAreaInSystem:
-      preServiceState.cumulativeAreaInSystem + probabilisticNetworkActiveJobCount(preServiceState),
+      preServiceState.cumulativeAreaInSystem +
+      probabilisticNetworkActiveJobCount(preServiceState),
     cumulativeDepartedSojourn: preServiceState.cumulativeDepartedSojourn,
   };
 
   for (const selectedSlot of selectedSlots) {
-    const currentPhase = probabilisticNetworkSlotPhase(preServiceState, selectedSlot);
+    const currentPhase = probabilisticNetworkSlotPhase(
+      preServiceState,
+      selectedSlot
+    );
     const nextPhase = probabilisticNetworkAdvancePhase(currentPhase);
     const departedIncrement =
-      nextPhase === 7 ? timeTick + 1 - probabilisticNetworkArrivalTick(selectedSlot) : 0;
+      nextPhase === 7
+        ? timeTick + 1 - probabilisticNetworkArrivalTick(selectedSlot)
+        : 0;
 
-    nextState = selectedSlot === 1
-      ? {
-        ...nextState,
-        job1Phase: nextPhase,
-        cumulativeDepartedSojourn: nextState.cumulativeDepartedSojourn + departedIncrement,
-      }
-      : {
-        ...nextState,
-        job2Phase: nextPhase,
-        cumulativeDepartedSojourn: nextState.cumulativeDepartedSojourn + departedIncrement,
-      };
+    nextState =
+      selectedSlot === 1
+        ? {
+            ...nextState,
+            job1Phase: nextPhase,
+            cumulativeDepartedSojourn:
+              nextState.cumulativeDepartedSojourn + departedIncrement,
+          }
+        : {
+            ...nextState,
+            job2Phase: nextPhase,
+            cumulativeDepartedSojourn:
+              nextState.cumulativeDepartedSojourn + departedIncrement,
+          };
   }
 
   return nextState;
@@ -1287,7 +1423,7 @@ function serveProbabilisticNetworkState(
 
 function probabilisticNetworkOpenAgeContribution(
   state: ProbabilisticNetworkState,
-  timeTick: number,
+  timeTick: number
 ): number {
   let openAge = 0;
   if (probabilisticNetworkPhaseIsActive(state.job1Phase)) {
@@ -1301,42 +1437,51 @@ function probabilisticNetworkOpenAgeContribution(
 
 function weightedProbabilisticNetworkOpenAge(
   distribution: ReadonlyMap<string, number>,
-  timeTick: number,
+  timeTick: number
 ): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
-    total += mass * probabilisticNetworkOpenAgeContribution(
-      probabilisticNetworkStateFromKey(key),
-      timeTick,
-    );
+    total +=
+      mass *
+      probabilisticNetworkOpenAgeContribution(
+        probabilisticNetworkStateFromKey(key),
+        timeTick
+      );
   }
   return total;
 }
 
 function weightedProbabilisticNetworkAreaInSystem(
-  distribution: ReadonlyMap<string, number>,
+  distribution: ReadonlyMap<string, number>
 ): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
-    total += mass * probabilisticNetworkStateFromKey(key).cumulativeAreaInSystem;
+    total +=
+      mass * probabilisticNetworkStateFromKey(key).cumulativeAreaInSystem;
   }
   return total;
 }
 
 function weightedProbabilisticNetworkDepartedSojourn(
-  distribution: ReadonlyMap<string, number>,
+  distribution: ReadonlyMap<string, number>
 ): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
-    total += mass * probabilisticNetworkStateFromKey(key).cumulativeDepartedSojourn;
+    total +=
+      mass * probabilisticNetworkStateFromKey(key).cumulativeDepartedSojourn;
   }
   return total;
 }
 
-function isProbabilisticNetworkDone(distribution: ReadonlyMap<string, number>): boolean {
+function isProbabilisticNetworkDone(
+  distribution: ReadonlyMap<string, number>
+): boolean {
   for (const key of distribution.keys()) {
     const state = probabilisticNetworkStateFromKey(key);
-    if (probabilisticNetworkPhaseIsActive(state.job1Phase) || probabilisticNetworkPhaseIsActive(state.job2Phase)) {
+    if (
+      probabilisticNetworkPhaseIsActive(state.job1Phase) ||
+      probabilisticNetworkPhaseIsActive(state.job2Phase)
+    ) {
       return false;
     }
   }
@@ -1344,7 +1489,7 @@ function isProbabilisticNetworkDone(distribution: ReadonlyMap<string, number>): 
 }
 
 function simulateProbabilisticNetworkKernel(
-  selector: ProbabilisticNetworkServiceSelector,
+  selector: ProbabilisticNetworkServiceSelector
 ): readonly ProbabilisticNetworkStep[] {
   const steps: ProbabilisticNetworkStep[] = [
     {
@@ -1366,23 +1511,40 @@ function simulateProbabilisticNetworkKernel(
 
     for (const [key, stateMass] of current.distribution.entries()) {
       const state = probabilisticNetworkStateFromKey(key);
-      for (const branch of probabilisticNetworkArrivalBranches(current.timeTick)) {
-        const preServiceState = applyProbabilisticNetworkArrival(state, current.timeTick, branch);
+      for (const branch of probabilisticNetworkArrivalBranches(
+        current.timeTick
+      )) {
+        const preServiceState = applyProbabilisticNetworkArrival(
+          state,
+          current.timeTick,
+          branch
+        );
         const nextState = serveProbabilisticNetworkState(
           preServiceState,
           current.timeTick,
-          selector,
+          selector
         );
         const nextKey = probabilisticNetworkStateKey(nextState);
-        nextDistribution.set(nextKey, (nextDistribution.get(nextKey) ?? 0) + stateMass * branch.mass);
+        nextDistribution.set(
+          nextKey,
+          (nextDistribution.get(nextKey) ?? 0) + stateMass * branch.mass
+        );
       }
     }
 
     const nextTimeTick = current.timeTick + 1;
-    const totalMass = [...nextDistribution.values()].reduce((sum, mass) => sum + mass, 0);
-    const weightedAreaInSystem = weightedProbabilisticNetworkAreaInSystem(nextDistribution);
-    const weightedDepartedSojourn = weightedProbabilisticNetworkDepartedSojourn(nextDistribution);
-    const weightedOpenAge = weightedProbabilisticNetworkOpenAge(nextDistribution, nextTimeTick);
+    const totalMass = [...nextDistribution.values()].reduce(
+      (sum, mass) => sum + mass,
+      0
+    );
+    const weightedAreaInSystem =
+      weightedProbabilisticNetworkAreaInSystem(nextDistribution);
+    const weightedDepartedSojourn =
+      weightedProbabilisticNetworkDepartedSojourn(nextDistribution);
+    const weightedOpenAge = weightedProbabilisticNetworkOpenAge(
+      nextDistribution,
+      nextTimeTick
+    );
 
     steps.push({
       timeTick: nextTimeTick,
@@ -1402,7 +1564,7 @@ function simulateProbabilisticNetworkKernel(
 }
 
 function enumerateProbabilisticNetworkLeafExpectation(
-  selector: ProbabilisticNetworkServiceSelector,
+  selector: ProbabilisticNetworkServiceSelector
 ): {
   readonly totalMass: number;
   readonly weightedAreaInSystem: number;
@@ -1411,7 +1573,7 @@ function enumerateProbabilisticNetworkLeafExpectation(
   const explore = (
     timeTick: number,
     state: ProbabilisticNetworkState,
-    branchMass: number,
+    branchMass: number
   ): {
     readonly totalMass: number;
     readonly weightedAreaInSystem: number;
@@ -1430,8 +1592,16 @@ function enumerateProbabilisticNetworkLeafExpectation(
     let weightedDepartedSojourn = 0;
 
     for (const branch of probabilisticNetworkArrivalBranches(timeTick)) {
-      const preServiceState = applyProbabilisticNetworkArrival(state, timeTick, branch);
-      const nextState = serveProbabilisticNetworkState(preServiceState, timeTick, selector);
+      const preServiceState = applyProbabilisticNetworkArrival(
+        state,
+        timeTick,
+        branch
+      );
+      const nextState = serveProbabilisticNetworkState(
+        preServiceState,
+        timeTick,
+        selector
+      );
       const leaf = explore(timeTick + 1, nextState, branchMass * branch.mass);
       totalMass += leaf.totalMass;
       weightedAreaInSystem += leaf.weightedAreaInSystem;
@@ -1445,15 +1615,21 @@ function enumerateProbabilisticNetworkLeafExpectation(
     };
   };
 
-  return explore(0, {
-    job1Phase: 0,
-    job2Phase: 0,
-    cumulativeAreaInSystem: 0,
-    cumulativeDepartedSojourn: 0,
-  }, 1);
+  return explore(
+    0,
+    {
+      job1Phase: 0,
+      job2Phase: 0,
+      cumulativeAreaInSystem: 0,
+      cumulativeDepartedSojourn: 0,
+    },
+    1
+  );
 }
 
-function largeProbabilisticNetworkStateKey(state: LargeProbabilisticNetworkState): string {
+function largeProbabilisticNetworkStateKey(
+  state: LargeProbabilisticNetworkState
+): string {
   return [
     state.slot1Phase,
     state.slot2Phase,
@@ -1463,9 +1639,16 @@ function largeProbabilisticNetworkStateKey(state: LargeProbabilisticNetworkState
   ].join(',');
 }
 
-function largeProbabilisticNetworkStateFromKey(key: string): LargeProbabilisticNetworkState {
-  const [slot1Phase, slot2Phase, slot3Phase, cumulativeAreaInSystem, cumulativeDepartedSojourn] =
-    key.split(',').map((value) => Number.parseInt(value, 10));
+function largeProbabilisticNetworkStateFromKey(
+  key: string
+): LargeProbabilisticNetworkState {
+  const [
+    slot1Phase,
+    slot2Phase,
+    slot3Phase,
+    cumulativeAreaInSystem,
+    cumulativeDepartedSojourn,
+  ] = key.split(',').map((value) => Number.parseInt(value, 10));
   return {
     slot1Phase,
     slot2Phase,
@@ -1476,7 +1659,7 @@ function largeProbabilisticNetworkStateFromKey(key: string): LargeProbabilisticN
 }
 
 function largeProbabilisticNetworkArrivalBranches(
-  timeTick: number,
+  timeTick: number
 ): readonly LargeProbabilisticNetworkArrivalBranch[] {
   if (timeTick >= 3) {
     return [{ arrivingPhase: 0, mass: 1 }];
@@ -1586,7 +1769,7 @@ function largeProbabilisticNetworkAdvancePhase(phase: number): number {
 function applyLargeProbabilisticNetworkArrival(
   state: LargeProbabilisticNetworkState,
   timeTick: number,
-  branch: LargeProbabilisticNetworkArrivalBranch,
+  branch: LargeProbabilisticNetworkArrivalBranch
 ): LargeProbabilisticNetworkState {
   if (timeTick === 0) {
     return {
@@ -1621,7 +1804,9 @@ function applyLargeProbabilisticNetworkArrival(
   return state;
 }
 
-function largeProbabilisticNetworkActiveJobCount(state: LargeProbabilisticNetworkState): number {
+function largeProbabilisticNetworkActiveJobCount(
+  state: LargeProbabilisticNetworkState
+): number {
   let activeJobs = 0;
   if (largeProbabilisticNetworkPhaseIsActive(state.slot1Phase)) {
     activeJobs += 1;
@@ -1637,7 +1822,7 @@ function largeProbabilisticNetworkActiveJobCount(state: LargeProbabilisticNetwor
 
 function largeProbabilisticNetworkSlotPhase(
   state: LargeProbabilisticNetworkState,
-  slot: 1 | 2 | 3,
+  slot: 1 | 2 | 3
 ): number {
   if (slot === 1) {
     return state.slot1Phase;
@@ -1656,7 +1841,7 @@ function largeProbabilisticNetworkArrivalTick(slot: 1 | 2 | 3): number {
 
 function largeProbabilisticNetworkActiveSlotsAtNode(
   state: LargeProbabilisticNetworkState,
-  node: 1 | 2 | 3,
+  node: 1 | 2 | 3
 ): readonly (1 | 2 | 3)[] {
   const candidates: Array<1 | 2 | 3> = [];
   if (largeProbabilisticNetworkPhaseNode(state.slot1Phase) === node) {
@@ -1674,12 +1859,15 @@ function largeProbabilisticNetworkActiveSlotsAtNode(
 function serveLargeProbabilisticNetworkState(
   preServiceState: LargeProbabilisticNetworkState,
   timeTick: number,
-  selector: LargeProbabilisticNetworkServiceSelector,
+  selector: LargeProbabilisticNetworkServiceSelector
 ): LargeProbabilisticNetworkState {
   const selectedSlots = new Set<1 | 2 | 3>();
 
   for (const node of [1, 2, 3] as const) {
-    const candidates = largeProbabilisticNetworkActiveSlotsAtNode(preServiceState, node);
+    const candidates = largeProbabilisticNetworkActiveSlotsAtNode(
+      preServiceState,
+      node
+    );
     if (candidates.length === 1) {
       selectedSlots.add(candidates[0]!);
       continue;
@@ -1701,16 +1889,22 @@ function serveLargeProbabilisticNetworkState(
   };
 
   for (const selectedSlot of selectedSlots) {
-    const currentPhase = largeProbabilisticNetworkSlotPhase(preServiceState, selectedSlot);
+    const currentPhase = largeProbabilisticNetworkSlotPhase(
+      preServiceState,
+      selectedSlot
+    );
     const nextPhase = largeProbabilisticNetworkAdvancePhase(currentPhase);
     const departedIncrement =
-      nextPhase === 13 ? timeTick + 1 - largeProbabilisticNetworkArrivalTick(selectedSlot) : 0;
+      nextPhase === 13
+        ? timeTick + 1 - largeProbabilisticNetworkArrivalTick(selectedSlot)
+        : 0;
 
     if (selectedSlot === 1) {
       nextState = {
         ...nextState,
         slot1Phase: nextPhase,
-        cumulativeDepartedSojourn: nextState.cumulativeDepartedSojourn + departedIncrement,
+        cumulativeDepartedSojourn:
+          nextState.cumulativeDepartedSojourn + departedIncrement,
       };
       continue;
     }
@@ -1719,7 +1913,8 @@ function serveLargeProbabilisticNetworkState(
       nextState = {
         ...nextState,
         slot2Phase: nextPhase,
-        cumulativeDepartedSojourn: nextState.cumulativeDepartedSojourn + departedIncrement,
+        cumulativeDepartedSojourn:
+          nextState.cumulativeDepartedSojourn + departedIncrement,
       };
       continue;
     }
@@ -1727,7 +1922,8 @@ function serveLargeProbabilisticNetworkState(
     nextState = {
       ...nextState,
       slot3Phase: nextPhase,
-      cumulativeDepartedSojourn: nextState.cumulativeDepartedSojourn + departedIncrement,
+      cumulativeDepartedSojourn:
+        nextState.cumulativeDepartedSojourn + departedIncrement,
     };
   }
 
@@ -1736,16 +1932,22 @@ function serveLargeProbabilisticNetworkState(
 
 function largeProbabilisticNetworkOpenAgeContribution(
   state: LargeProbabilisticNetworkState,
-  timeTick: number,
+  timeTick: number
 ): number {
   let openAge = 0;
   if (largeProbabilisticNetworkPhaseIsActive(state.slot1Phase)) {
     openAge += timeTick;
   }
-  if (largeProbabilisticNetworkPhaseIsActive(state.slot2Phase) && timeTick > 0) {
+  if (
+    largeProbabilisticNetworkPhaseIsActive(state.slot2Phase) &&
+    timeTick > 0
+  ) {
     openAge += timeTick - 1;
   }
-  if (largeProbabilisticNetworkPhaseIsActive(state.slot3Phase) && timeTick > 1) {
+  if (
+    largeProbabilisticNetworkPhaseIsActive(state.slot3Phase) &&
+    timeTick > 1
+  ) {
     openAge += timeTick - 2;
   }
   return openAge;
@@ -1753,39 +1955,46 @@ function largeProbabilisticNetworkOpenAgeContribution(
 
 function weightedLargeProbabilisticNetworkOpenAge(
   distribution: ReadonlyMap<string, number>,
-  timeTick: number,
+  timeTick: number
 ): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
-    total += mass * largeProbabilisticNetworkOpenAgeContribution(
-      largeProbabilisticNetworkStateFromKey(key),
-      timeTick,
-    );
+    total +=
+      mass *
+      largeProbabilisticNetworkOpenAgeContribution(
+        largeProbabilisticNetworkStateFromKey(key),
+        timeTick
+      );
   }
   return total;
 }
 
 function weightedLargeProbabilisticNetworkAreaInSystem(
-  distribution: ReadonlyMap<string, number>,
+  distribution: ReadonlyMap<string, number>
 ): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
-    total += mass * largeProbabilisticNetworkStateFromKey(key).cumulativeAreaInSystem;
+    total +=
+      mass * largeProbabilisticNetworkStateFromKey(key).cumulativeAreaInSystem;
   }
   return total;
 }
 
 function weightedLargeProbabilisticNetworkDepartedSojourn(
-  distribution: ReadonlyMap<string, number>,
+  distribution: ReadonlyMap<string, number>
 ): number {
   let total = 0;
   for (const [key, mass] of distribution.entries()) {
-    total += mass * largeProbabilisticNetworkStateFromKey(key).cumulativeDepartedSojourn;
+    total +=
+      mass *
+      largeProbabilisticNetworkStateFromKey(key).cumulativeDepartedSojourn;
   }
   return total;
 }
 
-function isLargeProbabilisticNetworkDone(distribution: ReadonlyMap<string, number>): boolean {
+function isLargeProbabilisticNetworkDone(
+  distribution: ReadonlyMap<string, number>
+): boolean {
   for (const key of distribution.keys()) {
     const state = largeProbabilisticNetworkStateFromKey(key);
     if (
@@ -1800,7 +2009,7 @@ function isLargeProbabilisticNetworkDone(distribution: ReadonlyMap<string, numbe
 }
 
 function simulateLargeProbabilisticNetworkKernel(
-  selector: LargeProbabilisticNetworkServiceSelector,
+  selector: LargeProbabilisticNetworkServiceSelector
 ): readonly LargeProbabilisticNetworkStep[] {
   const steps: LargeProbabilisticNetworkStep[] = [
     {
@@ -1819,26 +2028,39 @@ function simulateLargeProbabilisticNetworkKernel(
 
     for (const [key, stateMass] of current.distribution.entries()) {
       const state = largeProbabilisticNetworkStateFromKey(key);
-      for (const branch of largeProbabilisticNetworkArrivalBranches(current.timeTick)) {
-        const preServiceState = applyLargeProbabilisticNetworkArrival(state, current.timeTick, branch);
+      for (const branch of largeProbabilisticNetworkArrivalBranches(
+        current.timeTick
+      )) {
+        const preServiceState = applyLargeProbabilisticNetworkArrival(
+          state,
+          current.timeTick,
+          branch
+        );
         const nextState = serveLargeProbabilisticNetworkState(
           preServiceState,
           current.timeTick,
-          selector,
+          selector
         );
         const nextKey = largeProbabilisticNetworkStateKey(nextState);
-        nextDistribution.set(nextKey, (nextDistribution.get(nextKey) ?? 0) + stateMass * branch.mass);
+        nextDistribution.set(
+          nextKey,
+          (nextDistribution.get(nextKey) ?? 0) + stateMass * branch.mass
+        );
       }
     }
 
     const nextTimeTick = current.timeTick + 1;
-    const totalMass = [...nextDistribution.values()].reduce((sum, mass) => sum + mass, 0);
-    const weightedAreaInSystem = weightedLargeProbabilisticNetworkAreaInSystem(nextDistribution);
+    const totalMass = [...nextDistribution.values()].reduce(
+      (sum, mass) => sum + mass,
+      0
+    );
+    const weightedAreaInSystem =
+      weightedLargeProbabilisticNetworkAreaInSystem(nextDistribution);
     const weightedDepartedSojourn =
       weightedLargeProbabilisticNetworkDepartedSojourn(nextDistribution);
     const weightedOpenAge = weightedLargeProbabilisticNetworkOpenAge(
       nextDistribution,
-      nextTimeTick,
+      nextTimeTick
     );
 
     steps.push({
@@ -1850,7 +2072,10 @@ function simulateLargeProbabilisticNetworkKernel(
       weightedOpenAge,
     });
 
-    if (nextTimeTick >= 3 && isLargeProbabilisticNetworkDone(nextDistribution)) {
+    if (
+      nextTimeTick >= 3 &&
+      isLargeProbabilisticNetworkDone(nextDistribution)
+    ) {
       break;
     }
 
@@ -1861,7 +2086,7 @@ function simulateLargeProbabilisticNetworkKernel(
 }
 
 function enumerateLargeProbabilisticNetworkLeafExpectation(
-  selector: LargeProbabilisticNetworkServiceSelector,
+  selector: LargeProbabilisticNetworkServiceSelector
 ): {
   readonly totalMass: number;
   readonly weightedAreaInSystem: number;
@@ -1870,15 +2095,18 @@ function enumerateLargeProbabilisticNetworkLeafExpectation(
   const explore = (
     timeTick: number,
     state: LargeProbabilisticNetworkState,
-    branchMass: number,
+    branchMass: number
   ): {
     readonly totalMass: number;
     readonly weightedAreaInSystem: number;
     readonly weightedDepartedSojourn: number;
   } => {
-    if (timeTick >= 3 && !largeProbabilisticNetworkPhaseIsActive(state.slot1Phase) &&
+    if (
+      timeTick >= 3 &&
+      !largeProbabilisticNetworkPhaseIsActive(state.slot1Phase) &&
       !largeProbabilisticNetworkPhaseIsActive(state.slot2Phase) &&
-      !largeProbabilisticNetworkPhaseIsActive(state.slot3Phase)) {
+      !largeProbabilisticNetworkPhaseIsActive(state.slot3Phase)
+    ) {
       return {
         totalMass: branchMass,
         weightedAreaInSystem: branchMass * state.cumulativeAreaInSystem,
@@ -1893,8 +2121,16 @@ function enumerateLargeProbabilisticNetworkLeafExpectation(
     let weightedDepartedSojourn = 0;
 
     for (const branch of largeProbabilisticNetworkArrivalBranches(timeTick)) {
-      const preServiceState = applyLargeProbabilisticNetworkArrival(state, timeTick, branch);
-      const nextState = serveLargeProbabilisticNetworkState(preServiceState, timeTick, selector);
+      const preServiceState = applyLargeProbabilisticNetworkArrival(
+        state,
+        timeTick,
+        branch
+      );
+      const nextState = serveLargeProbabilisticNetworkState(
+        preServiceState,
+        timeTick,
+        selector
+      );
       const leaf = explore(timeTick + 1, nextState, branchMass * branch.mass);
       totalMass += leaf.totalMass;
       weightedAreaInSystem += leaf.weightedAreaInSystem;
@@ -1908,18 +2144,22 @@ function enumerateLargeProbabilisticNetworkLeafExpectation(
     };
   };
 
-  return explore(0, {
-    slot1Phase: 0,
-    slot2Phase: 0,
-    slot3Phase: 0,
-    cumulativeAreaInSystem: 0,
-    cumulativeDepartedSojourn: 0,
-  }, 1);
+  return explore(
+    0,
+    {
+      slot1Phase: 0,
+      slot2Phase: 0,
+      slot3Phase: 0,
+      cumulativeAreaInSystem: 0,
+      cumulativeDepartedSojourn: 0,
+    },
+    1
+  );
 }
 
 function selectPerNodeBestJob(
   state: NetworkDisciplineState,
-  compareJobs: (left: ActiveNetworkJob, right: ActiveNetworkJob) => number,
+  compareJobs: (left: ActiveNetworkJob, right: ActiveNetworkJob) => number
 ): NetworkNodeSelection {
   const selection = new Map<number, string>();
   for (const node of state.activeNodes) {
@@ -1933,7 +2173,6 @@ function selectPerNodeBestJob(
 }
 
 describe('Queueing Theory Subsumption (§5)', () => {
-
   describe('Discipline-General Sample-Path Identities', () => {
     const finiteTraceJobs: readonly TickJob[] = [
       { id: 'A', arrivalTick: 0, serviceQuanta: 2, priority: 2 },
@@ -1946,10 +2185,12 @@ describe('Queueing Theory Subsumption (§5)', () => {
       const schedules = enumerateAllWorkConservingSchedules(finiteTraceJobs);
       const totalServiceQuanta = finiteTraceJobs.reduce(
         (sum, job) => sum + job.serviceQuanta,
-        0,
+        0
       );
       const finalDepartureTicks = new Set(
-        schedules.map((schedule) => analyzeTickSchedule(schedule).finalDepartureTick),
+        schedules.map(
+          (schedule) => analyzeTickSchedule(schedule).finalDepartureTick
+        )
       );
 
       expect(schedules.length).toBeGreaterThan(5);
@@ -1961,7 +2202,7 @@ describe('Queueing Theory Subsumption (§5)', () => {
         expect(metrics.areaInSystem).toBe(metrics.totalSojourn);
         expect(metrics.averageInSystem).toBeCloseTo(
           metrics.effectiveArrivalRate * metrics.averageSojourn,
-          12,
+          12
         );
       }
     });
@@ -1969,18 +2210,24 @@ describe('Queueing Theory Subsumption (§5)', () => {
     it('named queue disciplines embed as fold-selection policies in the exhaustive family', () => {
       const exhaustiveOrders = new Set(
         enumerateAllWorkConservingSchedules(finiteTraceJobs).map((schedule) =>
-          schedule.serviceOrder.join(','),
-        ),
+          schedule.serviceOrder.join(',')
+        )
       );
 
       const disciplineSchedules = [
-        simulateDiscipline(finiteTraceJobs, ({ activeJobs }) => firstActiveJob(activeJobs).id),
-        simulateDiscipline(finiteTraceJobs, ({ activeJobs }) => lastActiveJob(activeJobs).id),
+        simulateDiscipline(
+          finiteTraceJobs,
+          ({ activeJobs }) => firstActiveJob(activeJobs).id
+        ),
+        simulateDiscipline(
+          finiteTraceJobs,
+          ({ activeJobs }) => lastActiveJob(activeJobs).id
+        ),
         simulateDiscipline(finiteTraceJobs, ({ activeJobs }) => {
           const [bestJob] = [...activeJobs].sort(
             (left, right) =>
               left.priority - right.priority ||
-              compareActiveByQueueOrder(left, right),
+              compareActiveByQueueOrder(left, right)
           );
           expect(bestJob).toBeDefined();
           return bestJob!.id;
@@ -1989,7 +2236,7 @@ describe('Queueing Theory Subsumption (§5)', () => {
           const [bestJob] = [...activeJobs].sort(
             (left, right) =>
               left.remainingQuanta - right.remainingQuanta ||
-              compareActiveByQueueOrder(left, right),
+              compareActiveByQueueOrder(left, right)
           );
           expect(bestJob).toBeDefined();
           return bestJob!.id;
@@ -1998,11 +2245,13 @@ describe('Queueing Theory Subsumption (§5)', () => {
 
       for (const schedule of disciplineSchedules) {
         const metrics = analyzeTickSchedule(schedule);
-        expect(exhaustiveOrders.has(schedule.serviceOrder.join(','))).toBe(true);
+        expect(exhaustiveOrders.has(schedule.serviceOrder.join(','))).toBe(
+          true
+        );
         expect(metrics.areaInSystem).toBe(metrics.totalSojourn);
         expect(metrics.averageInSystem).toBeCloseTo(
           metrics.effectiveArrivalRate * metrics.averageSojourn,
-          12,
+          12
         );
       }
     });
@@ -2023,7 +2272,8 @@ describe('Queueing Theory Subsumption (§5)', () => {
         },
         {
           name: 'hyperexponential',
-          sample: (rng) => (rng() < 0.75 ? expSample(2.5, rng) : expSample(0.6, rng)),
+          sample: (rng) =>
+            rng() < 0.75 ? expSample(2.5, rng) : expSample(0.6, rng),
         },
         {
           name: 'lognormal',
@@ -2033,14 +2283,14 @@ describe('Queueing Theory Subsumption (§5)', () => {
       const arrivalTicks = [0, 1, 1] as const;
 
       for (const [lawIndex, law] of serviceLaws.entries()) {
-        const rng = makeRng(0x51CE00 + lawIndex);
+        const rng = makeRng(0x51ce00 + lawIndex);
         const jobs = arrivalTicks.map(
           (arrivalTick, index): TickJob => ({
             id: `${law.name}-${index}`,
             arrivalTick,
             serviceQuanta: discretizeServiceTime(law.sample(rng)),
             priority: index,
-          }),
+          })
         );
         const schedules = enumerateAllWorkConservingSchedules(jobs);
 
@@ -2051,7 +2301,7 @@ describe('Queueing Theory Subsumption (§5)', () => {
           expect(metrics.areaInSystem).toBe(metrics.totalSojourn);
           expect(metrics.averageInSystem).toBeCloseTo(
             metrics.effectiveArrivalRate * metrics.averageSojourn,
-            12,
+            12
           );
         }
       }
@@ -2096,49 +2346,50 @@ describe('Queueing Theory Subsumption (§5)', () => {
         expect(metrics.areaInSystem).toBe(metrics.totalSojourn);
         expect(metrics.averageInSystem).toBeCloseTo(
           metrics.effectiveArrivalRate * metrics.averageSojourn,
-          12,
+          12
         );
       }
     });
 
     it('named per-node disciplines embed inside the exhaustive multiclass network family', () => {
       const exhaustiveTimelines = new Set(
-        enumerateAllWorkConservingNetworkSchedules(networkJobs).map((schedule) =>
-          schedule.serviceTimeline.join('||'),
-        ),
+        enumerateAllWorkConservingNetworkSchedules(networkJobs).map(
+          (schedule) => schedule.serviceTimeline.join('||')
+        )
       );
 
       const namedSchedules = [
         simulateNetworkDiscipline(networkJobs, (state) =>
-          selectPerNodeBestJob(state, compareActiveNetworkByQueueOrder),
+          selectPerNodeBestJob(state, compareActiveNetworkByQueueOrder)
         ),
         simulateNetworkDiscipline(networkJobs, (state) =>
-          selectPerNodeBestJob(
-            state,
-            (left, right) => compareActiveNetworkByQueueOrder(right, left),
-          ),
+          selectPerNodeBestJob(state, (left, right) =>
+            compareActiveNetworkByQueueOrder(right, left)
+          )
         ),
         simulateNetworkDiscipline(networkJobs, (state) =>
           selectPerNodeBestJob(
             state,
             (left, right) =>
               left.priority - right.priority ||
-              compareActiveNetworkByQueueOrder(left, right),
-          ),
+              compareActiveNetworkByQueueOrder(left, right)
+          )
         ),
         simulateNetworkDiscipline(networkJobs, (state) =>
           selectPerNodeBestJob(
             state,
             (left, right) =>
               left.remainingQuanta - right.remainingQuanta ||
-              compareActiveNetworkByQueueOrder(left, right),
-          ),
+              compareActiveNetworkByQueueOrder(left, right)
+          )
         ),
       ];
 
       for (const schedule of namedSchedules) {
         const metrics = analyzeNetworkSchedule(schedule);
-        expect(exhaustiveTimelines.has(schedule.serviceTimeline.join('||'))).toBe(true);
+        expect(
+          exhaustiveTimelines.has(schedule.serviceTimeline.join('||'))
+        ).toBe(true);
         expect(metrics.areaInSystem).toBe(metrics.totalSojourn);
       }
     });
@@ -2226,7 +2477,7 @@ describe('Queueing Theory Subsumption (§5)', () => {
           expect(metrics.areaInSystem).toBe(metrics.totalSojourn);
           expect(metrics.averageInSystem).toBeCloseTo(
             metrics.effectiveArrivalRate * metrics.averageSojourn,
-            12,
+            12
           );
         }
       }
@@ -2332,14 +2583,14 @@ describe('Queueing Theory Subsumption (§5)', () => {
     > = [
       [
         'fifo',
-        (state) => selectPerNodeBestJob(state, compareActiveNetworkByQueueOrder),
+        (state) =>
+          selectPerNodeBestJob(state, compareActiveNetworkByQueueOrder),
       ],
       [
         'lifo',
         (state) =>
-          selectPerNodeBestJob(
-            state,
-            (left, right) => compareActiveNetworkByQueueOrder(right, left),
+          selectPerNodeBestJob(state, (left, right) =>
+            compareActiveNetworkByQueueOrder(right, left)
           ),
       ],
       [
@@ -2348,7 +2599,8 @@ describe('Queueing Theory Subsumption (§5)', () => {
           selectPerNodeBestJob(
             state,
             (left, right) =>
-              left.priority - right.priority || compareActiveNetworkByQueueOrder(left, right),
+              left.priority - right.priority ||
+              compareActiveNetworkByQueueOrder(left, right)
           ),
       ],
       [
@@ -2358,16 +2610,22 @@ describe('Queueing Theory Subsumption (§5)', () => {
             state,
             (left, right) =>
               left.remainingQuanta - right.remainingQuanta ||
-              compareActiveNetworkByQueueOrder(left, right),
+              compareActiveNetworkByQueueOrder(left, right)
           ),
       ],
     ];
 
     it('finite-support stochastic mixtures preserve network customer-time conservation in expectation', () => {
       for (const [, selector] of namedSelectors) {
-        const mixture = analyzeWeightedNetworkMixture(stochasticNetworkScenarios, selector);
+        const mixture = analyzeWeightedNetworkMixture(
+          stochasticNetworkScenarios,
+          selector
+        );
         expect(mixture.weightedAreaInSystem).toBe(mixture.weightedTotalSojourn);
-        expect(mixture.expectedAreaInSystem).toBeCloseTo(mixture.expectedTotalSojourn, 12);
+        expect(mixture.expectedAreaInSystem).toBeCloseTo(
+          mixture.expectedTotalSojourn,
+          12
+        );
         expect(mixture.totalMass).toBe(6);
       }
     });
@@ -2378,7 +2636,9 @@ describe('Queueing Theory Subsumption (§5)', () => {
       let weightedScheduleMass = 0;
 
       for (const scenario of stochasticNetworkScenarios) {
-        const schedules = enumerateAllWorkConservingNetworkSchedules(scenario.jobs);
+        const schedules = enumerateAllWorkConservingNetworkSchedules(
+          scenario.jobs
+        );
         expect(schedules.length).toBeGreaterThan(0);
 
         for (const schedule of schedules) {
@@ -2392,7 +2652,7 @@ describe('Queueing Theory Subsumption (§5)', () => {
       expect(weightedAreaInSystem).toBe(weightedTotalSojourn);
       expect(weightedAreaInSystem / weightedScheduleMass).toBeCloseTo(
         weightedTotalSojourn / weightedScheduleMass,
-        12,
+        12
       );
     });
   });
@@ -2401,22 +2661,10 @@ describe('Queueing Theory Subsumption (§5)', () => {
     const namedKernelSelectors: ReadonlyArray<
       readonly [string, ProbabilisticServiceSelector]
     > = [
-      [
-        'fifo',
-        () => 1,
-      ],
-      [
-        'lifo',
-        () => 2,
-      ],
-      [
-        'static-priority',
-        () => 2,
-      ],
-      [
-        'srpt',
-        (state) => (state.remainingJob2 < state.remainingJob1 ? 2 : 1),
-      ],
+      ['fifo', () => 1],
+      ['lifo', () => 2],
+      ['static-priority', () => 2],
+      ['srpt', (state) => (state.remainingJob2 < state.remainingJob1 ? 2 : 1)],
     ];
 
     it('preserves customer-time conservation at every tick of the exact transition kernel', () => {
@@ -2429,17 +2677,21 @@ describe('Queueing Theory Subsumption (§5)', () => {
         for (const [index, step] of steps.entries()) {
           expect(step.totalMass).toBe(expectedMassByTick[index]);
           expect(step.weightedAreaInSystem).toBe(
-            step.weightedDepartedSojourn + step.weightedOpenAge,
+            step.weightedDepartedSojourn + step.weightedOpenAge
           );
         }
 
         const finalStep = steps[steps.length - 1]!;
         expect(finalStep.timeTick).toBe(4);
         expect(finalStep.weightedOpenAge).toBe(0);
-        expect(finalStep.weightedAreaInSystem).toBe(finalStep.weightedDepartedSojourn);
-        expect(finalStep.weightedAreaInSystem / finalStep.totalMass).toBeCloseTo(
+        expect(finalStep.weightedAreaInSystem).toBe(
+          finalStep.weightedDepartedSojourn
+        );
+        expect(
+          finalStep.weightedAreaInSystem / finalStep.totalMass
+        ).toBeCloseTo(
           finalStep.weightedDepartedSojourn / finalStep.totalMass,
-          12,
+          12
         );
       }
     });
@@ -2450,8 +2702,12 @@ describe('Queueing Theory Subsumption (§5)', () => {
       const leafExpectation = enumerateProbabilisticLeafExpectation(() => 1);
 
       expect(finalStep.totalMass).toBe(leafExpectation.totalMass);
-      expect(finalStep.weightedAreaInSystem).toBe(leafExpectation.weightedAreaInSystem);
-      expect(finalStep.weightedDepartedSojourn).toBe(leafExpectation.weightedDepartedSojourn);
+      expect(finalStep.weightedAreaInSystem).toBe(
+        leafExpectation.weightedAreaInSystem
+      );
+      expect(finalStep.weightedDepartedSojourn).toBe(
+        leafExpectation.weightedDepartedSojourn
+      );
     });
   });
 
@@ -2459,21 +2715,19 @@ describe('Queueing Theory Subsumption (§5)', () => {
     const namedNetworkKernelSelectors: ReadonlyArray<
       readonly [string, ProbabilisticNetworkServiceSelector]
     > = [
-      [
-        'fifo',
-        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2,
-      ],
-      [
-        'lifo',
-        (_state, _node, candidates) => Math.max(...candidates) as 1 | 2,
-      ],
+      ['fifo', (_state, _node, candidates) => Math.min(...candidates) as 1 | 2],
+      ['lifo', (_state, _node, candidates) => Math.max(...candidates) as 1 | 2],
       [
         'static-priority',
         (state, _node, candidates) => {
-          const [bestSlot] = [...candidates].sort((left, right) =>
-            probabilisticNetworkPhaseClass(probabilisticNetworkSlotPhase(state, right)) -
-            probabilisticNetworkPhaseClass(probabilisticNetworkSlotPhase(state, left)) ||
-            left - right,
+          const [bestSlot] = [...candidates].sort(
+            (left, right) =>
+              probabilisticNetworkPhaseClass(
+                probabilisticNetworkSlotPhase(state, right)
+              ) -
+                probabilisticNetworkPhaseClass(
+                  probabilisticNetworkSlotPhase(state, left)
+                ) || left - right
           );
           expect(bestSlot).toBeDefined();
           return bestSlot!;
@@ -2482,14 +2736,14 @@ describe('Queueing Theory Subsumption (§5)', () => {
       [
         'srpt',
         (state, _node, candidates) => {
-          const [bestSlot] = [...candidates].sort((left, right) =>
-            probabilisticNetworkPhaseTotalRemaining(
-              probabilisticNetworkSlotPhase(state, left),
-            ) -
-            probabilisticNetworkPhaseTotalRemaining(
-              probabilisticNetworkSlotPhase(state, right),
-            ) ||
-            left - right,
+          const [bestSlot] = [...candidates].sort(
+            (left, right) =>
+              probabilisticNetworkPhaseTotalRemaining(
+                probabilisticNetworkSlotPhase(state, left)
+              ) -
+                probabilisticNetworkPhaseTotalRemaining(
+                  probabilisticNetworkSlotPhase(state, right)
+                ) || left - right
           );
           expect(bestSlot).toBeDefined();
           return bestSlot!;
@@ -2507,33 +2761,41 @@ describe('Queueing Theory Subsumption (§5)', () => {
         for (const [index, step] of steps.entries()) {
           expect(step.totalMass).toBe(expectedMassByTick[index]);
           expect(step.weightedAreaInSystem).toBe(
-            step.weightedDepartedSojourn + step.weightedOpenAge,
+            step.weightedDepartedSojourn + step.weightedOpenAge
           );
         }
 
         const finalStep = steps[steps.length - 1]!;
         expect(finalStep.timeTick).toBe(6);
         expect(finalStep.weightedOpenAge).toBe(0);
-        expect(finalStep.weightedAreaInSystem).toBe(finalStep.weightedDepartedSojourn);
-        expect(finalStep.weightedAreaInSystem / finalStep.totalMass).toBeCloseTo(
+        expect(finalStep.weightedAreaInSystem).toBe(
+          finalStep.weightedDepartedSojourn
+        );
+        expect(
+          finalStep.weightedAreaInSystem / finalStep.totalMass
+        ).toBeCloseTo(
           finalStep.weightedDepartedSojourn / finalStep.totalMass,
-          12,
+          12
         );
       }
     });
 
     it('collapses the multiclass network kernel to the same final expectation as explicit leaf enumeration', () => {
       const fifoKernel = simulateProbabilisticNetworkKernel(
-        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2,
+        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2
       );
       const finalStep = fifoKernel[fifoKernel.length - 1]!;
       const leafExpectation = enumerateProbabilisticNetworkLeafExpectation(
-        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2,
+        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2
       );
 
       expect(finalStep.totalMass).toBe(leafExpectation.totalMass);
-      expect(finalStep.weightedAreaInSystem).toBe(leafExpectation.weightedAreaInSystem);
-      expect(finalStep.weightedDepartedSojourn).toBe(leafExpectation.weightedDepartedSojourn);
+      expect(finalStep.weightedAreaInSystem).toBe(
+        leafExpectation.weightedAreaInSystem
+      );
+      expect(finalStep.weightedDepartedSojourn).toBe(
+        leafExpectation.weightedDepartedSojourn
+      );
     });
 
     it('exposes the worst small-data ramp-up branch as a two-arrival reverse-route collision', () => {
@@ -2555,9 +2817,8 @@ describe('Queueing Theory Subsumption (§5)', () => {
           priority: 1,
         },
       ];
-      const schedule = simulateNetworkDiscipline(
-        worstRampBranch,
-        (state) => selectPerNodeBestJob(state, compareActiveNetworkByQueueOrder),
+      const schedule = simulateNetworkDiscipline(worstRampBranch, (state) =>
+        selectPerNodeBestJob(state, compareActiveNetworkByQueueOrder)
       );
       const metrics = analyzeNetworkSchedule(schedule);
 
@@ -2591,14 +2852,14 @@ describe('Queueing Theory Subsumption (§5)', () => {
       [
         'static-priority',
         (state, _node, candidates) => {
-          const [bestSlot] = [...candidates].sort((left, right) =>
-            largeProbabilisticNetworkPhaseClass(
-              largeProbabilisticNetworkSlotPhase(state, right),
-            ) -
-            largeProbabilisticNetworkPhaseClass(
-              largeProbabilisticNetworkSlotPhase(state, left),
-            ) ||
-            left - right,
+          const [bestSlot] = [...candidates].sort(
+            (left, right) =>
+              largeProbabilisticNetworkPhaseClass(
+                largeProbabilisticNetworkSlotPhase(state, right)
+              ) -
+                largeProbabilisticNetworkPhaseClass(
+                  largeProbabilisticNetworkSlotPhase(state, left)
+                ) || left - right
           );
           expect(bestSlot).toBeDefined();
           return bestSlot!;
@@ -2607,14 +2868,14 @@ describe('Queueing Theory Subsumption (§5)', () => {
       [
         'srpt',
         (state, _node, candidates) => {
-          const [bestSlot] = [...candidates].sort((left, right) =>
-            largeProbabilisticNetworkPhaseTotalRemaining(
-              largeProbabilisticNetworkSlotPhase(state, left),
-            ) -
-            largeProbabilisticNetworkPhaseTotalRemaining(
-              largeProbabilisticNetworkSlotPhase(state, right),
-            ) ||
-            left - right,
+          const [bestSlot] = [...candidates].sort(
+            (left, right) =>
+              largeProbabilisticNetworkPhaseTotalRemaining(
+                largeProbabilisticNetworkSlotPhase(state, left)
+              ) -
+                largeProbabilisticNetworkPhaseTotalRemaining(
+                  largeProbabilisticNetworkSlotPhase(state, right)
+                ) || left - right
           );
           expect(bestSlot).toBeDefined();
           return bestSlot!;
@@ -2627,45 +2888,54 @@ describe('Queueing Theory Subsumption (§5)', () => {
         const steps = simulateLargeProbabilisticNetworkKernel(selector);
 
         for (const step of steps) {
-          const expectedMass = step.timeTick === 0
-            ? 1
-            : step.timeTick === 1
+          const expectedMass =
+            step.timeTick === 0
+              ? 1
+              : step.timeTick === 1
               ? 4
               : step.timeTick === 2
-                ? 16
-                : 64;
+              ? 16
+              : 64;
           expect(step.totalMass).toBe(expectedMass);
           expect(step.weightedAreaInSystem).toBe(
-            step.weightedDepartedSojourn + step.weightedOpenAge,
+            step.weightedDepartedSojourn + step.weightedOpenAge
           );
         }
 
         const finalStep = steps[steps.length - 1]!;
         expect(finalStep.weightedOpenAge).toBe(0);
-        expect(finalStep.weightedAreaInSystem).toBe(finalStep.weightedDepartedSojourn);
-        expect(finalStep.weightedAreaInSystem / finalStep.totalMass).toBeCloseTo(
+        expect(finalStep.weightedAreaInSystem).toBe(
+          finalStep.weightedDepartedSojourn
+        );
+        expect(
+          finalStep.weightedAreaInSystem / finalStep.totalMass
+        ).toBeCloseTo(
           finalStep.weightedDepartedSojourn / finalStep.totalMass,
-          12,
+          12
         );
       }
     });
 
     it('collapses the larger multiclass kernel to the same final expectation as explicit leaf enumeration', () => {
       const fifoKernel = simulateLargeProbabilisticNetworkKernel(
-        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2 | 3,
+        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2 | 3
       );
       const finalStep = fifoKernel[fifoKernel.length - 1]!;
       const leafExpectation = enumerateLargeProbabilisticNetworkLeafExpectation(
-        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2 | 3,
+        (_state, _node, candidates) => Math.min(...candidates) as 1 | 2 | 3
       );
 
       expect(finalStep.totalMass).toBe(leafExpectation.totalMass);
-      expect(finalStep.weightedAreaInSystem).toBe(leafExpectation.weightedAreaInSystem);
-      expect(finalStep.weightedDepartedSojourn).toBe(leafExpectation.weightedDepartedSojourn);
+      expect(finalStep.weightedAreaInSystem).toBe(
+        leafExpectation.weightedAreaInSystem
+      );
+      expect(finalStep.weightedDepartedSojourn).toBe(
+        leafExpectation.weightedDepartedSojourn
+      );
     });
   });
 
-  describe('Little\'s Law as β₁ = 0', () => {
+  describe("Little's Law as β₁ = 0", () => {
     /**
      * Little's Law: L = λW
      *   L = average items in system
@@ -2681,9 +2951,9 @@ describe('Queueing Theory Subsumption (§5)', () => {
      * "how many items are in the system?"
      */
 
-    it('Little\'s Law holds for single-server queue (β₁ = 0)', () => {
-      const arrivalRate = 10;    // λ = 10 items/sec
-      const serviceTime = 0.08;  // W = 80ms per item
+    it("Little's Law holds for single-server queue (β₁ = 0)", () => {
+      const arrivalRate = 10; // λ = 10 items/sec
+      const serviceTime = 0.08; // W = 80ms per item
 
       // Little's Law
       const L = arrivalRate * serviceTime;
@@ -2702,7 +2972,7 @@ describe('Queueing Theory Subsumption (§5)', () => {
       expect(utilization).toBe(L); // They're the same equation
     });
 
-    it('pipeline equation generalizes Little\'s Law for β₁ > 0', () => {
+    it("pipeline equation generalizes Little's Law for β₁ > 0", () => {
       const arrivalRate = 10;
       const serviceTime = 0.08;
       const C = 4; // β₁ = 3
@@ -2728,11 +2998,11 @@ describe('Queueing Theory Subsumption (§5)', () => {
       expect(pipelineThroughput / sequentialThroughput).toBe(C);
     });
 
-    it('discrete-event M/M/1 simulation satisfies Little\'s Law', () => {
+    it("discrete-event M/M/1 simulation satisfies Little's Law", () => {
       const lambda = 7.5; // arrivals/sec
       const mu = 10.0; // services/sec
       const jobs = 40_000;
-      const rng = makeRng(0xC0FFEE);
+      const rng = makeRng(0xc0ffee);
 
       let arrivalTime = 0;
       let serverFreeAt = 0;
@@ -2813,10 +3083,10 @@ describe('Queueing Theory Subsumption (§5)', () => {
       const b8 = erlangB(8, A); // β₁ = 7
 
       // Each doubling of capacity dramatically reduces blocking
-      expect(b1).toBeGreaterThan(0.5);  // >50% blocked at β₁=0
+      expect(b1).toBeGreaterThan(0.5); // >50% blocked at β₁=0
       expect(b4).toBeLessThan(b1);
       expect(b8).toBeLessThan(b4);
-      expect(b8).toBeLessThan(0.05);    // <5% blocked at β₁=7
+      expect(b8).toBeLessThan(0.05); // <5% blocked at β₁=7
     });
 
     it('vent propagation depth = 0 when β₁ > 0 and alternative paths exist', () => {
@@ -2861,10 +3131,10 @@ describe('Queueing Theory Subsumption (§5)', () => {
 
       // Utilization at each node: ρ_i = λ / μ_i
       const arrivalRate = 8; // below bottleneck
-      const utilizations = serviceRates.map(mu => arrivalRate / mu);
+      const utilizations = serviceRates.map((mu) => arrivalRate / mu);
 
-      expect(utilizations[0]).toBe(0.4);  // node 1: 40%
-      expect(utilizations[1]).toBe(0.8);  // node 2: 80% (near bottleneck)
+      expect(utilizations[0]).toBe(0.4); // node 1: 40%
+      expect(utilizations[1]).toBe(0.8); // node 2: 80% (near bottleneck)
       expect(utilizations[2]).toBeCloseTo(0.533, 2); // node 3: 53%
     });
 
@@ -2895,7 +3165,7 @@ describe('Queueing Theory Subsumption (§5)', () => {
       const jobs = 20_000;
 
       function simulateMMc(c: number): { avgWait: number; throughput: number } {
-        const rng = makeRng(0xABC000 + c);
+        const rng = makeRng(0xabc000 + c);
         const serverFree = Array.from({ length: c }, () => 0);
         let arrival = 0;
         let totalWait = 0;

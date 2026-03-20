@@ -129,7 +129,9 @@ export class TCPFlowTransport implements FlowTransport {
 
   private onData(chunk: Uint8Array): void {
     // Append to reassembly buffer
-    const combined = new Uint8Array(this.rxBuffer.byteLength + chunk.byteLength);
+    const combined = new Uint8Array(
+      this.rxBuffer.byteLength + chunk.byteLength
+    );
     combined.set(this.rxBuffer);
     combined.set(chunk, this.rxBuffer.byteLength);
     this.rxBuffer = combined;
@@ -196,7 +198,9 @@ export async function connectTCPFlow(
     });
 
     socket.on('error', (err) => {
-      reject(new Error(`TCP connection failed to ${host}:${port}: ${err.message}`));
+      reject(
+        new Error(`TCP connection failed to ${host}:${port}: ${err.message}`)
+      );
     });
   });
 }
@@ -230,7 +234,9 @@ export async function listenTCPFlow(
     });
 
     server.on('error', (err) => {
-      reject(new Error(`TCP flow server failed on ${host}:${port}: ${err.message}`));
+      reject(
+        new Error(`TCP flow server failed on ${host}:${port}: ${err.message}`)
+      );
     });
   });
 }

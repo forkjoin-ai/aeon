@@ -15,8 +15,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gnosis-negative-controls.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gnosis-negative-controls.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gnosis-negative-controls.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gnosis-negative-controls.md'
+  );
 
   let assertParity = false;
   let jsonPath = defaultJsonPath;
@@ -61,21 +67,31 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderGnosisNegativeControlsBenchmarkMarkdown(report),
-    'utf8',
+    'utf8'
   );
 
   process.stdout.write(
-    `gnosis-negative-controls: ${report.allControlsPass ? 'MATCH' : 'MISMATCH'}\n`,
+    `gnosis-negative-controls: ${
+      report.allControlsPass ? 'MATCH' : 'MISMATCH'
+    }\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   for (const [taskId, task] of Object.entries(report.tasks)) {
     process.stdout.write(
-      `- ${taskId}: gap=${task.maxEvalMeanSquaredErrorGap.toFixed(3)}, min-exact=${task.minExactWithinToleranceFraction.toFixed(3)}, parity=${task.parityRecovered ? 'yes' : 'no'}\n`,
+      `- ${taskId}: gap=${task.maxEvalMeanSquaredErrorGap.toFixed(
+        3
+      )}, min-exact=${task.minExactWithinToleranceFraction.toFixed(
+        3
+      )}, parity=${task.parityRecovered ? 'yes' : 'no'}\n`
     );
   }
 
@@ -85,6 +101,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

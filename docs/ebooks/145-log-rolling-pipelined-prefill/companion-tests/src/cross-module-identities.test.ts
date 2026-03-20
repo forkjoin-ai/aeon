@@ -20,8 +20,7 @@ describe('THM-DEFICIT-DETERMINES-HEAT: topology directly determines thermodynami
   const topologicalDeficit = (paths: number, streams: number) =>
     Math.max(0, paths - streams);
 
-  const hasCollision = (paths: number, streams: number) =>
-    streams < paths; // pigeonhole: if streams < paths, collision exists
+  const hasCollision = (paths: number, streams: number) => streams < paths; // pigeonhole: if streams < paths, collision exists
 
   const landauerHeat = (erasedBits: number) => kT_ln2_300K * erasedBits;
 
@@ -170,10 +169,12 @@ describe('THM-WALLACE-FRONTIER-DUALITY: Wallace waste = American frontier waste'
   it('both monotone in the same direction', () => {
     const paths = 10;
     for (let s = 1; s < paths; s++) {
-      expect(topologicalDeficit(paths, s + 1))
-        .toBeLessThanOrEqual(topologicalDeficit(paths, s));
-      expect(wallaceWaste(paths, s + 1))
-        .toBeLessThanOrEqual(wallaceWaste(paths, s));
+      expect(topologicalDeficit(paths, s + 1)).toBeLessThanOrEqual(
+        topologicalDeficit(paths, s)
+      );
+      expect(wallaceWaste(paths, s + 1)).toBeLessThanOrEqual(
+        wallaceWaste(paths, s)
+      );
     }
   });
 });
@@ -193,11 +194,15 @@ describe('THM-SEMIOTIC-WHIP-AMPLIFICATION: conversational deficit amplifies', ()
   const effectivePaths = (c: Conversation) =>
     c.initialPaths + c.exchanges * c.growthPerExchange;
 
-  const cumulativeDeficit = (c: Conversation) =>
-    effectivePaths(c) - c.streams;
+  const cumulativeDeficit = (c: Conversation) => effectivePaths(c) - c.streams;
 
   it('deficit positive from first exchange', () => {
-    const c: Conversation = { initialPaths: 5, streams: 1, exchanges: 0, growthPerExchange: 1 };
+    const c: Conversation = {
+      initialPaths: 5,
+      streams: 1,
+      exchanges: 0,
+      growthPerExchange: 1,
+    };
     expect(cumulativeDeficit(c)).toBe(4);
     expect(cumulativeDeficit(c)).toBeGreaterThan(0);
   });
@@ -205,7 +210,12 @@ describe('THM-SEMIOTIC-WHIP-AMPLIFICATION: conversational deficit amplifies', ()
   it('deficit monotonically increases with exchanges', () => {
     let prev = 0;
     for (let e = 0; e <= 10; e++) {
-      const c: Conversation = { initialPaths: 5, streams: 1, exchanges: e, growthPerExchange: 2 };
+      const c: Conversation = {
+        initialPaths: 5,
+        streams: 1,
+        exchanges: e,
+        growthPerExchange: 2,
+      };
       const d = cumulativeDeficit(c);
       expect(d).toBeGreaterThanOrEqual(prev);
       prev = d;
@@ -215,18 +225,30 @@ describe('THM-SEMIOTIC-WHIP-AMPLIFICATION: conversational deficit amplifies', ()
   it('context slows amplification: lower growth → lower deficit', () => {
     const exchanges = 5;
     const withoutContext: Conversation = {
-      initialPaths: 5, streams: 1, exchanges, growthPerExchange: 3,
+      initialPaths: 5,
+      streams: 1,
+      exchanges,
+      growthPerExchange: 3,
     };
     const withContext: Conversation = {
-      initialPaths: 5, streams: 1, exchanges, growthPerExchange: 1,
+      initialPaths: 5,
+      streams: 1,
+      exchanges,
+      growthPerExchange: 1,
     };
-    expect(cumulativeDeficit(withContext))
-      .toBeLessThan(cumulativeDeficit(withoutContext));
+    expect(cumulativeDeficit(withContext)).toBeLessThan(
+      cumulativeDeficit(withoutContext)
+    );
   });
 
   it('the whip snap: deficit grows linearly but impact grows proportionally', () => {
     // Like a whip: energy conserved but speed increases as mass decreases
-    const c: Conversation = { initialPaths: 3, streams: 1, exchanges: 10, growthPerExchange: 1 };
+    const c: Conversation = {
+      initialPaths: 3,
+      streams: 1,
+      exchanges: 10,
+      growthPerExchange: 1,
+    };
     expect(cumulativeDeficit(c)).toBe(12); // 3 + 10 - 1
     // 12 semantic paths through 1 stream = 11 bits of nuance lost
   });

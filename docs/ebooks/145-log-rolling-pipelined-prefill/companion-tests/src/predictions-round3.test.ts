@@ -36,7 +36,9 @@ describe('Prediction 31: Beauty optimality predicts aesthetic preference', () =>
       { name: 'cluttered collage', elements: 10, connections: 4 },
       { name: 'blank canvas', elements: 10, connections: 1 },
     ];
-    const deficits = artworks.map((a) => beautyDeficit(a.elements, a.connections));
+    const deficits = artworks.map((a) =>
+      beautyDeficit(a.elements, a.connections)
+    );
     expect(deficits[0]).toBeLessThan(deficits[1]);
     expect(deficits[1]).toBeLessThan(deficits[2]);
   });
@@ -109,7 +111,12 @@ describe('Prediction 33: Void field equation predicts information propagation', 
   });
 
   it('gradient is bounded by source density', () => {
-    for (const [s, d] of [[100, 0], [50, 25], [10, 10], [0, 50]]) {
+    for (const [s, d] of [
+      [100, 0],
+      [50, 25],
+      [10, 10],
+      [0, 50],
+    ]) {
       expect(gradient(s, d)).toBeLessThanOrEqual(s);
     }
   });
@@ -153,7 +160,7 @@ describe('Prediction 34: Negotiation heat predicts mediation duration', () => {
   });
 
   it('complex negotiations (many issues) generate more heat', () => {
-    const simple = negotiationHeat(3);   // Salary only
+    const simple = negotiationHeat(3); // Salary only
     const moderate = negotiationHeat(8); // Salary + benefits + vacation
     const complex = negotiationHeat(20); // Full contract negotiation
 
@@ -171,7 +178,12 @@ describe('Prediction 34: Negotiation heat predicts mediation duration', () => {
 // ============================================================================
 
 describe('Prediction 35: Whip wave duality predicts optimal batch size', () => {
-  function totalTime(items: number, batchSize: number, stages: number, correctionCost: number): number {
+  function totalTime(
+    items: number,
+    batchSize: number,
+    stages: number,
+    correctionCost: number
+  ): number {
     return Math.ceil(items / batchSize) + stages + correctionCost * batchSize;
   }
 
@@ -214,12 +226,20 @@ describe('Prediction 35: Whip wave duality predicts optimal batch size', () => {
     let minBatch = 1;
     for (let b = 1; b <= items; b++) {
       const t = totalTime(items, b, stages, correctionCost);
-      if (t < minTime) { minTime = t; minBatch = b; }
+      if (t < minTime) {
+        minTime = t;
+        minBatch = b;
+      }
     }
 
     // After the optimal, time increases
     if (minBatch < items) {
-      const pastOptimal = totalTime(items, minBatch + 10, stages, correctionCost);
+      const pastOptimal = totalTime(
+        items,
+        minBatch + 10,
+        stages,
+        correctionCost
+      );
       expect(pastOptimal).toBeGreaterThanOrEqual(minTime);
     }
   });

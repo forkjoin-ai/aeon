@@ -14,8 +14,8 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const state = {
-  frames: [],        // { frame, timestamp, direction, rawBytes }
-  streams: {},       // streamId → { state, parent, children, frames, bytesReceived }
+  frames: [], // { frame, timestamp, direction, rawBytes }
+  streams: {}, // streamId → { state, parent, children, frames, bytesReceived }
   recording: true,
   startTime: null,
 };
@@ -24,12 +24,18 @@ const state = {
 // Tab switching
 // ═══════════════════════════════════════════════════════════════════════════════
 
-document.querySelectorAll('.tabs button').forEach(btn => {
+document.querySelectorAll('.tabs button').forEach((btn) => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document
+      .querySelectorAll('.tabs button')
+      .forEach((b) => b.classList.remove('active'));
+    document
+      .querySelectorAll('.panel')
+      .forEach((p) => p.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+    document
+      .getElementById('panel-' + btn.dataset.panel)
+      .classList.add('active');
   });
 });
 
@@ -48,12 +54,13 @@ document.getElementById('btn-clear').addEventListener('click', () => {
   state.streams = {};
   state.startTime = null;
   renderAll();
-  document.getElementById('status').textContent = 'Cleared. Waiting for frames...';
+  document.getElementById('status').textContent =
+    'Cleared. Waiting for frames...';
 });
 
 document.getElementById('btn-export').addEventListener('click', () => {
   const data = {
-    frames: state.frames.map(f => ({
+    frames: state.frames.map((f) => ({
       streamId: f.frame.streamId,
       sequence: f.frame.sequence,
       flags: f.frame.flags,
@@ -71,7 +78,9 @@ document.getElementById('btn-export').addEventListener('click', () => {
       bytesReceived: s.bytesReceived,
     })),
   };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: 'application/json',
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -89,7 +98,12 @@ function ingestFrame(frame, direction, timestamp) {
 
   if (!state.startTime) state.startTime = timestamp;
 
-  const entry = { frame, direction, timestamp, elapsed: timestamp - state.startTime };
+  const entry = {
+    frame,
+    direction,
+    timestamp,
+    elapsed: timestamp - state.startTime,
+  };
   state.frames.push(entry);
 
   // Track stream state
@@ -121,7 +135,11 @@ function ingestFrame(frame, direction, timestamp) {
   if (frame.flags & AEON_FLAGS.FORK) {
     // Parse child stream IDs from payload
     if (frame.payload && frame.payload.length >= 2) {
-      const view = new DataView(frame.payload.buffer, frame.payload.byteOffset, frame.payload.byteLength);
+      const view = new DataView(
+        frame.payload.buffer,
+        frame.payload.byteOffset,
+        frame.payload.byteLength
+      );
       for (let i = 0; i < frame.payload.length; i += 2) {
         const childId = view.getUint16(i);
         stream.children.push(childId);
@@ -160,19 +178,21 @@ function renderAll() {
 function renderWaterfall() {
   const body = document.getElementById('waterfall-body');
   if (state.frames.length === 0) {
-    body.innerHTML = '<p style="color: var(--text-dim); padding: 16px;">No frames captured yet.</p>';
+    body.innerHTML =
+      '<p style="color: var(--text-dim); padding: 16px;">No frames captured yet.</p>';
     return;
   }
 
   const maxElapsed = state.frames[state.frames.length - 1].elapsed || 1;
 
-  body.innerHTML = state.frames.map(entry => {
-    const f = entry.frame;
-    const pct = (entry.elapsed / maxElapsed) * 100;
-    const widthPct = Math.max(2, (f.length / (maxElapsed + 1)) * 30);
-    const barColor = getBarColor(f.flags);
+  body.innerHTML = state.frames
+    .map((entry) => {
+      const f = entry.frame;
+      const pct = (entry.elapsed / maxElapsed) * 100;
+      const widthPct = Math.max(2, (f.length / (maxElapsed + 1)) * 30);
+      const barColor = getBarColor(f.flags);
 
-    return `<div class="waterfall-row ${entry.direction}">
+      return `<div class="waterfall-row ${entry.direction}">
       <span>${entry.elapsed.toFixed(1)}ms</span>
       <span>${f.streamId}</span>
       <span>${f.sequence}</span>
@@ -186,7 +206,8 @@ function renderWaterfall() {
         "></div>
       </span>
     </div>`;
-  }).join('');
+    })
+    .join('');
 }
 
 function getBarColor(flags) {
@@ -207,11 +228,12 @@ function renderTree() {
     .map(([id]) => parseInt(id));
 
   if (roots.length === 0) {
-    body.innerHTML = '<p style="color: var(--text-dim); padding: 16px;">No streams captured yet.</p>';
+    body.innerHTML =
+      '<p style="color: var(--text-dim); padding: 16px;">No streams captured yet.</p>';
     return;
   }
 
-  body.innerHTML = roots.map(id => renderStreamNode(id, 0)).join('');
+  body.innerHTML = roots.map((id) => renderStreamNode(id, 0)).join('');
 }
 
 function renderStreamNode(streamId, depth) {
@@ -231,7 +253,9 @@ function renderStreamNode(streamId, depth) {
 
   if (stream.children.length > 0) {
     html += '<div class="stream-children">';
-    html += stream.children.map(cid => renderStreamNode(cid, depth + 1)).join('');
+    html += stream.children
+      .map((cid) => renderStreamNode(cid, depth + 1))
+      .join('');
     html += '</div>';
   }
 
@@ -242,15 +266,17 @@ function renderFrames() {
   const body = document.getElementById('frames-body');
 
   if (state.frames.length === 0) {
-    body.innerHTML = '<p style="color: var(--text-dim); padding: 16px;">No frames captured yet.</p>';
+    body.innerHTML =
+      '<p style="color: var(--text-dim); padding: 16px;">No frames captured yet.</p>';
     return;
   }
 
-  body.innerHTML = state.frames.map((entry, i) => {
-    const f = entry.frame;
-    const preview = f.payload ? payloadPreview(f.payload) : '';
+  body.innerHTML = state.frames
+    .map((entry, i) => {
+      const f = entry.frame;
+      const preview = f.payload ? payloadPreview(f.payload) : '';
 
-    return `<div class="frame-item ${f.flagClass}">
+      return `<div class="frame-item ${f.flagClass}">
       <div class="frame-header">
         <span>#${i}</span>
         <span>${entry.elapsed.toFixed(1)}ms</span>
@@ -260,9 +286,12 @@ function renderFrames() {
         <span class="flag-${f.flagClass}">${f.flagNames}</span>
         <span>${f.length} bytes</span>
       </div>
-      ${preview ? `<div class="frame-payload">${escapeHtml(preview)}</div>` : ''}
+      ${
+        preview ? `<div class="frame-payload">${escapeHtml(preview)}</div>` : ''
+      }
     </div>`;
-  }).join('');
+    })
+    .join('');
 }
 
 function renderStats() {
@@ -274,23 +303,38 @@ function renderStats() {
   }
 
   const totalFrames = state.frames.length;
-  const sentFrames = state.frames.filter(f => f.direction === 'send').length;
+  const sentFrames = state.frames.filter((f) => f.direction === 'send').length;
   const recvFrames = totalFrames - sentFrames;
 
   const totalPayload = state.frames.reduce((sum, f) => sum + f.frame.length, 0);
   const totalOverhead = totalFrames * AEON_HEADER_SIZE;
   const totalWire = totalPayload + totalOverhead;
-  const overheadPct = totalWire > 0 ? (totalOverhead / totalWire * 100).toFixed(2) : '0';
+  const overheadPct =
+    totalWire > 0 ? ((totalOverhead / totalWire) * 100).toFixed(2) : '0';
 
   const totalStreams = Object.keys(state.streams).length;
-  const openStreams = Object.values(state.streams).filter(s => s.state === 'open').length;
-  const closedStreams = Object.values(state.streams).filter(s => s.state === 'closed').length;
-  const ventedStreams = Object.values(state.streams).filter(s => s.state === 'vented').length;
+  const openStreams = Object.values(state.streams).filter(
+    (s) => s.state === 'open'
+  ).length;
+  const closedStreams = Object.values(state.streams).filter(
+    (s) => s.state === 'closed'
+  ).length;
+  const ventedStreams = Object.values(state.streams).filter(
+    (s) => s.state === 'vented'
+  ).length;
 
-  const forkFrames = state.frames.filter(f => f.frame.flags & AEON_FLAGS.FORK).length;
-  const ventFrames = state.frames.filter(f => f.frame.flags & AEON_FLAGS.VENT).length;
-  const finFrames = state.frames.filter(f => f.frame.flags & AEON_FLAGS.FIN).length;
-  const dataFrames = state.frames.filter(f => f.frame.flags === 0 && f.frame.length > 0).length;
+  const forkFrames = state.frames.filter(
+    (f) => f.frame.flags & AEON_FLAGS.FORK
+  ).length;
+  const ventFrames = state.frames.filter(
+    (f) => f.frame.flags & AEON_FLAGS.VENT
+  ).length;
+  const finFrames = state.frames.filter(
+    (f) => f.frame.flags & AEON_FLAGS.FIN
+  ).length;
+  const dataFrames = state.frames.filter(
+    (f) => f.frame.flags === 0 && f.frame.length > 0
+  ).length;
 
   const elapsed = state.frames[state.frames.length - 1].elapsed;
 
@@ -300,12 +344,22 @@ function renderStats() {
     <div class="stat-row"><span class="stat-label">FORK frames</span><span class="stat-value">${forkFrames}</span></div>
     <div class="stat-row"><span class="stat-label">FIN frames</span><span class="stat-value">${finFrames}</span></div>
     <div class="stat-row"><span class="stat-label">VENT frames</span><span class="stat-value">${ventFrames}</span></div>
-    <div class="stat-row"><span class="stat-label">Payload bytes</span><span class="stat-value">${formatBytes(totalPayload)}</span></div>
-    <div class="stat-row"><span class="stat-label">Framing overhead</span><span class="stat-value">${formatBytes(totalOverhead)} (${overheadPct}%)</span></div>
-    <div class="stat-row"><span class="stat-label">Total wire bytes</span><span class="stat-value">${formatBytes(totalWire)}</span></div>
+    <div class="stat-row"><span class="stat-label">Payload bytes</span><span class="stat-value">${formatBytes(
+      totalPayload
+    )}</span></div>
+    <div class="stat-row"><span class="stat-label">Framing overhead</span><span class="stat-value">${formatBytes(
+      totalOverhead
+    )} (${overheadPct}%)</span></div>
+    <div class="stat-row"><span class="stat-label">Total wire bytes</span><span class="stat-value">${formatBytes(
+      totalWire
+    )}</span></div>
     <div class="stat-row"><span class="stat-label">Streams</span><span class="stat-value">${totalStreams} total (${openStreams} open, ${closedStreams} closed, ${ventedStreams} vented)</span></div>
-    <div class="stat-row"><span class="stat-label">Duration</span><span class="stat-value">${elapsed.toFixed(1)}ms</span></div>
-    <div class="stat-row"><span class="stat-label">Throughput</span><span class="stat-value">${elapsed > 0 ? formatBytes(totalPayload / (elapsed / 1000)) + '/s' : 'N/A'}</span></div>
+    <div class="stat-row"><span class="stat-label">Duration</span><span class="stat-value">${elapsed.toFixed(
+      1
+    )}ms</span></div>
+    <div class="stat-row"><span class="stat-label">Throughput</span><span class="stat-value">${
+      elapsed > 0 ? formatBytes(totalPayload / (elapsed / 1000)) + '/s' : 'N/A'
+    }</span></div>
   `;
 }
 
@@ -326,8 +380,9 @@ function escapeHtml(str) {
 function updateStatus() {
   const n = state.frames.length;
   const streams = Object.keys(state.streams).length;
-  document.getElementById('status').textContent =
-    `${n} frames, ${streams} streams`;
+  document.getElementById(
+    'status'
+  ).textContent = `${n} frames, ${streams} streams`;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════

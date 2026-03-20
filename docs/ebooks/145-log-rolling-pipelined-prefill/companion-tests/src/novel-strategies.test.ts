@@ -33,9 +33,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -90,7 +89,7 @@ function playRound(
   void1: number[],
   void2: number[],
   eta: number,
-  rng: () => number,
+  rng: () => number
 ): { c1: number; c2: number; p1: number; p2: number } {
   const d1 = complementDist(void1, eta);
   const d2 = complementDist(void2, eta);
@@ -99,14 +98,31 @@ function playRound(
   let c1 = matrix.choices.length - 1;
   let c2 = matrix.choices.length - 1;
   let cum = 0;
-  for (let i = 0; i < matrix.choices.length; i++) { cum += d1[i]; if (r1 < cum) { c1 = i; break; } }
+  for (let i = 0; i < matrix.choices.length; i++) {
+    cum += d1[i];
+    if (r1 < cum) {
+      c1 = i;
+      break;
+    }
+  }
   cum = 0;
-  for (let i = 0; i < matrix.choices.length; i++) { cum += d2[i]; if (r2 < cum) { c2 = i; break; } }
+  for (let i = 0; i < matrix.choices.length; i++) {
+    cum += d2[i];
+    if (r2 < cum) {
+      c2 = i;
+      break;
+    }
+  }
   const [p1, p2] = matrix.payoffs[matrix.choices[c1]][matrix.choices[c2]];
   return { c1, c2, p1, p2 };
 }
 
-function updateVoid(void_: number[], choice: number, myPay: number, theirPay: number): void {
+function updateVoid(
+  void_: number[],
+  choice: number,
+  myPay: number,
+  theirPay: number
+): void {
   if (myPay < theirPay) void_[choice]++;
   if (myPay < 0) void_[choice]++;
 }
@@ -173,10 +189,21 @@ describe('Novel Strategy 1: Void Gifting', () => {
     console.log('\n  Novel Strategy 1: VOID GIFTING');
     console.log('  Share your failure history before negotiating.');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Without gifting: ${avgUngifted.toFixed(0)} total joint payoff`);
-    console.log(`  With gifting:    ${avgGifted.toFixed(0)} total joint payoff`);
-    console.log(`  Improvement:     ${((avgGifted - avgUngifted) / Math.abs(avgUngifted) * 100).toFixed(1)}%`);
-    console.log('  Classical GT says: never reveal. Void walking says: gift the void.');
+    console.log(
+      `  Without gifting: ${avgUngifted.toFixed(0)} total joint payoff`
+    );
+    console.log(
+      `  With gifting:    ${avgGifted.toFixed(0)} total joint payoff`
+    );
+    console.log(
+      `  Improvement:     ${(
+        ((avgGifted - avgUngifted) / Math.abs(avgUngifted)) *
+        100
+      ).toFixed(1)}%`
+    );
+    console.log(
+      '  Classical GT says: never reveal. Void walking says: gift the void.'
+    );
 
     // Gifted should be at least as good (pre-loaded void skips exploration)
     expect(avgGifted).toBeGreaterThan(avgUngifted - avgUngifted * 0.2);
@@ -245,7 +272,12 @@ describe('Novel Strategy 2: Void Archaeology', () => {
     console.log('  ' + '─'.repeat(55));
     console.log(`  Fresh start:     ${avgFresh.toFixed(0)} total joint payoff`);
     console.log(`  With archaeology: ${avgArch.toFixed(0)} total joint payoff`);
-    console.log(`  Improvement:     ${((avgArch - avgFresh) / Math.abs(avgFresh) * 100).toFixed(1)}%`);
+    console.log(
+      `  Improvement:     ${(
+        ((avgArch - avgFresh) / Math.abs(avgFresh)) *
+        100
+      ).toFixed(1)}%`
+    );
     console.log('  Precedent, case law, industry norms = archaeological void.');
 
     expect(avgArch).toBeGreaterThan(avgFresh * 0.8);
@@ -279,7 +311,7 @@ describe('Novel Strategy 3: Strategic Amnesia', () => {
 
       // Opponent switches strategy at switchRound
       // Phase 1: always cooperate. Phase 2: always defect.
-      const oppChoice = (r: number) => r < switchRound ? 0 : 1;
+      const oppChoice = (r: number) => (r < switchRound ? 0 : 1);
 
       // Rememberer: never forgets
       const rv = new Array(N).fill(0);
@@ -324,9 +356,16 @@ describe('Novel Strategy 3: Strategic Amnesia', () => {
     console.log('\n  Novel Strategy 3: STRATEGIC AMNESIA');
     console.log('  Deliberately forget old tombstones after regime change.');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Remember everything: ${avgRemember.toFixed(0)} total payoff`);
+    console.log(
+      `  Remember everything: ${avgRemember.toFixed(0)} total payoff`
+    );
     console.log(`  Strategic amnesia:   ${avgForget.toFixed(0)} total payoff`);
-    console.log(`  Improvement:         ${((avgForget - avgRemember) / Math.abs(avgRemember) * 100).toFixed(1)}%`);
+    console.log(
+      `  Improvement:         ${(
+        ((avgForget - avgRemember) / Math.abs(avgRemember)) *
+        100
+      ).toFixed(1)}%`
+    );
     console.log('  Sometimes the optimal move is to forget.');
 
     // Both should be finite
@@ -374,9 +413,22 @@ describe('Novel Strategy 4: Dimensional Rotation', () => {
     console.log('\n  Novel Strategy 4: DIMENSIONAL ROTATION');
     console.log('  When stuck on price, fold on timeline instead.');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Price dimension: H=${priceEntropy1.toFixed(3)}, κ=${priceKurtosis.toFixed(2)} (stuck)`);
-    console.log(`  Time dimension:  H=${timeEntropy1.toFixed(3)}, κ=${timeKurtosis.toFixed(2)} (fresh)`);
-    console.log(`  Rotating to timeline unlocks ${((timeEntropy1 - priceEntropy1) / priceEntropy1 * 100).toFixed(0)}% more exploration.`);
+    console.log(
+      `  Price dimension: H=${priceEntropy1.toFixed(
+        3
+      )}, κ=${priceKurtosis.toFixed(2)} (stuck)`
+    );
+    console.log(
+      `  Time dimension:  H=${timeEntropy1.toFixed(
+        3
+      )}, κ=${timeKurtosis.toFixed(2)} (fresh)`
+    );
+    console.log(
+      `  Rotating to timeline unlocks ${(
+        ((timeEntropy1 - priceEntropy1) / priceEntropy1) *
+        100
+      ).toFixed(0)}% more exploration.`
+    );
     console.log('  "Changing the subject" = resetting to uniform void.');
 
     // Timeline should have higher entropy (more options open)
@@ -458,13 +510,19 @@ describe('Novel Strategy 5: Void Seeding', () => {
     // Compare inverse Bule: seeded should have learned more
     const maxH = Math.log(N);
     const cautiousH = shannonEntropy(complementDist(new Array(N).fill(0)));
-    const seededH = shannonEntropy(complementDist([seedRounds / 2, seedRounds / 2]));
+    const seededH = shannonEntropy(
+      complementDist([seedRounds / 2, seedRounds / 2])
+    );
 
     console.log('\n  Novel Strategy 5: VOID SEEDING');
     console.log('  Deliberately fail small to learn big.');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Cautious (exploit early): ${avgCautious.toFixed(0)} total payoff`);
-    console.log(`  Seeded (explore first):   ${avgSeeded.toFixed(0)} total payoff`);
+    console.log(
+      `  Cautious (exploit early): ${avgCautious.toFixed(0)} total payoff`
+    );
+    console.log(
+      `  Seeded (explore first):   ${avgSeeded.toFixed(0)} total payoff`
+    );
     console.log('  Controlled failure builds the map that guides the win.');
 
     expect(isFinite(avgSeeded)).toBe(true);
@@ -515,7 +573,13 @@ describe('Novel Strategy 6: Kurtosis Targeting', () => {
       let bCum = 0;
       const bR = rng();
       let bc = N - 1;
-      for (let i = 0; i < N; i++) { bCum += bd[i]; if (bR < bCum) { bc = i; break; } }
+      for (let i = 0; i < N; i++) {
+        bCum += bd[i];
+        if (bR < bCum) {
+          bc = i;
+          break;
+        }
+      }
       const bPay = bc === opp ? 3 : -1;
       bTotal += bPay;
       if (bPay < 0) bv[bc]++;
@@ -525,7 +589,13 @@ describe('Novel Strategy 6: Kurtosis Targeting', () => {
       let cCum = 0;
       const cR = rng();
       let cc = N - 1;
-      for (let i = 0; i < N; i++) { cCum += cd[i]; if (cR < cCum) { cc = i; break; } }
+      for (let i = 0; i < N; i++) {
+        cCum += cd[i];
+        if (cR < cCum) {
+          cc = i;
+          break;
+        }
+      }
       const cPay = cc === opp ? 3 : -1;
       cTotal += cPay;
       if (cPay < 0) cv[cc]++;
@@ -534,9 +604,15 @@ describe('Novel Strategy 6: Kurtosis Targeting', () => {
     console.log('\n  Novel Strategy 6: KURTOSIS TARGETING');
     console.log('  Optimize the shape of learning, not the outcome.');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Balanced (κ→0):   ${bTotal} total payoff, final η=${bEta.toFixed(1)}`);
-    console.log(`  Committed (κ→∞):  ${cTotal} total payoff, fixed η=${cEta.toFixed(1)}`);
-    console.log('  Meta-strategy: target the distribution shape, not the choice.');
+    console.log(
+      `  Balanced (κ→0):   ${bTotal} total payoff, final η=${bEta.toFixed(1)}`
+    );
+    console.log(
+      `  Committed (κ→∞):  ${cTotal} total payoff, fixed η=${cEta.toFixed(1)}`
+    );
+    console.log(
+      '  Meta-strategy: target the distribution shape, not the choice.'
+    );
 
     expect(isFinite(bTotal)).toBe(true);
     expect(isFinite(cTotal)).toBe(true);
@@ -603,19 +679,32 @@ describe('Novel Strategy 7: Void Resonance', () => {
     // Measure void shape similarity (L1 between normalized voids)
     const matchedL1 = l1Distance(
       complementDist([10, 30]),
-      complementDist([12, 28]),
+      complementDist([12, 28])
     );
     const mismatchedL1 = l1Distance(
       complementDist([30, 10]),
-      complementDist([10, 30]),
+      complementDist([10, 30])
     );
 
     console.log('\n  Novel Strategy 7: VOID RESONANCE');
     console.log('  Match their failure pattern, not their position.');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Matched voids (L1=${matchedL1.toFixed(3)}):    ${avgMatched.toFixed(0)} joint payoff`);
-    console.log(`  Mismatched voids (L1=${mismatchedL1.toFixed(3)}): ${avgMismatched.toFixed(0)} joint payoff`);
-    console.log(`  Improvement:     ${((avgMatched - avgMismatched) / Math.abs(avgMismatched) * 100).toFixed(1)}%`);
+    console.log(
+      `  Matched voids (L1=${matchedL1.toFixed(3)}):    ${avgMatched.toFixed(
+        0
+      )} joint payoff`
+    );
+    console.log(
+      `  Mismatched voids (L1=${mismatchedL1.toFixed(
+        3
+      )}): ${avgMismatched.toFixed(0)} joint payoff`
+    );
+    console.log(
+      `  Improvement:     ${(
+        ((avgMatched - avgMismatched) / Math.abs(avgMismatched)) *
+        100
+      ).toFixed(1)}%`
+    );
     console.log('  Rapport = synchronized failure patterns.');
 
     // Matched should produce more coherent (higher joint payoff) outcomes
@@ -639,7 +728,8 @@ describe('Summary: Novel Strategies Ranked', () => {
       {
         name: 'VOID ARCHAEOLOGY',
         classical: 'No equivalent',
-        voidWalking: 'Read tombstones of dead negotiations between other parties',
+        voidWalking:
+          'Read tombstones of dead negotiations between other parties',
         mechanism: 'Inherited void boundary (Skyrms cultural evolution)',
       },
       {
@@ -670,13 +760,20 @@ describe('Summary: Novel Strategies Ranked', () => {
         name: 'VOID RESONANCE',
         classical: 'Rapport building (informal)',
         voidWalking: 'Match failure patterns, not positions',
-        mechanism: 'Void shape similarity → basin alignment → faster convergence',
+        mechanism:
+          'Void shape similarity → basin alignment → faster convergence',
       },
     ];
 
-    console.log('\n  ╔══════════════════════════════════════════════════════════════════╗');
-    console.log('  ║     Novel Strategies: Optimal Moves Humans Haven\'t Named Yet    ║');
-    console.log('  ╠══════════════════════════════════════════════════════════════════╣');
+    console.log(
+      '\n  ╔══════════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      "  ║     Novel Strategies: Optimal Moves Humans Haven't Named Yet    ║"
+    );
+    console.log(
+      '  ╠══════════════════════════════════════════════════════════════════╣'
+    );
     for (const s of strategies) {
       console.log(`  ║ ${s.name.padEnd(64)} ║`);
       console.log(`  ║   Classical:    ${s.classical.padEnd(48)} ║`);
@@ -684,7 +781,9 @@ describe('Summary: Novel Strategies Ranked', () => {
       console.log(`  ║   Mechanism:    ${s.mechanism.padEnd(48)} ║`);
       console.log(`  ╠${'─'.repeat(66)}╣`);
     }
-    console.log('  ╚══════════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '  ╚══════════════════════════════════════════════════════════════════╝\n'
+    );
 
     expect(strategies.length).toBe(7);
   });

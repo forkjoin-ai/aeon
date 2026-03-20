@@ -34,9 +34,8 @@ function complementDist(counts: number[], eta: number): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -78,16 +77,16 @@ const ALL_GAITS: Gait[] = ['stand', 'trot', 'canter', 'gallop'];
 
 interface GaitProfile {
   name: Gait;
-  depth: number;       // pipeline parallelism
-  eta: number;         // exploitation sharpness
+  depth: number; // pipeline parallelism
+  eta: number; // exploitation sharpness
   exploration: number; // random exploration rate
-  speed: number;       // rounds per wall-tick
+  speed: number; // rounds per wall-tick
 }
 
 const GAIT_PROFILES: Record<Gait, GaitProfile> = {
-  stand:  { name: 'stand',  depth: 1,  eta: 0,   exploration: 1.0,  speed: 0 },
-  trot:   { name: 'trot',   depth: 1,  eta: 1.5, exploration: 0.3,  speed: 1 },
-  canter: { name: 'canter', depth: 4,  eta: 3.0, exploration: 0.1,  speed: 4 },
+  stand: { name: 'stand', depth: 1, eta: 0, exploration: 1.0, speed: 0 },
+  trot: { name: 'trot', depth: 1, eta: 1.5, exploration: 0.3, speed: 1 },
+  canter: { name: 'canter', depth: 4, eta: 3.0, exploration: 0.1, speed: 4 },
   gallop: { name: 'gallop', depth: 16, eta: 5.0, exploration: 0.02, speed: 16 },
 };
 
@@ -99,11 +98,11 @@ type PayoffFn = (myChoice: number, oppChoice: number) => [number, number];
 
 interface GaitRaceResult {
   gait: Gait;
-  quality: number;    // avg payoff per round
-  speed: number;      // rounds processed
-  fitness: number;    // speed × quality (the racing metric)
-  kurtosis: number;   // complement distribution shape
-  entropy: number;    // uncertainty remaining
+  quality: number; // avg payoff per round
+  speed: number; // rounds processed
+  fitness: number; // speed × quality (the racing metric)
+  kurtosis: number; // complement distribution shape
+  entropy: number; // uncertainty remaining
   inverseBule: number;
 }
 
@@ -114,7 +113,7 @@ function raceGait(
   wallTicks: number,
   opponentFn: (rng: () => number) => number,
   payoffFn: PayoffFn,
-  rng: () => number,
+  rng: () => number
 ): GaitRaceResult {
   const N = voidCounts.length;
   const localVoid = [...voidCounts]; // don't mutate shared state
@@ -134,7 +133,13 @@ function raceGait(
         const r = rng();
         let cum = 0;
         choice = N - 1;
-        for (let i = 0; i < N; i++) { cum += dist[i]; if (r < cum) { choice = i; break; } }
+        for (let i = 0; i < N; i++) {
+          cum += dist[i];
+          if (r < cum) {
+            choice = i;
+            break;
+          }
+        }
       }
 
       const [myPay, theirPay] = payoffFn(choice, opp);
@@ -194,14 +199,19 @@ function wallingtonRotation(
   ticksPerStage: number,
   opponentFn: (rng: () => number) => number,
   payoffFn: PayoffFn,
-  rng: () => number,
+  rng: () => number
 ): RotationResult {
   const voidCounts = new Array(numChoices).fill(0);
   const stages: RotationStage[] = [];
   const gaitSchedule: Gait[] = [];
   const kurtTraj: number[] = [];
   const fitTraj: number[] = [];
-  const gaitWinCounts: Record<Gait, number> = { stand: 0, trot: 0, canter: 0, gallop: 0 };
+  const gaitWinCounts: Record<Gait, number> = {
+    stand: 0,
+    trot: 0,
+    canter: 0,
+    gallop: 0,
+  };
   let totalPayoff = 0;
   let totalRounds = 0;
 
@@ -213,15 +223,22 @@ function wallingtonRotation(
     for (const gait of ALL_GAITS) {
       const profile = GAIT_PROFILES[gait];
       const result = raceGait(
-        profile, voidCounts, ticksPerStage, opponentFn, payoffFn, rng,
+        profile,
+        voidCounts,
+        ticksPerStage,
+        opponentFn,
+        payoffFn,
+        rng
       );
       results.push(result);
     }
 
     // RACE: evaluate fitness = speed × quality
     // FOLD: select the gait with highest fitness, vent the rest
-    const winner = results.reduce((best, r) =>
-      r.fitness > best.fitness ? r : best, results[0]);
+    const winner = results.reduce(
+      (best, r) => (r.fitness > best.fitness ? r : best),
+      results[0]
+    );
 
     // Update shared void with winner's experience
     // (the winner's choices shaped the void for the next stage)
@@ -238,7 +255,13 @@ function wallingtonRotation(
           const r = rng();
           let cum = 0;
           choice = numChoices - 1;
-          for (let i = 0; i < numChoices; i++) { cum += dist[i]; if (r < cum) { choice = i; break; } }
+          for (let i = 0; i < numChoices; i++) {
+            cum += dist[i];
+            if (r < cum) {
+              choice = i;
+              break;
+            }
+          }
         }
         const [myPay, theirPay] = payoffFn(choice, opp);
         totalPayoff += myPay;
@@ -283,9 +306,13 @@ function wallingtonRotation(
 // ============================================================================
 
 describe('Wallington Gait Rotation: Gaits Race Each Other', () => {
-
   const HD: PayoffFn = (my, opp) => {
-    const m = [[2, 2], [0, 4], [4, 0], [-1, -1]];
+    const m = [
+      [2, 2],
+      [0, 4],
+      [4, 0],
+      [-1, -1],
+    ];
     return m[my * 2 + opp] as [number, number];
   };
 
@@ -298,44 +325,85 @@ describe('Wallington Gait Rotation: Gaits Race Each Other', () => {
   it('rotation selects gaits by fitness across stages', () => {
     const rng = makeRng(42);
     const result = wallingtonRotation(
-      2, 20, 5,
-      (rng) => rng() < 0.5 ? 0 : 1,
-      HD, rng,
+      2,
+      20,
+      5,
+      (rng) => (rng() < 0.5 ? 0 : 1),
+      HD,
+      rng
     );
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════════╗');
-    console.log('  ║  WALLINGTON GAIT ROTATION: Hawk-Dove (20 stages × 5 ticks)   ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════════╣');
-    console.log(`  ║  Schedule: ${result.gaitSchedule.map((g) => g[0]).join('').padEnd(50)}║`);
-    console.log(`  ║  κ:        ${sparkline(result.kurtosisTrajectory).padEnd(50)}║`);
-    console.log(`  ║  fitness:  ${sparkline(result.fitnessTrajectory).padEnd(50)}║`);
-    console.log('  ╠───────────────────────────────────────────────────────────────╣');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  WALLINGTON GAIT ROTATION: Hawk-Dove (20 stages × 5 ticks)   ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║  Schedule: ${result.gaitSchedule
+        .map((g) => g[0])
+        .join('')
+        .padEnd(50)}║`
+    );
+    console.log(
+      `  ║  κ:        ${sparkline(result.kurtosisTrajectory).padEnd(50)}║`
+    );
+    console.log(
+      `  ║  fitness:  ${sparkline(result.fitnessTrajectory).padEnd(50)}║`
+    );
+    console.log(
+      '  ╠───────────────────────────────────────────────────────────────╣'
+    );
     for (const g of ALL_GAITS) {
       const wins = result.gaitWinCounts[g];
-      const pct = (wins / result.stages.length * 100).toFixed(0);
-      const bar = '█'.repeat(Math.max(0, Math.round(wins / result.stages.length * 30)));
-      console.log(`  ║  ${g.padEnd(8)} ${String(wins).padStart(3)} wins (${pct.padStart(3)}%) ${bar.padEnd(30)} ║`);
+      const pct = ((wins / result.stages.length) * 100).toFixed(0);
+      const bar = '█'.repeat(
+        Math.max(0, Math.round((wins / result.stages.length) * 30))
+      );
+      console.log(
+        `  ║  ${g.padEnd(8)} ${String(wins).padStart(3)} wins (${pct.padStart(
+          3
+        )}%) ${bar.padEnd(30)} ║`
+      );
     }
-    console.log('  ╠───────────────────────────────────────────────────────────────╣');
-    console.log(`  ║  Total: ${result.totalRounds} rounds, ${result.totalPayoff} payoff, ${result.wallClockMs.toFixed(1)}ms      ║`);
-    console.log(`  ║  Avg: ${(result.totalPayoff / result.totalRounds).toFixed(3)} per round                                ║`);
-    console.log('  ╚═══════════════════════════════════════════════════════════════╝');
+    console.log(
+      '  ╠───────────────────────────────────────────────────────────────╣'
+    );
+    console.log(
+      `  ║  Total: ${result.totalRounds} rounds, ${
+        result.totalPayoff
+      } payoff, ${result.wallClockMs.toFixed(1)}ms      ║`
+    );
+    console.log(
+      `  ║  Avg: ${(result.totalPayoff / result.totalRounds).toFixed(
+        3
+      )} per round                                ║`
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════════╝'
+    );
 
     // Stand should never win when other gaits are available
     // (zero speed × any quality = zero fitness)
     expect(result.gaitWinCounts.stand).toBe(0);
     // Gallop should win most stages (highest speed × decent quality)
     expect(result.gaitWinCounts.gallop).toBeGreaterThanOrEqual(
-      result.gaitWinCounts.trot,
+      result.gaitWinCounts.trot
     );
   });
 
   it('early stages favor thorough gaits, late stages favor fast gaits', () => {
     const rng = makeRng(123);
     const result = wallingtonRotation(
-      3, 30, 3,
+      3,
+      30,
+      3,
       (rng) => Math.floor(rng() * 3),
-      COORD5, rng,
+      COORD5,
+      rng
     );
 
     // Split schedule into halves
@@ -348,8 +416,18 @@ describe('Wallington Gait Rotation: Gaits Race Each Other', () => {
     console.log('\n  Gait evolution across 30 stages (3-choice coordination):');
     console.log(`  First  15: ${firstHalf.map((g) => g[0]).join('')}`);
     console.log(`  Second 15: ${secondHalf.map((g) => g[0]).join('')}`);
-    console.log(`  Gallop: first=${countGait(firstHalf, 'gallop')} second=${countGait(secondHalf, 'gallop')}`);
-    console.log(`  Trot:   first=${countGait(firstHalf, 'trot')} second=${countGait(secondHalf, 'trot')}`);
+    console.log(
+      `  Gallop: first=${countGait(firstHalf, 'gallop')} second=${countGait(
+        secondHalf,
+        'gallop'
+      )}`
+    );
+    console.log(
+      `  Trot:   first=${countGait(firstHalf, 'trot')} second=${countGait(
+        secondHalf,
+        'trot'
+      )}`
+    );
 
     // Should complete all stages
     expect(result.stages.length).toBe(30);
@@ -358,15 +436,24 @@ describe('Wallington Gait Rotation: Gaits Race Each Other', () => {
   it('5-choice negotiation: full rotation with schedule visualization', () => {
     const rng = makeRng(42);
     const result = wallingtonRotation(
-      5, 25, 4,
+      5,
+      25,
+      4,
       (rng) => Math.floor(rng() * 5),
-      COORD5, rng,
+      COORD5,
+      rng
     );
 
     const maxH = Math.log(5);
     const finalDist = complementDist(
-      new Array(5).fill(0).map((_, i) => result.stages[result.stages.length - 1]?.allResults[0]?.kurtosis ?? 0),
-      3,
+      new Array(5)
+        .fill(0)
+        .map(
+          (_, i) =>
+            result.stages[result.stages.length - 1]?.allResults[0]?.kurtosis ??
+            0
+        ),
+      3
     );
 
     console.log('\n  5-Choice Negotiation Wallington Rotation (25 stages):');
@@ -376,8 +463,16 @@ describe('Wallington Gait Rotation: Gaits Race Each Other', () => {
     for (const g of ALL_GAITS) {
       console.log(`  ${g.padEnd(8)} ${result.gaitWinCounts[g]} wins`);
     }
-    console.log(`  Total: ${result.totalRounds} rounds in ${result.wallClockMs.toFixed(1)}ms`);
-    console.log(`  Throughput: ${(result.totalRounds / result.wallClockMs).toFixed(0)} rounds/ms`);
+    console.log(
+      `  Total: ${result.totalRounds} rounds in ${result.wallClockMs.toFixed(
+        1
+      )}ms`
+    );
+    console.log(
+      `  Throughput: ${(result.totalRounds / result.wallClockMs).toFixed(
+        0
+      )} rounds/ms`
+    );
 
     expect(result.totalRounds).toBeGreaterThan(0);
   });
@@ -386,7 +481,7 @@ describe('Wallington Gait Rotation: Gaits Race Each Other', () => {
     const T_STAGES = 20;
     const TICKS = 5;
     const N = 2;
-    const oppFn = (rng: () => number) => rng() < 0.5 ? 0 : 1;
+    const oppFn = (rng: () => number) => (rng() < 0.5 ? 0 : 1);
 
     // Wallington rotation
     const rng1 = makeRng(42);
@@ -405,15 +500,28 @@ describe('Wallington Gait Rotation: Gaits Race Each Other', () => {
     let gallopRounds = 0;
     for (let s = 0; s < T_STAGES; s++) {
       const result = raceGait(
-        GAIT_PROFILES.gallop, gallopVoid, TICKS, oppFn, HD, rng3,
+        GAIT_PROFILES.gallop,
+        gallopVoid,
+        TICKS,
+        oppFn,
+        HD,
+        rng3
       );
       gallopPayoff += result.fitness;
       gallopRounds += result.speed;
     }
 
     console.log('\n  Rotation vs Fixed Gait:');
-    console.log(`  Rotation:    ${rotation.totalPayoff} payoff / ${rotation.totalRounds} rounds = ${(rotation.totalPayoff / rotation.totalRounds).toFixed(3)}`);
-    console.log(`  Fixed gallop: ${gallopPayoff} payoff / ${gallopRounds} rounds = ${(gallopPayoff / gallopRounds).toFixed(3)}`);
+    console.log(
+      `  Rotation:    ${rotation.totalPayoff} payoff / ${
+        rotation.totalRounds
+      } rounds = ${(rotation.totalPayoff / rotation.totalRounds).toFixed(3)}`
+    );
+    console.log(
+      `  Fixed gallop: ${gallopPayoff} payoff / ${gallopRounds} rounds = ${(
+        gallopPayoff / gallopRounds
+      ).toFixed(3)}`
+    );
 
     // Both should complete
     expect(rotation.totalRounds).toBeGreaterThan(0);
@@ -423,23 +531,62 @@ describe('Wallington Gait Rotation: Gaits Race Each Other', () => {
   it('speed benchmark: 50 stages, 10 ticks, 5 choices', () => {
     const rng = makeRng(42);
     const result = wallingtonRotation(
-      5, 50, 10,
+      5,
+      50,
+      10,
       (rng) => Math.floor(rng() * 5),
-      COORD5, rng,
+      COORD5,
+      rng
     );
 
     const throughput = result.totalRounds / result.wallClockMs;
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════╗');
-    console.log('  ║  WALLINGTON ROTATION BENCHMARK: 50 stages × 10 ticks     ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════╣');
-    console.log(`  ║  Rounds:     ${String(result.totalRounds).padStart(8)}                                ║`);
-    console.log(`  ║  Wall-clock: ${result.wallClockMs.toFixed(1).padStart(8)}ms                               ║`);
-    console.log(`  ║  Throughput: ${throughput.toFixed(0).padStart(8)} rounds/ms                        ║`);
-    console.log(`  ║  Payoff:     ${String(result.totalPayoff).padStart(8)}                                ║`);
-    console.log(`  ║  Schedule:   ${result.gaitSchedule.map((g) => g[0]).join('').substring(0, 44).padEnd(44)} ║`);
-    console.log(`  ║  Wins: S=${result.gaitWinCounts.stand} T=${result.gaitWinCounts.trot} C=${result.gaitWinCounts.canter} G=${result.gaitWinCounts.gallop}${''.padEnd(30)}║`);
-    console.log('  ╚═══════════════════════════════════════════════════════════╝');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  WALLINGTON ROTATION BENCHMARK: 50 stages × 10 ticks     ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║  Rounds:     ${String(result.totalRounds).padStart(
+        8
+      )}                                ║`
+    );
+    console.log(
+      `  ║  Wall-clock: ${result.wallClockMs
+        .toFixed(1)
+        .padStart(8)}ms                               ║`
+    );
+    console.log(
+      `  ║  Throughput: ${throughput
+        .toFixed(0)
+        .padStart(8)} rounds/ms                        ║`
+    );
+    console.log(
+      `  ║  Payoff:     ${String(result.totalPayoff).padStart(
+        8
+      )}                                ║`
+    );
+    console.log(
+      `  ║  Schedule:   ${result.gaitSchedule
+        .map((g) => g[0])
+        .join('')
+        .substring(0, 44)
+        .padEnd(44)} ║`
+    );
+    console.log(
+      `  ║  Wins: S=${result.gaitWinCounts.stand} T=${
+        result.gaitWinCounts.trot
+      } C=${result.gaitWinCounts.canter} G=${
+        result.gaitWinCounts.gallop
+      }${''.padEnd(30)}║`
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════╝'
+    );
 
     expect(result.wallClockMs).toBeLessThan(1000);
     expect(result.totalRounds).toBeGreaterThan(1000);

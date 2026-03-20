@@ -54,8 +54,12 @@ describe('Chapter 17 whip exhaustion figure', () => {
   it('verifies energy taper: inner fold discharges more than outer', () => {
     const report = buildCh17WhipExhaustionFigureReport();
     // Attention heads (innermost geometric race) > each residual fold (outermost structural)
-    const headAxis = report.axes.find((a) => a.label.includes('Attention Heads'));
-    const residualAxis = report.axes.find((a) => a.label === 'Residual-Attention');
+    const headAxis = report.axes.find((a) =>
+      a.label.includes('Attention Heads')
+    );
+    const residualAxis = report.axes.find(
+      (a) => a.label === 'Residual-Attention'
+    );
     expect(headAxis!.beta1).toBeGreaterThan(residualAxis!.beta1);
     expect(report.taperRatio).toBe(15); // 15:1 for N=16
   });
@@ -106,7 +110,8 @@ describe('Chapter 17 whip exhaustion figure', () => {
       // Verify the formula: N + (E if MoE, else f)
       // MoE replaces FFN — it doesn't add to it
       const expected =
-        config.heads + (config.moeExperts > 0 ? config.moeExperts : config.ffnExpansion);
+        config.heads +
+        (config.moeExperts > 0 ? config.moeExperts : config.ffnExpansion);
       expect(report.totalBeta1).toBe(expected);
       // After all folds, beta_1 = 0
       expect(report.whipCount).toBe(4);

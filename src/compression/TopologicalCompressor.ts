@@ -94,7 +94,7 @@ const CHUNK_HEADER_SIZE = 9;
 function encodeChunkHeader(
   codecId: number,
   originalSize: number,
-  compressedSize: number,
+  compressedSize: number
 ): Uint8Array {
   const header = new Uint8Array(CHUNK_HEADER_SIZE);
   const view = new DataView(header.buffer);
@@ -106,7 +106,7 @@ function encodeChunkHeader(
 
 function decodeChunkHeader(
   data: Uint8Array,
-  offset: number,
+  offset: number
 ): { codecId: number; originalSize: number; compressedSize: number } {
   const codecId = data[offset];
   const view = new DataView(data.buffer, data.byteOffset + offset + 1, 8);
@@ -123,7 +123,7 @@ const STREAM_HEADER_SIZE = 5;
 
 function encodeStreamHeader(
   strategy: number,
-  originalSize: number,
+  originalSize: number
 ): Uint8Array {
   const header = new Uint8Array(STREAM_HEADER_SIZE);
   header[0] = strategy;
@@ -131,12 +131,15 @@ function encodeStreamHeader(
   return header;
 }
 
-function decodeStreamHeader(
-  data: Uint8Array,
-): { strategy: number; originalSize: number } {
+function decodeStreamHeader(data: Uint8Array): {
+  strategy: number;
+  originalSize: number;
+} {
   const strategy = data[0];
   const originalSize = new DataView(
-    data.buffer, data.byteOffset + 1, 4,
+    data.buffer,
+    data.byteOffset + 1,
+    4
   ).getUint32(0);
   return { strategy, originalSize };
 }
@@ -146,7 +149,9 @@ function decodeStreamHeader(
 // ============================================================================
 
 export class TopologicalCompressor {
-  private readonly config: TopologicalCompressorConfig & { streamRace: boolean };
+  private readonly config: TopologicalCompressorConfig & {
+    streamRace: boolean;
+  };
 
   constructor(config?: Partial<TopologicalCompressorConfig>) {
     this.config = {
@@ -236,7 +241,7 @@ export class TopologicalCompressor {
       const header = encodeChunkHeader(
         bestCodecId,
         chunk.length,
-        bestCompressed.length,
+        bestCompressed.length
       );
       const frame = new Uint8Array(CHUNK_HEADER_SIZE + bestCompressed.length);
       frame.set(header, 0);
@@ -261,7 +266,7 @@ export class TopologicalCompressor {
 
     const totalCompressedSize = compressedChunks.reduce(
       (sum, c) => sum + c.length,
-      0,
+      0
     );
     const output = new Uint8Array(totalCompressedSize);
     let offset = 0;
@@ -298,13 +303,15 @@ export class TopologicalCompressor {
 
       const { codecId, originalSize, compressedSize } = decodeChunkHeader(
         compressed,
-        readPos,
+        readPos
       );
       readPos += CHUNK_HEADER_SIZE;
 
       if (readPos + compressedSize > compressed.length) {
         throw new Error(
-          `Truncated chunk data at offset ${readPos}: need ${compressedSize}, have ${compressed.length - readPos}`,
+          `Truncated chunk data at offset ${readPos}: need ${compressedSize}, have ${
+            compressed.length - readPos
+          }`
         );
       }
 
@@ -324,7 +331,7 @@ export class TopologicalCompressor {
       const codec = getCodecById(chunk.codecId);
       const decompressed = codec.decode(
         chunk.compressedData,
-        chunk.originalSize,
+        chunk.originalSize
       );
       output.set(decompressed, writePos);
       writePos += chunk.originalSize;
@@ -413,11 +420,13 @@ export class TopologicalCompressor {
     // Total independent cycles = outer_paths - 1 + inner_β₁
     const outerPaths = globalCandidates.length + 1; // +1 for per-chunk
     const innerBeta = Math.max(0, codecs.length - 1);
-    const totalBeta = (outerPaths - 1) + innerBeta;
+    const totalBeta = outerPaths - 1 + innerBeta;
 
     if (bestStrategy === 0) {
       // Per-chunk topological won — prefix with stream header
-      const output = new Uint8Array(STREAM_HEADER_SIZE + chunkedResult.data.length);
+      const output = new Uint8Array(
+        STREAM_HEADER_SIZE + chunkedResult.data.length
+      );
       output.set(streamHeader, 0);
       output.set(chunkedResult.data, STREAM_HEADER_SIZE);
 
@@ -432,7 +441,9 @@ export class TopologicalCompressor {
       };
     } else {
       // Global codec won
-      const output = new Uint8Array(STREAM_HEADER_SIZE + bestGlobal!.compressed.length);
+      const output = new Uint8Array(
+        STREAM_HEADER_SIZE + bestGlobal!.compressed.length
+      );
       output.set(streamHeader, 0);
       output.set(bestGlobal!.compressed, STREAM_HEADER_SIZE);
 

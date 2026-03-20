@@ -18,15 +18,27 @@ function createLinkedTransports(): [FlowTransport, FlowTransport] {
   let handlerB: ((data: Uint8Array) => void) | null = null;
 
   const transportA: FlowTransport = {
-    send: (data) => { if (handlerB) handlerB(new Uint8Array(data)); },
-    onReceive: (handler) => { handlerA = handler; },
-    close: () => { handlerA = null; },
+    send: (data) => {
+      if (handlerB) handlerB(new Uint8Array(data));
+    },
+    onReceive: (handler) => {
+      handlerA = handler;
+    },
+    close: () => {
+      handlerA = null;
+    },
   };
 
   const transportB: FlowTransport = {
-    send: (data) => { if (handlerA) handlerA(new Uint8Array(data)); },
-    onReceive: (handler) => { handlerB = handler; },
-    close: () => { handlerB = null; },
+    send: (data) => {
+      if (handlerA) handlerA(new Uint8Array(data));
+    },
+    onReceive: (handler) => {
+      handlerB = handler;
+    },
+    close: () => {
+      handlerB = null;
+    },
   };
 
   return [transportA, transportB];
@@ -38,7 +50,7 @@ describe('HTTP↔Aeon Bridge', () => {
       const req: AeonHTTPRequest = {
         method: 'GET',
         path: '/api/data',
-        headers: { 'accept': 'application/json' },
+        headers: { accept: 'application/json' },
         requestId: 'req-1',
       };
 
@@ -132,7 +144,7 @@ describe('HTTP↔Aeon Bridge', () => {
     });
 
     it('should handle binary response body', () => {
-      const binary = new Uint8Array([0x89, 0x50, 0x4E, 0x47]); // PNG header
+      const binary = new Uint8Array([0x89, 0x50, 0x4e, 0x47]); // PNG header
       const res = {
         status: 200,
         headers: { 'content-type': 'image/png' },
@@ -169,7 +181,7 @@ describe('HTTP↔Aeon Bridge', () => {
       const response = await nginxBridge.sendRequest({
         method: 'GET',
         path: '/api/data',
-        headers: { 'accept': 'application/json' },
+        headers: { accept: 'application/json' },
         requestId: 'test-req-1',
       });
 
@@ -224,9 +236,24 @@ describe('HTTP↔Aeon Bridge', () => {
 
       // Send 3 requests concurrently
       const [r1, r2, r3] = await Promise.all([
-        nginxBridge.sendRequest({ method: 'GET', path: '/fast', headers: {}, requestId: 'req-a' }),
-        nginxBridge.sendRequest({ method: 'GET', path: '/slow', headers: {}, requestId: 'req-b' }),
-        nginxBridge.sendRequest({ method: 'GET', path: '/medium', headers: {}, requestId: 'req-c' }),
+        nginxBridge.sendRequest({
+          method: 'GET',
+          path: '/fast',
+          headers: {},
+          requestId: 'req-a',
+        }),
+        nginxBridge.sendRequest({
+          method: 'GET',
+          path: '/slow',
+          headers: {},
+          requestId: 'req-b',
+        }),
+        nginxBridge.sendRequest({
+          method: 'GET',
+          path: '/medium',
+          headers: {},
+          requestId: 'req-c',
+        }),
       ]);
 
       expect(new TextDecoder().decode(r1.body)).toBe('response for /fast');
@@ -239,7 +266,9 @@ describe('HTTP↔Aeon Bridge', () => {
 
     it('should timeout if no response', async () => {
       const [nginxSide, aeonSide] = createLinkedTransports();
-      const nginxBridge = new HTTPAeonBridge(nginxSide, { responseTimeout: 100 });
+      const nginxBridge = new HTTPAeonBridge(nginxSide, {
+        responseTimeout: 100,
+      });
       // Don't register any handler on aeon side — request will timeout
 
       await expect(

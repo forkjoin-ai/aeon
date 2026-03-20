@@ -41,9 +41,16 @@ interface VoidSystem<Choice> {
   /** The choice space */
   choices: Choice[];
   /** The fold: selects one, destroys the rest. Returns [winner, vented[]] */
-  fold: (alternatives: Choice[], rng: () => number) => { winner: Choice; vented: Choice[] };
+  fold: (
+    alternatives: Choice[],
+    rng: () => number
+  ) => { winner: Choice; vented: Choice[] };
   /** Conservation check: winner + vented = alternatives */
-  conserves: (alternatives: Choice[], winner: Choice, vented: Choice[]) => boolean;
+  conserves: (
+    alternatives: Choice[],
+    winner: Choice,
+    vented: Choice[]
+  ) => boolean;
   /** Irreversibility: fold cannot be undone (vented cannot be recovered) */
   irreversible: true;
   /** Ground state: minimum cost of folding (>= 0) */
@@ -94,9 +101,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -122,7 +128,7 @@ function excessKurtosis(values: number[]): number {
 function proveUniversalTheorems<C>(
   system: VoidSystem<C>,
   rounds: number,
-  seed: number,
+  seed: number
 ): UniversalResults {
   const rng = makeRng(seed);
   const N = system.choices.length;
@@ -142,7 +148,13 @@ function proveUniversalTheorems<C>(
     const rv = rng();
     let cum = 0;
     let choiceIdx = N - 1;
-    for (let i = 0; i < N; i++) { cum += dist[i]; if (rv < cum) { choiceIdx = i; break; } }
+    for (let i = 0; i < N; i++) {
+      cum += dist[i];
+      if (rv < cum) {
+        choiceIdx = i;
+        break;
+      }
+    }
 
     // Environment
     const env = system.environment(rng);
@@ -190,7 +202,8 @@ function proveUniversalTheorems<C>(
   const regret = bestFixed - totalPayoff;
 
   // Tunnel: mutual info > 0 if void has any structure
-  const tunnelInfoPositive = voidCounts.some((v) => v > 0) &&
+  const tunnelInfoPositive =
+    voidCounts.some((v) => v > 0) &&
     voidCounts.some((v, i) => v !== voidCounts[0]);
 
   return {
@@ -223,7 +236,7 @@ const QUARK_SYSTEM: VoidSystem<string> = {
   conserves: (alts, winner, vented) => 1 + vented.length === alts.length,
   irreversible: true,
   groundStateCost: 1, // confinement energy
-  payoff: (c, env) => c === env ? 3 : -1,
+  payoff: (c, env) => (c === env ? 3 : -1),
   environment: (rng) => ['red', 'green', 'blue'][Math.floor(rng() * 3)],
 };
 
@@ -237,8 +250,9 @@ const PROTEIN_SYSTEM: VoidSystem<string> = {
   conserves: (alts, winner, vented) => 1 + vented.length === alts.length,
   irreversible: true,
   groundStateCost: 0, // native state is ground
-  payoff: (c, env) => c === 'native' ? 5 : c === env ? 1 : -1,
-  environment: (rng) => ['native', 'misfolded-A', 'misfolded-B', 'unfolded'][Math.floor(rng() * 4)],
+  payoff: (c, env) => (c === 'native' ? 5 : c === env ? 1 : -1),
+  environment: (rng) =>
+    ['native', 'misfolded-A', 'misfolded-B', 'unfolded'][Math.floor(rng() * 4)],
 };
 
 const NEURON_SYSTEM: VoidSystem<string> = {
@@ -251,8 +265,9 @@ const NEURON_SYSTEM: VoidSystem<string> = {
   conserves: (alts, winner, vented) => 1 + vented.length === alts.length,
   irreversible: true,
   groundStateCost: 0,
-  payoff: (c, env) => c === env ? 4 : -1,
-  environment: (rng) => ['token-A', 'token-B', 'token-C', 'token-D'][Math.floor(rng() * 4)],
+  payoff: (c, env) => (c === env ? 4 : -1),
+  environment: (rng) =>
+    ['token-A', 'token-B', 'token-C', 'token-D'][Math.floor(rng() * 4)],
 };
 
 const SPEECH_SYSTEM: VoidSystem<string> = {
@@ -265,8 +280,11 @@ const SPEECH_SYSTEM: VoidSystem<string> = {
   conserves: (alts, winner, vented) => 1 + vented.length === alts.length,
   irreversible: true,
   groundStateCost: 1, // minimum 1 Bule deficit
-  payoff: (c, env) => c === env ? 3 : 0,
-  environment: (rng) => ['denotation', 'connotation', 'implicature', 'affect', 'context'][Math.floor(rng() * 5)],
+  payoff: (c, env) => (c === env ? 3 : 0),
+  environment: (rng) =>
+    ['denotation', 'connotation', 'implicature', 'affect', 'context'][
+      Math.floor(rng() * 5)
+    ],
 };
 
 const NEGOTIATION_SYSTEM: VoidSystem<string> = {
@@ -284,7 +302,8 @@ const NEGOTIATION_SYSTEM: VoidSystem<string> = {
     if (c === 'price-mid') return 2; // compromise
     return -1; // rejection
   },
-  environment: (rng) => ['price-low', 'price-mid', 'price-high'][Math.floor(rng() * 3)],
+  environment: (rng) =>
+    ['price-low', 'price-mid', 'price-high'][Math.floor(rng() * 3)],
 };
 
 const PSYCHE_SYSTEM: VoidSystem<string> = {
@@ -303,7 +322,8 @@ const PSYCHE_SYSTEM: VoidSystem<string> = {
     if (c === env) return 2;
     return -1;
   },
-  environment: (rng) => ['trust', 'withdraw', 'fight', 'freeze', 'connect'][Math.floor(rng() * 5)],
+  environment: (rng) =>
+    ['trust', 'withdraw', 'fight', 'freeze', 'connect'][Math.floor(rng() * 5)],
 };
 
 const SPACETIME_SYSTEM: VoidSystem<string> = {
@@ -339,7 +359,6 @@ const ALL_SYSTEMS = [
 // ============================================================================
 
 describe('Grand Unification of Shape', () => {
-
   it('all seven domains satisfy the three constraints', () => {
     for (const sys of ALL_SYSTEMS) {
       // Conservation: fold preserves total count
@@ -370,26 +389,62 @@ describe('Grand Unification of Shape', () => {
       results.push(r);
     }
 
-    console.log('\n  ╔════════════════════════════════════════════════════════════════════════╗');
-    console.log('  ║              GRAND UNIFICATION OF SHAPE                                ║');
-    console.log('  ║  Same theorems. Seven domains. One structure.                          ║');
-    console.log('  ╠════════════════════════════════════════════════════════════════════════╣');
-    console.log(`  ║  ${'Domain'.padEnd(30)} ${'Bound'.padStart(5)} ${'VoidR'.padStart(6)} ${'H'.padStart(6)} ${'L1'.padStart(6)} ${'B⁻¹'.padStart(8)} ${'κ'.padStart(7)} ║`);
+    console.log(
+      '\n  ╔════════════════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║              GRAND UNIFICATION OF SHAPE                                ║'
+    );
+    console.log(
+      '  ║  Same theorems. Seven domains. One structure.                          ║'
+    );
+    console.log(
+      '  ╠════════════════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║  ${'Domain'.padEnd(30)} ${'Bound'.padStart(5)} ${'VoidR'.padStart(
+        6
+      )} ${'H'.padStart(6)} ${'L1'.padStart(6)} ${'B⁻¹'.padStart(
+        8
+      )} ${'κ'.padStart(7)} ║`
+    );
     console.log(`  ╠${'─'.repeat(72)}╣`);
 
     for (const r of results) {
       console.log(
-        `  ║  ${r.domain.padEnd(30)} ${String(r.boundaryRank).padStart(5)} ${r.voidRatio.toFixed(2).padStart(6)} ${r.gradientEntropy.toFixed(3).padStart(6)} ${r.coherenceL1.toFixed(3).padStart(6)} ${(r.inverseBule * 1000).toFixed(3).padStart(8)} ${r.kurtosis.toFixed(2).padStart(7)} ║`,
+        `  ║  ${r.domain.padEnd(30)} ${String(r.boundaryRank).padStart(
+          5
+        )} ${r.voidRatio.toFixed(2).padStart(6)} ${r.gradientEntropy
+          .toFixed(3)
+          .padStart(6)} ${r.coherenceL1.toFixed(3).padStart(6)} ${(
+          r.inverseBule * 1000
+        )
+          .toFixed(3)
+          .padStart(8)} ${r.kurtosis.toFixed(2).padStart(7)} ║`
       );
     }
     console.log(`  ╠${'─'.repeat(72)}╣`);
-    console.log('  ║  Theorems verified in ALL domains:                                     ║');
-    console.log('  ║  ✓ THM-VOID-BOUNDARY-MEASURABLE   (boundary rank > 0)                  ║');
-    console.log('  ║  ✓ THM-VOID-DOMINANCE             (void ratio > 0)                     ║');
-    console.log('  ║  ✓ THM-VOID-GRADIENT              (entropy < max)                      ║');
-    console.log('  ║  ✓ THM-VOID-COHERENCE             (L1 = 0.000 for same boundary)       ║');
-    console.log('  ║  ✓ Conservation                   (First Law holds every round)         ║');
-    console.log('  ╚════════════════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '  ║  Theorems verified in ALL domains:                                     ║'
+    );
+    console.log(
+      '  ║  ✓ THM-VOID-BOUNDARY-MEASURABLE   (boundary rank > 0)                  ║'
+    );
+    console.log(
+      '  ║  ✓ THM-VOID-DOMINANCE             (void ratio > 0)                     ║'
+    );
+    console.log(
+      '  ║  ✓ THM-VOID-GRADIENT              (entropy < max)                      ║'
+    );
+    console.log(
+      '  ║  ✓ THM-VOID-COHERENCE             (L1 = 0.000 for same boundary)       ║'
+    );
+    console.log(
+      '  ║  ✓ Conservation                   (First Law holds every round)         ║'
+    );
+    console.log(
+      '  ╚════════════════════════════════════════════════════════════════════════╝\n'
+    );
 
     // UNIVERSAL THEOREM VERIFICATION
     for (const r of results) {
@@ -427,11 +482,11 @@ describe('Grand Unification of Shape', () => {
       const r = proveUniversalTheorems(sys, T, 42);
       shapes.push({
         domain: r.domain,
-        hasBoundary: r.boundaryRank >= 0,        // always true
-        hasGradient: r.gradientEntropy >= 0,      // always true
-        hasCoherence: r.coherenceL1 === 0,        // always true
-        hasConservation: r.conservationHolds,       // always true
-        voidDominates: r.voidRatio >= 0,           // always true
+        hasBoundary: r.boundaryRank >= 0, // always true
+        hasGradient: r.gradientEntropy >= 0, // always true
+        hasCoherence: r.coherenceL1 === 0, // always true
+        hasConservation: r.conservationHolds, // always true
+        voidDominates: r.voidRatio >= 0, // always true
       });
     }
 
@@ -458,7 +513,9 @@ describe('Grand Unification of Shape', () => {
     console.log('  Not by assumption. By proof.');
     console.log('  Conservation + Irreversibility + Ground State');
     console.log('  → Measurable Boundary + Gradient + Coherence + Dominance');
-    console.log('  In quarks, proteins, neurons, speech, negotiation, psyche, spacetime.');
+    console.log(
+      '  In quarks, proteins, neurons, speech, negotiation, psyche, spacetime.'
+    );
     console.log('  One structure. One shape. Seven substrates. Zero sorry.\n');
   });
 });

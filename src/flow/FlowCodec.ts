@@ -22,7 +22,7 @@ import type { FlowFrame } from './types';
 export const HEADER_SIZE = 10;
 
 /** Maximum payload length (2^24 - 1 = 16,777,215 bytes ≈ 16 MB) */
-export const MAX_PAYLOAD_LENGTH = 0xFFFFFF;
+export const MAX_PAYLOAD_LENGTH = 0xffffff;
 
 type WasmMode = 'auto' | 'off' | 'force';
 type WasmModuleInput = WebAssembly.Module | BufferSource;
@@ -96,14 +96,18 @@ export class FlowCodec {
    * Create a FlowCodec. Tries WASM acceleration, falls back to JS.
    * The JS path is always correct — WASM is a performance optimization only.
    */
-  static async create(options: FlowCodecCreateOptions = {}): Promise<FlowCodec> {
+  static async create(
+    options: FlowCodecCreateOptions = {}
+  ): Promise<FlowCodec> {
     const wasmMode = options.wasmMode ?? 'auto';
     if (wasmMode === 'off') {
       return new FlowCodec(null);
     }
     if (typeof WebAssembly === 'undefined') {
       if (wasmMode === 'force') {
-        throw new Error('FlowCodec WASM requested in force mode, but WebAssembly is unavailable');
+        throw new Error(
+          'FlowCodec WASM requested in force mode, but WebAssembly is unavailable'
+        );
       }
       return new FlowCodec(null);
     }
@@ -114,7 +118,7 @@ export class FlowCodec {
       if (!source) {
         if (wasmMode === 'force') {
           throw new Error(
-            'FlowCodec WASM module not found (expected src/flow/wasm/aeon-flow-codec.wasm)',
+            'FlowCodec WASM module not found (expected src/flow/wasm/aeon-flow-codec.wasm)'
           );
         }
         return new FlowCodec(null);
@@ -179,9 +183,9 @@ export class FlowCodec {
     // flags: u8
     buf[6] = frame.flags;
     // length: u24 big-endian
-    buf[7] = (payloadLen >>> 16) & 0xFF;
-    buf[8] = (payloadLen >>> 8) & 0xFF;
-    buf[9] = payloadLen & 0xFF;
+    buf[7] = (payloadLen >>> 16) & 0xff;
+    buf[8] = (payloadLen >>> 8) & 0xff;
+    buf[9] = payloadLen & 0xff;
     // payload
     buf.set(frame.payload, HEADER_SIZE);
 
@@ -203,7 +207,9 @@ export class FlowCodec {
   ): { frame: FlowFrame; bytesRead: number } {
     if (buffer.length - offset < HEADER_SIZE) {
       throw new RangeError(
-        `Buffer too small: need at least ${HEADER_SIZE} bytes, have ${buffer.length - offset}`
+        `Buffer too small: need at least ${HEADER_SIZE} bytes, have ${
+          buffer.length - offset
+        }`
       );
     }
 
@@ -212,7 +218,9 @@ export class FlowCodec {
 
     if (buffer.length - offset - HEADER_SIZE < length) {
       throw new RangeError(
-        `Buffer too small for payload: need ${length} bytes, have ${buffer.length - offset - HEADER_SIZE}`
+        `Buffer too small for payload: need ${length} bytes, have ${
+          buffer.length - offset - HEADER_SIZE
+        }`
       );
     }
 
@@ -274,7 +282,9 @@ export class FlowCodec {
       // Need at least a header to continue
       if (buffer.length - offset < HEADER_SIZE) {
         throw new RangeError(
-          `Truncated frame at offset ${offset}: need ${HEADER_SIZE} bytes, have ${buffer.length - offset}`
+          `Truncated frame at offset ${offset}: need ${HEADER_SIZE} bytes, have ${
+            buffer.length - offset
+          }`
         );
       }
 
@@ -295,7 +305,7 @@ export class FlowCodec {
 
   private decodeHeaderInJavaScript(
     buffer: Uint8Array,
-    offset: number,
+    offset: number
   ): DecodedHeader {
     const view = new DataView(
       buffer.buffer,
@@ -316,7 +326,7 @@ export class FlowCodec {
 
   private decodeHeaderWithWasm(
     buffer: Uint8Array,
-    offset: number,
+    offset: number
   ): DecodedHeader {
     const wasmState = this.wasmState;
     if (!wasmState) {
@@ -326,7 +336,7 @@ export class FlowCodec {
     this.refreshWasmViews(wasmState);
     wasmState.memoryBytes.set(
       buffer.subarray(offset, offset + HEADER_SIZE),
-      wasmState.framePtr,
+      wasmState.framePtr
     );
 
     const bytesRead = wasmState.exports.decodeFrame(
@@ -334,12 +344,12 @@ export class FlowCodec {
       wasmState.streamIdPtr,
       wasmState.sequencePtr,
       wasmState.flagsPtr,
-      wasmState.lengthPtr,
+      wasmState.lengthPtr
     );
 
     if (bytesRead !== HEADER_SIZE) {
       throw new RangeError(
-        `WASM decoder returned invalid header size ${bytesRead} (expected ${HEADER_SIZE})`,
+        `WASM decoder returned invalid header size ${bytesRead} (expected ${HEADER_SIZE})`
       );
     }
 
@@ -361,7 +371,7 @@ export class FlowCodec {
   }
 
   private static createWasmState(
-    wasmInstance: WebAssembly.Instance,
+    wasmInstance: WebAssembly.Instance
   ): FlowCodecWasmState | null {
     const exports = wasmInstance.exports as Record<string, unknown>;
     const memory = exports.memory;
@@ -397,7 +407,7 @@ export class FlowCodec {
   }
 
   private static async instantiateWasm(
-    source: WasmModuleInput,
+    source: WasmModuleInput
   ): Promise<WebAssembly.Instance> {
     if (source instanceof WebAssembly.Module) {
       return new WebAssembly.Instance(source, {});
@@ -409,11 +419,7 @@ export class FlowCodec {
       return result;
     }
 
-    if (
-      typeof result === 'object' &&
-      result !== null &&
-      'instance' in result
-    ) {
+    if (typeof result === 'object' && result !== null && 'instance' in result) {
       const maybeInstance = (result as { instance: unknown }).instance;
       if (maybeInstance instanceof WebAssembly.Instance) {
         return maybeInstance;
@@ -436,7 +442,7 @@ export class FlowCodec {
 
     // Construct dynamically to avoid hard build-time asset coupling.
     const wasmPath = './wasm/' + 'aeon-flow-codec.wasm';
-    const wasmUrl = new URL(wasmPath, import.meta.url);
+    const wasmUrl = new URL(wasmPath, (import.meta as any).url);
 
     try {
       const controller = new AbortController();

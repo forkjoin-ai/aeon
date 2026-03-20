@@ -64,7 +64,10 @@ function randomDag(nodeCount: number, density: number, seed: number): Dag {
 function buildTopology(dag: Dag): DagTopology {
   const inDegree = new Array<number>(dag.nodeCount).fill(0);
   const outDegree = new Array<number>(dag.nodeCount).fill(0);
-  const outgoing: Array<number[]> = Array.from({ length: dag.nodeCount }, () => []);
+  const outgoing: Array<number[]> = Array.from(
+    { length: dag.nodeCount },
+    () => []
+  );
 
   for (const [from, to] of dag.edges) {
     outDegree[from] += 1;
@@ -96,7 +99,10 @@ function decomposeDag(dag: Dag): Decomposition {
   const chains = new Set<number>();
 
   for (let node = 0; node < dag.nodeCount; node++) {
-    const nodeClass = classifyNode(topology.inDegree[node], topology.outDegree[node]);
+    const nodeClass = classifyNode(
+      topology.inDegree[node],
+      topology.outDegree[node]
+    );
     if (nodeClass === 'fork') forks.add(node);
     else if (nodeClass === 'join') joins.add(node);
     else chains.add(node);
@@ -108,7 +114,7 @@ function decomposeDag(dag: Dag): Decomposition {
 function isJunctionNode(
   node: number,
   decomposition: Decomposition,
-  topology: DagTopology,
+  topology: DagTopology
 ): boolean {
   return (
     decomposition.forks.has(node) ||
@@ -140,7 +146,7 @@ function toJunctionChainDecomposition(dag: Dag): JunctionChainDecomposition {
         const cursorOutgoing = topology.outgoing[cursor];
         if (cursorOutgoing.length !== 1) {
           throw new Error(
-            `Expected chain node ${cursor} to have exactly one outgoing edge`,
+            `Expected chain node ${cursor} to have exactly one outgoing edge`
           );
         }
         const successor = cursorOutgoing[0];
@@ -210,7 +216,9 @@ function enumerateExpandedPathsFromSegments(dag: Dag): number[][] {
 
     const outgoingSegments = segmentsByFrom.get(node);
     if (outgoingSegments === undefined || outgoingSegments.length === 0) {
-      throw new Error(`Node ${node} is not a sink but has no decomposition segments`);
+      throw new Error(
+        `Node ${node} is not a sink but has no decomposition segments`
+      );
     }
 
     for (const segment of outgoingSegments) {
@@ -292,10 +300,12 @@ describe('THM-COMPLETENESS-DAG (executable finite-DAG decomposition)', () => {
     const denseDecomp = decomposeDag(dense);
 
     expect(
-      sparseDecomp.forks.size + sparseDecomp.joins.size + sparseDecomp.chains.size,
+      sparseDecomp.forks.size +
+        sparseDecomp.joins.size +
+        sparseDecomp.chains.size
     ).toBe(sparse.nodeCount);
     expect(
-      denseDecomp.forks.size + denseDecomp.joins.size + denseDecomp.chains.size,
+      denseDecomp.forks.size + denseDecomp.joins.size + denseDecomp.chains.size
     ).toBe(dense.nodeCount);
   });
 
@@ -324,7 +334,7 @@ describe('THM-COMPLETENESS-DAG (executable finite-DAG decomposition)', () => {
         .sort();
       const coveredEdgeKeys = decomposition.segments
         .flatMap((segment) =>
-          segment.edges.map(([from, to]) => edgeKey(from, to)),
+          segment.edges.map(([from, to]) => edgeKey(from, to))
         )
         .sort();
 
@@ -339,7 +349,7 @@ describe('THM-COMPLETENESS-DAG (executable finite-DAG decomposition)', () => {
       const dag = randomDag(10, 0.35, seed);
       const originalPaths = canonicalizePaths(enumerateSourceSinkPaths(dag));
       const decomposedPaths = canonicalizePaths(
-        enumerateExpandedPathsFromSegments(dag),
+        enumerateExpandedPathsFromSegments(dag)
       );
 
       expect(decomposedPaths).toEqual(originalPaths);

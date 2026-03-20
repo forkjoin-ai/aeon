@@ -104,11 +104,15 @@ function shannonEntropy(probs: number[]): number {
  */
 function buildClockwork(
   f: (x: number) => number,
-  perturbScale: number = 0.1,
+  perturbScale: number = 0.1
 ): ClockworkSystem<number> {
   return {
     frequentist: f,
-    bayesian: (input: number, beta1: number, rng: () => number): BayesianResult => {
+    bayesian: (
+      input: number,
+      beta1: number,
+      rng: () => number
+    ): BayesianResult => {
       const numPaths = beta1 + 1;
       const pathResults: number[] = [];
       // Fork: compute along β₁+1 perturbed paths
@@ -128,7 +132,10 @@ function buildClockwork(
           voidBoundary.push({
             pathIndex: i,
             result: pathResults[i],
-            reason: Math.abs(pathResults[i] - median) > perturbScale ? 'outlier' : 'slower',
+            reason:
+              Math.abs(pathResults[i] - median) > perturbScale
+                ? 'outlier'
+                : 'slower',
           });
         }
       }
@@ -137,7 +144,13 @@ function buildClockwork(
       const probs = pathResults.map((v) => Math.abs(v) / total);
       const preFoldEntropy = shannonEntropy(probs);
 
-      return { estimate: median, pathResults, ventedPaths, voidBoundary, preFoldEntropy };
+      return {
+        estimate: median,
+        pathResults,
+        ventedPaths,
+        voidBoundary,
+        preFoldEntropy,
+      };
     },
   };
 }
@@ -151,7 +164,7 @@ function runEscapement(
   beta1Star: number,
   maxCycles: number,
   epsilon: number,
-  rng: () => number,
+  rng: () => number
 ): { states: EscapementState[]; converged: boolean } {
   const states: EscapementState[] = [];
   let frequency = 1.0;
@@ -208,7 +221,7 @@ function runMainspring(
   input: number,
   beta1Star: number,
   budget: number,
-  rng: () => number,
+  rng: () => number
 ): { budget: MainspringBudget; states: EscapementState[] } {
   const states: EscapementState[] = [];
   let spent = 0;
@@ -312,7 +325,14 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
   describe('18.2 Self-Verification Convergence', () => {
     it('escapement converges: tick and tock agree within ε', () => {
       const rng = makeRng(777);
-      const { states, converged } = runEscapement(clockworkLinear, 5, 4, 20, 0.01, rng);
+      const { states, converged } = runEscapement(
+        clockworkLinear,
+        5,
+        4,
+        20,
+        0.01,
+        rng
+      );
       expect(converged).toBe(true);
       const firstAgreement = states.find((s) => s.agreement);
       expect(firstAgreement).toBeDefined();
@@ -321,14 +341,28 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
     it('convergence holds across multiple inputs', () => {
       for (const input of [0, 1, 3, 7, 10, 100]) {
         const rng = makeRng(42 + input);
-        const { converged } = runEscapement(clockworkLinear, input, 4, 20, 0.01, rng);
+        const { converged } = runEscapement(
+          clockworkLinear,
+          input,
+          4,
+          20,
+          0.01,
+          rng
+        );
         expect(converged).toBe(true);
       }
     });
 
     it('convergence holds for nonlinear functions', () => {
       const rng = makeRng(314);
-      const { converged } = runEscapement(clockworkQuadratic, 3, 4, 20, 0.1, rng);
+      const { converged } = runEscapement(
+        clockworkQuadratic,
+        3,
+        4,
+        20,
+        0.1,
+        rng
+      );
       expect(converged).toBe(true);
     });
   });
@@ -338,12 +372,19 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
       for (const beta1Star of [2, 4, 8, 16]) {
         const expectedCostPerCycle = kT_ln2 * (beta1Star - 1);
         const rng = makeRng(42);
-        const { states } = runEscapement(clockworkLinear, 5, beta1Star, 5, 0.01, rng);
+        const { states } = runEscapement(
+          clockworkLinear,
+          5,
+          beta1Star,
+          5,
+          0.01,
+          rng
+        );
         // After N cycles, cumulative cost = N × expected
         for (let i = 0; i < states.length; i++) {
           expect(states[i].cumulativeCost).toBeCloseTo(
             (i + 1) * expectedCostPerCycle,
-            10,
+            10
           );
         }
       }
@@ -379,8 +420,12 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
       // Same void boundary
       expect(result1.voidBoundary.length).toBe(result2.voidBoundary.length);
       for (let i = 0; i < result1.voidBoundary.length; i++) {
-        expect(result1.voidBoundary[i].pathIndex).toBe(result2.voidBoundary[i].pathIndex);
-        expect(result1.voidBoundary[i].result).toBe(result2.voidBoundary[i].result);
+        expect(result1.voidBoundary[i].pathIndex).toBe(
+          result2.voidBoundary[i].pathIndex
+        );
+        expect(result1.voidBoundary[i].result).toBe(
+          result2.voidBoundary[i].result
+        );
       }
     });
 
@@ -421,7 +466,7 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
         if (firstAgree > 0 && firstAgree + 1 < states.length) {
           // Check that frequency decreased compared to before agreement
           expect(states[firstAgree].frequency).toBeLessThan(
-            states[firstAgree > 0 ? firstAgree - 1 : 0].frequency + 0.01,
+            states[firstAgree > 0 ? firstAgree - 1 : 0].frequency + 0.01
           );
         }
       }
@@ -451,7 +496,13 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
       // Use very high β₁* so cost per cycle is high relative to info gain
       const rng = makeRng(42);
       const largeBudget = 10000;
-      const { budget } = runMainspring(clockworkLinear, 5, 100, largeBudget, rng);
+      const { budget } = runMainspring(
+        clockworkLinear,
+        5,
+        100,
+        largeBudget,
+        rng
+      );
       expect(budget.halted).toBe(true);
       if (budget.haltReason === 'marginal_cost_exceeds_gain') {
         // Cost per cycle = kT ln 2 × 99 ≈ 99
@@ -611,7 +662,9 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
       // THM-VOID-GRADIENT: complement distribution weights all paths
       const ventCounts = new Array(beta1Star + 1).fill(0);
       for (const entry of result.voidBoundary) ventCounts[entry.pathIndex]++;
-      const complementWeights = ventCounts.map((c) => 1 - c / (ventCounts.length || 1));
+      const complementWeights = ventCounts.map(
+        (c) => 1 - c / (ventCounts.length || 1)
+      );
       expect(complementWeights.every((w) => w >= 0)).toBe(true);
       exercised['THM-VOID-GRADIENT'] = true;
 
@@ -629,7 +682,14 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
       exercised['THM-FAIL-LANDAUER-BOUNDARY'] = true;
 
       // THM-S7-WARM-CTRL: adaptive escapement
-      const { states } = runEscapement(clockworkLinear, input, beta1Star, 10, 0.01, makeRng(42));
+      const { states } = runEscapement(
+        clockworkLinear,
+        input,
+        beta1Star,
+        10,
+        0.01,
+        makeRng(42)
+      );
       expect(states.length).toBeGreaterThan(0);
       exercised['THM-S7-WARM-CTRL'] = true;
 
@@ -639,7 +699,9 @@ describe('Clockwork Self-Verification (§18 -- Instantiation K)', () => {
 
       // THM-BEAUTY-PARETO: dial optimization (zero deficit is optimal)
       // The frequentist result (deficit=0) matches the Bayesian fold
-      expect(Math.abs(clockworkLinear.frequentist(input) - result.estimate)).toBeLessThan(0.01);
+      expect(
+        Math.abs(clockworkLinear.frequentist(input) - result.estimate)
+      ).toBeLessThan(0.01);
       exercised['THM-BEAUTY-PARETO'] = true;
 
       // All 10 theorem references exercised

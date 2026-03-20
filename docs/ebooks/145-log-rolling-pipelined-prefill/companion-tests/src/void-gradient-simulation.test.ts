@@ -44,7 +44,7 @@ function makeRng(seed: number): () => number {
 function computeVoidGradient(
   ventCounts: number[],
   rounds: number,
-  epsilon: number = 0.01,
+  epsilon: number = 0.01
 ): VoidGradientState {
   const N = ventCounts.length;
   const maxVent = Math.max(...ventCounts, 1);
@@ -71,7 +71,7 @@ function runVoidGradientBandit(
   rounds: number,
   trueCosts: number[],
   rng: () => number,
-  epsilon: number = 0.01,
+  epsilon: number = 0.01
 ): { totalCost: number; finalDistribution: number[]; ventCounts: number[] } {
   // ventCounts here represent cumulative observed cost (scaled to integers)
   const ventCounts = new Array(numArms).fill(0);
@@ -123,13 +123,13 @@ describe('THM-VOID-GRADIENT: Void Density Induces Optimal Fork Distribution', ()
 
     // Choice 0 was vented least (10 times) -> highest complement weight
     const maxProbIdx = state.complementDistribution.indexOf(
-      Math.max(...state.complementDistribution),
+      Math.max(...state.complementDistribution)
     );
     expect(maxProbIdx).toBe(0);
 
     // Choice 1 was vented most (50 times) -> lowest complement weight
     const minProbIdx = state.complementDistribution.indexOf(
-      Math.min(...state.complementDistribution),
+      Math.min(...state.complementDistribution)
     );
     expect(minProbIdx).toBe(1);
   });
@@ -163,7 +163,9 @@ describe('THM-VOID-GRADIENT: Void Density Induces Optimal Fork Distribution', ()
 
     // Higher cost -> higher void density (vented more often)
     for (let i = 0; i < N - 1; i++) {
-      expect(state.voidDensity[i]).toBeLessThan(state.voidDensity[i + 1] + 0.05);
+      expect(state.voidDensity[i]).toBeLessThan(
+        state.voidDensity[i + 1] + 0.05
+      );
     }
   });
 
@@ -187,14 +189,14 @@ describe('THM-VOID-GRADIENT: Void Density Induces Optimal Fork Distribution', ()
     // Even if arm 0 is played more, its per-play contribution is small.
     // Therefore arm 0 should have lowest vent rate and highest complement weight.
     expect(state.complementDistribution[0]).toBeGreaterThan(
-      state.complementDistribution[N - 1],
+      state.complementDistribution[N - 1]
     );
 
     // Verify ordering: costs are [0.1, 0.4, 0.6, 0.9]
     // Complement distribution should roughly anti-correlate with costs
     // (not perfectly due to stochastic sampling, but best > worst)
     expect(state.complementDistribution[0]).toBeGreaterThan(
-      state.complementDistribution[2],
+      state.complementDistribution[2]
     );
   });
 
@@ -212,10 +214,10 @@ describe('THM-VOID-GRADIENT: Void Density Induces Optimal Fork Distribution', ()
     // Complement distribution should anti-correlate with vent counts
     // i.e., high vent -> low probability (avoid the worst choices)
     expect(state.complementDistribution[0]).toBeGreaterThan(
-      state.complementDistribution[1],
+      state.complementDistribution[1]
     );
     expect(state.complementDistribution[1]).toBeGreaterThan(
-      state.complementDistribution[2],
+      state.complementDistribution[2]
     );
   });
 
@@ -232,7 +234,7 @@ describe('THM-VOID-GRADIENT: Void Density Induces Optimal Fork Distribution', ()
 
     // Same inputs -> same distribution (deterministic, unique)
     expect(state1.complementDistribution).toEqual(
-      state2.complementDistribution,
+      state2.complementDistribution
     );
 
     // Distribution sums to 1
@@ -257,11 +259,9 @@ describe('THM-VOID-GRADIENT: Void Density Induces Optimal Fork Distribution', ()
     // With small epsilon, distribution is more extreme
     // With large epsilon, distribution is more uniform (epsilon floor large)
     const gapSmall =
-      smallEps.complementDistribution[0] -
-      smallEps.complementDistribution[1];
+      smallEps.complementDistribution[0] - smallEps.complementDistribution[1];
     const gapLarge =
-      largeEps.complementDistribution[0] -
-      largeEps.complementDistribution[1];
+      largeEps.complementDistribution[0] - largeEps.complementDistribution[1];
 
     // Both gaps should be positive (arm 0 always preferred)
     expect(gapSmall).toBeGreaterThan(0);

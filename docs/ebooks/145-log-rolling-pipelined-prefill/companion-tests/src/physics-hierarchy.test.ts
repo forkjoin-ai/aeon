@@ -70,18 +70,18 @@ describe('Physics Hierarchy (§6.11)', () => {
      * Vent: destructively interfering paths cancel (amplitude → 0)
      */
     it('sum over paths reproduces free-particle propagator', () => {
-      const xi = 0;       // start position
-      const xf = 1;       // end position
-      const T = 1;        // total time
-      const m = 1;        // mass
-      const hbar = 1;     // ℏ = 1 (natural units)
-      const nSteps = 4;   // time slices
+      const xi = 0; // start position
+      const xf = 1; // end position
+      const T = 1; // total time
+      const m = 1; // mass
+      const hbar = 1; // ℏ = 1 (natural units)
+      const nSteps = 4; // time slices
       const dt = T / nSteps;
       const nSamples = 200; // discrete paths per intermediate point
 
       // Fork: generate all discretized paths
       // For a free particle, S[path] = m/2 Σ (Δx/Δt)²Δt
-      const rng = makeRng(0xFE1A);
+      const rng = makeRng(0xfe1a);
 
       // Sample intermediate positions and compute path amplitudes
       let totalAmplitude: Complex = { re: 0, im: 0 };
@@ -154,7 +154,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       const nSamples = 500;
 
       function computeVentRatio(hbar: number): number {
-        const rng = makeRng(0xC1A55);
+        const rng = makeRng(0xc1a55);
         let amp: Complex = { re: 0, im: 0 };
         let destructive = 0;
 
@@ -180,7 +180,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       }
 
       // Compare vent ratios at different ℏ values
-      const ventLargeHbar = computeVentRatio(10);   // quantum regime
+      const ventLargeHbar = computeVentRatio(10); // quantum regime
       const ventSmallHbar = computeVentRatio(0.01); // classical regime
 
       // As ℏ→0, more paths are "vented" (destructive interference)
@@ -203,7 +203,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       // Classical (straight-line) path
       const classicalPath = Array.from(
         { length: nSteps + 1 },
-        (_, i) => xi + (xf - xi) * (i / nSteps),
+        (_, i) => xi + (xf - xi) * (i / nSteps)
       );
 
       function computeAction(path: number[]): number {
@@ -221,7 +221,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       expect(classicalAction).toBeCloseTo(0.5, 5);
 
       // Any deviation from the straight line increases action
-      const rng = makeRng(0xDE1A0);
+      const rng = makeRng(0xde1a0);
       for (let trial = 0; trial < 50; trial++) {
         const deviatedPath = classicalPath.map((x, i) => {
           if (i === 0 || i === nSteps) return x; // endpoints fixed
@@ -246,9 +246,9 @@ describe('Physics Hierarchy (§6.11)', () => {
       // Simple 1D rectangular barrier tunneling
       // T = exp(-2κL) where κ = sqrt(2m(V₀-E)) / ℏ
       const m = 1;
-      const V0 = 2;      // barrier height
-      const E = 1;        // particle energy (E < V0 → classically forbidden)
-      const L = 1;        // barrier width
+      const V0 = 2; // barrier height
+      const E = 1; // particle energy (E < V0 → classically forbidden)
+      const L = 1; // barrier width
 
       function tunnelingProbability(hbar: number): number {
         const kappa = Math.sqrt(2 * m * (V0 - E)) / hbar;
@@ -310,11 +310,11 @@ describe('Physics Hierarchy (§6.11)', () => {
       // For a harmonic potential V = ½kx², the virial theorem gives ⟨K⟩ = ⟨V⟩
       // Use exact analytical solution over complete periods
 
-      const k = 1;      // spring constant
-      const m = 1;      // mass
-      const x0 = 2;     // initial displacement
+      const k = 1; // spring constant
+      const m = 1; // mass
+      const x0 = 2; // initial displacement
       const omega = Math.sqrt(k / m); // angular frequency = 1
-      const period = 2 * Math.PI / omega;
+      const period = (2 * Math.PI) / omega;
 
       // Sample over exactly 10 complete periods for clean averaging
       const nPeriods = 10;
@@ -354,7 +354,7 @@ describe('Physics Hierarchy (§6.11)', () => {
 
       // We model this abstractly: fork N paths with potential V
       const V_fork = 100; // total potential energy committed at fork
-      const N = 8;        // paths forked
+      const N = 8; // paths forked
 
       // In virial equilibrium, energy partitions equally
       const K_per_path = V_fork / (2 * N); // kinetic per path
@@ -409,7 +409,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       }
 
       // Simulate many decay events with random energy sharing
-      const rng = makeRng(0xBE1ADECA);
+      const rng = makeRng(0xbe1adeca);
       const events: DecayProducts[] = [];
 
       for (let i = 0; i < 100; i++) {
@@ -427,8 +427,10 @@ describe('Physics Hierarchy (§6.11)', () => {
 
         // Energy conservation: total products = neutron mass
         const totalProducts =
-          protonMass + protonKinetic +
-          electronMass + electronKinetic +
+          protonMass +
+          protonKinetic +
+          electronMass +
+          electronKinetic +
           neutrinoEnergy;
         expect(totalProducts).toBeCloseTo(neutronMass, 1);
       }
@@ -441,10 +443,13 @@ describe('Physics Hierarchy (§6.11)', () => {
       // Vent rule: "propagate down, never across"
       // Neutrinos don't interact with decay products after emission
       // We model this as: neutrino energy is gone (irreversible)
-      const totalVented = events.reduce((sum, e) => sum + e.neutrino.kinetic, 0);
+      const totalVented = events.reduce(
+        (sum, e) => sum + e.neutrino.kinetic,
+        0
+      );
       const totalFolded = events.reduce(
         (sum, e) => sum + e.proton.kinetic + e.electron.kinetic,
-        0,
+        0
       );
       expect(totalVented).toBeGreaterThan(0);
       expect(totalFolded).toBeGreaterThan(0);
@@ -495,7 +500,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       // When separation energy > 2m_q, string breaks → new pair created
 
       const stringTension = 1; // GeV/fm (approximately)
-      const quarkMass = 0.3;   // GeV (light quark constituent mass)
+      const quarkMass = 0.3; // GeV (light quark constituent mass)
       const pairCreationThreshold = 2 * quarkMass;
 
       interface QuarkSystem {
@@ -504,7 +509,10 @@ describe('Physics Hierarchy (§6.11)', () => {
         potentialEnergy: number;
       }
 
-      function attemptSeparation(system: QuarkSystem, distance: number): QuarkSystem {
+      function attemptSeparation(
+        system: QuarkSystem,
+        distance: number
+      ): QuarkSystem {
         const newSep = system.separation + distance;
         const V = stringTension * newSep;
 
@@ -548,7 +556,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       // Key assertion: you can never have a single isolated quark
       // Every attempt to vent creates new pairs → confinement
       const isolatedQuarks = system.quarks.filter(
-        (q) => !system.quarks.includes(q === 'q' ? 'qbar' : 'q'),
+        (q) => !system.quarks.includes(q === 'q' ? 'qbar' : 'q')
       );
       // In a confined system, quarks always come in color-neutral groups
       expect(system.quarks.length % 2).toBe(0); // always pairs
@@ -558,7 +566,13 @@ describe('Physics Hierarchy (§6.11)', () => {
       // Color charge is always neutralized — no "dead ends" in color flow
       // This means β₂ = 0 for the strong force topology
 
-      type ColorCharge = 'red' | 'green' | 'blue' | 'antired' | 'antigreen' | 'antiblue';
+      type ColorCharge =
+        | 'red'
+        | 'green'
+        | 'blue'
+        | 'antired'
+        | 'antigreen'
+        | 'antiblue';
 
       interface Hadron {
         constituents: ColorCharge[];
@@ -566,7 +580,14 @@ describe('Physics Hierarchy (§6.11)', () => {
       }
 
       function isNeutral(charges: ColorCharge[]): boolean {
-        const counts = { red: 0, green: 0, blue: 0, antired: 0, antigreen: 0, antiblue: 0 };
+        const counts = {
+          red: 0,
+          green: 0,
+          blue: 0,
+          antired: 0,
+          antigreen: 0,
+          antiblue: 0,
+        };
         for (const c of charges) counts[c]++;
 
         // Meson: color + anticolor
@@ -632,10 +653,10 @@ describe('Physics Hierarchy (§6.11)', () => {
 
       // Fork: explore the potential landscape symmetrically
       const nPaths = 100;
-      const rng = makeRng(0xB055);
+      const rng = makeRng(0xb055);
       const forkedPositions = Array.from(
         { length: nPaths },
-        () => (rng() - 0.5) * 4, // uniform in [-2, 2]
+        () => (rng() - 0.5) * 4 // uniform in [-2, 2]
       );
 
       // Race: each position has a potential energy
@@ -647,7 +668,7 @@ describe('Physics Hierarchy (§6.11)', () => {
 
       // Fold: system selects ONE minimum (symmetry breaks)
       const winners = forkedPositions.filter(
-        (phi) => Math.abs(potential(phi) - minEnergy) < 0.1,
+        (phi) => Math.abs(potential(phi) - minEnergy) < 0.1
       );
       expect(winners.length).toBeGreaterThan(0);
 
@@ -667,7 +688,9 @@ describe('Physics Hierarchy (§6.11)', () => {
       // In a real system, fluctuations would break the tie
       // We simulate this by picking the first minimum found
       const chosenDirection = Math.sign(winners[0]);
-      const foldedPaths = winners.filter((w) => Math.sign(w) === chosenDirection);
+      const foldedPaths = winners.filter(
+        (w) => Math.sign(w) === chosenDirection
+      );
       expect(foldedPaths.length).toBeGreaterThan(0);
     });
 
@@ -709,12 +732,12 @@ describe('Physics Hierarchy (§6.11)', () => {
       const xf = 0.5;
 
       // Exact Schrödinger propagator for free particle
-      const exactPhase = m * (xf - xi) * (xf - xi) / (2 * hbar * T);
+      const exactPhase = (m * (xf - xi) * (xf - xi)) / (2 * hbar * T);
       const exactPropagator = cExp(exactPhase);
 
       // Monte Carlo path integral at increasing sample counts
       function pathIntegralMC(nSamples: number, nSteps: number): Complex {
-        const rng = makeRng(0x5C0DE + nSamples);
+        const rng = makeRng(0x5c0de + nSamples);
         const dt = T / nSteps;
         let amp: Complex = { re: 0, im: 0 };
 
@@ -723,7 +746,7 @@ describe('Physics Hierarchy (§6.11)', () => {
           for (let step = 1; step < nSteps; step++) {
             // Sample around classical path with thermal fluctuations
             const classicalX = xi + (xf - xi) * (step / nSteps);
-            path.push(classicalX + (rng() - 0.5) * Math.sqrt(hbar * dt / m));
+            path.push(classicalX + (rng() - 0.5) * Math.sqrt((hbar * dt) / m));
           }
           path.push(xf);
 
@@ -800,7 +823,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       const nPaths = 200;
 
       function effectiveBeta1(hbar: number): number {
-        const rng = makeRng(0xBE111 + Math.floor(hbar * 1000));
+        const rng = makeRng(0xbe111 + Math.floor(hbar * 1000));
         const actions: number[] = [];
 
         for (let s = 0; s < nPaths; s++) {
@@ -821,14 +844,14 @@ describe('Physics Hierarchy (§6.11)', () => {
         // A path "contributes" if its action is within ℏ of the minimum
         const minAction = Math.min(...actions);
         const contributing = actions.filter(
-          (a) => Math.abs(a - minAction) < hbar,
+          (a) => Math.abs(a - minAction) < hbar
         ).length;
 
         return contributing - 1; // β₁ = contributing paths - 1
       }
 
-      const beta1_small = effectiveBeta1(0.01);  // classical: few paths
-      const beta1_large = effectiveBeta1(10);     // quantum: many paths
+      const beta1_small = effectiveBeta1(0.01); // classical: few paths
+      const beta1_large = effectiveBeta1(10); // quantum: many paths
 
       expect(beta1_large).toBeGreaterThan(beta1_small);
     });
@@ -863,17 +886,14 @@ describe('Physics Hierarchy (§6.11)', () => {
       // Time-evolve: each eigenstate picks up phase exp(-iEₙt/ℏ)
       function evolve(t: number): Complex[] {
         return coefficients.map(({ n, c }) => {
-          const phase = cExp(-eigenEnergy(n) * t / hbar);
+          const phase = cExp((-eigenEnergy(n) * t) / hbar);
           return cMul(c, phase);
         });
       }
 
       // At t=0: all phases aligned (constructive)
       const amp0 = evolve(0);
-      const totalMag0 = amp0.reduce(
-        (sum, a) => sum + cMag2(a),
-        0,
-      );
+      const totalMag0 = amp0.reduce((sum, a) => sum + cMag2(a), 0);
       expect(totalMag0).toBeCloseTo(1, 10); // normalized
 
       // At some later time: phases differ (race in progress)
@@ -886,10 +906,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       expect(phases1[1]).not.toBeCloseTo(phases1[2], 2);
 
       // Total probability is conserved (unitarity = energy conservation in race)
-      const totalMag1 = amp1.reduce(
-        (sum, a) => sum + cMag2(a),
-        0,
-      );
+      const totalMag1 = amp1.reduce((sum, a) => sum + cMag2(a), 0);
       expect(totalMag1).toBeCloseTo(1, 10);
 
       // The race is ongoing — no fold has occurred
@@ -907,7 +924,9 @@ describe('Physics Hierarchy (§6.11)', () => {
       // Allowed energies
       const allowedEnergies = Array.from(
         { length: 10 },
-        (_, i) => ((i + 1) * (i + 1) * Math.PI * Math.PI * hbar * hbar) / (2 * m * L * L),
+        (_, i) =>
+          ((i + 1) * (i + 1) * Math.PI * Math.PI * hbar * hbar) /
+          (2 * m * L * L)
       );
 
       // Energy gaps are nonzero (discrete spectrum)
@@ -918,7 +937,7 @@ describe('Physics Hierarchy (§6.11)', () => {
       // An arbitrary energy is NOT allowed
       const arbitraryE = 5.0;
       const isAllowed = allowedEnergies.some(
-        (E) => Math.abs(E - arbitraryE) < 0.01,
+        (E) => Math.abs(E - arbitraryE) < 0.01
       );
       expect(isAllowed).toBe(false);
 

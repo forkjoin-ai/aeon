@@ -52,7 +52,7 @@ function makeRng(seed: number): () => number {
 function simulateForkRaceFold(
   forkWidth: number,
   steps: number,
-  rng: () => number,
+  rng: () => number
 ): VoidBoundary {
   const boundary: VoidBoundary = {
     steps: [],
@@ -74,7 +74,7 @@ function simulateForkRaceFold(
 /** Compute complement weights from vent counts. */
 function computeComplementWeights(
   ventCounts: number[],
-  rounds: number,
+  rounds: number
 ): number[] {
   return ventCounts.map((v) => rounds - v + 1);
 }
@@ -166,7 +166,7 @@ describe('THM-VOID-DOMINANCE: Void Volume Dominates Active Computation', () => {
       const activePaths = N;
       const ratio = voidVolume / activePaths;
       // Ratio = T * (N-1) / N, which grows linearly with T
-      expect(ratio).toBeGreaterThanOrEqual(T * (N - 1) / N - 0.01);
+      expect(ratio).toBeGreaterThanOrEqual((T * (N - 1)) / N - 0.01);
       expect(ratio).toBeGreaterThan(T / 2); // always > T/2 for N >= 2
     }
   });
@@ -231,7 +231,8 @@ describe('THM-VOID-MEMORY-EFFICIENCY: Boundary Encoding Is Exponentially Compact
       const ratio = fullBits / boundaryBits;
 
       // Ratio should be Omega(N * payload / log N)
-      const expectedMinRatio = ((N - 1) * payloadBits) / Math.ceil(Math.log2(N));
+      const expectedMinRatio =
+        ((N - 1) * payloadBits) / Math.ceil(Math.log2(N));
       expect(ratio).toBeGreaterThanOrEqual(expectedMinRatio * 0.99);
       expect(ratio).toBeGreaterThan(1);
     }
@@ -389,14 +390,18 @@ describe('THM-VOID-COHERENCE: Independent Void Walkers Converge', () => {
 
     // Walker A: adds Gaussian-like noise (bounded)
     const noisyCountsA = trueVentCounts.map((v) =>
-      Math.max(0, v + Math.floor((rng1() - 0.5) * Math.sqrt(rounds))),
+      Math.max(0, v + Math.floor((rng1() - 0.5) * Math.sqrt(rounds)))
     );
     const noisyCountsB = trueVentCounts.map((v) =>
-      Math.max(0, v + Math.floor((rng2() - 0.5) * Math.sqrt(rounds))),
+      Math.max(0, v + Math.floor((rng2() - 0.5) * Math.sqrt(rounds)))
     );
 
-    const distA = normalizeWeights(computeComplementWeights(noisyCountsA, rounds));
-    const distB = normalizeWeights(computeComplementWeights(noisyCountsB, rounds));
+    const distA = normalizeWeights(
+      computeComplementWeights(noisyCountsA, rounds)
+    );
+    const distB = normalizeWeights(
+      computeComplementWeights(noisyCountsB, rounds)
+    );
 
     // L1 distance should be O(1/sqrt(T))
     let l1 = 0;
@@ -429,7 +434,7 @@ describe('THM-VOID-COHERENCE: Independent Void Walkers Converge', () => {
     // Both walkers compute the same vent counts
     function ventCountsFromBoundary(
       log: Array<{ step: number; winnerId: number }>,
-      numChoices: number,
+      numChoices: number
     ): number[] {
       const counts = new Array(numChoices).fill(0);
       for (const entry of log) {
@@ -445,8 +450,12 @@ describe('THM-VOID-COHERENCE: Independent Void Walkers Converge', () => {
     expect(ventsA).toEqual(ventsB);
 
     // Same vent counts -> same complement weights -> same distribution
-    const distA = normalizeWeights(computeComplementWeights(ventsA, boundary.length));
-    const distB = normalizeWeights(computeComplementWeights(ventsB, boundary.length));
+    const distA = normalizeWeights(
+      computeComplementWeights(ventsA, boundary.length)
+    );
+    const distB = normalizeWeights(
+      computeComplementWeights(ventsB, boundary.length)
+    );
     expect(distA).toEqual(distB);
   });
 });

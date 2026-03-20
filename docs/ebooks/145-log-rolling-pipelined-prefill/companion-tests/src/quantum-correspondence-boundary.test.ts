@@ -22,23 +22,45 @@ function cMag2(value: Complex): number {
   return value.re * value.re + value.im * value.im;
 }
 
-function cApproxEqual(actual: Complex, expected: Complex, tolerance = 1e-10): void {
-  expect(actual.re).toBeCloseTo(expected.re, Math.floor(-Math.log10(tolerance)));
-  expect(actual.im).toBeCloseTo(expected.im, Math.floor(-Math.log10(tolerance)));
+function cApproxEqual(
+  actual: Complex,
+  expected: Complex,
+  tolerance = 1e-10
+): void {
+  expect(actual.re).toBeCloseTo(
+    expected.re,
+    Math.floor(-Math.log10(tolerance))
+  );
+  expect(actual.im).toBeCloseTo(
+    expected.im,
+    Math.floor(-Math.log10(tolerance))
+  );
 }
 
-type Kernel2 = readonly [readonly [Complex, Complex], readonly [Complex, Complex]];
+type Kernel2 = readonly [
+  readonly [Complex, Complex],
+  readonly [Complex, Complex]
+];
 
-function kernelStep(kernel: Kernel2, state: readonly [Complex, Complex]): [Complex, Complex] {
-  const next0 = cAdd(cMul(kernel[0][0], state[0]), cMul(kernel[0][1], state[1]));
-  const next1 = cAdd(cMul(kernel[1][0], state[0]), cMul(kernel[1][1], state[1]));
+function kernelStep(
+  kernel: Kernel2,
+  state: readonly [Complex, Complex]
+): [Complex, Complex] {
+  const next0 = cAdd(
+    cMul(kernel[0][0], state[0]),
+    cMul(kernel[0][1], state[1])
+  );
+  const next1 = cAdd(
+    cMul(kernel[1][0], state[0]),
+    cMul(kernel[1][1], state[1])
+  );
   return [next0, next1];
 }
 
 function kernelPowerApply(
   kernel: Kernel2,
   startState: readonly [Complex, Complex],
-  steps: number,
+  steps: number
 ): [Complex, Complex] {
   let state: [Complex, Complex] = [startState[0], startState[1]];
   for (let i = 0; i < steps; i++) {
@@ -51,11 +73,15 @@ function enumeratePathSum(
   kernel: Kernel2,
   startNode: 0 | 1,
   endNode: 0 | 1,
-  steps: number,
+  steps: number
 ): Complex {
   const startAmplitude: Complex = { re: 1, im: 0 };
 
-  function recurse(currentNode: 0 | 1, remaining: number, amplitude: Complex): Complex {
+  function recurse(
+    currentNode: 0 | 1,
+    remaining: number,
+    amplitude: Complex
+  ): Complex {
     if (remaining === 0) {
       return currentNode === endNode ? amplitude : { re: 0, im: 0 };
     }
@@ -63,12 +89,12 @@ function enumeratePathSum(
     const through0 = recurse(
       0,
       remaining - 1,
-      cMul(kernel[0][currentNode], amplitude),
+      cMul(kernel[0][currentNode], amplitude)
     );
     const through1 = recurse(
       1,
       remaining - 1,
-      cMul(kernel[1][currentNode], amplitude),
+      cMul(kernel[1][currentNode], amplitude)
     );
     return cAdd(through0, through1);
   }
@@ -77,7 +103,10 @@ function enumeratePathSum(
 }
 
 function linearFold(amplitudes: readonly Complex[]): Complex {
-  return amplitudes.reduce<Complex>((acc, next) => cAdd(acc, next), { re: 0, im: 0 });
+  return amplitudes.reduce<Complex>((acc, next) => cAdd(acc, next), {
+    re: 0,
+    im: 0,
+  });
 }
 
 function winnerTakeAllFold(amplitudes: readonly Complex[]): Complex {
@@ -131,11 +160,20 @@ describe('Quantum correspondence boundary (§6.12)', () => {
   it('discrete path sums are exactly recovered by linear fold in the finite kernel model', () => {
     const invSqrt2 = 1 / Math.sqrt(2);
     const kernel: Kernel2 = [
-      [{ re: invSqrt2, im: 0 }, { re: invSqrt2, im: 0 }],
-      [{ re: invSqrt2, im: 0 }, { re: -invSqrt2, im: 0 }],
+      [
+        { re: invSqrt2, im: 0 },
+        { re: invSqrt2, im: 0 },
+      ],
+      [
+        { re: invSqrt2, im: 0 },
+        { re: -invSqrt2, im: 0 },
+      ],
     ];
 
-    const startState: [Complex, Complex] = [{ re: 1, im: 0 }, { re: 0, im: 0 }];
+    const startState: [Complex, Complex] = [
+      { re: 1, im: 0 },
+      { re: 0, im: 0 },
+    ];
     const steps = 3;
     const byKernel = kernelPowerApply(kernel, startState, steps);
 
@@ -147,23 +185,29 @@ describe('Quantum correspondence boundary (§6.12)', () => {
   });
 
   it('linear fold is additive across path partitions; winner-take-all fold is not', () => {
-    const partitionA: readonly Complex[] = [{ re: 1, im: 0 }, { re: -1, im: 0 }];
+    const partitionA: readonly Complex[] = [
+      { re: 1, im: 0 },
+      { re: -1, im: 0 },
+    ];
     const partitionB: readonly Complex[] = [{ re: 0, im: 1 }];
     const all = [...partitionA, ...partitionB];
 
     const linearAll = linearFold(all);
-    const linearPartitioned = cAdd(linearFold(partitionA), linearFold(partitionB));
+    const linearPartitioned = cAdd(
+      linearFold(partitionA),
+      linearFold(partitionB)
+    );
     cApproxEqual(linearAll, linearPartitioned);
 
     const nonlinearAll = winnerTakeAllFold(all);
     const nonlinearPartitioned = cAdd(
       winnerTakeAllFold(partitionA),
-      winnerTakeAllFold(partitionB),
+      winnerTakeAllFold(partitionB)
     );
 
     const nonlinearDistance = Math.hypot(
       nonlinearAll.re - nonlinearPartitioned.re,
-      nonlinearAll.im - nonlinearPartitioned.im,
+      nonlinearAll.im - nonlinearPartitioned.im
     );
     expect(nonlinearDistance).toBeGreaterThan(0.5);
   });
@@ -179,13 +223,19 @@ describe('Quantum correspondence boundary (§6.12)', () => {
     expect(cMag2(quantumLikeFullFold)).toBeCloseTo(0, 12);
 
     const [earlyStopRaceResult] = amplitudes;
-    expect(earlyStopRaceResult.re).toBe(witnessObserved('early-stop-cancellation-counterexample'));
+    expect(earlyStopRaceResult.re).toBe(
+      witnessObserved('early-stop-cancellation-counterexample')
+    );
     expect(cMag2(earlyStopRaceResult)).toBeCloseTo(1, 12);
-    expect(cMag2(earlyStopRaceResult)).toBeGreaterThan(cMag2(quantumLikeFullFold));
+    expect(cMag2(earlyStopRaceResult)).toBeGreaterThan(
+      cMag2(quantumLikeFullFold)
+    );
   });
 
   it('linear fold is permutation invariant on the cancellation witness; early-stop race is not', () => {
-    const [firstInput, secondInput] = witnessInputs('early-stop-order-counterexample');
+    const [firstInput, secondInput] = witnessInputs(
+      'early-stop-order-counterexample'
+    );
     const forward: readonly Complex[] = [
       { re: firstInput ?? 0, im: 0 },
       { re: secondInput ?? 0, im: 0 },
@@ -204,14 +254,22 @@ describe('Quantum correspondence boundary (§6.12)', () => {
     const [forwardEarlyStop] = forward;
     const [reversedEarlyStop] = reversed;
 
-    expect(forwardEarlyStop.re).toBe(witnessObserved('early-stop-order-counterexample'));
-    expect(reversedEarlyStop.re).toBe(witnessAlternate('early-stop-order-counterexample'));
+    expect(forwardEarlyStop.re).toBe(
+      witnessObserved('early-stop-order-counterexample')
+    );
+    expect(reversedEarlyStop.re).toBe(
+      witnessAlternate('early-stop-order-counterexample')
+    );
     expect(forwardEarlyStop).not.toEqual(reversedEarlyStop);
   });
 
   it('formal witness export supplies the integer partition and order counterexamples used by runtime checks', () => {
-    const winnerPartitionInputs = witnessInputs('winner-partition-counterexample');
-    const earlyPartitionInputs = witnessInputs('early-stop-partition-counterexample');
+    const winnerPartitionInputs = witnessInputs(
+      'winner-partition-counterexample'
+    );
+    const earlyPartitionInputs = witnessInputs(
+      'early-stop-partition-counterexample'
+    );
 
     expect(winnerPartitionInputs).toEqual([2, 1, -2]);
     expect(witnessObserved('winner-partition-counterexample')).toBe(2);

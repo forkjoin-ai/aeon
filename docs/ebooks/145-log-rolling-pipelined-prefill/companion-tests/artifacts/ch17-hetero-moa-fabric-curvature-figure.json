@@ -25,37 +25,25 @@
       "kind": "cpu",
       "label": "CPU control helix",
       "laneCount": 2,
-      "bindings": [
-        "native threads",
-        "command CUDA fallback"
-      ]
+      "bindings": ["native threads", "command CUDA fallback"]
     },
     {
       "kind": "gpu",
       "label": "GPU wave helix",
       "laneCount": 1,
-      "bindings": [
-        "WebGPU",
-        "CUDA-style runner"
-      ]
+      "bindings": ["WebGPU", "CUDA-style runner"]
     },
     {
       "kind": "npu",
       "label": "NPU route helix",
       "laneCount": 1,
-      "bindings": [
-        "WebNN",
-        "vendor NPU runner"
-      ]
+      "bindings": ["WebNN", "vendor NPU runner"]
     },
     {
       "kind": "wasm",
       "label": "WASM browser helix",
       "laneCount": 1,
-      "bindings": [
-        "WASM",
-        "browser worker"
-      ]
+      "bindings": ["WASM", "browser worker"]
     }
   ],
   "curvatureView": {

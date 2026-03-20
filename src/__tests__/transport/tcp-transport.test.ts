@@ -40,7 +40,8 @@ function createMockSocket(): {
       return true;
     },
     on: (event: string, handler: (...args: unknown[]) => void) => {
-      if (event === 'data') handlers.data = handler as (d: Buffer | Uint8Array) => void;
+      if (event === 'data')
+        handlers.data = handler as (d: Buffer | Uint8Array) => void;
       if (event === 'close') handlers.close = handler as () => void;
       if (event === 'error') handlers.error = handler as (e: Error) => void;
     },
@@ -126,9 +127,9 @@ describe('TCP FlowTransport', () => {
       const frame = makeLengthPrefixed(payload);
 
       // Split into 3 chunks at arbitrary boundaries
-      handlers.data?.(frame.subarray(0, 3));   // Partial length prefix
-      handlers.data?.(frame.subarray(3, 10));  // Rest of prefix + some payload
-      handlers.data?.(frame.subarray(10));     // Rest of payload
+      handlers.data?.(frame.subarray(0, 3)); // Partial length prefix
+      handlers.data?.(frame.subarray(3, 10)); // Rest of prefix + some payload
+      handlers.data?.(frame.subarray(10)); // Rest of payload
 
       expect(received).toEqual(['fragmented message']);
       transport.close();
@@ -148,7 +149,9 @@ describe('TCP FlowTransport', () => {
       const msg3 = makeLengthPrefixed(new TextEncoder().encode('third'));
 
       // All three arrive in one chunk
-      const combined = new Uint8Array(msg1.byteLength + msg2.byteLength + msg3.byteLength);
+      const combined = new Uint8Array(
+        msg1.byteLength + msg2.byteLength + msg3.byteLength
+      );
       combined.set(msg1, 0);
       combined.set(msg2, msg1.byteLength);
       combined.set(msg3, msg1.byteLength + msg2.byteLength);
@@ -185,7 +188,9 @@ describe('TCP FlowTransport', () => {
         received.push(data);
       });
 
-      const binary = new Uint8Array([0x00, 0xFF, 0xAE, 0x0F, 0x10, 0x80, 0xDE, 0xAD]);
+      const binary = new Uint8Array([
+        0x00, 0xff, 0xae, 0x0f, 0x10, 0x80, 0xde, 0xad,
+      ]);
       handlers.data?.(makeLengthPrefixed(binary));
 
       expect(received.length).toBe(1);

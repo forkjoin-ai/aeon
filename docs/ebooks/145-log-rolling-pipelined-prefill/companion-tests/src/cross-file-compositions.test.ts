@@ -11,20 +11,48 @@
 import { describe, expect, it } from 'bun:test';
 
 // Buleyean Engine
-interface BuleyeanSpace { numChoices: number; rounds: number; voidBoundary: number[]; }
-function createSpace(n: number): BuleyeanSpace { return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) }; }
-function weight(s: BuleyeanSpace, i: number): number { return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1; }
-function reject(s: BuleyeanSpace, r: number): BuleyeanSpace { const b = [...s.voidBoundary]; b[r]! += 1; return { numChoices: s.numChoices, rounds: s.rounds + 1, voidBoundary: b }; }
+interface BuleyeanSpace {
+  numChoices: number;
+  rounds: number;
+  voidBoundary: number[];
+}
+function createSpace(n: number): BuleyeanSpace {
+  return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) };
+}
+function weight(s: BuleyeanSpace, i: number): number {
+  return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1;
+}
+function reject(s: BuleyeanSpace, r: number): BuleyeanSpace {
+  const b = [...s.voidBoundary];
+  b[r]! += 1;
+  return { numChoices: s.numChoices, rounds: s.rounds + 1, voidBoundary: b };
+}
 
 // Helpers
-function collapseGap(n: number): number { return n - 1; }
-function negotiationDeficit(totalDims: number): number { return totalDims - 1; }
-function residualDebt(wake: number, carried: number, quota: number): number { return Math.max(0, wake + carried - quota); }
-function repairedFrontier(f: number, v: number, r: number): number { return f - v + r; }
-function entropyProxy(f: number): number { return f - 1; }
-function keepCoeff(a: number, b: number): number { return a + b; }
-function ventCoeff(v: number): number { return v; }
-function repairCoeff(b: number, r: number): number { return b + r; }
+function collapseGap(n: number): number {
+  return n - 1;
+}
+function negotiationDeficit(totalDims: number): number {
+  return totalDims - 1;
+}
+function residualDebt(wake: number, carried: number, quota: number): number {
+  return Math.max(0, wake + carried - quota);
+}
+function repairedFrontier(f: number, v: number, r: number): number {
+  return f - v + r;
+}
+function entropyProxy(f: number): number {
+  return f - 1;
+}
+function keepCoeff(a: number, b: number): number {
+  return a + b;
+}
+function ventCoeff(v: number): number {
+  return v;
+}
+function repairCoeff(b: number, r: number): number {
+  return b + r;
+}
 
 describe('Theorem 222: Quantum-Cancer Topological Isomorphism', () => {
   it('both systems have post-collapse β₁ = 0', () => {
@@ -56,7 +84,10 @@ describe('Theorem 222: Quantum-Cancer Topological Isomorphism', () => {
 
 describe('Theorem 223: Failure Controller as Negotiation', () => {
   it('minimum cost action wins (keep when cheapest)', () => {
-    const a = 1, b = 1, v = 5, r = 4;
+    const a = 1,
+      b = 1,
+      v = 5,
+      r = 4;
     const keep = keepCoeff(a, b); // 2
     const vent = ventCoeff(v); // 5
     const repair = repairCoeff(b, r); // 5
@@ -66,7 +97,10 @@ describe('Theorem 223: Failure Controller as Negotiation', () => {
   });
 
   it('vent wins when cheapest', () => {
-    const a = 3, b = 3, v = 2, r = 4;
+    const a = 3,
+      b = 3,
+      v = 2,
+      r = 4;
     const keep = keepCoeff(a, b); // 6
     const vent = ventCoeff(v); // 2
     const repair = repairCoeff(b, r); // 7
@@ -75,7 +109,10 @@ describe('Theorem 223: Failure Controller as Negotiation', () => {
   });
 
   it('zero deficit: all actions equivalent', () => {
-    const a = 1, b = 1, v = 2, r = 1;
+    const a = 1,
+      b = 1,
+      v = 2,
+      r = 1;
     const keep = keepCoeff(a, b); // 2
     const vent = ventCoeff(v); // 2
     const repair = repairCoeff(b, r); // 2
@@ -86,12 +123,17 @@ describe('Theorem 223: Failure Controller as Negotiation', () => {
 
 describe('Theorem 224: Over-Repair Dual Cost', () => {
   it('over-repair increases BOTH entropy AND debt', () => {
-    const frontier = 10, vented = 3, repaired = 6;
-    const wake = 8, quota = 5;
+    const frontier = 10,
+      vented = 3,
+      repaired = 6;
+    const wake = 8,
+      quota = 5;
 
     // Entropy increases
     const oldEntropy = entropyProxy(frontier);
-    const newEntropy = entropyProxy(repairedFrontier(frontier, vented, repaired));
+    const newEntropy = entropyProxy(
+      repairedFrontier(frontier, vented, repaired)
+    );
     expect(newEntropy).toBeGreaterThan(oldEntropy);
 
     // Debt is positive
@@ -100,7 +142,9 @@ describe('Theorem 224: Over-Repair Dual Cost', () => {
   });
 
   it('the over-engineering margin appears in both measures', () => {
-    const frontier = 8, vented = 2, repaired = 5;
+    const frontier = 8,
+      vented = 2,
+      repaired = 5;
     const margin = repaired - vented; // 3
 
     const newFrontier = repairedFrontier(frontier, vented, repaired);
@@ -170,7 +214,9 @@ describe('Cross-File Master', () => {
     expect(keepCoeff(1, 1)).toBeLessThanOrEqual(ventCoeff(5));
 
     // 224: dual cost
-    expect(entropyProxy(repairedFrontier(10, 3, 6))).toBeGreaterThan(entropyProxy(10));
+    expect(entropyProxy(repairedFrontier(10, 3, 6))).toBeGreaterThan(
+      entropyProxy(10)
+    );
 
     // 225: collapse = negotiation
     expect(collapseGap(10)).toBe(negotiationDeficit(10));

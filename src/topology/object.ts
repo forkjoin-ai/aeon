@@ -1,8 +1,4 @@
-export type AeonObjectProjectionKind =
-  | 'document'
-  | 'app'
-  | 'agent'
-  | 'stream';
+export type AeonObjectProjectionKind = 'document' | 'app' | 'agent' | 'stream';
 
 export type AeonAppProjectionKind = 'panel' | 'window';
 

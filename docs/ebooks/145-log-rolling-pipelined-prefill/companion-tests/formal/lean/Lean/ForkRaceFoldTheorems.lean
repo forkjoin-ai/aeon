@@ -86,3 +86,5 @@ import ForkRaceFoldTheorems.QuantumCancerTriples
 import ForkRaceFoldTheorems.SemioticTriples
 import ForkRaceFoldTheorems.TripleCompositions
 import ForkRaceFoldTheorems.GrandUnification
+import ForkRaceFoldTheorems.PredictionsRound15
+import ForkRaceFoldTheorems.PredictionsRound16

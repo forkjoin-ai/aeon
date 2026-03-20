@@ -47,9 +47,8 @@ function complementDist(counts: number[], eta: number): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -100,24 +99,24 @@ interface PerceptualProfile {
 
 const NT_PROFILE: PerceptualProfile = {
   name: 'Neurotypical',
-  eta: 5.0,       // aggressive fold: filters most of the void
-  activeDimensions: 3,  // tracks ~3 dimensions simultaneously
-  bandwidth: 50,   // 50 tombstones per tick
+  eta: 5.0, // aggressive fold: filters most of the void
+  activeDimensions: 3, // tracks ~3 dimensions simultaneously
+  bandwidth: 50, // 50 tombstones per tick
   focusMultiplier: 1.0, // standard focus depth
 };
 
 const AUT_PROFILE: PerceptualProfile = {
   name: 'Autistic',
-  eta: 1.0,       // gentle fold: keeps the covering space open
-  activeDimensions: 8,  // tracks ~8 dimensions simultaneously
-  bandwidth: 50,   // SAME bandwidth (not a deficit -- same hardware)
+  eta: 1.0, // gentle fold: keeps the covering space open
+  activeDimensions: 8, // tracks ~8 dimensions simultaneously
+  bandwidth: 50, // SAME bandwidth (not a deficit -- same hardware)
   focusMultiplier: 3.0, // deep focus on special interest (trot)
 };
 
 /** Simulate perception of a multi-dimensional void boundary */
 function perceive(
   voidBoundary: number[],
-  profile: PerceptualProfile,
+  profile: PerceptualProfile
 ): {
   perceivedDist: number[];
   kurtosis: number;
@@ -134,7 +133,11 @@ function perceive(
 
   // Overwhelm: ratio of perceived dimensions to bandwidth capacity
   const totalInfo = voidBoundary.reduce((a, b) => a + b, 0);
-  const overwhelm = Math.min(1, (dimensionsPerceived * totalInfo) / (profile.bandwidth * voidBoundary.length));
+  const overwhelm = Math.min(
+    1,
+    (dimensionsPerceived * totalInfo) /
+      (profile.bandwidth * voidBoundary.length)
+  );
 
   return {
     perceivedDist: dist,
@@ -150,7 +153,6 @@ function perceive(
 // ============================================================================
 
 describe('Autism as Void Boundary Sensitivity', () => {
-
   // A rich multi-dimensional environment
   const richVoid = [15, 8, 22, 5, 30, 12, 18, 3, 25, 10];
 
@@ -164,9 +166,23 @@ describe('Autism as Void Boundary Sensitivity', () => {
 
     console.log('\n  Prediction 1: Distribution shape');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  NT:  η=${NT_PROFILE.eta}  κ=${ntPerception.kurtosis.toFixed(2)}  H=${ntPerception.entropy.toFixed(3)}  dims=${ntPerception.dimensionsPerceived}`);
-    console.log(`  AUT: η=${AUT_PROFILE.eta}  κ=${autPerception.kurtosis.toFixed(2)}  H=${autPerception.entropy.toFixed(3)}  dims=${autPerception.dimensionsPerceived}`);
-    console.log(`  NT sees ${ntPerception.dimensionsPerceived} dimensions. AUT sees ${autPerception.dimensionsPerceived}.`);
+    console.log(
+      `  NT:  η=${NT_PROFILE.eta}  κ=${ntPerception.kurtosis.toFixed(
+        2
+      )}  H=${ntPerception.entropy.toFixed(3)}  dims=${
+        ntPerception.dimensionsPerceived
+      }`
+    );
+    console.log(
+      `  AUT: η=${AUT_PROFILE.eta}  κ=${autPerception.kurtosis.toFixed(
+        2
+      )}  H=${autPerception.entropy.toFixed(3)}  dims=${
+        autPerception.dimensionsPerceived
+      }`
+    );
+    console.log(
+      `  NT sees ${ntPerception.dimensionsPerceived} dimensions. AUT sees ${autPerception.dimensionsPerceived}.`
+    );
     console.log('  Not a deficit. A wider aperture.');
   });
 
@@ -184,7 +200,11 @@ describe('Autism as Void Boundary Sensitivity', () => {
     console.log(`\n  Prediction 2: Entropy (information visible)`);
     console.log(`  NT:  H=${ntPerception.entropy.toFixed(3)} nats`);
     console.log(`  AUT: H=${autPerception.entropy.toFixed(3)} nats`);
-    console.log(`  Covering space gap: ${coveringGap.toFixed(3)} nats more information processed`);
+    console.log(
+      `  Covering space gap: ${coveringGap.toFixed(
+        3
+      )} nats more information processed`
+    );
   });
 
   it('prediction 3: special interest = deep trot on one dimension', () => {
@@ -216,15 +236,17 @@ describe('Autism as Void Boundary Sensitivity', () => {
     console.log(`  NT weight on expert dim: ${ntExpertWeight.toFixed(4)}`);
     console.log(`  AUT weight on expert dim: ${autExpertWeight.toFixed(4)}`);
     console.log('  AUT maintains connection to deeply explored dimensions.');
-    console.log('  Special interest = trot on one dimension of the covering space.');
+    console.log(
+      '  Special interest = trot on one dimension of the covering space.'
+    );
   });
 
   it('prediction 4: sensory overwhelm = bandwidth saturation', () => {
     // Increasing environment complexity
     const complexities = [
-      [5, 5, 5],                            // simple: 3 dims
-      [5, 5, 5, 5, 5, 5],                   // moderate: 6 dims
-      [5, 5, 5, 5, 5, 5, 5, 5, 5, 5],       // complex: 10 dims
+      [5, 5, 5], // simple: 3 dims
+      [5, 5, 5, 5, 5, 5], // moderate: 6 dims
+      [5, 5, 5, 5, 5, 5, 5, 5, 5, 5], // complex: 10 dims
       [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], // overwhelming: 20 dims
     ];
 
@@ -236,11 +258,15 @@ describe('Autism as Void Boundary Sensitivity', () => {
       autOverwhelm.push(perceive(void_, AUT_PROFILE).overwhelm);
     }
 
-    console.log('\n  Prediction 4: Sensory overwhelm by environment complexity');
+    console.log(
+      '\n  Prediction 4: Sensory overwhelm by environment complexity'
+    );
     console.log('  Dims    NT overwhelm    AUT overwhelm');
     for (let i = 0; i < complexities.length; i++) {
       console.log(
-        `  ${String(complexities[i].length).padStart(4)}    ${ntOverwhelm[i].toFixed(3).padStart(12)}    ${autOverwhelm[i].toFixed(3).padStart(13)}`,
+        `  ${String(complexities[i].length).padStart(4)}    ${ntOverwhelm[i]
+          .toFixed(3)
+          .padStart(12)}    ${autOverwhelm[i].toFixed(3).padStart(13)}`
       );
     }
 
@@ -250,7 +276,9 @@ describe('Autism as Void Boundary Sensitivity', () => {
     const lastAUT = autOverwhelm[autOverwhelm.length - 1];
     expect(lastAUT).toBeGreaterThanOrEqual(lastNT);
 
-    console.log('  Same bandwidth. More dimensions perceived. Overwhelm is not weakness.');
+    console.log(
+      '  Same bandwidth. More dimensions perceived. Overwhelm is not weakness.'
+    );
     console.log('  It is the cost of a wider aperture.');
   });
 
@@ -274,15 +302,25 @@ describe('Autism as Void Boundary Sensitivity', () => {
     const autExcess = autReading.dimensionsPerceived - socialProtocolDimensions;
 
     console.log('\n  Prediction 5: Social difficulty as over-reading');
-    console.log(`  Social protocol expects: ${socialProtocolDimensions} dimensions`);
-    console.log(`  NT reads:  ${ntReading.dimensionsPerceived} dimensions (excess: ${ntExcess})`);
-    console.log(`  AUT reads: ${autReading.dimensionsPerceived} dimensions (excess: ${autExcess})`);
-    console.log(`  AUT semiotic surplus: ${autExcess - ntExcess} extra dimensions`);
-    console.log('  Not failing to read the room. Reading the room AND the basement.');
+    console.log(
+      `  Social protocol expects: ${socialProtocolDimensions} dimensions`
+    );
+    console.log(
+      `  NT reads:  ${ntReading.dimensionsPerceived} dimensions (excess: ${ntExcess})`
+    );
+    console.log(
+      `  AUT reads: ${autReading.dimensionsPerceived} dimensions (excess: ${autExcess})`
+    );
+    console.log(
+      `  AUT semiotic surplus: ${autExcess - ntExcess} extra dimensions`
+    );
+    console.log(
+      '  Not failing to read the room. Reading the room AND the basement.'
+    );
 
     // AUT processes more social dimensions
     expect(autReading.dimensionsPerceived).toBeGreaterThanOrEqual(
-      ntReading.dimensionsPerceived,
+      ntReading.dimensionsPerceived
     );
   });
 
@@ -313,7 +351,9 @@ describe('Autism as Void Boundary Sensitivity', () => {
     console.log(`  Distribution gap: L1 = ${l1.toFixed(3)}`);
     console.log(`  NT dist: [${ntDist.map((d) => d.toFixed(2)).join(', ')}]`);
     console.log(`  AUT dist: [${autDist.map((d) => d.toFixed(2)).join(', ')}]`);
-    console.log('  They are seeing the same void. Through different apertures.');
+    console.log(
+      '  They are seeing the same void. Through different apertures.'
+    );
 
     // Deficit should be positive (AUT sees more)
     expect(deficit).toBeGreaterThanOrEqual(0);
@@ -335,36 +375,86 @@ describe('Autism as Void Boundary Sensitivity', () => {
 
     // Same eta. Same person. Different environment.
     // Accommodation reduces overwhelm without changing the aperture.
-    expect(accommodated.overwhelm).toBeLessThanOrEqual(unaccommodated.overwhelm);
+    expect(accommodated.overwhelm).toBeLessThanOrEqual(
+      unaccommodated.overwhelm
+    );
 
     // The accommodated environment lets the autistic person USE their
     // wider aperture productively (higher inverse Bule on fewer dims)
     expect(accommodated.entropy).toBeLessThan(unaccommodated.entropy);
 
-    console.log('\n  Prediction 7: Accommodation = environment design, not person-fixing');
-    console.log(`  Unaccommodated: ${overwhelmingVoid.length} dims, overwhelm=${unaccommodated.overwhelm.toFixed(3)}, H=${unaccommodated.entropy.toFixed(3)}`);
-    console.log(`  Accommodated:   ${accommodatedVoid.length} dims, overwhelm=${accommodated.overwhelm.toFixed(3)}, H=${accommodated.entropy.toFixed(3)}`);
-    console.log('  Same person. Same aperture. Environment matched to bandwidth.');
+    console.log(
+      '\n  Prediction 7: Accommodation = environment design, not person-fixing'
+    );
+    console.log(
+      `  Unaccommodated: ${
+        overwhelmingVoid.length
+      } dims, overwhelm=${unaccommodated.overwhelm.toFixed(
+        3
+      )}, H=${unaccommodated.entropy.toFixed(3)}`
+    );
+    console.log(
+      `  Accommodated:   ${
+        accommodatedVoid.length
+      } dims, overwhelm=${accommodated.overwhelm.toFixed(
+        3
+      )}, H=${accommodated.entropy.toFixed(3)}`
+    );
+    console.log(
+      '  Same person. Same aperture. Environment matched to bandwidth.'
+    );
     console.log('  Not fixing the telescope. Pointing it at fewer stars.');
   });
 
   it('summary: the bandwidth model', () => {
-    console.log('\n  ╔═══════════════════════════════════════════════════════════════╗');
-    console.log('  ║  Autism as Void Boundary Sensitivity: The Bandwidth Model     ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════════╣');
-    console.log('  ║  NT:   η=5.0  Folds aggressively. Sees base space.           ║');
-    console.log('  ║  AUT:  η=1.0  Folds gently. Sees covering space.             ║');
-    console.log('  ║                                                               ║');
-    console.log('  ║  Same void. Same tombstones. Different aperture.              ║');
-    console.log('  ║                                                               ║');
-    console.log('  ║  Sensory overwhelm   = bandwidth saturation, not malfunction  ║');
-    console.log('  ║  Special interest     = deep trot on manageable dimension     ║');
-    console.log('  ║  Social difficulty    = reading too much, not too little       ║');
-    console.log('  ║  Communication gap    = covering-base semiotic deficit         ║');
-    console.log('  ║  Accommodation        = environment design, not person-fixing  ║');
-    console.log('  ║                                                               ║');
-    console.log('  ║  The autistic brain is not broken. It is reading a bigger map. ║');
-    console.log('  ╚═══════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  Autism as Void Boundary Sensitivity: The Bandwidth Model     ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      '  ║  NT:   η=5.0  Folds aggressively. Sees base space.           ║'
+    );
+    console.log(
+      '  ║  AUT:  η=1.0  Folds gently. Sees covering space.             ║'
+    );
+    console.log(
+      '  ║                                                               ║'
+    );
+    console.log(
+      '  ║  Same void. Same tombstones. Different aperture.              ║'
+    );
+    console.log(
+      '  ║                                                               ║'
+    );
+    console.log(
+      '  ║  Sensory overwhelm   = bandwidth saturation, not malfunction  ║'
+    );
+    console.log(
+      '  ║  Special interest     = deep trot on manageable dimension     ║'
+    );
+    console.log(
+      '  ║  Social difficulty    = reading too much, not too little       ║'
+    );
+    console.log(
+      '  ║  Communication gap    = covering-base semiotic deficit         ║'
+    );
+    console.log(
+      '  ║  Accommodation        = environment design, not person-fixing  ║'
+    );
+    console.log(
+      '  ║                                                               ║'
+    );
+    console.log(
+      '  ║  The autistic brain is not broken. It is reading a bigger map. ║'
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════════╝\n'
+    );
 
     expect(true).toBe(true); // the summary itself is the test
   });

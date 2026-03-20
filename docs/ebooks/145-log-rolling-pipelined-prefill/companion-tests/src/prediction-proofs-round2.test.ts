@@ -43,21 +43,21 @@ describe('Prediction 6: V(D)J recombination efficiency follows CRISPR topology l
 
   interface GeneSegment {
     name: string;
-    sigma: number;         // local topological complexity
+    sigma: number; // local topological complexity
     recombinationRate: number; // measured usage frequency [0,1]
   }
 
   // Synthetic V(D)J segments modeled on human IGH locus patterns:
   // Proximal V segments (low σ, high usage) vs distal V segments (high σ, low usage)
   const vSegments: GeneSegment[] = [
-    { name: 'VH1-proximal',  sigma: 0, recombinationRate: 0.18 },
-    { name: 'VH3-proximal',  sigma: 1, recombinationRate: 0.15 },
-    { name: 'VH4-proximal',  sigma: 1, recombinationRate: 0.14 },
-    { name: 'VH2-medial',    sigma: 2, recombinationRate: 0.08 },
-    { name: 'VH5-medial',    sigma: 2, recombinationRate: 0.07 },
-    { name: 'VH6-distal',    sigma: 3, recombinationRate: 0.04 },
-    { name: 'VH7-distal',    sigma: 4, recombinationRate: 0.02 },
-    { name: 'VH-pseudo',     sigma: 5, recombinationRate: 0.005 },
+    { name: 'VH1-proximal', sigma: 0, recombinationRate: 0.18 },
+    { name: 'VH3-proximal', sigma: 1, recombinationRate: 0.15 },
+    { name: 'VH4-proximal', sigma: 1, recombinationRate: 0.14 },
+    { name: 'VH2-medial', sigma: 2, recombinationRate: 0.08 },
+    { name: 'VH5-medial', sigma: 2, recombinationRate: 0.07 },
+    { name: 'VH6-distal', sigma: 3, recombinationRate: 0.04 },
+    { name: 'VH7-distal', sigma: 4, recombinationRate: 0.02 },
+    { name: 'VH-pseudo', sigma: 5, recombinationRate: 0.005 },
   ];
 
   it('recombination rate monotonically decreases with σ (grouped means)', () => {
@@ -67,7 +67,10 @@ describe('Prediction 6: V(D)J recombination efficiency follows CRISPR topology l
       bySignma.get(s.sigma)!.push(s.recombinationRate);
     }
     const means = [...bySignma.entries()]
-      .map(([sigma, rates]) => ({ sigma, mean: rates.reduce((a, b) => a + b, 0) / rates.length }))
+      .map(([sigma, rates]) => ({
+        sigma,
+        mean: rates.reduce((a, b) => a + b, 0) / rates.length,
+      }))
       .sort((a, b) => a.sigma - b.sigma);
 
     let violations = 0;
@@ -79,10 +82,11 @@ describe('Prediction 6: V(D)J recombination efficiency follows CRISPR topology l
 
   it('exponential decay model η = η₀ × exp(-α × σ) fits V(D)J data', () => {
     const alpha = 0.6;
-    const eta0 = 0.20;
+    const eta0 = 0.2;
     let ssRes = 0;
     let ssTot = 0;
-    const meanRate = vSegments.reduce((s, v) => s + v.recombinationRate, 0) / vSegments.length;
+    const meanRate =
+      vSegments.reduce((s, v) => s + v.recombinationRate, 0) / vSegments.length;
     for (const v of vSegments) {
       const predicted = eta0 * Math.exp(-alpha * v.sigma);
       ssRes += (v.recombinationRate - predicted) ** 2;
@@ -133,9 +137,9 @@ describe('Prediction 7: Transformer head pruning should follow β₁ contributio
 
   interface AttentionHead {
     index: number;
-    magnitudeNorm: number;     // L2 norm of weight matrix
+    magnitudeNorm: number; // L2 norm of weight matrix
     beta1Contribution: number; // topological contribution (entropy of attention pattern)
-    taskAccuracy: number;      // accuracy when this head is active
+    taskAccuracy: number; // accuracy when this head is active
   }
 
   function generateHeads(numHeads: number, seed: number): AttentionHead[] {
@@ -149,17 +153,32 @@ describe('Prediction 7: Transformer head pruning should follow β₁ contributio
       // Voita et al. (2019) showed "specialized heads do the heavy lifting"
       const beta1 = rng() < 0.3 ? rng() * 0.3 : 0.5 + rng() * 0.5; // 30% low, 70% high
       const accuracy = 0.5 + beta1 * 0.4 + (rng() - 0.5) * 0.1;
-      heads.push({ index: i, magnitudeNorm: magnitude, beta1Contribution: beta1, taskAccuracy: accuracy });
+      heads.push({
+        index: i,
+        magnitudeNorm: magnitude,
+        beta1Contribution: beta1,
+        taskAccuracy: accuracy,
+      });
     }
     return heads;
   }
 
-  function pruneByMagnitude(heads: AttentionHead[], keepN: number): AttentionHead[] {
-    return [...heads].sort((a, b) => b.magnitudeNorm - a.magnitudeNorm).slice(0, keepN);
+  function pruneByMagnitude(
+    heads: AttentionHead[],
+    keepN: number
+  ): AttentionHead[] {
+    return [...heads]
+      .sort((a, b) => b.magnitudeNorm - a.magnitudeNorm)
+      .slice(0, keepN);
   }
 
-  function pruneByBeta1(heads: AttentionHead[], keepN: number): AttentionHead[] {
-    return [...heads].sort((a, b) => b.beta1Contribution - a.beta1Contribution).slice(0, keepN);
+  function pruneByBeta1(
+    heads: AttentionHead[],
+    keepN: number
+  ): AttentionHead[] {
+    return [...heads]
+      .sort((a, b) => b.beta1Contribution - a.beta1Contribution)
+      .slice(0, keepN);
   }
 
   function ensembleAccuracy(heads: AttentionHead[]): number {
@@ -235,13 +254,16 @@ describe('Prediction 8: Trauma recovery oscillates before converging', () => {
    */
 
   interface RecoveryTrajectory {
-    initialVoidDensity: number;  // severity [0,1]
-    sessions: number[];          // wellbeing score per session [0,10]
-    oscillationCount: number;    // number of direction changes
+    initialVoidDensity: number; // severity [0,1]
+    sessions: number[]; // wellbeing score per session [0,10]
+    oscillationCount: number; // number of direction changes
     converged: boolean;
   }
 
-  function simulateRecovery(voidDensity: number, seed: number): RecoveryTrajectory {
+  function simulateRecovery(
+    voidDensity: number,
+    seed: number
+  ): RecoveryTrajectory {
     const rng = makeRng(seed);
     const sessions: number[] = [];
     const maxSessions = 100;
@@ -261,17 +283,26 @@ describe('Prediction 8: Trauma recovery oscillates before converging', () => {
 
       // Count direction changes
       if (sessions.length >= 2) {
-        const direction = sessions[sessions.length - 1] > sessions[sessions.length - 2] ? 'up' : 'down';
+        const direction =
+          sessions[sessions.length - 1] > sessions[sessions.length - 2]
+            ? 'up'
+            : 'down';
         if (lastDirection && direction !== lastDirection) oscillations++;
         lastDirection = direction;
       }
     }
 
     const lastFive = sessions.slice(-5);
-    const variance = lastFive.reduce((s, v) => s + (v - lastFive[0]) ** 2, 0) / 5;
+    const variance =
+      lastFive.reduce((s, v) => s + (v - lastFive[0]) ** 2, 0) / 5;
     const converged = variance < 0.5;
 
-    return { initialVoidDensity: voidDensity, sessions, oscillationCount: oscillations, converged };
+    return {
+      initialVoidDensity: voidDensity,
+      sessions,
+      oscillationCount: oscillations,
+      converged,
+    };
   }
 
   it('THM-VOID-GRADIENT: all trajectories eventually converge', () => {
@@ -298,7 +329,7 @@ describe('Prediction 8: Trauma recovery oscillates before converging', () => {
 
   it('oscillation count increases with initial void density', () => {
     const densities = [0.1, 0.3, 0.5, 0.7, 0.9];
-    const oscillations = densities.map(d => {
+    const oscillations = densities.map((d) => {
       // Average over 5 seeds for stability
       let total = 0;
       for (let s = 0; s < 5; s++) {
@@ -318,8 +349,10 @@ describe('Prediction 8: Trauma recovery oscillates before converging', () => {
   it('peace_context_reduces: wellbeing trend is monotonically positive in the mean', () => {
     const trajectory = simulateRecovery(0.5, 42);
     // Moving average of last 10 sessions should be higher than first 10
-    const firstTen = trajectory.sessions.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
-    const lastTen = trajectory.sessions.slice(-10).reduce((a, b) => a + b, 0) / 10;
+    const firstTen =
+      trajectory.sessions.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
+    const lastTen =
+      trajectory.sessions.slice(-10).reduce((a, b) => a + b, 0) / 10;
     expect(lastTen).toBeGreaterThan(firstTen);
   });
 
@@ -351,39 +384,63 @@ describe('Prediction 9: Silent mutations alter CRISPR editability despite identi
    */
 
   interface Codon {
-    sequence: string;   // e.g., 'GCU'
-    aminoAcid: string;  // e.g., 'Ala'
-    gcContent: number;  // GC fraction of the codon
+    sequence: string; // e.g., 'GCU'
+    aminoAcid: string; // e.g., 'Ala'
+    gcContent: number; // GC fraction of the codon
     sigmaContribution: number; // contribution to local σ
   }
 
   // Alanine codons: all encode the same amino acid
   const alanineCodens: Codon[] = [
-    { sequence: 'GCU', aminoAcid: 'Ala', gcContent: 0.67, sigmaContribution: 0.5 },
-    { sequence: 'GCC', aminoAcid: 'Ala', gcContent: 1.00, sigmaContribution: 1.2 }, // all GC → stem-loop potential
-    { sequence: 'GCA', aminoAcid: 'Ala', gcContent: 0.67, sigmaContribution: 0.4 },
-    { sequence: 'GCG', aminoAcid: 'Ala', gcContent: 1.00, sigmaContribution: 1.0 }, // GC-rich
+    {
+      sequence: 'GCU',
+      aminoAcid: 'Ala',
+      gcContent: 0.67,
+      sigmaContribution: 0.5,
+    },
+    {
+      sequence: 'GCC',
+      aminoAcid: 'Ala',
+      gcContent: 1.0,
+      sigmaContribution: 1.2,
+    }, // all GC → stem-loop potential
+    {
+      sequence: 'GCA',
+      aminoAcid: 'Ala',
+      gcContent: 0.67,
+      sigmaContribution: 0.4,
+    },
+    {
+      sequence: 'GCG',
+      aminoAcid: 'Ala',
+      gcContent: 1.0,
+      sigmaContribution: 1.0,
+    }, // GC-rich
   ];
 
-  function editingEfficiency(sigma: number, alpha: number = 0.5, eta0: number = 0.95): number {
+  function editingEfficiency(
+    sigma: number,
+    alpha: number = 0.5,
+    eta0: number = 0.95
+  ): number {
     return eta0 * Math.exp(-alpha * sigma);
   }
 
   it('all alanine codons encode the same amino acid', () => {
-    const uniqueAAs = new Set(alanineCodens.map(c => c.aminoAcid));
+    const uniqueAAs = new Set(alanineCodens.map((c) => c.aminoAcid));
     expect(uniqueAAs.size).toBe(1);
   });
 
   it('different codons produce different σ contributions', () => {
-    const sigmas = alanineCodens.map(c => c.sigmaContribution);
+    const sigmas = alanineCodens.map((c) => c.sigmaContribution);
     const uniqueSigmas = new Set(sigmas);
     expect(uniqueSigmas.size).toBeGreaterThan(1);
   });
 
   it('THM-TOPO-MUTATION-DETECTION: Δσ detects silent mutation before phenotype', () => {
     // GCA → GCC is a silent mutation (both Ala) but Δσ > 0
-    const gca = alanineCodens.find(c => c.sequence === 'GCA')!;
-    const gcc = alanineCodens.find(c => c.sequence === 'GCC')!;
+    const gca = alanineCodens.find((c) => c.sequence === 'GCA')!;
+    const gcc = alanineCodens.find((c) => c.sequence === 'GCC')!;
     const deltaSigma = gcc.sigmaContribution - gca.sigmaContribution;
     expect(deltaSigma).toBeGreaterThan(0);
     // The protein is identical, but the topology changed
@@ -392,8 +449,8 @@ describe('Prediction 9: Silent mutations alter CRISPR editability despite identi
 
   it('silent mutation alters CRISPR editing efficiency at the locus', () => {
     // Compare editing efficiency at GCA vs GCC locus (same protein!)
-    const gca = alanineCodens.find(c => c.sequence === 'GCA')!;
-    const gcc = alanineCodens.find(c => c.sequence === 'GCC')!;
+    const gca = alanineCodens.find((c) => c.sequence === 'GCA')!;
+    const gcc = alanineCodens.find((c) => c.sequence === 'GCC')!;
 
     const etaGCA = editingEfficiency(gca.sigmaContribution);
     const etaGCC = editingEfficiency(gcc.sigmaContribution);
@@ -401,7 +458,7 @@ describe('Prediction 9: Silent mutations alter CRISPR editability despite identi
     // GCC has higher σ → lower editing efficiency
     expect(etaGCC).toBeLessThan(etaGCA);
     // The difference is substantial (>10% relative)
-    expect((etaGCA - etaGCC) / etaGCA).toBeGreaterThan(0.10);
+    expect((etaGCA - etaGCC) / etaGCA).toBeGreaterThan(0.1);
   });
 
   it('the topological deficit of a silent mutation is nonzero', () => {
@@ -415,8 +472,8 @@ describe('Prediction 9: Silent mutations alter CRISPR editability despite identi
       }
     }
     // At least some pairs have different σ
-    const withDeltaSigma = pairs.filter(([a, b]) =>
-      Math.abs(a.sigmaContribution - b.sigmaContribution) > 0.01
+    const withDeltaSigma = pairs.filter(
+      ([a, b]) => Math.abs(a.sigmaContribution - b.sigmaContribution) > 0.01
     );
     expect(withDeltaSigma.length).toBeGreaterThan(0);
   });
@@ -442,24 +499,63 @@ describe('Prediction 10: Myelinated nerve conduction velocity tracks pipeline fo
 
   interface NerveConfig {
     name: string;
-    internodeDistance_mm: number;  // distance between nodes of Ranvier
-    fiberDiameter_um: number;     // axon diameter
-    measuredVelocity_ms: number;  // conduction velocity m/s
+    internodeDistance_mm: number; // distance between nodes of Ranvier
+    fiberDiameter_um: number; // axon diameter
+    measuredVelocity_ms: number; // conduction velocity m/s
   }
 
   // Data points from the biological literature (Wu et al. 2012, Waxman 1980):
   const nerveData: NerveConfig[] = [
-    { name: 'unmyelinated-C',  internodeDistance_mm: 0.001, fiberDiameter_um: 0.5, measuredVelocity_ms: 1.0 },
-    { name: 'thin-myelinated', internodeDistance_mm: 0.2,   fiberDiameter_um: 2,   measuredVelocity_ms: 12 },
-    { name: 'A-delta',         internodeDistance_mm: 0.5,   fiberDiameter_um: 4,   measuredVelocity_ms: 25 },
-    { name: 'A-beta',          internodeDistance_mm: 1.0,   fiberDiameter_um: 8,   measuredVelocity_ms: 50 },
-    { name: 'A-alpha',         internodeDistance_mm: 1.5,   fiberDiameter_um: 15,  measuredVelocity_ms: 80 },
-    { name: 'large-motor',     internodeDistance_mm: 2.0,   fiberDiameter_um: 20,  measuredVelocity_ms: 100 },
+    {
+      name: 'unmyelinated-C',
+      internodeDistance_mm: 0.001,
+      fiberDiameter_um: 0.5,
+      measuredVelocity_ms: 1.0,
+    },
+    {
+      name: 'thin-myelinated',
+      internodeDistance_mm: 0.2,
+      fiberDiameter_um: 2,
+      measuredVelocity_ms: 12,
+    },
+    {
+      name: 'A-delta',
+      internodeDistance_mm: 0.5,
+      fiberDiameter_um: 4,
+      measuredVelocity_ms: 25,
+    },
+    {
+      name: 'A-beta',
+      internodeDistance_mm: 1.0,
+      fiberDiameter_um: 8,
+      measuredVelocity_ms: 50,
+    },
+    {
+      name: 'A-alpha',
+      internodeDistance_mm: 1.5,
+      fiberDiameter_um: 15,
+      measuredVelocity_ms: 80,
+    },
+    {
+      name: 'large-motor',
+      internodeDistance_mm: 2.0,
+      fiberDiameter_um: 20,
+      measuredVelocity_ms: 100,
+    },
     // At very large internode distance, velocity plateaus (Wu et al. 2012)
-    { name: 'theoretical-max', internodeDistance_mm: 3.0,   fiberDiameter_um: 20,  measuredVelocity_ms: 105 },
+    {
+      name: 'theoretical-max',
+      internodeDistance_mm: 3.0,
+      fiberDiameter_um: 20,
+      measuredVelocity_ms: 105,
+    },
   ];
 
-  function pipelineSpeedup(chunkSize: number, numStages: number, totalWork: number): number {
+  function pipelineSpeedup(
+    chunkSize: number,
+    numStages: number,
+    totalWork: number
+  ): number {
     if (chunkSize <= 0 || numStages <= 0) return 1;
     const chunkedTime = Math.ceil(totalWork / chunkSize) + (numStages - 1);
     const sequentialTime = totalWork * numStages;
@@ -482,7 +578,9 @@ describe('Prediction 10: Myelinated nerve conduction velocity tracks pipeline fo
   it('velocity increases monotonically with internode distance', () => {
     let violations = 0;
     for (let i = 1; i < nerveData.length; i++) {
-      if (nerveData[i].measuredVelocity_ms < nerveData[i - 1].measuredVelocity_ms) {
+      if (
+        nerveData[i].measuredVelocity_ms < nerveData[i - 1].measuredVelocity_ms
+      ) {
         violations++;
       }
     }
@@ -493,8 +591,11 @@ describe('Prediction 10: Myelinated nerve conduction velocity tracks pipeline fo
     // The last two data points should show diminishing returns
     const secondLast = nerveData[nerveData.length - 2];
     const last = nerveData[nerveData.length - 1];
-    const gainLastStep = last.measuredVelocity_ms - secondLast.measuredVelocity_ms;
-    const gainPrevStep = secondLast.measuredVelocity_ms - nerveData[nerveData.length - 3].measuredVelocity_ms;
+    const gainLastStep =
+      last.measuredVelocity_ms - secondLast.measuredVelocity_ms;
+    const gainPrevStep =
+      secondLast.measuredVelocity_ms -
+      nerveData[nerveData.length - 3].measuredVelocity_ms;
     // Plateau: gain decreases
     expect(gainLastStep).toBeLessThan(gainPrevStep);
   });
@@ -502,10 +603,12 @@ describe('Prediction 10: Myelinated nerve conduction velocity tracks pipeline fo
   it('speedup from myelination matches pipeline speedup formula', () => {
     const unmyelinated = nerveData[0];
     for (const nerve of nerveData.slice(1)) {
-      const measuredSpeedup = nerve.measuredVelocity_ms / unmyelinated.measuredVelocity_ms;
+      const measuredSpeedup =
+        nerve.measuredVelocity_ms / unmyelinated.measuredVelocity_ms;
       // Pipeline model: speedup ≈ B × N / (1 + N - 1) for large B
       // Simplified: speedup ≈ internode_distance_ratio
-      const distanceRatio = nerve.internodeDistance_mm / unmyelinated.internodeDistance_mm;
+      const distanceRatio =
+        nerve.internodeDistance_mm / unmyelinated.internodeDistance_mm;
       // The pipeline formula gives speedup proportional to chunk size,
       // which is proportional to internode distance. Check within order of magnitude.
       expect(measuredSpeedup).toBeGreaterThan(distanceRatio * 0.01);
@@ -515,14 +618,18 @@ describe('Prediction 10: Myelinated nerve conduction velocity tracks pipeline fo
 
   it('demyelination (reducing B) predicts velocity loss', () => {
     // MS simulation: reduce internode distance by 50%
-    const healthy = nerveData.find(n => n.name === 'A-alpha')!;
+    const healthy = nerveData.find((n) => n.name === 'A-alpha')!;
     const demyelinatedInternode = healthy.internodeDistance_mm * 0.5;
     // Find closest match in data
     const closest = nerveData.reduce((best, n) =>
       Math.abs(n.internodeDistance_mm - demyelinatedInternode) <
-      Math.abs(best.internodeDistance_mm - demyelinatedInternode) ? n : best
+      Math.abs(best.internodeDistance_mm - demyelinatedInternode)
+        ? n
+        : best
     );
     // Demyelinated velocity should be lower
-    expect(closest.measuredVelocity_ms).toBeLessThan(healthy.measuredVelocity_ms);
+    expect(closest.measuredVelocity_ms).toBeLessThan(
+      healthy.measuredVelocity_ms
+    );
   });
 });

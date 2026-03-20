@@ -45,25 +45,30 @@ export interface AstronomicMetronomicReport {
 /* ------------------------------------------------------------------ */
 
 const COLORS = {
-  human: '#0f766e',      // teal-700
-  room: '#6366f1',       // indigo-500
-  city: '#d97706',       // amber-600
-  earth: '#2563eb',      // blue-600
-  mars: '#dc2626',       // red-600
-  alpha: '#7c3aed',      // violet-600
-  galaxy: '#0891b2',     // cyan-600
+  human: '#0f766e', // teal-700
+  room: '#6366f1', // indigo-500
+  city: '#d97706', // amber-600
+  earth: '#2563eb', // blue-600
+  mars: '#dc2626', // red-600
+  alpha: '#7c3aed', // violet-600
+  galaxy: '#0891b2', // cyan-600
   bg: '#f8fafc',
   text: '#334155',
   textLight: '#94a3b8',
   grid: '#e2e8f0',
-  taper: '#f59e0b',      // amber-500
+  taper: '#f59e0b', // amber-500
 } as const;
 
 /* ------------------------------------------------------------------ */
 /*  Range computation                                                  */
 /* ------------------------------------------------------------------ */
 
-function computeRange(N: number, P: number, rho: number, cStarSq: number): number {
+function computeRange(
+  N: number,
+  P: number,
+  rho: number,
+  cStarSq: number
+): number {
   return Math.sqrt((N * P) / (rho * cStarSq));
 }
 
@@ -201,13 +206,16 @@ export function buildAstronomicMetronomicReport(): AstronomicMetronomicReport {
 function generateSVG(scales: readonly WhipRangeScale[]): string {
   const W = 900;
   const H = 500;
-  const padL = 80, padR = 40, padT = 60, padB = 80;
+  const padL = 80,
+    padR = 40,
+    padT = 60,
+    padB = 80;
   const plotW = W - padL - padR;
   const plotH = H - padT - padB;
 
   // Log scale for distances
-  const logDistances = scales.map(s => Math.log10(s.distance_m));
-  const logRanges = scales.map(s => Math.log10(s.d_max_m));
+  const logDistances = scales.map((s) => Math.log10(s.distance_m));
+  const logRanges = scales.map((s) => Math.log10(s.d_max_m));
   const minLog = Math.floor(Math.min(...logDistances));
   const maxLog = Math.ceil(Math.max(...logRanges));
 
@@ -222,29 +230,67 @@ function generateSVG(scales: readonly WhipRangeScale[]): string {
   svg += `<rect width="${W}" height="${H}" fill="${COLORS.bg}"/>\n`;
 
   // Title
-  svg += `<text x="${W / 2}" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="${COLORS.text}">Astronomic Metronomic</text>\n`;
-  svg += `<text x="${W / 2}" y="46" text-anchor="middle" font-size="11" fill="${COLORS.textLight}">d_max = √(N·P / ρ·c*²) — How far can you whip a bit?</text>\n`;
+  svg += `<text x="${
+    W / 2
+  }" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="${
+    COLORS.text
+  }">Astronomic Metronomic</text>\n`;
+  svg += `<text x="${W / 2}" y="46" text-anchor="middle" font-size="11" fill="${
+    COLORS.textLight
+  }">d_max = √(N·P / ρ·c*²) — How far can you whip a bit?</text>\n`;
 
   // Grid lines
   for (let log = minLog; log <= maxLog; log += 2) {
     const x = xPos(log);
     const y = yPos(log);
-    svg += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="${COLORS.grid}" stroke-width="0.5"/>\n`;
-    svg += `<line x1="${padL}" y1="${y}" x2="${padL + plotW}" y2="${y}" stroke="${COLORS.grid}" stroke-width="0.5"/>\n`;
-    svg += `<text x="${x}" y="${padT + plotH + 16}" text-anchor="middle" font-size="9" fill="${COLORS.textLight}">10^${log}</text>\n`;
-    svg += `<text x="${padL - 8}" y="${y + 3}" text-anchor="end" font-size="9" fill="${COLORS.textLight}">10^${log}</text>\n`;
+    svg += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${
+      padT + plotH
+    }" stroke="${COLORS.grid}" stroke-width="0.5"/>\n`;
+    svg += `<line x1="${padL}" y1="${y}" x2="${
+      padL + plotW
+    }" y2="${y}" stroke="${COLORS.grid}" stroke-width="0.5"/>\n`;
+    svg += `<text x="${x}" y="${
+      padT + plotH + 16
+    }" text-anchor="middle" font-size="9" fill="${
+      COLORS.textLight
+    }">10^${log}</text>\n`;
+    svg += `<text x="${padL - 8}" y="${
+      y + 3
+    }" text-anchor="end" font-size="9" fill="${
+      COLORS.textLight
+    }">10^${log}</text>\n`;
   }
 
   // Axes labels
-  svg += `<text x="${W / 2}" y="${H - 8}" text-anchor="middle" font-size="10" fill="${COLORS.text}">Distance (meters, log scale)</text>\n`;
-  svg += `<text x="14" y="${H / 2}" text-anchor="middle" font-size="10" fill="${COLORS.text}" transform="rotate(-90, 14, ${H / 2})">Whip Range d_max (meters, log scale)</text>\n`;
+  svg += `<text x="${W / 2}" y="${
+    H - 8
+  }" text-anchor="middle" font-size="10" fill="${
+    COLORS.text
+  }">Distance (meters, log scale)</text>\n`;
+  svg += `<text x="14" y="${H / 2}" text-anchor="middle" font-size="10" fill="${
+    COLORS.text
+  }" transform="rotate(-90, 14, ${
+    H / 2
+  })">Whip Range d_max (meters, log scale)</text>\n`;
 
   // Diagonal: d_max = d (just barely reaches)
-  svg += `<line x1="${xPos(minLog)}" y1="${yPos(minLog)}" x2="${xPos(maxLog)}" y2="${yPos(maxLog)}" stroke="${COLORS.taper}" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.6"/>\n`;
-  svg += `<text x="${xPos(maxLog) - 5}" y="${yPos(maxLog) + 14}" text-anchor="end" font-size="8" fill="${COLORS.taper}">d_max = d (threshold)</text>\n`;
+  svg += `<line x1="${xPos(minLog)}" y1="${yPos(minLog)}" x2="${xPos(
+    maxLog
+  )}" y2="${yPos(maxLog)}" stroke="${
+    COLORS.taper
+  }" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.6"/>\n`;
+  svg += `<text x="${xPos(maxLog) - 5}" y="${
+    yPos(maxLog) + 14
+  }" text-anchor="end" font-size="8" fill="${
+    COLORS.taper
+  }">d_max = d (threshold)</text>\n`;
 
   // The taper: connect scale points
-  const points = scales.map(s => `${xPos(Math.log10(s.distance_m))},${yPos(Math.log10(s.d_max_m))}`).join(' ');
+  const points = scales
+    .map(
+      (s) => `${xPos(Math.log10(s.distance_m))},${yPos(Math.log10(s.d_max_m))}`
+    )
+    .join(' ');
   svg += `<polyline points="${points}" fill="none" stroke="${COLORS.text}" stroke-width="2" opacity="0.3"/>\n`;
 
   // Data points + labels
@@ -259,17 +305,27 @@ function generateSVG(scales: readonly WhipRangeScale[]): string {
     // Label
     const labelY = y - 12;
     svg += `<text x="${x}" y="${labelY}" text-anchor="middle" font-size="9" font-weight="600" fill="${s.color}">${s.label}</text>\n`;
-    svg += `<text x="${x}" y="${labelY - 12}" text-anchor="middle" font-size="7" fill="${COLORS.textLight}">${s.distance_human} | N=${formatN(s.fork_N)}</text>\n`;
+    svg += `<text x="${x}" y="${
+      labelY - 12
+    }" text-anchor="middle" font-size="7" fill="${COLORS.textLight}">${
+      s.distance_human
+    } | N=${formatN(s.fork_N)}</text>\n`;
 
     // Above/below threshold indicator
     if (aboveLine) {
-      svg += `<text x="${x + 10}" y="${y + 4}" font-size="8" fill="${s.color}">✓</text>\n`;
+      svg += `<text x="${x + 10}" y="${y + 4}" font-size="8" fill="${
+        s.color
+      }">✓</text>\n`;
     }
   }
 
   // Legend
-  svg += `<text x="${padL + 10}" y="${padT + 16}" font-size="9" fill="${COLORS.text}">Above diagonal: signal reaches. Below: too far.</text>\n`;
-  svg += `<text x="${padL + 10}" y="${padT + 28}" font-size="8" fill="${COLORS.textLight}">Fork more paths (increase N) to push points upward.</text>\n`;
+  svg += `<text x="${padL + 10}" y="${padT + 16}" font-size="9" fill="${
+    COLORS.text
+  }">Above diagonal: signal reaches. Below: too far.</text>\n`;
+  svg += `<text x="${padL + 10}" y="${padT + 28}" font-size="8" fill="${
+    COLORS.textLight
+  }">Fork more paths (increase N) to push points upward.</text>\n`;
 
   svg += `</svg>`;
   return svg;
@@ -287,7 +343,10 @@ function formatN(n: number): string {
 /*  Markdown generation                                                */
 /* ------------------------------------------------------------------ */
 
-function generateMarkdown(scales: readonly WhipRangeScale[], equation: string): string {
+function generateMarkdown(
+  scales: readonly WhipRangeScale[],
+  equation: string
+): string {
   let md = `# Astronomic Metronomic\n\n`;
   md += `**${equation}**\n\n`;
   md += `How far can you whip a bit? Same formula at every scale.\n\n`;
@@ -295,7 +354,9 @@ function generateMarkdown(scales: readonly WhipRangeScale[], equation: string): 
   md += `|:------|:---------|:-------|:-------|:------|:---------|\n`;
   for (const s of scales) {
     const reaches = s.d_max_m > s.distance_m ? 'yes' : 'no';
-    md += `| ${s.label} | ${s.distance_human} | ${formatN(s.fork_N)} | ${s.medium} | ${formatDistance(s.d_max_m)} | ${reaches} |\n`;
+    md += `| ${s.label} | ${s.distance_human} | ${formatN(s.fork_N)} | ${
+      s.medium
+    } | ${formatDistance(s.d_max_m)} | ${reaches} |\n`;
   }
   md += `\nThe child passing balls in §0 and the child juggling across the galaxy are the same formula.\n`;
   md += `The distance is in the taper. The message is in the balls.\n`;
@@ -324,8 +385,14 @@ const outDir = path.join(import.meta.dir, '..', '..', 'figures');
 fs.mkdirSync(outDir, { recursive: true });
 
 fs.writeFileSync(path.join(outDir, 'astronomic-metronomic.svg'), report.svg);
-fs.writeFileSync(path.join(outDir, 'astronomic-metronomic.json'), JSON.stringify(report, null, 2));
-fs.writeFileSync(path.join(outDir, 'astronomic-metronomic.md'), report.markdown);
+fs.writeFileSync(
+  path.join(outDir, 'astronomic-metronomic.json'),
+  JSON.stringify(report, null, 2)
+);
+fs.writeFileSync(
+  path.join(outDir, 'astronomic-metronomic.md'),
+  report.markdown
+);
 
 console.log('Generated:');
 console.log('  figures/astronomic-metronomic.svg');

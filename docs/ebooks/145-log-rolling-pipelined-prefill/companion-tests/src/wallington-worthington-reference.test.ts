@@ -15,7 +15,7 @@ describe('reader-facing Wallington/Worthington references', () => {
         (chunk) => chunk.map((value) => value + 1),
         (chunk) => chunk.map((value) => value * 2),
         (chunk) => chunk.map((value) => value - 3),
-      ],
+      ]
     );
 
     expect(run.chunkSize).toBe(2);
@@ -27,7 +27,9 @@ describe('reader-facing Wallington/Worthington references', () => {
     ]);
     expect(run.totalTicks).toBe(6);
     expect(formatWallingtonSchedule(run)).toContain('t0: s0:c0');
-    expect(formatWallingtonSchedule(run)).toContain('t2: s0:c2 | s1:c1 | s2:c0');
+    expect(formatWallingtonSchedule(run)).toContain(
+      't2: s0:c2 | s1:c1 | s2:c0'
+    );
     expect(run.output).toEqual([1, 3, 5, 7, 9, 11, 13, 15]);
   });
 
@@ -49,4 +51,3 @@ describe('reader-facing Wallington/Worthington references', () => {
     expect(run.collapsedOutput).toEqual([22, 24, 26, 28, 30, 32, 34, 36]);
   });
 });
-

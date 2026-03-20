@@ -4,12 +4,7 @@
   "idleFormula": "idle = (N - 1) / (C + N - 1)",
   "reynoldsFormula": "Re = N / C",
   "balancedChunkRule": "Left-panel curves use the balanced-chunk cross-section C = N to expose the inverted-scaling slope directly.",
-  "stageFamilies": [
-    2,
-    4,
-    8,
-    10
-  ],
+  "stageFamilies": [2, 4, 8, 10],
   "workloadRange": {
     "low": 10,
     "high": 512

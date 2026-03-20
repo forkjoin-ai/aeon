@@ -142,14 +142,14 @@ export class UDPFlowTransport {
         const maxPayload = this.config.mtu - FRAGMENT_HEADER_SIZE;
         if (data.length <= maxPayload) {
             // Fits in one datagram — no fragmentation needed
-            const frameId = this.nextFrameId++ & 0xFFFF;
+            const frameId = this.nextFrameId++ & 0xffff;
             const datagram = this.wrapFragment(frameId, 0, 1, data);
             this.sendDatagram(datagram);
             this.trackInflight(data, frameId);
         }
         else {
             // Fragment into MTU-sized chunks
-            const frameId = this.nextFrameId++ & 0xFFFF;
+            const frameId = this.nextFrameId++ & 0xffff;
             const totalFragments = Math.ceil(data.length / maxPayload);
             if (totalFragments > 255) {
                 // Too large for UDP fragmentation — caller should use WebSocket
@@ -423,10 +423,10 @@ export class UDPFlowTransport {
                 const bit = seq - baseSeq;
                 if (bit >= 0 && bit < 64) {
                     if (bit < 32) {
-                        bitmapLo |= (1 << bit);
+                        bitmapLo |= 1 << bit;
                     }
                     else {
-                        bitmapHi |= (1 << (bit - 32));
+                        bitmapHi |= 1 << (bit - 32);
                     }
                 }
             }
@@ -461,13 +461,13 @@ export class UDPFlowTransport {
         }
         // Encode as a flow frame with ACK_FLAG
         const ackFrame = this.codec.encode({
-            streamId: 0xFFFF, // Reserved stream for transport-level control
+            streamId: 0xffff, // Reserved stream for transport-level control
             sequence: 0,
             flags: ACK_FLAG,
             payload,
         });
         // Send as a single datagram (ACKs are always small)
-        const datagram = this.wrapFragment(this.nextFrameId++ & 0xFFFF, 0, 1, ackFrame);
+        const datagram = this.wrapFragment(this.nextFrameId++ & 0xffff, 0, 1, ackFrame);
         this.sendDatagram(datagram);
     }
     /**
@@ -488,7 +488,7 @@ export class UDPFlowTransport {
                 // Retransmit
                 frame.retransmits++;
                 frame.sentAt = now;
-                const frameId = this.nextFrameId++ & 0xFFFF;
+                const frameId = this.nextFrameId++ & 0xffff;
                 const maxPayload = this.config.mtu - FRAGMENT_HEADER_SIZE;
                 if (frame.data.length <= maxPayload) {
                     const datagram = this.wrapFragment(frameId, 0, 1, frame.data);
@@ -526,7 +526,10 @@ async function createUDPSocket(host, port) {
                 },
                 onMessage(handler) {
                     socket.on('message', (msg, rinfo) => {
-                        handler(new Uint8Array(msg), { address: rinfo.address, port: rinfo.port });
+                        handler(new Uint8Array(msg), {
+                            address: rinfo.address,
+                            port: rinfo.port,
+                        });
                     });
                 },
                 close() {
@@ -588,7 +591,7 @@ export class WebTransportFlowTransport {
             return;
         const maxPayload = UDP_MTU - FRAGMENT_HEADER_SIZE;
         if (data.length <= maxPayload) {
-            const frameId = this.nextFrameId++ & 0xFFFF;
+            const frameId = this.nextFrameId++ & 0xffff;
             const datagram = new Uint8Array(FRAGMENT_HEADER_SIZE + data.length);
             const view = new DataView(datagram.buffer);
             view.setUint16(0, frameId);
@@ -598,7 +601,7 @@ export class WebTransportFlowTransport {
             this.writer.write(datagram).catch(() => undefined);
         }
         else {
-            const frameId = this.nextFrameId++ & 0xFFFF;
+            const frameId = this.nextFrameId++ & 0xffff;
             const totalFragments = Math.ceil(data.length / maxPayload);
             if (totalFragments > 255)
                 return;
@@ -647,7 +650,12 @@ export class WebTransportFlowTransport {
                 else {
                     let group = this.fragmentGroups.get(frameId);
                     if (!group) {
-                        group = { frameId, total: fragTotal, received: new Map(), createdAt: Date.now() };
+                        group = {
+                            frameId,
+                            total: fragTotal,
+                            received: new Map(),
+                            createdAt: Date.now(),
+                        };
                         this.fragmentGroups.set(frameId, group);
                     }
                     group.received.set(fragIndex, payload.slice());

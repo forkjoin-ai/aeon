@@ -38,7 +38,11 @@ export function detectHairpins(
   for (let i = 0; i < window.length - 2 * minStem - minLoop; i++) {
     for (let loopLen = minLoop; loopLen <= maxLoop; loopLen++) {
       let stemLen = 0;
-      for (let s = 0; s < Math.min(minStem + 4, i + 1, window.length - i - loopLen); s++) {
+      for (
+        let s = 0;
+        s < Math.min(minStem + 4, i + 1, window.length - i - loopLen);
+        s++
+      ) {
         const left = window[i - s] ?? '';
         const right = window[i + loopLen + 1 + s] ?? '';
         if (left && right && COMPLEMENT[left] === right) {
@@ -106,7 +110,13 @@ export function detectCruciforms(
       if (rightStart + minArm > window.length) break;
 
       let armLen = 0;
-      for (let a = 0; a < minArm + 4 && i + a < window.length && rightStart + minArm - 1 - a >= 0; a++) {
+      for (
+        let a = 0;
+        a < minArm + 4 &&
+        i + a < window.length &&
+        rightStart + minArm - 1 - a >= 0;
+        a++
+      ) {
         const left = window[i + a];
         const right = window[rightStart + minArm - 1 - a];
         if (COMPLEMENT[left] === right) {
@@ -147,7 +157,11 @@ export interface TopologicalProfile {
  * Compute the local topological complexity σ(ℓ) at a given locus.
  * β₁(ℓ) = 2 + σ(ℓ) where 2 counts the two strand cycles of the double helix.
  */
-export function computeSigma(seq: string, locus: number, windowSize = 30): TopologicalProfile {
+export function computeSigma(
+  seq: string,
+  locus: number,
+  windowSize = 30
+): TopologicalProfile {
   const hairpins = detectHairpins(seq, locus, windowSize);
   const gQuadruplexes = detectGQuadruplexes(seq, locus, windowSize);
   const cruciforms = detectCruciforms(seq, locus, windowSize);
@@ -166,7 +180,10 @@ export function computeSigma(seq: string, locus: number, windowSize = 30): Topol
 /**
  * Compute the topological profile across an entire sequence at every position.
  */
-export function computeTopologicalMap(seq: string, windowSize = 30): TopologicalProfile[] {
+export function computeTopologicalMap(
+  seq: string,
+  windowSize = 30
+): TopologicalProfile[] {
   const map: TopologicalProfile[] = [];
   for (let i = 0; i < seq.length; i++) {
     map.push(computeSigma(seq, i, windowSize));
@@ -205,7 +222,8 @@ export function computeMutationTopology(
   const refProfile = computeSigma(seq, locus, windowSize);
 
   // Apply the mutation
-  const mutantSeq = seq.slice(0, locus) + mutantBase.toUpperCase() + seq.slice(locus + 1);
+  const mutantSeq =
+    seq.slice(0, locus) + mutantBase.toUpperCase() + seq.slice(locus + 1);
   const mutProfile = computeSigma(mutantSeq, locus, windowSize);
 
   const deltaSigma = mutProfile.sigma - refProfile.sigma;
@@ -236,7 +254,11 @@ export function computeMutationTopology(
  * η(ℓ) ∝ 1 / (2 + σ(ℓ))
  * Normalized so that a topologically simple site (σ=0) has η=1.0.
  */
-export function predictCrisprEfficiency(seq: string, locus: number, windowSize = 30): number {
+export function predictCrisprEfficiency(
+  seq: string,
+  locus: number,
+  windowSize = 30
+): number {
   const profile = computeSigma(seq, locus, windowSize);
   return 2 / profile.beta1; // normalized: η=1.0 when σ=0 (β₁=2)
 }
@@ -249,7 +271,11 @@ export interface CancerTopologyReport {
   /** Gene name */
   gene: string;
   /** Hotspot loci with their topological profiles */
-  hotspots: { locus: number; profile: TopologicalProfile; isKnownHotspot: boolean }[];
+  hotspots: {
+    locus: number;
+    profile: TopologicalProfile;
+    isKnownHotspot: boolean;
+  }[];
   /** Average σ at known hotspot positions */
   meanSigmaHotspots: number;
   /** Average σ at non-hotspot positions */
@@ -283,16 +309,23 @@ export function analyzeCancerTopology(
     }
   }
 
-  const meanSigmaHotspots = hotspotProfiles.length > 0
-    ? hotspotProfiles.reduce((sum, p) => sum + p.sigma, 0) / hotspotProfiles.length
-    : 0;
-  const meanSigmaNonHotspots = nonHotspotProfiles.length > 0
-    ? nonHotspotProfiles.reduce((sum, p) => sum + p.sigma, 0) / nonHotspotProfiles.length
-    : 0;
+  const meanSigmaHotspots =
+    hotspotProfiles.length > 0
+      ? hotspotProfiles.reduce((sum, p) => sum + p.sigma, 0) /
+        hotspotProfiles.length
+      : 0;
+  const meanSigmaNonHotspots =
+    nonHotspotProfiles.length > 0
+      ? nonHotspotProfiles.reduce((sum, p) => sum + p.sigma, 0) /
+        nonHotspotProfiles.length
+      : 0;
 
-  const topologicalEnrichment = meanSigmaNonHotspots > 0
-    ? meanSigmaHotspots / meanSigmaNonHotspots
-    : meanSigmaHotspots > 0 ? Infinity : 1;
+  const topologicalEnrichment =
+    meanSigmaNonHotspots > 0
+      ? meanSigmaHotspots / meanSigmaNonHotspots
+      : meanSigmaHotspots > 0
+      ? Infinity
+      : 1;
 
   return {
     gene: geneName,
@@ -343,24 +376,33 @@ export function analyzeDriverVsPassenger(
   passengers: MutationSpec[],
   windowSize = 30
 ): DriverPassengerReport {
-  const driverTopologies = drivers.map(m =>
+  const driverTopologies = drivers.map((m) =>
     computeMutationTopology(seq, m.locus, m.mutantBase, windowSize)
   );
-  const passengerTopologies = passengers.map(m =>
+  const passengerTopologies = passengers.map((m) =>
     computeMutationTopology(seq, m.locus, m.mutantBase, windowSize)
   );
 
-  const meanDrivers = driverTopologies.length > 0
-    ? driverTopologies.reduce((s, t) => s + t.severityBules, 0) / driverTopologies.length
-    : 0;
-  const meanPassengers = passengerTopologies.length > 0
-    ? passengerTopologies.reduce((s, t) => s + t.severityBules, 0) / passengerTopologies.length
-    : 0;
+  const meanDrivers =
+    driverTopologies.length > 0
+      ? driverTopologies.reduce((s, t) => s + t.severityBules, 0) /
+        driverTopologies.length
+      : 0;
+  const meanPassengers =
+    passengerTopologies.length > 0
+      ? passengerTopologies.reduce((s, t) => s + t.severityBules, 0) /
+        passengerTopologies.length
+      : 0;
 
   return {
     meanAbsDeltaSigmaDrivers: meanDrivers,
     meanAbsDeltaSigmaPassengers: meanPassengers,
-    driverEnrichment: meanPassengers > 0 ? meanDrivers / meanPassengers : (meanDrivers > 0 ? Infinity : 1),
+    driverEnrichment:
+      meanPassengers > 0
+        ? meanDrivers / meanPassengers
+        : meanDrivers > 0
+        ? Infinity
+        : 1,
     theoremSupported: meanDrivers >= meanPassengers,
     drivers: driverTopologies,
     passengers: passengerTopologies,

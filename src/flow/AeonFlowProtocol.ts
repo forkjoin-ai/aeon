@@ -70,26 +70,29 @@ export class AeonFlowProtocol {
   private poisonHandlers: Map<number, Set<VoidHandler>> = new Map();
 
   // Race tracking
-  private raceGroups: Map<string, {
-    streamIds: number[];
-    resolve: (result: { winner: number; result: Uint8Array }) => void;
-    settled: boolean;
-  }> = new Map();
+  private raceGroups: Map<
+    string,
+    {
+      streamIds: number[];
+      resolve: (result: { winner: number; result: Uint8Array }) => void;
+      settled: boolean;
+    }
+  > = new Map();
 
   // Fold tracking
-  private foldGroups: Map<string, {
-    streamIds: number[];
-    merger: (results: Map<number, Uint8Array>) => Uint8Array;
-    resolve: (result: Uint8Array) => void;
-    results: Map<number, Uint8Array>;
-    completed: Set<number>;
-    settled: boolean;
-  }> = new Map();
+  private foldGroups: Map<
+    string,
+    {
+      streamIds: number[];
+      merger: (results: Map<number, Uint8Array>) => Uint8Array;
+      resolve: (result: Uint8Array) => void;
+      results: Map<number, Uint8Array>;
+      completed: Set<number>;
+      settled: boolean;
+    }
+  > = new Map();
 
-  constructor(
-    transport: FlowTransport,
-    config?: Partial<FlowProtocolConfig>
-  ) {
+  constructor(transport: FlowTransport, config?: Partial<FlowProtocolConfig>) {
     this.transport = transport;
     this.config = { ...DEFAULT_FLOW_CONFIG, ...config };
     this.codec = FlowCodec.createSync();
@@ -167,9 +170,11 @@ export class AeonFlowProtocol {
     }
 
     // Send FORK frame on parent to notify remote
-    this.sendFrame(parentStreamId, FORK, new Uint8Array(
-      childIds.flatMap((id) => [(id >>> 8) & 0xFF, id & 0xFF])
-    ));
+    this.sendFrame(
+      parentStreamId,
+      FORK,
+      new Uint8Array(childIds.flatMap((id) => [(id >>> 8) & 0xff, id & 0xff]))
+    );
 
     return childIds;
   }
@@ -199,9 +204,13 @@ export class AeonFlowProtocol {
     // Send RACE frame on each stream
     for (const id of streamIds) {
       const peerIds = streamIds.filter((sid) => sid !== id);
-      this.sendFrame(id, RACE, new Uint8Array(
-        peerIds.flatMap((pid) => [(pid >>> 8) & 0xFF, pid & 0xFF])
-      ));
+      this.sendFrame(
+        id,
+        RACE,
+        new Uint8Array(
+          peerIds.flatMap((pid) => [(pid >>> 8) & 0xff, pid & 0xff])
+        )
+      );
     }
 
     const groupId = `race-${streamIds.join('-')}-${Date.now()}`;
@@ -404,7 +413,9 @@ export class AeonFlowProtocol {
       this.frameHandlers.set(streamId, handlers);
     }
     handlers.add(handler);
-    return () => { handlers!.delete(handler); };
+    return () => {
+      handlers!.delete(handler);
+    };
   }
 
   /**
@@ -417,7 +428,9 @@ export class AeonFlowProtocol {
       this.endHandlers.set(streamId, handlers);
     }
     handlers.add(handler);
-    return () => { handlers!.delete(handler); };
+    return () => {
+      handlers!.delete(handler);
+    };
   }
 
   /**
@@ -430,7 +443,9 @@ export class AeonFlowProtocol {
       this.ventHandlers.set(streamId, handlers);
     }
     handlers.add(handler);
-    return () => { handlers!.delete(handler); };
+    return () => {
+      handlers!.delete(handler);
+    };
   }
 
   /**
@@ -443,7 +458,9 @@ export class AeonFlowProtocol {
       this.poisonHandlers.set(streamId, handlers);
     }
     handlers.add(handler);
-    return () => { handlers!.delete(handler); };
+    return () => {
+      handlers!.delete(handler);
+    };
   }
 
   // ═══════════════════════════════════════════════════════════════════════
@@ -661,12 +678,11 @@ export class AeonFlowProtocol {
     if (!stream) {
       throw new Error(`Stream ${streamId} does not exist`);
     }
-    if (
-      allowedStates.length > 0 &&
-      !allowedStates.includes(stream.state)
-    ) {
+    if (allowedStates.length > 0 && !allowedStates.includes(stream.state)) {
       throw new Error(
-        `Stream ${streamId} is in state '${stream.state}', expected one of: ${allowedStates.join(', ')}`
+        `Stream ${streamId} is in state '${
+          stream.state
+        }', expected one of: ${allowedStates.join(', ')}`
       );
     }
     return stream;

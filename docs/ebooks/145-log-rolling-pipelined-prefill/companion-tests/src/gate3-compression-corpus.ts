@@ -156,7 +156,11 @@ function quantile(values: readonly number[], q: number): number {
   return sorted[lower] * (1 - weight) + sorted[upper] * weight;
 }
 
-function bootstrapMedianCi(values: readonly number[], seed: number, resamples: number): BootstrapInterval {
+function bootstrapMedianCi(
+  values: readonly number[],
+  seed: number,
+  resamples: number
+): BootstrapInterval {
   if (values.length === 0) {
     return { low: Number.NaN, high: Number.NaN };
   }
@@ -203,11 +207,22 @@ function makeTextSegment(size: number, rng: Lcg): Uint8Array {
     'display:flex;align-items:center;justify-content:space-between;\n',
     'SELECT id,name,updated_at FROM feed_items WHERE tenant_id=? ORDER BY updated_at DESC;\n',
   ];
-  return repeatPatternToSize(variants[uniformInt(rng, 0, variants.length - 1)], size);
+  return repeatPatternToSize(
+    variants[uniformInt(rng, 0, variants.length - 1)],
+    size
+  );
 }
 
 function makeJsonSegment(size: number, rng: Lcg): Uint8Array {
-  const payload = `{"id":${uniformInt(rng, 1, 99999)},"tenant":"acme","status":"active","tags":["prod","edge"],"latency_ms":${uniformInt(rng, 1, 1000)}}\n`;
+  const payload = `{"id":${uniformInt(
+    rng,
+    1,
+    99999
+  )},"tenant":"acme","status":"active","tags":["prod","edge"],"latency_ms":${uniformInt(
+    rng,
+    1,
+    1000
+  )}}\n`;
   return repeatPatternToSize(payload, size);
 }
 
@@ -228,7 +243,10 @@ function makeDictionarySegment(size: number, rng: Lcg): Uint8Array {
     'content-security-policy x-frame-options strict-transport-security',
     'translate moderation presence typing indicator websocket reconnect',
   ];
-  return repeatPatternToSize(patterns[uniformInt(rng, 0, patterns.length - 1)], size);
+  return repeatPatternToSize(
+    patterns[uniformInt(rng, 0, patterns.length - 1)],
+    size
+  );
 }
 
 function makeBinaryNoiseSegment(size: number, rng: Lcg): Uint8Array {
@@ -253,7 +271,10 @@ function makeWasmLikeSegment(size: number, rng: Lcg): Uint8Array {
   const output = new Uint8Array(size);
   const opcodes = [0x20, 0x21, 0x22, 0x28, 0x36, 0x41, 0x6a, 0x10];
   for (let i = 0; i < size; i++) {
-    output[i] = i % 9 === 0 ? opcodes[uniformInt(rng, 0, opcodes.length - 1)] : uniformInt(rng, 0, 255);
+    output[i] =
+      i % 9 === 0
+        ? opcodes[uniformInt(rng, 0, opcodes.length - 1)]
+        : uniformInt(rng, 0, 255);
   }
   return output;
 }
@@ -274,14 +295,19 @@ function makeSegment(
   kind: SegmentKind,
   lowBytes: number,
   highBytes: number,
-  payloadScale: number,
+  payloadScale: number
 ): Segment {
-  const size = Math.max(256, Math.round(uniformInt(rng, lowBytes, highBytes) * payloadScale));
+  const size = Math.max(
+    256,
+    Math.round(uniformInt(rng, lowBytes, highBytes) * payloadScale)
+  );
   if (kind === 'text') return { kind, data: makeTextSegment(size, rng) };
   if (kind === 'json') return { kind, data: makeJsonSegment(size, rng) };
   if (kind === 'numeric') return { kind, data: makeNumericSegment(size, rng) };
-  if (kind === 'dictionary') return { kind, data: makeDictionarySegment(size, rng) };
-  if (kind === 'binary') return { kind, data: makeBinaryNoiseSegment(size, rng) };
+  if (kind === 'dictionary')
+    return { kind, data: makeDictionarySegment(size, rng) };
+  if (kind === 'binary')
+    return { kind, data: makeBinaryNoiseSegment(size, rng) };
   if (kind === 'image') return { kind, data: makeImageLikeSegment(size, rng) };
   return { kind, data: makeWasmLikeSegment(size, rng) };
 }
@@ -292,7 +318,12 @@ function appendMany(target: Segment[], source: readonly Segment[]): void {
   }
 }
 
-function buildFamilySample(family: string, sampleIndex: number, seed: number, payloadScale: number): Sample {
+function buildFamilySample(
+  family: string,
+  sampleIndex: number,
+  seed: number,
+  payloadScale: number
+): Sample {
   const rng = new Lcg(seed);
   const segments: Segment[] = [];
 
@@ -304,7 +335,15 @@ function buildFamilySample(family: string, sampleIndex: number, seed: number, pa
       ]);
     }
     for (let i = 0; i < uniformInt(rng, 2, 5); i++) {
-      segments.push(makeSegment(rng, rng.next() < 0.6 ? 'image' : 'binary', 5000, 46000, payloadScale));
+      segments.push(
+        makeSegment(
+          rng,
+          rng.next() < 0.6 ? 'image' : 'binary',
+          5000,
+          46000,
+          payloadScale
+        )
+      );
     }
   } else if (family === 'api-telemetry') {
     for (let i = 0; i < uniformInt(rng, 8, 16); i++) {
@@ -341,7 +380,15 @@ function buildFamilySample(family: string, sampleIndex: number, seed: number, pa
   } else {
     // text-homogeneous (non-primary stress)
     for (let i = 0; i < uniformInt(rng, 14, 28); i++) {
-      segments.push(makeSegment(rng, rng.next() < 0.6 ? 'text' : 'dictionary', 1500, 18000, payloadScale));
+      segments.push(
+        makeSegment(
+          rng,
+          rng.next() < 0.6 ? 'text' : 'dictionary',
+          1500,
+          18000,
+          payloadScale
+        )
+      );
     }
   }
 
@@ -372,8 +419,15 @@ function buildCorpus(config: Gate3Config): readonly Sample[] {
   const samples: Sample[] = [];
   for (const family of config.families) {
     for (let i = 0; i < config.sampleCountPerFamily; i++) {
-      const sampleSeed = mixSeed(config.seed, i, family.name.length, family.primary ? 1 : 2);
-      samples.push(buildFamilySample(family.name, i, sampleSeed, config.payloadScale));
+      const sampleSeed = mixSeed(
+        config.seed,
+        i,
+        family.name.length,
+        family.primary ? 1 : 2
+      );
+      samples.push(
+        buildFamilySample(family.name, i, sampleSeed, config.payloadScale)
+      );
     }
   }
   return samples;
@@ -386,7 +440,8 @@ function encodeSizeWithRawFallback(codec: CodecLike, data: Uint8Array): number {
 
 function selectHeuristicCodecId(sample: Sample): string {
   const total = sample.data.length;
-  const textLike = sample.kindBytes.text + sample.kindBytes.json + sample.kindBytes.dictionary;
+  const textLike =
+    sample.kindBytes.text + sample.kindBytes.json + sample.kindBytes.dictionary;
   const numericLike = sample.kindBytes.numeric + sample.kindBytes.wasm;
   const binaryLike = sample.kindBytes.binary + sample.kindBytes.image;
   const textRatio = textLike / total;
@@ -400,7 +455,9 @@ function selectHeuristicCodecId(sample: Sample): string {
   return 'dictionary';
 }
 
-function evaluateSamples(config: Gate3Config): readonly (Sample & { readonly outcome: SampleOutcome })[] {
+function evaluateSamples(
+  config: Gate3Config
+): readonly (Sample & { readonly outcome: SampleOutcome })[] {
   const topological = new TopologicalCompressor({
     chunkSize: config.chunkSize,
     codecs: BUILTIN_CODECS,
@@ -433,7 +490,9 @@ function evaluateSamples(config: Gate3Config): readonly (Sample & { readonly out
       }
       for (let i = 0; i < restored.length; i++) {
         if (restored[i] !== sample.data[i]) {
-          throw new Error(`Gate 3 roundtrip content mismatch for ${sample.id} at byte ${i}`);
+          throw new Error(
+            `Gate 3 roundtrip content mismatch for ${sample.id} at byte ${i}`
+          );
         }
       }
       roundtripChecks += 1;
@@ -442,7 +501,10 @@ function evaluateSamples(config: Gate3Config): readonly (Sample & { readonly out
     const fixedSizes = {
       brotli: encodeSizeWithRawFallback(fixedCodecs.brotli, sample.data),
       gzip: encodeSizeWithRawFallback(fixedCodecs.gzip, sample.data),
-      dictionary: encodeSizeWithRawFallback(fixedCodecs.dictionary, sample.data),
+      dictionary: encodeSizeWithRawFallback(
+        fixedCodecs.dictionary,
+        sample.data
+      ),
       lz77: encodeSizeWithRawFallback(fixedCodecs.lz77, sample.data),
       huffman: encodeSizeWithRawFallback(fixedCodecs.huffman, sample.data),
       delta: encodeSizeWithRawFallback(fixedCodecs.delta, sample.data),
@@ -456,14 +518,17 @@ function evaluateSamples(config: Gate3Config): readonly (Sample & { readonly out
       fixedSizes.lz77,
       fixedSizes.huffman,
       fixedSizes.delta,
-      fixedSizes.raw,
+      fixedSizes.raw
     );
 
     const heuristicCodecId = selectHeuristicCodecId(sample);
-    const heuristicSize = fixedSizes[heuristicCodecId as keyof typeof fixedSizes];
+    const heuristicSize =
+      fixedSizes[heuristicCodecId as keyof typeof fixedSizes];
 
-    const gainVsBestFixedPct = ((bestFixedSize - topologicalSize) / bestFixedSize) * 100;
-    const gainVsHeuristicPct = ((heuristicSize - topologicalSize) / heuristicSize) * 100;
+    const gainVsBestFixedPct =
+      ((bestFixedSize - topologicalSize) / bestFixedSize) * 100;
+    const gainVsHeuristicPct =
+      ((heuristicSize - topologicalSize) / heuristicSize) * 100;
 
     outcomes.push({
       ...sample,
@@ -487,10 +552,14 @@ function evaluateCell(
   family: Gate3Family,
   samples: readonly (Sample & { readonly outcome: SampleOutcome })[],
   config: Gate3Config,
-  familyIndex: number,
+  familyIndex: number
 ): Gate3CellResult {
-  const gainsVsBestFixed = samples.map((sample) => sample.outcome.gainVsBestFixedPct);
-  const gainsVsHeuristic = samples.map((sample) => sample.outcome.gainVsHeuristicPct);
+  const gainsVsBestFixed = samples.map(
+    (sample) => sample.outcome.gainVsBestFixedPct
+  );
+  const gainsVsHeuristic = samples.map(
+    (sample) => sample.outcome.gainVsHeuristicPct
+  );
   const codecsUsed = samples.map((sample) => sample.outcome.codecsUsed);
 
   const medianGainVsBestFixedPct = quantile(gainsVsBestFixed, 0.5);
@@ -498,23 +567,33 @@ function evaluateCell(
   const medianGainVsBestFixedPctCi = bootstrapMedianCi(
     gainsVsBestFixed,
     mixSeed(config.seed, familyIndex, 701),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
   const medianGainVsHeuristicPctCi = bootstrapMedianCi(
     gainsVsHeuristic,
     mixSeed(config.seed, familyIndex, 709),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
 
-  const winRateVsBestFixed = gainsVsBestFixed.filter((value) => value > 0).length / gainsVsBestFixed.length;
-  const winRateVsHeuristic = gainsVsHeuristic.filter((value) => value > 0).length / gainsVsHeuristic.length;
+  const winRateVsBestFixed =
+    gainsVsBestFixed.filter((value) => value > 0).length /
+    gainsVsBestFixed.length;
+  const winRateVsHeuristic =
+    gainsVsHeuristic.filter((value) => value > 0).length /
+    gainsVsHeuristic.length;
   const medianCodecsUsed = quantile(codecsUsed, 0.5);
 
   const failedCriteria: string[] = [];
-  if (medianGainVsBestFixedPctCi.low <= config.thresholds.gainVsBestFixedMedianLowerCiPct) {
+  if (
+    medianGainVsBestFixedPctCi.low <=
+    config.thresholds.gainVsBestFixedMedianLowerCiPct
+  ) {
     failedCriteria.push('gain_vs_best_fixed_ci_low');
   }
-  if (medianGainVsHeuristicPctCi.low <= config.thresholds.gainVsHeuristicMedianLowerCiPct) {
+  if (
+    medianGainVsHeuristicPctCi.low <=
+    config.thresholds.gainVsHeuristicMedianLowerCiPct
+  ) {
     failedCriteria.push('gain_vs_heuristic_ci_low');
   }
   if (winRateVsBestFixed < config.thresholds.minWinRateVsBestFixed) {
@@ -576,13 +655,21 @@ export function makeDefaultGate3Config(): Gate3Config {
 export function runGate3Corpus(config: Gate3Config): Gate3Report {
   const sampleOutcomes = evaluateSamples(config);
   const cells = config.families.map((family, index) => {
-    const familySamples = sampleOutcomes.filter((sample) => sample.family === family.name);
+    const familySamples = sampleOutcomes.filter(
+      (sample) => sample.family === family.name
+    );
     return evaluateCell(family, familySamples, config, index);
   });
 
-  const primaryCells = cells.filter((cell) => cell.primary).map((cell) => cell.cellId);
-  const passedPrimaryCells = cells.filter((cell) => cell.primary && cell.pass).map((cell) => cell.cellId);
-  const failedPrimaryCells = cells.filter((cell) => cell.primary && !cell.pass).map((cell) => cell.cellId);
+  const primaryCells = cells
+    .filter((cell) => cell.primary)
+    .map((cell) => cell.cellId);
+  const passedPrimaryCells = cells
+    .filter((cell) => cell.primary && cell.pass)
+    .map((cell) => cell.cellId);
+  const failedPrimaryCells = cells
+    .filter((cell) => cell.primary && !cell.pass)
+    .map((cell) => cell.cellId);
 
   return {
     protocol: {
@@ -615,7 +702,9 @@ export function renderGate3Markdown(report: Gate3Report): string {
   const lines: string[] = [];
   lines.push('# Gate 3 Compression Corpus Matrix');
   lines.push('');
-  lines.push('Heterogeneous compression corpus benchmark (topological per-chunk race vs fixed-codec and heuristic baselines) with bootstrap uncertainty intervals.');
+  lines.push(
+    'Heterogeneous compression corpus benchmark (topological per-chunk race vs fixed-codec and heuristic baselines) with bootstrap uncertainty intervals.'
+  );
   lines.push('');
   lines.push('## Corpus');
   lines.push('');
@@ -628,20 +717,36 @@ export function renderGate3Markdown(report: Gate3Report): string {
   lines.push('## Verdict');
   lines.push('');
   lines.push(`- Overall Gate 3: **${report.gate.pass ? 'PASS' : 'DENY'}**`);
-  lines.push(`- Primary cells passed: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}`);
+  lines.push(
+    `- Primary cells passed: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}`
+  );
   lines.push('');
   lines.push('## Matrix Results');
   lines.push('');
-  lines.push('| Cell | Primary | Samples | Median Gain vs Best Fixed % (95% CI) | Median Gain vs Heuristic % (95% CI) | Win Rates (best fixed/heuristic) | Median Codecs Used | Pass |');
+  lines.push(
+    '| Cell | Primary | Samples | Median Gain vs Best Fixed % (95% CI) | Median Gain vs Heuristic % (95% CI) | Win Rates (best fixed/heuristic) | Median Codecs Used | Pass |'
+  );
   lines.push('|---|---|---:|---:|---:|---:|---:|---|');
   for (const cell of report.cells) {
     lines.push(
-      `| ${cell.cellId} | ${cell.primary ? 'yes' : 'no'} | ${cell.sampleCount}` +
-        ` | ${cell.medianGainVsBestFixedPct.toFixed(3)} (${cell.medianGainVsBestFixedPctCi.low.toFixed(3)} to ${cell.medianGainVsBestFixedPctCi.high.toFixed(3)})` +
-        ` | ${cell.medianGainVsHeuristicPct.toFixed(3)} (${cell.medianGainVsHeuristicPctCi.low.toFixed(3)} to ${cell.medianGainVsHeuristicPctCi.high.toFixed(3)})` +
-        ` | ${formatPercent(cell.winRateVsBestFixed)}/${formatPercent(cell.winRateVsHeuristic)}` +
+      `| ${cell.cellId} | ${cell.primary ? 'yes' : 'no'} | ${
+        cell.sampleCount
+      }` +
+        ` | ${cell.medianGainVsBestFixedPct.toFixed(
+          3
+        )} (${cell.medianGainVsBestFixedPctCi.low.toFixed(
+          3
+        )} to ${cell.medianGainVsBestFixedPctCi.high.toFixed(3)})` +
+        ` | ${cell.medianGainVsHeuristicPct.toFixed(
+          3
+        )} (${cell.medianGainVsHeuristicPctCi.low.toFixed(
+          3
+        )} to ${cell.medianGainVsHeuristicPctCi.high.toFixed(3)})` +
+        ` | ${formatPercent(cell.winRateVsBestFixed)}/${formatPercent(
+          cell.winRateVsHeuristic
+        )}` +
         ` | ${cell.medianCodecsUsed.toFixed(2)}` +
-        ` | ${cell.pass ? 'yes' : 'no'} |`,
+        ` | ${cell.pass ? 'yes' : 'no'} |`
     );
   }
   lines.push('');

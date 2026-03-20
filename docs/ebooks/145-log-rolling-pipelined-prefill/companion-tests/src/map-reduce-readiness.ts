@@ -32,7 +32,10 @@ export function mean(values: readonly number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-export function linearRegressionSlope(x: readonly number[], y: readonly number[]): number {
+export function linearRegressionSlope(
+  x: readonly number[],
+  y: readonly number[]
+): number {
   const xBar = mean(x);
   const yBar = mean(y);
   let numerator = 0;
@@ -47,7 +50,7 @@ export function linearRegressionSlope(x: readonly number[], y: readonly number[]
 
 export function pearsonCorrelation(
   x: readonly number[],
-  y: readonly number[],
+  y: readonly number[]
 ): number {
   const xBar = mean(x);
   const yBar = mean(y);
@@ -67,7 +70,9 @@ export function pearsonCorrelation(
   return denom === 0 ? 0 : covariance / denom;
 }
 
-export function computeReadinessScores(inputs: ReadinessInputs): ReadinessScores {
+export function computeReadinessScores(
+  inputs: ReadinessInputs
+): ReadinessScores {
   const mapIndependence = clamp01(inputs.mapIndependence);
   const reduceAssociativity = clamp01(inputs.reduceAssociativity);
   const keySkew = clamp01(inputs.keySkew);
@@ -79,7 +84,7 @@ export function computeReadinessScores(inputs: ReadinessInputs): ReadinessScores
   const oBeta = clamp01(deficit / Math.max(1, intrinsicBeta1));
 
   const qMr = clamp01(
-    mapIndependence * reduceAssociativity * (1 - keySkew) * zeroCopyRatio,
+    mapIndependence * reduceAssociativity * (1 - keySkew) * zeroCopyRatio
   );
 
   return {
@@ -91,7 +96,7 @@ export function computeReadinessScores(inputs: ReadinessInputs): ReadinessScores
 
 export function simulatePromotionGain(
   inputs: ReadinessInputs,
-  rng: () => number,
+  rng: () => number
 ): number {
   const mapIndependence = clamp01(inputs.mapIndependence);
   const reduceAssociativity = clamp01(inputs.reduceAssociativity);
@@ -103,10 +108,7 @@ export function simulatePromotionGain(
   const deficit = Math.max(0, intrinsicBeta1 - implementationBeta1);
   const opportunity = clamp01(deficit / Math.max(1, intrinsicBeta1));
   const migrationQuality =
-    mapIndependence *
-    reduceAssociativity *
-    (1 - keySkew) *
-    zeroCopyRatio;
+    mapIndependence * reduceAssociativity * (1 - keySkew) * zeroCopyRatio;
 
   // Baseline map/reduce runtime model (no explicit race/vent semantics).
   const baselineParallelism = Math.max(1, 1 + implementationBeta1);
@@ -129,7 +131,8 @@ export function simulatePromotionGain(
   const raceBenefit = 1 - 0.5 * opportunity * migrationQuality;
   const ventBenefit = 1 - 0.6 * opportunity * migrationQuality;
   const promotedReducerPenalty =
-    1 + (1 - reduceAssociativity) * (1.25 - 0.95 * opportunity * migrationQuality);
+    1 +
+    (1 - reduceAssociativity) * (1.25 - 0.95 * opportunity * migrationQuality);
   const coordinationOverhead =
     4 + 8 * (1 - mapIndependence) + 6 * (1 - reduceAssociativity);
 

@@ -11,27 +11,53 @@
 import { describe, expect, it } from 'bun:test';
 
 // Buleyean Engine (inline)
-interface BuleyeanSpace { numChoices: number; rounds: number; voidBoundary: number[]; }
-function createSpace(n: number): BuleyeanSpace { return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) }; }
-function weight(s: BuleyeanSpace, i: number): number { return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1; }
-function probability(s: BuleyeanSpace, i: number): number { let tw = 0; for (let j = 0; j < s.numChoices; j++) tw += weight(s, j); return weight(s, i) / tw; }
-function reject(s: BuleyeanSpace, r: number): BuleyeanSpace { const b = [...s.voidBoundary]; b[r]! += 1; return { numChoices: s.numChoices, rounds: s.rounds + 1, voidBoundary: b }; }
+interface BuleyeanSpace {
+  numChoices: number;
+  rounds: number;
+  voidBoundary: number[];
+}
+function createSpace(n: number): BuleyeanSpace {
+  return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) };
+}
+function weight(s: BuleyeanSpace, i: number): number {
+  return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1;
+}
+function probability(s: BuleyeanSpace, i: number): number {
+  let tw = 0;
+  for (let j = 0; j < s.numChoices; j++) tw += weight(s, j);
+  return weight(s, i) / tw;
+}
+function reject(s: BuleyeanSpace, r: number): BuleyeanSpace {
+  const b = [...s.voidBoundary];
+  b[r]! += 1;
+  return { numChoices: s.numChoices, rounds: s.rounds + 1, voidBoundary: b };
+}
 
 // Sleep debt helpers
-function residualDebt(wakeLoad: number, carriedDebt: number, recoveryQuota: number): number {
-  return Math.max(0, (wakeLoad + carriedDebt) - recoveryQuota);
+function residualDebt(
+  wakeLoad: number,
+  carriedDebt: number,
+  recoveryQuota: number
+): number {
+  return Math.max(0, wakeLoad + carriedDebt - recoveryQuota);
 }
 function effectiveCapacity(maxCap: number, debt: number): number {
   return maxCap - Math.min(maxCap, debt);
 }
 
 // Failure entropy helpers
-function structuredFrontier(frontier: number, vented: number): number { return frontier - vented; }
-function entropyProxy(frontier: number): number { return frontier - 1; }
+function structuredFrontier(frontier: number, vented: number): number {
+  return frontier - vented;
+}
+function entropyProxy(frontier: number): number {
+  return frontier - 1;
+}
 
 describe('Prediction 111: Non-Empirical Prediction', () => {
   it('structural holes have positive prediction weight', () => {
-    const total = 118, observed = 116, holes = 2;
+    const total = 118,
+      observed = 116,
+      holes = 2;
     expect(observed + holes).toBe(total);
     const holeWeight = 20 - Math.min(5, 20) + 1;
     expect(holeWeight).toBeGreaterThan(0);
@@ -55,7 +81,8 @@ describe('Prediction 111: Non-Empirical Prediction', () => {
 describe('Prediction 112: Grandfather Paradox Resolution', () => {
   it('void boundary is append-only: events cannot be erased', () => {
     let h = createSpace(5);
-    h = reject(h, 0); h = reject(h, 1);
+    h = reject(h, 0);
+    h = reject(h, 1);
     for (let i = 0; i < 5; i++) expect(weight(h, i)).toBeGreaterThan(0);
   });
 
@@ -128,9 +155,14 @@ describe('Prediction 115: Structural Holes Predict Backward', () => {
   });
 
   it('two observers predict identically (coherence)', () => {
-    let s1 = createSpace(3), s2 = createSpace(3);
-    for (const r of [0, 1, 0, 2]) { s1 = reject(s1, r); s2 = reject(s2, r); }
-    for (let i = 0; i < 3; i++) expect(probability(s1, i)).toBe(probability(s2, i));
+    let s1 = createSpace(3),
+      s2 = createSpace(3);
+    for (const r of [0, 1, 0, 2]) {
+      s1 = reject(s1, r);
+      s2 = reject(s2, r);
+    }
+    for (let i = 0; i < 3; i++)
+      expect(probability(s1, i)).toBe(probability(s2, i));
   });
 
   it('no candidate eliminated', () => {
@@ -146,7 +178,8 @@ describe('Round 7 Master', () => {
     expect(weight(createSpace(3), 0)).toBeGreaterThan(0);
     expect(residualDebt(8, 0, 6)).toBeGreaterThan(0);
     expect(structuredFrontier(5, 4)).toBe(1);
-    let r = createSpace(3); r = reject(r, 0);
+    let r = createSpace(3);
+    r = reject(r, 0);
     expect(weight(r, 1)).toBeGreaterThanOrEqual(weight(r, 0));
     console.log('All five deep predictions verified');
   });

@@ -26,7 +26,10 @@ function mean(values: readonly number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function linearRegressionSlope(x: readonly number[], y: readonly number[]): number {
+function linearRegressionSlope(
+  x: readonly number[],
+  y: readonly number[]
+): number {
   const xBar = mean(x);
   const yBar = mean(y);
   let numerator = 0;
@@ -56,7 +59,7 @@ describe('Quantum Speedup = Topological Deficit (§6.12)', () => {
     it('sequential search takes N evaluations on average', () => {
       // Classical search: one path at a time, β₁ = 0
       const N = 1000;
-      const rng = makeRng(0xC1A55);
+      const rng = makeRng(0xc1a55);
       const target = Math.floor(rng() * N);
 
       // Sequential search: check one element at a time
@@ -79,7 +82,7 @@ describe('Quantum Speedup = Topological Deficit (§6.12)', () => {
     it('average sequential search takes N/2 evaluations', () => {
       const N = 200;
       const trials = 5000;
-      const rng = makeRng(0xABCD);
+      const rng = makeRng(0xabcd);
       let totalEvals = 0;
 
       for (let t = 0; t < trials; t++) {
@@ -144,7 +147,7 @@ describe('Quantum Speedup = Topological Deficit (§6.12)', () => {
 
         // Grover constants imply ~2/π ≈ 0.6366 multiplier on √N
         expect(normalized).toBeGreaterThan(0.58);
-        expect(normalized).toBeLessThan(0.70);
+        expect(normalized).toBeLessThan(0.7);
       }
     });
 
@@ -186,7 +189,7 @@ describe('Quantum Speedup = Topological Deficit (§6.12)', () => {
     });
   });
 
-  describe('Shor\'s algorithm: factoring speedup = topological deficit', () => {
+  describe("Shor's algorithm: factoring speedup = topological deficit", () => {
     it('classical factoring vs quantum period-finding topology', () => {
       // Classical trial division: O(√N) — sequential, β₁ = 0
       // Shor's: O((log N)³) — quantum period finding exploits parallelism
@@ -244,10 +247,10 @@ describe('Band Theory: Band Gap = β₂ > 0 (§6.11)', () => {
     // V(x) = 0 for 0 < x < a (well), V(x) = V0 for a < x < a+b (barrier)
     // Period: d = a + b
 
-    const a = 1.0;     // well width
-    const b = 0.2;     // barrier width
-    const V0 = 10;     // barrier height (energy units)
-    const d = a + b;   // period
+    const a = 1.0; // well width
+    const b = 0.2; // barrier width
+    const V0 = 10; // barrier height (energy units)
+    const d = a + b; // period
 
     // The Kronig-Penney dispersion relation:
     // cos(kd) = cos(αa)cosh(κb) - [(κ²-α²)/(2ακ)]sin(αa)sinh(κb)
@@ -263,7 +266,8 @@ describe('Band Theory: Band Gap = β₂ > 0 (§6.11)', () => {
         return (
           Math.cos(alpha * a) * Math.cos(beta * b) -
           ((beta * beta + alpha * alpha) / (2 * alpha * beta)) *
-            Math.sin(alpha * a) * Math.sin(beta * b)
+            Math.sin(alpha * a) *
+            Math.sin(beta * b)
         );
       }
       // Below barrier: well has propagating, barrier has evanescent solution
@@ -272,7 +276,8 @@ describe('Band Theory: Band Gap = β₂ > 0 (§6.11)', () => {
       return (
         Math.cos(alpha * a) * Math.cosh(kappa * b) -
         ((kappa * kappa - alpha * alpha) / (2 * alpha * kappa)) *
-          Math.sin(alpha * a) * Math.sinh(kappa * b)
+          Math.sin(alpha * a) *
+          Math.sinh(kappa * b)
       );
     }
 
@@ -337,7 +342,8 @@ describe('Band Theory: Band Gap = β₂ > 0 (§6.11)', () => {
         return (
           Math.cos(alpha * a) * Math.cos(beta * b) -
           ((beta * beta + alpha * alpha) / (2 * alpha * beta)) *
-            Math.sin(alpha * a) * Math.sin(beta * b)
+            Math.sin(alpha * a) *
+            Math.sin(beta * b)
         );
       }
       const alpha = Math.sqrt(E);
@@ -345,7 +351,8 @@ describe('Band Theory: Band Gap = β₂ > 0 (§6.11)', () => {
       return (
         Math.cos(alpha * a) * Math.cosh(kappa * b) -
         ((kappa * kappa - alpha * alpha) / (2 * alpha * kappa)) *
-          Math.sin(alpha * a) * Math.sinh(kappa * b)
+          Math.sin(alpha * a) *
+          Math.sinh(kappa * b)
       );
     }
 
@@ -390,7 +397,8 @@ describe('Band Theory: Band Gap = β₂ > 0 (§6.11)', () => {
         return (
           Math.cos(alpha * a) * Math.cosh(kappa * b) -
           ((kappa * kappa - alpha * alpha) / (2 * alpha * kappa)) *
-            Math.sin(alpha * a) * Math.sinh(kappa * b)
+            Math.sin(alpha * a) *
+            Math.sinh(kappa * b)
         );
       }
 
@@ -503,7 +511,8 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
     for (const [a, b] of graph.edges) {
       union(a, b);
     }
-    const components = new Set(Array.from({ length: V }, (_, i) => find(i))).size;
+    const components = new Set(Array.from({ length: V }, (_, i) => find(i)))
+      .size;
 
     return Math.max(0, E - V + components);
   }
@@ -542,7 +551,10 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
     deltaForkJoin: number;
   }
 
-  function runEvolution(seed: number, selectionPressure: boolean): EvolutionSummary {
+  function runEvolution(
+    seed: number,
+    selectionPressure: boolean
+  ): EvolutionSummary {
     const rng = makeRng(seed);
     const generations = 90;
     const populationSize = 24;
@@ -567,15 +579,20 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
       const mutation = rng();
 
       if (mutation < 0.55 && edges.length > nodeCount - 1) {
-        const nonBackbone = edges.filter(([f, t]) => !(t === f + 1 && f < nodeCount - 1));
+        const nonBackbone = edges.filter(
+          ([f, t]) => !(t === f + 1 && f < nodeCount - 1)
+        );
         if (nonBackbone.length > 0) {
           const chosen = nonBackbone[Math.floor(rng() * nonBackbone.length)];
-          const idx = edges.findIndex(([f, t]) => f === chosen[0] && t === chosen[1]);
+          const idx = edges.findIndex(
+            ([f, t]) => f === chosen[0] && t === chosen[1]
+          );
           if (idx >= 0) edges.splice(idx, 1);
         }
-      } else if (mutation < 0.80) {
+      } else if (mutation < 0.8) {
         const from = Math.floor(rng() * (nodeCount - 2));
-        const to = from + 2 + Math.floor(rng() * Math.max(1, nodeCount - from - 2));
+        const to =
+          from + 2 + Math.floor(rng() * Math.max(1, nodeCount - from - 2));
         if (to < nodeCount) edges.push([from, to]);
       }
 
@@ -605,19 +622,23 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
       const valid = scored
         .map((entry) => ({
           ...entry,
-          fitness: entry.energy > nodeCount + 2 ? entry.fitness * 0.5 : entry.fitness,
+          fitness:
+            entry.energy > nodeCount + 2 ? entry.fitness * 0.5 : entry.fitness,
         }))
         .filter((entry) => entry.energy >= nodeCount - 1);
 
       const avgBeta1 = mean(valid.map((entry) => computeBeta1(entry.graph)));
       avgBeta1PerGen.push(avgBeta1);
       forkJoinFractionPerGen.push(
-        valid.filter((entry) => hasForkJoinStructure(entry.graph)).length / valid.length,
+        valid.filter((entry) => hasForkJoinStructure(entry.graph)).length /
+          valid.length
       );
 
       const survivorCount = Math.ceil(valid.length / 2);
       const survivors = selectionPressure
-        ? [...valid].sort((a, b) => b.fitness - a.fitness).slice(0, survivorCount)
+        ? [...valid]
+            .sort((a, b) => b.fitness - a.fitness)
+            .slice(0, survivorCount)
         : shuffleInPlace([...valid]).slice(0, survivorCount);
 
       population = [];
@@ -643,13 +664,13 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
   }
 
   it('selection pressure increases β₁ and fork/join prevalence in one run', () => {
-    const summary = runEvolution(0xE701CE, true);
+    const summary = runEvolution(0xe701ce, true);
     expect(summary.deltaBeta1).toBeGreaterThan(0);
     expect(summary.deltaForkJoin).toBeGreaterThan(0);
   });
 
   it('constraint-driven evolution beats neutral drift across many seeds', () => {
-    const seeds = Array.from({ length: 24 }, (_, i) => 0xE70000 + i * 97);
+    const seeds = Array.from({ length: 24 }, (_, i) => 0xe70000 + i * 97);
 
     const selected = seeds.map((seed) => runEvolution(seed, true));
     const neutral = seeds.map((seed) => runEvolution(seed, false));
@@ -661,19 +682,23 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
     const neutralDeltaFork = neutral.map((result) => result.deltaForkJoin);
 
     const pairwiseBetaWins = selected.filter(
-      (result, i) => result.deltaBeta1 > neutral[i].deltaBeta1,
+      (result, i) => result.deltaBeta1 > neutral[i].deltaBeta1
     ).length;
     const pairwiseForkWins = selected.filter(
-      (result, i) => result.deltaForkJoin > neutral[i].deltaForkJoin,
+      (result, i) => result.deltaForkJoin > neutral[i].deltaForkJoin
     ).length;
 
-    expect(mean(selectedDeltaBeta)).toBeGreaterThan(mean(neutralDeltaBeta) + 0.08);
+    expect(mean(selectedDeltaBeta)).toBeGreaterThan(
+      mean(neutralDeltaBeta) + 0.08
+    );
     expect(mean(selectedDeltaFork)).toBeGreaterThan(0.02);
-    expect(mean(selected.map((result) => result.lateForkJoin))).toBeGreaterThan(0.45);
+    expect(mean(selected.map((result) => result.lateForkJoin))).toBeGreaterThan(
+      0.45
+    );
     expect(pairwiseBetaWins).toBeGreaterThan(Math.floor(seeds.length * 0.65));
     // Fork/join prevalence is noisier than β₁ under neutral drift; keep a
     // moderate pairwise bar and rely on stronger mean-effect assertions above.
-    expect(pairwiseForkWins).toBeGreaterThan(Math.floor(seeds.length * 0.40));
+    expect(pairwiseForkWins).toBeGreaterThan(Math.floor(seeds.length * 0.4));
   });
 
   it('graphs with higher β₁ have higher throughput', () => {
@@ -682,19 +707,36 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
 
     const sequential: SimpleGraph = {
       nodeCount: 5,
-      edges: [[0, 1], [1, 2], [2, 3], [3, 4]],
+      edges: [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+      ],
     };
 
     const simpleFork: SimpleGraph = {
       nodeCount: 5,
-      edges: [[0, 1], [0, 2], [1, 3], [2, 3], [3, 4]], // fork at 0, join at 3
+      edges: [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+        [3, 4],
+      ], // fork at 0, join at 3
     };
 
     const wideFork: SimpleGraph = {
       nodeCount: 6,
       edges: [
-        [0, 1], [0, 2], [0, 3], [0, 4], // fork 4 ways
-        [1, 5], [2, 5], [3, 5], [4, 5],  // join at 5
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [0, 4], // fork 4 ways
+        [1, 5],
+        [2, 5],
+        [3, 5],
+        [4, 5], // join at 5
       ],
     };
 
@@ -708,10 +750,10 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
 
     // Throughput scales with β₁
     expect(computeThroughput(wideFork)).toBeGreaterThan(
-      computeThroughput(simpleFork),
+      computeThroughput(simpleFork)
     );
     expect(computeThroughput(simpleFork)).toBeGreaterThan(
-      computeThroughput(sequential),
+      computeThroughput(sequential)
     );
   });
 
@@ -742,7 +784,14 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
 
     const preFold: SimpleGraph = {
       nodeCount: 5,
-      edges: [[0, 1], [0, 2], [0, 3], [1, 4], [2, 4], [3, 4]],
+      edges: [
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [1, 4],
+        [2, 4],
+        [3, 4],
+      ],
     };
 
     const postFold: SimpleGraph = {
@@ -767,7 +816,12 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
 
     const minimalFork: SimpleGraph = {
       nodeCount: 4,
-      edges: [[0, 1], [0, 2], [1, 3], [2, 3]], // simplest fork/join
+      edges: [
+        [0, 1],
+        [0, 2],
+        [1, 3],
+        [2, 3],
+      ], // simplest fork/join
     };
 
     // Minimum overhead: 4 edges for β₁ = 1
@@ -781,7 +835,11 @@ describe('Convergence Simulation: 3 Constraints → Fork/Race/Fold (§13)', () =
     // Sequential needs only 3 edges for 4 nodes but has β₁ = 0
     const sequential: SimpleGraph = {
       nodeCount: 4,
-      edges: [[0, 1], [1, 2], [2, 3]],
+      edges: [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+      ],
     };
     expect(computeBeta1(sequential)).toBe(0);
     expect(sequential.edges.length).toBe(3); // less overhead, but no parallelism

@@ -135,9 +135,8 @@ function complementDist(counts: number[], eta: number): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -201,7 +200,7 @@ function c0Execute(
   state: MetaCogState,
   matrix: PayoffMatrix,
   opponentChoice: string,
-  rng: () => number,
+  rng: () => number
 ): string {
   const choices = matrix.choices;
   const N = choices.length;
@@ -234,9 +233,11 @@ function c0Update(
   state: MetaCogState,
   myChoice: string,
   opponentChoice: string,
-  matrix: PayoffMatrix,
+  matrix: PayoffMatrix
 ): void {
-  const [myPay, theirPay] = matrix.payoffs[myChoice]?.[opponentChoice] ?? [0, 0];
+  const [myPay, theirPay] = matrix.payoffs[myChoice]?.[opponentChoice] ?? [
+    0, 0,
+  ];
   const idx = matrix.choices.indexOf(myChoice);
 
   // Apply void decay (c3 parameter)
@@ -278,7 +279,8 @@ function c1Monitor(state: MetaCogState): void {
   // Inverse Bule for this window
   const maxEntropy = Math.log(dist.length);
   if (state.c0.totalRounds > 0) {
-    state.c1.inverseBule = (maxEntropy - state.c1.entropy) / state.c0.totalRounds;
+    state.c1.inverseBule =
+      (maxEntropy - state.c1.entropy) / state.c0.totalRounds;
   }
 
   // Track inverse Bule history
@@ -295,8 +297,10 @@ function c2Evaluate(state: MetaCogState): void {
   if (ibHist.length >= 2) {
     const recent = ibHist.slice(-3);
     const older = ibHist.slice(-6, -3);
-    const recentMean = recent.length > 0 ? recent.reduce((a, b) => a + b, 0) / recent.length : 0;
-    const olderMean = older.length > 0 ? older.reduce((a, b) => a + b, 0) / older.length : 0;
+    const recentMean =
+      recent.length > 0 ? recent.reduce((a, b) => a + b, 0) / recent.length : 0;
+    const olderMean =
+      older.length > 0 ? older.reduce((a, b) => a + b, 0) / older.length : 0;
     state.c2.gradientDirection = recentMean - olderMean;
     state.c2.gradientMagnitude = Math.abs(state.c2.gradientDirection);
   }
@@ -307,7 +311,8 @@ function c2Evaluate(state: MetaCogState): void {
     const prev2 = ibHist.slice(-4, -2);
     const lastMean = last2.reduce((a, b) => a + b, 0) / 2;
     const prevMean = prev2.reduce((a, b) => a + b, 0) / 2;
-    state.c2.regimeChangeDetected = Math.abs(lastMean - prevMean) > prevMean * 0.5;
+    state.c2.regimeChangeDetected =
+      Math.abs(lastMean - prevMean) > prevMean * 0.5;
   }
 
   // Inverse Bule trend (slope)
@@ -315,7 +320,10 @@ function c2Evaluate(state: MetaCogState): void {
     const n = Math.min(5, ibHist.length);
     const recent = ibHist.slice(-n);
     // Simple linear regression slope
-    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+    let sumX = 0,
+      sumY = 0,
+      sumXY = 0,
+      sumX2 = 0;
     for (let i = 0; i < recent.length; i++) {
       sumX += i;
       sumY += recent[i];
@@ -323,9 +331,8 @@ function c2Evaluate(state: MetaCogState): void {
       sumX2 += i * i;
     }
     const denom = recent.length * sumX2 - sumX * sumX;
-    state.c2.inverseBuleTrend = denom !== 0
-      ? (recent.length * sumXY - sumX * sumY) / denom
-      : 0;
+    state.c2.inverseBuleTrend =
+      denom !== 0 ? (recent.length * sumXY - sumX * sumY) / denom : 0;
   }
 
   // Exploration vs exploitation scoring
@@ -397,10 +404,18 @@ function c3Adapt(state: MetaCogState): void {
 /** Run full metacognitive void walker against an opponent */
 function runMetaCogGame(
   matrix: PayoffMatrix,
-  opponentStrategy: (round: number, history: string[], rng: () => number) => string,
+  opponentStrategy: (
+    round: number,
+    history: string[],
+    rng: () => number
+  ) => string,
   rounds: number,
-  rng: () => number,
-): { state: MetaCogState; snapshots: EvolutionSnapshot[]; opponentHistory: string[] } {
+  rng: () => number
+): {
+  state: MetaCogState;
+  snapshots: EvolutionSnapshot[];
+  opponentHistory: string[];
+} {
   const state = initMetaCog(matrix.choices.length);
   const snapshots: EvolutionSnapshot[] = [];
   const myHistory: string[] = [];
@@ -467,7 +482,8 @@ function grimTrigger(choices: string[]) {
   let triggered = false;
   return (round: number, theirHistory: string[]): string => {
     if (triggered) return choices[choices.length - 1];
-    if (theirHistory.some((c) => c === choices[choices.length - 1])) triggered = true;
+    if (theirHistory.some((c) => c === choices[choices.length - 1]))
+      triggered = true;
     return triggered ? choices[choices.length - 1] : choices[0];
   };
 }
@@ -510,7 +526,10 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
   it('evolves against tit-for-tat in PD: explores then exploits', () => {
     const rng = makeRng(42);
     const { state, snapshots } = runMetaCogGame(
-      PD, titForTat(PD.choices), 500, rng,
+      PD,
+      titForTat(PD.choices),
+      500,
+      rng
     );
 
     // Should have adapted at least once
@@ -519,18 +538,32 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
     // Exploration rate should decrease over time (learning → exploitation)
     const earlyExploration = snapshots.slice(0, 5).map((s) => s.c3_exploration);
     const lateExploration = snapshots.slice(-5).map((s) => s.c3_exploration);
-    const earlyMean = earlyExploration.reduce((a, b) => a + b, 0) / earlyExploration.length;
-    const lateMean = lateExploration.reduce((a, b) => a + b, 0) / lateExploration.length;
+    const earlyMean =
+      earlyExploration.reduce((a, b) => a + b, 0) / earlyExploration.length;
+    const lateMean =
+      lateExploration.reduce((a, b) => a + b, 0) / lateExploration.length;
     expect(lateMean).toBeLessThanOrEqual(earlyMean + 0.1);
 
     console.log('\n  Metacognitive PD vs Tit-for-Tat (500 rounds):');
     console.log('  ' + '─'.repeat(70));
-    console.log(`  c0 avg payoff:  ${sparkline(snapshots.map((s) => s.c0_payoff))}`);
-    console.log(`  c1 entropy:     ${sparkline(snapshots.map((s) => s.c1_entropy))}`);
-    console.log(`  c1 inv.Bule:    ${sparkline(snapshots.map((s) => s.c1_inverseBule))}`);
-    console.log(`  c2 gradient:    ${sparkline(snapshots.map((s) => s.c2_gradient))}`);
-    console.log(`  c3 eta:         ${sparkline(snapshots.map((s) => s.c3_eta))}`);
-    console.log(`  c3 exploration: ${sparkline(snapshots.map((s) => s.c3_exploration))}`);
+    console.log(
+      `  c0 avg payoff:  ${sparkline(snapshots.map((s) => s.c0_payoff))}`
+    );
+    console.log(
+      `  c1 entropy:     ${sparkline(snapshots.map((s) => s.c1_entropy))}`
+    );
+    console.log(
+      `  c1 inv.Bule:    ${sparkline(snapshots.map((s) => s.c1_inverseBule))}`
+    );
+    console.log(
+      `  c2 gradient:    ${sparkline(snapshots.map((s) => s.c2_gradient))}`
+    );
+    console.log(
+      `  c3 eta:         ${sparkline(snapshots.map((s) => s.c3_eta))}`
+    );
+    console.log(
+      `  c3 exploration: ${sparkline(snapshots.map((s) => s.c3_exploration))}`
+    );
     console.log(`  c3 adaptations: ${state.c3.adaptationCount}`);
     console.log(`  Final phase: ${state.c2.phaseLabel}`);
     console.log('  ' + '─'.repeat(70));
@@ -540,22 +573,35 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
     const rng = makeRng(42);
     // Opponent cooperates for 200 rounds then defects forever
     const { state, snapshots } = runMetaCogGame(
-      PD, regimeChange(PD.choices, 200), 500, rng,
+      PD,
+      regimeChange(PD.choices, 200),
+      500,
+      rng
     );
 
     // Should detect the regime change
     // After round 200, c2 should flag a transition
     const postSwitch = snapshots.filter((s) => s.round > 200);
-    const hasTransition = postSwitch.some((s) => s.c2_phase === 'transitioning');
+    const hasTransition = postSwitch.some(
+      (s) => s.c2_phase === 'transitioning'
+    );
     // The creature should have adapted (increased exploration after regime change)
     expect(state.c3.adaptationCount).toBeGreaterThan(1);
 
     console.log('\n  Metacognitive PD vs Regime Change (switch at r=200):');
     console.log('  ' + '─'.repeat(70));
-    console.log(`  c0 avg payoff:  ${sparkline(snapshots.map((s) => s.c0_payoff))}`);
-    console.log(`  c1 entropy:     ${sparkline(snapshots.map((s) => s.c1_entropy))}`);
-    console.log(`  c3 exploration: ${sparkline(snapshots.map((s) => s.c3_exploration))}`);
-    console.log(`  c3 eta:         ${sparkline(snapshots.map((s) => s.c3_eta))}`);
+    console.log(
+      `  c0 avg payoff:  ${sparkline(snapshots.map((s) => s.c0_payoff))}`
+    );
+    console.log(
+      `  c1 entropy:     ${sparkline(snapshots.map((s) => s.c1_entropy))}`
+    );
+    console.log(
+      `  c3 exploration: ${sparkline(snapshots.map((s) => s.c3_exploration))}`
+    );
+    console.log(
+      `  c3 eta:         ${sparkline(snapshots.map((s) => s.c3_eta))}`
+    );
     console.log(`  phases: ${snapshots.map((s) => s.c2_phase[0]).join('')}`);
     console.log(`  c3 adaptations: ${state.c3.adaptationCount}`);
     console.log('  ' + '─'.repeat(70));
@@ -564,7 +610,10 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
   it('evolves against always-defect: converges to defection', () => {
     const rng = makeRng(42);
     const { state, snapshots } = runMetaCogGame(
-      PD, alwaysDefect(PD.choices), 300, rng,
+      PD,
+      alwaysDefect(PD.choices),
+      300,
+      rng
     );
 
     // Against constant defection, should learn to defect
@@ -572,16 +621,25 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
     expect(state.c0.voidCounts[0]).toBeGreaterThan(0); // cooperate gets vented
 
     console.log('\n  Metacognitive PD vs Always-Defect:');
-    console.log(`  c0 avg payoff:  ${sparkline(snapshots.map((s) => s.c0_payoff))}`);
-    console.log(`  c1 entropy:     ${sparkline(snapshots.map((s) => s.c1_entropy))}`);
-    console.log(`  c3 exploration: ${sparkline(snapshots.map((s) => s.c3_exploration))}`);
+    console.log(
+      `  c0 avg payoff:  ${sparkline(snapshots.map((s) => s.c0_payoff))}`
+    );
+    console.log(
+      `  c1 entropy:     ${sparkline(snapshots.map((s) => s.c1_entropy))}`
+    );
+    console.log(
+      `  c3 exploration: ${sparkline(snapshots.map((s) => s.c3_exploration))}`
+    );
     console.log(`  Final phase: ${state.c2.phaseLabel}`);
   });
 
   it('handles 3-choice game (RPS): stays exploratory', () => {
     const rng = makeRng(42);
     const { state, snapshots } = runMetaCogGame(
-      RPS, randomStrat(RPS.choices), 500, rng,
+      RPS,
+      randomStrat(RPS.choices),
+      500,
+      rng
     );
 
     // In RPS against random, no strategy dominates
@@ -591,10 +649,18 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
     expect(finalEntropy).toBeGreaterThan(0.5); // not converged to one choice
 
     console.log('\n  Metacognitive RPS vs Random:');
-    console.log(`  c0 avg payoff:  ${sparkline(snapshots.map((s) => s.c0_payoff))}`);
-    console.log(`  c1 entropy:     ${sparkline(snapshots.map((s) => s.c1_entropy))}`);
-    console.log(`  c3 eta:         ${sparkline(snapshots.map((s) => s.c3_eta))}`);
-    console.log(`  c3 exploration: ${sparkline(snapshots.map((s) => s.c3_exploration))}`);
+    console.log(
+      `  c0 avg payoff:  ${sparkline(snapshots.map((s) => s.c0_payoff))}`
+    );
+    console.log(
+      `  c1 entropy:     ${sparkline(snapshots.map((s) => s.c1_entropy))}`
+    );
+    console.log(
+      `  c3 eta:         ${sparkline(snapshots.map((s) => s.c3_eta))}`
+    );
+    console.log(
+      `  c3 exploration: ${sparkline(snapshots.map((s) => s.c3_exploration))}`
+    );
     console.log(`  Final phase: ${state.c2.phaseLabel}`);
   });
 
@@ -604,7 +670,10 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
 
     // Metacognitive walker
     const { state: metaState } = runMetaCogGame(
-      PD, titForTat(PD.choices), 1000, rng1,
+      PD,
+      titForTat(PD.choices),
+      1000,
+      rng1
     );
 
     // Static void walker (fixed eta=2, fixed exploration=0.1)
@@ -624,9 +693,18 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
     const staticAvg = staticState.c0.totalPayoff / staticState.c0.totalRounds;
 
     console.log('\n  Metacognitive vs Static Void Walker (PD, 1000 rounds):');
-    console.log(`  Metacognitive: avg payoff = ${metaAvg.toFixed(3)}, adaptations = ${metaState.c3.adaptationCount}`);
+    console.log(
+      `  Metacognitive: avg payoff = ${metaAvg.toFixed(3)}, adaptations = ${
+        metaState.c3.adaptationCount
+      }`
+    );
     console.log(`  Static:        avg payoff = ${staticAvg.toFixed(3)}`);
-    console.log(`  Improvement:   ${((metaAvg - staticAvg) / Math.abs(staticAvg) * 100).toFixed(1)}%`);
+    console.log(
+      `  Improvement:   ${(
+        ((metaAvg - staticAvg) / Math.abs(staticAvg)) *
+        100
+      ).toFixed(1)}%`
+    );
 
     // Metacognitive should be at least as good (it can only help)
     // Allow small tolerance for stochastic variation
@@ -636,24 +714,79 @@ describe('Metacognitive Void Walker (c0-c3)', () => {
   it('grand evolution: all layers visualized', () => {
     const rng = makeRng(123);
     const { state, snapshots } = runMetaCogGame(
-      HD, grimTrigger(HD.choices), 500, rng,
+      HD,
+      grimTrigger(HD.choices),
+      500,
+      rng
     );
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════╗');
-    console.log('  ║   Metacognitive Evolution: Hawk-Dove vs Grim-Trigger      ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════╣');
-    console.log(`  ║ c0 payoff:     ${sparkline(snapshots.map((s) => s.c0_payoff)).substring(0, 40).padEnd(40)} ║`);
-    console.log(`  ║ c1 kurtosis:   ${sparkline(snapshots.map((s) => s.c1_kurtosis)).substring(0, 40).padEnd(40)} ║`);
-    console.log(`  ║ c1 entropy:    ${sparkline(snapshots.map((s) => s.c1_entropy)).substring(0, 40).padEnd(40)} ║`);
-    console.log(`  ║ c1 inv.Bule:   ${sparkline(snapshots.map((s) => s.c1_inverseBule)).substring(0, 40).padEnd(40)} ║`);
-    console.log(`  ║ c2 gradient:   ${sparkline(snapshots.map((s) => s.c2_gradient)).substring(0, 40).padEnd(40)} ║`);
-    console.log(`  ║ c3 eta:        ${sparkline(snapshots.map((s) => s.c3_eta)).substring(0, 40).padEnd(40)} ║`);
-    console.log(`  ║ c3 explore:    ${sparkline(snapshots.map((s) => s.c3_exploration)).substring(0, 40).padEnd(40)} ║`);
-    console.log(`  ╠═══════════════════════════════════════════════════════════╣`);
-    console.log(`  ║ Adaptations: ${state.c3.adaptationCount}  Final: ${state.c2.phaseLabel.padEnd(15)}                ║`);
-    console.log(`  ║ Final eta: ${state.c3.eta.toFixed(1)}  Final exploration: ${state.c3.explorationRate.toFixed(3)}            ║`);
-    console.log(`  ║ Avg payoff: ${(state.c0.totalPayoff / state.c0.totalRounds).toFixed(3)}  Inv.Bule: ${(state.c1.inverseBule * 1000).toFixed(3)} mB⁻¹     ║`);
-    console.log(`  ╚═══════════════════════════════════════════════════════════╝`);
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║   Metacognitive Evolution: Hawk-Dove vs Grim-Trigger      ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║ c0 payoff:     ${sparkline(snapshots.map((s) => s.c0_payoff))
+        .substring(0, 40)
+        .padEnd(40)} ║`
+    );
+    console.log(
+      `  ║ c1 kurtosis:   ${sparkline(snapshots.map((s) => s.c1_kurtosis))
+        .substring(0, 40)
+        .padEnd(40)} ║`
+    );
+    console.log(
+      `  ║ c1 entropy:    ${sparkline(snapshots.map((s) => s.c1_entropy))
+        .substring(0, 40)
+        .padEnd(40)} ║`
+    );
+    console.log(
+      `  ║ c1 inv.Bule:   ${sparkline(snapshots.map((s) => s.c1_inverseBule))
+        .substring(0, 40)
+        .padEnd(40)} ║`
+    );
+    console.log(
+      `  ║ c2 gradient:   ${sparkline(snapshots.map((s) => s.c2_gradient))
+        .substring(0, 40)
+        .padEnd(40)} ║`
+    );
+    console.log(
+      `  ║ c3 eta:        ${sparkline(snapshots.map((s) => s.c3_eta))
+        .substring(0, 40)
+        .padEnd(40)} ║`
+    );
+    console.log(
+      `  ║ c3 explore:    ${sparkline(snapshots.map((s) => s.c3_exploration))
+        .substring(0, 40)
+        .padEnd(40)} ║`
+    );
+    console.log(
+      `  ╠═══════════════════════════════════════════════════════════╣`
+    );
+    console.log(
+      `  ║ Adaptations: ${
+        state.c3.adaptationCount
+      }  Final: ${state.c2.phaseLabel.padEnd(15)}                ║`
+    );
+    console.log(
+      `  ║ Final eta: ${state.c3.eta.toFixed(
+        1
+      )}  Final exploration: ${state.c3.explorationRate.toFixed(
+        3
+      )}            ║`
+    );
+    console.log(
+      `  ║ Avg payoff: ${(state.c0.totalPayoff / state.c0.totalRounds).toFixed(
+        3
+      )}  Inv.Bule: ${(state.c1.inverseBule * 1000).toFixed(3)} mB⁻¹     ║`
+    );
+    console.log(
+      `  ╚═══════════════════════════════════════════════════════════╝`
+    );
 
     expect(state.c3.adaptationCount).toBeGreaterThan(0);
   });

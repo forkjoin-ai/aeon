@@ -29,7 +29,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -57,7 +58,12 @@ function selectGait(k: number, prev: Gait, rounds: number): Gait {
   return prev;
 }
 
-const GAIT_DEPTH: Record<Gait, number> = { stand: 1, trot: 1, canter: 4, gallop: 16 };
+const GAIT_DEPTH: Record<Gait, number> = {
+  stand: 1,
+  trot: 1,
+  canter: 4,
+  gallop: 16,
+};
 
 type PayoffFn = (choice: number, env: number) => number;
 
@@ -76,7 +82,7 @@ function runDomain(
   T: number,
   payoff: PayoffFn,
   envFn: (rng: () => number) => number,
-  seed: number,
+  seed: number
 ): DomainResult {
   // Adaptive gait
   const rng1 = makeRng(seed);
@@ -86,7 +92,12 @@ function runDomain(
   let exploration = 0.3;
   let adaptivePayoff = 0;
   let totalRounds = 0;
-  const gaitMix: Record<Gait, number> = { stand: 0, trot: 0, canter: 0, gallop: 0 };
+  const gaitMix: Record<Gait, number> = {
+    stand: 0,
+    trot: 0,
+    canter: 0,
+    gallop: 0,
+  };
 
   let round = 0;
   while (round < T) {
@@ -96,10 +107,20 @@ function runDomain(
     gait = newGait;
 
     switch (gait) {
-      case 'stand': break;
-      case 'trot': exploration = Math.min(0.4, exploration + 0.01); eta = Math.max(1, eta - 0.05); break;
-      case 'canter': exploration = Math.max(0.05, exploration - 0.005); eta = Math.min(5, eta + 0.05); break;
-      case 'gallop': exploration = Math.max(0.01, exploration - 0.01); eta = Math.min(8, eta + 0.1); break;
+      case 'stand':
+        break;
+      case 'trot':
+        exploration = Math.min(0.4, exploration + 0.01);
+        eta = Math.max(1, eta - 0.05);
+        break;
+      case 'canter':
+        exploration = Math.max(0.05, exploration - 0.005);
+        eta = Math.min(5, eta + 0.05);
+        break;
+      case 'gallop':
+        exploration = Math.max(0.01, exploration - 0.01);
+        eta = Math.min(8, eta + 0.1);
+        break;
     }
 
     const depth = Math.min(GAIT_DEPTH[gait], T - round);
@@ -113,7 +134,13 @@ function runDomain(
         const rv = rng1();
         let cum = 0;
         choice = N - 1;
-        for (let i = 0; i < N; i++) { cum += dist2[i]; if (rv < cum) { choice = i; break; } }
+        for (let i = 0; i < N; i++) {
+          cum += dist2[i];
+          if (rv < cum) {
+            choice = i;
+            break;
+          }
+        }
       }
       const pay = payoff(choice, env);
       adaptivePayoff += pay;
@@ -134,15 +161,31 @@ function runDomain(
     const rv = rng2();
     let choice = N - 1;
     let cum = 0;
-    for (let i = 0; i < N; i++) { cum += dist[i]; if (rv < cum) { choice = i; break; } }
+    for (let i = 0; i < N; i++) {
+      cum += dist[i];
+      if (rv < cum) {
+        choice = i;
+        break;
+      }
+    }
     const pay = payoff(choice, env);
     fixedPayoff += pay;
     if (pay < 0) void2[choice]++;
   }
 
-  const improvement = fixedPayoff !== 0 ? (adaptivePayoff - fixedPayoff) / Math.abs(fixedPayoff) * 100 : 0;
+  const improvement =
+    fixedPayoff !== 0
+      ? ((adaptivePayoff - fixedPayoff) / Math.abs(fixedPayoff)) * 100
+      : 0;
 
-  return { domain, adaptivePayoff, fixedTrotPayoff: fixedPayoff, rounds: totalRounds, gaitMix, improvement };
+  return {
+    domain,
+    adaptivePayoff,
+    fixedTrotPayoff: fixedPayoff,
+    rounds: totalRounds,
+    gaitMix,
+    improvement,
+  };
 }
 
 // ============================================================================
@@ -150,30 +193,34 @@ function runDomain(
 // ============================================================================
 
 describe('Trot All Gradients: Gait Walker Across Every Domain', () => {
-
-  const domains: Array<{ name: string; N: number; payoff: PayoffFn; envFn: (rng: () => number) => number }> = [
+  const domains: Array<{
+    name: string;
+    N: number;
+    payoff: PayoffFn;
+    envFn: (rng: () => number) => number;
+  }> = [
     {
       name: 'Protein folding',
       N: 4, // native, misfolded-A, misfolded-B, unfolded
-      payoff: (c, env) => c === 0 ? 5 : c === env ? 1 : -2, // native = best
+      payoff: (c, env) => (c === 0 ? 5 : c === env ? 1 : -2), // native = best
       envFn: (rng) => Math.floor(rng() * 4),
     },
     {
       name: 'Queue stability',
       N: 3, // underload, balanced, overload
-      payoff: (c, env) => c === 1 ? 3 : Math.abs(c - env) <= 1 ? 1 : -1, // balanced = best
+      payoff: (c, env) => (c === 1 ? 3 : Math.abs(c - env) <= 1 ? 1 : -1), // balanced = best
       envFn: (rng) => Math.floor(rng() * 3),
     },
     {
       name: 'Semiotic fold',
       N: 5, // denotation, connotation, implicature, affect, context
-      payoff: (c, env) => c === env ? 4 : -1, // match = communication success
+      payoff: (c, env) => (c === env ? 4 : -1), // match = communication success
       envFn: (rng) => Math.floor(rng() * 5),
     },
     {
       name: 'Attention (softmax)',
       N: 4, // tokens
-      payoff: (c, env) => c === env ? 3 : -1, // attend to correct token
+      payoff: (c, env) => (c === env ? 3 : -1), // attend to correct token
       envFn: (rng) => Math.floor(rng() * 4),
     },
     {
@@ -228,17 +275,39 @@ describe('Trot All Gradients: Gait Walker Across Every Domain', () => {
       results.push(r);
     }
 
-    console.log('\n  ╔══════════════════════════════════════════════════════════════════╗');
-    console.log('  ║     TROT ALL GRADIENTS: Adaptive Gait Across Every Domain       ║');
-    console.log('  ╠══════════════════════════════════════════════════════════════════╣');
-    console.log(`  ║  ${'Domain'.padEnd(20)} ${'Adaptive'.padStart(9)} ${'Trot'.padStart(9)} ${'Δ%'.padStart(7)} ${'S'.padStart(3)} ${'T'.padStart(4)} ${'C'.padStart(5)} ${'G'.padStart(5)} ║`);
+    console.log(
+      '\n  ╔══════════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║     TROT ALL GRADIENTS: Adaptive Gait Across Every Domain       ║'
+    );
+    console.log(
+      '  ╠══════════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║  ${'Domain'.padEnd(20)} ${'Adaptive'.padStart(9)} ${'Trot'.padStart(
+        9
+      )} ${'Δ%'.padStart(7)} ${'S'.padStart(3)} ${'T'.padStart(
+        4
+      )} ${'C'.padStart(5)} ${'G'.padStart(5)} ║`
+    );
     console.log(`  ╠${'─'.repeat(66)}╣`);
     for (const r of results) {
       console.log(
-        `  ║  ${r.domain.padEnd(20)} ${String(r.adaptivePayoff).padStart(9)} ${String(r.fixedTrotPayoff).padStart(9)} ${r.improvement.toFixed(1).padStart(6)}% ${String(r.gaitMix.stand).padStart(3)} ${String(r.gaitMix.trot).padStart(4)} ${String(r.gaitMix.canter).padStart(5)} ${String(r.gaitMix.gallop).padStart(5)} ║`,
+        `  ║  ${r.domain.padEnd(20)} ${String(r.adaptivePayoff).padStart(
+          9
+        )} ${String(r.fixedTrotPayoff).padStart(9)} ${r.improvement
+          .toFixed(1)
+          .padStart(6)}% ${String(r.gaitMix.stand).padStart(3)} ${String(
+          r.gaitMix.trot
+        ).padStart(4)} ${String(r.gaitMix.canter).padStart(5)} ${String(
+          r.gaitMix.gallop
+        ).padStart(5)} ║`
       );
     }
-    console.log('  ╚══════════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '  ╚══════════════════════════════════════════════════════════════════╝\n'
+    );
 
     // All domains should complete
     for (const r of results) {

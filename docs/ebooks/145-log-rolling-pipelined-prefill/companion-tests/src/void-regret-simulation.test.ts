@@ -39,7 +39,7 @@ function runExp3(
   numArms: number,
   rounds: number,
   costs: (round: number) => number[],
-  rng: () => number,
+  rng: () => number
 ): BanditResult {
   const gamma = Math.min(1, Math.sqrt((numArms * Math.log(numArms)) / rounds));
   const weights = new Array(numArms).fill(1);
@@ -50,7 +50,7 @@ function runExp3(
     // Compute distribution
     const weightSum = weights.reduce((a, b) => a + b, 0);
     const probs = weights.map(
-      (w) => (1 - gamma) * (w / weightSum) + gamma / numArms,
+      (w) => (1 - gamma) * (w / weightSum) + gamma / numArms
     );
 
     // Sample arm
@@ -100,7 +100,7 @@ function runVoidWalker(
   numArms: number,
   rounds: number,
   costs: (round: number) => number[],
-  rng: () => number,
+  rng: () => number
 ): BanditResult {
   // Cumulative estimated loss per arm (the void boundary)
   const cumulativeLoss = new Array(numArms).fill(0);
@@ -160,7 +160,7 @@ function runUniform(
   numArms: number,
   rounds: number,
   costs: (round: number) => number[],
-  rng: () => number,
+  rng: () => number
 ): BanditResult {
   let totalReward = 0;
   const armRewards = new Array(numArms).fill(0);
@@ -213,7 +213,7 @@ describe('THM-VOID-REGRET-BOUND: Void Walking Reduces Adversarial Regret', () =>
 
     // On average, void walker should achieve lower regret
     expect(totalVoidRegret / numTrials).toBeLessThan(
-      totalUniformRegret / numTrials,
+      totalUniformRegret / numTrials
     );
   });
 
@@ -270,7 +270,7 @@ describe('THM-VOID-REGRET-BOUND: Void Walking Reduces Adversarial Regret', () =>
     // due to exploration bonus). Compare absolute regret magnitude.
     // Void walker should not be catastrophically worse than Exp3.
     expect(Math.abs(voidResult.regret)).toBeLessThan(
-      Math.abs(exp3Result.regret) * 5 + T * 0.1,
+      Math.abs(exp3Result.regret) * 5 + T * 0.1
     );
   });
 

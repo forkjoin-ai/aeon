@@ -27,8 +27,14 @@ import type { FlowTransport } from '../flow/types';
  */
 export interface MessagePortLike {
   postMessage(data: unknown, transfer?: Transferable[]): void;
-  addEventListener?(type: 'message', handler: (event: MessageEvent) => void): void;
-  removeEventListener?(type: 'message', handler: (event: MessageEvent) => void): void;
+  addEventListener?(
+    type: 'message',
+    handler: (event: MessageEvent) => void
+  ): void;
+  removeEventListener?(
+    type: 'message',
+    handler: (event: MessageEvent) => void
+  ): void;
   onmessage?: ((event: MessageEvent) => void) | null;
   close?(): void;
   start?(): void;
@@ -85,7 +91,10 @@ export class MessagePortFlowTransport implements FlowTransport {
         this.receiveHandler(new Uint8Array(data));
       } else if (data instanceof Uint8Array) {
         this.receiveHandler(data);
-      } else if (data?.type === 'aeon-flow' && data.buffer instanceof ArrayBuffer) {
+      } else if (
+        data?.type === 'aeon-flow' &&
+        data.buffer instanceof ArrayBuffer
+      ) {
         this.receiveHandler(new Uint8Array(data.buffer));
       }
     };
@@ -108,7 +117,10 @@ export class MessagePortFlowTransport implements FlowTransport {
       this.port.postMessage(copy.buffer, [copy.buffer]);
     } else {
       // Structured clone — data is copied, sender retains access
-      this.port.postMessage({ type: 'aeon-flow', buffer: data.buffer.slice(0) });
+      this.port.postMessage({
+        type: 'aeon-flow',
+        buffer: data.buffer.slice(0),
+      });
     }
   }
 

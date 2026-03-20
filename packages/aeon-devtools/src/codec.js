@@ -12,11 +12,11 @@
 const AEON_HEADER_SIZE = 10;
 
 const AEON_FLAGS = {
-  FORK:     0x01,
-  RACE:     0x02,
+  FORK: 0x01,
+  RACE: 0x02,
   FOLD: 0x04,
-  VENT:   0x08,
-  FIN:      0x10,
+  VENT: 0x08,
+  FIN: 0x10,
 };
 
 function decodeAeonFrame(buffer, offset = 0) {
@@ -29,16 +29,18 @@ function decodeAeonFrame(buffer, offset = 0) {
   const streamId = view.getUint16(0);
   const sequence = view.getUint32(2);
   const flags = view.getUint8(6);
-  const length = (view.getUint8(7) << 16) | (view.getUint8(8) << 8) | view.getUint8(9);
+  const length =
+    (view.getUint8(7) << 16) | (view.getUint8(8) << 8) | view.getUint8(9);
 
   const total = AEON_HEADER_SIZE + length;
   if (buffer.byteLength - offset < total) {
     return null; // incomplete payload
   }
 
-  const payload = length > 0
-    ? new Uint8Array(buffer, offset + AEON_HEADER_SIZE, length)
-    : null;
+  const payload =
+    length > 0
+      ? new Uint8Array(buffer, offset + AEON_HEADER_SIZE, length)
+      : null;
 
   return {
     streamId,
@@ -105,7 +107,7 @@ function payloadPreview(payload, maxLen = 200) {
 
   // Binary: show hex dump
   const hex = Array.from(payload.slice(0, Math.min(payload.length, maxLen / 3)))
-    .map(b => b.toString(16).padStart(2, '0'))
+    .map((b) => b.toString(16).padStart(2, '0'))
     .join(' ');
   return hex + (payload.length > maxLen / 3 ? ' ...' : '');
 }

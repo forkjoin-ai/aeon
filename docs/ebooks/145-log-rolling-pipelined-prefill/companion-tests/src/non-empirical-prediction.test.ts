@@ -40,7 +40,10 @@ function buleyeanWeight(rounds: number, voidCount: number): number {
 }
 
 /** Interpolation weight from neighbor void data. */
-function interpolationWeight(neighborRoundsSum: number, neighborVoidSum: number): number {
+function interpolationWeight(
+  neighborRoundsSum: number,
+  neighborVoidSum: number
+): number {
   return neighborRoundsSum - Math.min(neighborVoidSum, neighborRoundsSum) + 1;
 }
 
@@ -53,7 +56,7 @@ function uninformedWeight(rounds: number): number {
 function predictByInterpolation(
   lattice: StructuralLattice,
   holeName: string,
-  property: string,
+  property: string
 ): number | null {
   const hole = lattice.positions.get(holeName);
   if (!hole || hole.observed) return null;
@@ -443,16 +446,26 @@ describe('historical predictions as structural holes', () => {
     const predicted = { atomicWeight: 68, density: 5.9 };
     const actual = { atomicWeight: 69.72, density: 5.904 };
 
-    expect(Math.abs(predicted.atomicWeight - actual.atomicWeight) / actual.atomicWeight).toBeLessThan(0.03);
-    expect(Math.abs(predicted.density - actual.density) / actual.density).toBeLessThan(0.01);
+    expect(
+      Math.abs(predicted.atomicWeight - actual.atomicWeight) /
+        actual.atomicWeight
+    ).toBeLessThan(0.03);
+    expect(
+      Math.abs(predicted.density - actual.density) / actual.density
+    ).toBeLessThan(0.01);
   });
 
   it('Mendeleev: eka-silicon (germanium), 1871 -> 1886', () => {
     const predicted = { atomicWeight: 72, density: 5.5 };
     const actual = { atomicWeight: 72.63, density: 5.32 };
 
-    expect(Math.abs(predicted.atomicWeight - actual.atomicWeight) / actual.atomicWeight).toBeLessThan(0.01);
-    expect(Math.abs(predicted.density - actual.density) / actual.density).toBeLessThan(0.04);
+    expect(
+      Math.abs(predicted.atomicWeight - actual.atomicWeight) /
+        actual.atomicWeight
+    ).toBeLessThan(0.01);
+    expect(
+      Math.abs(predicted.density - actual.density) / actual.density
+    ).toBeLessThan(0.04);
   });
 
   it('Dirac: positron, 1931 -> 1932', () => {
@@ -497,7 +510,12 @@ describe('historical predictions as structural holes', () => {
       { name: 'positron', yearPredicted: 1931, yearConfirmed: 1932, gap: 1 },
       { name: 'neutrino', yearPredicted: 1930, yearConfirmed: 1956, gap: 26 },
       { name: 'omega-minus', yearPredicted: 1962, yearConfirmed: 1964, gap: 2 },
-      { name: 'Higgs boson', yearPredicted: 1964, yearConfirmed: 2012, gap: 48 },
+      {
+        name: 'Higgs boson',
+        yearPredicted: 1964,
+        yearConfirmed: 2012,
+        gap: 48,
+      },
     ];
 
     for (const p of predictions) {
@@ -508,7 +526,8 @@ describe('historical predictions as structural holes', () => {
     }
 
     // Average gap: ~16 years. Structure predicts decades ahead.
-    const avgGap = predictions.reduce((s, p) => s + p.gap, 0) / predictions.length;
+    const avgGap =
+      predictions.reduce((s, p) => s + p.gap, 0) / predictions.length;
     expect(avgGap).toBeGreaterThan(10);
   });
 });

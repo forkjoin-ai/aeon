@@ -20,15 +20,15 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate3-compression-corpus-figure.json',
+    '../artifacts/ch17-gate3-compression-corpus-figure.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate3-compression-corpus-figure.md',
+    '../artifacts/ch17-gate3-compression-corpus-figure.md'
   );
   const defaultSvgPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate3-compression-corpus-figure.svg',
+    '../artifacts/ch17-gate3-compression-corpus-figure.svg'
   );
 
   let assertSurface = false;
@@ -85,31 +85,53 @@ function main(): void {
   const options = parseCli(process.argv.slice(2));
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const artifactsDir = resolve(moduleDir, '../artifacts');
-  const gate3 = loadJson<Gate3Report>(resolve(artifactsDir, 'gate3-compression-corpus.json'));
+  const gate3 = loadJson<Gate3Report>(
+    resolve(artifactsDir, 'gate3-compression-corpus.json')
+  );
   const report = buildCh17Gate3CompressionCorpusFigureReport(gate3);
 
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderCh17Gate3CompressionCorpusFigureMarkdown(report),
-    'utf8',
+    'utf8'
   );
-  writeFileSync(options.svgPath, renderCh17Gate3CompressionCorpusFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.svgPath,
+    renderCh17Gate3CompressionCorpusFigureSvg(report),
+    'utf8'
+  );
 
-  process.stdout.write(`ch17-gate3-compression-corpus-figure: ${report.label}\n`);
+  process.stdout.write(
+    `ch17-gate3-compression-corpus-figure: ${report.label}\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
-  process.stdout.write(`- primary cells: ${report.primaryPassed}/${report.primaryTotal}\n`);
   process.stdout.write(
-    `- gain ranges: ${report.bestFixedGainRangePct.low.toFixed(6)}% to ${report.bestFixedGainRangePct.high.toFixed(3)}% and ${report.heuristicGainRangePct.low.toFixed(3)}% to ${report.heuristicGainRangePct.high.toFixed(3)}%\n`,
+    `- primary cells: ${report.primaryPassed}/${report.primaryTotal}\n`
   );
   process.stdout.write(
-    `- minimum primary-cell CI lows: ${report.minPrimaryBestFixedCiLowPct.toFixed(6)}% and ${report.minPrimaryHeuristicCiLowPct.toFixed(3)}%\n`,
+    `- gain ranges: ${report.bestFixedGainRangePct.low.toFixed(
+      6
+    )}% to ${report.bestFixedGainRangePct.high.toFixed(
+      3
+    )}% and ${report.heuristicGainRangePct.low.toFixed(
+      3
+    )}% to ${report.heuristicGainRangePct.high.toFixed(3)}%\n`
+  );
+  process.stdout.write(
+    `- minimum primary-cell CI lows: ${report.minPrimaryBestFixedCiLowPct.toFixed(
+      6
+    )}% and ${report.minPrimaryHeuristicCiLowPct.toFixed(3)}%\n`
   );
 
   if (

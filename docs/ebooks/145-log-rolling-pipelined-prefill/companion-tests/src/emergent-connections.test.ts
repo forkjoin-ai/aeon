@@ -42,7 +42,10 @@ function dot(a: readonly number[], b: readonly number[]): number {
   return s;
 }
 
-function crossEntropy(target: readonly number[], predicted: readonly number[]): number {
+function crossEntropy(
+  target: readonly number[],
+  predicted: readonly number[]
+): number {
   let loss = 0;
   for (let i = 0; i < target.length; i++) {
     if (target[i] > 0) {
@@ -63,7 +66,11 @@ describe('Hylomorphism (CH23.1)', () => {
 
     type Tree<T> = { value: T; children: Tree<T>[] } | { value: T };
 
-    function ana<T>(seed: T, unfold: (s: T) => T[] | null, depth: number): Tree<T> {
+    function ana<T>(
+      seed: T,
+      unfold: (s: T) => T[] | null,
+      depth: number
+    ): Tree<T> {
       if (depth === 0) return { value: seed };
       const children = unfold(seed);
       if (!children || children.length === 0) return { value: seed };
@@ -74,16 +81,20 @@ describe('Hylomorphism (CH23.1)', () => {
     }
 
     // Fork: split a number into its factors
-    const tree = ana(12, (n) => {
-      const factors: number[] = [];
-      for (let i = 2; i <= Math.sqrt(n); i++) {
-        if (n % i === 0) {
-          factors.push(i);
-          factors.push(n / i);
+    const tree = ana(
+      12,
+      (n) => {
+        const factors: number[] = [];
+        for (let i = 2; i <= Math.sqrt(n); i++) {
+          if (n % i === 0) {
+            factors.push(i);
+            factors.push(n / i);
+          }
         }
-      }
-      return factors.length > 0 ? factors : null;
-    }, 2);
+        return factors.length > 0 ? factors : null;
+      },
+      2
+    );
 
     expect(tree.value).toBe(12);
     expect('children' in tree).toBe(true);
@@ -98,7 +109,10 @@ describe('Hylomorphism (CH23.1)', () => {
 
     type Tree<T> = { value: T; children: Tree<T>[] } | { value: T };
 
-    function cata<T, R>(tree: Tree<T>, combine: (value: T, children: R[]) => R): R {
+    function cata<T, R>(
+      tree: Tree<T>,
+      combine: (value: T, children: R[]) => R
+    ): R {
       if (!('children' in tree) || tree.children.length === 0) {
         return combine(tree.value, []);
       }
@@ -116,14 +130,15 @@ describe('Hylomorphism (CH23.1)', () => {
     };
 
     // Fold: sum all values
-    const sum = cata<number, number>(tree, (val, childSums) =>
-      val + childSums.reduce((a, b) => a + b, 0),
+    const sum = cata<number, number>(
+      tree,
+      (val, childSums) => val + childSums.reduce((a, b) => a + b, 0)
     );
     expect(sum).toBe(1 + 2 + 3 + 4 + 5 + 6 + 7);
 
     // Fold: find maximum (race → fold)
     const max = cata<number, number>(tree, (val, childMaxes) =>
-      Math.max(val, ...childMaxes),
+      Math.max(val, ...childMaxes)
     );
     expect(max).toBe(7);
   });
@@ -136,13 +151,19 @@ describe('Hylomorphism (CH23.1)', () => {
       seed: S,
       unfold: (s: S) => { value: T; seeds: S[] } | { value: T },
       combine: (value: T, children: R[]) => R,
-      depth: number,
+      depth: number
     ): R {
       const unfolded = unfold(seed);
-      if (depth === 0 || !('seeds' in unfolded) || unfolded.seeds.length === 0) {
+      if (
+        depth === 0 ||
+        !('seeds' in unfolded) ||
+        unfolded.seeds.length === 0
+      ) {
         return combine(unfolded.value, []);
       }
-      const children = unfolded.seeds.map((s) => hylo(s, unfold, combine, depth - 1));
+      const children = unfolded.seeds.map((s) =>
+        hylo(s, unfold, combine, depth - 1)
+      );
       return combine(unfolded.value, children);
     }
 
@@ -152,13 +173,16 @@ describe('Hylomorphism (CH23.1)', () => {
       (n) => {
         if (n <= 1) return { value: n };
         // Fork: try different divisions
-        return { value: n, seeds: [Math.floor(n / 2), Math.floor(n / 3), n - 1] };
+        return {
+          value: n,
+          seeds: [Math.floor(n / 2), Math.floor(n / 3), n - 1],
+        };
       },
       (value, children) => {
         if (children.length === 0) return value;
         return Math.min(...children); // Race: pick the smallest
       },
-      5,
+      5
     );
 
     expect(result).toBeLessThanOrEqual(100);
@@ -263,7 +287,7 @@ describe('Carnot Cycle (CH23.2)', () => {
     // Model: ideal gas adiabatic process PV^γ = const
     const gamma = 5 / 3; // monatomic ideal gas
     const P1 = 100; // kPa
-    const V1 = 1;   // m³
+    const V1 = 1; // m³
 
     const constant = P1 * Math.pow(V1, gamma);
 
@@ -339,7 +363,9 @@ describe('Race Is Timeless (CH23.3)', () => {
     ];
 
     // Fold: pick the winner (lowest latency)
-    const winner = results.reduce((best, r) => (r.latency < best.latency ? r : best));
+    const winner = results.reduce((best, r) =>
+      r.latency < best.latency ? r : best
+    );
     expect(winner.path).toBe('raw');
 
     // After fold, we only have the winner
@@ -435,7 +461,7 @@ describe('Race Is Timeless (CH23.3)', () => {
 
     // Fold: measurement collapses to |0⟩ or |1⟩
     const p0 = cMag2(alphaEvolved); // probability of |0⟩
-    const p1 = cMag2(betaEvolved);  // probability of |1⟩
+    const p1 = cMag2(betaEvolved); // probability of |1⟩
     expect(p0 + p1).toBeCloseTo(1, 10);
 
     // After measurement, we get ONE outcome
@@ -476,7 +502,8 @@ describe('Protein Folding (CH23.4)', () => {
     // But proteins fold in milliseconds to seconds!
     // This requires parallel search (fork/race/fold), not sequential
     const actualFoldingTime = 1e-3; // 1 ms
-    const speedup = Math.pow(10, logConformations) / (actualFoldingTime / samplingTime);
+    const speedup =
+      Math.pow(10, logConformations) / (actualFoldingTime / samplingTime);
     expect(speedup).toBeGreaterThan(1e80);
   });
 
@@ -487,7 +514,7 @@ describe('Protein Folding (CH23.4)', () => {
     // Fold: select lowest-energy conformation
     // Vent: high-energy conformations are discarded
 
-    const rng = makeRng(0xF01D);
+    const rng = makeRng(0xf01d);
 
     interface Conformation {
       angles: number[];
@@ -514,14 +541,17 @@ describe('Protein Folding (CH23.4)', () => {
 
     // Fold: select the winner (lowest energy)
     const winner = conformations[0];
-    expect(winner.energy).toBeLessThan(conformations[nConformations - 1].energy);
+    expect(winner.energy).toBeLessThan(
+      conformations[nConformations - 1].energy
+    );
 
     // Vent: all non-winners are discarded
     const ventedCount = nConformations - 1;
     expect(ventedCount).toBe(999);
 
     // The winner should be near the global minimum (angles ≈ 0)
-    const avgAngle = winner.angles.reduce((s, a) => s + Math.abs(a), 0) / nAngles;
+    const avgAngle =
+      winner.angles.reduce((s, a) => s + Math.abs(a), 0) / nAngles;
     // In 1000 random samples, the best should have small angles
     expect(avgAngle).toBeLessThan(3);
 
@@ -541,11 +571,11 @@ describe('Protein Folding (CH23.4)', () => {
     }
 
     const proteins: Protein[] = [
-      { id: 'p1', folded: true, misfolded: false },   // correctly folded
-      { id: 'p2', folded: true, misfolded: true },     // misfolded
-      { id: 'p3', folded: false, misfolded: false },   // still folding
-      { id: 'p4', folded: true, misfolded: true },     // misfolded
-      { id: 'p5', folded: true, misfolded: false },    // correctly folded
+      { id: 'p1', folded: true, misfolded: false }, // correctly folded
+      { id: 'p2', folded: true, misfolded: true }, // misfolded
+      { id: 'p3', folded: false, misfolded: false }, // still folding
+      { id: 'p4', folded: true, misfolded: true }, // misfolded
+      { id: 'p5', folded: true, misfolded: false }, // correctly folded
     ];
 
     // Chaperone = vent operator: identify and remove misfolded
@@ -644,20 +674,20 @@ describe('Manifold Hypothesis (CH23.5)', () => {
     // Simulate: high-dimensional data → lower-dimensional projections
     // Each projection reduces β₁ (fewer independent paths)
 
-    const rng = makeRng(0xAF01D);
+    const rng = makeRng(0xaf01d);
     const n = 50;
     const dim = 20;
 
     // Generate data in dim dimensions
     const data = Array.from({ length: n }, () =>
-      Array.from({ length: dim }, () => rng() * 2 - 1),
+      Array.from({ length: dim }, () => rng() * 2 - 1)
     );
 
     // Successive projections (simulating network layers)
     function project(data: number[][], targetDim: number): number[][] {
       // Random linear projection + ReLU (vent negatives)
       const projMatrix = Array.from({ length: data[0].length }, () =>
-        Array.from({ length: targetDim }, () => rng() * 2 - 1),
+        Array.from({ length: targetDim }, () => rng() * 2 - 1)
       );
 
       return data.map((row) => {
@@ -676,11 +706,14 @@ describe('Manifold Hypothesis (CH23.5)', () => {
     function effectiveDim(data: number[][]): number {
       // Count dimensions with significant variance
       const dim = data[0].length;
-      const means = Array.from({ length: dim }, (_, j) =>
-        data.reduce((s, row) => s + row[j], 0) / data.length,
+      const means = Array.from(
+        { length: dim },
+        (_, j) => data.reduce((s, row) => s + row[j], 0) / data.length
       );
-      const variances = Array.from({ length: dim }, (_, j) =>
-        data.reduce((s, row) => s + (row[j] - means[j]) ** 2, 0) / data.length,
+      const variances = Array.from(
+        { length: dim },
+        (_, j) =>
+          data.reduce((s, row) => s + (row[j] - means[j]) ** 2, 0) / data.length
       );
       const threshold = 0.01;
       return variances.filter((v) => v > threshold).length;
@@ -722,19 +755,22 @@ describe('Attention Is Race (CH23.6)', () => {
   it('QK^T is a pairwise race: all token pairs compete', () => {
     const seqLen = 4;
     const dHead = 8;
-    const rng = makeRng(0xA11E);
+    const rng = makeRng(0xa11e);
 
     // Q and K matrices
     const Q = Array.from({ length: seqLen }, () =>
-      Array.from({ length: dHead }, () => rng() * 2 - 1),
+      Array.from({ length: dHead }, () => rng() * 2 - 1)
     );
     const K = Array.from({ length: seqLen }, () =>
-      Array.from({ length: dHead }, () => rng() * 2 - 1),
+      Array.from({ length: dHead }, () => rng() * 2 - 1)
     );
 
     // QK^T: race between all token pairs
     const scores: Matrix = Array.from({ length: seqLen }, (_, i) =>
-      Array.from({ length: seqLen }, (_, j) => dot(Q[i], K[j]) / Math.sqrt(dHead)),
+      Array.from(
+        { length: seqLen },
+        (_, j) => dot(Q[i], K[j]) / Math.sqrt(dHead)
+      )
     );
 
     // Every pair competed (race is complete)
@@ -765,9 +801,10 @@ describe('Attention Is Race (CH23.6)', () => {
 
     // Compare with hard vent (argmax): only one survives
     const hardVented = weights.map((w, i) =>
-      i === weights.indexOf(Math.max(...weights)) ? 1 : 0,
+      i === weights.indexOf(Math.max(...weights)) ? 1 : 0
     );
-    const hardVentRatio = hardVented.filter((w) => w === 0).length / weights.length;
+    const hardVentRatio =
+      hardVented.filter((w) => w === 0).length / weights.length;
     expect(hardVentRatio).toBe(0.8); // 4 of 5 vented
 
     // Soft vent ratio (weight < threshold)
@@ -779,21 +816,24 @@ describe('Attention Is Race (CH23.6)', () => {
   it('causal mask is structural venting: future tokens unreachable', () => {
     const seqLen = 5;
     const dHead = 4;
-    const rng = makeRng(0xFA5C);
+    const rng = makeRng(0xfa5c);
 
     const Q = Array.from({ length: seqLen }, () =>
-      Array.from({ length: dHead }, () => rng() * 2 - 1),
+      Array.from({ length: dHead }, () => rng() * 2 - 1)
     );
     const K = [...Q]; // self-attention
 
     // Compute scores
     const scores: Matrix = Array.from({ length: seqLen }, (_, i) =>
-      Array.from({ length: seqLen }, (_, j) => dot(Q[i], K[j]) / Math.sqrt(dHead)),
+      Array.from(
+        { length: seqLen },
+        (_, j) => dot(Q[i], K[j]) / Math.sqrt(dHead)
+      )
     );
 
     // Apply causal mask: set future positions to -Infinity
     const maskedScores = scores.map((row, i) =>
-      row.map((score, j) => (j > i ? -Infinity : score)),
+      row.map((score, j) => (j > i ? -Infinity : score))
     );
 
     // After softmax, future positions get 0 weight (hard vent via mask)
@@ -826,16 +866,16 @@ describe('Attention Is Race (CH23.6)', () => {
     const heads = 4;
     const dHead = 4;
     const dModel = heads * dHead; // 16
-    const rng = makeRng(0xBEAD);
+    const rng = makeRng(0xbead);
 
     // Input
     const input: Matrix = Array.from({ length: seqLen }, () =>
-      Array.from({ length: dModel }, () => rng() * 2 - 1),
+      Array.from({ length: dModel }, () => rng() * 2 - 1)
     );
 
     // Fork: split into heads
     const headInputs = Array.from({ length: heads }, (_, h) =>
-      input.map((row) => row.slice(h * dHead, (h + 1) * dHead)),
+      input.map((row) => row.slice(h * dHead, (h + 1) * dHead))
     );
     expect(headInputs).toHaveLength(heads); // β₁ = heads - 1 = 3
 
@@ -941,11 +981,11 @@ describe('Loss = Q (CH23.7)', () => {
   it('dropout is stochastic venting: randomly zeroes activations', () => {
     const activations = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0];
     const dropRate = 0.5;
-    const rng = makeRng(0xD00F);
+    const rng = makeRng(0xd00f);
 
     function dropout(
       acts: number[],
-      rate: number,
+      rate: number
     ): { result: number[]; ventedCount: number } {
       let vented = 0;
       const result = acts.map((a) => {
@@ -1000,8 +1040,8 @@ describe('Loss = Q (CH23.7)', () => {
       thetaHigh -= lrHigh * gradient(thetaHigh);
     }
     // Should oscillate (not converge)
-    const oscillating = highLosses.some((l, i) =>
-      i > 0 && l > highLosses[i - 1],
+    const oscillating = highLosses.some(
+      (l, i) => i > 0 && l > highLosses[i - 1]
     );
     expect(oscillating).toBe(true);
 
@@ -1040,20 +1080,23 @@ describe('Loss = Q (CH23.7)', () => {
 
     // Bayes optimal prediction: always predict y=1 (since 0.7 > 0.5)
     // Expected loss = -[p*log(p) + (1-p)*log(1-p)] = binary entropy
-    const bayesError =
-      -(pTrue * Math.log(pTrue) + (1 - pTrue) * Math.log(1 - pTrue));
+    const bayesError = -(
+      pTrue * Math.log(pTrue) +
+      (1 - pTrue) * Math.log(1 - pTrue)
+    );
 
     expect(bayesError).toBeGreaterThan(0); // irreducible
 
     // Any other classifier has higher expected loss
     // Classifier that predicts p=0.5 (uniform)
-    const uniformLoss =
-      -(pTrue * Math.log(0.5) + (1 - pTrue) * Math.log(0.5));
+    const uniformLoss = -(pTrue * Math.log(0.5) + (1 - pTrue) * Math.log(0.5));
     expect(uniformLoss).toBeGreaterThan(bayesError);
 
     // Classifier that predicts p=0.9 (overconfident)
-    const overconfidentLoss =
-      -(pTrue * Math.log(0.9) + (1 - pTrue) * Math.log(0.1));
+    const overconfidentLoss = -(
+      pTrue * Math.log(0.9) +
+      (1 - pTrue) * Math.log(0.1)
+    );
     expect(overconfidentLoss).toBeGreaterThan(bayesError);
 
     // Bayes error is the ground state — cannot be improved upon
@@ -1089,7 +1132,7 @@ describe('Breathing Is Venting (CH23.8)', () => {
           { name: 'pyruvate-1', carbons: 3, energy: 40 },
           { name: 'pyruvate-2', carbons: 3, energy: 40 },
         ],
-        atpYield: 2,  // net ATP from glycolysis
+        atpYield: 2, // net ATP from glycolysis
         nadhYield: 2, // NADH produced
       };
     }
@@ -1107,7 +1150,9 @@ describe('Breathing Is Venting (CH23.8)', () => {
     const productEnergy = result.products.reduce((s, p) => s + p.energy, 0);
     const atpEnergy = result.atpYield * 7.3; // ~7.3 kcal/mol per ATP
     const nadhEnergy = result.nadhYield * 2.5; // ~2.5 kcal/mol per NADH
-    expect(productEnergy + atpEnergy + nadhEnergy).toBeLessThanOrEqual(glucose.energy);
+    expect(productEnergy + atpEnergy + nadhEnergy).toBeLessThanOrEqual(
+      glucose.energy
+    );
   });
 
   it('electron transport chain is race: electrons race down redox gradient', () => {
@@ -1119,10 +1164,26 @@ describe('Breathing Is Venting (CH23.8)', () => {
     }
 
     const etc: Complex[] = [
-      { name: 'Complex I (NADH dehydrogenase)', redoxPotential: -320, protonsTranslocated: 4 },
-      { name: 'Complex II (Succinate dehydrogenase)', redoxPotential: -40, protonsTranslocated: 0 },
-      { name: 'Complex III (Cytochrome bc1)', redoxPotential: 60, protonsTranslocated: 4 },
-      { name: 'Complex IV (Cytochrome c oxidase)', redoxPotential: 250, protonsTranslocated: 2 },
+      {
+        name: 'Complex I (NADH dehydrogenase)',
+        redoxPotential: -320,
+        protonsTranslocated: 4,
+      },
+      {
+        name: 'Complex II (Succinate dehydrogenase)',
+        redoxPotential: -40,
+        protonsTranslocated: 0,
+      },
+      {
+        name: 'Complex III (Cytochrome bc1)',
+        redoxPotential: 60,
+        protonsTranslocated: 4,
+      },
+      {
+        name: 'Complex IV (Cytochrome c oxidase)',
+        redoxPotential: 250,
+        protonsTranslocated: 2,
+      },
     ];
 
     // Electrons "race" from low to high redox potential
@@ -1137,7 +1198,9 @@ describe('Breathing Is Venting (CH23.8)', () => {
     // Final electron acceptor: O₂ (highest redox potential)
     // This is the "finish line" of the race
     const o2RedoxPotential = 815; // mV
-    expect(o2RedoxPotential).toBeGreaterThan(etc[etc.length - 1].redoxPotential);
+    expect(o2RedoxPotential).toBeGreaterThan(
+      etc[etc.length - 1].redoxPotential
+    );
   });
 
   it('ATP synthase is rotary fold: proton gradient → chemical bond', () => {
@@ -1176,18 +1239,18 @@ describe('Breathing Is Venting (CH23.8)', () => {
     // Heat is radiated — waste energy that cannot be recovered
 
     interface MetabolicBudget {
-      glucoseEnergy: number;     // total input energy
-      atpEnergy: number;         // useful work (fold)
-      heatDissipated: number;    // waste heat (vent)
-      co2Released: number;       // waste carbon (vent)
+      glucoseEnergy: number; // total input energy
+      atpEnergy: number; // useful work (fold)
+      heatDissipated: number; // waste heat (vent)
+      co2Released: number; // waste carbon (vent)
     }
 
     // Human metabolism: ~40% efficiency
     const budget: MetabolicBudget = {
       glucoseEnergy: 100,
-      atpEnergy: 40,       // ~40% converted to useful work
-      heatDissipated: 55,  // ~55% lost as heat
-      co2Released: 5,      // ~5% as CO₂ waste products
+      atpEnergy: 40, // ~40% converted to useful work
+      heatDissipated: 55, // ~55% lost as heat
+      co2Released: 5, // ~5% as CO₂ waste products
     };
 
     // First Law: V_fork = W_fold + Q_vent
@@ -1225,10 +1288,10 @@ describe('The Void (CH23.9)', () => {
     // Given max(a,b,c) = c, you cannot recover a and b
 
     const inputs = [
-      [3, 7, 5],    // max = 7
-      [1, 7, 2],    // max = 7
-      [7, 7, 7],    // max = 7
-      [-1, 7, 0],   // max = 7
+      [3, 7, 5], // max = 7
+      [1, 7, 2], // max = 7
+      [7, 7, 7], // max = 7
+      [-1, 7, 0], // max = 7
     ];
 
     // All have the same fold output

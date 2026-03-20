@@ -300,9 +300,24 @@ describe('Prediction 5: Market liquidity is inverse topological deficit', () => 
   it('deficit predicts bid-ask spread (model)', () => {
     // Higher deficit = wider spread
     const markets = [
-      { name: 'S&P 500 (highly liquid)', paths: 100, realized: 95, expectedSpread: 'tight' },
-      { name: 'Mid-cap stock', paths: 100, realized: 50, expectedSpread: 'moderate' },
-      { name: 'Penny stock (illiquid)', paths: 100, realized: 5, expectedSpread: 'wide' },
+      {
+        name: 'S&P 500 (highly liquid)',
+        paths: 100,
+        realized: 95,
+        expectedSpread: 'tight',
+      },
+      {
+        name: 'Mid-cap stock',
+        paths: 100,
+        realized: 50,
+        expectedSpread: 'moderate',
+      },
+      {
+        name: 'Penny stock (illiquid)',
+        paths: 100,
+        realized: 5,
+        expectedSpread: 'wide',
+      },
     ];
 
     const deficits = markets.map((m) => m.paths - m.realized);

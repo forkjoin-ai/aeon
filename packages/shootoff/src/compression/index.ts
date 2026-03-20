@@ -10,7 +10,10 @@
 
 import { gzipSync, brotliCompressSync, constants } from 'node:zlib';
 import { TopologicalCompressor } from '../../../../src/compression/TopologicalCompressor';
-import { PURE_JS_CODECS, BUILTIN_CODECS } from '../../../../src/compression/codecs';
+import {
+  PURE_JS_CODECS,
+  BUILTIN_CODECS,
+} from '../../../../src/compression/codecs';
 import type { CompressionAlgo } from '../types';
 
 /**
@@ -49,21 +52,21 @@ export function generatePayload(size: number, contentType: string): Uint8Array {
   } else if (isAlreadyCompressed(contentType)) {
     // Binary: pseudo-random (simulates already-compressed content)
     // Use a simple LCG for deterministic "random" bytes
-    let seed = 0xDEADBEEF;
+    let seed = 0xdeadbeef;
     for (let i = 0; i < size; i++) {
-      seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF;
-      buf[i] = (seed >>> 24) & 0xFF;
+      seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+      buf[i] = (seed >>> 24) & 0xff;
     }
   } else {
     // Mixed: some structure, some randomness
-    let seed = 0xCAFEBABE;
+    let seed = 0xcafebabe;
     for (let i = 0; i < size; i++) {
       if (i % 8 < 4) {
         // Structured bytes (repeating)
-        buf[i] = (i * 7 + 13) & 0xFF;
+        buf[i] = (i * 7 + 13) & 0xff;
       } else {
-        seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF;
-        buf[i] = (seed >>> 24) & 0xFF;
+        seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+        buf[i] = (seed >>> 24) & 0xff;
       }
     }
   }
@@ -75,30 +78,43 @@ export function generatePayload(size: number, contentType: string): Uint8Array {
  * Compress a payload with the given algorithm.
  * Returns the compressed bytes (or original for 'none').
  */
-export function compress(payload: Uint8Array, algo: CompressionAlgo): Uint8Array {
+export function compress(
+  payload: Uint8Array,
+  algo: CompressionAlgo
+): Uint8Array {
   switch (algo) {
     case 'none':
       return payload;
 
     case 'gzip':
-      return new Uint8Array(gzipSync(Buffer.from(payload), {
-        level: 6, // nginx default
-      }));
+      return new Uint8Array(
+        gzipSync(Buffer.from(payload), {
+          level: 6, // nginx default
+        })
+      );
 
     case 'brotli':
-      return new Uint8Array(brotliCompressSync(Buffer.from(payload), {
-        params: {
-          [constants.BROTLI_PARAM_QUALITY]: 4, // nginx default for on-the-fly
-        },
-      }));
+      return new Uint8Array(
+        brotliCompressSync(Buffer.from(payload), {
+          params: {
+            [constants.BROTLI_PARAM_QUALITY]: 4, // nginx default for on-the-fly
+          },
+        })
+      );
 
     case 'topo-pure': {
-      const compressor = new TopologicalCompressor({ chunkSize: 4096, codecs: PURE_JS_CODECS });
+      const compressor = new TopologicalCompressor({
+        chunkSize: 4096,
+        codecs: PURE_JS_CODECS,
+      });
       return compressor.compress(payload).data;
     }
 
     case 'topo-full': {
-      const compressor = new TopologicalCompressor({ chunkSize: 4096, codecs: BUILTIN_CODECS });
+      const compressor = new TopologicalCompressor({
+        chunkSize: 4096,
+        codecs: BUILTIN_CODECS,
+      });
       return compressor.compress(payload).data;
     }
   }

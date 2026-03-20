@@ -123,7 +123,7 @@ function criterionLabel(criterion: Gate4Criterion): string {
 
 function withThreshold(
   criterion: Gate4Criterion,
-  threshold: { readonly low?: number; readonly high?: number },
+  threshold: { readonly low?: number; readonly high?: number }
 ): Gate4FigureCriterion {
   return {
     id: criterion.id,
@@ -138,7 +138,7 @@ function withThreshold(
 }
 
 export function buildCh17Gate4RqrHoldoutFigureReport(
-  report: Gate4Report,
+  report: Gate4Report
 ): Ch17Gate4RqrHoldoutFigureReport {
   const deciles = report.holdout.deciles.map<Gate4FigureDecile>((decile) => ({
     decile: decile.decile,
@@ -154,32 +154,34 @@ export function buildCh17Gate4RqrHoldoutFigureReport(
     decile.meanPredictedGain,
   ]);
 
-  const criteria: Gate4FigureCriterion[] = report.gate.criteria.map((criterion) => {
-    switch (criterion.id) {
-      case 'spearman_ci_low':
-        return withThreshold(criterion, {
-          low: report.config.thresholds.spearmanLowerCi,
-        });
-      case 'slope_ci_low':
-        return withThreshold(criterion, {
-          low: report.config.thresholds.slopeLowerCi,
-        });
-      case 'quartile_delta_ci_low':
-        return withThreshold(criterion, {
-          low: report.config.thresholds.quartileDeltaLowerCi,
-        });
-      case 'predicted_pearson_ci_low':
-        return withThreshold(criterion, {
-          low: report.config.thresholds.predictedPearsonLowerCi,
-        });
-      case 'decile_monotonicity':
-        return withThreshold(criterion, {
-          high: report.config.thresholds.maxDecileMonotonicViolations,
-        });
-      default:
-        return withThreshold(criterion, {});
+  const criteria: Gate4FigureCriterion[] = report.gate.criteria.map(
+    (criterion) => {
+      switch (criterion.id) {
+        case 'spearman_ci_low':
+          return withThreshold(criterion, {
+            low: report.config.thresholds.spearmanLowerCi,
+          });
+        case 'slope_ci_low':
+          return withThreshold(criterion, {
+            low: report.config.thresholds.slopeLowerCi,
+          });
+        case 'quartile_delta_ci_low':
+          return withThreshold(criterion, {
+            low: report.config.thresholds.quartileDeltaLowerCi,
+          });
+        case 'predicted_pearson_ci_low':
+          return withThreshold(criterion, {
+            low: report.config.thresholds.predictedPearsonLowerCi,
+          });
+        case 'decile_monotonicity':
+          return withThreshold(criterion, {
+            high: report.config.thresholds.maxDecileMonotonicViolations,
+          });
+        default:
+          return withThreshold(criterion, {});
+      }
     }
-  });
+  );
 
   return {
     label: 'ch17-gate4-rqr-holdout-figure-v1',
@@ -199,16 +201,19 @@ export function buildCh17Gate4RqrHoldoutFigureReport(
       lowerQuartileRqr: report.holdout.lowerQuartileRqr,
       upperQuartileRqr: report.holdout.upperQuartileRqr,
     },
-    maxAbsoluteResidualGain: Math.max(...deciles.map((decile) => Math.abs(decile.residualGain))),
+    maxAbsoluteResidualGain: Math.max(
+      ...deciles.map((decile) => Math.abs(decile.residualGain))
+    ),
     monotonicViolations: report.holdout.monotonicViolations,
-    maxMonotonicViolations: report.config.thresholds.maxDecileMonotonicViolations,
+    maxMonotonicViolations:
+      report.config.thresholds.maxDecileMonotonicViolations,
     criteria,
     deciles,
   };
 }
 
 export function renderCh17Gate4RqrHoldoutFigureMarkdown(
-  report: Ch17Gate4RqrHoldoutFigureReport,
+  report: Ch17Gate4RqrHoldoutFigureReport
 ): string {
   const lines: string[] = [];
   lines.push('# Chapter 17 Gate 4 R_qr Holdout Figure');
@@ -216,21 +221,31 @@ export function renderCh17Gate4RqrHoldoutFigureMarkdown(
   lines.push(`- Label: \`${report.label}\``);
   lines.push(`- Source: \`${report.sourceLabel}\``);
   lines.push(
-    `- Samples: training \`${report.trainingSampleCount}\`, holdout \`${report.holdoutSampleCount}\``,
+    `- Samples: training \`${report.trainingSampleCount}\`, holdout \`${report.holdoutSampleCount}\``
   );
-  lines.push(`- Criteria passed: \`${report.criteriaPassed}/${report.criteriaTotal}\``);
+  lines.push(
+    `- Criteria passed: \`${report.criteriaPassed}/${report.criteriaTotal}\``
+  );
   lines.push(`- Holdout deciles: \`${report.decileCount}\``);
   lines.push(
-    `- Holdout gain range: \`${formatGain(report.gainRange.low)}\` to \`${formatGain(report.gainRange.high)}\``,
+    `- Holdout gain range: \`${formatGain(
+      report.gainRange.low
+    )}\` to \`${formatGain(report.gainRange.high)}\``
   );
   lines.push(
-    `- Holdout R_qr range: \`${formatRqr(report.rqrRange.low)}\` to \`${formatRqr(report.rqrRange.high)}\``,
+    `- Holdout R_qr range: \`${formatRqr(
+      report.rqrRange.low
+    )}\` to \`${formatRqr(report.rqrRange.high)}\``
   );
   lines.push(
-    `- Quartile delta: \`${formatGain(report.quartileDelta.value)}\` (95% CI \`${formatGain(report.quartileDelta.ci95.low)}\` to \`${formatGain(report.quartileDelta.ci95.high)}\`)`,
+    `- Quartile delta: \`${formatGain(
+      report.quartileDelta.value
+    )}\` (95% CI \`${formatGain(
+      report.quartileDelta.ci95.low
+    )}\` to \`${formatGain(report.quartileDelta.ci95.high)}\`)`
   );
   lines.push(
-    `- Monotonicity: \`${report.monotonicViolations}/${report.maxMonotonicViolations}\` allowed violations`,
+    `- Monotonicity: \`${report.monotonicViolations}/${report.maxMonotonicViolations}\` allowed violations`
   );
   lines.push('');
   lines.push('## Criteria');
@@ -239,25 +254,37 @@ export function renderCh17Gate4RqrHoldoutFigureMarkdown(
   lines.push('|---|---:|---:|---|---|');
   for (const criterion of report.criteria) {
     const ciText = criterion.ci95
-      ? `${formatMetric(criterion.ci95.low)} to ${formatMetric(criterion.ci95.high)}`
+      ? `${formatMetric(criterion.ci95.low)} to ${formatMetric(
+          criterion.ci95.high
+        )}`
       : 'n/a';
     lines.push(
-      `| ${criterion.label} | ${formatMetric(criterion.observed)} | ${ciText} | ${criterion.threshold} | ${criterion.pass ? 'yes' : 'no'} |`,
+      `| ${criterion.label} | ${formatMetric(
+        criterion.observed
+      )} | ${ciText} | ${criterion.threshold} | ${
+        criterion.pass ? 'yes' : 'no'
+      } |`
     );
   }
   lines.push('');
   lines.push('## Holdout Deciles');
   lines.push('');
-  lines.push('| Decile | Count | Mean R_qr | Mean Observed Gain | Mean Predicted Gain | Residual |');
+  lines.push(
+    '| Decile | Count | Mean R_qr | Mean Observed Gain | Mean Predicted Gain | Residual |'
+  );
   lines.push('|---|---:|---:|---:|---:|---:|');
   for (const decile of report.deciles) {
     lines.push(
-      `| ${decile.decile} | ${decile.count} | ${formatRqr(decile.meanRqr)} | ${formatGain(decile.meanObservedGain)} | ${formatGain(decile.meanPredictedGain)} | ${formatGain(decile.residualGain)} |`,
+      `| ${decile.decile} | ${decile.count} | ${formatRqr(
+        decile.meanRqr
+      )} | ${formatGain(decile.meanObservedGain)} | ${formatGain(
+        decile.meanPredictedGain
+      )} | ${formatGain(decile.residualGain)} |`
     );
   }
   lines.push('');
   lines.push(
-    'Interpretation: the figure keeps the predictive-screening claim honest by showing both the mostly monotone holdout decile uplift and the interval-backed scoring criteria, instead of collapsing the result into a single correlation statistic.',
+    'Interpretation: the figure keeps the predictive-screening claim honest by showing both the mostly monotone holdout decile uplift and the interval-backed scoring criteria, instead of collapsing the result into a single correlation statistic.'
   );
 
   return `${lines.join('\n')}\n`;
@@ -269,16 +296,20 @@ function renderCalibrationPanel(
   x: number,
   y: number,
   width: number,
-  height: number,
+  height: number
 ): void {
   svg.push(
-    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`,
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 34}" font-family="Georgia, serif" font-size="20" fill="#111827">Holdout Decile Calibration</text>`,
+    `<text x="${x + 24}" y="${
+      y + 34
+    }" font-family="Georgia, serif" font-size="20" fill="#111827">Holdout Decile Calibration</text>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 56}" font-family="Georgia, serif" font-size="13" fill="#4b5563">Observed and training-fit predicted gains across deciles sorted by mean R_qr.</text>`,
+    `<text x="${x + 24}" y="${
+      y + 56
+    }" font-family="Georgia, serif" font-size="13" fill="#4b5563">Observed and training-fit predicted gains across deciles sorted by mean R_qr.</text>`
   );
 
   const innerX = x + 72;
@@ -296,77 +327,128 @@ function renderCalibrationPanel(
   for (const tick of tickValues) {
     const cy = innerY + innerHeight - (tick / yMaxPct) * innerHeight;
     svg.push(
-      `<line x1="${innerX}" y1="${cy}" x2="${innerX + innerWidth}" y2="${cy}" stroke="#e5e7eb" stroke-width="1"/>`,
+      `<line x1="${innerX}" y1="${cy}" x2="${
+        innerX + innerWidth
+      }" y2="${cy}" stroke="#e5e7eb" stroke-width="1"/>`
     );
     svg.push(
-      `<text x="${innerX - 12}" y="${cy + 4}" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${trimFixed(tick, 1)}%</text>`,
+      `<text x="${innerX - 12}" y="${
+        cy + 4
+      }" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${trimFixed(
+        tick,
+        1
+      )}%</text>`
     );
   }
 
   const xStep =
-    report.deciles.length > 1 ? innerWidth / (report.deciles.length - 1) : innerWidth / 2;
+    report.deciles.length > 1
+      ? innerWidth / (report.deciles.length - 1)
+      : innerWidth / 2;
   const observedPath: string[] = [];
   const predictedPath: string[] = [];
 
   report.deciles.forEach((decile, index) => {
     const cx = innerX + xStep * index;
     const observedCy =
-      innerY + innerHeight - ((decile.meanObservedGain * 100) / yMaxPct) * innerHeight;
+      innerY +
+      innerHeight -
+      ((decile.meanObservedGain * 100) / yMaxPct) * innerHeight;
     const predictedCy =
-      innerY + innerHeight - ((decile.meanPredictedGain * 100) / yMaxPct) * innerHeight;
+      innerY +
+      innerHeight -
+      ((decile.meanPredictedGain * 100) / yMaxPct) * innerHeight;
     observedPath.push(`${index === 0 ? 'M' : 'L'} ${cx} ${observedCy}`);
     predictedPath.push(`${index === 0 ? 'M' : 'L'} ${cx} ${predictedCy}`);
   });
 
   svg.push(
-    `<path d="${observedPath.join(' ')}" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
+    `<path d="${observedPath.join(
+      ' '
+    )}" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`
   );
   svg.push(
-    `<path d="${predictedPath.join(' ')}" fill="none" stroke="#b45309" stroke-width="3" stroke-dasharray="8 6" stroke-linecap="round" stroke-linejoin="round"/>`,
+    `<path d="${predictedPath.join(
+      ' '
+    )}" fill="none" stroke="#b45309" stroke-width="3" stroke-dasharray="8 6" stroke-linecap="round" stroke-linejoin="round"/>`
   );
 
   report.deciles.forEach((decile, index) => {
     const cx = innerX + xStep * index;
     const observedCy =
-      innerY + innerHeight - ((decile.meanObservedGain * 100) / yMaxPct) * innerHeight;
+      innerY +
+      innerHeight -
+      ((decile.meanObservedGain * 100) / yMaxPct) * innerHeight;
     const predictedCy =
-      innerY + innerHeight - ((decile.meanPredictedGain * 100) / yMaxPct) * innerHeight;
+      innerY +
+      innerHeight -
+      ((decile.meanPredictedGain * 100) / yMaxPct) * innerHeight;
     svg.push(
-      `<circle cx="${cx}" cy="${observedCy}" r="5.5" fill="#0f766e" stroke="#ecfeff" stroke-width="2"/>`,
+      `<circle cx="${cx}" cy="${observedCy}" r="5.5" fill="#0f766e" stroke="#ecfeff" stroke-width="2"/>`
     );
     svg.push(
-      `<rect x="${cx - 4.5}" y="${predictedCy - 4.5}" width="9" height="9" rx="1.5" fill="#f59e0b" stroke="#78350f" stroke-width="1.4"/>`,
+      `<rect x="${cx - 4.5}" y="${
+        predictedCy - 4.5
+      }" width="9" height="9" rx="1.5" fill="#f59e0b" stroke="#78350f" stroke-width="1.4"/>`
     );
     const staggerOffset = index % 2 === 1 ? 14 : 0;
     svg.push(
-      `<text x="${cx}" y="${innerY + innerHeight + 22 + staggerOffset}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#374151">D${decile.decile}</text>`,
+      `<text x="${cx}" y="${
+        innerY + innerHeight + 22 + staggerOffset
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#374151">D${
+        decile.decile
+      }</text>`
     );
     svg.push(
-      `<text x="${cx}" y="${innerY + innerHeight + 36 + staggerOffset}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">R=${formatRqr(decile.meanRqr)}</text>`,
+      `<text x="${cx}" y="${
+        innerY + innerHeight + 36 + staggerOffset
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">R=${formatRqr(
+        decile.meanRqr
+      )}</text>`
     );
   });
 
   svg.push(
-    `<text x="${innerX + innerWidth / 2}" y="${innerY + innerHeight + 64}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Holdout deciles sorted by mean R_qr</text>`,
+    `<text x="${innerX + innerWidth / 2}" y="${
+      innerY + innerHeight + 64
+    }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Holdout deciles sorted by mean R_qr</text>`
   );
   svg.push(
-    `<text x="${innerX - 50}" y="${innerY + innerHeight / 2}" transform="rotate(-90 ${innerX - 50} ${innerY + innerHeight / 2})" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Mean realized / predicted gain</text>`,
+    `<text x="${innerX - 50}" y="${
+      innerY + innerHeight / 2
+    }" transform="rotate(-90 ${innerX - 50} ${
+      innerY + innerHeight / 2
+    })" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Mean realized / predicted gain</text>`
   );
 
   const legendY = y + 68;
-  svg.push(`<circle cx="${x + 24}" cy="${legendY}" r="5.5" fill="#0f766e" stroke="#ecfeff" stroke-width="2"/>`);
   svg.push(
-    `<text x="${x + 38}" y="${legendY + 4}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">Observed gain</text>`,
+    `<circle cx="${
+      x + 24
+    }" cy="${legendY}" r="5.5" fill="#0f766e" stroke="#ecfeff" stroke-width="2"/>`
   );
   svg.push(
-    `<rect x="${x + 148}" y="${legendY - 4.5}" width="9" height="9" rx="1.5" fill="#f59e0b" stroke="#78350f" stroke-width="1.4"/>`,
+    `<text x="${x + 38}" y="${
+      legendY + 4
+    }" font-family="system-ui, sans-serif" font-size="11" fill="#374151">Observed gain</text>`
   );
   svg.push(
-    `<text x="${x + 164}" y="${legendY + 4}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">Predicted gain</text>`,
+    `<rect x="${x + 148}" y="${
+      legendY - 4.5
+    }" width="9" height="9" rx="1.5" fill="#f59e0b" stroke="#78350f" stroke-width="1.4"/>`
+  );
+  svg.push(
+    `<text x="${x + 164}" y="${
+      legendY + 4
+    }" font-family="system-ui, sans-serif" font-size="11" fill="#374151">Predicted gain</text>`
   );
 
   svg.push(
-    `<text x="${x + width - 24}" y="${legendY + 4}" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">quartile delta ${formatGain(report.quartileDelta.value)}</text>`,
+    `<text x="${x + width - 24}" y="${
+      legendY + 4
+    }" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">quartile delta ${formatGain(
+      report.quartileDelta.value
+    )}</text>`
   );
 }
 
@@ -376,27 +458,33 @@ function renderCriteriaPanel(
   x: number,
   y: number,
   width: number,
-  height: number,
+  height: number
 ): void {
   svg.push(
-    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#f8fafc" stroke="#cbd5e1"/>`,
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#f8fafc" stroke="#cbd5e1"/>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 34}" font-family="Georgia, serif" font-size="20" fill="#111827">Holdout Screening Criteria</text>`,
+    `<text x="${x + 24}" y="${
+      y + 34
+    }" font-family="Georgia, serif" font-size="20" fill="#111827">Holdout Screening Criteria</text>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 56}" font-family="Georgia, serif" font-size="13" fill="#4b5563">Observed values and 95% intervals against the predeclared gate thresholds.</text>`,
+    `<text x="${x + 24}" y="${
+      y + 56
+    }" font-family="Georgia, serif" font-size="13" fill="#4b5563">Observed values and 95% intervals against the predeclared gate thresholds.</text>`
   );
 
   const ciCriteria = report.criteria.filter((criterion) => criterion.ci95);
-  const monotonicity = report.criteria.find((criterion) => criterion.id === 'decile_monotonicity');
+  const monotonicity = report.criteria.find(
+    (criterion) => criterion.id === 'decile_monotonicity'
+  );
   const metricMax = Math.max(
     1.05,
     ...ciCriteria.flatMap((criterion) => [
       criterion.observed,
       criterion.ci95?.high ?? 0,
       criterion.thresholdLow ?? 0,
-    ]),
+    ])
   );
 
   const innerX = x + 148;
@@ -407,10 +495,17 @@ function renderCriteriaPanel(
   for (const tick of [0, 0.25, 0.5, 0.75, 1]) {
     const cx = innerX + (tick / metricMax) * innerWidth;
     svg.push(
-      `<line x1="${cx}" y1="${innerY - 18}" x2="${cx}" y2="${innerY + rowStep * (ciCriteria.length - 1) + 16}" stroke="#e2e8f0" stroke-width="1"/>`,
+      `<line x1="${cx}" y1="${innerY - 18}" x2="${cx}" y2="${
+        innerY + rowStep * (ciCriteria.length - 1) + 16
+      }" stroke="#e2e8f0" stroke-width="1"/>`
     );
     svg.push(
-      `<text x="${cx}" y="${innerY - 28}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">${trimFixed(tick, 2)}</text>`,
+      `<text x="${cx}" y="${
+        innerY - 28
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">${trimFixed(
+        tick,
+        2
+      )}</text>`
     );
   }
 
@@ -429,71 +524,128 @@ function renderCriteriaPanel(
         : innerX + (criterion.thresholdLow / metricMax) * innerWidth;
 
     svg.push(
-      `<text x="${x + 24}" y="${cy + 5}" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${escapeXml(criterion.label)}</text>`,
+      `<text x="${x + 24}" y="${
+        cy + 5
+      }" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${escapeXml(
+        criterion.label
+      )}</text>`
     );
     svg.push(
-      `<line x1="${lowX}" y1="${cy}" x2="${highX}" y2="${cy}" stroke="${criterion.pass ? '#1d4ed8' : '#b91c1c'}" stroke-width="4" stroke-linecap="round"/>`,
+      `<line x1="${lowX}" y1="${cy}" x2="${highX}" y2="${cy}" stroke="${
+        criterion.pass ? '#1d4ed8' : '#b91c1c'
+      }" stroke-width="4" stroke-linecap="round"/>`
     );
     svg.push(
-      `<line x1="${lowX}" y1="${cy - 7}" x2="${lowX}" y2="${cy + 7}" stroke="${criterion.pass ? '#1d4ed8' : '#b91c1c'}" stroke-width="1.5"/>`,
+      `<line x1="${lowX}" y1="${cy - 7}" x2="${lowX}" y2="${cy + 7}" stroke="${
+        criterion.pass ? '#1d4ed8' : '#b91c1c'
+      }" stroke-width="1.5"/>`
     );
     svg.push(
-      `<line x1="${highX}" y1="${cy - 7}" x2="${highX}" y2="${cy + 7}" stroke="${criterion.pass ? '#1d4ed8' : '#b91c1c'}" stroke-width="1.5"/>`,
+      `<line x1="${highX}" y1="${cy - 7}" x2="${highX}" y2="${
+        cy + 7
+      }" stroke="${
+        criterion.pass ? '#1d4ed8' : '#b91c1c'
+      }" stroke-width="1.5"/>`
     );
     if (thresholdX !== undefined) {
       svg.push(
-        `<line x1="${thresholdX}" y1="${cy - 16}" x2="${thresholdX}" y2="${cy + 16}" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4"/>`,
+        `<line x1="${thresholdX}" y1="${cy - 16}" x2="${thresholdX}" y2="${
+          cy + 16
+        }" stroke="#64748b" stroke-width="2" stroke-dasharray="4 4"/>`
       );
     }
     svg.push(
-      `<circle cx="${observedX}" cy="${cy}" r="5.5" fill="${criterion.pass ? '#0f766e' : '#b91c1c'}" stroke="#f8fafc" stroke-width="2"/>`,
+      `<circle cx="${observedX}" cy="${cy}" r="5.5" fill="${
+        criterion.pass ? '#0f766e' : '#b91c1c'
+      }" stroke="#f8fafc" stroke-width="2"/>`
     );
     svg.push(
-      `<text x="${x + width - 20}" y="${cy + 24}" text-anchor="end" font-family="system-ui, sans-serif" font-size="10" fill="#475569">${escapeXml(`${formatMetric(criterion.observed)} | ${criterion.threshold}`)}</text>`,
+      `<text x="${x + width - 20}" y="${
+        cy + 24
+      }" text-anchor="end" font-family="system-ui, sans-serif" font-size="10" fill="#475569">${escapeXml(
+        `${formatMetric(criterion.observed)} | ${criterion.threshold}`
+      )}</text>`
     );
   });
 
   const gaugeY = y + height - 88;
   const gaugeX = x + 24;
   const gaugeWidth = width - 48;
-  const fillWidth = (report.monotonicViolations / report.maxMonotonicViolations) * gaugeWidth;
+  const fillWidth =
+    (report.monotonicViolations / report.maxMonotonicViolations) * gaugeWidth;
   svg.push(
-    `<text x="${gaugeX}" y="${gaugeY - 14}" font-family="system-ui, sans-serif" font-size="12" fill="#334155">Decile monotonicity</text>`,
+    `<text x="${gaugeX}" y="${
+      gaugeY - 14
+    }" font-family="system-ui, sans-serif" font-size="12" fill="#334155">Decile monotonicity</text>`
   );
   svg.push(
-    `<rect x="${gaugeX}" y="${gaugeY}" width="${gaugeWidth}" height="16" rx="8" fill="#e2e8f0"/>`,
+    `<rect x="${gaugeX}" y="${gaugeY}" width="${gaugeWidth}" height="16" rx="8" fill="#e2e8f0"/>`
   );
   svg.push(
-    `<rect x="${gaugeX}" y="${gaugeY}" width="${fillWidth}" height="16" rx="8" fill="${report.monotonicViolations <= report.maxMonotonicViolations ? '#0f766e' : '#b91c1c'}"/>`,
+    `<rect x="${gaugeX}" y="${gaugeY}" width="${fillWidth}" height="16" rx="8" fill="${
+      report.monotonicViolations <= report.maxMonotonicViolations
+        ? '#0f766e'
+        : '#b91c1c'
+    }"/>`
   );
   svg.push(
-    `<text x="${gaugeX + gaugeWidth / 2}" y="${gaugeY + 12}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#0f172a">${report.monotonicViolations} violation${report.monotonicViolations === 1 ? '' : 's'} of ${report.maxMonotonicViolations} allowed</text>`,
+    `<text x="${gaugeX + gaugeWidth / 2}" y="${
+      gaugeY + 12
+    }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#0f172a">${
+      report.monotonicViolations
+    } violation${report.monotonicViolations === 1 ? '' : 's'} of ${
+      report.maxMonotonicViolations
+    } allowed</text>`
   );
 
   const lowCalloutY = y + height - 54;
   const highCalloutY = y + height - 32;
   svg.push(
-    `<text x="${x + 24}" y="${lowCalloutY}" font-family="system-ui, sans-serif" font-size="12" fill="#475569">${escapeXml(`Low quartile: ${formatGain(report.quartileDelta.lowQuartileMeanGain)} at R_qr <= ${formatRqr(report.quartileDelta.lowerQuartileRqr)}`)}</text>`,
+    `<text x="${
+      x + 24
+    }" y="${lowCalloutY}" font-family="system-ui, sans-serif" font-size="12" fill="#475569">${escapeXml(
+      `Low quartile: ${formatGain(
+        report.quartileDelta.lowQuartileMeanGain
+      )} at R_qr <= ${formatRqr(report.quartileDelta.lowerQuartileRqr)}`
+    )}</text>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${highCalloutY}" font-family="system-ui, sans-serif" font-size="12" fill="#475569">${escapeXml(`High quartile: ${formatGain(report.quartileDelta.highQuartileMeanGain)} at R_qr >= ${formatRqr(report.quartileDelta.upperQuartileRqr)}`)}</text>`,
+    `<text x="${
+      x + 24
+    }" y="${highCalloutY}" font-family="system-ui, sans-serif" font-size="12" fill="#475569">${escapeXml(
+      `High quartile: ${formatGain(
+        report.quartileDelta.highQuartileMeanGain
+      )} at R_qr >= ${formatRqr(report.quartileDelta.upperQuartileRqr)}`
+    )}</text>`
   );
 }
 
 export function renderCh17Gate4RqrHoldoutFigureSvg(
-  report: Ch17Gate4RqrHoldoutFigureReport,
+  report: Ch17Gate4RqrHoldoutFigureReport
 ): string {
   const svg: string[] = [];
-  svg.push('<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820" role="img" aria-labelledby="title desc">');
+  svg.push(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820" role="img" aria-labelledby="title desc">'
+  );
   svg.push('<title id="title">Chapter 17 Gate 4 R_qr holdout figure</title>');
   svg.push(
-    '<desc id="desc">Two-panel figure showing holdout decile calibration and interval-backed predictive-screening criteria for the R_qr validation artifact.</desc>',
+    '<desc id="desc">Two-panel figure showing holdout decile calibration and interval-backed predictive-screening criteria for the R_qr validation artifact.</desc>'
   );
   svg.push('<rect width="1240" height="820" fill="#f3efe5"/>');
-  svg.push('<rect x="22" y="22" width="1196" height="776" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>');
-  svg.push('<text x="60" y="82" font-family="Georgia, serif" font-size="32" fill="#111827">Gate 4 R_qr Holdout Validation</text>');
   svg.push(
-    `<text x="60" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">Source ${escapeXml(report.sourceLabel)} | ${report.criteriaPassed}/${report.criteriaTotal} criteria passed | max residual ${formatGain(report.maxAbsoluteResidualGain)}</text>`,
+    '<rect x="22" y="22" width="1196" height="776" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>'
+  );
+  svg.push(
+    '<text x="60" y="82" font-family="Georgia, serif" font-size="32" fill="#111827">Gate 4 R_qr Holdout Validation</text>'
+  );
+  svg.push(
+    `<text x="60" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">Source ${escapeXml(
+      report.sourceLabel
+    )} | ${report.criteriaPassed}/${
+      report.criteriaTotal
+    } criteria passed | max residual ${formatGain(
+      report.maxAbsoluteResidualGain
+    )}</text>`
   );
 
   renderCalibrationPanel(svg, report, 52, 148, 688, 610);

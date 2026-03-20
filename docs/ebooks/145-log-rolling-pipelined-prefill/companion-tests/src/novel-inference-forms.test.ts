@@ -30,7 +30,7 @@ function buleyeanWeight(rounds: number, voidCount: number): number {
 /** Complement distribution: normalize Buleyean weights to probabilities. */
 function complementDistribution(
   rounds: number,
-  voidBoundary: number[],
+  voidBoundary: number[]
 ): number[] {
   const weights = voidBoundary.map((v) => buleyeanWeight(rounds, v));
   const total = weights.reduce((a, b) => a + b, 0);
@@ -57,7 +57,10 @@ function createVoidInferenceState(vocabSize: number): VoidInferenceState {
   };
 }
 
-function rejectToken(state: VoidInferenceState, tokenIdx: number): VoidInferenceState {
+function rejectToken(
+  state: VoidInferenceState,
+  tokenIdx: number
+): VoidInferenceState {
   const newBoundary = [...state.voidBoundary];
   newBoundary[tokenIdx] += 1;
   return {
@@ -93,7 +96,7 @@ describe('Form 1: Void Inference — generation by rejection accumulation', () =
     }
 
     const weights = state.voidBoundary.map((v) =>
-      buleyeanWeight(state.rounds, v),
+      buleyeanWeight(state.rounds, v)
     );
 
     // Token 4 (never rejected) should have highest weight
@@ -148,13 +151,13 @@ describe('Form 1: Void Inference — generation by rejection accumulation', () =
     // Step 1: reject token 0
     state = rejectToken(state, 0);
     const weights1 = state.voidBoundary.map((v) =>
-      buleyeanWeight(state.rounds, v),
+      buleyeanWeight(state.rounds, v)
     );
 
     // Step 2: reject token 0 again
     state = rejectToken(state, 0);
     const weights2 = state.voidBoundary.map((v) =>
-      buleyeanWeight(state.rounds, v),
+      buleyeanWeight(state.rounds, v)
     );
 
     // Token 0's weight should decrease as it accumulates rejections
@@ -179,7 +182,7 @@ interface RetrocausalDecoder {
 function createRetrocausalDecoder(
   vocabSize: number,
   terminalRounds: number,
-  terminalBoundary: number[],
+  terminalBoundary: number[]
 ): RetrocausalDecoder {
   return {
     terminalBoundary,
@@ -192,12 +195,11 @@ function createRetrocausalDecoder(
 
 function isConsistentWithTerminal(
   decoder: RetrocausalDecoder,
-  tokenIdx: number,
+  tokenIdx: number
 ): boolean {
   // A token is consistent if rejecting it doesn't exceed the terminal count
   return (
-    decoder.currentBoundary[tokenIdx] + 1 <=
-    decoder.terminalBoundary[tokenIdx]
+    decoder.currentBoundary[tokenIdx] + 1 <= decoder.terminalBoundary[tokenIdx]
   );
 }
 
@@ -208,7 +210,7 @@ describe('Form 2: Retrocausal Decoding — constrained generation from terminal 
     for (let i = 0; i < decoder.vocabSize; i++) {
       const w = buleyeanWeight(
         decoder.terminalRounds,
-        decoder.terminalBoundary[i],
+        decoder.terminalBoundary[i]
       );
       expect(w).toBeGreaterThan(0);
     }
@@ -220,7 +222,7 @@ describe('Form 2: Retrocausal Decoding — constrained generation from terminal 
     for (let i = 0; i < decoder.vocabSize; i++) {
       const w = buleyeanWeight(
         decoder.currentRounds,
-        decoder.currentBoundary[i],
+        decoder.currentBoundary[i]
       );
       expect(w).toBeGreaterThanOrEqual(1);
       expect(w).not.toBe(0);
@@ -254,10 +256,10 @@ describe('Form 2: Retrocausal Decoding — constrained generation from terminal 
     // Both terminal states are satisfiable
     for (let i = 0; i < 4; i++) {
       expect(
-        buleyeanWeight(decoder1.terminalRounds, decoder1.terminalBoundary[i]),
+        buleyeanWeight(decoder1.terminalRounds, decoder1.terminalBoundary[i])
       ).toBeGreaterThan(0);
       expect(
-        buleyeanWeight(decoder2.terminalRounds, decoder2.terminalBoundary[i]),
+        buleyeanWeight(decoder2.terminalRounds, decoder2.terminalBoundary[i])
       ).toBeGreaterThan(0);
     }
   });
@@ -269,7 +271,7 @@ describe('Form 2: Retrocausal Decoding — constrained generation from terminal 
     for (let i = 0; i < decoder.vocabSize; i++) {
       const w = buleyeanWeight(
         decoder.terminalRounds,
-        decoder.terminalBoundary[i],
+        decoder.terminalBoundary[i]
       );
       expect(w).toBe(1); // The sliver
       expect(w).not.toBe(0);
@@ -379,7 +381,7 @@ function createEnsemble(agentCount: number): SemioticEnsemble {
 
 function rejectAgent(
   ensemble: SemioticEnsemble,
-  agentIdx: number,
+  agentIdx: number
 ): SemioticEnsemble {
   const newRejections = [...ensemble.rejections];
   newRejections[agentIdx] += 1;
@@ -417,7 +419,7 @@ describe('Form 4: Semiotic Ensemble — fork/race/fold multi-model inference', (
     ensemble = rejectAgent(ensemble, 2);
 
     const weights = ensemble.rejections.map((v) =>
-      buleyeanWeight(ensemble.rounds, v),
+      buleyeanWeight(ensemble.rounds, v)
     );
 
     // Agent 3 (never rejected) has highest weight
@@ -549,7 +551,7 @@ describe('Form 5: Non-Empirical Inference — prediction without training data',
     const structuralWeight = interpolationWeight(hole);
     const buleyean = buleyeanWeight(
       hole.neighborRoundsSum,
-      hole.neighborVoidSum,
+      hole.neighborVoidSum
     );
 
     // They are the same formula
@@ -568,9 +570,7 @@ describe('Form 5: Non-Empirical Inference — prediction without training data',
       neighborVoidSum: 6, // More rejection
     };
 
-    expect(interpolationWeight(hole2)).toBeLessThan(
-      interpolationWeight(hole1),
-    );
+    expect(interpolationWeight(hole2)).toBeLessThan(interpolationWeight(hole1));
   });
 
   it('Mendeleev gallium example: structure predicts the hole', () => {
@@ -592,7 +592,7 @@ describe('Form 5: Non-Empirical Inference — prediction without training data',
     expect(prediction).toBeGreaterThan(0);
     // Prediction is more constrained than random
     expect(prediction).toBeLessThan(
-      uninformedGuessWeight(galliumHole.neighborRoundsSum),
+      uninformedGuessWeight(galliumHole.neighborRoundsSum)
     );
     // Prediction weight = 100 - 40 + 1 = 61
     expect(prediction).toBe(61);
@@ -648,7 +648,7 @@ describe('Cross-cutting: all five forms compose from Buleyean axioms', () => {
     for (let v1 = 0; v1 <= rounds; v1++) {
       for (let v2 = v1; v2 <= rounds; v2++) {
         expect(buleyeanWeight(rounds, v2)).toBeLessThanOrEqual(
-          buleyeanWeight(rounds, v1),
+          buleyeanWeight(rounds, v1)
         );
       }
     }

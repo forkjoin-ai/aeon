@@ -127,7 +127,7 @@ interface MutableRecoveryPathObservation {
 
 function createShardKey(
   shardRole: RecoveryShardRole,
-  shardIndex: number,
+  shardIndex: number
 ): string {
   return `${shardRole}:${shardIndex}`;
 }
@@ -160,8 +160,13 @@ export class RecoveryLedger {
     }
 
     const maximumShardUnits = this.dataShardCount + this.parityShardCount;
-    if (this.recoveryThreshold <= 0 || this.recoveryThreshold > maximumShardUnits) {
-      throw new Error('recoveryThreshold must be between 1 and the total number of shard units');
+    if (
+      this.recoveryThreshold <= 0 ||
+      this.recoveryThreshold > maximumShardUnits
+    ) {
+      throw new Error(
+        'recoveryThreshold must be between 1 and the total number of shard units'
+      );
     }
 
     if ('shards' in config) {
@@ -242,9 +247,10 @@ export class RecoveryLedger {
     if (path.status !== input.status) {
       // Success dominates failure because it carries the stronger observation:
       // this path eventually delivered useful work.
-      path.status = path.status === 'succeeded' || input.status === 'succeeded'
-        ? 'succeeded'
-        : 'failed';
+      path.status =
+        path.status === 'succeeded' || input.status === 'succeeded'
+          ? 'succeeded'
+          : 'failed';
     }
 
     if (input.requestId) {
@@ -287,8 +293,10 @@ export class RecoveryLedger {
     const availableParityShards = this.getAvailableShardIndices('parity');
     const missingDataShards = this.getMissingDataShardIndices();
     const conflictingShards = this.getConflicts();
-    const uniqueShardUnits = availableDataShards.length + availableParityShards.length;
-    const directDataComplete = availableDataShards.length === this.dataShardCount;
+    const uniqueShardUnits =
+      availableDataShards.length + availableParityShards.length;
+    const directDataComplete =
+      availableDataShards.length === this.dataShardCount;
     const canReconstruct =
       conflictingShards.length === 0 &&
       (directDataComplete || uniqueShardUnits >= this.recoveryThreshold);
@@ -321,7 +329,7 @@ export class RecoveryLedger {
         }
         return left.shardIndex - right.shardIndex;
       })
-      .map(shard => ({
+      .map((shard) => ({
         shardRole: shard.shardRole,
         shardIndex: shard.shardIndex,
         digests: sortStrings(shard.digests),
@@ -333,7 +341,7 @@ export class RecoveryLedger {
       }));
     const paths = [...this.paths.values()]
       .sort((left, right) => left.pathId.localeCompare(right.pathId))
-      .map(path => ({
+      .map((path) => ({
         pathId: path.pathId,
         status: path.status,
         requestIds: sortStrings(path.requestIds),
@@ -387,8 +395,14 @@ export class RecoveryLedger {
     for (const source of shard.sources) {
       existing.sources.add(source);
     }
-    existing.firstObservedAt = Math.min(existing.firstObservedAt, shard.firstObservedAt);
-    existing.lastObservedAt = Math.max(existing.lastObservedAt, shard.lastObservedAt);
+    existing.firstObservedAt = Math.min(
+      existing.firstObservedAt,
+      shard.firstObservedAt
+    );
+    existing.lastObservedAt = Math.max(
+      existing.lastObservedAt,
+      shard.lastObservedAt
+    );
   }
 
   private mergePath(path: RecoveryPathObservation): void {
@@ -410,9 +424,10 @@ export class RecoveryLedger {
       return;
     }
 
-    existing.status = existing.status === 'succeeded' || path.status === 'succeeded'
-      ? 'succeeded'
-      : 'failed';
+    existing.status =
+      existing.status === 'succeeded' || path.status === 'succeeded'
+        ? 'succeeded'
+        : 'failed';
     for (const requestId of path.requestIds) {
       existing.requestIds.add(requestId);
       this.requestIds.add(requestId);
@@ -423,14 +438,20 @@ export class RecoveryLedger {
     for (const reason of path.reasons) {
       existing.reasons.add(reason);
     }
-    existing.firstObservedAt = Math.min(existing.firstObservedAt, path.firstObservedAt);
-    existing.lastObservedAt = Math.max(existing.lastObservedAt, path.lastObservedAt);
+    existing.firstObservedAt = Math.min(
+      existing.firstObservedAt,
+      path.firstObservedAt
+    );
+    existing.lastObservedAt = Math.max(
+      existing.lastObservedAt,
+      path.lastObservedAt
+    );
   }
 
   private getAvailableShardIndices(role: RecoveryShardRole): number[] {
     return [...this.shards.values()]
-      .filter(shard => shard.shardRole === role)
-      .map(shard => shard.shardIndex)
+      .filter((shard) => shard.shardRole === role)
+      .map((shard) => shard.shardIndex)
       .sort((left, right) => left - right);
   }
 
@@ -449,15 +470,15 @@ export class RecoveryLedger {
 
   private getPathsByStatus(status: RecoveryPathStatus): string[] {
     return [...this.paths.values()]
-      .filter(path => path.status === status)
-      .map(path => path.pathId)
+      .filter((path) => path.status === status)
+      .map((path) => path.pathId)
       .sort();
   }
 
   private getConflicts(): RecoveryConflict[] {
     return [...this.shards.values()]
-      .filter(shard => shard.digests.size > 1)
-      .map(shard => ({
+      .filter((shard) => shard.digests.size > 1)
+      .map((shard) => ({
         shardRole: shard.shardRole,
         shardIndex: shard.shardIndex,
         digests: sortStrings(shard.digests),
@@ -472,7 +493,9 @@ export class RecoveryLedger {
 
   private assertCompatibleSnapshot(snapshot: RecoveryLedgerSnapshot): void {
     if (snapshot.objectId !== this.objectId) {
-      throw new Error(`RecoveryLedger object mismatch: expected ${this.objectId}, received ${snapshot.objectId}`);
+      throw new Error(
+        `RecoveryLedger object mismatch: expected ${this.objectId}, received ${snapshot.objectId}`
+      );
     }
     if (snapshot.dataShardCount !== this.dataShardCount) {
       throw new Error('RecoveryLedger dataShardCount mismatch');
@@ -486,8 +509,13 @@ export class RecoveryLedger {
   }
 
   private assertShardIndex(role: RecoveryShardRole, shardIndex: number): void {
-    const upperBound = role === 'data' ? this.dataShardCount : this.parityShardCount;
-    if (!Number.isInteger(shardIndex) || shardIndex < 0 || shardIndex >= upperBound) {
+    const upperBound =
+      role === 'data' ? this.dataShardCount : this.parityShardCount;
+    if (
+      !Number.isInteger(shardIndex) ||
+      shardIndex < 0 ||
+      shardIndex >= upperBound
+    ) {
       throw new Error(`Invalid ${role} shard index ${shardIndex}`);
     }
   }

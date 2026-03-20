@@ -15,8 +15,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gnosis-near-control-sweep.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gnosis-near-control-sweep.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gnosis-near-control-sweep.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gnosis-near-control-sweep.md'
+  );
 
   let assertBoundary = false;
   let jsonPath = defaultJsonPath;
@@ -61,23 +67,37 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderGnosisNearControlSweepMarkdown(report),
-    'utf8',
+    'utf8'
   );
 
   process.stdout.write(
-    `gnosis-near-control-sweep: ${report.predictedNearControlRecovered ? 'MATCH' : 'MISMATCH'}\n`,
+    `gnosis-near-control-sweep: ${
+      report.predictedNearControlRecovered ? 'MATCH' : 'MISMATCH'
+    }\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(
-    `- affine: last-parity=${report.affine.lastParityRegimeValue?.toFixed(2) ?? 'none'}, first-separated=${report.affine.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'}\n`,
+    `- affine: last-parity=${
+      report.affine.lastParityRegimeValue?.toFixed(2) ?? 'none'
+    }, first-separated=${
+      report.affine.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'
+    }\n`
   );
   process.stdout.write(
-    `- routed: last-parity=${report.routed.lastParityRegimeValue?.toFixed(2) ?? 'none'}, first-separated=${report.routed.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'}\n`,
+    `- routed: last-parity=${
+      report.routed.lastParityRegimeValue?.toFixed(2) ?? 'none'
+    }, first-separated=${
+      report.routed.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'
+    }\n`
   );
 
   if (options.assertBoundary && !report.predictedNearControlRecovered) {
@@ -86,6 +106,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

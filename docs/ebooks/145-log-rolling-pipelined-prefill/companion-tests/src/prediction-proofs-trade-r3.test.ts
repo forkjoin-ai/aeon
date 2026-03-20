@@ -34,8 +34,9 @@ describe('Prediction 217: Price discrimination as rate-distortion quotient', () 
   it('more tiers monotonically reduce loss', () => {
     for (let t = 1; t <= 10; t++) {
       if (t > 1) {
-        expect(infoLoss({ segments: 10, tiers: t }))
-          .toBeLessThan(infoLoss({ segments: 10, tiers: t - 1 }));
+        expect(infoLoss({ segments: 10, tiers: t })).toBeLessThan(
+          infoLoss({ segments: 10, tiers: t - 1 })
+        );
       }
     }
   });
@@ -53,7 +54,10 @@ describe('Prediction 217: Price discrimination as rate-distortion quotient', () 
     for (let t = 1; t <= 10; t++) {
       const ps: PricingStrategy = { segments: 10, tiers: t };
       const product = infoLoss(ps) * overhead(ps);
-      if (product < bestProduct) { bestProduct = product; bestTiers = t; }
+      if (product < bestProduct) {
+        bestProduct = product;
+        bestTiers = t;
+      }
     }
     // Optimal is at extremes (perfect discrimination or uniform)
     expect(bestTiers === 1 || bestTiers === 10).toBe(true);
@@ -73,7 +77,11 @@ describe('Prediction 217: Price discrimination as rate-distortion quotient', () 
 // ============================================================================
 
 describe('Prediction 218: Production line speedup via Wallington rotation', () => {
-  interface Pipeline { stages: number; lines: number; stageTime: number; }
+  interface Pipeline {
+    stages: number;
+    lines: number;
+    stageTime: number;
+  }
 
   const sequential = (p: Pipeline) => p.stages * p.lines * p.stageTime;
   const flow = (p: Pipeline) => p.stages * p.stageTime;
@@ -141,8 +149,10 @@ describe('Prediction 219: Cross-market inference via statistical teleportation',
 
   it('spread as deficit: wider spread = more uncertainty', () => {
     const narrowSpread = 2; // 2 ticks
-    const wideSpread = 8;   // 8 ticks
-    expect(uncertainty(wideSpread, 0)).toBeGreaterThan(uncertainty(narrowSpread, 0));
+    const wideSpread = 8; // 8 ticks
+    expect(uncertainty(wideSpread, 0)).toBeGreaterThan(
+      uncertainty(narrowSpread, 0)
+    );
     // But both converge to zero at their respective deficit counts
     expect(uncertainty(narrowSpread, narrowSpread)).toBe(0);
     expect(uncertainty(wideSpread, wideSpread)).toBe(0);
@@ -154,7 +164,11 @@ describe('Prediction 219: Cross-market inference via statistical teleportation',
 // ============================================================================
 
 describe('Prediction 220: Organizational slack as Wallace waste', () => {
-  interface Org { leadership: number; middle: number; execution: number; }
+  interface Org {
+    leadership: number;
+    middle: number;
+    execution: number;
+  }
 
   const throughput = (o: Org) => o.leadership + o.middle + o.execution;
   const peak = (o: Org) => 3 * Math.max(o.leadership, o.middle, o.execution);
@@ -213,29 +227,44 @@ describe('Prediction 220: Organizational slack as Wallace waste', () => {
 // ============================================================================
 
 describe('Prediction 221: Regulatory harmonization as interference coarsening', () => {
-  interface Regulatory { jurisdictions: number; zones: number; totalBurden: number; }
+  interface Regulatory {
+    jurisdictions: number;
+    zones: number;
+    totalBurden: number;
+  }
 
   const fragmentation = (r: Regulatory) => r.jurisdictions - r.zones;
 
   it('no harmonization = zero fragmentation reduction', () => {
-    expect(fragmentation({ jurisdictions: 10, zones: 10, totalBurden: 100 })).toBe(0);
+    expect(
+      fragmentation({ jurisdictions: 10, zones: 10, totalBurden: 100 })
+    ).toBe(0);
   });
 
   it('full harmonization has maximum fragmentation', () => {
-    expect(fragmentation({ jurisdictions: 10, zones: 1, totalBurden: 100 })).toBe(9);
+    expect(
+      fragmentation({ jurisdictions: 10, zones: 1, totalBurden: 100 })
+    ).toBe(9);
   });
 
   it('more zones → less fragmentation (monotone)', () => {
     for (let z = 1; z <= 10; z++) {
       if (z > 1) {
-        expect(fragmentation({ jurisdictions: 10, zones: z, totalBurden: 100 }))
-          .toBeLessThan(fragmentation({ jurisdictions: 10, zones: z - 1, totalBurden: 100 }));
+        expect(
+          fragmentation({ jurisdictions: 10, zones: z, totalBurden: 100 })
+        ).toBeLessThan(
+          fragmentation({ jurisdictions: 10, zones: z - 1, totalBurden: 100 })
+        );
       }
     }
   });
 
   it('total burden preserved under harmonization', () => {
-    const before: Regulatory = { jurisdictions: 10, zones: 10, totalBurden: 100 };
+    const before: Regulatory = {
+      jurisdictions: 10,
+      zones: 10,
+      totalBurden: 100,
+    };
     const after: Regulatory = { jurisdictions: 10, zones: 3, totalBurden: 100 };
     expect(before.totalBurden).toBe(after.totalBurden);
   });

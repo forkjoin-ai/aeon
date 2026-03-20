@@ -34,7 +34,10 @@ function buleyeanWeight(rounds: number, voidCount: number): number {
 }
 
 /** Attempt a self-referential fold: try to set ancestor weight to 0. */
-function attemptGrandfatherFold(chain: CausalChain, ancestorIdx: number): CausalChain {
+function attemptGrandfatherFold(
+  chain: CausalChain,
+  ancestorIdx: number
+): CausalChain {
   // The fold CANNOT reduce weight below 1 (the sliver)
   const newWeights = [...chain.weights];
   // Attempted: set to 0. Actual: clamped to minimum 1.
@@ -45,7 +48,7 @@ function attemptGrandfatherFold(chain: CausalChain, ancestorIdx: number): Causal
 /** Create a temporal branch (fork, not fold). */
 function branchTimeline(
   chain: CausalChain,
-  beta1: number,
+  beta1: number
 ): { original: CausalChain; branch: CausalChain; newBeta1: number } {
   // Original chain is preserved
   const branch: CausalChain = {
@@ -122,7 +125,13 @@ describe('self-referential fold is impossible', () => {
 
   it('all events in the chain remain positive after fold attempt', () => {
     const chain: CausalChain = {
-      events: ['great-grandparent', 'grandparent', 'parent', 'self', 'traveler'],
+      events: [
+        'great-grandparent',
+        'grandparent',
+        'parent',
+        'self',
+        'traveler',
+      ],
       weights: [5, 4, 3, 2, 1],
     };
 
@@ -332,8 +341,10 @@ describe('retrocausal consistency', () => {
     const paradoxState = { ancestorExists: false, travelerExists: true };
 
     // Consistency check: traveler existing requires ancestor existing
-    const isConsistent = (state: { ancestorExists: boolean; travelerExists: boolean }) =>
-      !state.travelerExists || state.ancestorExists;
+    const isConsistent = (state: {
+      ancestorExists: boolean;
+      travelerExists: boolean;
+    }) => !state.travelerExists || state.ancestorExists;
 
     expect(isConsistent(terminalState)).toBe(true);
     expect(isConsistent(paradoxState)).toBe(false); // Inconsistent!

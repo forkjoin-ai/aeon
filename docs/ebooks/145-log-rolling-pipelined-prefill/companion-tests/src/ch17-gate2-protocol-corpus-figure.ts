@@ -75,7 +75,12 @@ function rangeFor(values: readonly number[]): MetricRange {
   };
 }
 
-function scaleY(value: number, range: MetricRange, top: number, height: number): number {
+function scaleY(
+  value: number,
+  range: MetricRange,
+  top: number,
+  height: number
+): number {
   if (range.high <= range.low) {
     return top + height / 2;
   }
@@ -99,12 +104,17 @@ function metricColor(metric: 'framing' | 'median' | 'p95'): string {
 }
 
 export function buildCh17Gate2ProtocolCorpusFigureReport(
-  report: Gate2Report,
+  report: Gate2Report
 ): Ch17Gate2ProtocolCorpusFigureReport {
   const cells = report.cells.map<Gate2FigureCell>((cell) => ({
     cellId: cell.cellId,
-    environmentLabel:
-      `RTT ${trimFixed(cell.environment.rttMs, 0)} ms • BW ${trimFixed(cell.environment.bandwidthMbps, 0)} Mbps • loss ${formatLossPct(cell.environment.lossRate)}`,
+    environmentLabel: `RTT ${trimFixed(
+      cell.environment.rttMs,
+      0
+    )} ms • BW ${trimFixed(
+      cell.environment.bandwidthMbps,
+      0
+    )} Mbps • loss ${formatLossPct(cell.environment.lossRate)}`,
     primary: cell.environment.primary,
     rttMs: cell.environment.rttMs,
     bandwidthMbps: cell.environment.bandwidthMbps,
@@ -129,26 +139,30 @@ export function buildCh17Gate2ProtocolCorpusFigureReport(
     },
     primaryPassed: report.gate.passedPrimaryCells.length,
     primaryTotal: report.gate.primaryCells.length,
-    framingGainRangePct: rangeFor(cells.map((cell) => cell.framingMedianGainPct)),
-    completionMedianGainRangeMs: rangeFor(
-      cells.map((cell) => cell.completionMedianGainMs),
+    framingGainRangePct: rangeFor(
+      cells.map((cell) => cell.framingMedianGainPct)
     ),
-    completionP95GainRangeMs: rangeFor(cells.map((cell) => cell.completionP95GainMs)),
+    completionMedianGainRangeMs: rangeFor(
+      cells.map((cell) => cell.completionMedianGainMs)
+    ),
+    completionP95GainRangeMs: rangeFor(
+      cells.map((cell) => cell.completionP95GainMs)
+    ),
     minPrimaryFramingCiLowPct: Math.min(
-      ...ciCells.map((cell) => cell.framingMedianGainPctCi.low),
+      ...ciCells.map((cell) => cell.framingMedianGainPctCi.low)
     ),
     minPrimaryCompletionMedianCiLowMs: Math.min(
-      ...ciCells.map((cell) => cell.completionMedianGainMsCi.low),
+      ...ciCells.map((cell) => cell.completionMedianGainMsCi.low)
     ),
     minPrimaryCompletionP95CiLowMs: Math.min(
-      ...ciCells.map((cell) => cell.completionP95GainMsCi.low),
+      ...ciCells.map((cell) => cell.completionP95GainMsCi.low)
     ),
     cells,
   };
 }
 
 export function renderCh17Gate2ProtocolCorpusFigureMarkdown(
-  report: Ch17Gate2ProtocolCorpusFigureReport,
+  report: Ch17Gate2ProtocolCorpusFigureReport
 ): string {
   const lines: string[] = [];
   lines.push('# Chapter 17 Gate 2 Protocol-Corpus Figure');
@@ -156,37 +170,66 @@ export function renderCh17Gate2ProtocolCorpusFigureMarkdown(
   lines.push(`- Label: \`${report.label}\``);
   lines.push(`- Source: \`${report.sourceLabel}\``);
   lines.push(
-    `- Corpus: \`${report.corpus.siteCount}\` sites, \`${report.corpus.totalResources}\` resources, median \`${trimFixed(report.corpus.medianResourcesPerSite, 1)}\` resources/site`,
-  );
-  lines.push(`- Primary cells passed: \`${report.primaryPassed}/${report.primaryTotal}\``);
-  lines.push(
-    `- Framing gain range: \`${formatPct(report.framingGainRangePct.low)}\` to \`${formatPct(report.framingGainRangePct.high)}\``,
-  );
-  lines.push(
-    `- Completion median gain range: \`${formatMs(report.completionMedianGainRangeMs.low)} ms\` to \`${formatMs(report.completionMedianGainRangeMs.high)} ms\``,
+    `- Corpus: \`${report.corpus.siteCount}\` sites, \`${
+      report.corpus.totalResources
+    }\` resources, median \`${trimFixed(
+      report.corpus.medianResourcesPerSite,
+      1
+    )}\` resources/site`
   );
   lines.push(
-    `- Completion p95 gain range: \`${formatMs(report.completionP95GainRangeMs.low)} ms\` to \`${formatMs(report.completionP95GainRangeMs.high)} ms\``,
+    `- Primary cells passed: \`${report.primaryPassed}/${report.primaryTotal}\``
   );
   lines.push(
-    `- Minimum primary-cell CI lows: \`${formatPct(report.minPrimaryFramingCiLowPct)}\`, \`${formatMs(report.minPrimaryCompletionMedianCiLowMs)} ms\`, \`${formatMs(report.minPrimaryCompletionP95CiLowMs)} ms\``,
+    `- Framing gain range: \`${formatPct(
+      report.framingGainRangePct.low
+    )}\` to \`${formatPct(report.framingGainRangePct.high)}\``
+  );
+  lines.push(
+    `- Completion median gain range: \`${formatMs(
+      report.completionMedianGainRangeMs.low
+    )} ms\` to \`${formatMs(report.completionMedianGainRangeMs.high)} ms\``
+  );
+  lines.push(
+    `- Completion p95 gain range: \`${formatMs(
+      report.completionP95GainRangeMs.low
+    )} ms\` to \`${formatMs(report.completionP95GainRangeMs.high)} ms\``
+  );
+  lines.push(
+    `- Minimum primary-cell CI lows: \`${formatPct(
+      report.minPrimaryFramingCiLowPct
+    )}\`, \`${formatMs(
+      report.minPrimaryCompletionMedianCiLowMs
+    )} ms\`, \`${formatMs(report.minPrimaryCompletionP95CiLowMs)} ms\``
   );
   lines.push('');
   lines.push('## Cells');
   lines.push('');
   lines.push(
-    '| Cell | Environment | Primary | Framing Median Gain % (95% CI) | Completion Median Gain ms (95% CI) | Completion p95 Gain ms (95% CI) |',
+    '| Cell | Environment | Primary | Framing Median Gain % (95% CI) | Completion Median Gain ms (95% CI) | Completion p95 Gain ms (95% CI) |'
   );
   lines.push('|---|---|---|---:|---:|---:|');
 
   for (const cell of report.cells) {
     lines.push(
-      `| ${cell.cellId} | ${cell.environmentLabel} | ${cell.primary ? 'yes' : 'no'} | ${formatPct(cell.framingMedianGainPct)} (${formatPct(cell.framingMedianGainPctCi.low)} to ${formatPct(cell.framingMedianGainPctCi.high)}) | ${formatMs(cell.completionMedianGainMs)} (${formatMs(cell.completionMedianGainMsCi.low)} to ${formatMs(cell.completionMedianGainMsCi.high)}) | ${formatMs(cell.completionP95GainMs)} (${formatMs(cell.completionP95GainMsCi.low)} to ${formatMs(cell.completionP95GainMsCi.high)}) |`,
+      `| ${cell.cellId} | ${cell.environmentLabel} | ${
+        cell.primary ? 'yes' : 'no'
+      } | ${formatPct(cell.framingMedianGainPct)} (${formatPct(
+        cell.framingMedianGainPctCi.low
+      )} to ${formatPct(cell.framingMedianGainPctCi.high)}) | ${formatMs(
+        cell.completionMedianGainMs
+      )} (${formatMs(cell.completionMedianGainMsCi.low)} to ${formatMs(
+        cell.completionMedianGainMsCi.high
+      )}) | ${formatMs(cell.completionP95GainMs)} (${formatMs(
+        cell.completionP95GainMsCi.low
+      )} to ${formatMs(cell.completionP95GainMsCi.high)}) |`
     );
   }
 
   lines.push('');
-  lines.push('Interpretation: the figure separates the nearly invariant framing advantage from the latency gains that widen as impairment increases, making the protocol story legible without collapsing the corpus matrix into one scalar.');
+  lines.push(
+    'Interpretation: the figure separates the nearly invariant framing advantage from the latency gains that widen as impairment increases, making the protocol story legible without collapsing the corpus matrix into one scalar.'
+  );
 
   return `${lines.join('\n')}\n`;
 }
@@ -204,16 +247,24 @@ function renderMetricPanel(
     readonly axisLabel: string;
     readonly metric: 'framing' | 'median' | 'p95';
     readonly range: MetricRange;
-  },
+  }
 ): void {
   svg.push(
-    `<rect x="${options.x}" y="${options.y}" width="${options.width}" height="${options.height}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`,
+    `<rect x="${options.x}" y="${options.y}" width="${options.width}" height="${options.height}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`
   );
   svg.push(
-    `<text x="${options.x + 24}" y="${options.y + 34}" font-family="Georgia, serif" font-size="20" fill="#111827">${escapeXml(options.title)}</text>`,
+    `<text x="${options.x + 24}" y="${
+      options.y + 34
+    }" font-family="Georgia, serif" font-size="20" fill="#111827">${escapeXml(
+      options.title
+    )}</text>`
   );
   svg.push(
-    `<text x="${options.x + 24}" y="${options.y + 56}" font-family="Georgia, serif" font-size="13" fill="#4b5563">${escapeXml(options.subtitle)}</text>`,
+    `<text x="${options.x + 24}" y="${
+      options.y + 56
+    }" font-family="Georgia, serif" font-size="13" fill="#4b5563">${escapeXml(
+      options.subtitle
+    )}</text>`
   );
 
   const innerX = options.x + 54;
@@ -228,16 +279,23 @@ function renderMetricPanel(
     const value = options.range.low + step * index;
     const y = scaleY(value, options.range, innerY, innerHeight);
     svg.push(
-      `<line x1="${innerX}" y1="${y}" x2="${innerX + innerWidth}" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>`,
+      `<line x1="${innerX}" y1="${y}" x2="${
+        innerX + innerWidth
+      }" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>`
     );
-    const label = options.metric === 'framing' ? formatPct(value) : `${formatMs(value)} ms`;
+    const label =
+      options.metric === 'framing' ? formatPct(value) : `${formatMs(value)} ms`;
     svg.push(
-      `<text x="${innerX - 12}" y="${y + 4}" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${label}</text>`,
+      `<text x="${innerX - 12}" y="${
+        y + 4
+      }" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${label}</text>`
     );
   }
 
   const pointGap =
-    report.cells.length > 1 ? innerWidth / (report.cells.length - 1) : innerWidth / 2;
+    report.cells.length > 1
+      ? innerWidth / (report.cells.length - 1)
+      : innerWidth / 2;
   const path: string[] = [];
 
   report.cells.forEach((cell, index) => {
@@ -246,14 +304,14 @@ function renderMetricPanel(
       options.metric === 'framing'
         ? cell.framingMedianGainPct
         : options.metric === 'median'
-          ? cell.completionMedianGainMs
-          : cell.completionP95GainMs;
+        ? cell.completionMedianGainMs
+        : cell.completionP95GainMs;
     const interval =
       options.metric === 'framing'
         ? cell.framingMedianGainPctCi
         : options.metric === 'median'
-          ? cell.completionMedianGainMsCi
-          : cell.completionP95GainMsCi;
+        ? cell.completionMedianGainMsCi
+        : cell.completionP95GainMsCi;
     const cy = scaleY(value, options.range, innerY, innerHeight);
     const cyLow = scaleY(interval.low, options.range, innerY, innerHeight);
     const cyHigh = scaleY(interval.high, options.range, innerY, innerHeight);
@@ -261,35 +319,57 @@ function renderMetricPanel(
     path.push(`${index === 0 ? 'M' : 'L'} ${cx} ${cy}`);
 
     svg.push(
-      `<line x1="${cx}" y1="${cyLow}" x2="${cx}" y2="${cyHigh}" stroke="${color}" stroke-width="2" opacity="0.45"/>`,
+      `<line x1="${cx}" y1="${cyLow}" x2="${cx}" y2="${cyHigh}" stroke="${color}" stroke-width="2" opacity="0.45"/>`
     );
     svg.push(
-      `<line x1="${cx - 5}" y1="${cyLow}" x2="${cx + 5}" y2="${cyLow}" stroke="${color}" stroke-width="1.5" opacity="0.45"/>`,
+      `<line x1="${cx - 5}" y1="${cyLow}" x2="${
+        cx + 5
+      }" y2="${cyLow}" stroke="${color}" stroke-width="1.5" opacity="0.45"/>`
     );
     svg.push(
-      `<line x1="${cx - 5}" y1="${cyHigh}" x2="${cx + 5}" y2="${cyHigh}" stroke="${color}" stroke-width="1.5" opacity="0.45"/>`,
+      `<line x1="${cx - 5}" y1="${cyHigh}" x2="${
+        cx + 5
+      }" y2="${cyHigh}" stroke="${color}" stroke-width="1.5" opacity="0.45"/>`
     );
     svg.push(
-      `<circle cx="${cx}" cy="${cy}" r="5" fill="${primaryColor(cell.primary)}" stroke="${color}" stroke-width="2"/>`,
+      `<circle cx="${cx}" cy="${cy}" r="5" fill="${primaryColor(
+        cell.primary
+      )}" stroke="${color}" stroke-width="2"/>`
     );
     svg.push(
-      `<text x="${cx}" y="${innerY + innerHeight + 20}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#6b7280">r${trimFixed(cell.rttMs, 0)}</text>`,
+      `<text x="${cx}" y="${
+        innerY + innerHeight + 20
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#6b7280">r${trimFixed(
+        cell.rttMs,
+        0
+      )}</text>`
     );
     svg.push(
-      `<text x="${cx}" y="${innerY + innerHeight + 34}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">l${trimFixed(cell.lossRate * 100, 0)}</text>`,
+      `<text x="${cx}" y="${
+        innerY + innerHeight + 34
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">l${trimFixed(
+        cell.lossRate * 100,
+        0
+      )}</text>`
     );
   });
 
   svg.push(
-    `<path d="${path.join(' ')}" fill="none" stroke="${color}" stroke-width="2.5" opacity="0.9"/>`,
+    `<path d="${path.join(
+      ' '
+    )}" fill="none" stroke="${color}" stroke-width="2.5" opacity="0.9"/>`
   );
   svg.push(
-    `<text x="${innerX + innerWidth / 2}" y="${options.y + options.height - 18}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(options.axisLabel)}</text>`,
+    `<text x="${innerX + innerWidth / 2}" y="${
+      options.y + options.height - 18
+    }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(
+      options.axisLabel
+    )}</text>`
   );
 }
 
 export function renderCh17Gate2ProtocolCorpusFigureSvg(
-  report: Ch17Gate2ProtocolCorpusFigureReport,
+  report: Ch17Gate2ProtocolCorpusFigureReport
 ): string {
   const width = 1440;
   const height = 980;
@@ -297,31 +377,41 @@ export function renderCh17Gate2ProtocolCorpusFigureSvg(
     low: Math.floor((report.minPrimaryFramingCiLowPct - 0.2) * 10) / 10,
     high:
       Math.ceil(
-        (Math.max(...report.cells.map((cell) => cell.framingMedianGainPctCi.high)) + 0.2) * 10,
+        (Math.max(
+          ...report.cells.map((cell) => cell.framingMedianGainPctCi.high)
+        ) +
+          0.2) *
+          10
       ) / 10,
   };
   const completionMedianRange: MetricRange = {
     low: 0,
     high:
       Math.ceil(
-        Math.max(...report.cells.map((cell) => cell.completionMedianGainMsCi.high)) / 20,
+        Math.max(
+          ...report.cells.map((cell) => cell.completionMedianGainMsCi.high)
+        ) / 20
       ) * 20,
   };
   const completionP95Range: MetricRange = {
     low: 0,
     high:
       Math.ceil(
-        Math.max(...report.cells.map((cell) => cell.completionP95GainMsCi.high)) / 20,
+        Math.max(
+          ...report.cells.map((cell) => cell.completionP95GainMsCi.high)
+        ) / 20
       ) * 20,
   };
 
   const svg: string[] = [];
   svg.push(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`
   );
-  svg.push('<title id="title">Chapter 17 Gate 2 protocol-corpus figure</title>');
   svg.push(
-    '<desc id="desc">Three stacked protocol-corpus panels showing framing median gain, completion median gain, and completion p95 gain across the Gate 2 environment matrix, each with bootstrap confidence intervals.</desc>',
+    '<title id="title">Chapter 17 Gate 2 protocol-corpus figure</title>'
+  );
+  svg.push(
+    '<desc id="desc">Three stacked protocol-corpus panels showing framing median gain, completion median gain, and completion p95 gain across the Gate 2 environment matrix, each with bootstrap confidence intervals.</desc>'
   );
   svg.push('<defs>');
   svg.push('<linearGradient id="gate2bg" x1="0%" y1="0%" x2="100%" y2="100%">');
@@ -331,13 +421,25 @@ export function renderCh17Gate2ProtocolCorpusFigureSvg(
   svg.push('</defs>');
   svg.push('<rect width="1440" height="980" rx="24" fill="url(#gate2bg)"/>');
   svg.push(
-    '<text x="48" y="58" font-family="Georgia, serif" font-size="30" fill="#111827">Chapter 17 Gate 2 Protocol Corpus</text>',
+    '<text x="48" y="58" font-family="Georgia, serif" font-size="30" fill="#111827">Chapter 17 Gate 2 Protocol Corpus</text>'
   );
   svg.push(
-    `<text x="48" y="88" font-family="Georgia, serif" font-size="15" fill="#4b5563">Source ${escapeXml(report.sourceLabel)} • ${report.corpus.siteCount} sites • ${report.corpus.totalResources} resources • ${report.primaryPassed}/${report.primaryTotal} primary cells pass</text>`,
+    `<text x="48" y="88" font-family="Georgia, serif" font-size="15" fill="#4b5563">Source ${escapeXml(
+      report.sourceLabel
+    )} • ${report.corpus.siteCount} sites • ${
+      report.corpus.totalResources
+    } resources • ${report.primaryPassed}/${
+      report.primaryTotal
+    } primary cells pass</text>`
   );
   svg.push(
-    `<text x="48" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">Framing gain stays near ${formatPct(report.framingGainRangePct.low)}–${formatPct(report.framingGainRangePct.high)} while median and p95 completion gains widen to ${formatMs(report.completionMedianGainRangeMs.high)} ms and ${formatMs(report.completionP95GainRangeMs.high)} ms</text>`,
+    `<text x="48" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">Framing gain stays near ${formatPct(
+      report.framingGainRangePct.low
+    )}–${formatPct(
+      report.framingGainRangePct.high
+    )} while median and p95 completion gains widen to ${formatMs(
+      report.completionMedianGainRangeMs.high
+    )} ms and ${formatMs(report.completionP95GainRangeMs.high)} ms</text>`
   );
 
   renderMetricPanel(svg, report, {
@@ -346,8 +448,10 @@ export function renderCh17Gate2ProtocolCorpusFigureSvg(
     width: 1360,
     height: 230,
     title: 'Framing Median Gain',
-    subtitle: 'Header/framing advantage is stable across the environment matrix',
-    axisLabel: 'environment order: low RTT/low loss on the left, higher impairment on the right',
+    subtitle:
+      'Header/framing advantage is stable across the environment matrix',
+    axisLabel:
+      'environment order: low RTT/low loss on the left, higher impairment on the right',
     metric: 'framing',
     range: framingRange,
   });
@@ -357,7 +461,8 @@ export function renderCh17Gate2ProtocolCorpusFigureSvg(
     width: 1360,
     height: 230,
     title: 'Completion Median Gain',
-    subtitle: 'Median completion savings increase as RTT, loss, and bandwidth pressure worsen',
+    subtitle:
+      'Median completion savings increase as RTT, loss, and bandwidth pressure worsen',
     axisLabel: 'labels under points: r = RTT in ms, l = loss percent',
     metric: 'median',
     range: completionMedianRange,
@@ -369,30 +474,51 @@ export function renderCh17Gate2ProtocolCorpusFigureSvg(
     height: 230,
     title: 'Completion p95 Gain',
     subtitle: 'Tail savings widen even more strongly under heavier impairment',
-    axisLabel: 'filled green markers = primary cells, slate markers = non-primary cells',
+    axisLabel:
+      'filled green markers = primary cells, slate markers = non-primary cells',
     metric: 'p95',
     range: completionP95Range,
   });
 
-  svg.push(`<circle cx="58" cy="926" r="6" fill="${primaryColor(true)}" stroke="#111827" stroke-width="0.5"/>`);
   svg.push(
-    '<text x="74" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">primary cell</text>',
+    `<circle cx="58" cy="926" r="6" fill="${primaryColor(
+      true
+    )}" stroke="#111827" stroke-width="0.5"/>`
   );
-  svg.push(`<circle cx="150" cy="926" r="6" fill="${primaryColor(false)}" stroke="#111827" stroke-width="0.5"/>`);
   svg.push(
-    '<text x="166" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">non-primary cell</text>',
+    '<text x="74" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">primary cell</text>'
   );
-  svg.push(`<line x1="276" y1="926" x2="314" y2="926" stroke="${metricColor('framing')}" stroke-width="2.5"/>`);
   svg.push(
-    '<text x="322" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">framing gain</text>',
+    `<circle cx="150" cy="926" r="6" fill="${primaryColor(
+      false
+    )}" stroke="#111827" stroke-width="0.5"/>`
   );
-  svg.push(`<line x1="414" y1="926" x2="452" y2="926" stroke="${metricColor('median')}" stroke-width="2.5"/>`);
   svg.push(
-    '<text x="460" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">completion median gain</text>',
+    '<text x="166" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">non-primary cell</text>'
   );
-  svg.push(`<line x1="616" y1="926" x2="654" y2="926" stroke="${metricColor('p95')}" stroke-width="2.5"/>`);
   svg.push(
-    '<text x="662" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">completion p95 gain</text>',
+    `<line x1="276" y1="926" x2="314" y2="926" stroke="${metricColor(
+      'framing'
+    )}" stroke-width="2.5"/>`
+  );
+  svg.push(
+    '<text x="322" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">framing gain</text>'
+  );
+  svg.push(
+    `<line x1="414" y1="926" x2="452" y2="926" stroke="${metricColor(
+      'median'
+    )}" stroke-width="2.5"/>`
+  );
+  svg.push(
+    '<text x="460" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">completion median gain</text>'
+  );
+  svg.push(
+    `<line x1="616" y1="926" x2="654" y2="926" stroke="${metricColor(
+      'p95'
+    )}" stroke-width="2.5"/>`
+  );
+  svg.push(
+    '<text x="662" y="930" font-family="system-ui, sans-serif" font-size="12" fill="#4b5563">completion p95 gain</text>'
   );
 
   svg.push('</svg>');

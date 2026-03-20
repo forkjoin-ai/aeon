@@ -17,8 +17,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gate1-wallclock-hard-workloads.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gate1-wallclock-hard-workloads.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gate1-wallclock-hard-workloads.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gate1-wallclock-hard-workloads.md'
+  );
 
   let assertGate = false;
   let jsonPath = defaultJsonPath;
@@ -76,11 +82,19 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(options.markdownPath, renderGate1Markdown(report), 'utf8');
 
-  process.stdout.write(`gate1-hard verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`);
-  process.stdout.write(`primary cells: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}\n`);
+  process.stdout.write(
+    `gate1-hard verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`
+  );
+  process.stdout.write(
+    `primary cells: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
 
@@ -90,7 +104,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });
-

@@ -13,13 +13,18 @@ import type { Gate3Report } from './gate3-compression-corpus';
 
 function loadGate3Report(): Gate3Report {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const artifactPath = resolve(moduleDir, '../artifacts/gate3-compression-corpus.json');
+  const artifactPath = resolve(
+    moduleDir,
+    '../artifacts/gate3-compression-corpus.json'
+  );
   return JSON.parse(readFileSync(artifactPath, 'utf8')) as Gate3Report;
 }
 
 describe('Chapter 17 Gate 3 compression-corpus figure', () => {
   it('builds a compact figure report from the Gate 3 artifact', () => {
-    const figure = buildCh17Gate3CompressionCorpusFigureReport(loadGate3Report());
+    const figure = buildCh17Gate3CompressionCorpusFigureReport(
+      loadGate3Report()
+    );
 
     expect(figure.label).toBe('ch17-gate3-compression-corpus-figure-v1');
     expect(figure.sourceLabel).toBe('gate3-compression-corpus-v1');
@@ -34,7 +39,9 @@ describe('Chapter 17 Gate 3 compression-corpus figure', () => {
   });
 
   it('renders markdown and svg outputs with the two compression panels', () => {
-    const figure = buildCh17Gate3CompressionCorpusFigureReport(loadGate3Report());
+    const figure = buildCh17Gate3CompressionCorpusFigureReport(
+      loadGate3Report()
+    );
 
     const markdown = renderCh17Gate3CompressionCorpusFigureMarkdown(figure);
     const svg = renderCh17Gate3CompressionCorpusFigureSvg(figure);

@@ -109,12 +109,17 @@ export class TopologyAnalyzer {
   static analyze(graph: ComputationGraph): TopologyReport {
     const adjacency = buildAdjacency(graph);
     const reverseAdj = buildReverseAdjacency(graph);
-    const nodeIds = graph.nodes.map(n => n.id);
+    const nodeIds = graph.nodes.map((n) => n.id);
 
     const beta0 = computeBeta0(nodeIds, adjacency);
     const isDAG = checkDAG(nodeIds, adjacency);
     const forkJoinPairs = detectForkJoinPairs(nodeIds, adjacency, reverseAdj);
-    const beta1 = computeBeta1(graph.nodes.length, graph.edges.length, beta0, forkJoinPairs);
+    const beta1 = computeBeta1(
+      graph.nodes.length,
+      graph.edges.length,
+      beta0,
+      forkJoinPairs
+    );
     const beta2 = estimateBeta2(nodeIds, adjacency, reverseAdj);
 
     const betti: BettiNumbers = { beta0, beta1, beta2 };
@@ -242,7 +247,10 @@ function buildReverseAdjacency(graph: ComputationGraph): Map<string, string[]> {
 }
 
 /** β₀: connected components via union-find */
-function computeBeta0(nodeIds: string[], adjacency: Map<string, string[]>): number {
+function computeBeta0(
+  nodeIds: string[],
+  adjacency: Map<string, string[]>
+): number {
   const parent = new Map<string, string>();
   const rank = new Map<string, number>();
 
@@ -297,7 +305,10 @@ function computeBeta0(nodeIds: string[], adjacency: Map<string, string[]>): numb
 }
 
 /** Check if the graph is a DAG (no cycles) via topological sort */
-function checkDAG(nodeIds: string[], adjacency: Map<string, string[]>): boolean {
+function checkDAG(
+  nodeIds: string[],
+  adjacency: Map<string, string[]>
+): boolean {
   const inDegree = new Map<string, number>();
   for (const id of nodeIds) {
     inDegree.set(id, 0);
@@ -339,7 +350,7 @@ function checkDAG(nodeIds: string[], adjacency: Map<string, string[]>): boolean 
 function detectForkJoinPairs(
   nodeIds: string[],
   adjacency: Map<string, string[]>,
-  reverseAdj: Map<string, string[]>,
+  reverseAdj: Map<string, string[]>
 ): ForkJoinPair[] {
   const pairs: ForkJoinPair[] = [];
 
@@ -350,7 +361,7 @@ function detectForkJoinPairs(
 
     // For each fork, find the nearest join: BFS from each child,
     // find the first node reachable from ALL children
-    const reachSets: Set<string>[] = children.map(child => {
+    const reachSets: Set<string>[] = children.map((child) => {
       const reachable = new Set<string>();
       const q = [child];
       while (q.length > 0) {
@@ -368,7 +379,7 @@ function detectForkJoinPairs(
     if (reachSets.length === 0) continue;
     const intersection = new Set<string>();
     for (const candidate of reachSets[0]) {
-      if (reachSets.every(s => s.has(candidate))) {
+      if (reachSets.every((s) => s.has(candidate))) {
         intersection.add(candidate);
       }
     }
@@ -425,7 +436,7 @@ function computeBeta1(
   V: number,
   E: number,
   beta0: number,
-  forkJoinPairs: ForkJoinPair[],
+  forkJoinPairs: ForkJoinPair[]
 ): number {
   if (forkJoinPairs.length > 0) {
     return forkJoinPairs.reduce((sum, pair) => sum + pair.beta1Contribution, 0);
@@ -450,11 +461,13 @@ function computeBeta1(
 function estimateBeta2(
   nodeIds: string[],
   adjacency: Map<string, string[]>,
-  reverseAdj: Map<string, string[]>,
+  reverseAdj: Map<string, string[]>
 ): number {
   // Find sources (in-degree 0) and sinks (out-degree 0)
-  const sources = nodeIds.filter(id => (reverseAdj.get(id) || []).length === 0);
-  const sinks = nodeIds.filter(id => (adjacency.get(id) || []).length === 0);
+  const sources = nodeIds.filter(
+    (id) => (reverseAdj.get(id) || []).length === 0
+  );
+  const sinks = nodeIds.filter((id) => (adjacency.get(id) || []).length === 0);
 
   if (sources.length === 0 || sinks.length <= 1) return 0;
 
@@ -515,23 +528,42 @@ function estimateBeta2(
 }
 
 /** Compute the topological deficit */
-function computeDeficit(betti: BettiNumbers, intrinsicBeta1: number): DeficitReport {
+function computeDeficit(
+  betti: BettiNumbers,
+  intrinsicBeta1: number
+): DeficitReport {
   const deficit = intrinsicBeta1 - betti.beta1;
-  const utilization = intrinsicBeta1 === 0 ? 1.0 : Math.min(1.0, betti.beta1 / intrinsicBeta1);
+  const utilization =
+    intrinsicBeta1 === 0 ? 1.0 : Math.min(1.0, betti.beta1 / intrinsicBeta1);
 
   let assessment: string;
   if (deficit === 0) {
-    assessment = 'Topology-matched: 0 Bules — implementation topology matches problem topology';
+    assessment =
+      'Topology-matched: 0 Bules — implementation topology matches problem topology';
   } else if (deficit < 0) {
     assessment = `Over-forked: ${-deficit} excess parallel paths beyond the problem's intrinsic β₁* = ${intrinsicBeta1}`;
   } else if (utilization >= 0.8) {
-    assessment = `Near-matched: ${deficit} Bule${deficit !== 1 ? 's' : ''} of waste — ${(utilization * 100).toFixed(0)}% of natural parallelism utilized`;
+    assessment = `Near-matched: ${deficit} Bule${
+      deficit !== 1 ? 's' : ''
+    } of waste — ${(utilization * 100).toFixed(
+      0
+    )}% of natural parallelism utilized`;
   } else if (utilization >= 0.5) {
-    assessment = `Underutilized: ${deficit} Bule${deficit !== 1 ? 's' : ''} of waste — ${(utilization * 100).toFixed(0)}% of natural parallelism utilized`;
+    assessment = `Underutilized: ${deficit} Bule${
+      deficit !== 1 ? 's' : ''
+    } of waste — ${(utilization * 100).toFixed(
+      0
+    )}% of natural parallelism utilized`;
   } else if (betti.beta1 === 0) {
-    assessment = `Sequential bottleneck: ${deficit} Bule${deficit !== 1 ? 's' : ''} of waste — β₁ = 0 on a problem with intrinsic β₁* = ${intrinsicBeta1}`;
+    assessment = `Sequential bottleneck: ${deficit} Bule${
+      deficit !== 1 ? 's' : ''
+    } of waste — β₁ = 0 on a problem with intrinsic β₁* = ${intrinsicBeta1}`;
   } else {
-    assessment = `Severely underutilized: ${deficit} Bule${deficit !== 1 ? 's' : ''} of waste — ${(utilization * 100).toFixed(0)}% of natural parallelism utilized`;
+    assessment = `Severely underutilized: ${deficit} Bule${
+      deficit !== 1 ? 's' : ''
+    } of waste — ${(utilization * 100).toFixed(
+      0
+    )}% of natural parallelism utilized`;
   }
 
   return {

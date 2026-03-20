@@ -15,12 +15,18 @@ describe('Gnosis near-control sweep (§1.7, §6.12)', () => {
     expect(report.affine.firstSeparatedRegimeValue).toBe(0.4);
     expect(report.routed.lastParityRegimeValue).toBe(0.6);
     expect(report.routed.firstSeparatedRegimeValue).toBe(0.65);
-    expect(report.affine.points[0]?.linearAdvantageEvalMeanSquaredError ?? 1).toBeLessThan(0.01);
-    expect(report.routed.points[0]?.linearAdvantageEvalMeanSquaredError ?? 1).toBeLessThan(0.01);
+    expect(
+      report.affine.points[0]?.linearAdvantageEvalMeanSquaredError ?? 1
+    ).toBeLessThan(0.01);
+    expect(
+      report.routed.points[0]?.linearAdvantageEvalMeanSquaredError ?? 1
+    ).toBeLessThan(0.01);
   });
 
   it('renders a markdown report for the near-control zoom', async () => {
-    const markdown = renderGnosisNearControlSweepMarkdown(await runGnosisNearControlSweep());
+    const markdown = renderGnosisNearControlSweepMarkdown(
+      await runGnosisNearControlSweep()
+    );
 
     expect(markdown).toContain('# Gnosis Near-Control Sweep');
     expect(markdown).toContain('Last parity regime value');

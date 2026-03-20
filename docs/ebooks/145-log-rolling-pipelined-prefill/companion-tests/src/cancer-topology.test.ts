@@ -49,7 +49,11 @@ function probability(space: BuleyeanSpace, i: number): number {
 function reject(space: BuleyeanSpace, rejected: number): BuleyeanSpace {
   const newBoundary = [...space.voidBoundary];
   newBoundary[rejected]! += 1;
-  return { numChoices: space.numChoices, rounds: space.rounds + 1, voidBoundary: newBoundary };
+  return {
+    numChoices: space.numChoices,
+    rounds: space.rounds + 1,
+    voidBoundary: newBoundary,
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -63,13 +67,13 @@ const QUIESCENCE = 2;
 
 // Pathway definitions: name -> { beta1, isVent }
 const PATHWAYS: Record<string, { beta1: number; isVent: boolean }> = {
-  p53:     { beta1: 3, isVent: true },
-  rb:      { beta1: 2, isVent: true },
-  apc:     { beta1: 2, isVent: true },
+  p53: { beta1: 3, isVent: true },
+  rb: { beta1: 2, isVent: true },
+  apc: { beta1: 2, isVent: true },
   atm_atr: { beta1: 2, isVent: true },
-  mapk:    { beta1: 1, isVent: false },
-  pi3k:    { beta1: 1, isVent: false },
-  wnt:     { beta1: 1, isVent: false },
+  mapk: { beta1: 1, isVent: false },
+  pi3k: { beta1: 1, isVent: false },
+  wnt: { beta1: 1, isVent: false },
 };
 
 function totalVentBeta1(activePathways: Set<string>): number {
@@ -83,7 +87,7 @@ function totalVentBeta1(activePathways: Set<string>): number {
 
 function simulateCheckpoint(
   space: BuleyeanSpace,
-  activePathways: Set<string>,
+  activePathways: Set<string>
 ): BuleyeanSpace {
   let s = space;
   // Each active vent rejects "divide" (beta1 times)
@@ -199,7 +203,9 @@ describe('THM-CHECKPOINT-VENTING: Checkpoints Shift Distribution Away From Divid
     for (let i = 0; i < 5; i++) space5 = simulateCheckpoint(space5, healthy);
     for (let i = 0; i < 20; i++) space20 = simulateCheckpoint(space20, healthy);
 
-    expect(probability(space20, DIVIDE)).toBeLessThan(probability(space5, DIVIDE));
+    expect(probability(space20, DIVIDE)).toBeLessThan(
+      probability(space5, DIVIDE)
+    );
   });
 
   it('each checkpoint activation strictly decreases divide weight', () => {
@@ -277,7 +283,7 @@ describe('THM-THERAPEUTIC-RESTORATION: Any Vent Suffices', () => {
     }
 
     expect(probability(restoredSpace, DIVIDE)).toBeLessThan(
-      probability(cancerSpace, DIVIDE),
+      probability(cancerSpace, DIVIDE)
     );
   });
 
@@ -349,21 +355,30 @@ describe('THM-TOPOLOGICAL-DEFICIT-SEVERITY: Deficit Measures Aggressiveness', ()
     // Classical: Rb knocked out (deficit 2B)
     const classical = new Set(['p53', 'apc', 'atm_atr', 'mapk', 'pi3k', 'wnt']);
     let sClassical = createSpace(5);
-    for (let i = 0; i < cycles; i++) sClassical = simulateCheckpoint(sClassical, classical);
+    for (let i = 0; i < cycles; i++)
+      sClassical = simulateCheckpoint(sClassical, classical);
 
     // Combined: p53 + Rb + APC knocked out (deficit 7B)
     const combined = new Set(['atm_atr', 'mapk', 'pi3k', 'wnt']);
     let sCombined = createSpace(5);
-    for (let i = 0; i < cycles; i++) sCombined = simulateCheckpoint(sCombined, combined);
+    for (let i = 0; i < cycles; i++)
+      sCombined = simulateCheckpoint(sCombined, combined);
 
     expect(probability(sCombined, DIVIDE)).toBeGreaterThan(
-      probability(sClassical, DIVIDE),
+      probability(sClassical, DIVIDE)
     );
   });
 
   it('deficit ordering: Classical < Mesenchymal < Combined', () => {
     const classical = new Set(['p53', 'apc', 'atm_atr', 'mapk', 'pi3k', 'wnt']);
-    const mesenchymal = new Set(['rb', 'apc', 'atm_atr', 'mapk', 'pi3k', 'wnt']);
+    const mesenchymal = new Set([
+      'rb',
+      'apc',
+      'atm_atr',
+      'mapk',
+      'pi3k',
+      'wnt',
+    ]);
     const combined = new Set(['atm_atr', 'mapk', 'pi3k', 'wnt']);
 
     const deficits = [classical, mesenchymal, combined].map((pathways) => {
@@ -388,14 +403,30 @@ describe('THM-TOPOLOGICAL-DEFICIT-SEVERITY: Deficit Measures Aggressiveness', ()
 describe('THM-DRIVER-PASSENGER-SEPARATION: Topological Classification', () => {
   it('driver mutations on real TP53 have measurable topological effect', () => {
     // R175H: CGC→CAC at codon 175 (position 147 in our fragment)
-    const r175h = computeMutationTopology(TP53_EXONS_5_8, TP53_HOTSPOT_CODONS.R175H!, 'A');
+    const r175h = computeMutationTopology(
+      TP53_EXONS_5_8,
+      TP53_HOTSPOT_CODONS.R175H!,
+      'A'
+    );
     // R248W: CGG→TGG at codon 248 (position 366)
-    const r248w = computeMutationTopology(TP53_EXONS_5_8, TP53_HOTSPOT_CODONS.R248W!, 'T');
+    const r248w = computeMutationTopology(
+      TP53_EXONS_5_8,
+      TP53_HOTSPOT_CODONS.R248W!,
+      'T'
+    );
     // R273H: CGT→CAT at codon 273 (position 441)
-    const r273h = computeMutationTopology(TP53_EXONS_5_8, TP53_HOTSPOT_CODONS.R273H!, 'A');
+    const r273h = computeMutationTopology(
+      TP53_EXONS_5_8,
+      TP53_HOTSPOT_CODONS.R273H!,
+      'A'
+    );
 
     // At least some driver mutations should have non-zero Δσ
-    const driverSeverities = [r175h.severityBules, r248w.severityBules, r273h.severityBules];
+    const driverSeverities = [
+      r175h.severityBules,
+      r248w.severityBules,
+      r273h.severityBules,
+    ];
     const maxDriverSeverity = Math.max(...driverSeverities);
 
     // This is a real-data test: if all drivers are silent, the prediction fails
@@ -426,7 +457,7 @@ describe('THM-DRIVER-PASSENGER-SEPARATION: Topological Classification', () => {
         { locus: 10, mutantBase: 'T', label: 'synonymous_1' },
         { locus: 50, mutantBase: 'A', label: 'synonymous_2' },
         { locus: 200, mutantBase: 'G', label: 'synonymous_3' },
-      ],
+      ]
     );
 
     console.log('Driver vs Passenger report:', {
@@ -445,7 +476,7 @@ describe('THM-DRIVER-PASSENGER-SEPARATION: Topological Classification', () => {
     const report = analyzeCancerTopology(
       TP53_EXONS_5_8,
       'TP53',
-      Object.values(TP53_HOTSPOT_CODONS),
+      Object.values(TP53_HOTSPOT_CODONS)
     );
 
     console.log('TP53 Cancer Topology:', {
@@ -456,14 +487,16 @@ describe('THM-DRIVER-PASSENGER-SEPARATION: Topological Classification', () => {
     });
 
     // σ_ref is computable at every position
-    expect(report.hotspots.length).toBe(Object.values(TP53_HOTSPOT_CODONS).length);
+    expect(report.hotspots.length).toBe(
+      Object.values(TP53_HOTSPOT_CODONS).length
+    );
   });
 
   it('cancer hotspot analysis on KRAS', () => {
     const report = analyzeCancerTopology(
       KRAS_EXON_2,
       'KRAS',
-      [34, 35, 37, 38], // G12, G13 codons (positions 34-38)
+      [34, 35, 37, 38] // G12, G13 codons (positions 34-38)
     );
 
     console.log('KRAS Cancer Topology:', {
@@ -533,7 +566,7 @@ describe('Healthy vs Cancer Cell: Full Comparison', () => {
     // Healthy cell: divide is strongly suppressed
     expect(pDivideHealthy).toBeLessThan(0.15);
     // Cancer cell: divide probability is significantly higher than healthy
-    expect(pDivideCancer).toBeGreaterThan(0.20);
+    expect(pDivideCancer).toBeGreaterThan(0.2);
     // Cancer cell has much higher divide probability
     expect(pDivideCancer).toBeGreaterThan(pDivideHealthy);
   });
@@ -583,13 +616,16 @@ describe('Healthy vs Cancer Cell: Full Comparison', () => {
 
     // Healthy: P(divide) should stabilize at a low value
     const healthyLast10 = healthyTrajectory.slice(-10);
-    const healthyRange = Math.max(...healthyLast10) - Math.min(...healthyLast10);
+    const healthyRange =
+      Math.max(...healthyLast10) - Math.min(...healthyLast10);
     expect(healthyRange).toBeLessThan(0.01); // converged
 
     // Cancer: P(divide) should remain significantly higher than healthy
     const cancerLast10 = cancerTrajectory.slice(-10);
-    const cancerMean = cancerLast10.reduce((a, b) => a + b, 0) / cancerLast10.length;
-    const healthyMean = healthyLast10.reduce((a, b) => a + b, 0) / healthyLast10.length;
+    const cancerMean =
+      cancerLast10.reduce((a, b) => a + b, 0) / cancerLast10.length;
+    const healthyMean =
+      healthyLast10.reduce((a, b) => a + b, 0) / healthyLast10.length;
     expect(cancerMean).toBeGreaterThan(healthyMean * 2); // cancer >> healthy
   });
 });
@@ -597,7 +633,14 @@ describe('Healthy vs Cancer Cell: Full Comparison', () => {
 describe('Simulation: Therapeutic Intervention Timeline', () => {
   it('p53 restoration at cycle 10 in GBM Mesenchymal', () => {
     // Mesenchymal: p53 knocked out
-    const mesenchymalPre = new Set(['rb', 'apc', 'atm_atr', 'mapk', 'pi3k', 'wnt']);
+    const mesenchymalPre = new Set([
+      'rb',
+      'apc',
+      'atm_atr',
+      'mapk',
+      'pi3k',
+      'wnt',
+    ]);
     const mesenchymalPost = new Set(Object.keys(PATHWAYS)); // p53 restored
 
     let space = createSpace(5);
@@ -613,9 +656,18 @@ describe('Simulation: Therapeutic Intervention Timeline', () => {
       });
     }
 
-    console.log('Therapeutic intervention timeline (p53 restoration at cycle 10):');
-    for (const t of [trajectory[0]!, trajectory[9]!, trajectory[10]!, trajectory[29]!]) {
-      console.log(`  Cycle ${t.cycle} (${t.phase}): P(divide) = ${t.pDivide.toFixed(4)}`);
+    console.log(
+      'Therapeutic intervention timeline (p53 restoration at cycle 10):'
+    );
+    for (const t of [
+      trajectory[0]!,
+      trajectory[9]!,
+      trajectory[10]!,
+      trajectory[29]!,
+    ]) {
+      console.log(
+        `  Cycle ${t.cycle} (${t.phase}): P(divide) = ${t.pDivide.toFixed(4)}`
+      );
     }
 
     // P(divide) at end should be less than at intervention point
@@ -636,9 +688,11 @@ describe('Simulation: Therapeutic Intervention Timeline', () => {
     for (const intervention of interventions) {
       let space = createSpace(5);
       // 10 cycles as cancer
-      for (let i = 0; i < 10; i++) space = simulateCheckpoint(space, baseCancer);
+      for (let i = 0; i < 10; i++)
+        space = simulateCheckpoint(space, baseCancer);
       // 20 cycles post-intervention
-      for (let i = 0; i < 20; i++) space = simulateCheckpoint(space, intervention.pathways);
+      for (let i = 0; i < 20; i++)
+        space = simulateCheckpoint(space, intervention.pathways);
       results[intervention.name] = probability(space, DIVIDE);
     }
 
@@ -652,10 +706,12 @@ describe('Simulation: Therapeutic Intervention Timeline', () => {
 describe('End-to-End: Genomic Data + Cell Cycle Simulation', () => {
   it('TP53 topological map feeds into cell cycle model', () => {
     // Compute σ at TP53 hotspot positions
-    const hotspotSigmas = Object.entries(TP53_HOTSPOT_CODONS).map(([name, pos]) => {
-      const profile = computeSigma(TP53_EXONS_5_8, pos);
-      return { name, pos, sigma: profile.sigma, beta1: profile.beta1 };
-    });
+    const hotspotSigmas = Object.entries(TP53_HOTSPOT_CODONS).map(
+      ([name, pos]) => {
+        const profile = computeSigma(TP53_EXONS_5_8, pos);
+        return { name, pos, sigma: profile.sigma, beta1: profile.beta1 };
+      }
+    );
 
     console.log('TP53 hotspot topological profiles:', hotspotSigmas);
 
@@ -672,7 +728,9 @@ describe('End-to-End: Genomic Data + Cell Cycle Simulation', () => {
       // reduces the cell's ability to detect replication errors
       // Severity in Bules corresponds to lost checkpoint capacity
       const mutResult = computeMutationTopology(TP53_EXONS_5_8, hs.pos, 'N'); // 'N' = any base
-      expect(mutResult.sigmaRef + mutResult.deltaSigma).toBe(mutResult.sigmaMutant);
+      expect(mutResult.sigmaRef + mutResult.deltaSigma).toBe(
+        mutResult.sigmaMutant
+      );
     }
   });
 });

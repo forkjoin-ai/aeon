@@ -15,8 +15,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/adaptive-supremum-witness.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/adaptive-supremum-witness.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/adaptive-supremum-witness.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/adaptive-supremum-witness.md'
+  );
 
   let assertChecks = false;
   let jsonPath = defaultJsonPath;
@@ -63,24 +69,36 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderAdaptiveSupremumWitnessMarkdown(report),
-    'utf8',
+    'utf8'
   );
 
   process.stdout.write(
-    `adaptive-supremum-witness: ${report.allChecksPass ? 'READY' : 'FAILED'}\n`,
+    `adaptive-supremum-witness: ${report.allChecksPass ? 'READY' : 'FAILED'}\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(
-    `- spectral-radius=${report.ceiling.spectralRadius.toFixed(3)}, drift-gap=${report.drift.gap.toFixed(3)}, states=${report.drift.stateCount}\n`,
+    `- spectral-radius=${report.ceiling.spectralRadius.toFixed(
+      3
+    )}, drift-gap=${report.drift.gap.toFixed(3)}, states=${
+      report.drift.stateCount
+    }\n`
   );
   for (const schedule of report.schedules) {
     process.stdout.write(
-      `- ${schedule.id}: sup-left=${schedule.supremum.left.toFixed(3)}, sup-right=${schedule.supremum.right.toFixed(3)}, recovered=${schedule.recoveredExpectedSupremum ? 'yes' : 'no'}\n`,
+      `- ${schedule.id}: sup-left=${schedule.supremum.left.toFixed(
+        3
+      )}, sup-right=${schedule.supremum.right.toFixed(3)}, recovered=${
+        schedule.recoveredExpectedSupremum ? 'yes' : 'no'
+      }\n`
     );
   }
 
@@ -90,6 +108,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

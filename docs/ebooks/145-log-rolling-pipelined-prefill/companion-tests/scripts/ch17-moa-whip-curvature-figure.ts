@@ -2,9 +2,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import {
-  buildCh17MoaTopologyFigureReport,
-} from '../src/ch17-moa-topology-figure';
+import { buildCh17MoaTopologyFigureReport } from '../src/ch17-moa-topology-figure';
 import {
   buildCh17MoaWhipCurvatureFigureReport,
   renderCh17MoaWhipCurvatureFigureMarkdown,
@@ -22,15 +20,15 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/ch17-moa-whip-curvature-figure.json',
+    '../artifacts/ch17-moa-whip-curvature-figure.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-moa-whip-curvature-figure.md',
+    '../artifacts/ch17-moa-whip-curvature-figure.md'
   );
   const defaultSvgPath = resolve(
     moduleDir,
-    '../artifacts/ch17-moa-whip-curvature-figure.svg',
+    '../artifacts/ch17-moa-whip-curvature-figure.svg'
   );
 
   let assertSurface = false;
@@ -84,16 +82,16 @@ async function main(): Promise<void> {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const sparseTopologyPath = resolve(
     moduleDir,
-    '../../../../../../gnosis/examples/benchmarks/moa-transformer-moa.gg',
+    '../../../../../../gnosis/examples/benchmarks/moa-transformer-moa.gg'
   );
   const denseTopologyPath = resolve(
     moduleDir,
-    '../../../../../../gnosis/examples/benchmarks/moa-transformer-regular.gg',
+    '../../../../../../gnosis/examples/benchmarks/moa-transformer-regular.gg'
   );
   const topology = buildCh17MoaTopologyFigureReport(
     readFileSync(sparseTopologyPath, 'utf8'),
     sparseTopologyPath,
-    denseTopologyPath,
+    denseTopologyPath
   );
   const report = buildCh17MoaWhipCurvatureFigureReport(topology);
 
@@ -101,20 +99,28 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderCh17MoaWhipCurvatureFigureMarkdown(report),
-    'utf8',
+    'utf8'
   );
-  writeFileSync(options.svgPath, renderCh17MoaWhipCurvatureFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.svgPath,
+    renderCh17MoaWhipCurvatureFigureSvg(report),
+    'utf8'
+  );
 
   process.stdout.write(`ch17-moa-whip-curvature-figure: ${report.label}\n`);
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
-    `- primitive: ${report.primitive}, active blocks=${report.activeBlocks}/${report.blocks}, active heads=${report.activeHeadsPerLiveBlock}/${report.headsPerBlock}\n`,
+    `- primitive: ${report.primitive}, active blocks=${report.activeBlocks}/${report.blocks}, active heads=${report.activeHeadsPerLiveBlock}/${report.headsPerBlock}\n`
   );
 
   if (
@@ -133,7 +139,7 @@ async function main(): Promise<void> {
 
 main().catch((error) => {
   process.stderr.write(
-    `${error instanceof Error ? error.message : String(error)}\n`,
+    `${error instanceof Error ? error.message : String(error)}\n`
   );
   process.exitCode = 1;
 });

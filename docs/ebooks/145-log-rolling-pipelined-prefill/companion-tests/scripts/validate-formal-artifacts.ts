@@ -30,9 +30,12 @@ function validateTlaFile(filename: string): void {
 
   assert(
     JSON.stringify(reparsed) === JSON.stringify(parsed),
-    `TLA round-trip mismatch for ${filename}`,
+    `TLA round-trip mismatch for ${filename}`
   );
-  assert(parsed.moduleName === basename(filename, '.tla'), `Module name mismatch for ${filename}`);
+  assert(
+    parsed.moduleName === basename(filename, '.tla'),
+    `Module name mismatch for ${filename}`
+  );
 }
 
 function validateCfgFile(filename: string): void {
@@ -44,11 +47,11 @@ function validateCfgFile(filename: string): void {
 
   assert(
     JSON.stringify(reparsed) === JSON.stringify(parsed),
-    `CFG round-trip mismatch for ${filename}`,
+    `CFG round-trip mismatch for ${filename}`
   );
   assert(
     Boolean(parsed.specification || (parsed.init && parsed.next)),
-    `Config ${filename} must specify SPECIFICATION or INIT+NEXT`,
+    `Config ${filename} must specify SPECIFICATION or INIT+NEXT`
   );
 }
 
@@ -58,125 +61,185 @@ function validateLeanProject(): number {
     build: false,
   });
 
-  assert(result.report.project.lakefile !== null, 'Lean project must define a Lake configuration');
-  assert(result.report.project.toolchain !== null, 'Lean project must define a lean-toolchain');
-  assert(result.report.project.moduleCount > 0, 'Lean project must contain at least one module');
+  assert(
+    result.report.project.lakefile !== null,
+    'Lean project must define a Lake configuration'
+  );
+  assert(
+    result.report.project.toolchain !== null,
+    'Lean project must define a lean-toolchain'
+  );
+  assert(
+    result.report.project.moduleCount > 0,
+    'Lean project must contain at least one module'
+  );
   assert(
     result.report.project.moduleNames.includes('ForkRaceFoldTheorems'),
-    'Lean project must expose the ForkRaceFoldTheorems entrypoint',
+    'Lean project must expose the ForkRaceFoldTheorems entrypoint'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.MeasureQueueing'),
-    'Lean project must expose the MeasureQueueing module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.MeasureQueueing'
+    ),
+    'Lean project must expose the MeasureQueueing module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureComposition'),
-    'Lean project must expose the FailureComposition module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.FailureComposition'
+    ),
+    'Lean project must expose the FailureComposition module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureDurability'),
-    'Lean project must expose the FailureDurability module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.FailureDurability'
+    ),
+    'Lean project must expose the FailureDurability module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureUniversality'),
-    'Lean project must expose the FailureUniversality module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.FailureUniversality'
+    ),
+    'Lean project must expose the FailureUniversality module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureEntropy'),
-    'Lean project must expose the FailureEntropy module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.FailureEntropy'
+    ),
+    'Lean project must expose the FailureEntropy module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureFamilies'),
-    'Lean project must expose the FailureFamilies module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.FailureFamilies'
+    ),
+    'Lean project must expose the FailureFamilies module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.FailureTrilemma'),
-    'Lean project must expose the FailureTrilemma module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.FailureTrilemma'
+    ),
+    'Lean project must expose the FailureTrilemma module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QueueStability'),
-    'Lean project must expose the QueueStability module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.QueueStability'
+    ),
+    'Lean project must expose the QueueStability module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.JacksonRawClosure'),
-    'Lean project must expose the JacksonRawClosure module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.JacksonRawClosure'
+    ),
+    'Lean project must expose the JacksonRawClosure module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QueueBoundary'),
-    'Lean project must expose the QueueBoundary module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.QueueBoundary'
+    ),
+    'Lean project must expose the QueueBoundary module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.JacksonEnvelopeClosure'),
-    'Lean project must expose the JacksonEnvelopeClosure module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.JacksonEnvelopeClosure'
+    ),
+    'Lean project must expose the JacksonEnvelopeClosure module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.JacksonExactClosure'),
-    'Lean project must expose the JacksonExactClosure module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.JacksonExactClosure'
+    ),
+    'Lean project must expose the JacksonExactClosure module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.JacksonFeedForwardClosure'),
-    'Lean project must expose the JacksonFeedForwardClosure module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.JacksonFeedForwardClosure'
+    ),
+    'Lean project must expose the JacksonFeedForwardClosure module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.InterferenceCoarsening'),
-    'Lean project must expose the InterferenceCoarsening module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.InterferenceCoarsening'
+    ),
+    'Lean project must expose the InterferenceCoarsening module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.StateDependentQueueFamilies'),
-    'Lean project must expose the StateDependentQueueFamilies module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.StateDependentQueueFamilies'
+    ),
+    'Lean project must expose the StateDependentQueueFamilies module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.AdaptiveWitnesses'),
-    'Lean project must expose the AdaptiveWitnesses module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.AdaptiveWitnesses'
+    ),
+    'Lean project must expose the AdaptiveWitnesses module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QuorumAsyncNetwork'),
-    'Lean project must expose the QuorumAsyncNetwork module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.QuorumAsyncNetwork'
+    ),
+    'Lean project must expose the QuorumAsyncNetwork module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QuorumLinearizability'),
-    'Lean project must expose the QuorumLinearizability module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.QuorumLinearizability'
+    ),
+    'Lean project must expose the QuorumLinearizability module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QuorumVisibility'),
-    'Lean project must expose the QuorumVisibility module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.QuorumVisibility'
+    ),
+    'Lean project must expose the QuorumVisibility module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QuorumConsistency'),
-    'Lean project must expose the QuorumConsistency module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.QuorumConsistency'
+    ),
+    'Lean project must expose the QuorumConsistency module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.QuorumOrdering'),
-    'Lean project must expose the QuorumOrdering module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.QuorumOrdering'
+    ),
+    'Lean project must expose the QuorumOrdering module'
   );
   assert(
-    result.report.project.moduleNames.includes('ForkRaceFoldTheorems.JacksonQueueing'),
-    'Lean project must expose the JacksonQueueing module',
+    result.report.project.moduleNames.includes(
+      'ForkRaceFoldTheorems.JacksonQueueing'
+    ),
+    'Lean project must expose the JacksonQueueing module'
   );
   assert(
     result.report.build.attempted === false,
-    'Lean inspection preflight must not execute a build',
+    'Lean inspection preflight must not execute a build'
   );
 
   return result.report.project.moduleCount;
 }
 
 function main(): void {
-  const files = readdirSync(formalDir).filter((entry) => !entry.startsWith('.'));
+  const files = readdirSync(formalDir).filter(
+    (entry) => !entry.startsWith('.')
+  );
   const allTlaFiles = files.filter((entry) => extname(entry) === '.tla');
   const cfgFiles = files.filter((entry) => extname(entry) === '.cfg');
 
   assert(cfgFiles.length > 0, 'No .cfg files found in formal/');
 
   const cfgByBase = new Set(cfgFiles.map((entry) => basename(entry, '.cfg')));
-  const tlaFiles = allTlaFiles.filter((entry) => cfgByBase.has(basename(entry, '.tla')));
-  assert(tlaFiles.length > 0, 'No .tla files with matching .cfg found in formal/');
+  const tlaFiles = allTlaFiles.filter((entry) =>
+    cfgByBase.has(basename(entry, '.tla'))
+  );
+  assert(
+    tlaFiles.length > 0,
+    'No .tla files with matching .cfg found in formal/'
+  );
 
   for (const cfgFile of cfgFiles) {
     const baseName = basename(cfgFile, '.cfg');
     assert(
       allTlaFiles.includes(`${baseName}.tla`),
-      `Missing module for config ${baseName}.cfg`,
+      `Missing module for config ${baseName}.cfg`
     );
   }
 
@@ -189,7 +252,7 @@ function main(): void {
   const leanModuleCount = validateLeanProject();
 
   process.stdout.write(
-    `aeon-logic formal validation passed (${tlaFiles.length} TLA modules, ${cfgFiles.length} CFG files, ${leanModuleCount} Lean modules)\n`,
+    `aeon-logic formal validation passed (${tlaFiles.length} TLA modules, ${cfgFiles.length} CFG files, ${leanModuleCount} Lean modules)\n`
   );
 }
 

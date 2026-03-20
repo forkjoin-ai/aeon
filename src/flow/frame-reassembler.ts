@@ -188,9 +188,10 @@ export class FrameReassembler {
     if (!state) return [];
 
     const missing: number[] = [];
-    const maxBuffered = state.buffer.size > 0
-      ? Math.max(...state.buffer.keys())
-      : state.nextExpected;
+    const maxBuffered =
+      state.buffer.size > 0
+        ? Math.max(...state.buffer.keys())
+        : state.nextExpected;
 
     for (let seq = state.nextExpected; seq < maxBuffered; seq++) {
       if (!state.buffer.has(seq)) {

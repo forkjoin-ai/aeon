@@ -144,7 +144,10 @@ function quantile(values: readonly number[], q: number): number {
   return sorted[lower] * (1 - weight) + sorted[upper] * weight;
 }
 
-function rmse(predicted: readonly number[], observed: readonly number[]): number {
+function rmse(
+  predicted: readonly number[],
+  observed: readonly number[]
+): number {
   let sum = 0;
   for (let i = 0; i < predicted.length; i++) {
     const residual = predicted[i] - observed[i];
@@ -154,7 +157,10 @@ function rmse(predicted: readonly number[], observed: readonly number[]): number
 }
 
 function rank(values: readonly number[]): number[] {
-  const indexed: RankedValue[] = values.map((value, index) => ({ value, index }));
+  const indexed: RankedValue[] = values.map((value, index) => ({
+    value,
+    index,
+  }));
   indexed.sort((a, b) => a.value - b.value);
 
   const ranks = new Array<number>(values.length).fill(0);
@@ -175,11 +181,17 @@ function rank(values: readonly number[]): number[] {
   return ranks;
 }
 
-function spearmanCorrelation(x: readonly number[], y: readonly number[]): number {
+function spearmanCorrelation(
+  x: readonly number[],
+  y: readonly number[]
+): number {
   return pearsonCorrelation(rank(x), rank(y));
 }
 
-function fitLinearModel(scores: readonly number[], gains: readonly number[]): LinearModel {
+function fitLinearModel(
+  scores: readonly number[],
+  gains: readonly number[]
+): LinearModel {
   const slope = linearRegressionSlope(scores, gains);
   const intercept = mean(gains) - slope * mean(scores);
   return {
@@ -192,7 +204,7 @@ function bootstrapMetric(
   rows: readonly HoldoutRow[],
   resamples: number,
   seed: number,
-  statistic: (sample: readonly HoldoutRow[]) => number,
+  statistic: (sample: readonly HoldoutRow[]) => number
 ): BootstrapInterval {
   if (rows.length === 0) {
     return { low: Number.NaN, high: Number.NaN };
@@ -264,7 +276,7 @@ function generateDataset(
   sampleCount: number,
   inputGenerator: (rng: () => number) => ReadinessInputs,
   featureSeed: number,
-  noiseSeed: number,
+  noiseSeed: number
 ): DatasetRow[] {
   const featureRng = makeRng(featureSeed);
   const noiseRng = makeRng(noiseSeed);
@@ -295,8 +307,12 @@ function quartileDelta(rows: readonly HoldoutRow[]): {
   const lowerQuartile = quantile(rQrValues, 0.25);
   const upperQuartile = quantile(rQrValues, 0.75);
 
-  const low = rows.filter((row) => row.scores.rQr <= lowerQuartile).map((row) => row.observedGain);
-  const high = rows.filter((row) => row.scores.rQr >= upperQuartile).map((row) => row.observedGain);
+  const low = rows
+    .filter((row) => row.scores.rQr <= lowerQuartile)
+    .map((row) => row.observedGain);
+  const high = rows
+    .filter((row) => row.scores.rQr >= upperQuartile)
+    .map((row) => row.observedGain);
 
   if (low.length === 0 || high.length === 0) {
     throw new Error('quartile split produced empty cohorts');
@@ -317,7 +333,7 @@ function quartileDelta(rows: readonly HoldoutRow[]): {
 function summarizeDeciles(
   rows: readonly HoldoutRow[],
   decileCount: number,
-  monotonicTolerance: number,
+  monotonicTolerance: number
 ): {
   readonly deciles: readonly Gate4DecileSummary[];
   readonly monotonicViolations: number;
@@ -344,7 +360,10 @@ function summarizeDeciles(
 
   let monotonicViolations = 0;
   for (let index = 1; index < deciles.length; index++) {
-    if (deciles[index].meanObservedGain + monotonicTolerance < deciles[index - 1].meanObservedGain) {
+    if (
+      deciles[index].meanObservedGain + monotonicTolerance <
+      deciles[index - 1].meanObservedGain
+    ) {
       monotonicViolations += 1;
     }
   }
@@ -378,21 +397,23 @@ export function runGate4Holdout(config: Gate4Config): Gate4Report {
     config.trainSamples,
     sampleTrainingInputs,
     mixSeed(config.seed, 11),
-    mixSeed(config.seed, 12),
+    mixSeed(config.seed, 12)
   );
 
   const holdoutRowsRaw = generateDataset(
     config.holdoutSamples,
     sampleHoldoutInputs,
     mixSeed(config.seed, 21),
-    mixSeed(config.seed, 22),
+    mixSeed(config.seed, 22)
   );
 
   const trainRqr = trainRows.map((row) => row.scores.rQr);
   const trainObserved = trainRows.map((row) => row.observedGain);
   const model = fitLinearModel(trainRqr, trainObserved);
 
-  const trainPredicted = trainRqr.map((score) => clamp01(model.intercept + model.slope * score));
+  const trainPredicted = trainRqr.map((score) =>
+    clamp01(model.intercept + model.slope * score)
+  );
 
   const holdoutRows: HoldoutRow[] = holdoutRowsRaw.map((row) => ({
     ...row,
@@ -405,7 +426,10 @@ export function runGate4Holdout(config: Gate4Config): Gate4Report {
 
   const holdoutSpearman = spearmanCorrelation(holdoutRqr, holdoutObserved);
   const holdoutSlope = linearRegressionSlope(holdoutRqr, holdoutObserved);
-  const holdoutPredictedPearson = pearsonCorrelation(holdoutPredicted, holdoutObserved);
+  const holdoutPredictedPearson = pearsonCorrelation(
+    holdoutPredicted,
+    holdoutObserved
+  );
   const quartiles = quartileDelta(holdoutRows);
 
   const spearmanCi = bootstrapMetric(
@@ -416,7 +440,7 @@ export function runGate4Holdout(config: Gate4Config): Gate4Report {
       const x = sample.map((row) => row.scores.rQr);
       const y = sample.map((row) => row.observedGain);
       return spearmanCorrelation(x, y);
-    },
+    }
   );
 
   const slopeCi = bootstrapMetric(
@@ -427,14 +451,14 @@ export function runGate4Holdout(config: Gate4Config): Gate4Report {
       const x = sample.map((row) => row.scores.rQr);
       const y = sample.map((row) => row.observedGain);
       return linearRegressionSlope(x, y);
-    },
+    }
   );
 
   const quartileDeltaCi = bootstrapMetric(
     holdoutRows,
     config.bootstrapResamples,
     mixSeed(config.seed, 33),
-    (sample) => quartileDelta(sample).delta,
+    (sample) => quartileDelta(sample).delta
   );
 
   const predictedPearsonCi = bootstrapMetric(
@@ -445,27 +469,31 @@ export function runGate4Holdout(config: Gate4Config): Gate4Report {
       const predicted = sample.map((row) => row.predictedGain);
       const observed = sample.map((row) => row.observedGain);
       return pearsonCorrelation(predicted, observed);
-    },
+    }
   );
 
   const decileSummary = summarizeDeciles(
     holdoutRows,
     config.decileCount,
-    config.monotonicTolerance,
+    config.monotonicTolerance
   );
 
   const criteria: Gate4Criterion[] = [
     {
       id: 'spearman_ci_low',
-      description: 'Holdout rank correlation between R_qr and realized gain stays positive out-of-sample',
-      threshold: `95% CI low >= ${config.thresholds.spearmanLowerCi.toFixed(3)}`,
+      description:
+        'Holdout rank correlation between R_qr and realized gain stays positive out-of-sample',
+      threshold: `95% CI low >= ${config.thresholds.spearmanLowerCi.toFixed(
+        3
+      )}`,
       observed: holdoutSpearman,
       ci95: spearmanCi,
       pass: spearmanCi.low >= config.thresholds.spearmanLowerCi,
     },
     {
       id: 'slope_ci_low',
-      description: 'Holdout linear slope d(gain)/d(R_qr) remains materially positive',
+      description:
+        'Holdout linear slope d(gain)/d(R_qr) remains materially positive',
       threshold: `95% CI low >= ${config.thresholds.slopeLowerCi.toFixed(3)}`,
       observed: holdoutSlope,
       ci95: slopeCi,
@@ -473,16 +501,22 @@ export function runGate4Holdout(config: Gate4Config): Gate4Report {
     },
     {
       id: 'quartile_delta_ci_low',
-      description: 'Top-quartile R_qr workloads outperform bottom quartile on realized gain',
-      threshold: `95% CI low >= ${config.thresholds.quartileDeltaLowerCi.toFixed(3)}`,
+      description:
+        'Top-quartile R_qr workloads outperform bottom quartile on realized gain',
+      threshold: `95% CI low >= ${config.thresholds.quartileDeltaLowerCi.toFixed(
+        3
+      )}`,
       observed: quartiles.delta,
       ci95: quartileDeltaCi,
       pass: quartileDeltaCi.low >= config.thresholds.quartileDeltaLowerCi,
     },
     {
       id: 'predicted_pearson_ci_low',
-      description: 'Training-fit predictor remains correlated with holdout realized gain',
-      threshold: `95% CI low >= ${config.thresholds.predictedPearsonLowerCi.toFixed(3)}`,
+      description:
+        'Training-fit predictor remains correlated with holdout realized gain',
+      threshold: `95% CI low >= ${config.thresholds.predictedPearsonLowerCi.toFixed(
+        3
+      )}`,
       observed: holdoutPredictedPearson,
       ci95: predictedPearsonCi,
       pass: predictedPearsonCi.low >= config.thresholds.predictedPearsonLowerCi,
@@ -492,12 +526,18 @@ export function runGate4Holdout(config: Gate4Config): Gate4Report {
       description: 'Decile mean gains are near-monotone in R_qr',
       threshold: `violations <= ${config.thresholds.maxDecileMonotonicViolations}`,
       observed: decileSummary.monotonicViolations,
-      pass: decileSummary.monotonicViolations <= config.thresholds.maxDecileMonotonicViolations,
+      pass:
+        decileSummary.monotonicViolations <=
+        config.thresholds.maxDecileMonotonicViolations,
     },
   ];
 
-  const failedCriterionIds = criteria.filter((criterion) => !criterion.pass).map((criterion) => criterion.id);
-  const passedCriterionIds = criteria.filter((criterion) => criterion.pass).map((criterion) => criterion.id);
+  const failedCriterionIds = criteria
+    .filter((criterion) => !criterion.pass)
+    .map((criterion) => criterion.id);
+  const passedCriterionIds = criteria
+    .filter((criterion) => criterion.pass)
+    .map((criterion) => criterion.id);
 
   return {
     protocol: {
@@ -558,9 +598,15 @@ export function runGate4Holdout(config: Gate4Config): Gate4Report {
 
 function formatCriterionResult(criterion: Gate4Criterion): string {
   const ci = criterion.ci95
-    ? ` (95% CI ${criterion.ci95.low.toFixed(3)} to ${criterion.ci95.high.toFixed(3)})`
+    ? ` (95% CI ${criterion.ci95.low.toFixed(
+        3
+      )} to ${criterion.ci95.high.toFixed(3)})`
     : '';
-  return `- ${criterion.id}: ${criterion.pass ? 'PASS' : 'DENY'} | observed ${criterion.observed.toFixed(3)}${ci} | threshold ${criterion.threshold}`;
+  return `- ${criterion.id}: ${
+    criterion.pass ? 'PASS' : 'DENY'
+  } | observed ${criterion.observed.toFixed(3)}${ci} | threshold ${
+    criterion.threshold
+  }`;
 }
 
 export function renderGate4Markdown(report: Gate4Report): string {
@@ -587,20 +633,52 @@ export function renderGate4Markdown(report: Gate4Report): string {
   lines.push('');
   lines.push('## Holdout Summary');
   lines.push('');
-  lines.push(`- Spearman(R_qr, gain): ${report.holdout.spearman.value.toFixed(3)} (95% CI ${report.holdout.spearman.ci95.low.toFixed(3)} to ${report.holdout.spearman.ci95.high.toFixed(3)})`);
-  lines.push(`- Slope d(gain)/d(R_qr): ${report.holdout.slope.value.toFixed(3)} (95% CI ${report.holdout.slope.ci95.low.toFixed(3)} to ${report.holdout.slope.ci95.high.toFixed(3)})`);
-  lines.push(`- Top quartile minus bottom quartile gain: ${report.holdout.quartileDelta.value.toFixed(3)} (95% CI ${report.holdout.quartileDelta.ci95.low.toFixed(3)} to ${report.holdout.quartileDelta.ci95.high.toFixed(3)})`);
-  lines.push(`- Pearson(predicted, gain): ${report.holdout.predictedPearson.value.toFixed(3)} (95% CI ${report.holdout.predictedPearson.ci95.low.toFixed(3)} to ${report.holdout.predictedPearson.ci95.high.toFixed(3)})`);
+  lines.push(
+    `- Spearman(R_qr, gain): ${report.holdout.spearman.value.toFixed(
+      3
+    )} (95% CI ${report.holdout.spearman.ci95.low.toFixed(
+      3
+    )} to ${report.holdout.spearman.ci95.high.toFixed(3)})`
+  );
+  lines.push(
+    `- Slope d(gain)/d(R_qr): ${report.holdout.slope.value.toFixed(
+      3
+    )} (95% CI ${report.holdout.slope.ci95.low.toFixed(
+      3
+    )} to ${report.holdout.slope.ci95.high.toFixed(3)})`
+  );
+  lines.push(
+    `- Top quartile minus bottom quartile gain: ${report.holdout.quartileDelta.value.toFixed(
+      3
+    )} (95% CI ${report.holdout.quartileDelta.ci95.low.toFixed(
+      3
+    )} to ${report.holdout.quartileDelta.ci95.high.toFixed(3)})`
+  );
+  lines.push(
+    `- Pearson(predicted, gain): ${report.holdout.predictedPearson.value.toFixed(
+      3
+    )} (95% CI ${report.holdout.predictedPearson.ci95.low.toFixed(
+      3
+    )} to ${report.holdout.predictedPearson.ci95.high.toFixed(3)})`
+  );
   lines.push(`- Predicted RMSE: ${report.holdout.predictedRmse.toFixed(3)}`);
-  lines.push(`- Decile monotonicity violations: ${report.holdout.monotonicViolations}`);
+  lines.push(
+    `- Decile monotonicity violations: ${report.holdout.monotonicViolations}`
+  );
   lines.push('');
   lines.push('## Deciles (Holdout)');
   lines.push('');
-  lines.push('| Decile | Count | Mean R_qr | Mean Gain | Mean Predicted Gain |');
+  lines.push(
+    '| Decile | Count | Mean R_qr | Mean Gain | Mean Predicted Gain |'
+  );
   lines.push('|---|---:|---:|---:|---:|');
   for (const decile of report.holdout.deciles) {
     lines.push(
-      `| ${decile.decile} | ${decile.count} | ${decile.meanRqr.toFixed(3)} | ${decile.meanObservedGain.toFixed(3)} | ${decile.meanPredictedGain.toFixed(3)} |`,
+      `| ${decile.decile} | ${decile.count} | ${decile.meanRqr.toFixed(
+        3
+      )} | ${decile.meanObservedGain.toFixed(
+        3
+      )} | ${decile.meanPredictedGain.toFixed(3)} |`
     );
   }
   lines.push('');

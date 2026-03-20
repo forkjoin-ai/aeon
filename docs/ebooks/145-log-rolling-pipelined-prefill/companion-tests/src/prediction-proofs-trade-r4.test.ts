@@ -30,7 +30,9 @@ describe('Prediction 222: Flash crashes as whip snaps in liquidity taper', () =>
 
   it('snap is inevitable as liquidity approaches zero', () => {
     const flow = 1000;
-    const impacts = [100, 50, 20, 10, 5, 2, 1].map(liq => priceImpact(flow, liq));
+    const impacts = [100, 50, 20, 10, 5, 2, 1].map((liq) =>
+      priceImpact(flow, liq)
+    );
     // Monotonically increasing
     for (let i = 1; i < impacts.length; i++) {
       expect(impacts[i]).toBeGreaterThanOrEqual(impacts[i - 1]);
@@ -46,17 +48,17 @@ describe('Prediction 222: Flash crashes as whip snaps in liquidity taper', () =>
       { price: 99, liquidity: 500 },
       { price: 98, liquidity: 100 },
       { price: 97, liquidity: 10 },
-      { price: 96, liquidity: 1 },  // snap point
+      { price: 96, liquidity: 1 }, // snap point
     ];
     const flow = 500;
-    const impacts = levels.map(l => priceImpact(flow, l.liquidity));
+    const impacts = levels.map((l) => priceImpact(flow, l.liquidity));
     // Impact explodes at thin levels
     expect(impacts[4]).toBeGreaterThan(impacts[0] * 100);
   });
 
   it('constant liquidity = no snap (no taper)', () => {
     const flow = 100;
-    const impacts = [50, 50, 50, 50].map(liq => priceImpact(flow, liq));
+    const impacts = [50, 50, 50, 50].map((liq) => priceImpact(flow, liq));
     // All equal: no amplification
     for (let i = 1; i < impacts.length; i++) {
       expect(impacts[i]).toBe(impacts[0]);
@@ -176,15 +178,22 @@ describe('Prediction 225: Bailout vs bankruptcy as failure Pareto frontier', () 
     repairDebt: number;
   }
 
-  function responseCost(branches: number, resp: 'zombie' | 'bankruptcy' | 'bailout'): FailureCost {
+  function responseCost(
+    branches: number,
+    resp: 'zombie' | 'bankruptcy' | 'bailout'
+  ): FailureCost {
     switch (resp) {
-      case 'zombie': return { ongoingWaste: branches - 1, ventCost: 0, repairDebt: 0 };
-      case 'bankruptcy': return { ongoingWaste: 0, ventCost: branches - 1, repairDebt: 0 };
-      case 'bailout': return { ongoingWaste: 0, ventCost: 0, repairDebt: branches - 1 };
+      case 'zombie':
+        return { ongoingWaste: branches - 1, ventCost: 0, repairDebt: 0 };
+      case 'bankruptcy':
+        return { ongoingWaste: 0, ventCost: branches - 1, repairDebt: 0 };
+      case 'bailout':
+        return { ongoingWaste: 0, ventCost: 0, repairDebt: branches - 1 };
     }
   }
 
-  const totalCost = (c: FailureCost) => c.ongoingWaste + c.ventCost + c.repairDebt;
+  const totalCost = (c: FailureCost) =>
+    c.ongoingWaste + c.ventCost + c.repairDebt;
 
   it('total cost is invariant across responses: always branches - 1', () => {
     for (const resp of ['zombie', 'bankruptcy', 'bailout'] as const) {
@@ -209,10 +218,10 @@ describe('Prediction 225: Bailout vs bankruptcy as failure Pareto frontier', () 
     const branches = 10;
     const lehman = responseCost(branches, 'bankruptcy');
     const aig = responseCost(branches, 'bailout');
-    expect(lehman.ventCost).toBe(9);     // creditor losses
-    expect(lehman.repairDebt).toBe(0);    // no taxpayer cost
-    expect(aig.ventCost).toBe(0);         // no creditor losses
-    expect(aig.repairDebt).toBe(9);       // taxpayer cost
+    expect(lehman.ventCost).toBe(9); // creditor losses
+    expect(lehman.repairDebt).toBe(0); // no taxpayer cost
+    expect(aig.ventCost).toBe(0); // no creditor losses
+    expect(aig.repairDebt).toBe(9); // taxpayer cost
     // Same total cost
     expect(totalCost(lehman)).toBe(totalCost(aig));
   });
@@ -237,8 +246,11 @@ describe('Prediction 225: Bailout vs bankruptcy as failure Pareto frontier', () 
 // ============================================================================
 
 describe('Prediction 226: Corporate hierarchy heat -- each layer erases information', () => {
-  const totalErasure = (ground: number, layers: number, erasurePerLayer: number) =>
-    Math.min(layers * erasurePerLayer, ground);
+  const totalErasure = (
+    ground: number,
+    layers: number,
+    erasurePerLayer: number
+  ) => Math.min(layers * erasurePerLayer, ground);
 
   const topInfo = (ground: number, layers: number, erasurePerLayer: number) =>
     ground - totalErasure(ground, layers, erasurePerLayer);
@@ -281,7 +293,7 @@ describe('Prediction 226: Corporate hierarchy heat -- each layer erases informat
     const ground = 100;
     const erasure = 10;
     const traditional = topInfo(ground, 7, erasure); // 7 layers
-    const twoPizza = topInfo(ground, 3, erasure);     // 3 layers
+    const twoPizza = topInfo(ground, 3, erasure); // 3 layers
     expect(twoPizza).toBeGreaterThan(traditional);
     expect(twoPizza).toBe(70); // 100 - 30
     expect(traditional).toBe(30); // 100 - 70

@@ -19,9 +19,18 @@ describe('Gate 5 biological effect-size harness', () => {
     const reportB = runGate5BioEffectSize(config);
 
     expect(reportA.gate.pass).toBe(reportB.gate.pass);
-    expect(reportA.aggregate.pooledLogRatio).toBeCloseTo(reportB.aggregate.pooledLogRatio, 12);
-    expect(reportA.aggregate.pooledLogRatioCi95.low).toBeCloseTo(reportB.aggregate.pooledLogRatioCi95.low, 12);
-    expect(reportA.aggregate.pooledLogRatioCi95.high).toBeCloseTo(reportB.aggregate.pooledLogRatioCi95.high, 12);
+    expect(reportA.aggregate.pooledLogRatio).toBeCloseTo(
+      reportB.aggregate.pooledLogRatio,
+      12
+    );
+    expect(reportA.aggregate.pooledLogRatioCi95.low).toBeCloseTo(
+      reportB.aggregate.pooledLogRatioCi95.low,
+      12
+    );
+    expect(reportA.aggregate.pooledLogRatioCi95.high).toBeCloseTo(
+      reportB.aggregate.pooledLogRatioCi95.high,
+      12
+    );
   });
 
   it('fails when predeclared pooled threshold is overly strict', () => {
@@ -37,7 +46,9 @@ describe('Gate 5 biological effect-size harness', () => {
     };
 
     const report = runGate5BioEffectSize(config);
-    const criterion = report.gate.criteria.find((entry) => entry.id === 'pooled_log_ratio_ci_low');
+    const criterion = report.gate.criteria.find(
+      (entry) => entry.id === 'pooled_log_ratio_ci_low'
+    );
 
     expect(criterion).toBeDefined();
     expect(criterion?.pass).toBe(false);

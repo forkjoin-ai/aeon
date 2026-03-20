@@ -30,7 +30,7 @@ describe('Adaptive supremum family sweep', () => {
 
   it('renders a markdown summary table', () => {
     const markdown = renderAdaptiveSupremumFamilySweepMarkdown(
-      runAdaptiveSupremumFamilySweep(),
+      runAdaptiveSupremumFamilySweep()
     );
 
     expect(markdown).toContain('# Adaptive Supremum Family Sweep');

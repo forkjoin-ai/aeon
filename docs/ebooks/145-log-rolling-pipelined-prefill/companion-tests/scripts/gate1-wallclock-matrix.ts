@@ -33,8 +33,14 @@ function parseIntArg(value: string, flag: string): number {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gate1-wallclock-matrix.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gate1-wallclock-matrix.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gate1-wallclock-matrix.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gate1-wallclock-matrix.md'
+  );
 
   let assertGate = false;
   let trialsPerCell: number | null = null;
@@ -149,12 +155,17 @@ function parseCli(argv: readonly string[]): CliOptions {
   };
 }
 
-function applyOverrides(defaultConfig: Gate1Config, options: CliOptions): Gate1Config {
+function applyOverrides(
+  defaultConfig: Gate1Config,
+  options: CliOptions
+): Gate1Config {
   return {
     ...defaultConfig,
     trialsPerCell: options.trialsPerCell ?? defaultConfig.trialsPerCell,
-    bootstrapResamples: options.bootstrapResamples ?? defaultConfig.bootstrapResamples,
-    requestTimeoutMs: options.requestTimeoutMs ?? defaultConfig.requestTimeoutMs,
+    bootstrapResamples:
+      options.bootstrapResamples ?? defaultConfig.bootstrapResamples,
+    requestTimeoutMs:
+      options.requestTimeoutMs ?? defaultConfig.requestTimeoutMs,
   };
 }
 
@@ -167,8 +178,18 @@ function buildExecutionOptions(options: CliOptions): Gate1ExecutionOptions {
   };
 }
 
-function formatCellLine(cellId: string, pass: boolean, speedup: number, low: number, high: number): string {
-  return `- ${cellId}: ${pass ? 'PASS' : 'DENY'} (median speedup ${speedup.toFixed(3)}x, 95% CI ${low.toFixed(3)}-${high.toFixed(3)})\n`;
+function formatCellLine(
+  cellId: string,
+  pass: boolean,
+  speedup: number,
+  low: number,
+  high: number
+): string {
+  return `- ${cellId}: ${
+    pass ? 'PASS' : 'DENY'
+  } (median speedup ${speedup.toFixed(3)}x, 95% CI ${low.toFixed(
+    3
+  )}-${high.toFixed(3)})\n`;
 }
 
 async function main(): Promise<void> {
@@ -180,12 +201,22 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(options.markdownPath, renderGate1Markdown(report), 'utf8');
 
-  process.stdout.write(`gate1 verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`);
-  process.stdout.write(`primary cells: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}\n`);
-  process.stdout.write(`execution: ${report.execution.label} (${report.execution.mode})\n`);
+  process.stdout.write(
+    `gate1 verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`
+  );
+  process.stdout.write(
+    `primary cells: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}\n`
+  );
+  process.stdout.write(
+    `execution: ${report.execution.label} (${report.execution.mode})\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   for (const cell of report.cells) {
@@ -195,8 +226,8 @@ async function main(): Promise<void> {
         cell.passed,
         cell.speedupMedian,
         cell.speedupMedianCi.low,
-        cell.speedupMedianCi.high,
-      ),
+        cell.speedupMedianCi.high
+      )
     );
   }
 
@@ -206,6 +237,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

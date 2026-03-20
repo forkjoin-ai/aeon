@@ -15,9 +15,9 @@ describe('Gnosis impossible system topology registry', () => {
     expect(ids.size).toBe(GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES.length);
 
     for (const topology of GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES) {
-      expect(topology.gnosisExamplePath.startsWith('open-source/gnosis/examples/')).toBe(
-        true
-      );
+      expect(
+        topology.gnosisExamplePath.startsWith('open-source/gnosis/examples/')
+      ).toBe(true);
       expect(topology.gnosisTestPath).toBe(
         'open-source/gnosis/examples/impossible-systems.test.gg'
       );
@@ -26,17 +26,18 @@ describe('Gnosis impossible system topology registry', () => {
   });
 
   it('resolves entries by id for Aeon consumers', () => {
-    expect(getGnosisImpossibleSystemTopology('edge-pipeline-parallelism')?.aeonSurface).toBe(
-      'federation'
-    );
-    expect(getGnosisImpossibleSystemTopology('audio-token-privacy')?.aeonSurface).toBe(
-      'flow'
-    );
+    expect(
+      getGnosisImpossibleSystemTopology('edge-pipeline-parallelism')
+        ?.aeonSurface
+    ).toBe('federation');
+    expect(
+      getGnosisImpossibleSystemTopology('audio-token-privacy')?.aeonSurface
+    ).toBe('flow');
     expect(
       getGnosisImpossibleSystemTopology('crdt-split-brain-prevention')?.summary
     ).toContain('deterministic CRDT');
-    expect(getGnosisImpossibleSystemTopology('webgpu-graph-flattening')?.title).toBe(
-      'WebGPU Graph Flattening'
-    );
+    expect(
+      getGnosisImpossibleSystemTopology('webgpu-graph-flattening')?.title
+    ).toBe('WebGPU Graph Flattening');
   });
 });

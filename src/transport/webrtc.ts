@@ -254,7 +254,9 @@ export class WebRTCFlowTransport implements FlowTransport {
   private async connectSignaling(): Promise<void> {
     const url =
       this.config.signalingUrl ?? 'wss://relay.dashrelay.com/relay/sync';
-    const roomUrl = `${url}?room=${encodeURIComponent(this.config.roomId)}&peer=${encodeURIComponent(this.peerId)}`;
+    const roomUrl = `${url}?room=${encodeURIComponent(
+      this.config.roomId
+    )}&peer=${encodeURIComponent(this.peerId)}`;
 
     this.signalingWs = new WebSocket(roomUrl);
 

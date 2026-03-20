@@ -15,8 +15,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/ch17-replication-pack.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/ch17-replication-pack.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-replication-pack.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-replication-pack.md'
+  );
 
   let assertComplete = false;
   let jsonPath = defaultJsonPath;
@@ -61,10 +67,20 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  writeFileSync(options.markdownPath, renderCh17ReplicationPackMarkdown(report), 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
+  writeFileSync(
+    options.markdownPath,
+    renderCh17ReplicationPackMarkdown(report),
+    'utf8'
+  );
 
-  process.stdout.write(`ch17-replication-pack: ${report.complete ? 'READY' : 'INVALID'}\n`);
+  process.stdout.write(
+    `ch17-replication-pack: ${report.complete ? 'READY' : 'INVALID'}\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`entries: ${report.entryCount}\n`);
@@ -75,6 +91,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

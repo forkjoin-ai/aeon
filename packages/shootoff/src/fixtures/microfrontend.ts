@@ -12,30 +12,64 @@
 
 import type { SiteManifest } from '../types';
 
-function jsChunk(name: string, size: number, priority: number, blocking = false): import('../types').SiteResource {
-  return { path: `/js/${name}.js`, contentType: 'application/javascript', size, renderBlocking: blocking, priority };
+function jsChunk(
+  name: string,
+  size: number,
+  priority: number,
+  blocking = false
+): import('../types').SiteResource {
+  return {
+    path: `/js/${name}.js`,
+    contentType: 'application/javascript',
+    size,
+    renderBlocking: blocking,
+    priority,
+  };
 }
 
-function cssChunk(name: string, size: number, priority: number): import('../types').SiteResource {
-  return { path: `/css/${name}.css`, contentType: 'text/css', size, renderBlocking: priority > 5, priority };
+function cssChunk(
+  name: string,
+  size: number,
+  priority: number
+): import('../types').SiteResource {
+  return {
+    path: `/css/${name}.css`,
+    contentType: 'text/css',
+    size,
+    renderBlocking: priority > 5,
+    priority,
+  };
 }
 
 function icon(name: string, size: number): import('../types').SiteResource {
-  return { path: `/icons/${name}.svg`, contentType: 'image/svg+xml', size, renderBlocking: false, priority: 1 };
+  return {
+    path: `/icons/${name}.svg`,
+    contentType: 'image/svg+xml',
+    size,
+    renderBlocking: false,
+    priority: 1,
+  };
 }
 
 export const microfrontendSite: import('../types').SiteManifest = {
   name: 'microfrontend',
-  description: 'Modern SPA: aggressive code-splitting, 95 resources, lots of tiny modules (~1.8 MB)',
+  description:
+    'Modern SPA: aggressive code-splitting, 95 resources, lots of tiny modules (~1.8 MB)',
   resources: [
     // HTML shell
-    { path: '/index.html', contentType: 'text/html', size: 3_500, renderBlocking: true, priority: 10 },
+    {
+      path: '/index.html',
+      contentType: 'text/html',
+      size: 3_500,
+      renderBlocking: true,
+      priority: 10,
+    },
 
     // Entry point chunks (critical path)
     jsChunk('entry', 8_200, 10, true),
     jsChunk('runtime', 2_100, 10, true),
-    jsChunk('framework', 45_000, 9, true),   // React/Preact/Solid
-    jsChunk('vendor-core', 32_000, 9, true),  // router, state mgmt
+    jsChunk('framework', 45_000, 9, true), // React/Preact/Solid
+    jsChunk('vendor-core', 32_000, 9, true), // router, state mgmt
 
     // Route chunks (lazy loaded)
     jsChunk('route-home', 12_000, 7),
@@ -127,9 +161,33 @@ export const microfrontendSite: import('../types').SiteManifest = {
     icon('external', 310),
 
     // Micro-assets
-    { path: '/fonts/inter-var.woff2', contentType: 'font/woff2', size: 110_000, renderBlocking: true, priority: 8 },
-    { path: '/favicon.svg', contentType: 'image/svg+xml', size: 1_200, renderBlocking: false, priority: 1 },
-    { path: '/manifest.json', contentType: 'application/json', size: 450, renderBlocking: false, priority: 1 },
-    { path: '/robots.txt', contentType: 'text/plain', size: 80, renderBlocking: false, priority: 0 },
+    {
+      path: '/fonts/inter-var.woff2',
+      contentType: 'font/woff2',
+      size: 110_000,
+      renderBlocking: true,
+      priority: 8,
+    },
+    {
+      path: '/favicon.svg',
+      contentType: 'image/svg+xml',
+      size: 1_200,
+      renderBlocking: false,
+      priority: 1,
+    },
+    {
+      path: '/manifest.json',
+      contentType: 'application/json',
+      size: 450,
+      renderBlocking: false,
+      priority: 1,
+    },
+    {
+      path: '/robots.txt',
+      contentType: 'text/plain',
+      size: 80,
+      renderBlocking: false,
+      priority: 0,
+    },
   ],
 };

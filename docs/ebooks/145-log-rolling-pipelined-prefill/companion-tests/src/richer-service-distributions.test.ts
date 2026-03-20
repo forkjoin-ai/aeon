@@ -58,7 +58,7 @@ function hyperexpSample(
   rng: () => number,
   p: number,
   rate1: number,
-  rate2: number,
+  rate2: number
 ): number {
   // Mixture of two exponentials: with probability p use rate1, else rate2
   return rng() < p
@@ -98,7 +98,7 @@ function simulateQueue(
   arrivalRate: number,
   serviceSampler: (rng: () => number) => number,
   rounds: number,
-  rng: () => number,
+  rng: () => number
 ): QueueResult {
   // Event-driven simulation of M/G/1 queue
   // Arrivals are Poisson (exponential inter-arrivals) at arrivalRate.
@@ -198,7 +198,7 @@ function simulateWhipCurve(
   maxShards: number,
   serviceSampler: (rng: () => number) => number,
   rng: () => number,
-  trials: number,
+  trials: number
 ): WhipCurvePoint[] {
   const points: WhipCurvePoint[] = [];
 
@@ -308,20 +308,16 @@ describe('Richer service distributions -- queueing containment', () => {
   describe("Little's Law (L = lambda * W) across distributions", () => {
     for (const dist of distributions) {
       it(`holds for ${dist.name}`, () => {
-        const rng = makeRng(0xCAFE0000 + dist.name.length);
-        const result = simulateQueue(
-          ARRIVAL_RATE,
-          dist.sampler,
-          ROUNDS,
-          rng,
-        );
+        const rng = makeRng(0xcafe0000 + dist.name.length);
+        const result = simulateQueue(ARRIVAL_RATE, dist.sampler, ROUNDS, rng);
 
         const littleLHS = result.L;
         const littleRHS = result.lambda * result.W;
-        const relativeError = Math.abs(littleLHS - littleRHS) / Math.max(littleLHS, 1e-12);
+        const relativeError =
+          Math.abs(littleLHS - littleRHS) / Math.max(littleLHS, 1e-12);
 
         // Monte Carlo tolerance: 10% relative error is generous for 15k samples
-        expect(relativeError).toBeLessThan(0.10);
+        expect(relativeError).toBeLessThan(0.1);
       });
     }
   });
@@ -329,13 +325,8 @@ describe('Richer service distributions -- queueing containment', () => {
   describe('Conservation (arrivals = departures + in-system) across distributions', () => {
     for (const dist of distributions) {
       it(`holds for ${dist.name}`, () => {
-        const rng = makeRng(0xBEEF0000 + dist.name.length);
-        const result = simulateQueue(
-          ARRIVAL_RATE,
-          dist.sampler,
-          ROUNDS,
-          rng,
-        );
+        const rng = makeRng(0xbeef0000 + dist.name.length);
+        const result = simulateQueue(ARRIVAL_RATE, dist.sampler, ROUNDS, rng);
 
         // Strict conservation: every arrival either departed or is in-system
         expect(result.arrivals).toBe(result.departures + result.inSystem);
@@ -346,15 +337,15 @@ describe('Richer service distributions -- queueing containment', () => {
   describe('Worthington Whip crossover under each distribution', () => {
     for (const dist of distributions) {
       it(`crossover exists for ${dist.name}`, () => {
-        const rng = makeRng(0xACE00000 + dist.name.length);
+        const rng = makeRng(0xace00000 + dist.name.length);
         const curve = simulateWhipCurve(
-          256,   // items
-          5,     // stages
-          1.5,   // correction cost per shard
-          24,    // max shards
+          256, // items
+          5, // stages
+          1.5, // correction cost per shard
+          24, // max shards
           dist.sampler,
           rng,
-          300,   // trials per shard count
+          300 // trials per shard count
         );
 
         const optimum = findOptimum(curve);
@@ -375,19 +366,33 @@ describe('Richer service distributions -- queueing containment', () => {
     // still drives the Whip. We verify that higher correction cost
     // shifts the optimum toward fewer shards.
     const nonMarkovian = distributions.filter(
-      (d) => !d.name.includes('Exponential (M/M/1)') && !d.name.includes('Deterministic'),
+      (d) =>
+        !d.name.includes('Exponential (M/M/1)') &&
+        !d.name.includes('Deterministic')
     );
 
     for (const dist of nonMarkovian) {
       it(`higher correction cost reduces optimal shards for ${dist.name}`, () => {
-        const rng1 = makeRng(0xD00D0000 + dist.name.length);
-        const rng2 = makeRng(0xD00D0000 + dist.name.length);
+        const rng1 = makeRng(0xd00d0000 + dist.name.length);
+        const rng2 = makeRng(0xd00d0000 + dist.name.length);
 
         const curveLow = simulateWhipCurve(
-          256, 5, 0.8, 20, dist.sampler, rng1, 300,
+          256,
+          5,
+          0.8,
+          20,
+          dist.sampler,
+          rng1,
+          300
         );
         const curveHigh = simulateWhipCurve(
-          256, 5, 3.0, 20, dist.sampler, rng2, 300,
+          256,
+          5,
+          3.0,
+          20,
+          dist.sampler,
+          rng2,
+          300
         );
 
         const optLow = findOptimum(curveLow);
@@ -404,14 +409,15 @@ describe('Richer service distributions -- queueing containment', () => {
     // confirming the parameterization is correct.
     for (const dist of distributions) {
       it(`${dist.name} has mean close to ${dist.meanService}`, () => {
-        const rng = makeRng(0xFACE0000 + dist.name.length);
+        const rng = makeRng(0xface0000 + dist.name.length);
         const N = 50000;
         let sum = 0;
         for (let i = 0; i < N; i++) {
           sum += dist.sampler(rng);
         }
         const empiricalMean = sum / N;
-        const relError = Math.abs(empiricalMean - dist.meanService) / dist.meanService;
+        const relError =
+          Math.abs(empiricalMean - dist.meanService) / dist.meanService;
         expect(relError).toBeLessThan(0.05);
       });
     }
@@ -451,7 +457,7 @@ describe('Richer service distributions -- queueing containment', () => {
 
   describe('Hyperexponential has higher variance than exponential', () => {
     it('bimodal mixture has CV > 1', () => {
-      const rng = makeRng(0xABCD0000);
+      const rng = makeRng(0xabcd0000);
       const N = 50000;
       let sum = 0;
       let sumSq = 0;
@@ -477,7 +483,7 @@ describe('Richer service distributions -- queueing containment', () => {
         0.95,
         (r) => exponentialSample(r, 1.0),
         10000,
-        rng,
+        rng
       );
       expect(result.arrivals).toBe(result.departures + result.inSystem);
     });
@@ -489,16 +495,18 @@ describe('Richer service distributions -- queueing containment', () => {
 
       const rng5k = makeRng(0x55550000);
       const result5k = simulateQueue(0.7, sampler, 5000, rng5k);
-      const error5k = Math.abs(result5k.L - result5k.lambda * result5k.W) / result5k.L;
+      const error5k =
+        Math.abs(result5k.L - result5k.lambda * result5k.W) / result5k.L;
 
       const rng20k = makeRng(0x55550000);
       const result20k = simulateQueue(0.7, sampler, 20000, rng20k);
-      const error20k = Math.abs(result20k.L - result20k.lambda * result20k.W) / result20k.L;
+      const error20k =
+        Math.abs(result20k.L - result20k.lambda * result20k.W) / result20k.L;
 
       // With same seed prefix, 20k should generally be at least as good.
       // We just verify both are reasonable (< 10%) -- statistical, not deterministic.
-      expect(error5k).toBeLessThan(0.10);
-      expect(error20k).toBeLessThan(0.10);
+      expect(error5k).toBeLessThan(0.1);
+      expect(error20k).toBeLessThan(0.1);
     });
   });
 });

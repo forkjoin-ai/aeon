@@ -4,9 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
-import {
-  buildCh17MoaTopologyFigureReport,
-} from './ch17-moa-topology-figure';
+import { buildCh17MoaTopologyFigureReport } from './ch17-moa-topology-figure';
 import {
   buildCh17MoaWhipCurvatureFigureReport,
   renderCh17MoaWhipCurvatureFigureMarkdown,
@@ -16,11 +14,11 @@ import {
 const moduleDir = dirname(fileURLToPath(import.meta.url));
 const sparseTopologyPath = resolve(
   moduleDir,
-  '../../../../../../gnosis/examples/benchmarks/moa-transformer-moa.gg',
+  '../../../../../../gnosis/examples/benchmarks/moa-transformer-moa.gg'
 );
 const denseTopologyPath = resolve(
   moduleDir,
-  '../../../../../../gnosis/examples/benchmarks/moa-transformer-regular.gg',
+  '../../../../../../gnosis/examples/benchmarks/moa-transformer-regular.gg'
 );
 
 describe('Chapter 17 MoA whip curvature figure', () => {
@@ -28,7 +26,7 @@ describe('Chapter 17 MoA whip curvature figure', () => {
     const topology = buildCh17MoaTopologyFigureReport(
       readFileSync(sparseTopologyPath, 'utf8'),
       sparseTopologyPath,
-      denseTopologyPath,
+      denseTopologyPath
     );
     const report = buildCh17MoaWhipCurvatureFigureReport(topology);
 
@@ -38,14 +36,16 @@ describe('Chapter 17 MoA whip curvature figure', () => {
     expect(report.blocks).toBe(4);
     expect(report.activeBlocks).toBe(2);
     expect(report.activeBlockLabels).toEqual(['blk A', 'blk B']);
-    expect(report.curvatureView.outerEnvelopeLabel).toBe('curved whip envelope');
+    expect(report.curvatureView.outerEnvelopeLabel).toBe(
+      'curved whip envelope'
+    );
   });
 
   it('renders markdown and svg outputs with curved wraparound labels', () => {
     const topology = buildCh17MoaTopologyFigureReport(
       readFileSync(sparseTopologyPath, 'utf8'),
       sparseTopologyPath,
-      denseTopologyPath,
+      denseTopologyPath
     );
     const report = buildCh17MoaWhipCurvatureFigureReport(topology);
 
@@ -62,6 +62,8 @@ describe('Chapter 17 MoA whip curvature figure', () => {
     expect(svg).toContain('inner rot');
     expect(svg).toContain('blk A');
     expect(svg).toContain('<tspan');
-    expect(svg).toContain('The sparse path family now reads as a curved enclosure');
+    expect(svg).toContain(
+      'The sparse path family now reads as a curved enclosure'
+    );
   });
 });

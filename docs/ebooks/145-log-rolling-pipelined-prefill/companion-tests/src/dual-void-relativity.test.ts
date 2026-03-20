@@ -22,13 +22,13 @@ import { describe, expect, it } from 'vitest';
 interface VoidPartition {
   numTerms: number;
   rounds: number;
-  batnaVents: number[];  // per-term BATNA vent counts
-  watnaVents: number[];  // per-term WATNA vent counts
+  batnaVents: number[]; // per-term BATNA vent counts
+  watnaVents: number[]; // per-term WATNA vent counts
 }
 
 interface VoidFrame {
-  spacelike: number[];   // BATNA classification per dimension
-  timelike: number[];    // WATNA classification per dimension
+  spacelike: number[]; // BATNA classification per dimension
+  timelike: number[]; // WATNA classification per dimension
 }
 
 interface LorentzTransform {
@@ -70,8 +70,10 @@ function classifyCausal(score: number): CausalCharacter {
 }
 
 function totalVolume(partition: VoidPartition): number {
-  return partition.batnaVents.reduce((a, b) => a + b, 0) +
-         partition.watnaVents.reduce((a, b) => a + b, 0);
+  return (
+    partition.batnaVents.reduce((a, b) => a + b, 0) +
+    partition.watnaVents.reduce((a, b) => a + b, 0)
+  );
 }
 
 function batnaVolume(partition: VoidPartition): number {
@@ -96,14 +98,15 @@ describe('Dual Void Partition (THM-DUAL-VOID-*)', () => {
 
   it('THM-DUAL-VOID-PARTITION: total vents = batna + watna per term', () => {
     for (let i = 0; i < partition.numTerms; i++) {
-      expect(partition.batnaVents[i] + partition.watnaVents[i])
-        .toBe(partition.batnaVents[i] + partition.watnaVents[i]);
+      expect(partition.batnaVents[i] + partition.watnaVents[i]).toBe(
+        partition.batnaVents[i] + partition.watnaVents[i]
+      );
     }
   });
 
   it('THM-DUAL-VOID-PARTITION: both voids are nonempty', () => {
-    expect(partition.batnaVents.some(v => v > 0)).toBe(true);
-    expect(partition.watnaVents.some(v => v > 0)).toBe(true);
+    expect(partition.batnaVents.some((v) => v > 0)).toBe(true);
+    expect(partition.watnaVents.some((v) => v > 0)).toBe(true);
   });
 
   it('THM-BATNA-ATTRACTION: BATNA weights are always positive', () => {
@@ -122,7 +125,9 @@ describe('Dual Void Partition (THM-DUAL-VOID-*)', () => {
 
   it('THM-WATNA-REPULSION: monotone -- more WATNA = more repulsion', () => {
     // Sorted check
-    const repulsions = partition.watnaVents.map((_, i) => partition.watnaVents[i]);
+    const repulsions = partition.watnaVents.map(
+      (_, i) => partition.watnaVents[i]
+    );
     for (let i = 0; i < partition.numTerms; i++) {
       for (let j = 0; j < partition.numTerms; j++) {
         if (partition.watnaVents[i] <= partition.watnaVents[j]) {
@@ -159,8 +164,8 @@ describe('Dual Void Partition (THM-DUAL-VOID-*)', () => {
     // (causal character of each component) not the scalar score.
     // This is actually a STRONGER result: the score is a Lorentz scalar.
     const rounds = 20;
-    const scoreA = batnaWeight(rounds, 6) - 4;  // total=10, score=11
-    const scoreB = batnaWeight(rounds, 4) - 6;  // total=10, score=11
+    const scoreA = batnaWeight(rounds, 6) - 4; // total=10, score=11
+    const scoreB = batnaWeight(rounds, 4) - 6; // total=10, score=11
     expect(scoreA).toBe(scoreB); // Lorentz scalar invariance
   });
 });
@@ -178,7 +183,9 @@ describe('Dark Matter / Dark Energy (THM-DARK-*)', () => {
   };
 
   it('THM-DARK-MATTER-ENERGY-CONSERVATION: total = batna + watna', () => {
-    expect(totalVolume(partition)).toBe(batnaVolume(partition) + watnaVolume(partition));
+    expect(totalVolume(partition)).toBe(
+      batnaVolume(partition) + watnaVolume(partition)
+    );
   });
 
   it('THM-DARK-MATTER-POSITIVE: BATNA void has positive volume', () => {
@@ -211,11 +218,11 @@ describe('Void Relativity (THM-INTERVAL-*, THM-TIME-DILATION, THM-PROPER-TIME-*)
   // Two frames: same events, different classification
   const source: VoidFrame = {
     spacelike: [5, 8, 3, 6, 2],
-    timelike:  [2, 1, 4, 3, 5],
+    timelike: [2, 1, 4, 3, 5],
   };
   const target: VoidFrame = {
     spacelike: [3, 6, 5, 4, 4],
-    timelike:  [4, 3, 2, 5, 3],
+    timelike: [4, 3, 2, 5, 3],
   };
   const lt: LorentzTransform = { source, target };
   const rounds = 20;
@@ -227,10 +234,12 @@ describe('Void Relativity (THM-INTERVAL-*, THM-TIME-DILATION, THM-PROPER-TIME-*)
   });
 
   it('THM-INTERVAL-INVARIANCE-GLOBAL: sum of intervals is invariant', () => {
-    const sumSource = source.spacelike.reduce((a, b) => a + b, 0) +
-                      source.timelike.reduce((a, b) => a + b, 0);
-    const sumTarget = target.spacelike.reduce((a, b) => a + b, 0) +
-                      target.timelike.reduce((a, b) => a + b, 0);
+    const sumSource =
+      source.spacelike.reduce((a, b) => a + b, 0) +
+      source.timelike.reduce((a, b) => a + b, 0);
+    const sumTarget =
+      target.spacelike.reduce((a, b) => a + b, 0) +
+      target.timelike.reduce((a, b) => a + b, 0);
     expect(sumSource).toBe(sumTarget);
   });
 
@@ -293,8 +302,8 @@ describe('Emotion-Spacetime (THM-AFFECTIVELY-58, THM-EMPATHY-*)', () => {
       timelike: [] as number[],
     };
     // Set target.timelike to preserve interval
-    target.timelike = source.spacelike.map((s, i) =>
-      (s + source.timelike[i]) - target.spacelike[i]
+    target.timelike = source.spacelike.map(
+      (s, i) => s + source.timelike[i] - target.spacelike[i]
     );
 
     for (let i = 0; i < n; i++) {
@@ -327,8 +336,9 @@ describe('Emotion-Spacetime (THM-AFFECTIVELY-58, THM-EMPATHY-*)', () => {
       expect(interval(source, i)).toBe(interval(target, i));
       // Score is a Lorentz scalar -- same in both frames
       if (source.spacelike[i] <= rounds && target.spacelike[i] <= rounds) {
-        expect(settlementScore(source, rounds, i))
-          .toBe(settlementScore(target, rounds, i));
+        expect(settlementScore(source, rounds, i)).toBe(
+          settlementScore(target, rounds, i)
+        );
       }
     }
   });
@@ -341,8 +351,9 @@ describe('Emotion-Spacetime (THM-AFFECTIVELY-58, THM-EMPATHY-*)', () => {
     const after: VoidFrame = { spacelike: [10], timelike: [10] };
     expect(interval(before, 0)).toBe(interval(after, 0)); // preserved
     // Score is a Lorentz scalar -- preserved under frame change
-    expect(settlementScore(after, rounds, 0))
-      .toBe(settlementScore(before, rounds, 0));
+    expect(settlementScore(after, rounds, 0)).toBe(
+      settlementScore(before, rounds, 0)
+    );
   });
 
   it('THM-THERAPY-IMPROVES-CURVATURE-DIRECTION: WATNA component shrinks', () => {
@@ -364,8 +375,9 @@ describe('Pillar 1: Arrow of Time (THM-ARROW-*, THM-WATNA-ARROW)', () => {
     const t1 = { batna: [3, 5], watna: [2, 1] };
     const t2 = { batna: [4, 7], watna: [3, 2] };
     for (let i = 0; i < 2; i++) {
-      expect(t2.batna[i] + t2.watna[i])
-        .toBeGreaterThanOrEqual(t1.batna[i] + t1.watna[i]);
+      expect(t2.batna[i] + t2.watna[i]).toBeGreaterThanOrEqual(
+        t1.batna[i] + t1.watna[i]
+      );
     }
   });
 
@@ -408,8 +420,10 @@ describe('Pillar 1: Arrow of Time (THM-ARROW-*, THM-WATNA-ARROW)', () => {
   });
 
   it('THM-WATNA-DETERMINES-TEMPORAL-ORDER: strict WATNA increase → strict void increase', () => {
-    const batna_t1 = 3, watna_t1 = 2;
-    const batna_t2 = 4, watna_t2 = 4; // strict WATNA increase
+    const batna_t1 = 3,
+      watna_t1 = 2;
+    const batna_t2 = 4,
+      watna_t2 = 4; // strict WATNA increase
     expect(watna_t2).toBeGreaterThan(watna_t1);
     expect(batna_t2 + watna_t2).toBeGreaterThan(batna_t1 + watna_t1);
   });
@@ -421,14 +435,18 @@ describe('Pillar 1: Arrow of Time (THM-ARROW-*, THM-WATNA-ARROW)', () => {
 
 describe('Pillar 2: Holographic Principle (THM-HOLOGRAPHIC-*)', () => {
   it('THM-HOLOGRAPHIC-BOUND: boundary ≤ bulk', () => {
-    const dims = 58, depth = 100, forkWidth = 4;
+    const dims = 58,
+      depth = 100,
+      forkWidth = 4;
     const boundary = dims * depth;
     const bulk = dims * depth * (forkWidth - 1);
     expect(boundary).toBeLessThanOrEqual(bulk);
   });
 
   it('THM-HOLOGRAPHIC-STRICT: boundary < bulk when forkWidth > 2', () => {
-    const dims = 58, depth = 100, forkWidth = 4;
+    const dims = 58,
+      depth = 100,
+      forkWidth = 4;
     const boundary = dims * depth;
     const bulk = dims * depth * (forkWidth - 1);
     expect(boundary).toBeLessThan(bulk);
@@ -493,8 +511,9 @@ describe('Pillar 3: General Relativity (THM-EINSTEIN-*, THM-CURVATURE-*, THM-EVE
     // SE: 3, 8, 15 -- monotonically increasing
     for (let i = 0; i < 2; i++) {
       if (stressEnergy(frame, i) <= stressEnergy(frame, i + 1)) {
-        expect(localCurvature(frame, i))
-          .toBeLessThanOrEqual(localCurvature(frame, i + 1));
+        expect(localCurvature(frame, i)).toBeLessThanOrEqual(
+          localCurvature(frame, i + 1)
+        );
       }
     }
   });
@@ -571,10 +590,14 @@ describe("Pillar 4: Noether's Theorem (THM-NOETHER-*)", () => {
       spacelike: [3, 6, 5],
       timelike: [4, 3, 2],
     };
-    const sumSE_source = source.spacelike.reduce((a, _, i) =>
-      a + stressEnergy(source, i), 0);
-    const sumSE_target = target.spacelike.reduce((a, _, i) =>
-      a + stressEnergy(target, i), 0);
+    const sumSE_source = source.spacelike.reduce(
+      (a, _, i) => a + stressEnergy(source, i),
+      0
+    );
+    const sumSE_target = target.spacelike.reduce(
+      (a, _, i) => a + stressEnergy(target, i),
+      0
+    );
     expect(sumSE_source).toBe(sumSE_target);
   });
 
@@ -626,14 +649,14 @@ describe('Pillar 5: Entanglement (THM-ENTANGLEMENT-*, THM-NO-SIGNALING)', () => 
   });
 
   it('THM-NO-SIGNALING: reclassifying A does not change B SE', () => {
-    const originalB_SE = [0, 1, 2].map(i => stressEnergy(walkerB, i));
+    const originalB_SE = [0, 1, 2].map((i) => stressEnergy(walkerB, i));
     // "Reclassify" walkerA -- doesn't touch walkerB
     const newA: VoidFrame = {
       spacelike: [7, 1, 5],
       timelike: [0, 6, 3],
     };
     // Walker B unchanged
-    const afterB_SE = [0, 1, 2].map(i => stressEnergy(walkerB, i));
+    const afterB_SE = [0, 1, 2].map((i) => stressEnergy(walkerB, i));
     expect(afterB_SE).toEqual(originalB_SE);
     // But newA has same intervals as walkerA
     for (let i = 0; i < 3; i++) {
@@ -687,7 +710,9 @@ describe('Pillar 6: Unification (THM-VOID-FIELD-EQUATION, THM-GRAND-UNIFICATION)
     const heat_t1 = [5, 8];
     const heat_t2 = [7, 9]; // each >= t1
     for (let i = 0; i < 2; i++) {
-      expect(heat_t1[i] * heat_t1[i]).toBeLessThanOrEqual(heat_t2[i] * heat_t2[i]);
+      expect(heat_t1[i] * heat_t1[i]).toBeLessThanOrEqual(
+        heat_t2[i] * heat_t2[i]
+      );
     }
   });
 
@@ -727,7 +752,8 @@ describe('Pillar 6: Unification (THM-VOID-FIELD-EQUATION, THM-GRAND-UNIFICATION)
 describe('Coherence Breakdown (THM-COHERENCE-*)', () => {
   it('THM-COHERENCE-WHEN-CLASSIFICATION-AGREES: same classification → same score', () => {
     const rounds = 20;
-    const batna = 5, watna = 3;
+    const batna = 5,
+      watna = 3;
     const scoreA = batnaWeight(rounds, batna) - watna;
     const scoreB = batnaWeight(rounds, batna) - watna;
     expect(scoreA).toBe(scoreB);
@@ -796,8 +822,9 @@ describe('Physics Correspondence Bundle (THM-PHYSICS-CORRESPONDENCE-BUNDLE)', ()
     expect(interval(source, 0)).toBe(interval(target, 0));
 
     // 2. Score is Lorentz scalar (frame invariant)
-    expect(settlementScore(source, rounds, 0))
-      .toBe(settlementScore(target, rounds, 0));
+    expect(settlementScore(source, rounds, 0)).toBe(
+      settlementScore(target, rounds, 0)
+    );
 
     // 3. Curvature invariance
     expect(localCurvature(source, 0)).toBe(localCurvature(target, 0));
@@ -848,7 +875,7 @@ describe('Hardening: Structural Foundations', () => {
           const score = settlementScore(
             { spacelike: [batna], timelike: [watna] },
             rounds,
-            0,
+            0
           );
           if (batna <= rounds) {
             expect(score).toBe(rounds + 1 - iv);
@@ -864,13 +891,14 @@ describe('Hardening: Hodge Decomposition Properties', () => {
     // With at least one zero-WATNA term, settlement score is positive
     const partition = {
       batna: [3, 5, 2, 7],
-      watna: [1, 0, 4, 2],  // term 1 has zero WATNA
+      watna: [1, 0, 4, 2], // term 1 has zero WATNA
       rounds: 20,
     };
     const zeroWatnaIdx = 1;
     expect(partition.watna[zeroWatnaIdx]).toBe(0);
-    const score = batnaWeight(partition.rounds, partition.batna[zeroWatnaIdx]) -
-                  partition.watna[zeroWatnaIdx];
+    const score =
+      batnaWeight(partition.rounds, partition.batna[zeroWatnaIdx]) -
+      partition.watna[zeroWatnaIdx];
     expect(score).toBeGreaterThan(0);
   });
 
@@ -904,9 +932,17 @@ describe('Hardening: Dark Matter / Dark Energy Gradients', () => {
   it('settlement score monotonically decreases as WATNA grows (repulsive gradient)', () => {
     const rounds = 20;
     const batna = 5;
-    let prevScore = settlementScore({ spacelike: [batna], timelike: [0] }, rounds, 0);
+    let prevScore = settlementScore(
+      { spacelike: [batna], timelike: [0] },
+      rounds,
+      0
+    );
     for (let watna = 1; watna <= 15; watna++) {
-      const s = settlementScore({ spacelike: [batna], timelike: [watna] }, rounds, 0);
+      const s = settlementScore(
+        { spacelike: [batna], timelike: [watna] },
+        rounds,
+        0
+      );
       expect(s).toBeLessThanOrEqual(prevScore);
       prevScore = s;
     }
@@ -923,8 +959,8 @@ describe('Hardening: WATNA Fraction Frame-Dependence', () => {
     const fractionA = frameA.timelike[0] / interval(frameA, 0);
     const fractionB = frameB.timelike[0] / interval(frameB, 0);
     expect(fractionA).not.toBe(fractionB); // frame-dependent!
-    expect(fractionA).toBe(0.3);  // 3/10
-    expect(fractionB).toBe(0.6);  // 6/10
+    expect(fractionA).toBe(0.3); // 3/10
+    expect(fractionB).toBe(0.6); // 6/10
   });
 
   it('WATNA fraction sweep: same interval, all decompositions have different fractions', () => {
@@ -951,10 +987,11 @@ describe('Hardening: Score Stability Without New Vents', () => {
   it('score decreases when new vents are added (arrow of time)', () => {
     const rounds = 20;
     const before: VoidFrame = { spacelike: [5], timelike: [3] }; // interval=8
-    const after: VoidFrame = { spacelike: [6], timelike: [4] };  // interval=10
+    const after: VoidFrame = { spacelike: [6], timelike: [4] }; // interval=10
     expect(interval(after, 0)).toBeGreaterThan(interval(before, 0));
-    expect(settlementScore(after, rounds, 0))
-      .toBeLessThan(settlementScore(before, rounds, 0));
+    expect(settlementScore(after, rounds, 0)).toBeLessThan(
+      settlementScore(before, rounds, 0)
+    );
   });
 });
 
@@ -973,7 +1010,7 @@ describe('Hardening: Curvature Monotonicity Along Worldlines', () => {
   it('curvature is strictly monotone for strictly increasing heat', () => {
     const heats = [1, 2, 3, 4, 5];
     for (let i = 1; i < heats.length; i++) {
-      expect(heats[i] * heats[i]).toBeGreaterThan(heats[i-1] * heats[i-1]);
+      expect(heats[i] * heats[i]).toBeGreaterThan(heats[i - 1] * heats[i - 1]);
     }
   });
 });

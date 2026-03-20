@@ -20,19 +20,29 @@ describe('Toy attention fold ablation (§1.7, §6.12)', () => {
     const report = runToyAttentionFoldAblation();
 
     expect(report.strategies.linear.meanSquaredError).toBeCloseTo(0, 12);
-    expect(report.strategies.linear.meanSquaredErrorCi95.high).toBeLessThan(1e-9);
+    expect(report.strategies.linear.meanSquaredErrorCi95.high).toBeLessThan(
+      1e-9
+    );
     expect(report.strategies.linear.exactWithinToleranceFraction).toBe(1);
 
-    expect(report.strategies['winner-take-all'].meanSquaredError).toBeGreaterThan(0.1);
+    expect(
+      report.strategies['winner-take-all'].meanSquaredError
+    ).toBeGreaterThan(0.1);
     expect(report.strategies['early-stop'].meanSquaredError).toBeGreaterThan(
-      report.strategies['winner-take-all'].meanSquaredError,
+      report.strategies['winner-take-all'].meanSquaredError
     );
     expect(report.predictedRankingMatches).toBe(true);
-    expect(report.rankingByMeanSquaredError).toEqual(['linear', 'winner-take-all', 'early-stop']);
+    expect(report.rankingByMeanSquaredError).toEqual([
+      'linear',
+      'winner-take-all',
+      'early-stop',
+    ]);
   });
 
   it('renders a markdown report with metrics and sample predictions', () => {
-    const markdown = renderToyAttentionFoldAblationMarkdown(runToyAttentionFoldAblation());
+    const markdown = renderToyAttentionFoldAblationMarkdown(
+      runToyAttentionFoldAblation()
+    );
 
     expect(markdown).toContain('# Toy Attention Fold Ablation');
     expect(markdown).toContain('## Metrics');

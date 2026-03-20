@@ -121,7 +121,7 @@ function makeRng(seed: number): () => number {
  *  Default eta = 2.0 gives moderate differentiation. */
 function complementDistribution(
   ventCounts: number[],
-  eta: number = 2.0,
+  eta: number = 2.0
 ): number[] {
   const N = ventCounts.length;
   const maxVent = Math.max(...ventCounts);
@@ -156,7 +156,7 @@ function collectKurtosisTrajectory(
   rounds: number,
   trueCosts: number[],
   rng: () => number,
-  snapshotInterval: number = 10,
+  snapshotInterval: number = 10
 ): KurtosisSnapshot[] {
   const ventCounts = new Array(numArms).fill(0);
   const snapshots: KurtosisSnapshot[] = [];
@@ -239,19 +239,21 @@ function sparkline(values: number[], width: number = 60): string {
 function labeledSparkline(
   label: string,
   values: number[],
-  width: number = 50,
+  width: number = 50
 ): string {
   const min = Math.min(...values);
   const max = Math.max(...values);
   const spark = sparkline(values, width);
-  return `  ${label.padEnd(12)} ${min.toFixed(3).padStart(8)} ${spark} ${max.toFixed(3)}`;
+  return `  ${label.padEnd(12)} ${min
+    .toFixed(3)
+    .padStart(8)} ${spark} ${max.toFixed(3)}`;
 }
 
 /** Render a bar chart of the complement distribution. */
 function barChart(
   probs: number[],
   labels: string[],
-  width: number = 40,
+  width: number = 40
 ): string {
   const maxProb = Math.max(...probs);
   return probs
@@ -334,26 +336,26 @@ describe('Void Walking Kurtosis: Shape of the Complement Distribution', () => {
     console.log(
       labeledSparkline(
         'ex.kurtosis',
-        snapshots.map((s) => s.excessKurtosis),
-      ),
+        snapshots.map((s) => s.excessKurtosis)
+      )
     );
     console.log(
       labeledSparkline(
         'entropy',
-        snapshots.map((s) => s.entropy),
-      ),
+        snapshots.map((s) => s.entropy)
+      )
     );
     console.log(
       labeledSparkline(
         'gini',
-        snapshots.map((s) => s.gini),
-      ),
+        snapshots.map((s) => s.gini)
+      )
     );
     console.log(
       labeledSparkline(
         'max/min',
-        snapshots.map((s) => Math.min(s.ratio, 100)),
-      ),
+        snapshots.map((s) => Math.min(s.ratio, 100))
+      )
     );
     console.log('  ' + '─'.repeat(72));
     console.log('  t=0 (left) → t=2000 (right)\n');
@@ -387,17 +389,17 @@ describe('Void Walking Kurtosis: Shape of the Complement Distribution', () => {
       expect(crossingRound).toBeLessThan(T);
 
       console.log(
-        `\n  Phase transition: platykurtic → leptokurtic at round ${crossingRound}`,
+        `\n  Phase transition: platykurtic → leptokurtic at round ${crossingRound}`
       );
       console.log(
-        `  (${((crossingRound / T) * 100).toFixed(1)}% of total rounds)\n`,
+        `  (${((crossingRound / T) * 100).toFixed(1)}% of total rounds)\n`
       );
     }
 
     // Regardless of crossing, entropy should not increase significantly
     // (learning constrains the distribution, it doesn't expand it)
     expect(snapshots[snapshots.length - 1].entropy).toBeLessThanOrEqual(
-      snapshots[0].entropy + 0.01,
+      snapshots[0].entropy + 0.01
     );
   });
 
@@ -454,14 +456,16 @@ describe('Void Walking Kurtosis: Shape of the Complement Distribution', () => {
     console.log('\n  Dark Matter / Void Boundary Analogy:');
     console.log('  ' + '─'.repeat(50));
     console.log(
-      `  With void boundary:    gini=${structuredGini.toFixed(3)}  kurtosis=${structuredKurt.toFixed(3)}`,
+      `  With void boundary:    gini=${structuredGini.toFixed(
+        3
+      )}  kurtosis=${structuredKurt.toFixed(3)}`
     );
     console.log(
-      `  Without (reset):       gini=${resetGini.toFixed(3)}  kurtosis=${resetKurt.toFixed(3)}`,
+      `  Without (reset):       gini=${resetGini.toFixed(
+        3
+      )}  kurtosis=${resetKurt.toFixed(3)}`
     );
-    console.log(
-      '  The void boundary IS the dark matter scaffold.\n',
-    );
+    console.log('  The void boundary IS the dark matter scaffold.\n');
   });
 
   it('visualize complement distribution at multiple snapshots', () => {
@@ -512,7 +516,9 @@ describe('Void Walking Kurtosis: Shape of the Complement Distribution', () => {
         kurt > 0 ? 'leptokurtic' : kurt < -0.1 ? 'platykurtic' : 'mesokurtic';
 
       console.log(
-        `\n  Round ${String(round).padStart(4)} (${shape}, κ=${kurt.toFixed(2)}, H=${h.toFixed(2)}):`,
+        `\n  Round ${String(round).padStart(4)} (${shape}, κ=${kurt.toFixed(
+          2
+        )}, H=${h.toFixed(2)}):`
       );
       console.log(barChart(dist, labels, 35));
     }
@@ -566,13 +572,15 @@ describe('Void Walking Kurtosis: Shape of the Complement Distribution', () => {
       }
     }
 
-    console.log('\n  Non-Stationary Kurtosis Response (regime changes at t=1000, 2000)');
+    console.log(
+      '\n  Non-Stationary Kurtosis Response (regime changes at t=1000, 2000)'
+    );
     console.log('  ' + '─'.repeat(72));
     console.log(labeledSparkline('ex.kurtosis', kurtosisTrace));
     console.log(labeledSparkline('entropy', entropyTrace));
     console.log('  ' + '─'.repeat(72));
     console.log(
-      '  Regime changes create kurtosis perturbations as the walker re-adapts.\n',
+      '  Regime changes create kurtosis perturbations as the walker re-adapts.\n'
     );
 
     // The kurtosis trace should not be monotone (regime changes disrupt it)
@@ -597,7 +605,7 @@ describe('Void Walking Kurtosis: Shape of the Complement Distribution', () => {
       // Create costs: linearly spaced from 0.05 to 0.95
       const trueCosts = Array.from(
         { length: N },
-        (_, i) => 0.05 + (0.9 * i) / (N - 1),
+        (_, i) => 0.05 + (0.9 * i) / (N - 1)
       );
       const rng = makeRng(42);
       const ventCounts = new Array(N).fill(0);
@@ -638,11 +646,17 @@ describe('Void Walking Kurtosis: Shape of the Complement Distribution', () => {
         'final κ'.padEnd(12) +
         'init H'.padEnd(12) +
         'final H'.padEnd(12) +
-        'ΔH',
+        'ΔH'
     );
     for (const r of results) {
       console.log(
-        `  ${String(r.N).padEnd(8)}${r.initialKurt.toFixed(3).padEnd(12)}${r.finalKurt.toFixed(3).padEnd(12)}${r.initialEntropy.toFixed(3).padEnd(12)}${r.finalEntropy.toFixed(3).padEnd(12)}${(r.initialEntropy - r.finalEntropy).toFixed(3)}`,
+        `  ${String(r.N).padEnd(8)}${r.initialKurt
+          .toFixed(3)
+          .padEnd(12)}${r.finalKurt.toFixed(3).padEnd(12)}${r.initialEntropy
+          .toFixed(3)
+          .padEnd(12)}${r.finalEntropy.toFixed(3).padEnd(12)}${(
+          r.initialEntropy - r.finalEntropy
+        ).toFixed(3)}`
       );
     }
     console.log('  ' + '─'.repeat(65) + '\n');
@@ -650,7 +664,7 @@ describe('Void Walking Kurtosis: Shape of the Complement Distribution', () => {
     // Initial entropy should scale with log(N)
     for (let i = 1; i < results.length; i++) {
       expect(results[i].initialEntropy).toBeGreaterThan(
-        results[i - 1].initialEntropy,
+        results[i - 1].initialEntropy
       );
     }
 

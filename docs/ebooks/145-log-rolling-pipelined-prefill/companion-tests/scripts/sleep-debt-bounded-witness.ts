@@ -15,7 +15,10 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/sleep-debt-bounded-witness.json');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/sleep-debt-bounded-witness.json'
+  );
   const defaultMarkdownPath = resolve(
     moduleDir,
     '../artifacts/sleep-debt-bounded-witness.md'
@@ -64,7 +67,11 @@ function main(): void {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderSleepDebtBoundedWitnessMarkdown(report),
@@ -75,7 +82,11 @@ function main(): void {
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(
-    `- partialDebt=${report.aggregate.partialRecoveryLeavesPositiveDebt ? 'yes' : 'no'}, chronicIntrusion=${report.aggregate.chronicTruncationEnablesIntrusion ? 'yes' : 'no'}\n`
+    `- partialDebt=${
+      report.aggregate.partialRecoveryLeavesPositiveDebt ? 'yes' : 'no'
+    }, chronicIntrusion=${
+      report.aggregate.chronicTruncationEnablesIntrusion ? 'yes' : 'no'
+    }\n`
   );
 
   if (

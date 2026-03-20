@@ -117,7 +117,10 @@ function encodeInferenceRequest(req: FederatedInferenceRequest): Uint8Array {
   return frame;
 }
 
-function encodeInferenceResponse(text: string, metrics: { ttft: number; totalTime: number; tps: number }): Uint8Array {
+function encodeInferenceResponse(
+  text: string,
+  metrics: { ttft: number; totalTime: number; tps: number }
+): Uint8Array {
   const json = JSON.stringify({ text, ...metrics });
   const jsonBytes = textEncoder.encode(json);
   const frame = new Uint8Array(1 + jsonBytes.byteLength);
@@ -166,7 +169,11 @@ export class FederatedInferenceCoordinator {
    * Register a peer with its flow transport.
    * The transport should already be connected.
    */
-  addPeer(id: string, transport: FlowTransport, capabilities?: PeerCapabilities): void {
+  addPeer(
+    id: string,
+    transport: FlowTransport,
+    capabilities?: PeerCapabilities
+  ): void {
     const peer: FederatedPeer = {
       id,
       transport,
@@ -190,7 +197,11 @@ export class FederatedInferenceCoordinator {
         const json = textDecoder.decode(data.subarray(1));
         peer.capabilities = JSON.parse(json) as PeerCapabilities;
         peer.lastSeen = Date.now();
-        this.emit({ type: 'peer-capabilities', peerId: id, capabilities: peer.capabilities });
+        this.emit({
+          type: 'peer-capabilities',
+          peerId: id,
+          capabilities: peer.capabilities,
+        });
       }
     });
   }
@@ -226,7 +237,9 @@ export class FederatedInferenceCoordinator {
    * Forks the prompt to N peers, races them, returns the fastest result.
    * This is the core fork/race primitive applied at the network level.
    */
-  async infer(request: FederatedInferenceRequest): Promise<FederatedInferenceResult> {
+  async infer(
+    request: FederatedInferenceRequest
+  ): Promise<FederatedInferenceResult> {
     const availablePeers = this.getAvailablePeers(request.model);
     const minPeers = this.config.minPeers ?? 1;
     const maxPeers = this.config.maxPeers ?? 8;
@@ -243,41 +256,61 @@ export class FederatedInferenceCoordinator {
 
     // Select peers (up to maxPeers, sorted by estimated TPS descending)
     const selectedPeers = availablePeers
-      .sort((a, b) => (b.capabilities.estimatedTps ?? 0) - (a.capabilities.estimatedTps ?? 0))
+      .sort(
+        (a, b) =>
+          (b.capabilities.estimatedTps ?? 0) -
+          (a.capabilities.estimatedTps ?? 0)
+      )
       .slice(0, maxPeers - (includeLocal ? 1 : 0));
 
     const startTime = Date.now();
-    this.emit({ type: 'inference-start', peerCount: selectedPeers.length + (includeLocal ? 1 : 0) });
+    this.emit({
+      type: 'inference-start',
+      peerCount: selectedPeers.length + (includeLocal ? 1 : 0),
+    });
 
     // Race all peers (and optionally local)
     const raceEntries: Array<{
       id: string;
-      promise: Promise<{ text: string; ttft: number; totalTime: number; tps: number }>;
+      promise: Promise<{
+        text: string;
+        ttft: number;
+        totalTime: number;
+        tps: number;
+      }>;
     }> = [];
 
     // Fork to each peer
     for (const peer of selectedPeers) {
       const requestFrame = encodeInferenceRequest(request);
-      const peerPromise = new Promise<{ text: string; ttft: number; totalTime: number; tps: number }>(
-        (resolve, reject) => {
-          const timer = setTimeout(() => {
-            reject(new Error(`Peer ${peer.id} timeout`));
-          }, timeout);
+      const peerPromise = new Promise<{
+        text: string;
+        ttft: number;
+        totalTime: number;
+        tps: number;
+      }>((resolve, reject) => {
+        const timer = setTimeout(() => {
+          reject(new Error(`Peer ${peer.id} timeout`));
+        }, timeout);
 
-          // Store the original handler and set up our inference handler
-          const handler = (data: Uint8Array) => {
-            if (data[0] === MSG_INFERENCE_RESPONSE) {
-              clearTimeout(timer);
-              const json = textDecoder.decode(data.subarray(1));
-              const result = JSON.parse(json) as { text: string; ttft: number; totalTime: number; tps: number };
-              resolve(result);
-            }
-          };
+        // Store the original handler and set up our inference handler
+        const handler = (data: Uint8Array) => {
+          if (data[0] === MSG_INFERENCE_RESPONSE) {
+            clearTimeout(timer);
+            const json = textDecoder.decode(data.subarray(1));
+            const result = JSON.parse(json) as {
+              text: string;
+              ttft: number;
+              totalTime: number;
+              tps: number;
+            };
+            resolve(result);
+          }
+        };
 
-          peer.transport.onReceive(handler);
-          peer.transport.send(requestFrame);
-        }
-      );
+        peer.transport.onReceive(handler);
+        peer.transport.send(requestFrame);
+      });
 
       raceEntries.push({ id: peer.id, promise: peerPromise });
     }
@@ -285,16 +318,18 @@ export class FederatedInferenceCoordinator {
     // Include local inference if configured
     if (includeLocal && this.config.localInference) {
       const localStart = Date.now();
-      const localPromise = this.config.localInference(request.prompt).then((text) => {
-        const totalTime = Date.now() - localStart;
-        const tokens = text.split(/\s+/).length; // Rough estimate
-        return {
-          text,
-          ttft: totalTime / 2, // Rough estimate
-          totalTime,
-          tps: tokens / (totalTime / 1000),
-        };
-      });
+      const localPromise = this.config
+        .localInference(request.prompt)
+        .then((text) => {
+          const totalTime = Date.now() - localStart;
+          const tokens = text.split(/\s+/).length; // Rough estimate
+          return {
+            text,
+            ttft: totalTime / 2, // Rough estimate
+            totalTime,
+            tps: tokens / (totalTime / 1000),
+          };
+        });
 
       raceEntries.push({ id: '__local__', promise: localPromise });
     }
@@ -303,7 +338,10 @@ export class FederatedInferenceCoordinator {
     if (request.collectAll) {
       // Wait for all results, but return the first one as winner
       const allResults = new Map<string, { text: string; time: number }>();
-      let winner: { id: string; result: { text: string; ttft: number; totalTime: number; tps: number } } | null = null;
+      let winner: {
+        id: string;
+        result: { text: string; ttft: number; totalTime: number; tps: number };
+      } | null = null;
 
       const settled = await Promise.allSettled(
         raceEntries.map(async (entry) => {
@@ -311,7 +349,10 @@ export class FederatedInferenceCoordinator {
           if (!winner) {
             winner = { id: entry.id, result };
           }
-          allResults.set(entry.id, { text: result.text, time: result.totalTime });
+          allResults.set(entry.id, {
+            text: result.text,
+            time: result.totalTime,
+          });
           return { id: entry.id, result };
         })
       );
@@ -320,7 +361,10 @@ export class FederatedInferenceCoordinator {
         throw new Error('All peers failed inference');
       }
 
-      const w = winner as { id: string; result: { text: string; ttft: number; totalTime: number; tps: number } };
+      const w = winner as {
+        id: string;
+        result: { text: string; ttft: number; totalTime: number; tps: number };
+      };
       return {
         winnerId: w.id,
         text: w.result.text,
@@ -364,7 +408,10 @@ export class FederatedInferenceCoordinator {
    * @returns A FlowTransport receive handler
    */
   static createPeerHandler(
-    inferFn: (prompt: string, options?: { maxTokens?: number; temperature?: number }) => Promise<string>
+    inferFn: (
+      prompt: string,
+      options?: { maxTokens?: number; temperature?: number }
+    ) => Promise<string>
   ): (data: Uint8Array) => void {
     return (data: Uint8Array) => {
       if (data[0] !== MSG_INFERENCE_REQUEST) return;
@@ -400,7 +447,10 @@ export class FederatedInferenceCoordinator {
    */
   static setupPeer(
     transport: FlowTransport,
-    inferFn: (prompt: string, options?: { maxTokens?: number; temperature?: number }) => Promise<string>,
+    inferFn: (
+      prompt: string,
+      options?: { maxTokens?: number; temperature?: number }
+    ) => Promise<string>,
     capabilities: PeerCapabilities
   ): void {
     // Announce capabilities
@@ -423,15 +473,21 @@ export class FederatedInferenceCoordinator {
       void inferFn(request.prompt, {
         maxTokens: request.maxTokens,
         temperature: request.temperature,
-      }).then((text) => {
-        const totalTime = Date.now() - startTime;
-        const tokens = text.split(/\s+/).length;
-        const tps = tokens / Math.max(totalTime / 1000, 0.001);
-        const response = encodeInferenceResponse(text, { ttft: totalTime / 2, totalTime, tps });
-        transport.send(response);
-      }).catch(() => {
-        // Inference failed — don't respond, let coordinator timeout
-      });
+      })
+        .then((text) => {
+          const totalTime = Date.now() - startTime;
+          const tokens = text.split(/\s+/).length;
+          const tps = tokens / Math.max(totalTime / 1000, 0.001);
+          const response = encodeInferenceResponse(text, {
+            ttft: totalTime / 2,
+            totalTime,
+            tps,
+          });
+          transport.send(response);
+        })
+        .catch(() => {
+          // Inference failed — don't respond, let coordinator timeout
+        });
     });
   }
 
@@ -477,7 +533,11 @@ export class FederatedInferenceCoordinator {
 export type FederationEvent =
   | { type: 'peer-added'; peerId: string }
   | { type: 'peer-removed'; peerId: string }
-  | { type: 'peer-capabilities'; peerId: string; capabilities: PeerCapabilities }
+  | {
+      type: 'peer-capabilities';
+      peerId: string;
+      capabilities: PeerCapabilities;
+    }
   | { type: 'inference-start'; peerCount: number }
   | { type: 'inference-complete'; winnerId: string; totalTime: number }
   | { type: 'error'; message: string };

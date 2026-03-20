@@ -238,7 +238,9 @@ export function renderSleepDebtWeightedThresholdWitnessMarkdown(
   lines.push('');
   lines.push(`- Label: \`${report.label}\``);
   lines.push(
-    `- Calibrated critical wake boundary: \`${report.parameters.criticalWakeHours.toFixed(1)} h\` (\`${report.parameters.criticalWakeTenths}\` tenths)`
+    `- Calibrated critical wake boundary: \`${report.parameters.criticalWakeHours.toFixed(
+      1
+    )} h\` (\`${report.parameters.criticalWakeTenths}\` tenths)`
   );
   lines.push(
     `- Weighted parameters: wake burden \`${report.parameters.wakeBurdenRate}\`, recovery \`${report.parameters.recoveryRate}\`, cycle length \`${report.parameters.cycleLengthTenths}\` tenths`
@@ -247,28 +249,42 @@ export function renderSleepDebtWeightedThresholdWitnessMarkdown(
   lines.push(
     '| Scenario | Wake (h) | Sleep (h) | Cycles | Threshold lhs | Threshold rhs | Weighted surplus | Debt after cycles | Theorems |'
   );
-  lines.push(
-    '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |'
-  );
+  lines.push('| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |');
 
   for (const scenario of report.scenarios) {
     lines.push(
-      `| \`${scenario.id}\` | ${scenario.scheduledWakeHours.toFixed(1)} | ${(scenario.sleepQuotaTenths / 10).toFixed(1)} | ${scenario.cycleCount} | ${scenario.thresholdLhs} | ${scenario.thresholdRhs} | ${scenario.weightedSurplusPerCycle} | ${scenario.debtAfterCycles} | \`${scenario.theoremRefs.join(', ')}\` |`
+      `| \`${scenario.id}\` | ${scenario.scheduledWakeHours.toFixed(1)} | ${(
+        scenario.sleepQuotaTenths / 10
+      ).toFixed(1)} | ${scenario.cycleCount} | ${scenario.thresholdLhs} | ${
+        scenario.thresholdRhs
+      } | ${scenario.weightedSurplusPerCycle} | ${
+        scenario.debtAfterCycles
+      } | \`${scenario.theoremRefs.join(', ')}\` |`
     );
   }
 
   lines.push('');
   lines.push(
-    `- Literature boundary encoded exactly: \`${report.aggregate.literatureBoundaryMatchesTwentyPointTwoHours ? 'yes' : 'no'}\``
+    `- Literature boundary encoded exactly: \`${
+      report.aggregate.literatureBoundaryMatchesTwentyPointTwoHours
+        ? 'yes'
+        : 'no'
+    }\``
   );
   lines.push(
-    `- Subcritical schedule stays zero: \`${report.aggregate.subcriticalStaysZero ? 'yes' : 'no'}\``
+    `- Subcritical schedule stays zero: \`${
+      report.aggregate.subcriticalStaysZero ? 'yes' : 'no'
+    }\``
   );
   lines.push(
-    `- Critical schedule stays zero: \`${report.aggregate.criticalStaysZero ? 'yes' : 'no'}\``
+    `- Critical schedule stays zero: \`${
+      report.aggregate.criticalStaysZero ? 'yes' : 'no'
+    }\``
   );
   lines.push(
-    `- Supercritical schedule grows linearly: \`${report.aggregate.supercriticalGrowsLinearly ? 'yes' : 'no'}\``
+    `- Supercritical schedule grows linearly: \`${
+      report.aggregate.supercriticalGrowsLinearly ? 'yes' : 'no'
+    }\``
   );
   lines.push('');
   lines.push(

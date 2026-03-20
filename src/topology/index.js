@@ -11,8 +11,33 @@
  * @see docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md §6.12
  * @packageDocumentation
  */
-export { TopologyAnalyzer, } from './TopologyAnalyzer';
-export { TopologySampler, } from './TopologySampler';
-export { adaptiveParallelismPolicy, beta2FromBandGap, classifyPipelineRegime, frontierFill, firstLawConserved, pipelineOccupancy, protocolDeficits, quantumDeficitIdentity, settlementDeficits, speculativeTreeExpectedAccepted, turbulentIdleFraction, worthingtonWhipSavings, } from './formal-claims';
-export { GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES, getGnosisImpossibleSystemTopology, } from './gnosis-impossible-systems';
-export { DEFAULT_SPECULATION_BUDGET, canonicalizeFeatureFlags, computeProjectionCacheKey, createProjectionArtifactId, matchesRequestGuard, normalizeRequestSignature, requestSignatureKey, stableContentHash, } from './projection';
+export { TopologyAnalyzer } from './TopologyAnalyzer';
+export { TopologySampler } from './TopologySampler';
+export {
+  adaptiveParallelismPolicy,
+  beta2FromBandGap,
+  classifyPipelineRegime,
+  frontierFill,
+  firstLawConserved,
+  pipelineOccupancy,
+  protocolDeficits,
+  quantumDeficitIdentity,
+  settlementDeficits,
+  speculativeTreeExpectedAccepted,
+  turbulentIdleFraction,
+  worthingtonWhipSavings,
+} from './formal-claims';
+export {
+  GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES,
+  getGnosisImpossibleSystemTopology,
+} from './gnosis-impossible-systems';
+export {
+  DEFAULT_SPECULATION_BUDGET,
+  canonicalizeFeatureFlags,
+  computeProjectionCacheKey,
+  createProjectionArtifactId,
+  matchesRequestGuard,
+  normalizeRequestSignature,
+  requestSignatureKey,
+  stableContentHash,
+} from './projection';
