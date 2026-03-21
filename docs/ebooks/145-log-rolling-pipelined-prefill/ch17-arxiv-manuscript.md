@@ -3001,7 +3001,7 @@ Three results from the mechanized companion (`FibonacciDeep2.lean`, 413 theorems
 
 **Pascal's triangle diagonals.** $F(n+1) = \sum_{k=0}^{\lfloor n/2 \rfloor} \binom{n-k}{k}$. The shallow diagonals of Pascal's triangle sum to consecutive Fibonacci numbers (proved for $n = 0$ through $8$). Since $\binom{n}{k}$ counts the number of ways to select $k$ items from $n$ -- the number of possible folds -- this means Fibonacci IS the structure of all possible folds counted along the non-consecutive dimension. The non-consecutive constraint is the Zeckendorf condition, which is the same constraint that governs the complement distribution's support.
 
-**Power decomposition.** $\varphi^n = F(n) \cdot \varphi + F(n-1)$. Every power of the eigenvalue decomposes into Fibonacci coefficients. Exponentiation of $\varphi$ IS the Fibonacci sequence. This means $F(n)$ is the coefficient of $\varphi$ in the $n$-th power of $\varphi$. The Fibonacci number at position $n$ measures how much of the eigenvalue is present at the $n$-th fold.
+**Power decomposition.** $\varphi^n = F(n) \cdot \varphi + F(n-1)$. Every power of the eigenvalue decomposes into Fibonacci coefficients. Exponentiation of $\varphi$ *is* the Fibonacci sequence. This means $F(n)$ is the coefficient of $\varphi$ in the $n$-th power of $\varphi$. The Fibonacci number at position $n$ measures how much of the eigenvalue is present at the $n$-th fold.
 
 #### 15.10.5 The Bule Number
 
@@ -3022,7 +3022,7 @@ The Bule number at each Fibonacci step equals the Fibonacci retracement level ex
 
 Fibonacci retracement levels (23.6%, 38.2%, 61.8%), used in technical analysis of financial markets since the 1930s, are Bule numbers. Traders have been measuring the Bule for decades without naming it: the distance from the current price ratio to its eigenvalue. The framework does not claim markets *are* Fibonacci (see `AntiTheorems.lean` S9: the connection is conjectured, not proved). It claims the Bule is a well-defined metric with machine-checked values at Fibonacci steps (`NewConstants.lean`, 99 theorems, zero sorry).
 
-The Bule is the semiotic deficit formalized as a number. The gap between what a system IS and what it is CONVERGING TOWARD. The gap that drives Interfere. Close the gap to zero and the system dies ($\beta_0 = 1$). Keep the gap open and the system converges ($\beta_0 = 0$). The meaning of life is the Bule approaching zero without reaching it.
+The Bule is the semiotic deficit formalized as a number. The gap between what a system *is* and what it is converging toward. The gap that drives Interfere. Close the gap to zero and the system dies ($\beta_0 = 1$). Keep the gap open and the system converges ($\beta_0 = 0$). The meaning of life is the Bule approaching zero without reaching it.
 
 **Anti-theorems.** Six candidate constants were machine-checked and killed (`NewConstants.lean`): $\varphi \times \pi \neq 5$ (1.66% gap), $e^\varphi \neq 5$ ($\ln 5 \neq \varphi$, 0.53% gap), $\pi/\varphi \neq 2$ (2.9% gap), $5/(\varphi\pi) \neq 59/60$, $\varphi^\varphi$ is not a known constant, and $\varphi + e + \pi$ is not a known constant. The framework produces new *metrics* (the Bule), not new fundamental constants. The proved core (1,219+ theorems) is untouched.
 
@@ -3070,7 +3070,7 @@ A person's personality is the shape of these five numbers. A person's growth is 
 - *Let go* is stuck → breathing, forgiveness work, sleep, grief processing
 - *Learn* is stuck → reflection, journaling, therapy, honest feedback from others
 
-The radar chart of the five Bules IS the personality profile. The distance from center on each spoke IS the distance from $\varphi$. The shape IS the character. The change in shape over time IS growth. The product does not label ("you are an INTJ"). The product measures ("your *let go* is spiking, here is a breathing exercise, your *let go* dropped 3\% this week").
+The radar chart of the five Bules is the personality profile. The distance from center on each spoke is the distance from $\varphi$. The shape is the character. The change in shape over time is growth. The product does not label ("you are an INTJ"). The product measures ("your *let go* is spiking, here is a breathing exercise, your *let go* dropped 3\% this week").
 
 The OCEAN model (Costa \& McCrae, 1992) uses five factors derived from questionnaire factor analysis. Three of five map suggestively to Bule dimensions (Openness $\leftrightarrow$ Try, Conscientiousness $\leftrightarrow$ Commit, Neuroticism $\leftrightarrow$ inverted Let Go). Two do not: Extraversion and Agreeableness each load on three or more primitives and cannot be represented as single Bules. `FiveBule.lean` proves the anti-theorems: $3 > 1$ (a factor loading on three primitives is not a single dimension). The Five-Bule model is not OCEAN renamed. It is a different decomposition with different basis vectors -- one empirical (factor analysis), one mechanistic (the primitives). Partial overlap is expected. Equivalence is not.
 
