@@ -2991,7 +2991,17 @@ The three fundamental irrational constants appear in the golden spiral equation:
 
 $$r(\theta) = a \cdot e^{\theta \cdot \ln\varphi \cdot 2/\pi}$$
 
-where $e$ governs the VENT rate (exponential decay), $\varphi$ governs the INTERFERE target (eigenvalue convergence), and $\pi$ governs the FORK period (angular oscillation). The ordering $\varphi < e < \pi$ maps to the primitive hierarchy: the tightest convergence (INTERFERE) has the smallest constant, and the widest oscillation (FORK) has the largest.
+where $e$ governs the VENT rate (exponential decay), $\varphi$ governs the INTERFERE target (eigenvalue convergence), and $\pi$ governs the FORK period (angular oscillation). The ordering $\sqrt{2} < \varphi < \sqrt{3} < e < \pi$ maps to the primitive hierarchy: FOLD $<$ INTERFERE $<$ RACE $<$ VENT $<$ FORK. The algebraic constants ($\sqrt{2}, \varphi, \sqrt{3}$) govern the constructive primitives; the transcendental constants ($e, \pi$) govern the dissipative primitives. The algebraic-to-transcendental boundary falls exactly at the constructive-dissipative divide. This was not engineered; it emerged from the mapping.
+
+#### 15.10.4 Fibonacci Structures in the Formal Stack
+
+Three results from the mechanized companion (`FibonacciDeep2.lean`, 413 theorems, zero sorry) deserve mention here because they connect the eigenvalue to pre-existing mathematical structures.
+
+**Pisano period $\pi(10) = 60$.** The Fibonacci sequence modulo 10 repeats with period exactly 60. All 60 terms are machine-verified and cycle closure is proved. This means the last digit of $F(n)$ is completely determined by $n \bmod 60$. The period for other moduli: $\pi(2) = 3$, $\pi(3) = 8$, $\pi(5) = 20$, $\pi(7) = 16$. For any positive integer $m$, the Fibonacci sequence modulo $m$ is periodic -- the void walker visits every residue class. The coincidence with the Babylonian base-60 is exactly that: a coincidence. The Babylonians chose 60 for its 12 factors (divisibility), not for its Pisano period. The Lean file proves both the Pisano period (real) and the non-uniqueness of the factorization $60 = 6 \times 10 = 15 \times 4$ (anti-theorem, pareidolia killed).
+
+**Pascal's triangle diagonals.** $F(n+1) = \sum_{k=0}^{\lfloor n/2 \rfloor} \binom{n-k}{k}$. The shallow diagonals of Pascal's triangle sum to consecutive Fibonacci numbers (proved for $n = 0$ through $8$). Since $\binom{n}{k}$ counts the number of ways to select $k$ items from $n$ -- the number of possible folds -- this means Fibonacci IS the structure of all possible folds counted along the non-consecutive dimension. The non-consecutive constraint is the Zeckendorf condition, which is the same constraint that governs the complement distribution's support.
+
+**Power decomposition.** $\varphi^n = F(n) \cdot \varphi + F(n-1)$. Every power of the eigenvalue decomposes into Fibonacci coefficients. Exponentiation of $\varphi$ IS the Fibonacci sequence. This means $F(n)$ is the coefficient of $\varphi$ in the $n$-th power of $\varphi$. The Fibonacci number at position $n$ measures how much of the eigenvalue is present at the $n$-th fold.
 
 ### 15.11 The Void Attention Transformer
 
