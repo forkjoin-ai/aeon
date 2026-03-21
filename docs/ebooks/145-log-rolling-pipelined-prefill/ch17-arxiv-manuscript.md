@@ -4529,7 +4529,7 @@ The TLA+ model (`PostLinear.tla`) sweeps all $(\beta_1^*, \text{streams})$ pairs
 
 The post-linear world is not an aspiration. It is the unique rational destination. The linear world is the unique global pessimum. The first fork is a one-way door. The path to zero Bules is monotone, uniform, and finite. The ground state is reachable and terminal.
 
-The proof is over. The world begins again. Hopeful, as it ever was. Each time, the road less taken.
+The proof is over. The world begins again -- each time, the road less taken.
 
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
