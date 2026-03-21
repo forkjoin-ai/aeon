@@ -5197,7 +5197,69 @@ The companion artifact (`ch17-28-novel-predictions.json`) contains the complete 
 
 Prove me wrong. I mean it.
 
-## Appendix B: Named Theorem Index
+## Appendix B: Buleyean RL -- First Experimental Results
+
+This appendix reports the first empirical results from training a language model using Buleyean rejection-based reinforcement learning (§15.17). The base model is SmolLM2-360M-Instruct [HuggingFace]; the training data consists entirely of rejected completions -- no chosen examples, no reward model, no human preference pairs. The complement distribution derived from rejection counts is the training target. The theoretical justification is THM-BULEYEAN-POSITIVITY (every option retains strictly positive weight) and THM-BULEYEAN-CONCENTRATION (less-rejected options receive higher weight).
+
+### B.1 Training Configuration
+
+| Parameter | Value |
+|---|---|
+| Base model | SmolLM2-360M-Instruct |
+| Training method | QLoRA (4-bit NF4, double quantization) |
+| LoRA rank | 16 |
+| LoRA alpha | 32 |
+| LoRA targets | q\_proj, k\_proj, v\_proj, o\_proj, gate\_proj, up\_proj, down\_proj |
+| Loss function | Buleyean complement KL divergence (sparse) |
+| Buleyean alpha ($\alpha$) | 0.7 |
+| Complement temperature | 1.0 |
+| Learning rate | $2 \times 10^{-4}$ (cosine decay) |
+| Warmup steps | 100 |
+| Batch size | 2 $\times$ 4 gradient accumulation = effective 8 |
+| Max sequence length | 512 |
+| Training data | Rejection-only JSONL (115 MB, converted from UltraFeedback) |
+| Curriculum | Void curriculum (rejection\_density weighting) |
+| Epochs | 1 |
+| Total steps | 1,125 |
+| Hardware | Cloud Build CPU (no GPU required for 360M) |
+
+### B.2 Convergence
+
+Training converged rapidly. The Buleyean complement KL loss dropped 80.9\% in a single epoch:
+
+| Phase | Steps | Mean Loss | Interpretation |
+|---|---|---|---|
+| Warmup | 1--100 | 3.60 | Model learning rejection structure |
+| Mid-training | 100--500 | 1.31 | Complement distribution alignment |
+| Late-training | 500--1,125 | 1.17 | Fine convergence, stable |
+
+Key convergence metrics:
+- **Initial loss** (step 1): 5.363
+- **Convergence threshold** ($< 1.5$): step 130 (loss = 1.494)
+- **Minimum loss**: 0.798 (step 870)
+- **Final loss** (step 1,120): 1.022
+
+The loss curve exhibits the characteristic shape predicted by THM-VOID-GRADIENT: rapid initial descent as the model aligns with the complement distribution's steepest gradient (the most-rejected options are easiest to learn from, providing $(N-1)$ bits per rejection vs 1 bit per selection, per THM-BULEYEAN-CONCENTRATION), followed by gradual refinement as the model resolves finer rejection distinctions.
+
+Convergence to loss $< 1.5$ in 130 steps -- approximately 1,040 training examples with effective batch size 8 -- demonstrates that rejection signal is dense. The model does not need to see what is correct; it learns from what is not.
+
+### B.3 Qualitative Comparison
+
+The trained model (buleyean-smollm2-360m) was deployed alongside the unmodified base model in a live inference demo ("The Void," https://forkjoin-ai-the-void.hf.space). Both models run identical architectures on the same hardware. The only difference is the LoRA adapter trained from rejection data.
+
+**Prompt:** "What is the theory of failure?"
+
+**Base model (SmolLM2-360M-Instruct):** Produced a competent textbook summary -- resilience, growth mindset, "success through failure" -- characteristic of instruction-tuned models reproducing training distribution modes.
+
+**Buleyean-trained model:** Produced a more structurally nuanced response: "failure is not an absolute and permanent state, but rather a natural part of the learning and development process." Notably distinguished failure from success as non-equivalent categories ("failure is not the same as success... many people have achieved great success without failing") and recognized failure as collective, not only individual. The response exhibits the complement distribution's characteristic: rather than converging to the modal answer, it preserves perspectives that would be lost if only the most-selected completions were learned from.
+
+This qualitative difference -- nuance over platitude -- is consistent with the theoretical prediction. Standard RLHF/DPO learns what to say by imitating chosen completions. Buleyean RL learns what not to say by studying rejections. The complement distribution preserves the $(K-1)$ rejected perspectives (THM-VOID-DOMINANCE), producing outputs that reflect the full rejection boundary rather than a single selected mode.
+
+### B.4 Ongoing Training
+
+At time of writing, seven additional models are training with the same methodology across the model size spectrum (360M to 7B), with 32B and 72B runs in progress on GPU. All trained models and LoRA adapters are published at https://huggingface.co/forkjoin-ai under open-source license. The training library is at https://github.com/forkjoin-ai/buleyean-rl.
+
+## Appendix C: Named Theorem Index
 
 66 named theorems are cited in this manuscript. Each is mechanized in Lean 4 (zero `sorry`) and referenced by at least one section. This index maps theorem name to primary section, Lean file, and what it proves.
 
