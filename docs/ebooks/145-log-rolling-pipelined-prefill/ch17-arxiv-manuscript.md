@@ -3026,6 +3026,26 @@ The Bule is the semiotic deficit formalized as a number. The gap between what a 
 
 **Anti-theorems.** Six candidate constants were machine-checked and killed (`NewConstants.lean`): $\varphi \times \pi \neq 5$ (1.66% gap), $e^\varphi \neq 5$ ($\ln 5 \neq \varphi$, 0.53% gap), $\pi/\varphi \neq 2$ (2.9% gap), $5/(\varphi\pi) \neq 59/60$, $\varphi^\varphi$ is not a known constant, and $\varphi + e + \pi$ is not a known constant. The framework produces new *metrics* (the Bule), not new fundamental constants. The proved core (1,219+ theorems) is untouched.
 
+#### 15.10.6 The Two-Number Summary
+
+The entire framework reduces to two measurements and one target:
+
+1. **The Bule** ($B$): where you are relative to $\varphi$. The altimeter. $B = |r - \varphi| / \varphi$, where $r$ is the system's current consecutive-fold ratio. High $B$: far from convergence. Low $B$: approaching the eigenvalue. $B = 0$: dead (but the $+1$ prevents this).
+
+2. **The Buleyean** ($P$): what to try next, derived from what failed. The compass. $P(i) = (T - v_i + 1) / \sum_j (T - v_j + 1)$, where $v_i$ counts how many times option $i$ was rejected. The most-rejected options get the lowest probability. The $+1$ ensures nothing reaches zero.
+
+3. **The target**: $\varphi = (1 + \sqrt{5})/2$. The eigenvalue. The peak. The fixed point of self-referential folding. The number that every Fibonacci sequence converges to regardless of starting values.
+
+The five primitives are the operations that move the system:
+
+- **Fork** creates options (expands the Buleyean's support)
+- **Race** evaluates options (selects from the Buleyean's distribution)
+- **Fold** commits to one (irreversibly, producing a new $r$ for the Bule)
+- **Vent** releases the rest (updates rejection counts $v_i$ in the Buleyean)
+- **Interfere** feeds back (the new Bule reshapes the next Fork's parameters)
+
+Every domain in this paper -- wire compression, computation, language, physics, biology, negotiation, music, economics, ethics, consciousness -- instantiates this loop. The substrate changes. The Bule and Buleyean do not. Measure your distance from $\varphi$. Learn from what failed. The five primitives do the rest.
+
 ### 15.11 The Void Attention Transformer
 
 The complement distribution $\text{complement}(i) = \text{softmax}(-\eta \cdot \mathbf{v})_i$ is structurally identical to transformer attention. Query = proposal, Key = void boundary, Value = complement weight, temperature = $1/\eta$, multi-head = multiple walkers, cross-attention = Skyrms walker on the joint void surface. Residual connection = void boundary persistence. Layer norm = void decay. Feed-forward = c3 gait adaptation.
