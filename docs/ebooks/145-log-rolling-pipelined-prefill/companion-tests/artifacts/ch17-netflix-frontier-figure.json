@@ -1,0 +1,189 @@
+{
+  "label": "ch17-netflix-frontier-figure-v1",
+  "observedFloor": 0.8555,
+  "observedFloorSource": "BellKor Grand Prize paper",
+  "cinematchBaseline": 0.9525,
+  "targetRmse": 0.8572,
+  "algorithmFrontier": {
+    "description": "Progressive ensemble diversity: each milestone adds a new algorithm family to the blend. RMSE from published BellKor papers.",
+    "points": [
+      {
+        "name": "Cinematch (single heuristic CF)",
+        "shortLabel": "Cinematch",
+        "rmse": 0.9525,
+        "evalSet": "test",
+        "familyCount": 1,
+        "year": 2006,
+        "source": "Netflix official"
+      },
+      {
+        "name": "SVD latent factor model",
+        "shortLabel": "+SVD",
+        "rmse": 0.9025,
+        "evalSet": "test",
+        "familyCount": 2,
+        "year": 2006,
+        "source": "Funk blog 2006; Koren KDD 2008"
+      },
+      {
+        "name": "+ implicit feedback (SVD++)",
+        "shortLabel": "+implicit",
+        "rmse": 0.8911,
+        "evalSet": "test",
+        "familyCount": 2,
+        "year": 2008,
+        "source": "Koren, BellKor 2008"
+      },
+      {
+        "name": "+ temporal dynamics (timeSVD++)",
+        "shortLabel": "+temporal",
+        "rmse": 0.8762,
+        "evalSet": "test",
+        "familyCount": 2,
+        "year": 2009,
+        "source": "Koren, Temporal Dynamics 2009"
+      },
+      {
+        "name": "+ k-NN neighborhood blend",
+        "shortLabel": "+k-NN",
+        "rmse": 0.8712,
+        "evalSet": "quiz",
+        "familyCount": 3,
+        "year": 2007,
+        "source": "BellKor 2007 Progress Prize"
+      },
+      {
+        "name": "+ RBM + NNMF (6-family ensemble)",
+        "shortLabel": "+RBM+NNMF",
+        "rmse": 0.8643,
+        "evalSet": "probe",
+        "familyCount": 6,
+        "year": 2008,
+        "source": "BellKor 2008 (107 predictors)"
+      }
+    ]
+  },
+  "teamFrontier": {
+    "description": "Recursive team-of-teams diversity: each milestone merges a distinct team portfolio into the meta-blend.",
+    "points": [
+      {
+        "team": "BellKor (standalone)",
+        "shortLabel": "BellKor",
+        "rmse": 0.8643,
+        "evalSet": "probe",
+        "teamCount": 1,
+        "predictorCount": 107,
+        "year": 2008,
+        "source": "BellKor 2008 paper"
+      },
+      {
+        "team": "BellKor in BigChaos",
+        "shortLabel": "+BigChaos",
+        "rmse": 0.8616,
+        "evalSet": "quiz",
+        "teamCount": 2,
+        "predictorCount": null,
+        "year": 2008,
+        "source": "2008 Progress Prize"
+      },
+      {
+        "team": "BellKor's Pragmatic Chaos",
+        "shortLabel": "+PragTheory",
+        "rmse": 0.856704,
+        "evalSet": "test",
+        "teamCount": 3,
+        "predictorCount": null,
+        "year": 2009,
+        "source": "Grand Prize winner (test set)"
+      },
+      {
+        "team": "BPC + The Ensemble (50/50 blend)",
+        "shortLabel": "+Ensemble",
+        "rmse": 0.8555,
+        "evalSet": "quiz",
+        "teamCount": 4,
+        "predictorCount": null,
+        "year": 2009,
+        "source": "BellKor Grand Prize paper"
+      }
+    ]
+  },
+  "monocultureCeilings": [
+    {
+      "name": "Cinematch (baseline CF)",
+      "shortLabel": "Cinematch",
+      "rmse": 0.9525,
+      "evalSet": "test",
+      "familyCount": 1,
+      "year": 2006,
+      "source": "Netflix official"
+    },
+    {
+      "name": "Basic SVD (FunkSVD)",
+      "shortLabel": "FunkSVD",
+      "rmse": 0.9025,
+      "evalSet": "test",
+      "familyCount": 1,
+      "year": 2006,
+      "source": "Funk blog 2006"
+    },
+    {
+      "name": "RBM (100 hidden units)",
+      "shortLabel": "RBM",
+      "rmse": 0.9087,
+      "evalSet": "test",
+      "familyCount": 1,
+      "year": 2007,
+      "source": "Salakhutdinov et al. ICML 2007"
+    },
+    {
+      "name": "Neighborhood (k-NN + temporal)",
+      "shortLabel": "k-NN",
+      "rmse": 0.8885,
+      "evalSet": "test",
+      "familyCount": 1,
+      "year": 2009,
+      "source": "Koren, Temporal Dynamics 2009"
+    },
+    {
+      "name": "SVD++ (f=200)",
+      "shortLabel": "SVD++",
+      "rmse": 0.8911,
+      "evalSet": "test",
+      "familyCount": 1,
+      "year": 2008,
+      "source": "Koren, BellKor 2008"
+    },
+    {
+      "name": "timeSVD++ (best single model)",
+      "shortLabel": "tSVD++",
+      "rmse": 0.8762,
+      "evalSet": "test",
+      "familyCount": 1,
+      "year": 2009,
+      "source": "Koren, Temporal Dynamics 2009"
+    },
+    {
+      "name": "NNMF (60 factors)",
+      "shortLabel": "NNMF",
+      "rmse": 0.8973,
+      "evalSet": "test",
+      "familyCount": 1,
+      "year": 2008,
+      "source": "BellKor 2008"
+    }
+  ],
+  "frontierProperties": {
+    "monotone": true,
+    "zeroAtMatch": true,
+    "positiveBelow": true,
+    "pigeonholeWitness": true,
+    "recursiveAcrossLayers": true
+  },
+  "residualGap": {
+    "winnerRmse": 0.856704,
+    "blendRmse": 0.8555,
+    "gap": 0.0012039999999999829,
+    "interpretation": "The Grand Prize winner left 0.0012 RMSE on the table. Blending two independent mega-ensembles reduced it further, proving the winner had not reached the frontier. THM-AMERICAN-FRONTIER predicts this gap is non-zero whenever the ensemble's diversity d < beta_1* of the taste space."
+  }
+}
