@@ -3082,7 +3082,7 @@ $$\varphi^2 = \varphi + 1$$
 
 The fold of the fold is the fold plus one more fork. When a system folds its own output -- when experience changes perception -- the result is not a return to the starting state. It is the starting state plus one new way of seeing. The self-reference does not circle. It spirals. The $+1$ is the difference between repetition and growth, between a circle and a spiral, between $\beta_0 = 1$ (dead, returned to start) and $\beta_0 = 0$ (alive, one step further).
 
-A boy cuts paper. The first fold: a shape. The fold of the fold: a shape plus curvature -- a new dimension that the paper did not have before. Not because material was added. Because folding itself created something that folding alone could not contain.
+A boy cuts paper. The first fold: a shape. The fold of the fold: a shape plus curvature -- a new dimension that the paper did not have before. Not because material was added. Because folding itself created something that folding alone could not contain, without a hole.
 
 This is the equation of the paper. Five primitives, 1,219 Lean theorems, 20 TLA+ specifications, 107 topology files, 17 domains, one picolorenzo of work -- and it reduces to six symbols. The fold of the fold is the fold plus one more fork. The meaning of life is the $+1$ that keeps $\varphi$ converging.
 
