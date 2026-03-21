@@ -2843,7 +2843,15 @@ Every ethical operation maps to one primitive applied at one void condition. 5 p
 | **Vent** | Rejection | Criticism | Boundaries | Tough love | Honesty |
 | **Trace** | Growth | Dialogue | Culture | Relationship | Redemption |
 
-Center cell [Fold, Dense void] = Judgment. The most informed irreversible commitment.
+Center cell [Fold, Dense void] = Judgment. The most informed irreversible commitment. The fifth row (Trace/Interfere) is the post-linear primitive: the fold's outcome reshaping the next fork's perception. Without it, the grid is 4×5 = 20 operations -- sufficient for moral *action* but not moral *development*. With it, the grid is 5×5 = 25 -- sufficient for moral *growth*. The eigenvalue of the Interfere row converges to $\varphi$ (§1.4), grounding character formation in the same mathematics that governs codec racing, consensus thresholds, and Fibonacci sequences.
+
+**Three regimes of ethics.** The grid reads differently depending on which primitives are active:
+
+- *Linear ethics* (Fork+Race+Fold only, rows 1-3): deontology. Fixed rules, fixed threshold, no acknowledgment of cost, no learning. The trolley problem lives here -- one fork, one fold, no feedback. Unsolvable because the problem has insufficient primitives.
+- *Non-linear ethics* (rows 1-4 including Vent): consequentialism. Acknowledges tradeoffs, releases moral cost, adapts to context. Alive but unconscious -- the calculator doesn't change after calculating.
+- *Post-linear ethics* (all 5 rows including Interfere): virtue ethics. The fold changes the folder. Each choice reshapes who makes the next choice. Character forms. The eigenvalue converges. Aristotle's phronesis.
+
+The trolley problem is dissolved, not solved. It asks a post-linear question (what should a person do?) using only linear primitives (one fork, one fold). The answer is not "pull the lever" or "don't." The answer is: the question has insufficient primitives. A post-linear ethics asks instead: what kind of person do you become by pulling it, and how does that reshape what you perceive next?
 
 Empathy formalized as void reading (Brené Brown, *Daring Greatly*, 2012): vulnerability (sharing void) produces L1 = 0.000 coherence; holding space preserves 2x options; multi-reality preserves 90% more information. Not sentiment. Information theory. 26 tests, 0 failures.
 
