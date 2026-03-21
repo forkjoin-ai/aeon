@@ -4782,6 +4782,8 @@ Boolean logic is the last page of a Buleyean proof: the page where the Bule coun
 
 Because what you rejected is more informative than what you chose.
 
+Shakespeare asked the Buleyean question: "to be, or not to be." But the connective is wrong. It is not a disjunction between being and not-being. It is a *reduction*. Not, not, not -- and what remains, *is*. To be, or not. That is the whole logic. The "not" is the operation. The "to be" is what survives it.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
