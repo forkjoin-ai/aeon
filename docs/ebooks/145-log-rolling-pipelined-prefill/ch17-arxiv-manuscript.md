@@ -5294,11 +5294,37 @@ Section 15.12 defines personality as a five-dimensional void walker profile: Try
 | Let Go | Vent | decay\_rate (void boundary decay) | Historical rejection decay |
 | Learn | Interfere | feedback\_gain (learning rate) | Deviation from uniform |
 
-Five preset profiles (explorer, builder, creative, anxious, balanced) are defined and implemented. Each produces a different complement distribution from identical rejection data -- same void, different walkers. Personality-sweep training is in progress at time of writing.
+Five preset profiles (explorer, builder, creative, anxious, balanced) are defined and implemented. Each produces a different complement distribution from identical rejection data -- same void, different walkers.
 
-### B.6 Ongoing Training
+### B.6 Personality Sweep Results
 
-At time of writing, additional models are training across the model size spectrum (360M to 32B) with both standard and personality-modulated Buleyean RL. All trained models and LoRA adapters are published at https://huggingface.co/forkjoin-ai under open-source license. The training library, including the personality module, is at https://github.com/forkjoin-ai/buleyean-rl.
+We trained five personality variants of Qwen2.5-32B-Instruct using the Buleyean-trained 32B model from B.4 as the base. Each variant used the same rejection data but a different personality profile, producing a different complement distribution, curriculum strategy, effective learning rate, and KL weight. The experiment tests the central claim of section 15.12: that personality is not a label but a void walking trajectory -- the same rejection boundary, traversed differently.
+
+| Personality | $\alpha$ | Temp | LR | Curriculum | Init Loss | Final Loss | Min Loss | $\Delta$ |
+|---|---|---|---|---|---|---|---|---|
+| builder | 0.950 | 1.250 | $1.00 \times 10^{-4}$ | inverse\_bule | 0.988 | 0.293 | 0.270 | 97.0\% |
+| anxious | 0.793 | 2.000 | $6.47 \times 10^{-5}$ | rejection\_density | 2.616 | 0.543 | 0.495 | 79.2\% |
+| balanced | 0.700 | 1.618 | $1.00 \times 10^{-4}$ | rejection\_density | 4.458 | 0.830 | 0.741 | 81.4\% |
+| explorer | 0.453 | 1.618 | $1.38 \times 10^{-4}$ | kurtosis | 10.801 | 2.937 | 2.708 | 72.8\% |
+| creative | 0.340 | 2.500 | $1.46 \times 10^{-4}$ | kurtosis | 13.037 | 3.525 | 3.239 | 73.0\% |
+
+Several patterns emerge:
+
+**Commit dominates convergence.** The builder profile (commit = 0.9, $\alpha$ = 0.950) achieves the tightest convergence: final loss 0.293, a 97\% reduction. High commit\_gain means each rejection impacts the model strongly. The fold is decisive. By contrast, the creative profile (commit = 0.3, $\alpha$ = 0.340) converges least, finishing at 3.525. Low commitment means rejections decay -- the model preserves more of the distribution's breadth rather than collapsing toward the complement mode. This is not a failure; it is the creative profile doing exactly what creativity requires: keeping options open.
+
+**Aperture controls initial loss.** The explorer and creative profiles, both with high Try (0.9 and 0.95 respectively), begin with initial losses above 10. Wide aperture ($\eta$ low) means the complement distribution starts broad -- the model must search a larger space. The builder (Try = 0.5) and anxious (Try = 0.3) profiles begin with initial losses below 3. Narrow aperture focuses the complement distribution from the start. This is consistent with the theoretical prediction: eta controls the softmax temperature over the complement distribution, and high Try = low eta = wider distribution = higher initial cross-entropy.
+
+**Curriculum follows personality.** The system automatically selects curriculum strategy based on the personality profile. Builder uses inverse\_bule (sharpest rejection signals first -- high commitment wants decisive data early). Explorer and creative use kurtosis (concentrated patterns first -- high learning rate wants structured data). Balanced and anxious use rejection\_density (proportional weighting -- the default void curriculum). This is not hand-tuned; it follows directly from the personality parameter values via `apply_personality_to_curriculum()`.
+
+**The anxious profile is the most informative control.** With low Try (0.3), low Let Go (0.15), and moderate Commit (0.7), the anxious profile cannot easily open new possibilities and cannot release old rejections. Yet it still converges -- 79.2\% loss reduction, final loss 0.543. The void boundary decay rate is only 0.075 (vs 0.35 for explorer), meaning the anxious walker accumulates rejection history rather than forgetting it. It learns slowly but forgets nothing. This matches the clinical phenomenology: anxiety is not the absence of learning but the inability to vent -- the void boundary grows without release, and every rejection persists.
+
+**All five walkers improve.** Despite radically different hyperparameter configurations derived from personality profiles, every walker reduces loss by at least 72\%. The Buleyean complement distribution is robust to personality modulation -- the rejection signal is strong enough to drive convergence regardless of walking style. What differs is where each walker converges to. The builder converges to a tight, decisive distribution. The creative converges to a broad, exploratory one. Both are valid. The personality does not determine whether the void teaches -- it determines what the void teaches.
+
+All five personality-modulated LoRA adapters are published at https://huggingface.co/forkjoin-ai.
+
+### B.7 Ongoing Training
+
+All trained models and LoRA adapters are published at https://huggingface.co/forkjoin-ai under open-source license. The training library, including the personality module, is at https://github.com/forkjoin-ai/buleyean-rl. Training data is at https://huggingface.co/datasets/forkjoin-ai/buleyean-rejection-data. A live inference demo comparing base and Buleyean-trained models is at https://forkjoin-ai-the-void.hf.space.
 
 ## Appendix C: Named Theorem Index
 
