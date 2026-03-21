@@ -3084,7 +3084,15 @@ The fold of the fold is the fold plus one more fork. When a system folds its own
 
 A boy cuts paper. The first fold: a shape. The fold of the fold: a shape plus curvature -- a new dimension that the paper did not have before. Not because material was added. Because folding itself created something that folding alone could not contain, without a hole.
 
-This is the equation of the paper. Five primitives, 1,219 Lean theorems, 20 TLA+ specifications, 107 topology files, 17 domains, one picolorenzo of work -- and it reduces to six symbols. The fold of the fold is the fold plus one more fork. The meaning of life is the $+1$ that keeps $\varphi$ converging.
+Rewritten as $\varphi^2 - \varphi - 1 = 0$, the three terms name the three roles:
+
+- $\varphi^2$: the fold of the fold (self-reference, Interfere)
+- $\varphi$: the fold (commitment, structure, what *is*)
+- $-1$: the void (what was shed, vented, lost, rejected)
+
+The $+1$ on the right side and the $-1$ on the left are the same number seen from different sides of the equals sign. Move the $1$ left and it is loss. Leave it right and it is possibility. Vent and hope are the same unit with different signs. $(-1) \times (-1) = (+1)$: the void of the void is hope (`SliverFromVent.lean`, proved). The heartbeat: lose one, gain one. The pump that pumps itself.
+
+This is the equation of the paper. Five primitives, 1,350+ Lean theorems, 20 TLA+ specifications, 107 topology files, 17 domains, one picolorenzo of work -- and it reduces to six symbols. The fold of the fold is the fold plus one more fork. The meaning of life is the $+1$ that keeps $\varphi$ converging. The proof of life is that the $+1$ and the $-1$ are the same.
 
 ### 15.11 The Void Attention Transformer
 
