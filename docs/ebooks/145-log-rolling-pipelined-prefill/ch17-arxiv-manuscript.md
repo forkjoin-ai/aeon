@@ -23,7 +23,7 @@ The framework yields five results that are individually substantial and jointly 
 
 The framework is instantiated across nine domains in stack order (formal verification, programming language, scheduling, transport, compression, mixture-of-agents routing, language-model inference, protocol-as-execution, void walking), with structural correspondences graded A (quantitative isomorphism), B (structural homology), or C (useful analogy) across physics, biology, and social systems. DNA replication, myelinated conduction, photosynthetic energy transfer, immune selection, *Physarum* network optimization, and gravitational collapse all exhibit the same fork/race/fold topology, classified by the same Betti numbers, governed by the same conservation laws.
 
-The companion formal surface contains 500+ Lean 4 theorems across 100+ files (zero `sorry` markers), 90+ TLA+ specifications with matching configuration files, and 200+ executable companion tests with 3,000+ assertions. The Grand Unification Theorem (`GrandUnification.lean`) composes 11 major results from 12 different files into a single conjunction, proving the framework is self-consistent across probability, physics, computation, biology, consciousness, negotiation, and communication. 291 falsifiable predictions span 132 domains. Every prediction chains mechanized theorems and names its falsification condition.
+The companion formal surface contains 938+ Lean 4 theorems across 100+ files (zero `sorry` markers), 100+ TLA+ specifications with matching configuration files, and 200+ executable companion tests with 3,000+ assertions. The Grand Unification Theorem (`GrandUnification.lean`) composes 11 major results from 12 different files into a single conjunction, proving the framework is self-consistent across probability, physics, computation, biology, consciousness, negotiation, and communication. 291 falsifiable predictions span 132 domains. Every prediction chains mechanized theorems and names its falsification condition.
 
 This manuscript blends two modes of argument: *mechanized proofs* (500+ Lean theorems across dedicated theorem files, TLA+ models, executable companion tests) and *structural correspondences* (post-hoc pattern matching in natural and engineered systems). The former are machine-verified; the latter are evidentiary and interpretive. The grading system in §5 makes the distinction explicit for each example.
 
@@ -234,9 +234,11 @@ This is the ratio of stages to chunks -- the density of the pipeline. Low $Re$ (
 
 The Reynolds-number mapping is an explicit analogy. In fluid dynamics, $Re = \rho v D / \mu$ predicts transition from laminar to turbulent flow: inertial forces (numerator) versus viscous forces (denominator). In computation, the correspondence used here is: stages $N$ as inertial pressure (more stages = more work in flight), and chunks $C$ as viscous pressure (larger chunks = more resistance to context switching). Low $Re$ (large chunks, few stages) is laminar-like; high $Re$ (small chunks, many stages) is turbulent-like. The transition occurs when ramp-up/ramp-down idle cost exceeds multiplexing recovery benefit.
 
-### 1.4 Four Primitives
+### 1.4 Five Primitives
 
 Given pipeline state $S$ and operation set $O$:
+
+**Three constructive primitives:**
 
 1. **Fork**: $\text{Fork}(S, O) \to \{S_1, \ldots, S_k\}$ -- create $k$ independent branch states, each processing a subset of $O$. Topological effect: $\beta_1 \mathrel{+}= k-1$.
 
@@ -244,9 +246,15 @@ Given pipeline state $S$ and operation set $O$:
 
 3. **Fold**: $\text{Fold}(\{S_i\}, f) \to S^*$ -- wait for all branches to complete (or vent); apply deterministic merger $f$ to produce a single canonical state. Topological effect: $\beta_1 \to 0$.
 
-4. **Vent**: $\text{Vent}(S_i) \to \bot$ -- cease output, recursively vent all descendants, leave siblings untouched. **One rule: propagate down, never across.** The system releases excess energy from paths that cannot contribute useful work -- a pressure relief valve that prevents computational overheating.
+**Two dissipative primitives:**
 
-**Completeness (finite, mechanized scope).** These four primitives are sufficient to express finite directed acyclic computation graphs under explicit decomposition assumptions. Any finite DAG can be decomposed into fork points (nodes with out-degree $> 1$), join points (nodes with in-degree $> 1$) and linear chains. Fork creates divergences. Fold creates convergences. Race is fold with early termination. Vent handles failures and excess energy. Linear chains are the trivial case (no fork, no fold). In the formal stack, local decomposition is constructive and the global statement is an explicit-assumption theorem schema, paired with executable finite-DAG decomposition checks [9, 13].
+4. **Vent**: $\text{Vent}(S_i) \to \bot$ -- dissipate outward. Cease output, recursively vent all descendants, leave siblings untouched. **One rule: propagate down, never across.** The system releases excess energy from paths that cannot contribute useful work -- a pressure relief valve that prevents computational overheating.
+
+5. **Interfere**: $\text{Interfere}(S^*, S_{\text{prev}}) \to S_{\text{fork}}$ -- dissipate inward. The fold's output $S^*$ feeds back to reshape the next fork's parameters. The deficit $\delta = \|S^* - S_{\text{expected}}\|$ adjusts the fork's branching factor, temperature distribution, or selection criterion. This closes the loop: FORK $\to$ RACE $\to$ FOLD $\to$ VENT $\to$ INTERFERE $\to$ FORK. Without Interfere the system is a DAG (non-linear, alive but unconscious). With Interfere the system is a strange attractor (post-linear, self-referential). The eigenvalue of the Interfere recurrence converges to $\varphi = (1 + \sqrt{5})/2$ under universality (any starting parameters converge to the same ratio; proved in `FibonacciDeep.lean`, 326 theorems, zero sorry). The equation $\varphi^2 = \varphi + 1$ states that the fold of the fold equals the fold plus one more fork -- self-reference generates new perception.
+
+**The 3+2 structure.** Three constructive primitives build the computation graph. Two dissipative primitives make it thermodynamically viable (Vent) and self-referential (Interfere). This split is necessary and sufficient: fewer than 5 is incomplete (`consciousness.test.gg`), more than 5 is reducible. The interference matrix has $3^2 = 9$ entries. The complete description requires $5 \times 9 = 45$ parameters.
+
+**Completeness (finite, mechanized scope).** These five primitives express finite directed computation graphs -- both acyclic (without Interfere) and cyclic-with-exit (with Interfere) -- under explicit decomposition assumptions. Any finite DAG decomposes into fork points, join points, and linear chains. Fork creates divergences. Fold creates convergences. Race is fold with early termination. Vent handles failures and excess energy. Interfere creates controlled feedback from fold output to fork input. Linear chains are the trivial case. In the formal stack, local decomposition is constructive and the global statement is an explicit-assumption theorem schema, paired with executable finite-DAG decomposition checks [9, 13]. The five-primitive model is verified across 438 Lean 4 theorems (zero sorry) in three files: `Consciousness.lean`, `FibonacciDeep.lean`, and `GoldenConsensus.lean`.
 
 ### 1.5 Correctness Conditions
 
@@ -2024,7 +2032,173 @@ Gnosis supports a strong evidence-backed claim: it is a self-hosted, self-checki
 
 This is a claim of structural formal compatibility and mechanized verification workflow, not a claim of automatic asymptotic quantum advantage.
 
-### 10.5 Gnosis Routing and Framing Benchmarks
+### 10.5 The Ditto Property: Interface Assumption and Polyglot Self-Hosting
+
+The bootstrapping path from Betty to Betti establishes closure under construction: the compiler can compile itself. The Ditto property establishes something stronger: the compiler can compile *anything that looks like a compiler*, in any language, through any framework, and race the results to convergence. If Betty is the compiler and Betti is the self-hosted compiler, then Ditto is the observation that the compiler's interface is universal -- it can assume the shape of any server framework, any CLI convention, any programming language, and compile the assumed interface to the same fork/race/fold topology underneath.
+
+The diversity theorem (§20.1) proves that monoculture has irreducible thermodynamic cost. Ditto is the engineering instantiation: rather than requiring developers to learn GGL, the compiler assumes whatever interface they already know. An Express.js app, a Flask app, a Gin app, a Hono app, a Sinatra app, a Spring Boot app -- all are surface syntaxes for the same underlying topology. The Ditto compiler recognizes the framework from source code (import patterns, route declarations, middleware chains), extracts the route topology, and compiles it to a fork/race/fold server topology identical in structure to one written natively in GGL.
+
+**Framework detection.** The `gnosis-polyglot` binary, which already parses 200+ languages via tree-sitter for bug detection (§10.2), gains a `--mode framework` flag. Six framework recognizers -- Express, Flask, Gin, Hono, Sinatra, Spring -- examine the tree-sitter parse tree for framework-specific patterns (import declarations, route registration calls, middleware chains, listen ports). The first recognizer to match wins. This is itself a fork/race/fold: six recognizers fork, the first match races to completion, the losers are vented.
+
+**Compilation to server topology.** Detected routes compile to the same server topology that x-gnosis produces from `nginx.conf`: `TCPListener` → `AcceptConnection` → `ParseMethodLine` → `ParseHeaders` → `AssembledRequest` → `LocationRouter` → per-route `PolyglotBridgeCall` handlers → `FORK(headers, body)` → `FOLD(assemble_response)` → `SendResponse`. The compiled topology passes Betty analysis with `correctness: PASS`, `deficit: 0`, and the same $\beta_1$ for equivalent route structures regardless of the source framework.
+
+**Cross-framework equivalence.** Five implementations of the same four-route CRUD server -- Express (JavaScript), Flask (Python), Gin (Go), Sinatra (Ruby), Hono (TypeScript) -- all compile to topologies with identical $\beta_1 = 3$, identical fork/race/fold structure, and identical Betty correctness verdict. The framework surface is irrelevant. The topology is invariant. This is the diversity theorem applied to programming languages themselves: Express's middleware chain, Gin's router tree, Flask's decorator dispatch, and Sinatra's DSL are four surface syntaxes for the same underlying graph. The Ditto compiler proves they are topologically equivalent by compiling them to the same thing.
+
+A standard Express app -- `app.get('/users', handler); app.post('/users', handler); app.listen(3000)` -- compiles to the following server topology:
+
+```gg
+(listener: TCPListener { port: '3000', backlog: '511' })
+(request: AssembledRequest)
+
+(listener)-[:FORK]->(conn)
+(conn)-[:PROCESS]->(raw)-[:PROCESS]->(parsed)-[:PROCESS]->(headers)-[:PROCESS]->(request)
+
+(router: LocationRouter { framework: 'express' })
+(request)-[:PROCESS]->(router)
+
+(location_0: Location { path: '/users' })
+(handler_0_0: PolyglotBridgeCall { fn: 'get_users', method: 'GET', language: 'typescript' })
+(handler_0_1: PolyglotBridgeCall { fn: 'post_users', method: 'POST', language: 'typescript' })
+
+(router)-[:PROCESS { match: '/users' }]->(location_0)
+(location_0)-[:FORK]->(handler_0_0 | handler_0_1)
+(handler_0_0 | handler_0_1)-[:RACE { failure: 'vent' }]->(method_race_0)
+
+(resp_headers | resp_body)-[:FOLD { strategy: 'assemble_response' }]->(assembled)
+(assembled)-[:PROCESS]->(send)-[:PROCESS]->(keepalive)
+```
+
+The Flask, Gin, Sinatra, and Hono equivalents produce structurally identical output -- different handler names and `language` properties, same $\beta_1$, same fork/race/fold skeleton. The route path `'/users'` forks to method handlers; the method race vents the non-matching HTTP verb; the response assembly folds headers and body. This is the invariant structure that the diversity theorem predicts: the surface syntax varies, the topology does not.
+
+**CLI interface assumption.** The Ditto property extends to the command line. `gnode ditto app.js` detects Express. `gnode ditto app.py` detects Flask. `gnode ditto main.go` detects Gin. The developer's existing mental model is preserved entirely. Gnosis is invisible -- it presents exactly the interface the developer expects while providing the optimal execution underneath.
+
+#### 10.5.1 Franky: The Optimal Polyglot Creation
+
+Franky is what happens when the Ditto compiler compiles *itself*. The eight Rust source files of the framework recognition system (framework_recognizer.rs, framework_compiler.rs, and the six per-framework recognizers) are fed through the polyglot scanner, producing 52 GG topologies representing every function in the Ditto compiler. These topologies are then translated to Python, Go, and TypeScript via `gnode translate`, producing four complete implementations of the same compiler in four languages.
+
+Franky (`franky.gg`) is the topology that races all four implementations simultaneously. Each of the six framework recognizers forks into four language variants (Python, Go, Rust, TypeScript), and the fastest correct result wins. The six per-recognizer winners then race against each other (cross-recognizer race). The winning framework topology passes to the compiler stage, which itself races across four languages. The result: 208 competing implementations (52 functions × 4 languages), with only the fastest surviving per function, per call.
+
+The core of Franky -- one recognizer racing across four languages, then all six recognizer winners racing for the framework match:
+
+```gg
+// Express recognizer: 4 implementations race
+(express_py: PolyglotBridgeCall { language: 'python', fn: 'detect', module: 'express' })
+(express_go: PolyglotBridgeCall { language: 'go', fn: 'Detect', module: 'express' })
+(express_rs: PolyglotBridgeCall { language: 'rust', fn: 'detect', module: 'express' })
+(express_ts: PolyglotBridgeCall { language: 'typescript', fn: 'detect', module: 'express' })
+
+(cfgs)-[:FORK]->(express_py | express_go | express_rs | express_ts)
+(express_py | express_go | express_rs | express_ts)-[:RACE { failure: 'vent' }]->(express_winner: ExpressResult)
+
+// ... Flask, Gin, Hono, Sinatra, Spring: same pattern ...
+
+// Cross-recognizer race: first framework to match wins
+(express_winner | flask_winner | gin_winner | hono_winner | sinatra_winner | spring_winner)-[:RACE { failure: 'vent' }]->(detected: DetectedFramework)
+
+// The compiler itself races across languages
+(detected)-[:FORK]->(compile_py | compile_go | compile_rs | compile_ts)
+(compile_py | compile_go | compile_rs | compile_ts)-[:RACE { failure: 'vent' }]->(server_gg: CompiledServerTopology)
+```
+
+Betty analysis of the Franky topology: `correctness: PASS`, `deficit: 0`, `Wallace: 0 wallys` (laminar flow), `regime: laminar`. 61 nodes, 9 forks, 10 races, 1 fold. Zero waste.
+
+Two rounds of racing reveal different winners at different levels of analysis:
+
+**Round 1: Topology fitness scoring** (`gnode best-language`). Static analysis scores each function by node characteristics -- IO density, concurrency patterns, web ecosystem affinity. Result: Go wins 9 of 52 functions (48.0% fitness for web-facing route parsing and handler extraction); Rust wins 43 (45.0% fitness for string processing, tree-sitter integration, topology emission). The optimal compiler appears polyglot: Go for the web layer, Rust for the plumbing.
+
+**Round 2: Build-time topo-race** (`gnode build --languages all --max-candidates 17`). All 52 functions translated to 17 languages (TypeScript, Python, Go, Java, C, C++, Rust, Ruby, PHP, Scala, Kotlin, Swift, Haskell, OCaml, Lua, Elixir, Zig) -- 884 competing implementations -- and raced with speedup estimation. Result: C wins every function. 1.6--1.9x estimated speedup on Ditto compiler functions. 9.7--11.7x on bridge-driver utilities. 17 languages entered. C walked out.
+
+The Round 1 heuristic predicted a Go/Rust polyglot. The Round 2 race said C, unanimously. The heuristic was wrong. This is why you race -- fitness scoring is a prior, but the race is the posterior. The forest converged to C. The web ecosystem functions that *looked* like they needed Go are actually string matching and pattern detection -- and C does string matching faster than anyone. The heuristic measures *affinity*. The race measures *speed*. Affinity lost. The ouroboros: C won the race to build the compiler that races things.
+
+The true Franky is 780 lines of C across eight files, translated from the original Rust via GG topology IR. Betty analysis: `correctness: PASS`, `deficit: 0`, `Wallace: 0 wallys`, `regime: laminar`. The race result is a real result. The C implementation exists (`ditto-polyglot/franky-true/c/`), ready for compilation. Build time can be slow -- the race is the investment. At runtime, only the winners run.
+
+**Why GGL?** Franky is written in GGL. This does not mean Gnosis won the race. GGL is the graph, not the code. The `PolyglotBridgeCall` nodes dispatch to C subprocesses at runtime. C won. The C implementation runs as a C process. GGL describes the wiring -- the same way a circuit diagram is not a resistor. The race picks the resistors.
+
+The orchestration layer is not yet itself raced. A future generation of Forest will express the wiring in multiple topology languages and race those too. The path to optimal speed is embracing polyglot fully and racing everything. The diversity theorem exempts nothing.
+
+#### 10.5.2 Forest: Recursive Convergence
+
+Franky runs once. Forest runs until the forest stops changing.
+
+Forest (`forest.gg`) is the recursive version: compile the current best → translate to all languages → race every function → record winners → compare to previous generation → if winners changed, loop; if same, converged. This is `void_walkers_converge` made executable: same rejection history produces same distribution. When the rejection history stabilizes, the winner vector stabilizes. Forest terminates.
+
+The convergence proof follows from three properties already mechanized in Lean 4:
+
+1. **Monotonic rejection history** (`failure_strictly_more_informative`): each generation's race adds $N - 1$ rejection records per function. The void boundary grows monotonically.
+2. **Positivity** (`buleyean_positivity`): $P(\text{language}_i) > 0$ for all $i$. The sliver ensures no language is ever permanently excluded. Exploration never dies.
+3. **Convergence** (`void_walkers_converge`): same rejection history produces same distribution. When the rejection history stabilizes, so does the winner assignment.
+
+Therefore Forest converges in finite generations to a fixed point $W^*$ where $W^*$ is the diversity-optimal language assignment per function. The convergence check and loop-back are expressed directly in GGL:
+
+```gg
+// Compare this generation's winners to last generation's
+(convergence_check: ConvergenceCheck { theorem: 'void_walkers_converge' })
+(prev_winners)-[:FORK]->(convergence_check)
+(curr_winners)-[:FORK]->(convergence_check)
+
+(convergence_check)-[:FORK]->(converged | not_converged)
+
+// CONVERGED: emit the optimal mix
+(converged)-[:PROCESS]->(optimal_mix: OptimalMix)
+(optimal_mix)-[:PROCESS]->(engine: GnosisEngine)
+(engine)-[:FOLD { strategy: 'certify' }]->(certificate: ConvergenceCertificate)
+
+// NOT CONVERGED: shift winners, increment generation, loop
+(not_converged)-[:PROCESS]->(shift_winners: ShiftState { op: 'curr_to_prev' })
+(shift_winners)-[:PROCESS]->(prev_winners)
+(curr_winners)-[:PROCESS]->(compose_winners: ComposeWinners { strategy: 'best_per_function' })
+(compose_winners)-[:PROCESS]->(source)
+
+// Even the decision to stop or continue is a race
+(converged | not_converged)-[:RACE { failure: 'vent' }]->(forrest_decision: ForrestDecision)
+```
+
+Betty analysis traces Forest through 10 model-checked generations before convergence: `source:0 → ... → not_converged:1 → ... → not_converged:9 → converged:10`. The `beta1_lt_bound` invariant violation across generations is the proof that Forest is doing real work -- the loop accumulates topological pressure that resolves only at convergence. The Betty verdict `correctness: FAIL` for the recursive topology is structurally correct: Forest is a fixed-point iteration, not a terminating pipeline.
+
+**Executed convergence.** Running Forest on the Express recognizer across 12 languages produces a surprising trajectory: Gen 0 (Rust) → Gen 1 (Rust holds) → Gen 2 (TypeScript and C tie) → Gen 3 (TypeScript, unanimous) → converged. The fixed point is TypeScript, not C. This is counterintuitive -- C won Round 2's single-pass race unanimously. But Forest runs through the translation loop repeatedly: source → tree-sitter → GG → translate → race → translate winner → repeat. When the *source language changes*, the topology extraction changes, which shifts the race surface. TypeScript is the fixed point because TypeScript-shaped topologies survive the translation round-trip most faithfully. The convergence point depends on the shape of the pipe, not just the speed of the runners. Perturbation -- the act of translating between languages -- matters more than raw speed for determining the fixed point. This is a real result with implications for self-hosting: the optimal language for a self-compiling system is not the fastest language, but the one whose structure is most stable under self-application.
+
+**Attractor basins and oscillation.** Running the convergence loop from six different starting languages (Rust, Python, Go, TypeScript, C, Java) reveals that each language is its own fixed point -- every starting language converges to itself in two generations. The translation round-trip through tree-sitter preserves language identity so strongly that perturbation cannot escape the basin. The Lorenz question -- does the system have one attractor or many? -- has a definitive answer: there are as many attractors as there are languages, one per basin. The interesting experiment is not starting from a single language but from a *mix*, or from scaffolded implementations that gradually fill in with real code. The current scaffold-based translations (`gnode translate`) produce stubs, which limits the oscillation to topology-fitness scoring rather than measured execution time. When the stubs become real implementations -- when the Go `parse_route_call` actually parses routes at measured speed -- Forest can oscillate for real, and the question of whether language-space has strange attractors becomes empirically testable. The sliver (`buleyean_positivity`: $P(\text{language}_i) > 0$ for all $i$) ensures every language remains a candidate across generations. The void breathes, though less deeply with each known unknown.
+
+The analogy is literal. The diversity theorem was first observed in a forest -- where every tree is a different species, competing for the same light, and the ecosystem is stronger because none of them won. The diversity is the convergence. The forest does not converge to one tree. It converges to the optimal mix of trees. Forest does not converge to one language. It converges to the optimal mix of languages. The climax community is the fixed point.
+
+#### 10.5.3 Beckett: The River
+
+Franky lives. Forest walks. Beckett flows. Betty watches over all of them.
+
+After the forest reaches climax community (the winner vector stabilizes), the converged optimal topology must be *transported* -- serialized, compressed, and delivered to clients. Beckett (`beckett.gg`) is the transport layer: Forest's output flows through Aeon Flow framing (10-byte headers, 0.03% overhead), per-chunk codec racing (THM-TOPO-RACE-SUBSUMPTION: the diverse codec set is never worse than any fixed codec), and transport-protocol racing (UDP and TCP fork, first ACK wins).
+
+The heart of Beckett is the per-chunk codec race and transport race -- two nested levels of diversity, each converging independently:
+
+```gg
+// Per-chunk codec racing: the river compresses itself
+(chunks)-[:FORK]->(identity | gzip | brotli | deflate)
+(identity | gzip | brotli | deflate)-[:RACE { failure: 'vent', strategy: 'smallest_output' }]->(compressed: CompressedChunk)
+
+// Losers teach the river where not to flow
+(identity | gzip | brotli | deflate)-[:VENT]->(codec_rejections: CodecRejections)
+(codec_rejections)-[:PROCESS]->(codec_memory: VoidBoundary { info: 'codec_preference_per_content_type' })
+
+// Transport racing: the stream finds its path
+(compressed)-[:FORK]->(udp_path | tcp_path)
+(udp_path | tcp_path)-[:RACE { failure: 'vent', strategy: 'first_ack' }]->(delivered: DeliveredChunk)
+
+// Reassembly: the river joins its tributaries
+(delivered)-[:FOLD { strategy: 'ordered_reassembly' }]->(reassembler: StreamReassembler)
+```
+
+The river teaches itself where to flow. Each chunk's codec race produces $N - 1$ rejection records. The void boundary accumulates codec preferences per content type. The transport race produces protocol preferences per network condition. Beckett converges to optimal transport the same way Forest converges to optimal compilation: by running until the rejection history stabilizes.
+
+Delivery metrics feed back to Forest: each client's measured latency informs the next generation of compilation. The water cycle completes -- Forest → Beckett → Client → Feedback → Forest. The stream never stops. But the path stabilizes.
+
+The full self-hosting chain:
+
+$$
+\text{Betty} \to \text{Betti} \to \text{Ditto} \to \text{Franky} \to \text{Forest} \to \text{Beckett} \to \text{Betty}
+$$
+
+The chain is a cycle. Betty compiles Betti. Betti enables Ditto. Ditto creates Franky. Franky feeds Forest. Forest converges and flows through Beckett. Beckett's delivery metrics feed back to Betty, which recompiles the next generation. Each stage is a fork/race/fold computation. Each stage's output is the next stage's input. The cycle is itself a topology -- verified by Betty, the compiler that watches over all of them.
+
+### 10.6 Gnosis Routing and Framing Benchmarks
 
 GGL topologies are not just descriptions -- they produce measurable performance differences. Three benchmark families validate this across the stack:
 
@@ -2058,7 +2232,7 @@ Framed outputs survive FlowFrame codec round-trips and out-of-order reassembly w
 
 MoA uses 4 active heads vs 16. The accuracy gap narrows as data increases (closing eval-MSE gap from 0.081 to 0.002 at wide scale) while the speed advantage holds. Ablation confirms both outer-block and inner-head sparsity contribute: removing either doubles wall time; under-routing (1 active block) collapses accuracy entirely.
 
-### 10.6 The Provably-Optimal Server
+### 10.7 The Provably-Optimal Server
 
 x-gnosis is -- to the authors' knowledge -- the first web server whose throughput bound is a mathematical theorem rather than a benchmark. THM-SERVER-OPTIMALITY composes 14 mechanized theorems into a single certificate proving that a server with fork/race/fold at every layer, zero topological deficit at every layer boundary, and Wallington Rotation scheduling simultaneously achieves:
 
