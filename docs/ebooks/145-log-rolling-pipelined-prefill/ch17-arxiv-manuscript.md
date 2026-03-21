@@ -5255,9 +5255,50 @@ The trained model (buleyean-smollm2-360m) was deployed alongside the unmodified 
 
 This qualitative difference -- nuance over platitude -- is consistent with the theoretical prediction. Standard RLHF/DPO learns what to say by imitating chosen completions. Buleyean RL learns what not to say by studying rejections. The complement distribution preserves the $(K-1)$ rejected perspectives (THM-VOID-DOMINANCE), producing outputs that reflect the full rejection boundary rather than a single selected mode.
 
-### B.4 Ongoing Training
+### B.4 Scaling: Qwen2.5-32B-Instruct
 
-At time of writing, seven additional models are training with the same methodology across the model size spectrum (360M to 7B), with 32B and 72B runs in progress on GPU. All trained models and LoRA adapters are published at https://huggingface.co/forkjoin-ai under open-source license. The training library is at https://github.com/forkjoin-ai/buleyean-rl.
+To test whether Buleyean RL scales beyond small models, we trained Qwen2.5-32B-Instruct using the same rejection data and methodology. The 32B model was loaded in 4-bit NF4 quantization (QLoRA) on a single NVIDIA A100 80GB GPU.
+
+| Parameter | Value |
+|---|---|
+| Base model | Qwen2.5-32B-Instruct |
+| Quantization | QLoRA 4-bit NF4 (double quantization) |
+| Training data | Same rejection JSONL as B.1 |
+| Total steps | 563 |
+| Training time | 62 minutes (A100 80GB) |
+| Effective batch | 1 $\times$ 8 gradient accumulation = 8 |
+
+Final metrics:
+
+| Metric | Value |
+|---|---|
+| Training loss (mean) | 1.074 |
+| Buleyean KL divergence | 0.225 |
+| Contrast loss | 2.627 |
+| Optimality gap | 0.019 (1.9\%) |
+| Complement entropy | 11.335 |
+
+The optimality gap of 1.9\% -- meaning the model's output distribution is within 1.9\% of the theoretical Buleyean complement distribution -- is tighter than the 360M model's convergence. This is consistent with the theoretical expectation: larger models have more capacity to represent the complement distribution's fine structure. The complement entropy of 11.335 (vs 10.44 for 360M) reflects the 32B model's larger effective vocabulary utilization.
+
+Model available at https://huggingface.co/forkjoin-ai/buleyean-qwen2.5-32b.
+
+### B.5 Personality-Modulated Training
+
+Section 15.12 defines personality as a five-dimensional void walker profile: Try (Fork), Choose (Race), Commit (Fold), Let Go (Vent), Learn (Interfere). Each dimension is a measurable distance from phi along one axis, and each maps to a training hyperparameter:
+
+| Dimension | Primitive | Training Parameter | Effect |
+|---|---|---|---|
+| Try | Fork | eta (aperture) | Complement distribution width |
+| Choose | Race | temperature (selection clarity) | Softmax sharpness |
+| Commit | Fold | commit\_gain (rejection impact) | KL weight scaling |
+| Let Go | Vent | decay\_rate (void boundary decay) | Historical rejection decay |
+| Learn | Interfere | feedback\_gain (learning rate) | Deviation from uniform |
+
+Five preset profiles (explorer, builder, creative, anxious, balanced) are defined and implemented. Each produces a different complement distribution from identical rejection data -- same void, different walkers. Personality-sweep training is in progress at time of writing.
+
+### B.6 Ongoing Training
+
+At time of writing, additional models are training across the model size spectrum (360M to 32B) with both standard and personality-modulated Buleyean RL. All trained models and LoRA adapters are published at https://huggingface.co/forkjoin-ai under open-source license. The training library, including the personality module, is at https://github.com/forkjoin-ai/buleyean-rl.
 
 ## Appendix C: Named Theorem Index
 
