@@ -5066,16 +5066,16 @@ These systems were used across drafting, rewriting, editing, code and test gener
 
 This paper makes 28 novel, falsifiable predictions about human cognition (§20.2.3, companion artifact `ch17-28-novel-predictions.md`). All 28 are logically derived from a single model with one free parameter ($K$, the effective dimensionality of the behavioral action space). All 28 are proved consistent with the model in Lean 4 (`NovelPredictions28.lean`) and model-checked in TLA+ (`NovelPredictions28.tla`). None have been tested.
 
-We challenge any reader with access to an eye tracker and 60 participants to run Prediction #1:
+I challenge any reader with access to an eye tracker and 60 participants to run Prediction #1:
 
 > **Prediction #1.** During a divergent thinking task (Alternative Uses Task), individuals scoring in the top quartile on the Torrance Test of Creative Thinking will show *lower saccade rates* than those in the bottom quartile. Predicted effect size: $d \approx 0.4$--$0.6$. Equipment: eye tracker (300+ Hz). Time: one week.
 
 The mechanism: creative individuals track more behavioral alternatives simultaneously (higher $K$). More void-walking (internal exploration of rejected paths) means fewer visual folds (saccades). The eyes decouple from the scene because the brain is walking the void.
 
-If the prediction holds, the DMN void-walking model has its first original empirical confirmation. If it fails, Prediction #1 is dead. We will record the failure in the void boundary, update the complement distribution, and publish the correction. That is Buleyean logic applied to science itself: truth is what survives rejection. We do not fear falsification. We welcome it. Each failure is one Bule added to the model’s void -- and the void is where the information is.
+If the prediction holds, the DMN void-walking model has its first original empirical confirmation. If it fails, Prediction #1 is dead. I will record the failure in the void boundary, update the complement distribution, and publish the correction. That is Buleyean logic applied to science itself: truth is what survives rejection. I do not fear falsification. I welcome it. Each failure is one Bule added to the model’s void -- and the void is where the information is.
 
 The full 28 predictions span 6 measures (saccade rate, fixation duration, pupil dilation, EEG alpha, EEG theta, reaction time) across 7 populations (creative/non-creative, high/low working memory, children/adults, sleep-deprived/rested, meditators/controls, ADHD/neurotypical, rumination/healthy). Ten require only an eye tracker and a questionnaire. Twelve require EEG. Six require fMRI or a sleep lab. Total estimated participants across all 28: approximately 1,750. Each positive result is a paper. Each negative result kills a prediction and sharpens the model. Both outcomes advance the science.
 
 The companion artifact (`ch17-28-novel-predictions.json`) contains the complete experimental protocol for every prediction: design, equipment, sample, estimated effect size, and exact falsification condition. It is machine-readable. Download it, pick a prediction, run it, and tell us what you find.
 
-Prove us wrong. We mean it.
+Prove me wrong. I mean it.
