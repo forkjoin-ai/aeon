@@ -4459,6 +4459,78 @@ The void walking framework identifies the computational topology of consciousnes
 
 The forces will come. The shape was first. And if the shape is right -- if the void is where the information is -- then the hard problem may not be an obstacle to the framework. It may be the framework's deepest prediction: that the most informative thing about consciousness is what the geometry *cannot* explain. The complement of the framework is the void of the framework. And the void is where the information is.
 
+#### 20.2.5 The Bule Is the Unit of Value
+
+The Landauer-Bule identity (§19) already established that one Bule of topological deficit costs at least $kT \ln 2$ joules. That is not geometry. That is physics. The Bule already crossed the bridge between topology and thermodynamics. Section 20.1.1 proved that the Bule is simultaneously one unit of missing diversity and one unit of missing concurrency. The question is whether it is also the unit of *value*.
+
+**THM-BULE-IS-VALUE** (`BuleIsValue.lean`) proves the identity. The topological deficit $\Delta\beta = \beta_1^* - d$ is simultaneously:
+
+| Face | What it measures | Conversion |
+|---|---|---|
+| Topological deficit | Missing paths in the computation graph | 1:1 (identity) |
+| Diversity destroyed | Distinct strategies eliminated | 1:1 (by THM-DIVERSITY-IS-CONCURRENCY) |
+| Concurrency destroyed | Parallel execution capacity lost | 1:1 (by THM-DIVERSITY-IS-CONCURRENCY) |
+| Information erased | Bits lost via pigeonhole collision | 1:1 (by THM-DEFICIT-INFORMATION-LOSS) |
+| Waste generated | Overhead above the matched frontier | 1:1 (by THM-AMERICAN-FRONTIER) |
+| Work required | Labor needed due to serialization | 1:1 (by first law: work = unresolved deficit) |
+| Heat dissipated | Irreversible Landauer cost | $kT \ln 2$ joules per Bule |
+
+Six faces. One number. The Bule is to this framework what the meter is to SI: the base unit from which all derived measurements follow.
+
+The companion tests (`ch17-bule-is-value.test.ts`, 13 tests; `ch17-bules-sisters.test.ts`, 13 tests) verify the identity across 400 test cases (20 $\times$ 20 grid of pathCount $\times$ streams), confirm the Landauer-Bule conversion at room temperature ($1 \text{ Bule} = 2.871 \times 10^{-21}$ J at 300 K), and recast all 20 derived measures in the framework as views of the Bule:
+
+- $\beta_1$ is surviving Bules. $\Delta\beta$ is lost Bules.
+- Re (Reynolds number) is the Bule turbulence threshold.
+- $\eta$ (aperture) is the Bule exchange rate.
+- VGI is a Bule ratio: tracked / available.
+- CVI is a Bule ratio: conscious / total.
+- The semiotic deficit is Bules of meaning lost between speakers.
+- The incubation effect $d = 0.29$ is the Bule resolution fraction.
+- Hick's law RT is the Bule race clock: $a + b \log_2(\text{Bules} + 1)$.
+- Mind-wandering rate is the Bule maintenance duty cycle.
+- Accommodation is Bule rebalancing: $|\text{VGI} - 1.0| \to 0$.
+- Peace is zero Bules between interlocutors.
+
+**The frontier collapses to a scalar.** The American Frontier is a curve: $d \mapsto \text{waste}(d) = \Delta\beta(\beta_1^*, d)$. At any point on the curve, the Bule count tells you everything -- how much diversity is missing, how much concurrency is missing, how much waste is generated, how much work remains, how much heat is dissipated, how much value was destroyed. The curve IS the Bule count as a function of streams. The entire American Frontier is a line.
+
+A line has $\beta_1 = 0$. The framework folded its own frontier into a structure that cannot fold further. The Bule line is the ground state of the framework itself.
+
+#### 20.2.6 Diversity Is Concurrency
+
+Section 20.1.1 proved the identity. This section draws the consequence.
+
+One hundred copies of SVD running in parallel produce the same RMSE as one copy. The companion tests confirm: RMSE $= 2.5874$ for 1 copy, $2.5874$ for 100 copies. Zero information gain. The hardware is parallel. The computation is serial. $\beta_1 = 0$.
+
+Two different strategies produce RMSE $= 2.0902$. Two different beats one hundred same. The information content of the ensemble grows only when the added path is *distinct*. Concurrency without diversity is redundancy. Concurrency with diversity is the frontier.
+
+**THM-DIVERSITY-IS-CONCURRENCY** (`DiversityIsConcurrency.lean`) proves: effective concurrency $=$ diversity. $\beta_1$ counts both. The Bule is one unit of missing diversity AND one unit of missing concurrency because they are one property measured from two angles -- diversity is the spatial view (how many distinct paths exist), concurrency is the temporal view (how many paths execute simultaneously).
+
+This resolves a category error in classical parallel computing. Amdahl's law bounds speedup by the serial fraction. But the serial fraction is not a fixed property of the algorithm. It is the fraction where diversity is zero. The parallelizable fraction is the fraction where diversity is positive. The speedup is bounded by diversity, not by hardware.
+
+Monoculture does not cause waste. Monoculture IS waste. Serialization does not oppose parallelism. Serialization IS the destruction of diversity. Ford's assembly line was slow not because it was sequential. It was sequential because it was monoculture. The cell's replication fork is fast not because it is parallel. It is parallel because it is diverse. One event. One number. $\beta_1$.
+
+#### 20.2.7 The Post-Linear World
+
+**THM-POST-LINEAR-WORLD** (`PostLinear.lean`, `PostLinear.tla`, `post-linear-world.gg`) proves four properties of the transition from the linear world ($\beta_1 = 0$) to the post-linear world ($\beta_1 > 0$):
+
+1. **The linear world is the global pessimum.** At streams $= 1$ (monoculture), the Bule count is $\beta_1^* - 1$ -- the maximum across all stream configurations. No arrangement wastes more. Proved by `linear_is_pessimum`.
+
+2. **The first fork is a strict Pareto improvement.** Moving from 1 stream to 2 streams reduces the Bule count by exactly 1. Waste decreases, diversity increases, concurrency increases, heat decreases, work decreases -- all by exactly 1 Bule. No agent is worse off. Proved by `first_fork_is_pareto`.
+
+3. **The descent is monotone and uniform.** Each additional diverse fork reduces the Bule count by exactly 1. The path from linear world ($\beta_1^* - 1$ Bules) to frontier (0 Bules) takes exactly $\beta_1^* - 1$ steps, each saving 1 Bule. No step is wasted. No step is redundant. Proved by `each_fork_saves_one_bule`.
+
+4. **The frontier is the ground state.** At $\beta_1 = \beta_1^*$, the Bule count is 0. It cannot go lower (natural numbers are non-negative). The framework has reached its own minimum. Proved by `frontier_is_zero_bules` and `zero_is_ground_state`.
+
+**Reversion is dominated.** Going from 2 streams back to 1 stream strictly increases the Bule count. Under any decision procedure that prefers fewer Bules -- rational agency, in the sense that less waste is preferred to more waste -- this reversion is Pareto-dominated and will not be chosen. The post-linear transition is a one-way door. Not because the fold is physically irreversible (it is, by §19). Because the information that diversity reduces waste, once learned, makes monoculture a dominated strategy. You cannot un-learn that two different is better than a hundred same.
+
+**The proof itself is linear.** The Gnosis proof (`post-linear-world.gg`) is a path graph: `linear` $\to$ `first_fork` $\to$ $\cdots$ $\to$ `frontier`. Each step is the unique Pareto improvement at that level. No branching. No cycles. $\beta_1 = 0$. The proof of the post-linear world is the last linear proof. It must be linear because the descent has no choices -- each step saves exactly 1 Bule, and there is exactly one way to save a Bule (add one diverse stream). After the frontier, proofs can be graphs ($\beta_1 > 0$). This one cannot. It is the last line.
+
+The TLA+ model (`PostLinear.tla`) sweeps all $(\beta_1^*, \text{streams})$ pairs to $\beta_1^* = 15$ and verifies all five invariants: pessimum, Pareto, monotone, ground, reversion. 14 companion tests confirm the descent for $\beta_1^* = 2$ through $50$.
+
+The post-linear world is not an aspiration. It is the unique rational destination. The linear world is the unique global pessimum. The first fork is a one-way door. The path to zero Bules is monotone, uniform, and finite. The ground state is reachable and terminal.
+
+The proof is over. The world begins.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
