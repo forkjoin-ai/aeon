@@ -159,7 +159,7 @@ const MATRICES: Record<string, PayoffMatrix> = {
       scissors: { rock: [-1, 1], paper: [1, -1], scissors: [0, 0] },
     },
   },
-  'chicken': {
+  chicken: {
     // alias for hawk-dove with different framing
     choices: ['swerve', 'straight'],
     payoffs: {
@@ -176,7 +176,7 @@ const MATRICES: Record<string, PayoffMatrix> = {
 type Strategy = (
   history: Array<{ mine: Choice; theirs: Choice }>,
   choices: string[],
-  rng: () => number,
+  rng: () => number
 ) => Choice;
 
 const STRATEGIES: Record<string, Strategy> = {
@@ -191,7 +191,7 @@ const STRATEGIES: Record<string, Strategy> = {
 
   'grim-trigger': (history, choices) => {
     const defected = history.some(
-      (h) => h.theirs === choices[choices.length - 1],
+      (h) => h.theirs === choices[choices.length - 1]
     );
     return defected ? choices[choices.length - 1] : choices[0];
   },
@@ -221,7 +221,8 @@ const STRATEGIES: Record<string, Strategy> = {
 
   // Void walker: uses complement distribution over choices
   'void-walker': (history, choices, rng) => {
-    if (history.length === 0) return choices[Math.floor(rng() * choices.length)];
+    if (history.length === 0)
+      return choices[Math.floor(rng() * choices.length)];
     // Count how many times each of MY choices led to a bad outcome
     const lossCounts = new Array(choices.length).fill(0);
     for (const h of history) {
@@ -254,7 +255,7 @@ function playGame(
   p1Strat: string,
   p2Strat: string,
   rounds: number,
-  rng: () => number,
+  rng: () => number
 ): VoidWalkingGameResult {
   const s1 = STRATEGIES[p1Strat] || STRATEGIES['random'];
   const s2 = STRATEGIES[p2Strat] || STRATEGIES['random'];
@@ -363,7 +364,7 @@ describe('Classic Game Theory as Void Walking', () => {
       for (const s1 of strats) {
         for (const s2 of strats) {
           const rng = makeRng(
-            (s1 + s2).split('').reduce((a, c) => a + c.charCodeAt(0), 0),
+            (s1 + s2).split('').reduce((a, c) => a + c.charCodeAt(0), 0)
           );
           const r = playGame('PD', matrix, s1, s2, 100, rng);
           scores[s1] += r.p1Score;
@@ -371,11 +372,15 @@ describe('Classic Game Theory as Void Walking', () => {
       }
 
       const ranked = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-      console.log("\n  Prisoner's Dilemma Tournament (100 rounds × 9 opponents):");
+      console.log(
+        "\n  Prisoner's Dilemma Tournament (100 rounds × 9 opponents):"
+      );
       console.log('  ' + '─'.repeat(50));
       for (const [strat, score] of ranked) {
         const bar = '█'.repeat(Math.max(1, Math.round(score / 50)));
-        console.log(`  ${strat.padEnd(25)} ${String(score).padStart(6)} ${bar}`);
+        console.log(
+          `  ${strat.padEnd(25)} ${String(score).padStart(6)} ${bar}`
+        );
       }
       console.log('  ' + '─'.repeat(50));
 
@@ -538,7 +543,14 @@ describe('Classic Game Theory as Void Walking', () => {
         },
       };
       const rng = makeRng(42);
-      const r = playGame('PG', publicGoodsMatrix, 'void-walker', 'tit-for-tat', T, rng);
+      const r = playGame(
+        'PG',
+        publicGoodsMatrix,
+        'void-walker',
+        'tit-for-tat',
+        T,
+        rng
+      );
       // Void walker should accumulate some void (free-rider tombstones)
       expect(r.voidVolume).toBeGreaterThanOrEqual(0);
     });
@@ -553,7 +565,14 @@ describe('Classic Game Theory as Void Walking', () => {
         },
       };
       const rng = makeRng(42);
-      const r = playGame('TC', commonsMatrix, 'void-walker', 'void-walker', T, rng);
+      const r = playGame(
+        'TC',
+        commonsMatrix,
+        'void-walker',
+        'void-walker',
+        T,
+        rng
+      );
       // Void volume should be significant (many mutual-exploit rounds)
       expect(r.voidVolume).toBeGreaterThan(0);
     });
@@ -563,7 +582,14 @@ describe('Classic Game Theory as Void Walking', () => {
   describe('Grand Tournament: All Games × All Strategies', () => {
     it('void walker performance across all games', () => {
       const gameNames = Object.keys(MATRICES);
-      const strats = ['void-walker', 'tit-for-tat', 'always-cooperate', 'always-defect', 'random', 'pavlov'];
+      const strats = [
+        'void-walker',
+        'tit-for-tat',
+        'always-cooperate',
+        'always-defect',
+        'random',
+        'pavlov',
+      ];
 
       const results: Array<{
         game: string;
@@ -584,7 +610,7 @@ describe('Classic Game Theory as Void Walking', () => {
             const rng = makeRng(
               (game + strat + opponent)
                 .split('')
-                .reduce((a, c) => a + c.charCodeAt(0), 0),
+                .reduce((a, c) => a + c.charCodeAt(0), 0)
             );
             const r = playGame(game, MATRICES[game], strat, opponent, 100, rng);
             totalScore += r.p1Score;
@@ -604,9 +630,15 @@ describe('Classic Game Theory as Void Walking', () => {
       }
 
       // Print per-game leaderboards
-      console.log('\n  ╔══════════════════════════════════════════════════════════════╗');
-      console.log('  ║        Grand Tournament: Void Walking Across All Games       ║');
-      console.log('  ╚══════════════════════════════════════════════════════════════╝');
+      console.log(
+        '\n  ╔══════════════════════════════════════════════════════════════╗'
+      );
+      console.log(
+        '  ║        Grand Tournament: Void Walking Across All Games       ║'
+      );
+      console.log(
+        '  ╚══════════════════════════════════════════════════════════════╝'
+      );
 
       for (const game of gameNames) {
         const gameResults = results
@@ -620,7 +652,9 @@ describe('Classic Game Theory as Void Walking', () => {
           const score = r.avgScore.toFixed(1).padStart(7);
           const vr = (r.avgVoidRatio * 100).toFixed(0).padStart(3);
           console.log(
-            `  ${marker} ${r.strategy.padEnd(22)} score=${score}  void=${vr}%  κ=${r.avgKurtosis.toFixed(2)}`,
+            `  ${marker} ${r.strategy.padEnd(
+              22
+            )} score=${score}  void=${vr}%  κ=${r.avgKurtosis.toFixed(2)}`
           );
         }
       }
@@ -630,7 +664,9 @@ describe('Classic Game Theory as Void Walking', () => {
         const gameResults = results
           .filter((r) => r.game === game)
           .sort((a, b) => b.avgScore - a.avgScore);
-        const vwRank = gameResults.findIndex((r) => r.strategy === 'void-walker');
+        const vwRank = gameResults.findIndex(
+          (r) => r.strategy === 'void-walker'
+        );
         expect(vwRank).toBeLessThan(strats.length); // exists
       }
     });

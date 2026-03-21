@@ -36,7 +36,11 @@ function normalSample(rng: () => number): number {
   return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
 }
 
-function sampleService(law: ServiceLaw, mean: number, rng: () => number): number {
+function sampleService(
+  law: ServiceLaw,
+  mean: number,
+  rng: () => number
+): number {
   if (law === 'deterministic') return mean;
   if (law === 'exponential') {
     const u = Math.max(rng(), Number.EPSILON);
@@ -58,7 +62,7 @@ function sampleService(law: ServiceLaw, mean: number, rng: () => number): number
 function simulateWhipTrial(
   scenario: WhipScenario,
   shardCount: number,
-  rng: () => number,
+  rng: () => number
 ): number {
   const itemsPerShard = Math.ceil(scenario.items / shardCount);
   const stageSlots = itemsPerShard + scenario.stages - 1;
@@ -76,7 +80,8 @@ function simulateWhipTrial(
   }
 
   const correctionNoise = sampleService('lognormal', 1, rng);
-  const correction = scenario.correctionCostPerShard * shardCount * correctionNoise;
+  const correction =
+    scenario.correctionCostPerShard * shardCount * correctionNoise;
   return maxShardTime + correction;
 }
 
@@ -84,7 +89,7 @@ function estimateWhipMean(
   scenario: WhipScenario,
   shardCount: number,
   seed: number,
-  trials: number,
+  trials: number
 ): number {
   const rng = makeRng(seed ^ (shardCount * 0x9e3779b9));
   let total = 0;
@@ -97,7 +102,7 @@ function estimateWhipMean(
 function whipCurve(
   scenario: WhipScenario,
   seed: number,
-  trials: number,
+  trials: number
 ): readonly CurvePoint[] {
   const points: CurvePoint[] = [];
   for (let shards = 1; shards <= scenario.maxShards; shards++) {
@@ -130,9 +135,9 @@ function strictCrossover(points: readonly CurvePoint[]): number {
 
 function approximateAdaptiveShard(
   scenario: WhipScenario,
-  seed: number,
+  seed: number
 ): number {
-  const rng = makeRng(seed ^ 0xA5A5A5A5);
+  const rng = makeRng(seed ^ 0xa5a5a5a5);
   const pilotSamples = 800;
   let sum = 0;
   let sumSq = 0;
@@ -147,13 +152,20 @@ function approximateAdaptiveShard(
 
   // Heavier tails are penalized to avoid over-sharding in volatile regimes.
   const volatilityPenalty = 1 + cv;
-  const relaxed = Math.sqrt(scenario.items / (scenario.correctionCostPerShard * volatilityPenalty));
+  const relaxed = Math.sqrt(
+    scenario.items / (scenario.correctionCostPerShard * volatilityPenalty)
+  );
   return Math.max(1, Math.min(scenario.maxShards, Math.round(relaxed)));
 }
 
 describe('Cross-shard stochastic and adaptive characterization', () => {
   it('finite optimum and strict crossover persist across service-law families', () => {
-    const laws: readonly ServiceLaw[] = ['deterministic', 'exponential', 'lognormal', 'pareto'];
+    const laws: readonly ServiceLaw[] = [
+      'deterministic',
+      'exponential',
+      'lognormal',
+      'pareto',
+    ];
     for (const serviceLaw of laws) {
       const scenario: WhipScenario = {
         items: 384,
@@ -162,7 +174,7 @@ describe('Cross-shard stochastic and adaptive characterization', () => {
         maxShards: 32,
         serviceLaw,
       };
-      const curve = whipCurve(scenario, 0xACE000 + serviceLaw.length, 220);
+      const curve = whipCurve(scenario, 0xace000 + serviceLaw.length, 220);
       const optimum = argMin(curve);
       const crossover = strictCrossover(curve);
 
@@ -181,16 +193,37 @@ describe('Cross-shard stochastic and adaptive characterization', () => {
 
   it('adaptive shard heuristic tracks phase-wise optimum under changing distributions', () => {
     const phases: readonly WhipScenario[] = [
-      { items: 256, stages: 5, correctionCostPerShard: 1.2, maxShards: 32, serviceLaw: 'deterministic' },
-      { items: 256, stages: 5, correctionCostPerShard: 1.8, maxShards: 32, serviceLaw: 'lognormal' },
-      { items: 256, stages: 5, correctionCostPerShard: 2.4, maxShards: 32, serviceLaw: 'pareto' },
+      {
+        items: 256,
+        stages: 5,
+        correctionCostPerShard: 1.2,
+        maxShards: 32,
+        serviceLaw: 'deterministic',
+      },
+      {
+        items: 256,
+        stages: 5,
+        correctionCostPerShard: 1.8,
+        maxShards: 32,
+        serviceLaw: 'lognormal',
+      },
+      {
+        items: 256,
+        stages: 5,
+        correctionCostPerShard: 2.4,
+        maxShards: 32,
+        serviceLaw: 'pareto',
+      },
     ];
 
     for (let index = 0; index < phases.length; index++) {
       const scenario = phases[index]!;
-      const curve = whipCurve(scenario, 0xBEEF00 + index, 240);
+      const curve = whipCurve(scenario, 0xbeef00 + index, 240);
       const optimum = argMin(curve);
-      const adaptiveShard = approximateAdaptiveShard(scenario, 0x123400 + index);
+      const adaptiveShard = approximateAdaptiveShard(
+        scenario,
+        0x123400 + index
+      );
       const adaptive = curve[adaptiveShard - 1]!;
 
       expect(Math.abs(adaptive.shards - optimum.shards)).toBeLessThanOrEqual(4);
@@ -208,15 +241,24 @@ describe('Cross-shard stochastic and adaptive characterization', () => {
       serviceLaw: 'deterministic',
     };
 
-    const laws: readonly ServiceLaw[] = ['deterministic', 'exponential', 'lognormal', 'pareto'];
-    const rng = makeRng(0xFEEDFACE);
+    const laws: readonly ServiceLaw[] = [
+      'deterministic',
+      'exponential',
+      'lognormal',
+      'pareto',
+    ];
+    const rng = makeRng(0xfeedface);
 
     function mixedMean(shards: number): number {
       let total = 0;
       const trials = 280;
       for (let trial = 0; trial < trials; trial++) {
         const law = laws[Math.floor(rng() * laws.length)]!;
-        total += simulateWhipTrial({ ...scenario, serviceLaw: law }, shards, rng);
+        total += simulateWhipTrial(
+          { ...scenario, serviceLaw: law },
+          shards,
+          rng
+        );
       }
       return total / trials;
     }
@@ -235,4 +277,3 @@ describe('Cross-shard stochastic and adaptive characterization', () => {
     expect(tail.meanTime).toBeGreaterThan(optimum.meanTime);
   });
 });
-

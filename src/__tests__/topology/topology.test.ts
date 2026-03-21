@@ -48,10 +48,7 @@ describe('TopologyAnalyzer', () => {
 
     it('disconnected components increase β₀', () => {
       const graph: ComputationGraph = {
-        nodes: [
-          { id: 'a1' }, { id: 'a2' },
-          { id: 'b1' }, { id: 'b2' },
-        ],
+        nodes: [{ id: 'a1' }, { id: 'a2' }, { id: 'b1' }, { id: 'b2' }],
         edges: [
           { from: 'a1', to: 'a2' },
           { from: 'b1', to: 'b2' },
@@ -227,7 +224,16 @@ describe('TopologySampler', () => {
     const sampler = new TopologySampler({ intrinsicBeta1: 7 });
 
     // Fork 8 codecs
-    sampler.fork('chunk-1', ['raw', 'rle', 'delta', 'lz77', 'brotli', 'gzip', 'huffman', 'dict']);
+    sampler.fork('chunk-1', [
+      'raw',
+      'rle',
+      'delta',
+      'lz77',
+      'brotli',
+      'gzip',
+      'huffman',
+      'dict',
+    ]);
     expect(sampler.currentBeta1()).toBe(7);
     expect(sampler.currentDeficit()).toBe(0);
 

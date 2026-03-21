@@ -10,7 +10,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { TopologicalCompressor, BUILTIN_CODECS } from '@aeon/compression';
+import { TopologicalCompressor, BUILTIN_CODECS } from '@a0n/aeon/compression';
 import { EVIDENCE_DATA } from './evidence-sources.js';
 
 function makeRng(seed: number): () => number {
@@ -74,7 +74,7 @@ interface TraceEvent {
 
 function graphFromTrace(trace: readonly TraceEvent[]): TopoGraph {
   const indexById = new Map<string, number>(
-    trace.map((event, index) => [event.id, index]),
+    trace.map((event, index) => [event.id, index])
   );
   const edges: [number, number][] = [];
 
@@ -82,7 +82,9 @@ function graphFromTrace(trace: readonly TraceEvent[]): TopoGraph {
     for (const dependency of trace[i].dependsOn) {
       const from = indexById.get(dependency);
       if (from === undefined) {
-        throw new Error(`Unknown dependency '${dependency}' in trace event '${trace[i].id}'`);
+        throw new Error(
+          `Unknown dependency '${dependency}' in trace event '${trace[i].id}'`
+        );
       }
       edges.push([from, i]);
     }
@@ -95,9 +97,10 @@ function completionTime(trace: readonly TraceEvent[]): number {
   const finishById = new Map<string, number>();
 
   for (const event of trace) {
-    const dependencyFinish = event.dependsOn.length === 0
-      ? 0
-      : Math.max(...event.dependsOn.map((id) => finishById.get(id) ?? 0));
+    const dependencyFinish =
+      event.dependsOn.length === 0
+        ? 0
+        : Math.max(...event.dependsOn.map((id) => finishById.get(id) ?? 0));
     finishById.set(event.id, dependencyFinish + event.duration);
   }
 
@@ -115,7 +118,10 @@ describe('Protocol Topology (§8.3)', () => {
     const N = 10; // 10 resources to transfer
     const tcpGraph: TopoGraph = {
       nodeCount: N + 2, // source + N resources + sink (but sequential)
-      edges: Array.from({ length: N + 1 }, (_, i) => [i, i + 1] as [number, number]),
+      edges: Array.from(
+        { length: N + 1 },
+        (_, i) => [i, i + 1] as [number, number]
+      ),
     };
 
     const { beta1 } = computeBetti(tcpGraph);
@@ -132,8 +138,14 @@ describe('Protocol Topology (§8.3)', () => {
     const appGraph: TopoGraph = {
       nodeCount: streams + 2, // source + streams + sink
       edges: [
-        ...Array.from({ length: streams }, (_, i) => [0, i + 1] as [number, number]), // fork
-        ...Array.from({ length: streams }, (_, i) => [i + 1, streams + 1] as [number, number]), // join
+        ...Array.from(
+          { length: streams },
+          (_, i) => [0, i + 1] as [number, number]
+        ), // fork
+        ...Array.from(
+          { length: streams },
+          (_, i) => [i + 1, streams + 1] as [number, number]
+        ), // join
       ],
     };
     const appBetti = computeBetti(appGraph);
@@ -142,7 +154,10 @@ describe('Protocol Topology (§8.3)', () => {
     // Transport layer forces sequential
     const transportGraph: TopoGraph = {
       nodeCount: streams + 2,
-      edges: Array.from({ length: streams + 1 }, (_, i) => [i, i + 1] as [number, number]),
+      edges: Array.from(
+        { length: streams + 1 },
+        (_, i) => [i, i + 1] as [number, number]
+      ),
     };
     const transportBetti = computeBetti(transportGraph);
     expect(transportBetti.beta1).toBe(0); // sequential
@@ -163,8 +178,14 @@ describe('Protocol Topology (§8.3)', () => {
     const quicGraph: TopoGraph = {
       nodeCount: streams + 2,
       edges: [
-        ...Array.from({ length: streams }, (_, i) => [0, i + 1] as [number, number]),
-        ...Array.from({ length: streams }, (_, i) => [i + 1, streams + 1] as [number, number]),
+        ...Array.from(
+          { length: streams },
+          (_, i) => [0, i + 1] as [number, number]
+        ),
+        ...Array.from(
+          { length: streams },
+          (_, i) => [i + 1, streams + 1] as [number, number]
+        ),
       ],
     };
     const quicBetti = computeBetti(quicGraph);
@@ -182,8 +203,14 @@ describe('Protocol Topology (§8.3)', () => {
     const flowGraph: TopoGraph = {
       nodeCount: streams + 2,
       edges: [
-        ...Array.from({ length: streams }, (_, i) => [0, i + 1] as [number, number]),
-        ...Array.from({ length: streams }, (_, i) => [i + 1, streams + 1] as [number, number]),
+        ...Array.from(
+          { length: streams },
+          (_, i) => [0, i + 1] as [number, number]
+        ),
+        ...Array.from(
+          { length: streams },
+          (_, i) => [i + 1, streams + 1] as [number, number]
+        ),
       ],
     };
     const flowBetti = computeBetti(flowGraph);
@@ -201,7 +228,10 @@ describe('Protocol Topology (§8.3)', () => {
     // TCP: sequential
     const tcpGraph: TopoGraph = {
       nodeCount: N + 2,
-      edges: Array.from({ length: N + 1 }, (_, i) => [i, i + 1] as [number, number]),
+      edges: Array.from(
+        { length: N + 1 },
+        (_, i) => [i, i + 1] as [number, number]
+      ),
     };
 
     // HTTP/2 over TCP: application parallel, transport sequential
@@ -213,7 +243,10 @@ describe('Protocol Topology (§8.3)', () => {
       nodeCount: N + 2,
       edges: [
         ...Array.from({ length: N }, (_, i) => [0, i + 1] as [number, number]),
-        ...Array.from({ length: N }, (_, i) => [i + 1, N + 1] as [number, number]),
+        ...Array.from(
+          { length: N },
+          (_, i) => [i + 1, N + 1] as [number, number]
+        ),
       ],
     };
 
@@ -228,16 +261,16 @@ describe('Protocol Topology (§8.3)', () => {
     const deficitQUIC = deficit(quicGraph, intrinsic);
     const deficitFlow = deficit(flowGraph, intrinsic);
 
-    expect(deficitTCP).toBe(intrinsic);      // 94 Bules
-    expect(deficitHTTP2).toBe(intrinsic);     // 94 Bules (transport bottleneck)
-    expect(deficitQUIC).toBe(0);              // 0 Bules
-    expect(deficitFlow).toBe(0);              // 0 Bules
+    expect(deficitTCP).toBe(intrinsic); // 94 Bules
+    expect(deficitHTTP2).toBe(intrinsic); // 94 Bules (transport bottleneck)
+    expect(deficitQUIC).toBe(0); // 0 Bules
+    expect(deficitFlow).toBe(0); // 0 Bules
 
     // Framing overhead correlates with deficit
     // TCP: ~660 bytes/resource, QUIC: ~20 bytes, Aeon Flow: ~10 bytes
-    const overheadTCP = 660 * N;    // 62,700 bytes
-    const overheadQUIC = 20 * N;    // 1,900 bytes
-    const overheadFlow = 10 * N;    // 950 bytes
+    const overheadTCP = 660 * N; // 62,700 bytes
+    const overheadQUIC = 20 * N; // 1,900 bytes
+    const overheadFlow = 10 * N; // 950 bytes
 
     // Higher deficit → more overhead
     expect(overheadTCP).toBeGreaterThan(overheadQUIC);
@@ -252,7 +285,9 @@ describe('Protocol Topology (§8.3)', () => {
     const retransmitDuration = 6; // one lost stream takes much longer
 
     // TCP trace: ordered transport means stream i depends on stream i-1.
-    const tcpTrace: TraceEvent[] = [{ id: 'start', dependsOn: [], duration: 0 }];
+    const tcpTrace: TraceEvent[] = [
+      { id: 'start', dependsOn: [], duration: 0 },
+    ];
     for (let i = 1; i <= streams; i++) {
       tcpTrace.push({
         id: `tcp-${i}`,
@@ -267,7 +302,9 @@ describe('Protocol Topology (§8.3)', () => {
     });
 
     // QUIC trace: stream loss is isolated to that stream.
-    const quicTrace: TraceEvent[] = [{ id: 'start', dependsOn: [], duration: 0 }];
+    const quicTrace: TraceEvent[] = [
+      { id: 'start', dependsOn: [], duration: 0 },
+    ];
     for (let i = 1; i <= streams; i++) {
       quicTrace.push({
         id: `quic-${i}`,
@@ -282,7 +319,9 @@ describe('Protocol Topology (§8.3)', () => {
     });
 
     // Aeon Flow trace: same loss isolation topology as QUIC for independent streams.
-    const aeonTrace: TraceEvent[] = [{ id: 'start', dependsOn: [], duration: 0 }];
+    const aeonTrace: TraceEvent[] = [
+      { id: 'start', dependsOn: [], duration: 0 },
+    ];
     for (let i = 1; i <= streams; i++) {
       aeonTrace.push({
         id: `aeon-${i}`,
@@ -313,7 +352,9 @@ describe('Protocol Topology (§8.3)', () => {
     const aeonCompletion = completionTime(aeonTrace);
 
     // Head-of-line blocking cascades loss across later streams in TCP.
-    expect(tcpCompletion).toBeGreaterThan(quicCompletion + streams - lossStream);
+    expect(tcpCompletion).toBeGreaterThan(
+      quicCompletion + streams - lossStream
+    );
     // QUIC and Aeon isolate loss to the affected stream.
     expect(quicCompletion).toBe(aeonCompletion);
   });
@@ -333,7 +374,11 @@ describe('Financial Settlement Δβ (§6.12)', () => {
 
     const sequentialGraph: TopoGraph = {
       nodeCount: 4, // trade, clear, settle, done
-      edges: [[0, 1], [1, 2], [2, 3]], // sequential
+      edges: [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+      ], // sequential
     };
 
     const { beta1 } = computeBetti(sequentialGraph);
@@ -349,8 +394,12 @@ describe('Financial Settlement Δβ (§6.12)', () => {
     const parallelGraph: TopoGraph = {
       nodeCount: 5, // trade, clearing, netting, dvp, settled
       edges: [
-        [0, 1], [0, 2], [0, 3], // fork: trade → {clearing, netting, DVP}
-        [1, 4], [2, 4], [3, 4], // join: all → settled
+        [0, 1],
+        [0, 2],
+        [0, 3], // fork: trade → {clearing, netting, DVP}
+        [1, 4],
+        [2, 4],
+        [3, 4], // join: all → settled
       ],
     };
 
@@ -368,21 +417,25 @@ describe('Financial Settlement Δβ (§6.12)', () => {
 
     function simulateLockedCapital(
       trades: readonly Trade[],
-      settlementLagDays: number,
+      settlementLagDays: number
     ): number {
       return trades.reduce(
-        (accumulator, trade) => accumulator + trade.notional * settlementLagDays,
-        0,
+        (accumulator, trade) =>
+          accumulator + trade.notional * settlementLagDays,
+        0
       );
     }
 
     function buildTrades(dailyVolume: number, tradeCount: number): Trade[] {
       const tradeNotional = dailyVolume / tradeCount;
-      return Array.from({ length: tradeCount }, () => ({ notional: tradeNotional }));
+      return Array.from({ length: tradeCount }, () => ({
+        notional: tradeNotional,
+      }));
     }
 
     const coreDailyVolume = EVIDENCE_DATA.settlementDailyVolumeUsd.value;
-    const broadScopeDailyVolume = EVIDENCE_DATA.settlementDailyVolumeBroadScopeUsd.value;
+    const broadScopeDailyVolume =
+      EVIDENCE_DATA.settlementDailyVolumeBroadScopeUsd.value;
     const tradeCount = 10_000;
     const coreTrades = buildTrades(coreDailyVolume, tradeCount);
     const broadScopeTrades = buildTrades(broadScopeDailyVolume, tradeCount);
@@ -416,7 +469,12 @@ describe('Healthcare Referral Δβ (§6.12)', () => {
     // GP → specialist → imaging → diagnosis (sequential)
     const sequentialGraph: TopoGraph = {
       nodeCount: 5,
-      edges: [[0, 1], [1, 2], [2, 3], [3, 4]],
+      edges: [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+      ],
     };
 
     const { beta1 } = computeBetti(sequentialGraph);
@@ -433,8 +491,14 @@ describe('Healthcare Referral Δβ (§6.12)', () => {
     const parallelGraph: TopoGraph = {
       nodeCount: 6, // referral, blood, mri, genetic, specialist, diagnosis
       edges: [
-        [0, 1], [0, 2], [0, 3], [0, 4], // fork
-        [1, 5], [2, 5], [3, 5], [4, 5], // join at diagnosis
+        [0, 1],
+        [0, 2],
+        [0, 3],
+        [0, 4], // fork
+        [1, 5],
+        [2, 5],
+        [3, 5],
+        [4, 5], // join at diagnosis
       ],
     };
 
@@ -558,7 +622,11 @@ describe('Vent Ratio Entropy Bound (§6.5, §6.7)', () => {
     return data;
   }
 
-  function makeBernoulli(size: number, pZero: number, seed: number): Uint8Array {
+  function makeBernoulli(
+    size: number,
+    pZero: number,
+    seed: number
+  ): Uint8Array {
     const rng = makeRng(seed);
     const data = new Uint8Array(size);
     for (let i = 0; i < size; i++) data[i] = rng() < pZero ? 0 : 1;
@@ -593,10 +661,13 @@ describe('Vent Ratio Entropy Bound (§6.5, §6.7)', () => {
     const result = compressor.compress(data);
 
     const nonRawPathCount = Math.max(1, compressor.getCodecs().length - 1);
-    const totalPossibleVents = Math.max(1, result.chunks.length * nonRawPathCount);
+    const totalPossibleVents = Math.max(
+      1,
+      result.chunks.length * nonRawPathCount
+    );
     const totalVented = result.chunks.reduce(
       (sum, chunk) => sum + chunk.vented,
-      0,
+      0
     );
 
     const entropy = shannonEntropy(data);
@@ -612,9 +683,9 @@ describe('Vent Ratio Entropy Bound (§6.5, §6.7)', () => {
   it('higher entropy corpora yield higher vent ratios in real codec races', () => {
     const lowEntropy = new Uint8Array(4096).fill(0);
     const mediumEntropy = new TextEncoder().encode(
-      'the quick brown fox jumps over the lazy dog '.repeat(91),
+      'the quick brown fox jumps over the lazy dog '.repeat(91)
     );
-    const highEntropy = makeRandom(4096, 0xFACE);
+    const highEntropy = makeRandom(4096, 0xface);
 
     const metrics = [
       measureVentMetric(lowEntropy),
@@ -625,40 +696,48 @@ describe('Vent Ratio Entropy Bound (§6.5, §6.7)', () => {
     expect(metrics[0].entropy).toBeLessThan(metrics[1].entropy);
     expect(metrics[1].entropy).toBeLessThan(metrics[2].entropy);
 
-    expect(metrics[0].ventRatio).toBeLessThanOrEqual(metrics[1].ventRatio + 0.03);
-    expect(metrics[1].ventRatio).toBeLessThanOrEqual(metrics[2].ventRatio + 0.03);
-    expect(metrics[2].ventRatio).toBeGreaterThan(metrics[0].ventRatio + 0.20);
+    expect(metrics[0].ventRatio).toBeLessThanOrEqual(
+      metrics[1].ventRatio + 0.03
+    );
+    expect(metrics[1].ventRatio).toBeLessThanOrEqual(
+      metrics[2].ventRatio + 0.03
+    );
+    expect(metrics[2].ventRatio).toBeGreaterThan(metrics[0].ventRatio + 0.2);
   });
 
   it('entropy and vent ratio are strongly rank-correlated', () => {
-    const probabilities = [0.995, 0.99, 0.97, 0.94, 0.90, 0.80, 0.65, 0.50];
+    const probabilities = [0.995, 0.99, 0.97, 0.94, 0.9, 0.8, 0.65, 0.5];
     const metrics = probabilities.map((probability, index) =>
-      measureVentMetric(makeBernoulli(4096, probability, 0xAB00 + index)),
+      measureVentMetric(makeBernoulli(4096, probability, 0xab00 + index))
     );
 
     const rho = spearmanRho(
       metrics.map((metric) => metric.entropy),
-      metrics.map((metric) => metric.ventRatio),
+      metrics.map((metric) => metric.ventRatio)
     );
 
     expect(rho).toBeGreaterThan(0.75);
   });
 
   it('Shannon lower bound holds under topological compression output', () => {
-    const data = makeBernoulli(12_000, 0.90, 0xBEEF);
+    const data = makeBernoulli(12_000, 0.9, 0xbeef);
     const metric = measureVentMetric(data);
 
-    expect(metric.entropy).toBeGreaterThan(0.40);
-    expect(metric.entropy).toBeLessThan(0.60);
-    expect(metric.compressedBits).toBeGreaterThanOrEqual(metric.shannonLowerBoundBits);
+    expect(metric.entropy).toBeGreaterThan(0.4);
+    expect(metric.entropy).toBeLessThan(0.6);
+    expect(metric.compressedBits).toBeGreaterThanOrEqual(
+      metric.shannonLowerBoundBits
+    );
   });
 
   it('waste heat trend: higher entropy vents more and compresses less', () => {
     const low = measureVentMetric(new Uint8Array(4096).fill(0));
     const medium = measureVentMetric(
-      new TextEncoder().encode('data plane control plane inference '.repeat(120)),
+      new TextEncoder().encode(
+        'data plane control plane inference '.repeat(120)
+      )
     );
-    const high = measureVentMetric(makeRandom(4096, 0xDEAD));
+    const high = measureVentMetric(makeRandom(4096, 0xdead));
 
     expect(low.ventRatio).toBeLessThanOrEqual(medium.ventRatio + 0.05);
     expect(medium.ventRatio).toBeLessThanOrEqual(high.ventRatio + 0.05);

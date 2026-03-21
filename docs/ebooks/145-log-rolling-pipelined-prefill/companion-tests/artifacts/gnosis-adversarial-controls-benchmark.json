@@ -749,11 +749,7 @@
         "linear",
         "early-stop"
       ],
-      "rankingByLearningCurveArea": [
-        "winner-take-all",
-        "linear",
-        "early-stop"
-      ],
+      "rankingByLearningCurveArea": ["winner-take-all", "linear", "early-stop"],
       "favoredStrategyWinsFinal": true,
       "favoredStrategyWinsSampleEfficiency": true,
       "predictionRecovered": true
@@ -1146,11 +1142,7 @@
         "linear",
         "winner-take-all"
       ],
-      "rankingByLearningCurveArea": [
-        "early-stop",
-        "linear",
-        "winner-take-all"
-      ],
+      "rankingByLearningCurveArea": ["early-stop", "linear", "winner-take-all"],
       "favoredStrategyWinsFinal": true,
       "favoredStrategyWinsSampleEfficiency": true,
       "predictionRecovered": true
@@ -1567,11 +1559,7 @@
         "linear",
         "winner-take-all"
       ],
-      "rankingByLearningCurveArea": [
-        "early-stop",
-        "linear",
-        "winner-take-all"
-      ],
+      "rankingByLearningCurveArea": ["early-stop", "linear", "winner-take-all"],
       "favoredStrategyWinsFinal": true,
       "favoredStrategyWinsSampleEfficiency": true,
       "predictionRecovered": true

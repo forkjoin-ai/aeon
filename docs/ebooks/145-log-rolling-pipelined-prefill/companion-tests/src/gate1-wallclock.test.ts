@@ -19,8 +19,8 @@ describe('Gate 1 Wall-Clock Matrix', () => {
     const ci = bootstrapCi(
       values,
       (sample) => quantile(sample, 0.5),
-      0xBEEF,
-      1000,
+      0xbeef,
+      1000
     );
 
     expect(ci.low).toBeLessThanOrEqual(3);
@@ -33,7 +33,7 @@ describe('Gate 1 Wall-Clock Matrix', () => {
       trialsPerCell: 4,
       bootstrapResamples: 800,
       maxAttemptsPerRequest: 4,
-      seed: 0xFACE,
+      seed: 0xface,
       workloads: [
         {
           name: 'smoke-n3',
@@ -73,10 +73,9 @@ describe('Gate 1 Wall-Clock Matrix', () => {
     expect(config.workloads).toHaveLength(1);
     expect(config.workloads[0]?.name).toBe('factor-semiprime-n4-b6');
     expect(config.workloads[0]?.cpuTask?.kind).toBe('semiprime-factor');
-    expect(config.networkConditions.map((condition) => condition.name)).toEqual([
-      'rtt3-loss0',
-      'rtt7-loss0',
-    ]);
+    expect(config.networkConditions.map((condition) => condition.name)).toEqual(
+      ['rtt3-loss0', 'rtt7-loss0']
+    );
   });
 
   it('exports an md5-only hard-workload config for isolated reruns', () => {
@@ -85,9 +84,8 @@ describe('Gate 1 Wall-Clock Matrix', () => {
     expect(config.workloads).toHaveLength(1);
     expect(config.workloads[0]?.name).toBe('md5-grind-n4-b8');
     expect(config.workloads[0]?.cpuTask?.kind).toBe('md5-grind');
-    expect(config.networkConditions.map((condition) => condition.name)).toEqual([
-      'rtt3-loss0',
-      'rtt7-loss0',
-    ]);
+    expect(config.networkConditions.map((condition) => condition.name)).toEqual(
+      ['rtt3-loss0', 'rtt7-loss0']
+    );
   });
 });

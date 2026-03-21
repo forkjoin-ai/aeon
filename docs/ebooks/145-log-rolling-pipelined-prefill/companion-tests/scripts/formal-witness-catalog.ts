@@ -16,8 +16,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/formal-witness-catalog.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/formal-witness-catalog.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/formal-witness-catalog.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/formal-witness-catalog.md'
+  );
 
   let assertCatalog = false;
   let jsonPath = defaultJsonPath;
@@ -69,10 +75,14 @@ function main(): void {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const leanDir = resolve(moduleDir, '../formal/lean');
 
-  const buildResult = spawnSync('lake', ['build', 'ForkRaceFoldTheorems.Witnesses'], {
-    cwd: leanDir,
-    encoding: 'utf8',
-  });
+  const buildResult = spawnSync(
+    'lake',
+    ['build', 'ForkRaceFoldTheorems.Witnesses'],
+    {
+      cwd: leanDir,
+      encoding: 'utf8',
+    }
+  );
 
   if (buildResult.status !== 0) {
     process.stderr.write(buildResult.stderr);
@@ -85,7 +95,7 @@ function main(): void {
     {
       cwd: leanDir,
       encoding: 'utf8',
-    },
+    }
   );
 
   if (result.status !== 0) {
@@ -97,28 +107,34 @@ function main(): void {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderFormalWitnessCatalogMarkdown(report),
-    'utf8',
+    'utf8'
   );
 
   process.stdout.write(
-    `formal-witness-catalog: ${report.witnesses.length > 0 ? 'READY' : 'EMPTY'}\n`,
+    `formal-witness-catalog: ${
+      report.witnesses.length > 0 ? 'READY' : 'EMPTY'
+    }\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
-  process.stdout.write(
-    `witnesses: ${report.witnesses.length}\n`,
-  );
+  process.stdout.write(`witnesses: ${report.witnesses.length}\n`);
 
   if (
     options.assertCatalog &&
     !(
       report.label === 'formal-fold-boundary-witness-catalog-v1' &&
       report.witnesses.length >= 7 &&
-      report.witnesses.some((witness) => witness.id === 'winner-partition-counterexample')
+      report.witnesses.some(
+        (witness) => witness.id === 'winner-partition-counterexample'
+      )
     )
   ) {
     process.exitCode = 1;

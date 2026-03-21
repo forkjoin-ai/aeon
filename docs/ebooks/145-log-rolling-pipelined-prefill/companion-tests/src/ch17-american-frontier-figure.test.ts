@@ -21,7 +21,7 @@ describe('ch17-american-frontier-figure', () => {
 
   it('protocol waste is strictly decreasing across the framing frontier', () => {
     const overheads = buildAmericanFrontierReport().protocol.points.map(
-      (point) => point.overheadPct,
+      (point) => point.overheadPct
     );
 
     for (let index = 1; index < overheads.length; index++) {
@@ -36,7 +36,7 @@ describe('ch17-american-frontier-figure', () => {
 
     for (let index = 1; index < points.length; index++) {
       expect(points[index].idleFraction).toBeGreaterThan(
-        points[index - 1].idleFraction,
+        points[index - 1].idleFraction
       );
     }
   });
@@ -58,8 +58,7 @@ describe('ch17-american-frontier-figure', () => {
     let previousShare = -1;
     let previousWaste = Number.POSITIVE_INFINITY;
     for (const point of points) {
-      const share =
-        (point.aeonWins / (point.aeonWins + point.httpWins)) * 100;
+      const share = (point.aeonWins / (point.aeonWins + point.httpWins)) * 100;
       expect(share).toBeGreaterThan(previousShare);
       expect(point.wasteBytesPerWin).toBeLessThanOrEqual(previousWaste);
       previousShare = share;
@@ -71,14 +70,16 @@ describe('ch17-american-frontier-figure', () => {
     const heavy = buildAmericanFrontierReport().transport.heavyWitness;
 
     expect(heavy.zeroSkewWasteBytesPerWin).toBeGreaterThan(
-      heavy.tcpDelay2msWasteBytesPerWin,
+      heavy.tcpDelay2msWasteBytesPerWin
     );
     expect(heavy.tcpDelay2msAeonWinSharePct).toBeGreaterThan(99);
     expect(heavy.throughputRetentionPct).toBeGreaterThan(80);
   });
 
   it('renders markdown output with the recursive claim', () => {
-    const markdown = renderAmericanFrontierMarkdown(buildAmericanFrontierReport());
+    const markdown = renderAmericanFrontierMarkdown(
+      buildAmericanFrontierReport()
+    );
 
     expect(markdown).toContain('American Frontier');
     expect(markdown).toContain('Framing Waste by Protocol');

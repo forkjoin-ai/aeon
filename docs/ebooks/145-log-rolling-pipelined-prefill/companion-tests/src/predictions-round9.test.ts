@@ -20,13 +20,16 @@ describe('Prediction 142: Quantum Speedup = Deficit + 1', () => {
 
 describe('Prediction 143: Quorum Intersection', () => {
   it('strict majority failure budget < quorum size', () => {
-    const replicas = 5, failures = 2;
+    const replicas = 5,
+      failures = 2;
     expect(2 * failures).toBeLessThan(replicas);
     const quorum = replicas - failures;
     expect(failures).toBeLessThan(quorum);
   });
   it('write and read quorums intersect', () => {
-    const n = 7, f = 3, q = n - f; // q=4
+    const n = 7,
+      f = 3,
+      q = n - f; // q=4
     // Two sets of size 4 from 7 elements must overlap
     expect(2 * q).toBeGreaterThan(n);
   });
@@ -51,20 +54,26 @@ describe('Prediction 144: Fold Heat Hierarchy', () => {
 
 describe('Prediction 145: Wallace Waste Zero Iff Full', () => {
   it('equal pillars: zero waste', () => {
-    const l = 5, m = 5, r = 5;
+    const l = 5,
+      m = 5,
+      r = 5;
     const frontier = l + m + r;
     const envelope = 3 * Math.max(l, m, r);
     const waste = envelope - frontier;
     expect(waste).toBe(0);
   });
   it('unequal pillars: positive waste', () => {
-    const l = 2, m = 8, r = 3;
+    const l = 2,
+      m = 8,
+      r = 3;
     const frontier = l + m + r;
     const envelope = 3 * Math.max(l, m, r);
     expect(envelope - frontier).toBeGreaterThan(0);
   });
   it('conservation: frontier + waste = envelope', () => {
-    const l = 3, m = 7, r = 5;
+    const l = 3,
+      m = 7,
+      r = 5;
     const frontier = l + m + r;
     const peak = Math.max(l, m, r);
     const envelope = 3 * peak;
@@ -75,7 +84,9 @@ describe('Prediction 145: Wallace Waste Zero Iff Full', () => {
 
 describe('Prediction 146: Multiplexing Reduces Waste', () => {
   it('multiplexed capacity >= busy period', () => {
-    const busy = 10, capacity = 12, overlap = 3;
+    const busy = 10,
+      capacity = 12,
+      overlap = 3;
     const muxCap = busy + overlap; // simplified
     expect(muxCap).toBeGreaterThanOrEqual(busy);
   });
@@ -88,6 +99,8 @@ describe('Round 9 Master', () => {
     expect(Math.log2(1)).toBe(0); // injective zero heat
     expect(3 * 5 - (5 + 5 + 5)).toBe(0); // wallace zero
     expect(10 + 3).toBeGreaterThanOrEqual(10); // mux
-    console.log('Round 9: quantum + quorum + fold heat + wallace + mux verified');
+    console.log(
+      'Round 9: quantum + quorum + fold heat + wallace + mux verified'
+    );
   });
 });

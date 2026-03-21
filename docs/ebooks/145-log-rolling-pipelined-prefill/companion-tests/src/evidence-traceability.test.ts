@@ -18,7 +18,7 @@ const MANUSCRIPT_PATH = join(__dirname, '..', '..', 'ch17-arxiv-manuscript.md');
 
 function parseReferenceIds(markdown: string): Set<number> {
   const ids = new Set<number>();
-  for (const match of markdown.matchAll(/^\[(\d+)\]\s/mg)) {
+  for (const match of markdown.matchAll(/^\[(\d+)\]\s/gm)) {
     const numericId = Number(match[1]);
     if (Number.isInteger(numericId)) {
       ids.add(numericId);
@@ -34,16 +34,20 @@ describe('Evidence Traceability (§6.12)', () => {
       expect(Number.isFinite(datum.value)).toBe(true);
       expect(datum.unit.length).toBeGreaterThan(0);
       expect(datum.citationIds.length).toBeGreaterThan(0);
-      expect(datum.provenance === 'literature' || datum.provenance === 'simulation').toBe(true);
+      expect(
+        datum.provenance === 'literature' || datum.provenance === 'simulation'
+      ).toBe(true);
       expect(
         datum.evidenceType === 'primary-measurement' ||
-          datum.evidenceType === 'derived-scenario',
+          datum.evidenceType === 'derived-scenario'
       ).toBe(true);
       expect(datum.calibrationRange).toBeDefined();
       if (datum.calibrationRange === undefined) {
         throw new Error(`${datum.id} must define a calibration range`);
       }
-      expect(datum.calibrationRange.min).toBeLessThanOrEqual(datum.calibrationRange.max);
+      expect(datum.calibrationRange.min).toBeLessThanOrEqual(
+        datum.calibrationRange.max
+      );
       expect(datum.value).toBeGreaterThanOrEqual(datum.calibrationRange.min);
       expect(datum.value).toBeLessThanOrEqual(datum.calibrationRange.max);
       expect(datum.note.length).toBeGreaterThan(0);
@@ -73,9 +77,11 @@ describe('Evidence Traceability (§6.12)', () => {
   it('key manuscript-scale constants remain in calibrated ranges', () => {
     expect(EVIDENCE_DATA.rareDiseaseDelayYears.value).toBeCloseTo(4.7, 3);
     expect(EVIDENCE_DATA.settlementDailyVolumeUsd.value).toBeGreaterThan(2e12);
-    expect(EVIDENCE_DATA.settlementDailyVolumeBroadScopeUsd.value).toBeGreaterThan(
-      EVIDENCE_DATA.settlementDailyVolumeUsd.value,
-    );
-    expect(EVIDENCE_DATA.photosyntheticEfficiencyFloor.value).toBeGreaterThanOrEqual(0.95);
+    expect(
+      EVIDENCE_DATA.settlementDailyVolumeBroadScopeUsd.value
+    ).toBeGreaterThan(EVIDENCE_DATA.settlementDailyVolumeUsd.value);
+    expect(
+      EVIDENCE_DATA.photosyntheticEfficiencyFloor.value
+    ).toBeGreaterThanOrEqual(0.95);
   });
 });

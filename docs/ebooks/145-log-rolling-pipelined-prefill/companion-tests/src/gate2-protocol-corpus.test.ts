@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { makeDefaultGate2Config, renderGate2Markdown, runGate2Corpus } from './gate2-protocol-corpus';
+import {
+  makeDefaultGate2Config,
+  renderGate2Markdown,
+  runGate2Corpus,
+} from './gate2-protocol-corpus';
 
 describe('Gate 2 protocol corpus harness', () => {
   it('passes the default seeded matrix', () => {
@@ -9,7 +13,9 @@ describe('Gate 2 protocol corpus harness', () => {
     expect(report.gate.pass).toBe(true);
     expect(report.gate.primaryCells.length).toBeGreaterThan(0);
     expect(report.gate.failedPrimaryCells).toHaveLength(0);
-    expect(report.cells.every((cell) => cell.framingMedianGainPct > 0)).toBe(true);
+    expect(report.cells.every((cell) => cell.framingMedianGainPct > 0)).toBe(
+      true
+    );
   });
 
   it('denies when thresholds are intentionally impossible', () => {

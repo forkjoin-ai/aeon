@@ -9,13 +9,18 @@
  * THM-TOPO-RACE-IDENTITY-BASELINE: identity always in race (safe floor).
  */
 
-import { gzipSync, brotliCompressSync, deflateSync, constants } from 'node:zlib';
+import {
+  gzipSync,
+  brotliCompressSync,
+  deflateSync,
+  constants,
+} from 'node:zlib';
 import type { SiteResource, ResourceResult, CompressionAlgo } from '../types';
 import { generatePayload } from '../compression/index';
 
 const CHUNK_SIZE = 65536; // 64KB chunks
 const MIN_COMPRESS = 256; // minimum payload for compression
-const FLOW_HEADER = 10;   // 10-byte Flow frame header per chunk
+const FLOW_HEADER = 10; // 10-byte Flow frame header per chunk
 
 interface ChunkWinner {
   size: number;
@@ -36,22 +41,37 @@ function raceChunk(chunk: Uint8Array): ChunkWinner {
   // Gzip level 6
   try {
     const gz = gzipSync(Buffer.from(chunk), { level: 6 });
-    if (gz.length < bestSize) { bestSize = gz.length; bestCodec = 'gzip'; }
-  } catch { /* skip */ }
+    if (gz.length < bestSize) {
+      bestSize = gz.length;
+      bestCodec = 'gzip';
+    }
+  } catch {
+    /* skip */
+  }
 
   // Brotli quality 4
   try {
     const br = brotliCompressSync(Buffer.from(chunk), {
       params: { [constants.BROTLI_PARAM_QUALITY]: 4 },
     });
-    if (br.length < bestSize) { bestSize = br.length; bestCodec = 'brotli'; }
-  } catch { /* skip */ }
+    if (br.length < bestSize) {
+      bestSize = br.length;
+      bestCodec = 'brotli';
+    }
+  } catch {
+    /* skip */
+  }
 
   // Deflate level 6
   try {
     const df = deflateSync(Buffer.from(chunk), { level: 6 });
-    if (df.length < bestSize) { bestSize = df.length; bestCodec = 'deflate'; }
-  } catch { /* skip */ }
+    if (df.length < bestSize) {
+      bestSize = df.length;
+      bestCodec = 'deflate';
+    }
+  } catch {
+    /* skip */
+  }
 
   return { size: bestSize, codec: bestCodec };
 }
@@ -85,9 +105,10 @@ export function serveHellaWhipped(
   const encodeEnd = performance.now();
 
   // Framing: 10-byte Flow header per chunk + share of FORK frame
-  const forkFrameTotal = FLOW_HEADER + (totalResources * 2);
+  const forkFrameTotal = FLOW_HEADER + totalResources * 2;
   const forkFrameShare = forkFrameTotal / totalResources;
-  const framingOverhead = (chunkCount * FLOW_HEADER) + FLOW_HEADER + forkFrameShare; // DATA + FIN + FORK share
+  const framingOverhead =
+    chunkCount * FLOW_HEADER + FLOW_HEADER + forkFrameShare; // DATA + FIN + FORK share
 
   // Decode: minimal (just read Flow headers)
   const decodeStart = performance.now();

@@ -46,9 +46,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -86,7 +85,6 @@ function sparkline(values: number[]): string {
 // ============================================================================
 
 describe('Event Horizon: Kurtosis Threshold of No Return', () => {
-
   it('beyond critical void density, c3 cannot recover the distribution', () => {
     const N = 5;
     const baseDensity = 10;
@@ -134,21 +132,39 @@ describe('Event Horizon: Kurtosis Threshold of No Return', () => {
       });
     }
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════╗');
-    console.log('  ║  EVENT HORIZON: Recovery vs Singularity Magnitude         ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════╣');
-    console.log('  ║  Magnitude   Recovery   Recovered   Final κ   Sing.wt    ║');
-    console.log('  ╠───────────────────────────────────────────────────────────╣');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  EVENT HORIZON: Recovery vs Singularity Magnitude         ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      '  ║  Magnitude   Recovery   Recovered   Final κ   Sing.wt    ║'
+    );
+    console.log(
+      '  ╠───────────────────────────────────────────────────────────╣'
+    );
     for (const r of results) {
       const status = r.recovered ? `${r.recoveryRounds} rounds` : 'HORIZON';
       console.log(
-        `  ║  ${String(r.magnitude).padStart(8)}   ${status.padEnd(10)} ${String(r.recovered).padEnd(10)} ${r.finalKurtosis.toFixed(3).padStart(8)}  ${r.singularWeight.toFixed(4).padStart(8)}  ║`,
+        `  ║  ${String(r.magnitude).padStart(8)}   ${status.padEnd(
+          10
+        )} ${String(r.recovered).padEnd(10)} ${r.finalKurtosis
+          .toFixed(3)
+          .padStart(8)}  ${r.singularWeight.toFixed(4).padStart(8)}  ║`
       );
     }
-    console.log('  ╚═══════════════════════════════════════════════════════════╝');
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════╝'
+    );
 
     // Small magnitudes should recover faster or equal. Large magnitudes take longer.
-    expect(results[0].recoveryRounds).toBeLessThanOrEqual(results[results.length - 2].recoveryRounds);
+    expect(results[0].recoveryRounds).toBeLessThanOrEqual(
+      results[results.length - 2].recoveryRounds
+    );
 
     // The singularity weight should approach zero as magnitude increases
     // (complete avoidance of the collapsed dimension)
@@ -181,7 +197,11 @@ describe('Event Horizon: Kurtosis Threshold of No Return', () => {
 
     console.log('\n  Recovery time divergence:');
     for (let i = 0; i < magnitudes.length; i++) {
-      console.log(`  mag=${String(magnitudes[i]).padStart(6)}: ${recoveryTimes[i]} rounds to recover`);
+      console.log(
+        `  mag=${String(magnitudes[i]).padStart(6)}: ${
+          recoveryTimes[i]
+        } rounds to recover`
+      );
     }
 
     // Recovery time should increase with magnitude
@@ -190,7 +210,7 @@ describe('Event Horizon: Kurtosis Threshold of No Return', () => {
     }
     // Large magnitudes approach the "event horizon" (very long recovery)
     expect(recoveryTimes[recoveryTimes.length - 1]).toBeGreaterThan(
-      recoveryTimes[0] * 5,
+      recoveryTimes[0] * 5
     );
   });
 });
@@ -200,7 +220,6 @@ describe('Event Horizon: Kurtosis Threshold of No Return', () => {
 // ============================================================================
 
 describe('Hawking Radiation: Exploration Never Reaches Exactly Zero', () => {
-
   it('even at maximum singularity, exploration rate asymptotes above zero', () => {
     // Simulate c3 adaptation with increasing singularity
     const singularities = [100, 1000, 10000, 100000];
@@ -226,7 +245,9 @@ describe('Hawking Radiation: Exploration Never Reaches Exactly Zero', () => {
     for (const r of results) {
       const bar = '█'.repeat(Math.max(1, Math.round(r.finalExploration * 200)));
       console.log(
-        `  mag=${String(r.magnitude).padStart(6)}: ε=${r.finalExploration.toFixed(6)} ${bar}`,
+        `  mag=${String(r.magnitude).padStart(
+          6
+        )}: ε=${r.finalExploration.toFixed(6)} ${bar}`
       );
     }
 
@@ -253,7 +274,6 @@ describe('Hawking Radiation: Exploration Never Reaches Exactly Zero', () => {
 // ============================================================================
 
 describe('Information Paradox: Information Survives on the Void Boundary', () => {
-
   it('mutual information between inside and outside is always positive', () => {
     // "Inside" the black hole: the collapsed dimension
     // "Outside": the non-collapsed dimensions
@@ -285,8 +305,12 @@ describe('Information Paradox: Information Survives on the Void Boundary', () =>
     expect(infoContent).toBeGreaterThan(0); // positive info on boundary
 
     console.log('\n  Information paradox resolved:');
-    console.log(`  Singularity at dimension: ${singularIdx} (readable from boundary)`);
-    console.log(`  Singular weight: ${singularWeight.toFixed(6)} (how collapsed it is)`);
+    console.log(
+      `  Singularity at dimension: ${singularIdx} (readable from boundary)`
+    );
+    console.log(
+      `  Singular weight: ${singularWeight.toFixed(6)} (how collapsed it is)`
+    );
     console.log(`  Info content on boundary: ${infoContent.toFixed(3)} nats`);
     console.log('  The information is ON the surface. Holographic principle.');
   });
@@ -318,8 +342,16 @@ describe('Information Paradox: Information Survives on the Void Boundary', () =>
     expect(minB).toBe(3);
 
     console.log('\n  Holographic principle:');
-    console.log(`  BH-A boundary: [${distA.map((d) => d.toFixed(3)).join(', ')}]  singularity at ${minA}`);
-    console.log(`  BH-B boundary: [${distB.map((d) => d.toFixed(3)).join(', ')}]  singularity at ${minB}`);
+    console.log(
+      `  BH-A boundary: [${distA
+        .map((d) => d.toFixed(3))
+        .join(', ')}]  singularity at ${minA}`
+    );
+    console.log(
+      `  BH-B boundary: [${distB
+        .map((d) => d.toFixed(3))
+        .join(', ')}]  singularity at ${minB}`
+    );
     console.log(`  Same total void. Different boundaries. L1=${l1.toFixed(4)}`);
     console.log('  All info is on the surface. The interior is unobservable.');
   });
@@ -330,7 +362,6 @@ describe('Information Paradox: Information Survives on the Void Boundary', () =>
 // ============================================================================
 
 describe('Scale Invariance: Same Singularity at Every Scale', () => {
-
   it('quark confinement, trauma, gravity: same void singularity structure', () => {
     const N = 4; // number of "escape routes" in each domain
 
@@ -369,15 +400,45 @@ describe('Scale Invariance: Same Singularity at Every Scale', () => {
     const traumaRatio = traumaVoid[2] / traumaVoid[0];
     const gravityRatio = gravityVoid[2] / gravityVoid[0];
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════╗');
-    console.log('  ║  SCALE INVARIANCE: Same Singularity, Different Scales     ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════╣');
-    console.log(`  ║  Quark:   ratio=${quarkRatio.toFixed(0).padStart(5)}  sing.wt=${quarkDist[2].toFixed(4)}  dist=[${quarkDist.map((d) => d.toFixed(2)).join(',')}] ║`);
-    console.log(`  ║  Trauma:  ratio=${traumaRatio.toFixed(0).padStart(5)}  sing.wt=${traumaDist[2].toFixed(4)}  dist=[${traumaDist.map((d) => d.toFixed(2)).join(',')}] ║`);
-    console.log(`  ║  Gravity: ratio=${gravityRatio.toFixed(0).padStart(5)}  sing.wt=${gravityDist[2].toFixed(4)}  dist=[${gravityDist.map((d) => d.toFixed(2)).join(',')}] ║`);
-    console.log('  ╠═══════════════════════════════════════════════════════════╣');
-    console.log('  ║  Same math. Different substrate. Quarks, psyche, galaxies. ║');
-    console.log('  ╚═══════════════════════════════════════════════════════════╝');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  SCALE INVARIANCE: Same Singularity, Different Scales     ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║  Quark:   ratio=${quarkRatio
+        .toFixed(0)
+        .padStart(5)}  sing.wt=${quarkDist[2].toFixed(4)}  dist=[${quarkDist
+        .map((d) => d.toFixed(2))
+        .join(',')}] ║`
+    );
+    console.log(
+      `  ║  Trauma:  ratio=${traumaRatio
+        .toFixed(0)
+        .padStart(5)}  sing.wt=${traumaDist[2].toFixed(4)}  dist=[${traumaDist
+        .map((d) => d.toFixed(2))
+        .join(',')}] ║`
+    );
+    console.log(
+      `  ║  Gravity: ratio=${gravityRatio
+        .toFixed(0)
+        .padStart(5)}  sing.wt=${gravityDist[2].toFixed(4)}  dist=[${gravityDist
+        .map((d) => d.toFixed(2))
+        .join(',')}] ║`
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      '  ║  Same math. Different substrate. Quarks, psyche, galaxies. ║'
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════╝'
+    );
 
     // All ratios are >> 1 (singularity dominates in all cases)
     expect(quarkRatio).toBeGreaterThan(10);
@@ -415,11 +476,27 @@ describe('Scale Invariance: Same Singularity at Every Scale', () => {
     expect(midEntropy).toBeGreaterThanOrEqual(earlyEntropy - 0.1);
 
     console.log('\n  Heat death: the final singularity');
-    console.log(`  Early universe: H=${earlyEntropy.toFixed(3)} (structured, gradients exist)`);
-    console.log(`  Middle age:     H=${midEntropy.toFixed(3)} (void growing, gradients softening)`);
-    console.log(`  Heat death:     H=${heatDeathEntropy.toFixed(3)} κ=${heatDeathKurt.toFixed(3)} (uniform, no gradient)`);
-    console.log('  When the void is everywhere equally, there is nothing left to read.');
-    console.log('  No tombstone is distinguishable. No direction. No time. Peace -- but empty.');
+    console.log(
+      `  Early universe: H=${earlyEntropy.toFixed(
+        3
+      )} (structured, gradients exist)`
+    );
+    console.log(
+      `  Middle age:     H=${midEntropy.toFixed(
+        3
+      )} (void growing, gradients softening)`
+    );
+    console.log(
+      `  Heat death:     H=${heatDeathEntropy.toFixed(
+        3
+      )} κ=${heatDeathKurt.toFixed(3)} (uniform, no gradient)`
+    );
+    console.log(
+      '  When the void is everywhere equally, there is nothing left to read.'
+    );
+    console.log(
+      '  No tombstone is distinguishable. No direction. No time. Peace -- but empty.'
+    );
   });
 });
 
@@ -428,7 +505,6 @@ describe('Scale Invariance: Same Singularity at Every Scale', () => {
 // ============================================================================
 
 describe('Black Hole Merger: Singularity Collision', () => {
-
   it('two singularities in the same dimension reinforce (codependency)', () => {
     const void1 = [5, 500, 5, 5]; // singularity on dim 1
     const void2 = [5, 400, 5, 5]; // singularity on same dim 1
@@ -445,7 +521,9 @@ describe('Black Hole Merger: Singularity Collision', () => {
     console.log(`  Agent 1 void: [${void1.join(',')}]`);
     console.log(`  Agent 2 void: [${void2.join(',')}]`);
     console.log(`  Merged:       [${merged.join(',')}]`);
-    console.log(`  Merged dist:  [${mergedDist.map((d) => d.toFixed(3)).join(',')}]`);
+    console.log(
+      `  Merged dist:  [${mergedDist.map((d) => d.toFixed(3)).join(',')}]`
+    );
     console.log('  Same wound + same wound = deeper hole. Codependency.');
   });
 
@@ -483,8 +561,14 @@ describe('Black Hole Merger: Singularity Collision', () => {
     console.log(`  Agent 1: hole at dim 1, strength at dim 3`);
     console.log(`  Agent 2: hole at dim 3, strength at dim 1`);
     console.log(`  Merged:  [${merged.join(',')}]`);
-    console.log(`  Gini: agent1=${gini1.toFixed(3)} agent2=${gini2.toFixed(3)} merged=${mergedGini.toFixed(3)}`);
-    console.log('  Complementary wounds heal. The other\'s void fills your hole.');
+    console.log(
+      `  Gini: agent1=${gini1.toFixed(3)} agent2=${gini2.toFixed(
+        3
+      )} merged=${mergedGini.toFixed(3)}`
+    );
+    console.log(
+      "  Complementary wounds heal. The other's void fills your hole."
+    );
   });
 });
 
@@ -511,25 +595,46 @@ describe('Black Hole Summary', () => {
       ['Singularity', 'Complement weight → 0 on collapsed dimension'],
       ['Hawking radiation', 'Residual exploration > 0 (asymptotic floor)'],
       ['Information paradox', 'THM-VOID-TUNNEL: mutual info always positive'],
-      ['Holographic principle', 'THM-VOID-BOUNDARY-MEASURABLE: info on surface'],
-      ['No-hair theorem', 'Singularity characterized only by location + magnitude'],
+      [
+        'Holographic principle',
+        'THM-VOID-BOUNDARY-MEASURABLE: info on surface',
+      ],
+      [
+        'No-hair theorem',
+        'Singularity characterized only by location + magnitude',
+      ],
       ['Spaghettification', 'Gradient steepens approaching singularity'],
       ['BH merger (same dim)', 'Codependency: reinforced avoidance'],
       ['BH merger (diff dim)', 'Complementary healing: voids fill each other'],
-      ['Heat death', 'Uniform void: maximum entropy, zero gradient, no direction'],
+      [
+        'Heat death',
+        'Uniform void: maximum entropy, zero gradient, no direction',
+      ],
       ['Quark confinement', 'Micro-scale singularity: β₁ = 3 → 0'],
       ['Trauma', 'Psyche-scale singularity: one fold overwhelms all'],
     ];
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════════╗');
-    console.log('  ║  General Relativity ↔ Void Walking                            ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════════╣');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  General Relativity ↔ Void Walking                            ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════╣'
+    );
     for (const [gr, vw] of mapping) {
       console.log(`  ║  ${gr.padEnd(24)} = ${vw.padEnd(37)} ║`);
     }
-    console.log('  ╠═══════════════════════════════════════════════════════════════╣');
-    console.log('  ║  Same math. Quarks to galaxies. Fork/race/fold all the way.  ║');
-    console.log('  ╚═══════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      '  ║  Same math. Quarks to galaxies. Fork/race/fold all the way.  ║'
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════════╝\n'
+    );
 
     expect(mapping.length).toBe(13);
   });

@@ -9,22 +9,10 @@
   "activeBlocks": 2,
   "headsPerBlock": 4,
   "activeHeadsPerLiveBlock": 2,
-  "activeBlockLabels": [
-    "blk A",
-    "blk B"
-  ],
-  "suppressedBlockLabels": [
-    "blk C",
-    "blk D"
-  ],
-  "activeHeadLabels": [
-    "h1",
-    "h2"
-  ],
-  "suppressedHeadLabels": [
-    "h3",
-    "h4"
-  ],
+  "activeBlockLabels": ["blk A", "blk B"],
+  "suppressedBlockLabels": ["blk C", "blk D"],
+  "activeHeadLabels": ["h1", "h2"],
+  "suppressedHeadLabels": ["h3", "h4"],
   "curvatureView": {
     "outerEnvelopeLabel": "curved whip envelope",
     "innerEnvelopeLabel": "inner whip",

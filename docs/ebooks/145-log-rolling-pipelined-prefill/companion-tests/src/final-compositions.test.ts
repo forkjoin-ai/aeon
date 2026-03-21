@@ -97,10 +97,12 @@ describe('Prediction 194: Rate-distortion frontier is Pareto-optimal', () => {
     for (let i = 0; i < frontier.length; i++) {
       for (let j = i + 1; j < frontier.length; j++) {
         // No point dominates another on BOTH axes
-        const dominates = frontier[j]!.rate >= frontier[i]!.rate &&
-                         frontier[j]!.distortion <= frontier[i]!.distortion;
-        const dominated = frontier[i]!.rate >= frontier[j]!.rate &&
-                         frontier[i]!.distortion <= frontier[j]!.distortion;
+        const dominates =
+          frontier[j]!.rate >= frontier[i]!.rate &&
+          frontier[j]!.distortion <= frontier[i]!.distortion;
+        const dominated =
+          frontier[i]!.rate >= frontier[j]!.rate &&
+          frontier[i]!.distortion <= frontier[j]!.distortion;
         expect(dominates && dominated).toBe(false);
       }
     }
@@ -154,13 +156,15 @@ describe('Prediction 196: Unified information-processing chain', () => {
     expect(processed).toBeLessThanOrEqual(liveSupport);
     // Settle: Lyapunov convergence (P192)
     expect(0).toBe(0); // fixed point
-    console.log(`Chain: ${options} → race(${liveSupport}) → fold(${compressed}) → queue(${processed}) → settled(0)`);
+    console.log(
+      `Chain: ${options} → race(${liveSupport}) → fold(${compressed}) → queue(${processed}) → settled(0)`
+    );
   });
 });
 
 describe('Master: Predictions 192-196 all verified', () => {
   it('final round complete', () => {
-    [192, 193, 194, 195, 196].forEach(id => console.log(`P${id}: PROVEN`));
+    [192, 193, 194, 195, 196].forEach((id) => console.log(`P${id}: PROVEN`));
     console.log('196 predictions total. All LEDGER families exhausted.');
   });
 });

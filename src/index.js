@@ -65,9 +65,13 @@ export * from './federation';
  * SchemaVersionManager, SyncCoordinator, getAdaptiveCompressionOptimizer,
  * and getAgentPresenceManager are real exports — do NOT shadow them here.
  */
-export const Link = (() => {
-    throw new Error('Link: Stub called from @a0n/aeon. Import from @a0n/aeon-flux-react or mock in tests.');
-});
-export const useAeonPage = (() => {
-    throw new Error('useAeonPage: Stub called from @a0n/aeon. Import from @a0n/aeon-flux-react or mock in tests.');
-});
+export const Link = () => {
+  throw new Error(
+    'Link: Stub called from @a0n/aeon. Import from @a0n/aeon-flux-react or mock in tests.'
+  );
+};
+export const useAeonPage = () => {
+  throw new Error(
+    'useAeonPage: Stub called from @a0n/aeon. Import from @a0n/aeon-flux-react or mock in tests.'
+  );
+};

@@ -23,18 +23,32 @@ describe('Adaptive supremum witness', () => {
     expect(report.drift.rowSumViolations).toBe(0);
     expect(report.drift.driftViolations).toBe(0);
 
-    const alwaysUncongested = report.schedules.find((schedule) => schedule.id === 'always-uncongested');
-    const alwaysCongested = report.schedules.find((schedule) => schedule.id === 'always-congested');
-    const alternating = report.schedules.find((schedule) => schedule.id === 'alternating');
+    const alwaysUncongested = report.schedules.find(
+      (schedule) => schedule.id === 'always-uncongested'
+    );
+    const alwaysCongested = report.schedules.find(
+      (schedule) => schedule.id === 'always-congested'
+    );
+    const alternating = report.schedules.find(
+      (schedule) => schedule.id === 'alternating'
+    );
 
-    expect(alwaysUncongested?.supremum.right).toBeCloseTo(report.parameters.arrivalRight, 12);
-    expect(alwaysCongested?.supremum.right).toBeCloseTo(report.candidate.right, 12);
+    expect(alwaysUncongested?.supremum.right).toBeCloseTo(
+      report.parameters.arrivalRight,
+      12
+    );
+    expect(alwaysCongested?.supremum.right).toBeCloseTo(
+      report.candidate.right,
+      12
+    );
     expect(alwaysCongested?.allApproximantsBoundedByCandidate).toBe(true);
     expect(alternating?.recoveredExpectedSupremum).toBe(true);
   });
 
   it('renders a markdown report for the executable adaptive witness', () => {
-    const markdown = renderAdaptiveSupremumWitnessMarkdown(runAdaptiveSupremumWitness());
+    const markdown = renderAdaptiveSupremumWitnessMarkdown(
+      runAdaptiveSupremumWitness()
+    );
 
     expect(markdown).toContain('# Adaptive Supremum Witness');
     expect(markdown).toContain('Spectral radius: 0.000');

@@ -10,10 +10,29 @@
  * - Migration tracking and audit trails
  */
 export { SchemaVersionManager } from './SchemaVersionManager';
-export type { SchemaVersion, VersionMetadata, CompatibilityRule, } from './SchemaVersionManager';
+export type {
+  SchemaVersion,
+  VersionMetadata,
+  CompatibilityRule,
+} from './SchemaVersionManager';
 export { MigrationEngine } from './MigrationEngine';
-export type { Migration, MigrationResult, MigrationState, } from './MigrationEngine';
+export type {
+  Migration,
+  MigrationResult,
+  MigrationState,
+} from './MigrationEngine';
 export { DataTransformer } from './DataTransformer';
-export type { FieldTransformer, TransformationRule, TransformationResult, } from './DataTransformer';
+export type {
+  FieldTransformer,
+  TransformationRule,
+  TransformationResult,
+} from './DataTransformer';
 export { MigrationTracker } from './MigrationTracker';
-export type { MigrationRecord, RollbackPath, MigrationIntegrityEntry, MigrationTrackerPersistenceData, MigrationTrackerPersistenceConfig, MigrationTrackerOptions, } from './MigrationTracker';
+export type {
+  MigrationRecord,
+  RollbackPath,
+  MigrationIntegrityEntry,
+  MigrationTrackerPersistenceData,
+  MigrationTrackerPersistenceConfig,
+  MigrationTrackerOptions,
+} from './MigrationTracker';

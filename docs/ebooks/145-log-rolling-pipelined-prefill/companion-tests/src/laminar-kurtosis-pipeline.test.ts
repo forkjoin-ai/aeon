@@ -64,9 +64,8 @@ function complementDist(counts: number[], eta: number): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -107,18 +106,42 @@ function initPipeline(config: PipelineConfig): PipelineState {
   const N = config.numChoices;
   return {
     stages: [
-      { name: 'S0:Fork', targetKurtosisMin: -2, targetKurtosisMax: 0.5,
-        voidCounts: new Array(N).fill(0), eta: config.initialEta,
-        throughput: 0, backpressure: 0 },
-      { name: 'S1:Race', targetKurtosisMin: -1, targetKurtosisMax: 1.5,
-        voidCounts: new Array(N).fill(0), eta: config.initialEta,
-        throughput: 0, backpressure: 0 },
-      { name: 'S2:Fold', targetKurtosisMin: -0.5, targetKurtosisMax: 3,
-        voidCounts: new Array(N).fill(0), eta: config.initialEta + 1,
-        throughput: 0, backpressure: 0 },
-      { name: 'S3:Trace', targetKurtosisMin: -1, targetKurtosisMax: 5,
-        voidCounts: new Array(N).fill(0), eta: config.initialEta + 2,
-        throughput: 0, backpressure: 0 },
+      {
+        name: 'S0:Fork',
+        targetKurtosisMin: -2,
+        targetKurtosisMax: 0.5,
+        voidCounts: new Array(N).fill(0),
+        eta: config.initialEta,
+        throughput: 0,
+        backpressure: 0,
+      },
+      {
+        name: 'S1:Race',
+        targetKurtosisMin: -1,
+        targetKurtosisMax: 1.5,
+        voidCounts: new Array(N).fill(0),
+        eta: config.initialEta,
+        throughput: 0,
+        backpressure: 0,
+      },
+      {
+        name: 'S2:Fold',
+        targetKurtosisMin: -0.5,
+        targetKurtosisMax: 3,
+        voidCounts: new Array(N).fill(0),
+        eta: config.initialEta + 1,
+        throughput: 0,
+        backpressure: 0,
+      },
+      {
+        name: 'S3:Trace',
+        targetKurtosisMin: -1,
+        targetKurtosisMax: 5,
+        voidCounts: new Array(N).fill(0),
+        eta: config.initialEta + 2,
+        throughput: 0,
+        backpressure: 0,
+      },
     ],
     totalRounds: 0,
     totalPayoff: 0,
@@ -134,7 +157,7 @@ function pipelineTick(
   state: PipelineState,
   opponents: number[], // opponent choices for each in-flight round
   payoffFn: (myChoice: number, oppChoice: number) => [number, number],
-  rng: () => number,
+  rng: () => number
 ): void {
   const N = state.stages[0].voidCounts.length;
   const depth = Math.min(state.pipelineDepth, opponents.length);
@@ -149,7 +172,13 @@ function pipelineTick(
     const r = rng();
     let choice = N - 1;
     let cum = 0;
-    for (let i = 0; i < N; i++) { cum += dist[i]; if (r < cum) { choice = i; break; } }
+    for (let i = 0; i < N; i++) {
+      cum += dist[i];
+      if (r < cum) {
+        choice = i;
+        break;
+      }
+    }
 
     // S1: Race -- evaluate payoff (zero-cost, just lookup)
     const s1 = state.stages[1];
@@ -178,7 +207,9 @@ function pipelineTick(
   }
 
   // Laminar check: kurtosis should flow monotonically across stages
-  const kurtoses = state.stages.map((s) => excessKurtosis(complementDist(s.voidCounts, s.eta)));
+  const kurtoses = state.stages.map((s) =>
+    excessKurtosis(complementDist(s.voidCounts, s.eta))
+  );
 
   // Check laminar condition: each stage's kurtosis within its envelope
   for (let i = 0; i < state.stages.length; i++) {
@@ -206,11 +237,15 @@ function pipelineTick(
 // ============================================================================
 
 describe('Laminar Kurtosis Pipeline', () => {
-
   it('pipeline processes multiple rounds per tick (throughput test)', () => {
     const depths = [1, 2, 4, 8, 16];
     const T = 1000;
-    const results: Array<{ depth: number; wallTicks: number; throughput: number; payoff: number }> = [];
+    const results: Array<{
+      depth: number;
+      wallTicks: number;
+      throughput: number;
+      payoff: number;
+    }> = [];
 
     for (const depth of depths) {
       const rng = makeRng(42);
@@ -227,17 +262,22 @@ describe('Laminar Kurtosis Pipeline', () => {
 
       for (let tick = 0; tick < ticksNeeded; tick++) {
         const opponents = Array.from({ length: depth }, () =>
-          rng() < 0.5 ? 0 : 1,
+          rng() < 0.5 ? 0 : 1
         );
         pipelineTick(
           state,
           opponents,
           (my, opp) => {
             // Hawk-dove payoffs
-            const matrix = [[2, 2], [0, 4], [4, 0], [-1, -1]];
+            const matrix = [
+              [2, 2],
+              [0, 4],
+              [4, 0],
+              [-1, -1],
+            ];
             return matrix[my * 2 + opp] as [number, number];
           },
-          rng,
+          rng
         );
       }
 
@@ -256,7 +296,11 @@ describe('Laminar Kurtosis Pipeline', () => {
     const baseThru = results[0].throughput;
     for (const r of results) {
       console.log(
-        `  ${String(r.depth).padStart(5)}   ${String(r.wallTicks).padStart(10)}   ${r.throughput.toFixed(0).padStart(9)}   ${String(r.payoff).padStart(6)}   ${(r.throughput / baseThru).toFixed(1)}x`,
+        `  ${String(r.depth).padStart(5)}   ${String(r.wallTicks).padStart(
+          10
+        )}   ${r.throughput.toFixed(0).padStart(9)}   ${String(
+          r.payoff
+        ).padStart(6)}   ${(r.throughput / baseThru).toFixed(1)}x`
       );
     }
     console.log('  ' + '─'.repeat(60));
@@ -266,7 +310,9 @@ describe('Laminar Kurtosis Pipeline', () => {
       expect(r.wallTicks).toBeLessThanOrEqual(T);
     }
     // Deeper pipeline = fewer wall ticks
-    expect(results[results.length - 1].wallTicks).toBeLessThan(results[0].wallTicks);
+    expect(results[results.length - 1].wallTicks).toBeLessThan(
+      results[0].wallTicks
+    );
   });
 
   it('laminar condition maintains smooth kurtosis flow', () => {
@@ -282,13 +328,16 @@ describe('Laminar Kurtosis Pipeline', () => {
     const ticksNeeded = Math.ceil(config.totalRounds / config.pipelineDepth);
     for (let tick = 0; tick < ticksNeeded; tick++) {
       const opponents = Array.from({ length: config.pipelineDepth }, () =>
-        Math.floor(rng() * 3),
+        Math.floor(rng() * 3)
       );
       pipelineTick(
         state,
         opponents,
-        (my, opp) => my === opp ? [3, 3] as [number, number] : [-1, 1] as [number, number],
-        rng,
+        (my, opp) =>
+          my === opp
+            ? ([3, 3] as [number, number])
+            : ([-1, 1] as [number, number]),
+        rng
       );
     }
 
@@ -297,9 +346,15 @@ describe('Laminar Kurtosis Pipeline', () => {
     console.log('\n  Laminar Condition (3-choice coordination, 500 rounds):');
     console.log('  ' + '─'.repeat(55));
     console.log(`  Total ticks:        ${ticksNeeded}`);
-    console.log(`  Laminar violations: ${state.laminarViolations} (${(violationRate * 100).toFixed(1)}%)`);
+    console.log(
+      `  Laminar violations: ${state.laminarViolations} (${(
+        violationRate * 100
+      ).toFixed(1)}%)`
+    );
     console.log(`  κ trajectory:       ${sparkline(state.kurtosisTrajectory)}`);
-    console.log(`  Stage etas: ${state.stages.map((s) => s.eta.toFixed(1)).join(' → ')}`);
+    console.log(
+      `  Stage etas: ${state.stages.map((s) => s.eta.toFixed(1)).join(' → ')}`
+    );
     console.log(`  Total payoff: ${state.totalPayoff}`);
     console.log('  ' + '─'.repeat(55));
 
@@ -320,27 +375,57 @@ describe('Laminar Kurtosis Pipeline', () => {
 
     // Sequential (depth=1)
     const rng1 = makeRng(42);
-    const seqState = initPipeline({ numChoices: N, pipelineDepth: 1, totalRounds: T, initialEta: 2 });
+    const seqState = initPipeline({
+      numChoices: N,
+      pipelineDepth: 1,
+      totalRounds: T,
+      initialEta: 2,
+    });
     const seqStart = performance.now();
     for (let tick = 0; tick < T; tick++) {
-      pipelineTick(seqState, [rng1() < 0.5 ? 0 : 1], (my, opp) => {
-        const m = [[2, 2], [0, 4], [4, 0], [-1, -1]];
-        return m[my * 2 + opp] as [number, number];
-      }, rng1);
+      pipelineTick(
+        seqState,
+        [rng1() < 0.5 ? 0 : 1],
+        (my, opp) => {
+          const m = [
+            [2, 2],
+            [0, 4],
+            [4, 0],
+            [-1, -1],
+          ];
+          return m[my * 2 + opp] as [number, number];
+        },
+        rng1
+      );
     }
     const seqTime = performance.now() - seqStart;
 
     // Pipelined (depth=8)
     const rng2 = makeRng(42);
-    const pipState = initPipeline({ numChoices: N, pipelineDepth: 8, totalRounds: T, initialEta: 2 });
+    const pipState = initPipeline({
+      numChoices: N,
+      pipelineDepth: 8,
+      totalRounds: T,
+      initialEta: 2,
+    });
     const pipStart = performance.now();
     const pipTicks = Math.ceil(T / 8);
     for (let tick = 0; tick < pipTicks; tick++) {
-      const opps = Array.from({ length: 8 }, () => rng2() < 0.5 ? 0 : 1);
-      pipelineTick(pipState, opps, (my, opp) => {
-        const m = [[2, 2], [0, 4], [4, 0], [-1, -1]];
-        return m[my * 2 + opp] as [number, number];
-      }, rng2);
+      const opps = Array.from({ length: 8 }, () => (rng2() < 0.5 ? 0 : 1));
+      pipelineTick(
+        pipState,
+        opps,
+        (my, opp) => {
+          const m = [
+            [2, 2],
+            [0, 4],
+            [4, 0],
+            [-1, -1],
+          ];
+          return m[my * 2 + opp] as [number, number];
+        },
+        rng2
+      );
     }
     const pipTime = performance.now() - pipStart;
 
@@ -349,10 +434,20 @@ describe('Laminar Kurtosis Pipeline', () => {
 
     console.log('\n  Pipeline vs Sequential (2000 rounds Hawk-Dove):');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Sequential: ${seqTime.toFixed(1)}ms, ${seqState.totalRounds} rounds, avg=${seqAvg.toFixed(3)}`);
-    console.log(`  Pipeline:   ${pipTime.toFixed(1)}ms, ${pipState.totalRounds} rounds, avg=${pipAvg.toFixed(3)}`);
+    console.log(
+      `  Sequential: ${seqTime.toFixed(1)}ms, ${
+        seqState.totalRounds
+      } rounds, avg=${seqAvg.toFixed(3)}`
+    );
+    console.log(
+      `  Pipeline:   ${pipTime.toFixed(1)}ms, ${
+        pipState.totalRounds
+      } rounds, avg=${pipAvg.toFixed(3)}`
+    );
     console.log(`  Wall-clock speedup: ${(seqTime / pipTime).toFixed(1)}x`);
-    console.log(`  Quality delta: ${(pipAvg - seqAvg).toFixed(3)} (should be small)`);
+    console.log(
+      `  Quality delta: ${(pipAvg - seqAvg).toFixed(3)} (should be small)`
+    );
     console.log('  ' + '─'.repeat(55));
 
     // Pipeline should be faster in wall-clock ticks
@@ -376,16 +471,21 @@ describe('Laminar Kurtosis Pipeline', () => {
     const ticksNeeded = Math.ceil(config.totalRounds / config.pipelineDepth);
     for (let tick = 0; tick < ticksNeeded; tick++) {
       const opponents = Array.from({ length: config.pipelineDepth }, () =>
-        rng() < 0.5 ? 0 : 1,
+        rng() < 0.5 ? 0 : 1
       );
       pipelineTick(
         state,
         opponents,
         (my, opp) => {
-          const m = [[2, 2], [0, 4], [4, 0], [-1, -1]];
+          const m = [
+            [2, 2],
+            [0, 4],
+            [4, 0],
+            [-1, -1],
+          ];
           return m[my * 2 + opp] as [number, number];
         },
-        rng,
+        rng
       );
     }
 
@@ -395,14 +495,20 @@ describe('Laminar Kurtosis Pipeline', () => {
     console.log('  ' + '─'.repeat(55));
     for (let i = 0; i < state.stages.length; i++) {
       console.log(
-        `  ${state.stages[i].name}: η ${initialEtas[i].toFixed(1)} → ${finalEtas[i].toFixed(1)}  bp=${state.stages[i].backpressure.toFixed(2)}`,
+        `  ${state.stages[i].name}: η ${initialEtas[i].toFixed(
+          1
+        )} → ${finalEtas[i].toFixed(1)}  bp=${state.stages[
+          i
+        ].backpressure.toFixed(2)}`
       );
     }
     console.log(`  Laminar violations: ${state.laminarViolations}`);
     console.log('  ' + '─'.repeat(55));
 
     // Backpressure should have adjusted at least one eta
-    const etaChanged = finalEtas.some((e, i) => Math.abs(e - initialEtas[i]) > 0.1);
+    const etaChanged = finalEtas.some(
+      (e, i) => Math.abs(e - initialEtas[i]) > 0.1
+    );
     expect(etaChanged).toBe(true);
   });
 
@@ -422,7 +528,7 @@ describe('Laminar Kurtosis Pipeline', () => {
     const ticksNeeded = Math.ceil(T / depth);
     for (let tick = 0; tick < ticksNeeded; tick++) {
       const opponents = Array.from({ length: depth }, () =>
-        Math.floor(rng() * 5),
+        Math.floor(rng() * 5)
       );
       pipelineTick(
         state,
@@ -432,26 +538,60 @@ describe('Laminar Kurtosis Pipeline', () => {
           if (Math.abs(my - opp) === 1) return [2, 2];
           return [-1, 3];
         },
-        rng,
+        rng
       );
     }
     const elapsed = performance.now() - start;
 
     const maxH = Math.log(5);
-    const finalH = shannonEntropy(complementDist(state.stages[2].voidCounts, state.stages[2].eta));
+    const finalH = shannonEntropy(
+      complementDist(state.stages[2].voidCounts, state.stages[2].eta)
+    );
     const inverseBule = (maxH - finalH) / state.totalRounds;
 
     console.log('\n  ╔══════════════════════════════════════════════════════╗');
     console.log('  ║  LAMINAR NEGOTIATION PIPELINE: 10K rounds           ║');
     console.log('  ╠══════════════════════════════════════════════════════╣');
-    console.log(`  ║  Rounds:     ${String(state.totalRounds).padStart(8)}                          ║`);
-    console.log(`  ║  Wall-clock: ${elapsed.toFixed(1).padStart(8)}ms                         ║`);
-    console.log(`  ║  Throughput: ${(state.totalRounds / elapsed).toFixed(0).padStart(8)} rounds/ms                  ║`);
-    console.log(`  ║  Payoff:     ${String(state.totalPayoff).padStart(8)}                          ║`);
-    console.log(`  ║  Avg payoff: ${(state.totalPayoff / state.totalRounds).toFixed(3).padStart(8)}                          ║`);
-    console.log(`  ║  Inv. Bule:  ${(inverseBule * 1000).toFixed(3).padStart(8)} mB⁻¹                      ║`);
-    console.log(`  ║  Violations: ${String(state.laminarViolations).padStart(8)}                          ║`);
-    console.log(`  ║  κ trail:    ${sparkline(state.kurtosisTrajectory.slice(-50)).padEnd(35)}  ║`);
+    console.log(
+      `  ║  Rounds:     ${String(state.totalRounds).padStart(
+        8
+      )}                          ║`
+    );
+    console.log(
+      `  ║  Wall-clock: ${elapsed
+        .toFixed(1)
+        .padStart(8)}ms                         ║`
+    );
+    console.log(
+      `  ║  Throughput: ${(state.totalRounds / elapsed)
+        .toFixed(0)
+        .padStart(8)} rounds/ms                  ║`
+    );
+    console.log(
+      `  ║  Payoff:     ${String(state.totalPayoff).padStart(
+        8
+      )}                          ║`
+    );
+    console.log(
+      `  ║  Avg payoff: ${(state.totalPayoff / state.totalRounds)
+        .toFixed(3)
+        .padStart(8)}                          ║`
+    );
+    console.log(
+      `  ║  Inv. Bule:  ${(inverseBule * 1000)
+        .toFixed(3)
+        .padStart(8)} mB⁻¹                      ║`
+    );
+    console.log(
+      `  ║  Violations: ${String(state.laminarViolations).padStart(
+        8
+      )}                          ║`
+    );
+    console.log(
+      `  ║  κ trail:    ${sparkline(state.kurtosisTrajectory.slice(-50)).padEnd(
+        35
+      )}  ║`
+    );
     console.log('  ╚══════════════════════════════════════════════════════╝');
 
     expect(elapsed).toBeLessThan(500); // should be well under 500ms

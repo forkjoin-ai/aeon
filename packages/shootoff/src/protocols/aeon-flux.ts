@@ -27,18 +27,19 @@ import { generatePayload, compress } from '../compression';
 
 // ─── HTTP/1.1 headers for a single large HTML response ────────────────────
 
-const AEON_FLUX_HTTP_REQUEST_HEADERS = [
-  'GET / HTTP/1.1',
-  'Host: site.example.com',
-  'Accept: text/html,application/xhtml+xml',
-  'Accept-Encoding: gzip, deflate, br',
-  'Accept-Language: en-US,en;q=0.9',
-  'Connection: keep-alive',
-  'User-Agent: Mozilla/5.0 AeonFlux/1.0',
-  'Sec-Fetch-Dest: document',
-  'Sec-Fetch-Mode: navigate',
-  'Sec-Fetch-Site: none',
-].join('\r\n').length + 4; // +4 for \r\n\r\n
+const AEON_FLUX_HTTP_REQUEST_HEADERS =
+  [
+    'GET / HTTP/1.1',
+    'Host: site.example.com',
+    'Accept: text/html,application/xhtml+xml',
+    'Accept-Encoding: gzip, deflate, br',
+    'Accept-Language: en-US,en;q=0.9',
+    'Connection: keep-alive',
+    'User-Agent: Mozilla/5.0 AeonFlux/1.0',
+    'Sec-Fetch-Dest: document',
+    'Sec-Fetch-Mode: navigate',
+    'Sec-Fetch-Site: none',
+  ].join('\r\n').length + 4; // +4 for \r\n\r\n
 
 function aeonFluxHttpResponseHeaders(
   resource: SiteResource,
@@ -58,7 +59,9 @@ function aeonFluxHttpResponseHeaders(
     'Server: aeon-flow-site/1.0',
   ];
   if (compression !== 'none') {
-    headers.push(`Content-Encoding: ${compression === 'brotli' ? 'br' : compression}`);
+    headers.push(
+      `Content-Encoding: ${compression === 'brotli' ? 'br' : compression}`
+    );
   }
   return headers.join('\r\n').length + 4;
 }
@@ -82,7 +85,11 @@ export function serveAeonFluxHttp(
   const encodeTime = performance.now() - startEncode;
 
   const requestHeaders = AEON_FLUX_HTTP_REQUEST_HEADERS;
-  const responseHeaders = aeonFluxHttpResponseHeaders(resource, compressed, compression);
+  const responseHeaders = aeonFluxHttpResponseHeaders(
+    resource,
+    compressed,
+    compression
+  );
   const framingOverhead = requestHeaders + responseHeaders;
 
   const startDecode = performance.now();

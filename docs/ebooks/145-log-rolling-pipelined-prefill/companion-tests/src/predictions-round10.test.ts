@@ -17,8 +17,12 @@ function effectiveCapacity(maxCap: number, debt: number): number {
   return maxCap - Math.min(maxCap, debt);
 }
 
-function repairedFrontier(f: number, v: number, r: number): number { return f - v + r; }
-function entropyProxy(f: number): number { return f - 1; }
+function repairedFrontier(f: number, v: number, r: number): number {
+  return f - v + r;
+}
+function entropyProxy(f: number): number {
+  return f - 1;
+}
 
 describe('Prediction 147: Iterated Debt Closed-Form', () => {
   it('debt = n × (wake - quota) when quota < wake', () => {
@@ -62,10 +66,14 @@ describe('Prediction 149: Threshold Debt Spiral', () => {
 
 describe('Prediction 150: Over-Repair + Debt Compose', () => {
   it('over-repair increases entropy', () => {
-    expect(entropyProxy(repairedFrontier(10, 3, 5))).toBeGreaterThan(entropyProxy(10));
+    expect(entropyProxy(repairedFrontier(10, 3, 5))).toBeGreaterThan(
+      entropyProxy(10)
+    );
   });
   it('the over-engineering margin is exactly repaired - vented', () => {
-    const frontier = 10, vented = 3, repaired = 7;
+    const frontier = 10,
+      vented = 3,
+      repaired = 7;
     const margin = repaired - vented; // 4
     const newFrontier = repairedFrontier(frontier, vented, repaired);
     expect(newFrontier).toBe(frontier + margin);
@@ -88,8 +96,12 @@ describe('Round 10 Master', () => {
     expect(iteratedDebt(8, 6, 5)).toBe(10);
     expect(residualDebt(8, 10, 20)).toBe(0);
     expect(iteratedDebt(8, 6, 1)).toBeGreaterThan(0);
-    expect(entropyProxy(repairedFrontier(10, 3, 5))).toBeGreaterThan(entropyProxy(10));
+    expect(entropyProxy(repairedFrontier(10, 3, 5))).toBeGreaterThan(
+      entropyProxy(10)
+    );
     expect(iteratedDebt(6, 8, 100)).toBe(0);
-    console.log('Round 10: sleep schedules + debt spirals + over-repair verified');
+    console.log(
+      'Round 10: sleep schedules + debt spirals + over-repair verified'
+    );
   });
 });

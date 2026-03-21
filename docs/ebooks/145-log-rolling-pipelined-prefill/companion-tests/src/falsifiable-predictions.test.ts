@@ -76,10 +76,7 @@ function computeBetti(graph: TopoGraph): { beta0: number; beta1: number } {
 }
 
 /** Topological deficit: intrinsic parallelism minus realized parallelism. */
-function topologicalDeficit(
-  graph: TopoGraph,
-  intrinsicBeta1: number,
-): number {
+function topologicalDeficit(graph: TopoGraph, intrinsicBeta1: number): number {
   return intrinsicBeta1 - computeBetti(graph).beta1;
 }
 
@@ -474,13 +471,13 @@ describe('PREDICTION 5: Complement distribution concentration is non-decreasing'
     const epsilon = 0.005;
     for (let i = 1; i < bestArmShareTrajectory.length; i++) {
       expect(bestArmShareTrajectory[i]).toBeGreaterThanOrEqual(
-        bestArmShareTrajectory[i - 1] - epsilon,
+        bestArmShareTrajectory[i - 1] - epsilon
       );
     }
 
     // The final best-arm share should be strictly higher than the initial
     expect(
-      bestArmShareTrajectory[bestArmShareTrajectory.length - 1],
+      bestArmShareTrajectory[bestArmShareTrajectory.length - 1]
     ).toBeGreaterThan(bestArmShareTrajectory[0]);
 
     // The best arm (arm 2) should have the highest complement weight at the end
@@ -598,7 +595,11 @@ describe('PREDICTION 7: Racing never worse than best fixed codec', () => {
     while (i < chunk.length) {
       const val = chunk[i];
       let count = 1;
-      while (i + count < chunk.length && chunk[i + count] === val && count < 255) {
+      while (
+        i + count < chunk.length &&
+        chunk[i + count] === val &&
+        count < 255
+      ) {
         count++;
       }
       result.push(val, count);
@@ -632,7 +633,10 @@ describe('PREDICTION 7: Racing never worse than best fixed codec', () => {
         const arr = new Uint8Array(1024);
         let val = 128;
         for (let i = 0; i < 1024; i++) {
-          val = Math.max(0, Math.min(255, val + Math.floor((rng() - 0.5) * 10)));
+          val = Math.max(
+            0,
+            Math.min(255, val + Math.floor((rng() - 0.5) * 10))
+          );
           arr[i] = val;
         }
         return arr;
@@ -700,7 +704,7 @@ describe('PREDICTION 8: Pipeline Reynolds number predicts idle fraction', () => 
   it('Re = N/C is monotonically related to idle fraction', () => {
     function simulatePipeline(
       numStages: number,
-      numItems: number,
+      numItems: number
     ): { idleFraction: number; reynoldsNumber: number } {
       // Pipeline simulation: each item takes 1 tick per stage.
       // Pipeline width = 1 (single-issue pipeline).
@@ -732,9 +736,7 @@ describe('PREDICTION 8: Pipeline Reynolds number predicts idle fraction', () => 
       { stages: 200, items: 100 }, // Re = 2.00
     ];
 
-    const results = configs.map((c) =>
-      simulatePipeline(c.stages, c.items),
-    );
+    const results = configs.map((c) => simulatePipeline(c.stages, c.items));
 
     // Sort by Reynolds number
     results.sort((a, b) => a.reynoldsNumber - b.reynoldsNumber);
@@ -742,7 +744,7 @@ describe('PREDICTION 8: Pipeline Reynolds number predicts idle fraction', () => 
     // PREDICTION: idle fraction is non-decreasing as Re increases
     for (let i = 1; i < results.length; i++) {
       expect(results[i].idleFraction).toBeGreaterThanOrEqual(
-        results[i - 1].idleFraction - 1e-10,
+        results[i - 1].idleFraction - 1e-10
       );
     }
 

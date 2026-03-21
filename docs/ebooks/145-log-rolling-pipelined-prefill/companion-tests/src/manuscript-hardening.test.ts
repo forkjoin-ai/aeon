@@ -179,8 +179,8 @@ describe('§6.8 Information-theoretic framing: entropy bounds work extraction', 
 
     // Skewed source with p=0.9: H < 1 bit (less work extractable)
     const pSkewed = 0.9;
-    const HSkewed = -pSkewed * Math.log2(pSkewed) -
-                    (1 - pSkewed) * Math.log2(1 - pSkewed);
+    const HSkewed =
+      -pSkewed * Math.log2(pSkewed) - (1 - pSkewed) * Math.log2(1 - pSkewed);
     expect(HSkewed).toBeLessThan(H);
     expect(HSkewed).toBeGreaterThan(0);
   });
@@ -226,13 +226,15 @@ describe('§0 Pipeline formula: T = ceil(P/B) + N - 1', () => {
   });
 
   it('sequential baseline: 400 handoffs (no pipelining)', () => {
-    const P = 100, N = 4;
+    const P = 100,
+      N = 4;
     const sequential = P * N;
     expect(sequential).toBe(400);
   });
 
   it('speedup grows with P (inverted scaling)', () => {
-    const N = 4, B = 25;
+    const N = 4,
+      B = 25;
     const speedups: number[] = [];
     for (const P of [100, 1000, 10000]) {
       const sequential = P * N;
@@ -252,10 +254,10 @@ describe('§0 Pipeline formula: T = ceil(P/B) + N - 1', () => {
 
 describe('§8.2 Wire format: FlowFrame 10-byte header', () => {
   it('header = stream_id(2) + sequence(4) + flags(1) + length(3) = 10 bytes', () => {
-    const streamId = 2;   // u16
-    const sequence = 4;   // u32
-    const flags = 1;      // u8
-    const length = 3;     // u24
+    const streamId = 2; // u16
+    const sequence = 4; // u32
+    const flags = 1; // u8
+    const length = 3; // u24
     expect(streamId + sequence + flags + length).toBe(10);
   });
 

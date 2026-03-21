@@ -99,7 +99,9 @@ describe('Prediction 38: Semiotic peace predicts conflict resolution rate', () =
 
   it('residual is monotone decreasing in context', () => {
     for (let ctx = 0; ctx <= 10; ctx++) {
-      expect(residualConflict(10, ctx + 1)).toBeLessThanOrEqual(residualConflict(10, ctx));
+      expect(residualConflict(10, ctx + 1)).toBeLessThanOrEqual(
+        residualConflict(10, ctx)
+      );
     }
   });
 
@@ -161,7 +163,11 @@ describe('Prediction 39: Negotiation regret bounded by void walking', () => {
 // ============================================================================
 
 describe('Prediction 40: Failure cascades follow topological contagion', () => {
-  function maxCascade(total: number, initial: number, contagion: number): number {
+  function maxCascade(
+    total: number,
+    initial: number,
+    contagion: number
+  ): number {
     return Math.min(initial * (contagion + 1), total);
   }
 

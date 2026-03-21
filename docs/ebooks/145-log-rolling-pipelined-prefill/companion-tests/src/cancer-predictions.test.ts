@@ -55,16 +55,19 @@ const ARREST = 1;
 const QUIESCENCE = 2;
 
 const PATHWAYS: Record<string, { beta1: number; isVent: boolean }> = {
-  p53:     { beta1: 3, isVent: true },
-  rb:      { beta1: 2, isVent: true },
-  apc:     { beta1: 2, isVent: true },
+  p53: { beta1: 3, isVent: true },
+  rb: { beta1: 2, isVent: true },
+  apc: { beta1: 2, isVent: true },
   atm_atr: { beta1: 2, isVent: true },
-  mapk:    { beta1: 1, isVent: false },
-  pi3k:    { beta1: 1, isVent: false },
-  wnt:     { beta1: 1, isVent: false },
+  mapk: { beta1: 1, isVent: false },
+  pi3k: { beta1: 1, isVent: false },
+  wnt: { beta1: 1, isVent: false },
 };
 
-function simulateCheckpoint(space: BuleyeanSpace, active: Set<string>): BuleyeanSpace {
+function simulateCheckpoint(
+  space: BuleyeanSpace,
+  active: Set<string>
+): BuleyeanSpace {
   let s = space;
   for (const name of active) {
     const p = PATHWAYS[name];
@@ -72,7 +75,10 @@ function simulateCheckpoint(space: BuleyeanSpace, active: Set<string>): Buleyean
   }
   for (const name of active) {
     const p = PATHWAYS[name];
-    if (p && !p.isVent) { s = reject(s, ARREST); s = reject(s, QUIESCENCE); }
+    if (p && !p.isVent) {
+      s = reject(s, ARREST);
+      s = reject(s, QUIESCENCE);
+    }
   }
   return s;
 }
@@ -114,10 +120,10 @@ describe('Prediction 6: TMB-T > Raw TMB', () => {
       tmbt,
       meanSeverity: meanSeverity.toFixed(2),
       severityDistribution: {
-        silent: mutations.filter(m => m.severity === 0).length,
-        mild: mutations.filter(m => m.severity === 1).length,
-        moderate: mutations.filter(m => m.severity === 2).length,
-        severe: mutations.filter(m => m.severity >= 3).length,
+        silent: mutations.filter((m) => m.severity === 0).length,
+        mild: mutations.filter((m) => m.severity === 1).length,
+        moderate: mutations.filter((m) => m.severity === 2).length,
+        severe: mutations.filter((m) => m.severity >= 3).length,
       },
     });
 
@@ -131,7 +137,15 @@ describe('Prediction 6: TMB-T > Raw TMB', () => {
 
     // Low TMB-T tumor: only mapk/pi3k/wnt active (no vent loss from TMB-T)
     // High TMB-T tumor: p53 knocked out (TMB-T reflects actual disruption)
-    const lowTMBT = new Set(['p53', 'rb', 'apc', 'atm_atr', 'mapk', 'pi3k', 'wnt']);
+    const lowTMBT = new Set([
+      'p53',
+      'rb',
+      'apc',
+      'atm_atr',
+      'mapk',
+      'pi3k',
+      'wnt',
+    ]);
     const highTMBT = new Set(['rb', 'apc', 'atm_atr', 'mapk', 'pi3k', 'wnt']); // p53 lost
 
     let sLow = createSpace(5);
@@ -141,7 +155,9 @@ describe('Prediction 6: TMB-T > Raw TMB', () => {
       sHigh = simulateCheckpoint(sHigh, highTMBT);
     }
 
-    expect(probability(sHigh, DIVIDE)).toBeGreaterThan(probability(sLow, DIVIDE));
+    expect(probability(sHigh, DIVIDE)).toBeGreaterThan(
+      probability(sLow, DIVIDE)
+    );
   });
 });
 
@@ -156,9 +172,11 @@ describe('Prediction 7: Loss Order Matters', () => {
     // Both end with same total deficit (5B = p53:3 + Rb:2)
 
     function simulateWithLosses(
-      firstLoss: string, firstLossCycle: number,
-      secondLoss: string, secondLossCycle: number,
-      totalCycles: number,
+      firstLoss: string,
+      firstLossCycle: number,
+      secondLoss: string,
+      secondLossCycle: number,
+      totalCycles: number
     ): number[] {
       const allPathways = new Set(Object.keys(PATHWAYS));
       let space = createSpace(5);
@@ -206,8 +224,8 @@ describe('Prediction 7: Loss Order Matters', () => {
 
   it('earlier loss of high-beta-1 pathway = more damage', () => {
     // p53 (beta-1=3) lost at different times
-    const earlyLoss = 2;  // lost at cycle 2
-    const lateLoss = 15;  // lost at cycle 15
+    const earlyLoss = 2; // lost at cycle 2
+    const lateLoss = 15; // lost at cycle 15
 
     // Rejections contributed before loss = lossRound * beta1
     const earlyRejections = earlyLoss * 3;
@@ -247,7 +265,9 @@ describe('Prediction 7: Loss Order Matters', () => {
     });
 
     // Divide void count should be higher when p53 was active longer
-    expect(spaceB.voidBoundary[DIVIDE]!).toBeGreaterThan(spaceA.voidBoundary[DIVIDE]!);
+    expect(spaceB.voidBoundary[DIVIDE]!).toBeGreaterThan(
+      spaceA.voidBoundary[DIVIDE]!
+    );
   });
 });
 
@@ -261,7 +281,7 @@ describe('Prediction 8: Synthetic Lethality Phase Transition', () => {
     const viabilityThreshold = 5;
 
     const p53KO = healthyBeta1 - 3; // = 6, ≥ 5 (viable)
-    const rbKO = healthyBeta1 - 2;  // = 7, ≥ 5 (viable)
+    const rbKO = healthyBeta1 - 2; // = 7, ≥ 5 (viable)
     const bothKO = healthyBeta1 - 3 - 2; // = 4, < 5 (lethal)
 
     expect(p53KO).toBeGreaterThanOrEqual(viabilityThreshold);
@@ -337,8 +357,14 @@ describe('Prediction 8: Synthetic Lethality Phase Transition', () => {
         const singleKO2 = healthyBeta1 - g2.beta1;
         const doubleKO = healthyBeta1 - g1.beta1 - g2.beta1;
 
-        if (singleKO1 >= threshold && singleKO2 >= threshold && doubleKO < threshold) {
-          lethalPairs.push(`${g1.name} + ${g2.name} (${doubleKO}B < ${threshold}B)`);
+        if (
+          singleKO1 >= threshold &&
+          singleKO2 >= threshold &&
+          doubleKO < threshold
+        ) {
+          lethalPairs.push(
+            `${g1.name} + ${g2.name} (${doubleKO}B < ${threshold}B)`
+          );
         }
       }
     }
@@ -363,7 +389,7 @@ describe('Prediction 9: Immunotherapy Response Ratio', () => {
       { name: 'Combined', deficit: 7 },
     ];
 
-    const results = subtypes.map(s => ({
+    const results = subtypes.map((s) => ({
       ...s,
       ratio: immuneBeta1 / s.deficit,
       coverage: immuneBeta1 >= s.deficit ? 'complete' : 'partial',
@@ -379,7 +405,10 @@ describe('Prediction 9: Immunotherapy Response Ratio', () => {
   it('simulation: higher response ratio = lower P(divide) with immune vent', () => {
     const immuneBeta1 = 2;
 
-    function simulateWithImmuneVent(pathways: Set<string>, cycles: number): number {
+    function simulateWithImmuneVent(
+      pathways: Set<string>,
+      cycles: number
+    ): number {
       let space = createSpace(5);
       for (let i = 0; i < cycles; i++) {
         space = simulateCheckpoint(space, pathways);
@@ -396,8 +425,8 @@ describe('Prediction 9: Immunotherapy Response Ratio', () => {
     const pCombined = simulateWithImmuneVent(combined, 20);
 
     console.log('Immune vent simulation:', {
-      classical: { pDivide: pClassical.toFixed(4), ratio: (2/2).toFixed(2) },
-      combined: { pDivide: pCombined.toFixed(4), ratio: (2/7).toFixed(2) },
+      classical: { pDivide: pClassical.toFixed(4), ratio: (2 / 2).toFixed(2) },
+      combined: { pDivide: pCombined.toFixed(4), ratio: (2 / 7).toFixed(2) },
     });
 
     // Higher ratio (classical) should have lower P(divide) with immune vent
@@ -416,7 +445,7 @@ describe('Prediction 9: Immunotherapy Response Ratio', () => {
       return probability(space, DIVIDE);
     }
 
-    const mono = simulateWithImmune(1);  // PD-1 only
+    const mono = simulateWithImmune(1); // PD-1 only
     const combo = simulateWithImmune(2); // PD-1 + CTLA-4
 
     console.log('Mono vs Combo:', {
@@ -450,7 +479,8 @@ describe('Prediction 10: Convergence Bound C* = totalVentBeta1 - 1', () => {
     const preConvergence = trajectory.slice(0, convergenceRound);
 
     // Post-convergence range should be small
-    const postRange = Math.max(...postConvergence) - Math.min(...postConvergence);
+    const postRange =
+      Math.max(...postConvergence) - Math.min(...postConvergence);
     // Pre-convergence should show more variation
     const preRange = Math.max(...preConvergence) - Math.min(...preConvergence);
 
@@ -478,7 +508,8 @@ describe('Prediction 10: Convergence Bound C* = totalVentBeta1 - 1', () => {
 
     const convergenceRound = 2; // C* = 3 - 1 = 2
     const postConvergence = trajectory.slice(convergenceRound);
-    const postRange = Math.max(...postConvergence) - Math.min(...postConvergence);
+    const postRange =
+      Math.max(...postConvergence) - Math.min(...postConvergence);
 
     console.log('Partial restoration convergence (beta-1=3, C*=2):', {
       postConvergenceRange: postRange.toFixed(4),
@@ -491,9 +522,21 @@ describe('Prediction 10: Convergence Bound C* = totalVentBeta1 - 1', () => {
 
   it('higher beta-1 = longer convergence time', () => {
     const configs = [
-      { name: 'p53 only (beta-1=3)', pathways: new Set(['p53', 'mapk', 'pi3k', 'wnt']), cStar: 2 },
-      { name: 'p53+Rb (beta-1=5)', pathways: new Set(['p53', 'rb', 'mapk', 'pi3k', 'wnt']), cStar: 4 },
-      { name: 'all (beta-1=9)', pathways: new Set(Object.keys(PATHWAYS)), cStar: 8 },
+      {
+        name: 'p53 only (beta-1=3)',
+        pathways: new Set(['p53', 'mapk', 'pi3k', 'wnt']),
+        cStar: 2,
+      },
+      {
+        name: 'p53+Rb (beta-1=5)',
+        pathways: new Set(['p53', 'rb', 'mapk', 'pi3k', 'wnt']),
+        cStar: 4,
+      },
+      {
+        name: 'all (beta-1=9)',
+        pathways: new Set(Object.keys(PATHWAYS)),
+        cStar: 8,
+      },
     ];
 
     for (const config of configs) {
@@ -509,10 +552,15 @@ describe('Prediction 10: Convergence Bound C* = totalVentBeta1 - 1', () => {
       for (let i = 5; i < trajectory.length; i++) {
         const window = trajectory.slice(i - 3, i + 1);
         const range = Math.max(...window) - Math.min(...window);
-        if (range < 0.005) { firstStable = i - 3; break; }
+        if (range < 0.005) {
+          firstStable = i - 3;
+          break;
+        }
       }
 
-      console.log(`${config.name}: C* = ${config.cStar}, first stable ~ cycle ${firstStable}`);
+      console.log(
+        `${config.name}: C* = ${config.cStar}, first stable ~ cycle ${firstStable}`
+      );
     }
 
     // Higher beta-1 configs should have higher C*
@@ -557,7 +605,9 @@ describe('Master: All Five Predictions Verified', () => {
     ];
 
     for (const p of predictions) {
-      console.log(`Prediction ${p.id}: ${p.name} — ${p.proven ? 'PROVEN' : 'OPEN'}`);
+      console.log(
+        `Prediction ${p.id}: ${p.name} — ${p.proven ? 'PROVEN' : 'OPEN'}`
+      );
       expect(p.proven).toBe(true);
     }
   });

@@ -28,8 +28,14 @@ function parseIntArg(value: string, flag: string): number {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gate5-bio-effect-size.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gate5-bio-effect-size.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gate5-bio-effect-size.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gate5-bio-effect-size.md'
+  );
 
   let assertGate = false;
   let seed: number | null = null;
@@ -97,12 +103,16 @@ function parseCli(argv: readonly string[]): CliOptions {
   };
 }
 
-function applyOverrides(defaultConfig: Gate5Config, options: CliOptions): Gate5Config {
+function applyOverrides(
+  defaultConfig: Gate5Config,
+  options: CliOptions
+): Gate5Config {
   return {
     ...defaultConfig,
     seed: options.seed ?? defaultConfig.seed,
     drawsPerPair: options.drawsPerPair ?? defaultConfig.drawsPerPair,
-    bootstrapResamples: options.bootstrapResamples ?? defaultConfig.bootstrapResamples,
+    bootstrapResamples:
+      options.bootstrapResamples ?? defaultConfig.bootstrapResamples,
   };
 }
 
@@ -114,21 +124,37 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(options.markdownPath, renderGate5Markdown(report), 'utf8');
 
-  process.stdout.write(`gate5 verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`);
-  process.stdout.write(`criteria passed: ${report.gate.passedCriterionIds.length}/${report.gate.criteria.length}\n`);
-  process.stdout.write(`pair count: ${report.aggregate.pairCount} (primary ${report.aggregate.primaryPairCount})\n`);
+  process.stdout.write(
+    `gate5 verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`
+  );
+  process.stdout.write(
+    `criteria passed: ${report.gate.passedCriterionIds.length}/${report.gate.criteria.length}\n`
+  );
+  process.stdout.write(
+    `pair count: ${report.aggregate.pairCount} (primary ${report.aggregate.primaryPairCount})\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
 
   for (const criterion of report.gate.criteria) {
     const ci = criterion.ci95
-      ? `, 95% CI ${criterion.ci95.low.toFixed(3)}-${criterion.ci95.high.toFixed(3)}`
+      ? `, 95% CI ${criterion.ci95.low.toFixed(
+          3
+        )}-${criterion.ci95.high.toFixed(3)}`
       : '';
     process.stdout.write(
-      `- ${criterion.id}: ${criterion.pass ? 'PASS' : 'DENY'} (observed ${criterion.observed.toFixed(3)}${ci}; threshold ${criterion.threshold})\n`,
+      `- ${criterion.id}: ${
+        criterion.pass ? 'PASS' : 'DENY'
+      } (observed ${criterion.observed.toFixed(3)}${ci}; threshold ${
+        criterion.threshold
+      })\n`
     );
   }
 
@@ -138,6 +164,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

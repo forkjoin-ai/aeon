@@ -111,24 +111,36 @@ export function renderSleepDebtScheduleThresholdWitnessMarkdown(
   lines.push('');
   lines.push(`- Label: \`${report.label}\``);
   lines.push('');
-  lines.push('| Scenario | Wake | Quota | Cycles | Surplus | Debt after cycles | Theorems |');
+  lines.push(
+    '| Scenario | Wake | Quota | Cycles | Surplus | Debt after cycles | Theorems |'
+  );
   lines.push('| --- | ---: | ---: | ---: | ---: | ---: | --- |');
 
   for (const scenario of report.scenarios) {
     lines.push(
-      `| \`${scenario.id}\` | ${scenario.scheduledWake} | ${scenario.recoveryQuota} | ${scenario.cycleCount} | ${scenario.scheduleSurplus} | ${scenario.debtAfterCycles} | \`${scenario.theoremRefs.join(', ')}\` |`
+      `| \`${scenario.id}\` | ${scenario.scheduledWake} | ${
+        scenario.recoveryQuota
+      } | ${scenario.cycleCount} | ${scenario.scheduleSurplus} | ${
+        scenario.debtAfterCycles
+      } | \`${scenario.theoremRefs.join(', ')}\` |`
     );
   }
 
   lines.push('');
   lines.push(
-    `- Subcritical schedule stays zero: \`${report.aggregate.subcriticalStaysZero ? 'yes' : 'no'}\``
+    `- Subcritical schedule stays zero: \`${
+      report.aggregate.subcriticalStaysZero ? 'yes' : 'no'
+    }\``
   );
   lines.push(
-    `- Critical schedule stays zero: \`${report.aggregate.criticalStaysZero ? 'yes' : 'no'}\``
+    `- Critical schedule stays zero: \`${
+      report.aggregate.criticalStaysZero ? 'yes' : 'no'
+    }\``
   );
   lines.push(
-    `- Supercritical schedule grows linearly: \`${report.aggregate.supercriticalGrowsLinearly ? 'yes' : 'no'}\``
+    `- Supercritical schedule grows linearly: \`${
+      report.aggregate.supercriticalGrowsLinearly ? 'yes' : 'no'
+    }\``
   );
   lines.push('');
   lines.push(

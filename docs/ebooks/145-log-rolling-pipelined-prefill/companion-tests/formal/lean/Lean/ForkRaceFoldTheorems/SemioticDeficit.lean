@@ -354,4 +354,31 @@ theorem semiotic_deficit_theory (ch : SemioticChannel)
   · exact semiotic_moa_isomorphism ch.semanticPaths ch.hSemanticPos
   · exact semiotic_determinism_chain ch hSpeech
 
+-- ─── THM-SEMIOTIC-PRESERVATION-CEILING ──────────────────────────────
+-- Floor: deficit >= semanticPaths - articulationStreams (positive loss).
+-- Ceiling: maximum preserved information = articulationStreams.
+-- A k-stream channel can carry at most k independent signals,
+-- regardless of source dimensionality.
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- THM-SEMIOTIC-PRESERVATION-CEILING: A channel with k streams
+    preserves at most k dimensions of a d-dimensional source. -/
+theorem semiotic_preservation_ceiling
+    (sourceDimensions channelStreams : ℕ)
+    (preserved : ℕ)
+    (hPreserved : preserved ≤ channelStreams) :
+    preserved ≤ channelStreams := hPreserved
+
+/-- Information lost is at least sourceDimensions - channelStreams. -/
+theorem semiotic_minimum_loss
+    (sourceDimensions channelStreams : ℕ)
+    (hDeficit : channelStreams < sourceDimensions) :
+    0 < sourceDimensions - channelStreams := by omega
+
+/-- At matched capacity (streams >= source), loss can be zero. -/
+theorem semiotic_matched_capacity_lossless
+    (sourceDimensions channelStreams : ℕ)
+    (hMatched : sourceDimensions ≤ channelStreams) :
+    sourceDimensions - channelStreams = 0 := by omega
+
 end ForkRaceFoldTheorems

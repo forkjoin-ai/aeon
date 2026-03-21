@@ -159,7 +159,9 @@ describe('Flow ESI Processor Pattern', () => {
         directiveIds,
         (results: Map<number, Uint8Array>) => {
           const parts: string[] = [];
-          for (const [, data] of Array.from(results.entries()).sort(([a], [b]) => a - b)) {
+          for (const [, data] of Array.from(results.entries()).sort(
+            ([a], [b]) => a - b
+          )) {
             parts.push(new TextDecoder().decode(data));
           }
           return new TextEncoder().encode(parts.join('|'));

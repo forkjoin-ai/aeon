@@ -19,15 +19,15 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/ch17-inverted-scaling-reynolds-figure.json',
+    '../artifacts/ch17-inverted-scaling-reynolds-figure.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-inverted-scaling-reynolds-figure.md',
+    '../artifacts/ch17-inverted-scaling-reynolds-figure.md'
   );
   const defaultSvgPath = resolve(
     moduleDir,
-    '../artifacts/ch17-inverted-scaling-reynolds-figure.svg',
+    '../artifacts/ch17-inverted-scaling-reynolds-figure.svg'
   );
 
   let assertSurface = false;
@@ -84,28 +84,50 @@ function main(): void {
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderCh17InvertedScalingReynoldsFigureMarkdown(report),
-    'utf8',
+    'utf8'
   );
-  writeFileSync(options.svgPath, renderCh17InvertedScalingReynoldsFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.svgPath,
+    renderCh17InvertedScalingReynoldsFigureSvg(report),
+    'utf8'
+  );
 
-  const aeonFlow = report.scenarios.find((scenario) => scenario.id === 'aeon-flow-microfrontend');
-  const http1 = report.scenarios.find((scenario) => scenario.id === 'http1-microfrontend');
+  const aeonFlow = report.scenarios.find(
+    (scenario) => scenario.id === 'aeon-flow-microfrontend'
+  );
+  const http1 = report.scenarios.find(
+    (scenario) => scenario.id === 'http1-microfrontend'
+  );
   const maxScenarioSpeedup = Math.max(
-    ...report.scenarios.flatMap((scenario) => (scenario.speedup === undefined ? [] : [scenario.speedup])),
+    ...report.scenarios.flatMap((scenario) =>
+      scenario.speedup === undefined ? [] : [scenario.speedup]
+    )
   );
 
-  process.stdout.write(`ch17-inverted-scaling-reynolds-figure: ${report.label}\n`);
+  process.stdout.write(
+    `ch17-inverted-scaling-reynolds-figure: ${report.label}\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
-  process.stdout.write(`- stage families: ${report.stageFamilies.join(', ')}\n`);
-  process.stdout.write(`- max scenario speedup: ${maxScenarioSpeedup.toFixed(3)}x\n`);
   process.stdout.write(
-    `- transport Re shift: ${http1?.reynolds.toFixed(3)} -> ${aeonFlow?.reynolds.toFixed(3)}\n`,
+    `- stage families: ${report.stageFamilies.join(', ')}\n`
+  );
+  process.stdout.write(
+    `- max scenario speedup: ${maxScenarioSpeedup.toFixed(3)}x\n`
+  );
+  process.stdout.write(
+    `- transport Re shift: ${http1?.reynolds.toFixed(
+      3
+    )} -> ${aeonFlow?.reynolds.toFixed(3)}\n`
   );
 
   if (
@@ -114,7 +136,8 @@ function main(): void {
       aeonFlow?.regime === 'transitional' &&
       http1?.regime === 'turbulent' &&
       maxScenarioSpeedup > 260 &&
-      report.scenarios.filter((scenario) => scenario.speedup !== undefined).length === 4
+      report.scenarios.filter((scenario) => scenario.speedup !== undefined)
+        .length === 4
     )
   ) {
     process.exitCode = 1;

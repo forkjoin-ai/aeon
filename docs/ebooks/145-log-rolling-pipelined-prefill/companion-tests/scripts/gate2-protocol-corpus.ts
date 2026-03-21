@@ -29,8 +29,14 @@ function parseIntArg(value: string, flag: string): number {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gate2-protocol-corpus.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gate2-protocol-corpus.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gate2-protocol-corpus.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gate2-protocol-corpus.md'
+  );
 
   let assertGate = false;
   let seed: number | null = null;
@@ -108,13 +114,17 @@ function parseCli(argv: readonly string[]): CliOptions {
   };
 }
 
-function applyOverrides(defaultConfig: Gate2Config, options: CliOptions): Gate2Config {
+function applyOverrides(
+  defaultConfig: Gate2Config,
+  options: CliOptions
+): Gate2Config {
   return {
     ...defaultConfig,
     seed: options.seed ?? defaultConfig.seed,
     corpusSize: options.corpusSize ?? defaultConfig.corpusSize,
     trialsPerSite: options.trialsPerSite ?? defaultConfig.trialsPerSite,
-    bootstrapResamples: options.bootstrapResamples ?? defaultConfig.bootstrapResamples,
+    bootstrapResamples:
+      options.bootstrapResamples ?? defaultConfig.bootstrapResamples,
   };
 }
 
@@ -126,12 +136,22 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(options.markdownPath, renderGate2Markdown(report), 'utf8');
 
-  process.stdout.write(`gate2 verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`);
-  process.stdout.write(`primary cells: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}\n`);
-  process.stdout.write(`corpus: ${report.corpus.siteCount} sites, ${report.corpus.totalResources} resources\n`);
+  process.stdout.write(
+    `gate2 verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`
+  );
+  process.stdout.write(
+    `primary cells: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}\n`
+  );
+  process.stdout.write(
+    `corpus: ${report.corpus.siteCount} sites, ${report.corpus.totalResources} resources\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   for (const cell of report.cells) {
@@ -139,7 +159,7 @@ async function main(): Promise<void> {
       `- ${cell.cellId}: ${cell.passed ? 'PASS' : 'DENY'} ` +
         `(framing median ${cell.framingMedianGainPct.toFixed(3)}%, ` +
         `completion median ${cell.completionMedianGainMs.toFixed(3)} ms, ` +
-        `completion p95 ${cell.completionP95GainMs.toFixed(3)} ms)\n`,
+        `completion p95 ${cell.completionP95GainMs.toFixed(3)} ms)\n`
     );
   }
 
@@ -149,7 +169,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });
-

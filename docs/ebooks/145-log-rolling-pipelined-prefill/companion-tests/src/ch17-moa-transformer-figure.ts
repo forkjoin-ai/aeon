@@ -81,9 +81,10 @@ function multilineText(
     readonly color?: string;
     readonly weight?: number;
     readonly lineHeight?: number;
-  } = {},
+  } = {}
 ): void {
-  const lineHeight = options.lineHeight ?? Math.round((options.size ?? 13) * 1.2);
+  const lineHeight =
+    options.lineHeight ?? Math.round((options.size ?? 13) * 1.2);
   const tspans = lines
     .map((line, index) => {
       const dy = index === 0 ? '0' : String(lineHeight);
@@ -91,9 +92,13 @@ function multilineText(
     })
     .join('');
   svg.push(
-    `<text x="${x}" y="${y}" text-anchor="${options.anchor ?? 'middle'}" font-family="Georgia, Times New Roman, serif" font-size="${
+    `<text x="${x}" y="${y}" text-anchor="${
+      options.anchor ?? 'middle'
+    }" font-family="Georgia, Times New Roman, serif" font-size="${
       options.size ?? 13
-    }" font-weight="${options.weight ?? 400}" fill="${options.color ?? '#0f172a'}">${tspans}</text>`,
+    }" font-weight="${options.weight ?? 400}" fill="${
+      options.color ?? '#0f172a'
+    }">${tspans}</text>`
   );
 }
 
@@ -439,15 +444,25 @@ export function renderCh17MoaTransformerFigureSvg(
     if (labelLayout.dx !== 0 || labelLayout.dy < 0) {
       const leaderTargetY = y - Math.min(radius * 0.45, 14);
       svg.push(
-        `<line x1="${x}" y1="${leaderTargetY}" x2="${labelX}" y2="${labelY - 6}" stroke="#64748b" stroke-width="1.5" opacity="0.75"/>`,
+        `<line x1="${x}" y1="${leaderTargetY}" x2="${labelX}" y2="${
+          labelY - 6
+        }" stroke="#64748b" stroke-width="1.5" opacity="0.75"/>`
       );
     }
-    const labelTextWidth = Math.max(...labelLayout.lines.map((l) => l.length)) * 7.5;
+    const labelTextWidth =
+      Math.max(...labelLayout.lines.map((l) => l.length)) * 7.5;
     const labelTextHeight = labelLayout.lines.length * 14;
-    const bgX = labelLayout.anchor === 'end' ? labelX - labelTextWidth - 4 : labelLayout.anchor === 'start' ? labelX - 4 : labelX - labelTextWidth / 2 - 4;
+    const bgX =
+      labelLayout.anchor === 'end'
+        ? labelX - labelTextWidth - 4
+        : labelLayout.anchor === 'start'
+        ? labelX - 4
+        : labelX - labelTextWidth / 2 - 4;
     const bgY = labelY - 12;
     svg.push(
-      `<rect x="${bgX}" y="${bgY}" width="${labelTextWidth + 8}" height="${labelTextHeight + 6}" rx="4" ry="4" fill="#fffdf8" fill-opacity="0.88"/>`,
+      `<rect x="${bgX}" y="${bgY}" width="${labelTextWidth + 8}" height="${
+        labelTextHeight + 6
+      }" rx="4" ry="4" fill="#fffdf8" fill-opacity="0.88"/>`
     );
     multilineText(svg, labelX, labelY, labelLayout.lines, {
       anchor: labelLayout.anchor,

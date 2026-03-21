@@ -17,16 +17,36 @@
  * Everything speaks Aeon internally. HTTP is just the projection.
  */
 // ── DashRelay (backbone) ──────────────────────────────────────────
-export { DashRelayFlowTransport, createDashRelayFlow, } from './dashrelay';
+export { DashRelayFlowTransport, createDashRelayFlow } from './dashrelay';
 // ── Bluetooth (nearby mesh) ───────────────────────────────────────
-export { BluetoothFlowTransport, AEON_FLOW_SERVICE_UUID, AEON_FLOW_TX_UUID, AEON_FLOW_RX_UUID, } from './bluetooth';
+export {
+  BluetoothFlowTransport,
+  AEON_FLOW_SERVICE_UUID,
+  AEON_FLOW_TX_UUID,
+  AEON_FLOW_RX_UUID,
+} from './bluetooth';
 // ── WebRTC (browser-to-browser) ───────────────────────────────────
-export { WebRTCFlowTransport, createP2PFlow, } from './webrtc';
+export { WebRTCFlowTransport, createP2PFlow } from './webrtc';
 // ── TCP (server-to-server) ────────────────────────────────────────
-export { TCPFlowTransport, connectTCPFlow, listenTCPFlow, } from './tcp';
+export { TCPFlowTransport, connectTCPFlow, listenTCPFlow } from './tcp';
 // ── IPC (local processes) ─────────────────────────────────────────
-export { MessagePortFlowTransport, ChildProcessFlowTransport, createIPCPair, } from './ipc';
+export {
+  MessagePortFlowTransport,
+  ChildProcessFlowTransport,
+  createIPCPair,
+} from './ipc';
 // ── USB (hardware devices) ────────────────────────────────────────
-export { USBFlowTransport, AEON_USB_INTERFACE_CLASS, AEON_USB_SUBCLASS, AEON_USB_PROTOCOL, } from './usb';
+export {
+  USBFlowTransport,
+  AEON_USB_INTERFACE_CLASS,
+  AEON_USB_SUBCLASS,
+  AEON_USB_PROTOCOL,
+} from './usb';
 // ── HTTP (nginx bridge / normie projection) ───────────────────────
-export { HTTPAeonBridge, encodeHTTPRequest, decodeHTTPRequest, encodeHTTPResponse, decodeHTTPResponse, } from './http';
+export {
+  HTTPAeonBridge,
+  encodeHTTPRequest,
+  decodeHTTPRequest,
+  encodeHTTPResponse,
+  decodeHTTPResponse,
+} from './http';

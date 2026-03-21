@@ -24,8 +24,8 @@ import { describe, expect, it } from 'vitest';
 // ============================================================================
 
 interface SemioticChannel {
-  readonly semanticPaths: number;  // n: dimensions of thought
-  readonly streams: number;         // m: channels of speech (usually 1)
+  readonly semanticPaths: number; // n: dimensions of thought
+  readonly streams: number; // m: channels of speech (usually 1)
   readonly contextPerRound: number; // c: shared context gained per dialogue turn
 }
 
@@ -43,7 +43,7 @@ function computeDeficit(channel: SemioticChannel): number {
 
 function simulateDialogue(
   channel: SemioticChannel,
-  maxTurns: number = 10000,
+  maxTurns: number = 10000
 ): ConvergenceResult {
   const initialDeficit = computeDeficit(channel);
   let deficit = initialDeficit;
@@ -95,9 +95,17 @@ const COST_FUNCTIONS: CostFunction[] = [
   { name: 'linear', cost: (d) => d, monotone: true },
   { name: 'quadratic', cost: (d) => d * d, monotone: true },
   { name: 'exponential', cost: (d) => Math.exp(d) - 1, monotone: true },
-  { name: 'logarithmic', cost: (d) => d > 0 ? Math.log(1 + d) : 0, monotone: true },
+  {
+    name: 'logarithmic',
+    cost: (d) => (d > 0 ? Math.log(1 + d) : 0),
+    monotone: true,
+  },
   { name: 'Landauer heat', cost: (d) => d * Math.log(2), monotone: true },
-  { name: 'step (any positive deficit)', cost: (d) => d > 0 ? 1 : 0, monotone: true },
+  {
+    name: 'step (any positive deficit)',
+    cost: (d) => (d > 0 ? 1 : 0),
+    monotone: true,
+  },
 ];
 
 // ============================================================================
@@ -139,7 +147,7 @@ const COUNTEREXAMPLES: CounterexampleEntry[] = [
   {
     name: 'Cuban Missile Crisis backchannel',
     description: 'High context rate (0.30) -- fast convergence',
-    channel: { semanticPaths: 5, streams: 1, contextPerRound: 0.30 },
+    channel: { semanticPaths: 5, streams: 1, contextPerRound: 0.3 },
     expectedBehavior: 'Converges quickly (~14 turns)',
   },
   {
@@ -167,17 +175,16 @@ const COUNTEREXAMPLES: CounterexampleEntry[] = [
 // ============================================================================
 
 describe('Convergence Rate Bound', () => {
-
   // ── The bound itself ──────────────────────────────────────────────
 
   describe('the bound: turns ≤ ceil((n - m) / c)', () => {
     it('holds for all historic negotiation scenarios', () => {
       const scenarios = [
-        { name: 'Cuba', n: 5, c: 0.30 },
+        { name: 'Cuba', n: 5, c: 0.3 },
         { name: 'Versailles', n: 6, c: 0.05 },
         { name: 'Galileo', n: 5, c: 0.02 },
         { name: 'Lincoln-Douglas', n: 5, c: 0.15 },
-        { name: 'Beethoven', n: 6, c: 0.10 },
+        { name: 'Beethoven', n: 6, c: 0.1 },
         { name: 'Impressionism', n: 5, c: 0.08 },
         { name: 'Socrates', n: 5, c: 0.03 },
         { name: 'Edison-Tesla', n: 6, c: 0.12 },
@@ -213,13 +220,29 @@ describe('Convergence Rate Bound', () => {
 
     it('bound scales linearly with deficit, inversely with context rate', () => {
       // Double the deficit → double the bound
-      const c1 = convergenceBound({ semanticPaths: 5, streams: 1, contextPerRound: 0.5 });
-      const c2 = convergenceBound({ semanticPaths: 9, streams: 1, contextPerRound: 0.5 });
+      const c1 = convergenceBound({
+        semanticPaths: 5,
+        streams: 1,
+        contextPerRound: 0.5,
+      });
+      const c2 = convergenceBound({
+        semanticPaths: 9,
+        streams: 1,
+        contextPerRound: 0.5,
+      });
       expect(c2).toBe(c1 * 2);
 
       // Double the context rate → half the bound
-      const c3 = convergenceBound({ semanticPaths: 9, streams: 1, contextPerRound: 0.5 });
-      const c4 = convergenceBound({ semanticPaths: 9, streams: 1, contextPerRound: 1.0 });
+      const c3 = convergenceBound({
+        semanticPaths: 9,
+        streams: 1,
+        contextPerRound: 0.5,
+      });
+      const c4 = convergenceBound({
+        semanticPaths: 9,
+        streams: 1,
+        contextPerRound: 1.0,
+      });
       expect(c4).toBe(c3 / 2);
     });
   });
@@ -322,7 +345,11 @@ describe('Convergence Rate Bound', () => {
 
   describe('boundary conditions where the framework breaks', () => {
     it('zero context rate: framework correctly predicts impasse', () => {
-      const ch: SemioticChannel = { semanticPaths: 5, streams: 1, contextPerRound: 0 };
+      const ch: SemioticChannel = {
+        semanticPaths: 5,
+        streams: 1,
+        contextPerRound: 0,
+      };
       expect(convergenceBound(ch)).toBe(Infinity);
       expect(simulateDialogue(ch, 1000).converged).toBe(false);
     });
@@ -331,25 +358,41 @@ describe('Convergence Rate Bound', () => {
       // If context could be destroyed, the deficit would grow
       // The framework assumes context is monotonically non-decreasing
       // A negative context rate violates this assumption
-      const ch: SemioticChannel = { semanticPaths: 5, streams: 1, contextPerRound: -0.1 };
+      const ch: SemioticChannel = {
+        semanticPaths: 5,
+        streams: 1,
+        contextPerRound: -0.1,
+      };
       // The bound would be negative/meaningless
       expect(convergenceBound(ch)).toBe(Infinity); // contextPerRound <= 0 → Infinity
     });
 
     it('context rate > deficit: converges in 1 turn', () => {
-      const ch: SemioticChannel = { semanticPaths: 2, streams: 1, contextPerRound: 10 };
+      const ch: SemioticChannel = {
+        semanticPaths: 2,
+        streams: 1,
+        contextPerRound: 10,
+      };
       expect(convergenceBound(ch)).toBe(1);
       expect(simulateDialogue(ch).turnsToConvergence).toBe(1);
     });
 
     it('context rate exactly divides deficit: bound is exact', () => {
-      const ch: SemioticChannel = { semanticPaths: 11, streams: 1, contextPerRound: 2.0 };
+      const ch: SemioticChannel = {
+        semanticPaths: 11,
+        streams: 1,
+        contextPerRound: 2.0,
+      };
       expect(convergenceBound(ch)).toBe(5); // ceil(10 / 2.0) = 5
       expect(simulateDialogue(ch).turnsToConvergence).toBe(5);
     });
 
     it('context rate does not divide deficit: bound is ceil', () => {
-      const ch: SemioticChannel = { semanticPaths: 11, streams: 1, contextPerRound: 3.0 };
+      const ch: SemioticChannel = {
+        semanticPaths: 11,
+        streams: 1,
+        contextPerRound: 3.0,
+      };
       expect(convergenceBound(ch)).toBe(4); // ceil(10 / 3.0) = 4
       expect(simulateDialogue(ch).turnsToConvergence).toBeLessThanOrEqual(4);
     });
@@ -362,7 +405,11 @@ describe('Convergence Rate Bound', () => {
       // The inverse Bule B⁻¹ measures deficit reduction per round
       // For a fixed-context channel, B⁻¹ = contextPerRound
       // So turns_to_convergence = deficit / B⁻¹ = deficit / contextPerRound
-      const ch: SemioticChannel = { semanticPaths: 10, streams: 1, contextPerRound: 0.5 };
+      const ch: SemioticChannel = {
+        semanticPaths: 10,
+        streams: 1,
+        contextPerRound: 0.5,
+      };
       const deficit = computeDeficit(ch);
       const inverseBule = ch.contextPerRound;
       const turnsFromBule = Math.ceil(deficit / inverseBule);

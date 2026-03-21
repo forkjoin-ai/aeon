@@ -52,9 +52,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -103,7 +102,6 @@ function sparkline(values: number[]): string {
 // ============================================================================
 
 describe('Trauma: One Catastrophic Void Entry Dominates', () => {
-
   it('single catastrophic event spikes kurtosis and collapses entropy', () => {
     // Healthy void: balanced experience across 5 life domains
     const healthyVoid = [10, 12, 8, 11, 9]; // roughly equal
@@ -128,15 +126,32 @@ describe('Trauma: One Catastrophic Void Entry Dominates', () => {
 
     console.log('\n  Trauma: catastrophic void entry');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Healthy: κ=${healthyKurt.toFixed(2)} H=${healthyEntropy.toFixed(3)} dist=[${healthyDist.map((d) => d.toFixed(2)).join(', ')}]`);
-    console.log(`  Trauma:  κ=${traumaKurt.toFixed(2)} H=${traumaEntropy.toFixed(3)} dist=[${traumaDist.map((d) => d.toFixed(2)).join(', ')}]`);
-    console.log(`  Domain 3 weight: healthy=${healthyDist[3].toFixed(3)} trauma=${traumaDist[3].toFixed(3)} (avoidance)`);
+    console.log(
+      `  Healthy: κ=${healthyKurt.toFixed(2)} H=${healthyEntropy.toFixed(
+        3
+      )} dist=[${healthyDist.map((d) => d.toFixed(2)).join(', ')}]`
+    );
+    console.log(
+      `  Trauma:  κ=${traumaKurt.toFixed(2)} H=${traumaEntropy.toFixed(
+        3
+      )} dist=[${traumaDist.map((d) => d.toFixed(2)).join(', ')}]`
+    );
+    console.log(
+      `  Domain 3 weight: healthy=${healthyDist[3].toFixed(
+        3
+      )} trauma=${traumaDist[3].toFixed(3)} (avoidance)`
+    );
   });
 
   it('trauma severity scales with void entry magnitude', () => {
     const base = [10, 10, 10, 10, 10];
     const severities = [0, 20, 50, 100, 200, 500];
-    const results: Array<{ severity: number; kurtosis: number; entropy: number; avoidance: number }> = [];
+    const results: Array<{
+      severity: number;
+      kurtosis: number;
+      entropy: number;
+      avoidance: number;
+    }> = [];
 
     for (const s of severities) {
       const v = [...base];
@@ -154,17 +169,27 @@ describe('Trauma: One Catastrophic Void Entry Dominates', () => {
     console.log('  severity  kurtosis  entropy  avoidance');
     for (const r of results) {
       console.log(
-        `  ${String(r.severity).padStart(8)}  ${r.kurtosis.toFixed(3).padStart(8)}  ${r.entropy.toFixed(3).padStart(7)}  ${(r.avoidance * 100).toFixed(1).padStart(8)}%`,
+        `  ${String(r.severity).padStart(8)}  ${r.kurtosis
+          .toFixed(3)
+          .padStart(8)}  ${r.entropy.toFixed(3).padStart(7)}  ${(
+          r.avoidance * 100
+        )
+          .toFixed(1)
+          .padStart(8)}%`
       );
     }
 
     // Higher severity → lower entropy (more constricted life)
     for (let i = 1; i < results.length; i++) {
-      expect(results[i].entropy).toBeLessThanOrEqual(results[i - 1].entropy + 0.01);
+      expect(results[i].entropy).toBeLessThanOrEqual(
+        results[i - 1].entropy + 0.01
+      );
     }
     // Higher severity → more avoidance of the traumatized domain
     for (let i = 1; i < results.length; i++) {
-      expect(results[i].avoidance).toBeGreaterThanOrEqual(results[i - 1].avoidance - 0.01);
+      expect(results[i].avoidance).toBeGreaterThanOrEqual(
+        results[i - 1].avoidance - 0.01
+      );
     }
   });
 });
@@ -174,7 +199,6 @@ describe('Trauma: One Catastrophic Void Entry Dominates', () => {
 // ============================================================================
 
 describe('Freeze Response: Metacognitive Layer Locks', () => {
-
   it('catastrophic void entry freezes exploration rate to near-zero', () => {
     // Simulate c3 adaptation with a catastrophic event
     let eta = 2.0;
@@ -209,20 +233,32 @@ describe('Freeze Response: Metacognitive Layer Locks', () => {
     // Exploration should have crashed post-trauma
     const preTroumaExploration = explorationHistory.slice(15, 20);
     const postTraumaExploration = explorationHistory.slice(-5);
-    const preMean = preTroumaExploration.reduce((a, b) => a + b, 0) / preTroumaExploration.length;
-    const postMean = postTraumaExploration.reduce((a, b) => a + b, 0) / postTraumaExploration.length;
+    const preMean =
+      preTroumaExploration.reduce((a, b) => a + b, 0) /
+      preTroumaExploration.length;
+    const postMean =
+      postTraumaExploration.reduce((a, b) => a + b, 0) /
+      postTraumaExploration.length;
 
     expect(postMean).toBeLessThanOrEqual(preMean);
 
     console.log('\n  Freeze response:');
     console.log(`  exploration: ${sparkline(explorationHistory)}`);
-    console.log(`  pre-trauma ε=${preMean.toFixed(3)} → post-trauma ε=${postMean.toFixed(3)}`);
+    console.log(
+      `  pre-trauma ε=${preMean.toFixed(3)} → post-trauma ε=${postMean.toFixed(
+        3
+      )}`
+    );
     console.log('  The creature stopped exploring. Freeze.');
   });
 
   it('freeze is proportional to trauma magnitude', () => {
     const magnitudes = [10, 50, 100, 500];
-    const results: Array<{ magnitude: number; finalExploration: number; finalEta: number }> = [];
+    const results: Array<{
+      magnitude: number;
+      finalExploration: number;
+      finalEta: number;
+    }> = [];
 
     for (const mag of magnitudes) {
       let eta = 2.0;
@@ -239,18 +275,26 @@ describe('Freeze Response: Metacognitive Layer Locks', () => {
         }
       }
 
-      results.push({ magnitude: mag, finalExploration: exploration, finalEta: eta });
+      results.push({
+        magnitude: mag,
+        finalExploration: exploration,
+        finalEta: eta,
+      });
     }
 
     console.log('\n  Freeze depth by trauma magnitude:');
     for (const r of results) {
-      console.log(`  mag=${String(r.magnitude).padStart(3)}: ε=${r.finalExploration.toFixed(4)} η=${r.finalEta.toFixed(1)}`);
+      console.log(
+        `  mag=${String(r.magnitude).padStart(
+          3
+        )}: ε=${r.finalExploration.toFixed(4)} η=${r.finalEta.toFixed(1)}`
+      );
     }
 
     // Larger trauma → deeper freeze (lower exploration)
     for (let i = 1; i < results.length; i++) {
       expect(results[i].finalExploration).toBeLessThanOrEqual(
-        results[i - 1].finalExploration + 0.01,
+        results[i - 1].finalExploration + 0.01
       );
     }
   });
@@ -261,7 +305,6 @@ describe('Freeze Response: Metacognitive Layer Locks', () => {
 // ============================================================================
 
 describe('Healing: Diluting the Catastrophic Entry', () => {
-
   it('adding positive experiences reduces kurtosis toward healthy baseline', () => {
     // Traumatized void
     const traumaVoid = [10, 10, 200, 10, 10];
@@ -274,13 +317,19 @@ describe('Healing: Diluting the Catastrophic Entry', () => {
     const healingEntropy = shannonEntropy(complementDist(healingVoid));
 
     // Healing should reduce kurtosis toward zero (more balanced)
-    expect(Math.abs(healingKurt)).toBeLessThanOrEqual(Math.abs(traumaKurt) + 0.01);
+    expect(Math.abs(healingKurt)).toBeLessThanOrEqual(
+      Math.abs(traumaKurt) + 0.01
+    );
     // Healing should increase entropy (more options feel available)
     expect(healingEntropy).toBeGreaterThanOrEqual(traumaEntropy - 0.01);
 
     console.log('\n  Healing through dilution:');
-    console.log(`  Trauma:  κ=${traumaKurt.toFixed(3)} H=${traumaEntropy.toFixed(3)}`);
-    console.log(`  Healing: κ=${healingKurt.toFixed(3)} H=${healingEntropy.toFixed(3)}`);
+    console.log(
+      `  Trauma:  κ=${traumaKurt.toFixed(3)} H=${traumaEntropy.toFixed(3)}`
+    );
+    console.log(
+      `  Healing: κ=${healingKurt.toFixed(3)} H=${healingEntropy.toFixed(3)}`
+    );
     console.log('  New experience dilutes the catastrophic entry.');
   });
 
@@ -304,14 +353,20 @@ describe('Healing: Diluting the Catastrophic Entry', () => {
     }
 
     // Kurtosis should trend downward
-    const earlyKurt = kurtosisTrajectory.slice(0, 5).reduce((a, b) => a + b, 0) / 5;
-    const lateKurt = kurtosisTrajectory.slice(-5).reduce((a, b) => a + b, 0) / 5;
+    const earlyKurt =
+      kurtosisTrajectory.slice(0, 5).reduce((a, b) => a + b, 0) / 5;
+    const lateKurt =
+      kurtosisTrajectory.slice(-5).reduce((a, b) => a + b, 0) / 5;
     expect(lateKurt).toBeLessThan(earlyKurt + 0.1);
 
     console.log('\n  Healing trajectory (20 therapy sessions):');
     console.log(`  κ: ${sparkline(kurtosisTrajectory)}`);
     console.log(`  H: ${sparkline(entropyTrajectory)}`);
-    console.log(`  κ: ${earlyKurt.toFixed(2)} → ${lateKurt.toFixed(2)} (decreasing = healing)`);
+    console.log(
+      `  κ: ${earlyKurt.toFixed(2)} → ${lateKurt.toFixed(
+        2
+      )} (decreasing = healing)`
+    );
     console.log('  Each session dilutes. Kurtosis softens. Options return.');
   });
 
@@ -333,13 +388,19 @@ describe('Healing: Diluting the Catastrophic Entry', () => {
     // Holding space produces at least as high entropy (more balanced experience)
     // The key difference: holding space adds to ALL domains, not just the avoided one
     expect(holdVoid.reduce((a, b) => a + b, 0)).toBeGreaterThanOrEqual(
-      noHoldVoid.reduce((a, b) => a + b, 0),
+      noHoldVoid.reduce((a, b) => a + b, 0)
     );
 
     console.log('\n  Holding space enables healing:');
-    console.log(`  Without holding: H=${noHoldEntropy.toFixed(3)} (avoidance reinforced)`);
-    console.log(`  With holding:    H=${holdEntropy.toFixed(3)} (options restored)`);
-    console.log('  Don\'t fix. Don\'t fold. Just be present. Race without deadline.');
+    console.log(
+      `  Without holding: H=${noHoldEntropy.toFixed(3)} (avoidance reinforced)`
+    );
+    console.log(
+      `  With holding:    H=${holdEntropy.toFixed(3)} (options restored)`
+    );
+    console.log(
+      "  Don't fix. Don't fold. Just be present. Race without deadline."
+    );
   });
 });
 
@@ -348,7 +409,6 @@ describe('Healing: Diluting the Catastrophic Entry', () => {
 // ============================================================================
 
 describe('Addiction: Void Seeding in the Wrong Dimension', () => {
-
   it('addiction builds void in irrelevant dimension (zero inverse Bule)', () => {
     // The actual problem is in dimension 2 (trauma)
     const relevantVoid = [5, 5, 200, 5, 5]; // domain 2 is the wound
@@ -375,9 +435,15 @@ describe('Addiction: Void Seeding in the Wrong Dimension', () => {
     expect(afterH).toBeLessThan(beforeH + 0.01);
 
     console.log('\n  Addiction: void seeding in wrong dimension');
-    console.log(`  Before: dist=[${complementDist(relevantVoid).map((d) => d.toFixed(2)).join(', ')}]`);
+    console.log(
+      `  Before: dist=[${complementDist(relevantVoid)
+        .map((d) => d.toFixed(2))
+        .join(', ')}]`
+    );
     console.log(`  After:  dist=[${dist.map((d) => d.toFixed(2)).join(', ')}]`);
-    console.log('  Domain 2 (trauma) unchanged. Domain 4 (substance) now also avoided.');
+    console.log(
+      '  Domain 2 (trauma) unchanged. Domain 4 (substance) now also avoided.'
+    );
     console.log('  Tombstones accumulated, but in the wrong graveyard.');
   });
 
@@ -399,8 +465,10 @@ describe('Addiction: Void Seeding in the Wrong Dimension', () => {
     // Recovery: the RATIO of domain 2 to others improves
     // Before: domain 2 has 200 out of 715 total (28%)
     // After: domain 2 has 350 out of 1215 total (29%) -- ratio improves
-    const addictedRatio = addictedVoid[2] / addictedVoid.reduce((a, b) => a + b, 0);
-    const recoveryRatio = recoveryVoid[2] / recoveryVoid.reduce((a, b) => a + b, 0);
+    const addictedRatio =
+      addictedVoid[2] / addictedVoid.reduce((a, b) => a + b, 0);
+    const recoveryRatio =
+      recoveryVoid[2] / recoveryVoid.reduce((a, b) => a + b, 0);
     // The trauma domain's proportion of total void should decrease (diluted)
     expect(recoveryRatio).toBeLessThanOrEqual(addictedRatio + 0.02);
     // Recovery: distribution is more balanced (Gini decreases)
@@ -409,9 +477,19 @@ describe('Addiction: Void Seeding in the Wrong Dimension', () => {
     expect(recoveryGini).toBeLessThanOrEqual(addictedGini);
 
     console.log('\n  Recovery: redirect void seeding');
-    console.log(`  Addicted Gini: ${addictedGini.toFixed(3)} dist=[${addictedDist.map((d) => d.toFixed(2)).join(', ')}]`);
-    console.log(`  Recovery Gini: ${recoveryGini.toFixed(3)} dist=[${recoveryDist.map((d) => d.toFixed(2)).join(', ')}]`);
-    console.log('  Balanced experience dilutes both trauma and addiction voids.');
+    console.log(
+      `  Addicted Gini: ${addictedGini.toFixed(3)} dist=[${addictedDist
+        .map((d) => d.toFixed(2))
+        .join(', ')}]`
+    );
+    console.log(
+      `  Recovery Gini: ${recoveryGini.toFixed(3)} dist=[${recoveryDist
+        .map((d) => d.toFixed(2))
+        .join(', ')}]`
+    );
+    console.log(
+      '  Balanced experience dilutes both trauma and addiction voids.'
+    );
   });
 });
 
@@ -420,7 +498,6 @@ describe('Addiction: Void Seeding in the Wrong Dimension', () => {
 // ============================================================================
 
 describe('Resilience: Dense Prior Void Absorbs Catastrophic Entries', () => {
-
   it('experienced agent absorbs trauma better than naive agent', () => {
     // Naive: sparse void (young, few experiences)
     const naiveVoid = [2, 2, 2, 2, 2];
@@ -451,7 +528,9 @@ describe('Resilience: Dense Prior Void Absorbs Catastrophic Entries', () => {
     const naiveEntropyBefore = shannonEntropy(complementDist(naiveVoid));
     const naiveEntropyAfter = shannonEntropy(complementDist(naiveTraumaVoid));
     const expEntropyBefore = shannonEntropy(complementDist(experiencedVoid));
-    const expEntropyAfter = shannonEntropy(complementDist(experiencedTraumaVoid));
+    const expEntropyAfter = shannonEntropy(
+      complementDist(experiencedTraumaVoid)
+    );
 
     const naiveEntropyLoss = naiveEntropyBefore - naiveEntropyAfter;
     const expEntropyLoss = expEntropyBefore - expEntropyAfter;
@@ -461,16 +540,30 @@ describe('Resilience: Dense Prior Void Absorbs Catastrophic Entries', () => {
 
     console.log('\n  Resilience: experienced vs naive under same trauma');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Naive:       Δκ=${naiveImpact.toFixed(3)}  ΔH=${naiveEntropyLoss.toFixed(3)} (devastated)`);
-    console.log(`  Experienced: Δκ=${expImpact.toFixed(3)}  ΔH=${expEntropyLoss.toFixed(3)} (absorbed)`);
-    console.log('  A dense void boundary absorbs catastrophe like a shock absorber.');
+    console.log(
+      `  Naive:       Δκ=${naiveImpact.toFixed(
+        3
+      )}  ΔH=${naiveEntropyLoss.toFixed(3)} (devastated)`
+    );
+    console.log(
+      `  Experienced: Δκ=${expImpact.toFixed(3)}  ΔH=${expEntropyLoss.toFixed(
+        3
+      )} (absorbed)`
+    );
+    console.log(
+      '  A dense void boundary absorbs catastrophe like a shock absorber.'
+    );
     console.log('  Resilience IS void density. Experience IS protection.');
   });
 
   it('resilience scales with prior void density', () => {
     const priorDensities = [1, 5, 10, 25, 50, 100];
     const traumaMagnitude = 100;
-    const results: Array<{ density: number; kurtosisImpact: number; entropyLoss: number }> = [];
+    const results: Array<{
+      density: number;
+      kurtosisImpact: number;
+      entropyLoss: number;
+    }> = [];
 
     for (const d of priorDensities) {
       const voidBefore = new Array(5).fill(d);
@@ -493,7 +586,9 @@ describe('Resilience: Dense Prior Void Absorbs Catastrophic Entries', () => {
     console.log('  density  Δκ        ΔH');
     for (const r of results) {
       console.log(
-        `  ${String(r.density).padStart(7)}  ${r.kurtosisImpact.toFixed(3).padStart(8)}  ${r.entropyLoss.toFixed(3).padStart(8)}`,
+        `  ${String(r.density).padStart(7)}  ${r.kurtosisImpact
+          .toFixed(3)
+          .padStart(8)}  ${r.entropyLoss.toFixed(3).padStart(8)}`
       );
     }
     console.log('  Higher density = less impact. Resilience = dense void.');
@@ -501,7 +596,7 @@ describe('Resilience: Dense Prior Void Absorbs Catastrophic Entries', () => {
     // Impact should decrease with density
     for (let i = 1; i < results.length; i++) {
       expect(results[i].entropyLoss).toBeLessThanOrEqual(
-        results[i - 1].entropyLoss + 0.01,
+        results[i - 1].entropyLoss + 0.01
       );
     }
   });
@@ -521,21 +616,39 @@ describe('Trauma Theory Summary', () => {
       ['Healing', 'Dilution through balanced new experience'],
       ['Holding space', 'Race without fold: no judgment, just presence'],
       ['Therapy sessions', 'Iterative context accumulation reducing kurtosis'],
-      ['Addiction', 'Void seeding in wrong dimension: tombstones in wrong graveyard'],
+      [
+        'Addiction',
+        'Void seeding in wrong dimension: tombstones in wrong graveyard',
+      ],
       ['Recovery', 'Redirecting void seeding to relevant dimension'],
       ['Resilience', 'Dense prior void absorbs catastrophe (shock absorber)'],
-      ['Post-traumatic growth', 'Trauma tombstone eventually enriches the void boundary'],
+      [
+        'Post-traumatic growth',
+        'Trauma tombstone eventually enriches the void boundary',
+      ],
     ];
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════════╗');
-    console.log('  ║  Maté → Void Walking: Trauma as Information Theory            ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════════╣');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  Maté → Void Walking: Trauma as Information Theory            ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════╣'
+    );
     for (const [mate, void_] of mapping) {
       console.log(`  ║  ${mate.padEnd(22)} = ${void_.padEnd(37)} ║`);
     }
-    console.log('  ╠═══════════════════════════════════════════════════════════════╣');
-    console.log('  ║  Not what happened to you. What happened to your void.       ║');
-    console.log('  ╚═══════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      '  ║  Not what happened to you. What happened to your void.       ║'
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════════╝\n'
+    );
 
     expect(mapping.length).toBe(11);
   });

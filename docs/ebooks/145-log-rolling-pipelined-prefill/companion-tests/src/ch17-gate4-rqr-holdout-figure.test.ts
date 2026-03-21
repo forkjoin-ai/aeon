@@ -13,7 +13,10 @@ import type { Gate4Report } from './gate4-rqr-holdout';
 
 function loadGate4Report(): Gate4Report {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const artifactPath = resolve(moduleDir, '../artifacts/gate4-rqr-holdout.json');
+  const artifactPath = resolve(
+    moduleDir,
+    '../artifacts/gate4-rqr-holdout.json'
+  );
   return JSON.parse(readFileSync(artifactPath, 'utf8')) as Gate4Report;
 }
 

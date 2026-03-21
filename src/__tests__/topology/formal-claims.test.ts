@@ -58,7 +58,7 @@ describe('Topology formal claim helpers', () => {
         actualBeta1: 2,
         stageCount: 2,
         chunkCount: 20,
-      }).action,
+      }).action
     ).toBe('expand');
 
     expect(
@@ -67,7 +67,7 @@ describe('Topology formal claim helpers', () => {
         actualBeta1: 2,
         stageCount: 4,
         chunkCount: 1,
-      }).action,
+      }).action
     ).toBe('staggered-expand');
 
     expect(
@@ -76,7 +76,7 @@ describe('Topology formal claim helpers', () => {
         actualBeta1: 5,
         stageCount: 4,
         chunkCount: 1,
-      }).action,
+      }).action
     ).toBe('constrain');
 
     expect(
@@ -85,7 +85,7 @@ describe('Topology formal claim helpers', () => {
         actualBeta1: 3,
         stageCount: 4,
         chunkCount: 2,
-      }).action,
+      }).action
     ).toBe('multiplex');
 
     expect(
@@ -94,7 +94,7 @@ describe('Topology formal claim helpers', () => {
         actualBeta1: 3,
         stageCount: 2,
         chunkCount: 10,
-      }).action,
+      }).action
     ).toBe('hold');
   });
 

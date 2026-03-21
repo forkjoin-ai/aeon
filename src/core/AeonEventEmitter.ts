@@ -134,8 +134,9 @@ export class AeonEventEmitter<
 
   listeners<K extends EventKey<Events>>(event: K): Events[K][] {
     return (
-      this.listenerMap.get(event)?.map((listener) => listener.fn as Events[K]) ??
-      []
+      this.listenerMap
+        .get(event)
+        ?.map((listener) => listener.fn as Events[K]) ?? []
     );
   }
 

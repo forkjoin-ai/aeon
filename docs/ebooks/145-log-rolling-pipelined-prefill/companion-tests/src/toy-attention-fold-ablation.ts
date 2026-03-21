@@ -15,7 +15,10 @@ type StrategyName = 'linear' | 'winner-take-all' | 'early-stop';
 
 interface StrategyOutput {
   readonly name: StrategyName;
-  readonly predict: (query: number, config: ToyAttentionAblationConfig) => readonly number[];
+  readonly predict: (
+    query: number,
+    config: ToyAttentionAblationConfig
+  ) => readonly number[];
 }
 
 export interface StrategyMetrics {
@@ -54,23 +57,33 @@ function softmax(logits: readonly number[]): number[] {
   return exponentials.map((value) => value / total);
 }
 
-function attentionWeights(query: number, config: ToyAttentionAblationConfig): number[] {
+function attentionWeights(
+  query: number,
+  config: ToyAttentionAblationConfig
+): number[] {
   return softmax(config.keys.map((key) => query * key));
 }
 
-function linearPrediction(query: number, config: ToyAttentionAblationConfig): number[] {
+function linearPrediction(
+  query: number,
+  config: ToyAttentionAblationConfig
+): number[] {
   const weights = attentionWeights(query, config);
   const outputDimension = config.values[0]?.length ?? 0;
 
   return Array.from({ length: outputDimension }, (_, dimension) =>
     weights.reduce(
-      (sum, weight, index) => sum + weight * (config.values[index]?.[dimension] ?? 0),
-      0,
-    ),
+      (sum, weight, index) =>
+        sum + weight * (config.values[index]?.[dimension] ?? 0),
+      0
+    )
   );
 }
 
-function winnerTakeAllPrediction(query: number, config: ToyAttentionAblationConfig): readonly number[] {
+function winnerTakeAllPrediction(
+  query: number,
+  config: ToyAttentionAblationConfig
+): readonly number[] {
   const scores = config.keys.map((key) => query * key);
   let bestIndex = 0;
 
@@ -83,7 +96,10 @@ function winnerTakeAllPrediction(query: number, config: ToyAttentionAblationConf
   return config.values[bestIndex] ?? [];
 }
 
-function earlyStopPrediction(_query: number, config: ToyAttentionAblationConfig): readonly number[] {
+function earlyStopPrediction(
+  _query: number,
+  config: ToyAttentionAblationConfig
+): readonly number[] {
   return config.values[0] ?? [];
 }
 
@@ -109,7 +125,7 @@ export function makeDefaultToyAttentionAblationConfig(): ToyAttentionAblationCon
 
 function strategyMetrics(
   strategy: StrategyOutput,
-  config: ToyAttentionAblationConfig,
+  config: ToyAttentionAblationConfig
 ): StrategyMetrics {
   let squaredErrorSum = 0;
   let componentCount = 0;
@@ -131,7 +147,8 @@ function strategyMetrics(
       maxAbsoluteError = Math.max(maxAbsoluteError, Math.abs(error));
     }
 
-    const sampleMeanSquaredError = teacher.length === 0 ? 0 : sampleSquaredErrorSum / teacher.length;
+    const sampleMeanSquaredError =
+      teacher.length === 0 ? 0 : sampleSquaredErrorSum / teacher.length;
     sampleMeanSquaredErrors.push(sampleMeanSquaredError);
     if (sampleMeanSquaredError <= config.exactSampleMseTolerance) {
       exactWithinToleranceCount++;
@@ -142,30 +159,41 @@ function strategyMetrics(
   }
 
   return {
-    meanSquaredError: componentCount === 0 ? 0 : squaredErrorSum / componentCount,
-    meanSquaredErrorCi95: bootstrapMeanConfidenceInterval(sampleMeanSquaredErrors, {
-      seed:
-        strategy.name === 'linear'
-          ? 0x11111111
-          : strategy.name === 'winner-take-all'
+    meanSquaredError:
+      componentCount === 0 ? 0 : squaredErrorSum / componentCount,
+    meanSquaredErrorCi95: bootstrapMeanConfidenceInterval(
+      sampleMeanSquaredErrors,
+      {
+        seed:
+          strategy.name === 'linear'
+            ? 0x11111111
+            : strategy.name === 'winner-take-all'
             ? 0x22222222
             : 0x33333333,
-    }),
+      }
+    ),
     maxAbsoluteError,
     exactWithinToleranceFraction:
-      config.queries.length === 0 ? 0 : exactWithinToleranceCount / config.queries.length,
-    exactWithinToleranceFractionCi95: bootstrapMeanConfidenceInterval(exactIndicators, {
-      seed:
-        strategy.name === 'linear'
-          ? 0x44444444
-          : strategy.name === 'winner-take-all'
+      config.queries.length === 0
+        ? 0
+        : exactWithinToleranceCount / config.queries.length,
+    exactWithinToleranceFractionCi95: bootstrapMeanConfidenceInterval(
+      exactIndicators,
+      {
+        seed:
+          strategy.name === 'linear'
+            ? 0x44444444
+            : strategy.name === 'winner-take-all'
             ? 0x55555555
             : 0x66666666,
-    }),
+      }
+    ),
   };
 }
 
-function samplePredictions(config: ToyAttentionAblationConfig): readonly SamplePrediction[] {
+function samplePredictions(
+  config: ToyAttentionAblationConfig
+): readonly SamplePrediction[] {
   const sampleQueries = [
     config.queries[0],
     config.queries[Math.floor(config.queries.length / 2)],
@@ -181,17 +209,20 @@ function samplePredictions(config: ToyAttentionAblationConfig): readonly SampleP
 }
 
 export function runToyAttentionFoldAblation(
-  config: ToyAttentionAblationConfig = makeDefaultToyAttentionAblationConfig(),
+  config: ToyAttentionAblationConfig = makeDefaultToyAttentionAblationConfig()
 ): ToyAttentionFoldAblationReport {
   const strategyMetricsByName = Object.fromEntries(
-    strategies.map((strategy) => [strategy.name, strategyMetrics(strategy, config)]),
+    strategies.map((strategy) => [
+      strategy.name,
+      strategyMetrics(strategy, config),
+    ])
   ) as Record<StrategyName, StrategyMetrics>;
 
   const rankingByMeanSquaredError = [...strategies]
     .sort(
       (left, right) =>
         strategyMetricsByName[left.name].meanSquaredError -
-        strategyMetricsByName[right.name].meanSquaredError,
+        strategyMetricsByName[right.name].meanSquaredError
     )
     .map((strategy) => strategy.name);
 
@@ -224,7 +255,7 @@ function formatInterval(interval: ConfidenceInterval): string {
 }
 
 export function renderToyAttentionFoldAblationMarkdown(
-  report: ToyAttentionFoldAblationReport,
+  report: ToyAttentionFoldAblationReport
 ): string {
   const lines: string[] = [];
   lines.push('# Toy Attention Fold Ablation');
@@ -233,18 +264,34 @@ export function renderToyAttentionFoldAblationMarkdown(
   lines.push(`- Queries: \`${report.config.queryCount}\``);
   lines.push(`- Paths: \`${report.config.pathCount}\``);
   lines.push(`- Output dimension: \`${report.config.outputDimension}\``);
-  lines.push(`- Exact-sample MSE tolerance: \`${report.config.exactSampleMseTolerance}\``);
-  lines.push(`- Predicted ranking recovered: \`${report.predictedRankingMatches ? 'yes' : 'no'}\``);
+  lines.push(
+    `- Exact-sample MSE tolerance: \`${report.config.exactSampleMseTolerance}\``
+  );
+  lines.push(
+    `- Predicted ranking recovered: \`${
+      report.predictedRankingMatches ? 'yes' : 'no'
+    }\``
+  );
   lines.push('');
   lines.push('## Metrics');
   lines.push('');
-  lines.push('| Strategy | Mean squared error | MSE 95% CI | Max absolute error | Exact-within-tolerance fraction | Exact 95% CI |');
+  lines.push(
+    '| Strategy | Mean squared error | MSE 95% CI | Max absolute error | Exact-within-tolerance fraction | Exact 95% CI |'
+  );
   lines.push('|---|---:|---:|---:|---:|---:|');
 
   for (const strategyName of report.rankingByMeanSquaredError) {
     const metrics = report.strategies[strategyName];
     lines.push(
-      `| \`${strategyName}\` | ${metrics.meanSquaredError.toFixed(3)} | ${formatInterval(metrics.meanSquaredErrorCi95)} | ${metrics.maxAbsoluteError.toFixed(3)} | ${metrics.exactWithinToleranceFraction.toFixed(3)} | ${formatInterval(metrics.exactWithinToleranceFractionCi95)} |`,
+      `| \`${strategyName}\` | ${metrics.meanSquaredError.toFixed(
+        3
+      )} | ${formatInterval(
+        metrics.meanSquaredErrorCi95
+      )} | ${metrics.maxAbsoluteError.toFixed(
+        3
+      )} | ${metrics.exactWithinToleranceFraction.toFixed(
+        3
+      )} | ${formatInterval(metrics.exactWithinToleranceFractionCi95)} |`
     );
   }
 
@@ -256,12 +303,18 @@ export function renderToyAttentionFoldAblationMarkdown(
 
   for (const sample of report.samplePredictions) {
     lines.push(
-      `| ${sample.query.toFixed(3)} | ${formatVector(sample.teacher)} | ${formatVector(sample.winnerTakeAll)} | ${formatVector(sample.earlyStop)} |`,
+      `| ${sample.query.toFixed(3)} | ${formatVector(
+        sample.teacher
+      )} | ${formatVector(sample.winnerTakeAll)} | ${formatVector(
+        sample.earlyStop
+      )} |`
     );
   }
 
   lines.push('');
-  lines.push('Interpretation: hold keys, values, score function, and query grid fixed. Swapping only the fold rule preserves exact teacher reconstruction for linear attention and introduces measurable error for nonlinear selection.');
+  lines.push(
+    'Interpretation: hold keys, values, score function, and query grid fixed. Swapping only the fold rule preserves exact teacher reconstruction for linear attention and introduces measurable error for nonlinear selection.'
+  );
   lines.push('');
 
   return `${lines.join('\n')}\n`;

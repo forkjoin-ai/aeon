@@ -15,7 +15,7 @@ function loadGate2Report(): Gate2Report {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const artifactPath = resolve(
     moduleDir,
-    '../artifacts/gate2-protocol-corpus.json',
+    '../artifacts/gate2-protocol-corpus.json'
   );
   return JSON.parse(readFileSync(artifactPath, 'utf8')) as Gate2Report;
 }

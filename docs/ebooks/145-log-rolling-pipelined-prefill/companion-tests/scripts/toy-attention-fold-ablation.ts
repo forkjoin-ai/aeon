@@ -15,8 +15,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/toy-attention-fold-ablation.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/toy-attention-fold-ablation.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/toy-attention-fold-ablation.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/toy-attention-fold-ablation.md'
+  );
 
   let assertRanking = false;
   let jsonPath = defaultJsonPath;
@@ -61,17 +67,33 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  writeFileSync(options.markdownPath, renderToyAttentionFoldAblationMarkdown(report), 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
+  writeFileSync(
+    options.markdownPath,
+    renderToyAttentionFoldAblationMarkdown(report),
+    'utf8'
+  );
 
-  process.stdout.write(`toy-attention-fold-ablation: ${report.predictedRankingMatches ? 'MATCH' : 'MISMATCH'}\n`);
+  process.stdout.write(
+    `toy-attention-fold-ablation: ${
+      report.predictedRankingMatches ? 'MATCH' : 'MISMATCH'
+    }\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
 
   for (const strategyName of report.rankingByMeanSquaredError) {
     const metrics = report.strategies[strategyName];
     process.stdout.write(
-      `- ${strategyName}: mse=${metrics.meanSquaredError.toFixed(3)}, max-abs=${metrics.maxAbsoluteError.toFixed(3)}, exact=${metrics.exactWithinToleranceFraction.toFixed(3)}\n`,
+      `- ${strategyName}: mse=${metrics.meanSquaredError.toFixed(
+        3
+      )}, max-abs=${metrics.maxAbsoluteError.toFixed(
+        3
+      )}, exact=${metrics.exactWithinToleranceFraction.toFixed(3)}\n`
     );
   }
 
@@ -81,6 +103,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

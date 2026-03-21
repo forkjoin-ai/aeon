@@ -39,7 +39,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -57,7 +58,11 @@ interface TKIPoint {
   accommodating: number;
 }
 
-function computeTKI(coopRate: number, avgScore: number, voidRate: number): TKIPoint {
+function computeTKI(
+  coopRate: number,
+  avgScore: number,
+  voidRate: number
+): TKIPoint {
   const scoreNorm = Math.max(0, Math.min(1, (avgScore + 2) / 6));
   const raw = {
     competing: (1 - coopRate) * scoreNorm,
@@ -66,7 +71,12 @@ function computeTKI(coopRate: number, avgScore: number, voidRate: number): TKIPo
     avoiding: Math.max(0, 1 - voidRate * 5),
     accommodating: coopRate * (1 - scoreNorm),
   };
-  const sum = raw.competing + raw.collaborating + raw.compromising + raw.avoiding + raw.accommodating;
+  const sum =
+    raw.competing +
+    raw.collaborating +
+    raw.compromising +
+    raw.avoiding +
+    raw.accommodating;
   const denom = sum > 0 ? sum : 1;
   return {
     competing: raw.competing / denom,
@@ -80,10 +90,10 @@ function computeTKI(coopRate: number, avgScore: number, voidRate: number): TKIPo
 function tkiDistance(a: TKIPoint, b: TKIPoint): number {
   return Math.sqrt(
     (a.competing - b.competing) ** 2 +
-    (a.collaborating - b.collaborating) ** 2 +
-    (a.compromising - b.compromising) ** 2 +
-    (a.avoiding - b.avoiding) ** 2 +
-    (a.accommodating - b.accommodating) ** 2,
+      (a.collaborating - b.collaborating) ** 2 +
+      (a.compromising - b.compromising) ** 2 +
+      (a.avoiding - b.avoiding) ** 2 +
+      (a.accommodating - b.accommodating) ** 2
   );
 }
 
@@ -99,10 +109,32 @@ function tkiDominant(p: TKIPoint): string {
 }
 
 type PayoffFn = (my: number, opp: number) => [number, number];
-const HD: PayoffFn = (my, opp) => ([[2, 2], [0, 4], [4, 0], [-1, -1]] as [number, number][])[my * 2 + opp];
-const PD: PayoffFn = (my, opp) => ([[3, 3], [0, 5], [5, 0], [1, 1]] as [number, number][])[my * 2 + opp];
+const HD: PayoffFn = (my, opp) =>
+  (
+    [
+      [2, 2],
+      [0, 4],
+      [4, 0],
+      [-1, -1],
+    ] as [number, number][]
+  )[my * 2 + opp];
+const PD: PayoffFn = (my, opp) =>
+  (
+    [
+      [3, 3],
+      [0, 5],
+      [5, 0],
+      [1, 1],
+    ] as [number, number][]
+  )[my * 2 + opp];
 
-function runAndProfile(payoff: PayoffFn, N: number, T: number, oppFn: (rng: () => number) => number, rng: () => number): TKIPoint {
+function runAndProfile(
+  payoff: PayoffFn,
+  N: number,
+  T: number,
+  oppFn: (rng: () => number) => number,
+  rng: () => number
+): TKIPoint {
   const void_ = new Array(N).fill(0);
   let totalPayoff = 0;
   let coopChoices = 0;
@@ -113,13 +145,25 @@ function runAndProfile(payoff: PayoffFn, N: number, T: number, oppFn: (rng: () =
     const rv = rng();
     let choice = N - 1;
     let cum = 0;
-    for (let i = 0; i < N; i++) { cum += dist[i]; if (rv < cum) { choice = i; break; } }
+    for (let i = 0; i < N; i++) {
+      cum += dist[i];
+      if (rv < cum) {
+        choice = i;
+        break;
+      }
+    }
     if (choice === 0) coopChoices++;
     const opp = oppFn(rng);
     const [myPay, theirPay] = payoff(choice, opp);
     totalPayoff += myPay;
-    if (myPay < theirPay) { void_[choice]++; voidEntries++; }
-    if (myPay < 0) { void_[choice]++; voidEntries++; }
+    if (myPay < theirPay) {
+      void_[choice]++;
+      voidEntries++;
+    }
+    if (myPay < 0) {
+      void_[choice]++;
+      voidEntries++;
+    }
   }
 
   return computeTKI(coopChoices / T, totalPayoff / T, voidEntries / T);
@@ -130,21 +174,27 @@ function runAndProfile(payoff: PayoffFn, N: number, T: number, oppFn: (rng: () =
 // ============================================================================
 
 describe('Thomas-Kilmann as Continuous Void-Space Manifold', () => {
-
   it('TKI coordinates sum to 1 (simplex)', () => {
     const points: TKIPoint[] = [];
     for (let coop = 0; coop <= 1; coop += 0.2) {
       for (let score = -2; score <= 4; score += 1) {
         for (let voidRate = 0; voidRate <= 0.5; voidRate += 0.1) {
           const p = computeTKI(coop, score, voidRate);
-          const sum = p.competing + p.collaborating + p.compromising + p.avoiding + p.accommodating;
+          const sum =
+            p.competing +
+            p.collaborating +
+            p.compromising +
+            p.avoiding +
+            p.accommodating;
           // Sum is 1.0 when any raw value is positive, or 0.0 when all raw are 0 (degenerate)
           expect(sum === 0 || Math.abs(sum - 1.0) < 0.00001).toBe(true);
           points.push(p);
         }
       }
     }
-    console.log(`\n  TKI simplex: ${points.length} points sampled, all sum to 1.0`);
+    console.log(
+      `\n  TKI simplex: ${points.length} points sampled, all sum to 1.0`
+    );
   });
 
   it('pure strategies map to known TKI corners', () => {
@@ -161,9 +211,19 @@ describe('Thomas-Kilmann as Continuous Void-Space Manifold', () => {
     expect(mixedTKI.compromising).toBeGreaterThan(0.3);
 
     console.log('  Pure strategies at TKI corners:');
-    console.log(`    Defect:    ${tkiDominant(defectTKI)} (${(defectTKI.competing * 100).toFixed(0)}%C ${(defectTKI.avoiding * 100).toFixed(0)}%Av)`);
-    console.log(`    Cooperate: ${tkiDominant(coopTKI)} (${(coopTKI.collaborating * 100).toFixed(0)}%Cl ${(coopTKI.accommodating * 100).toFixed(0)}%Ac)`);
-    console.log(`    Mixed:     compromising=${(mixedTKI.compromising * 100).toFixed(0)}%`);
+    console.log(
+      `    Defect:    ${tkiDominant(defectTKI)} (${(
+        defectTKI.competing * 100
+      ).toFixed(0)}%C ${(defectTKI.avoiding * 100).toFixed(0)}%Av)`
+    );
+    console.log(
+      `    Cooperate: ${tkiDominant(coopTKI)} (${(
+        coopTKI.collaborating * 100
+      ).toFixed(0)}%Cl ${(coopTKI.accommodating * 100).toFixed(0)}%Ac)`
+    );
+    console.log(
+      `    Mixed:     compromising=${(mixedTKI.compromising * 100).toFixed(0)}%`
+    );
   });
 
   it('void walking trajectory traces a path through TKI space', () => {
@@ -182,22 +242,49 @@ describe('Thomas-Kilmann as Continuous Void-Space Manifold', () => {
       const opp = rng() < 0.5 ? 0 : 1;
       const [myPay, theirPay] = HD(choice, opp);
       totalPayoff += myPay;
-      if (myPay < theirPay) { void_[choice]++; voidEntries++; }
-      if (myPay < 0) { void_[choice]++; voidEntries++; }
+      if (myPay < theirPay) {
+        void_[choice]++;
+        voidEntries++;
+      }
+      if (myPay < 0) {
+        void_[choice]++;
+        voidEntries++;
+      }
 
       if ((r + 1) % 25 === 0) {
-        snapshots.push(computeTKI(coopCount / (r + 1), totalPayoff / (r + 1), voidEntries / (r + 1)));
+        snapshots.push(
+          computeTKI(
+            coopCount / (r + 1),
+            totalPayoff / (r + 1),
+            voidEntries / (r + 1)
+          )
+        );
       }
     }
 
     // Trajectory should move (not static)
-    const firstLast = tkiDistance(snapshots[0], snapshots[snapshots.length - 1]);
+    const firstLast = tkiDistance(
+      snapshots[0],
+      snapshots[snapshots.length - 1]
+    );
 
     console.log('\n  TKI trajectory (Hawk-Dove, 500 rounds):');
     console.log('  round  Comp  Coll  Compr Avoid Accom  dominant');
     for (let i = 0; i < snapshots.length; i++) {
       const s = snapshots[i];
-      console.log(`  ${String((i + 1) * 25).padStart(5)}  ${(s.competing * 100).toFixed(0).padStart(4)}% ${(s.collaborating * 100).toFixed(0).padStart(4)}% ${(s.compromising * 100).toFixed(0).padStart(4)}% ${(s.avoiding * 100).toFixed(0).padStart(4)}% ${(s.accommodating * 100).toFixed(0).padStart(4)}%  ${tkiDominant(s)}`);
+      console.log(
+        `  ${String((i + 1) * 25).padStart(5)}  ${(s.competing * 100)
+          .toFixed(0)
+          .padStart(4)}% ${(s.collaborating * 100).toFixed(0).padStart(4)}% ${(
+          s.compromising * 100
+        )
+          .toFixed(0)
+          .padStart(4)}% ${(s.avoiding * 100).toFixed(0).padStart(4)}% ${(
+          s.accommodating * 100
+        )
+          .toFixed(0)
+          .padStart(4)}%  ${tkiDominant(s)}`
+      );
     }
     console.log(`  Trajectory length: ${firstLast.toFixed(4)}`);
 
@@ -210,15 +297,39 @@ describe('Thomas-Kilmann as Continuous Void-Space Manifold', () => {
 
     // Skyrms (void walker): p(dove) ≈ 88%
     const rng = makeRng(42);
-    const skyrmsTKI = runAndProfile(HD, 2, 2000, (rng) => rng() < 0.5 ? 0 : 1, rng);
+    const skyrmsTKI = runAndProfile(
+      HD,
+      2,
+      2000,
+      (rng) => (rng() < 0.5 ? 0 : 1),
+      rng
+    );
 
     const distance = tkiDistance(nashTKI, skyrmsTKI);
 
     console.log('\n  Nash vs Skyrms on the TKI manifold:');
-    console.log(`  Nash:   Comp=${(nashTKI.competing * 100).toFixed(0)}% Coll=${(nashTKI.collaborating * 100).toFixed(0)}% Compr=${(nashTKI.compromising * 100).toFixed(0)}% Avoid=${(nashTKI.avoiding * 100).toFixed(0)}% Accom=${(nashTKI.accommodating * 100).toFixed(0)}% → ${tkiDominant(nashTKI)}`);
-    console.log(`  Skyrms: Comp=${(skyrmsTKI.competing * 100).toFixed(0)}% Coll=${(skyrmsTKI.collaborating * 100).toFixed(0)}% Compr=${(skyrmsTKI.compromising * 100).toFixed(0)}% Avoid=${(skyrmsTKI.avoiding * 100).toFixed(0)}% Accom=${(skyrmsTKI.accommodating * 100).toFixed(0)}% → ${tkiDominant(skyrmsTKI)}`);
+    console.log(
+      `  Nash:   Comp=${(nashTKI.competing * 100).toFixed(0)}% Coll=${(
+        nashTKI.collaborating * 100
+      ).toFixed(0)}% Compr=${(nashTKI.compromising * 100).toFixed(0)}% Avoid=${(
+        nashTKI.avoiding * 100
+      ).toFixed(0)}% Accom=${(nashTKI.accommodating * 100).toFixed(
+        0
+      )}% → ${tkiDominant(nashTKI)}`
+    );
+    console.log(
+      `  Skyrms: Comp=${(skyrmsTKI.competing * 100).toFixed(0)}% Coll=${(
+        skyrmsTKI.collaborating * 100
+      ).toFixed(0)}% Compr=${(skyrmsTKI.compromising * 100).toFixed(
+        0
+      )}% Avoid=${(skyrmsTKI.avoiding * 100).toFixed(0)}% Accom=${(
+        skyrmsTKI.accommodating * 100
+      ).toFixed(0)}% → ${tkiDominant(skyrmsTKI)}`
+    );
     console.log(`  Distance on manifold: ${distance.toFixed(4)}`);
-    console.log('  The Skyrms equilibrium is a different point on the TKI manifold than Nash.');
+    console.log(
+      '  The Skyrms equilibrium is a different point on the TKI manifold than Nash.'
+    );
 
     expect(distance).toBeGreaterThan(0);
   });
@@ -239,8 +350,16 @@ describe('Thomas-Kilmann as Continuous Void-Space Manifold', () => {
     const differentDist = tkiDistance(profileC, profileD);
 
     console.log('\n  TKI distance predicts compatibility:');
-    console.log(`  Similar:   d=${similarDist.toFixed(4)} (${tkiDominant(profileA)} + ${tkiDominant(profileB)})`);
-    console.log(`  Different: d=${differentDist.toFixed(4)} (${tkiDominant(profileC)} + ${tkiDominant(profileD)})`);
+    console.log(
+      `  Similar:   d=${similarDist.toFixed(4)} (${tkiDominant(
+        profileA
+      )} + ${tkiDominant(profileB)})`
+    );
+    console.log(
+      `  Different: d=${differentDist.toFixed(4)} (${tkiDominant(
+        profileC
+      )} + ${tkiDominant(profileD)})`
+    );
 
     expect(differentDist).toBeGreaterThan(similarDist);
   });
@@ -249,7 +368,7 @@ describe('Thomas-Kilmann as Continuous Void-Space Manifold', () => {
     const strategies: Record<string, (rng: () => number) => number> = {
       'always-cooperate': () => 0,
       'always-defect': () => 1,
-      'random': (rng) => rng() < 0.5 ? 0 : 1,
+      random: (rng) => (rng() < 0.5 ? 0 : 1),
       'tit-for-tat': () => 0, // simplified: cooperates
     };
 
@@ -262,7 +381,15 @@ describe('Thomas-Kilmann as Continuous Void-Space Manifold', () => {
 
     console.log('\n  Strategies on the TKI manifold:');
     for (const p of profiles) {
-      console.log(`    ${p.name.padEnd(20)} ${tkiDominant(p.tki).padEnd(14)} [${(p.tki.competing * 100).toFixed(0)}, ${(p.tki.collaborating * 100).toFixed(0)}, ${(p.tki.compromising * 100).toFixed(0)}, ${(p.tki.avoiding * 100).toFixed(0)}, ${(p.tki.accommodating * 100).toFixed(0)}]`);
+      console.log(
+        `    ${p.name.padEnd(20)} ${tkiDominant(p.tki).padEnd(14)} [${(
+          p.tki.competing * 100
+        ).toFixed(0)}, ${(p.tki.collaborating * 100).toFixed(0)}, ${(
+          p.tki.compromising * 100
+        ).toFixed(0)}, ${(p.tki.avoiding * 100).toFixed(0)}, ${(
+          p.tki.accommodating * 100
+        ).toFixed(0)}]`
+      );
     }
 
     // Should have at least 2 distinct profiles

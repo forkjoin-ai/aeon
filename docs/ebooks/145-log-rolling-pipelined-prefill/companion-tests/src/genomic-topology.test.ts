@@ -74,15 +74,13 @@ const G4_RICH_SEQ =
 /**
  * Synthetic topologically simple sequence — no secondary structures expected.
  */
-const SIMPLE_SEQ =
-  'ACACACACACACACACACACACACACACACACACACACACACACACACACAC';
+const SIMPLE_SEQ = 'ACACACACACACACACACACACACACACACACACACACACACACACACACAC';
 
 /**
  * Synthetic hairpin-forming sequence.
  * GCGCGC...loop...GCGCGC (inverted complement)
  */
-const HAIRPIN_SEQ =
-  'ATCGATCGGCGCGCGCAAAAAAGCGCGCGCATCGATCGATCGATCGATCG';
+const HAIRPIN_SEQ = 'ATCGATCGGCGCGCGCAAAAAAGCGCGCGCATCGATCGATCGATCGATCG';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // §3.2 PROP-GENOME-SELF-DESCRIBING: σ(ℓ) is sequence-computable
@@ -183,7 +181,9 @@ describe('THM-TOPO-MUTATION-DETECTION — Δσ as mutation severity', () => {
   it('|Δσ| is non-negative for all mutations', () => {
     for (let i = 0; i < 50; i++) {
       const locus = Math.floor(Math.random() * (TP53_EXON5_8.length - 1));
-      const bases = ['A', 'T', 'C', 'G'].filter(b => b !== TP53_EXON5_8[locus]);
+      const bases = ['A', 'T', 'C', 'G'].filter(
+        (b) => b !== TP53_EXON5_8[locus]
+      );
       for (const base of bases) {
         const result = computeMutationTopology(TP53_EXON5_8, locus, base);
         expect(result.severityBules).toBeGreaterThanOrEqual(0);
@@ -199,7 +199,7 @@ describe('THM-TOPO-MUTATION-DETECTION — Δσ as mutation severity', () => {
     const breakPos = almostG4.indexOf('GGATC') + 0; // the G before A
     // Actually let's construct it more carefully:
     // Almost-G4: three G-runs present, fourth has only 2 G's
-    const preG4  = 'ATCGATCGGGTTAGGGTTAGGGTTAGGATCGATCGATCG';
+    const preG4 = 'ATCGATCGGGTTAGGGTTAGGGTTAGGATCGATCGATCG';
     const mutPos = preG4.lastIndexOf('GG') + 2; // position after last GG, convert to GGG
 
     if (mutPos < preG4.length && preG4[mutPos] !== 'G') {
@@ -214,7 +214,8 @@ describe('THM-TOPO-MUTATION-DETECTION — Δσ as mutation severity', () => {
     // E_unwind(ℓ) ∝ β₁(ℓ) = 2 + σ(ℓ)
     // Each component contributes independently
     const profile = computeSigma(TP53_EXON5_8, 200);
-    const expectedBeta1 = 2 + profile.hairpins + 3 * profile.gQuadruplexes + 2 * profile.cruciforms;
+    const expectedBeta1 =
+      2 + profile.hairpins + 3 * profile.gQuadruplexes + 2 * profile.cruciforms;
     expect(profile.beta1).toBe(expectedBeta1);
     // Energy is proportional to β₁ — conservation holds
   });
@@ -301,7 +302,7 @@ describe('Cancer Genomics — Topological Mutation Hotspot Correlation', () => {
   });
 
   it('TP53 cancer topology analysis runs to completion', () => {
-    const validHotspots = TP53_HOTSPOTS.filter(p => p < TP53_EXON5_8.length);
+    const validHotspots = TP53_HOTSPOTS.filter((p) => p < TP53_EXON5_8.length);
     const report = analyzeCancerTopology(TP53_EXON5_8, 'TP53', validHotspots);
 
     expect(report.gene).toBe('TP53');
@@ -310,11 +311,14 @@ describe('Cancer Genomics — Topological Mutation Hotspot Correlation', () => {
     expect(report.meanSigmaNonHotspots).toBeGreaterThanOrEqual(0);
     // The enrichment ratio is computable
     expect(typeof report.topologicalEnrichment).toBe('number');
-    expect(isFinite(report.topologicalEnrichment) || report.topologicalEnrichment === Infinity).toBe(true);
+    expect(
+      isFinite(report.topologicalEnrichment) ||
+        report.topologicalEnrichment === Infinity
+    ).toBe(true);
   });
 
   it('KRAS cancer topology analysis runs to completion', () => {
-    const validHotspots = KRAS_HOTSPOTS.filter(p => p < KRAS_EXON2.length);
+    const validHotspots = KRAS_HOTSPOTS.filter((p) => p < KRAS_EXON2.length);
     const report = analyzeCancerTopology(KRAS_EXON2, 'KRAS', validHotspots);
 
     expect(report.gene).toBe('KRAS');
@@ -336,7 +340,7 @@ describe('THM-TOPO-MUTATION-DETECTION — Driver vs Passenger Severity', () => {
     { locus: 369, mutantBase: 'T', label: 'R248W' },
     // R273H: CGT→CAT at codon 273
     { locus: 444, mutantBase: 'A', label: 'R273H' },
-  ].filter(m => m.locus < TP53_EXON5_8.length);
+  ].filter((m) => m.locus < TP53_EXON5_8.length);
 
   // Synthetic passenger mutations: synonymous changes at non-hotspot positions
   const tp53Passengers: MutationSpec[] = [
@@ -346,10 +350,14 @@ describe('THM-TOPO-MUTATION-DETECTION — Driver vs Passenger Severity', () => {
     { locus: 200, mutantBase: 'G', label: 'synonymous_4' },
     { locus: 300, mutantBase: 'T', label: 'synonymous_5' },
     { locus: 400, mutantBase: 'A', label: 'synonymous_6' },
-  ].filter(m => m.locus < TP53_EXON5_8.length);
+  ].filter((m) => m.locus < TP53_EXON5_8.length);
 
   it('driver vs passenger analysis runs to completion', () => {
-    const report = analyzeDriverVsPassenger(TP53_EXON5_8, tp53Drivers, tp53Passengers);
+    const report = analyzeDriverVsPassenger(
+      TP53_EXON5_8,
+      tp53Drivers,
+      tp53Passengers
+    );
 
     expect(report.drivers.length).toBe(tp53Drivers.length);
     expect(report.passengers.length).toBe(tp53Passengers.length);
@@ -361,7 +369,11 @@ describe('THM-TOPO-MUTATION-DETECTION — Driver vs Passenger Severity', () => {
 
   it('all driver mutations have well-defined Δσ', () => {
     for (const driver of tp53Drivers) {
-      const topo = computeMutationTopology(TP53_EXON5_8, driver.locus, driver.mutantBase);
+      const topo = computeMutationTopology(
+        TP53_EXON5_8,
+        driver.locus,
+        driver.mutantBase
+      );
       expect(typeof topo.deltaSigma).toBe('number');
       expect(typeof topo.severity).toBe('string');
       expect(['silent', 'mild', 'moderate', 'severe']).toContain(topo.severity);
@@ -370,7 +382,11 @@ describe('THM-TOPO-MUTATION-DETECTION — Driver vs Passenger Severity', () => {
 
   it('all passenger mutations have well-defined Δσ', () => {
     for (const passenger of tp53Passengers) {
-      const topo = computeMutationTopology(TP53_EXON5_8, passenger.locus, passenger.mutantBase);
+      const topo = computeMutationTopology(
+        TP53_EXON5_8,
+        passenger.locus,
+        passenger.mutantBase
+      );
       expect(typeof topo.deltaSigma).toBe('number');
       expect(typeof topo.severity).toBe('string');
       expect(['silent', 'mild', 'moderate', 'severe']).toContain(topo.severity);
@@ -400,7 +416,7 @@ describe('End-to-End — Genome Self-Describing Pipeline', () => {
     expect(map.length).toBe(KRAS_EXON2.length);
 
     // Step 2: Predict CRISPR efficiency at each position
-    const efficiencies = map.map(p => ({
+    const efficiencies = map.map((p) => ({
       locus: p.locus,
       sigma: p.sigma,
       eta: 2 / p.beta1,
@@ -447,7 +463,7 @@ describe('End-to-End — Genome Self-Describing Pipeline', () => {
   it('σ_ref + Δσ = σ_mutant (topological accounting identity)', () => {
     // Conservation: the deficit is exactly the difference
     for (let i = 0; i < TP53_EXON5_8.length; i += 50) {
-      const bases = ['A', 'T', 'C', 'G'].filter(b => b !== TP53_EXON5_8[i]);
+      const bases = ['A', 'T', 'C', 'G'].filter((b) => b !== TP53_EXON5_8[i]);
       for (const base of bases) {
         const result = computeMutationTopology(TP53_EXON5_8, i, base);
         expect(result.sigmaRef + result.deltaSigma).toBe(result.sigmaMutant);

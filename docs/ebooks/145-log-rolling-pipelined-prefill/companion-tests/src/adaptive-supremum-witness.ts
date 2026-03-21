@@ -83,7 +83,11 @@ function approxEqual(left: number, right: number, epsilon = 1e-12): boolean {
   return Math.abs(left - right) <= epsilon;
 }
 
-function makeState(leftQueue: number, rightQueue: number, congested: boolean): AdaptiveRoutingState {
+function makeState(
+  leftQueue: number,
+  rightQueue: number,
+  congested: boolean
+): AdaptiveRoutingState {
   return {
     leftQueue,
     rightQueue,
@@ -91,14 +95,20 @@ function makeState(leftQueue: number, rightQueue: number, congested: boolean): A
   };
 }
 
-function buildCandidate(parameters: TwoNodeAdaptiveWitnessParameters): ThroughputVector {
+function buildCandidate(
+  parameters: TwoNodeAdaptiveWitnessParameters
+): ThroughputVector {
   return {
     left: parameters.arrivalLeft,
-    right: parameters.arrivalRight + parameters.arrivalLeft * parameters.rerouteProbability,
+    right:
+      parameters.arrivalRight +
+      parameters.arrivalLeft * parameters.rerouteProbability,
   };
 }
 
-function buildCeilingRouting(parameters: TwoNodeAdaptiveWitnessParameters): RoutingMatrix {
+function buildCeilingRouting(
+  parameters: TwoNodeAdaptiveWitnessParameters
+): RoutingMatrix {
   return {
     left: {
       left: 0,
@@ -113,7 +123,7 @@ function buildCeilingRouting(parameters: TwoNodeAdaptiveWitnessParameters): Rout
 
 function buildAdaptiveRouting(
   parameters: TwoNodeAdaptiveWitnessParameters,
-  state: AdaptiveRoutingState,
+  state: AdaptiveRoutingState
 ): RoutingMatrix {
   return {
     left: {
@@ -134,15 +144,23 @@ function rowSums(matrix: RoutingMatrix): ThroughputVector {
   };
 }
 
-function multiplyRouting(left: RoutingMatrix, right: RoutingMatrix): RoutingMatrix {
+function multiplyRouting(
+  left: RoutingMatrix,
+  right: RoutingMatrix
+): RoutingMatrix {
   return {
     left: {
-      left: left.left.left * right.left.left + left.left.right * right.right.left,
-      right: left.left.left * right.left.right + left.left.right * right.right.right,
+      left:
+        left.left.left * right.left.left + left.left.right * right.right.left,
+      right:
+        left.left.left * right.left.right + left.left.right * right.right.right,
     },
     right: {
-      left: left.right.left * right.left.left + left.right.right * right.right.left,
-      right: left.right.left * right.left.right + left.right.right * right.right.right,
+      left:
+        left.right.left * right.left.left + left.right.right * right.right.left,
+      right:
+        left.right.left * right.left.right +
+        left.right.right * right.right.right,
     },
   };
 }
@@ -168,21 +186,34 @@ function buildDriftGap(parameters: TwoNodeAdaptiveWitnessParameters): number {
   return Math.min(
     parameters.serviceLeft - parameters.arrivalLeft,
     parameters.serviceRight -
-      (parameters.arrivalRight + parameters.arrivalLeft * parameters.rerouteProbability),
+      (parameters.arrivalRight +
+        parameters.arrivalLeft * parameters.rerouteProbability)
   );
 }
 
 function expectedLyapunov(
   parameters: TwoNodeAdaptiveWitnessParameters,
-  state: AdaptiveRoutingState,
+  state: AdaptiveRoutingState
 ): number {
-  return isSmallSet(state) ? lyapunov(state) : lyapunov(state) - buildDriftGap(parameters);
+  return isSmallSet(state)
+    ? lyapunov(state)
+    : lyapunov(state) - buildDriftGap(parameters);
 }
 
-function enumerateStates(parameters: TwoNodeAdaptiveWitnessParameters): readonly AdaptiveRoutingState[] {
+function enumerateStates(
+  parameters: TwoNodeAdaptiveWitnessParameters
+): readonly AdaptiveRoutingState[] {
   const states: AdaptiveRoutingState[] = [];
-  for (let leftQueue = 0; leftQueue <= parameters.maxLeftQueue; leftQueue += 1) {
-    for (let rightQueue = 0; rightQueue <= parameters.maxRightQueue; rightQueue += 1) {
+  for (
+    let leftQueue = 0;
+    leftQueue <= parameters.maxLeftQueue;
+    leftQueue += 1
+  ) {
+    for (
+      let rightQueue = 0;
+      rightQueue <= parameters.maxRightQueue;
+      rightQueue += 1
+    ) {
       states.push(makeState(leftQueue, rightQueue, false));
       states.push(makeState(leftQueue, rightQueue, true));
     }
@@ -193,11 +224,14 @@ function enumerateStates(parameters: TwoNodeAdaptiveWitnessParameters): readonly
 function trafficStep(
   parameters: TwoNodeAdaptiveWitnessParameters,
   throughput: ThroughputVector,
-  state: AdaptiveRoutingState,
+  state: AdaptiveRoutingState
 ): ThroughputVector {
   const routing = buildAdaptiveRouting(parameters, state);
   return {
-    left: parameters.arrivalLeft + throughput.left * routing.left.left + throughput.right * routing.right.left,
+    left:
+      parameters.arrivalLeft +
+      throughput.left * routing.left.left +
+      throughput.right * routing.right.left,
     right:
       parameters.arrivalRight +
       throughput.left * routing.left.right +
@@ -208,7 +242,7 @@ function trafficStep(
 function runScheduleApproximants(
   parameters: TwoNodeAdaptiveWitnessParameters,
   pattern: readonly boolean[],
-  steps: number,
+  steps: number
 ): readonly ThroughputVector[] {
   const approximants: ThroughputVector[] = [
     {
@@ -228,7 +262,7 @@ function scheduleReport(
   id: string,
   description: string,
   pattern: readonly boolean[],
-  steps = 6,
+  steps = 6
 ): AdaptiveScheduleReport {
   const candidate = buildCandidate(parameters);
   const approximants = runScheduleApproximants(parameters, pattern, steps);
@@ -237,7 +271,7 @@ function scheduleReport(
       left: Math.max(current.left, next.left),
       right: Math.max(current.right, next.right),
     }),
-    approximants[0] ?? { left: 0, right: 0 },
+    approximants[0] ?? { left: 0, right: 0 }
   );
   const expectedSupremumRight = pattern.includes(true)
     ? candidate.right
@@ -253,7 +287,7 @@ function scheduleReport(
     allApproximantsBoundedByCandidate: approximants.every(
       (approximation) =>
         approximation.left <= candidate.left + 1e-12 &&
-        approximation.right <= candidate.right + 1e-12,
+        approximation.right <= candidate.right + 1e-12
     ),
     recoveredExpectedSupremum:
       approxEqual(supremum.left, candidate.left) &&
@@ -262,7 +296,7 @@ function scheduleReport(
 }
 
 export function runAdaptiveSupremumWitness(
-  parameters: TwoNodeAdaptiveWitnessParameters = DEFAULT_PARAMETERS,
+  parameters: TwoNodeAdaptiveWitnessParameters = DEFAULT_PARAMETERS
 ): AdaptiveSupremumWitnessReport {
   const candidate = buildCandidate(parameters);
   const ceiling = buildCeilingRouting(parameters);
@@ -308,33 +342,38 @@ export function runAdaptiveSupremumWitness(
       parameters,
       'always-uncongested',
       'Ceiling never activates, so the right node stays at its direct arrival baseline.',
-      [false],
+      [false]
     ),
     scheduleReport(
       parameters,
       'always-congested',
       'Ceiling activates on every step, so the right node reaches the closed-form reroute bound immediately.',
-      [true],
+      [true]
     ),
     scheduleReport(
       parameters,
       'alternating',
       'Congestion toggles, so the right coordinate oscillates below the same schedule-uniform ceiling.',
-      [false, true],
+      [false, true]
     ),
     scheduleReport(
       parameters,
       'delayed-reroute',
       'The ceiling is dormant first and then activates, showing that the constructive supremum picks up the first congested branch without overshooting.',
-      [false, false, true, true],
+      [false, false, true, true]
     ),
   ] as const;
 
   const candidateResidualLeft =
-    candidate.left - (parameters.arrivalLeft + candidate.left * ceiling.left.left + candidate.right * ceiling.right.left);
+    candidate.left -
+    (parameters.arrivalLeft +
+      candidate.left * ceiling.left.left +
+      candidate.right * ceiling.right.left);
   const candidateResidualRight =
     candidate.right -
-    (parameters.arrivalRight + candidate.left * ceiling.left.right + candidate.right * ceiling.right.right);
+    (parameters.arrivalRight +
+      candidate.left * ceiling.left.right +
+      candidate.right * ceiling.right.right);
 
   const report: AdaptiveSupremumWitnessReport = {
     label: 'adaptive-supremum-witness-v1',
@@ -353,7 +392,8 @@ export function runAdaptiveSupremumWitness(
       spectralRadius: 0,
       nilpotentOrder: 2,
       squareIsZero: isZeroMatrix(ceilingSquared),
-      strictRowSubstochastic: rowSums(ceiling).left < 1 && rowSums(ceiling).right < 1,
+      strictRowSubstochastic:
+        rowSums(ceiling).left < 1 && rowSums(ceiling).right < 1,
     },
     drift: {
       gap: driftGap,
@@ -376,7 +416,8 @@ export function runAdaptiveSupremumWitness(
       driftViolations === 0 &&
       scheduleReports.every(
         (schedule) =>
-          schedule.allApproximantsBoundedByCandidate && schedule.recoveredExpectedSupremum,
+          schedule.allApproximantsBoundedByCandidate &&
+          schedule.recoveredExpectedSupremum
       ),
   };
 
@@ -384,12 +425,22 @@ export function runAdaptiveSupremumWitness(
 }
 
 export function renderAdaptiveSupremumWitnessMarkdown(
-  report: AdaptiveSupremumWitnessReport,
+  report: AdaptiveSupremumWitnessReport
 ): string {
   const scheduleLines = report.schedules
     .map((schedule) => {
-      const pattern = schedule.congestionPattern.map((value) => (value ? '1' : '0')).join('');
-      return `| ${schedule.id} | \`${pattern}\` | ${schedule.supremum.left.toFixed(3)} | ${schedule.supremum.right.toFixed(3)} | ${schedule.expectedSupremumRight.toFixed(3)} | ${schedule.recoveredExpectedSupremum ? 'yes' : 'no'} |`;
+      const pattern = schedule.congestionPattern
+        .map((value) => (value ? '1' : '0'))
+        .join('');
+      return `| ${
+        schedule.id
+      } | \`${pattern}\` | ${schedule.supremum.left.toFixed(
+        3
+      )} | ${schedule.supremum.right.toFixed(
+        3
+      )} | ${schedule.expectedSupremumRight.toFixed(3)} | ${
+        schedule.recoveredExpectedSupremum ? 'yes' : 'no'
+      } |`;
     })
     .join('\n');
 
@@ -418,8 +469,12 @@ export function renderAdaptiveSupremumWitnessMarkdown(
     '',
     `- Left coordinate: ${report.candidate.left.toFixed(3)}`,
     `- Right coordinate: ${report.candidate.right.toFixed(3)}`,
-    `- Left fixed-point residual: ${report.candidate.fixedPointResidualLeft.toExponential(3)}`,
-    `- Right fixed-point residual: ${report.candidate.fixedPointResidualRight.toExponential(3)}`,
+    `- Left fixed-point residual: ${report.candidate.fixedPointResidualLeft.toExponential(
+      3
+    )}`,
+    `- Right fixed-point residual: ${report.candidate.fixedPointResidualRight.toExponential(
+      3
+    )}`,
     `- Left service slack: ${report.candidate.serviceSlackLeft.toFixed(3)}`,
     `- Right service slack: ${report.candidate.serviceSlackRight.toFixed(3)}`,
     '',

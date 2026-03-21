@@ -97,7 +97,9 @@ const totalSize = prerendered.size + PRODUCTION_ASSET_OVERHEAD;
 
 export const bigContentFluxSite: SiteManifest = {
   name: 'big-content-flux',
-  description: `Aeon-Flux: React→prerenderPage() with ESI + moderation + presence + skeletons (${(totalSize / 1024).toFixed(0)} KB, 1 resource)`,
+  description: `Aeon-Flux: React→prerenderPage() with ESI + moderation + presence + skeletons (${(
+    totalSize / 1024
+  ).toFixed(0)} KB, 1 resource)`,
   resources: [
     {
       path: '/index.html',

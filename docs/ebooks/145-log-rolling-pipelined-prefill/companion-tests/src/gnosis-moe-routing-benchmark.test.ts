@@ -18,20 +18,28 @@ describe('Gnosis mini-MoE routing benchmark (§1.7, §6.12)', () => {
       'early-stop',
     ]);
 
-    expect(report.strategies.linear.meanEvalMeanSquaredError).toBeLessThan(0.01);
-    expect(report.strategies.linear.meanExactWithinToleranceFraction).toBeGreaterThan(0.9);
-    expect(report.strategies['winner-take-all'].meanEvalMeanSquaredError).toBeGreaterThan(0.2);
-    expect(report.strategies['early-stop'].meanEvalMeanSquaredError).toBeGreaterThan(
-      report.strategies['winner-take-all'].meanEvalMeanSquaredError,
+    expect(report.strategies.linear.meanEvalMeanSquaredError).toBeLessThan(
+      0.01
     );
-    expect(report.strategies['winner-take-all'].meanDualActiveRegionMeanAbsoluteError).toBeGreaterThan(
-      0.3,
+    expect(
+      report.strategies.linear.meanExactWithinToleranceFraction
+    ).toBeGreaterThan(0.9);
+    expect(
+      report.strategies['winner-take-all'].meanEvalMeanSquaredError
+    ).toBeGreaterThan(0.2);
+    expect(
+      report.strategies['early-stop'].meanEvalMeanSquaredError
+    ).toBeGreaterThan(
+      report.strategies['winner-take-all'].meanEvalMeanSquaredError
     );
+    expect(
+      report.strategies['winner-take-all'].meanDualActiveRegionMeanAbsoluteError
+    ).toBeGreaterThan(0.3);
   });
 
   it('renders a markdown report with interval-backed routed metrics', async () => {
     const markdown = renderGnosisMiniMoeRoutingBenchmarkMarkdown(
-      await runGnosisMiniMoeRoutingBenchmark(),
+      await runGnosisMiniMoeRoutingBenchmark()
     );
 
     expect(markdown).toContain('# Gnosis Mini-MoE Routing Benchmark');

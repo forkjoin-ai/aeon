@@ -1,5 +1,9 @@
 import { once } from 'node:events';
-import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import {
+  createServer,
+  type IncomingMessage,
+  type ServerResponse,
+} from 'node:http';
 import { performance } from 'node:perf_hooks';
 import { createHash } from 'node:crypto';
 
@@ -92,7 +96,9 @@ export interface Gate1Report {
   };
 }
 
-function extractEndpointHosts(endpointPool: readonly string[] | undefined): readonly string[] {
+function extractEndpointHosts(
+  endpointPool: readonly string[] | undefined
+): readonly string[] {
   if (!endpointPool) {
     return [];
   }
@@ -193,7 +199,7 @@ export function bootstrapCi(
   values: readonly number[],
   statistic: (sample: readonly number[]) => number,
   rngSeed: number,
-  resamples: number,
+  resamples: number
 ): BootstrapInterval {
   if (values.length === 0) {
     return { low: Number.NaN, high: Number.NaN };
@@ -219,12 +225,22 @@ export function bootstrapCi(
 function summarizeDistribution(
   values: readonly number[],
   seed: number,
-  resamples: number,
+  resamples: number
 ): DistributionSummary {
   const p50 = quantile(values, 0.5);
   const p95 = quantile(values, 0.95);
-  const p50Ci = bootstrapCi(values, (sample) => quantile(sample, 0.5), mixSeed(seed, 11), resamples);
-  const p95Ci = bootstrapCi(values, (sample) => quantile(sample, 0.95), mixSeed(seed, 13), resamples);
+  const p50Ci = bootstrapCi(
+    values,
+    (sample) => quantile(sample, 0.5),
+    mixSeed(seed, 11),
+    resamples
+  );
+  const p95Ci = bootstrapCi(
+    values,
+    (sample) => quantile(sample, 0.95),
+    mixSeed(seed, 13),
+    resamples
+  );
 
   return {
     p50Ms: p50,
@@ -246,7 +262,11 @@ async function readBody(request: IncomingMessage): Promise<string> {
   return Buffer.concat(chunks).toString('utf8');
 }
 
-function sendJson(response: ServerResponse, statusCode: number, body: unknown): void {
+function sendJson(
+  response: ServerResponse,
+  statusCode: number,
+  body: unknown
+): void {
   response.statusCode = statusCode;
   response.setHeader('access-control-allow-origin', '*');
   response.setHeader('access-control-allow-methods', 'POST, OPTIONS');
@@ -279,7 +299,7 @@ function runCpuTask(
   chunkId: number,
   tokenCount: number,
   payload: string,
-  stageIndex: number,
+  stageIndex: number
 ): number {
   const units = Math.max(0, Math.floor(cpuTask.unitsPerToken * tokenCount));
   if (units === 0) {
@@ -299,7 +319,10 @@ function runCpuTask(
 
   let checksum = 2166136261 >>> 0;
   for (let unit = 0; unit < units; unit++) {
-    const semiprime = FACTOR_SEMIPRIMES[(chunkId + stageIndex + unit) % FACTOR_SEMIPRIMES.length];
+    const semiprime =
+      FACTOR_SEMIPRIMES[
+        (chunkId + stageIndex + unit) % FACTOR_SEMIPRIMES.length
+      ];
     const factor = smallestFactor(semiprime);
     checksum = Math.imul(checksum ^ factor, 16777619) >>> 0;
   }
@@ -310,12 +333,15 @@ async function startStageServers(
   nodeCount: number,
   serviceMsPerToken: number,
   listenHost: string,
-  advertiseHost: string,
+  advertiseHost: string
 ): Promise<readonly StageServer[]> {
   const servers: StageServer[] = [];
 
   for (let stageIndex = 0; stageIndex < nodeCount; stageIndex++) {
-    const handler = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
+    const handler = async (
+      request: IncomingMessage,
+      response: ServerResponse
+    ): Promise<void> => {
       if (request.method === 'OPTIONS' && request.url === '/stage') {
         response.statusCode = 204;
         response.setHeader('access-control-allow-origin', '*');
@@ -349,10 +375,18 @@ async function startStageServers(
       checksum = Math.imul(checksum ^ parsed.payload.length, 16777619) >>> 0;
       checksum = Math.imul(checksum ^ stageIndex, 16777619) >>> 0;
       if (parsed.cpuTask) {
-        checksum = Math.imul(
-          checksum ^ runCpuTask(parsed.cpuTask, parsed.chunkId, parsed.tokenCount, parsed.payload, stageIndex),
-          16777619,
-        ) >>> 0;
+        checksum =
+          Math.imul(
+            checksum ^
+              runCpuTask(
+                parsed.cpuTask,
+                parsed.chunkId,
+                parsed.tokenCount,
+                parsed.payload,
+                stageIndex
+              ),
+            16777619
+          ) >>> 0;
       }
 
       const result: StageResponse = {
@@ -374,7 +408,9 @@ async function startStageServers(
     const address = server.address();
 
     if (!address || typeof address === 'string') {
-      throw new Error(`Unable to resolve listen address for stage ${stageIndex}`);
+      throw new Error(
+        `Unable to resolve listen address for stage ${stageIndex}`
+      );
     }
 
     servers.push({
@@ -399,11 +435,11 @@ async function startStageServers(
 
 function buildExternalStageServers(
   nodeCount: number,
-  endpointPool: readonly string[],
+  endpointPool: readonly string[]
 ): readonly StageServer[] {
   if (endpointPool.length < nodeCount) {
     throw new Error(
-      `External endpoint pool has ${endpointPool.length} endpoints, but workload requires ${nodeCount}`,
+      `External endpoint pool has ${endpointPool.length} endpoints, but workload requires ${nodeCount}`
     );
   }
 
@@ -427,7 +463,7 @@ async function sendWithImpairment(
   network: Gate1NetworkCondition,
   rng: Lcg,
   maxAttempts: number,
-  requestTimeoutMs: number,
+  requestTimeoutMs: number
 ): Promise<{ response: StageResponse; attempts: number }> {
   const encoded = JSON.stringify(payload);
 
@@ -489,7 +525,7 @@ async function runSequentialTrial(
   servers: readonly StageServer[],
   seed: number,
   maxAttempts: number,
-  requestTimeoutMs: number,
+  requestTimeoutMs: number
 ): Promise<TrialResult> {
   const rng = new Lcg(seed);
   const payloadUnit = 'x'.repeat(workload.payloadBytesPerToken);
@@ -511,7 +547,7 @@ async function runSequentialTrial(
         network,
         rng,
         maxAttempts,
-        requestTimeoutMs,
+        requestTimeoutMs
       );
 
       attempts += requestAttempts;
@@ -521,7 +557,9 @@ async function runSequentialTrial(
         response.chunkId !== token ||
         response.tokenCount !== 1
       ) {
-        throw new Error(`Sequential response mismatch at token=${token}, stage=${stageIndex}`);
+        throw new Error(
+          `Sequential response mismatch at token=${token}, stage=${stageIndex}`
+        );
       }
     }
   }
@@ -540,13 +578,15 @@ async function runChunkedTrial(
   servers: readonly StageServer[],
   seed: number,
   maxAttempts: number,
-  requestTimeoutMs: number,
+  requestTimeoutMs: number
 ): Promise<TrialResult> {
   const rng = new Lcg(seed);
   const chunkTokenCounts = buildChunks(workload.tokens, workload.chunkSize);
   const stageCount = workload.nodes;
   const stageQueues: number[][] = Array.from({ length: stageCount }, () => []);
-  const inFlight: Array<Promise<InFlightResult> | null> = new Array(stageCount).fill(null);
+  const inFlight: Array<Promise<InFlightResult> | null> = new Array(
+    stageCount
+  ).fill(null);
   const completed = new Set<number>();
   const payloadUnit = 'x'.repeat(workload.payloadBytesPerToken);
   let attempts = 0;
@@ -579,7 +619,7 @@ async function runChunkedTrial(
       network,
       rng,
       maxAttempts,
-      requestTimeoutMs,
+      requestTimeoutMs
     ).then(({ response, attempts: requestAttempts }) => ({
       stageIndex,
       chunkId,
@@ -595,9 +635,13 @@ async function runChunkedTrial(
   }
 
   while (completed.size < chunkTokenCounts.length) {
-    const active = inFlight.filter((entry): entry is Promise<InFlightResult> => entry !== null);
+    const active = inFlight.filter(
+      (entry): entry is Promise<InFlightResult> => entry !== null
+    );
     if (active.length === 0) {
-      throw new Error('Chunked pipeline deadlock: no in-flight work and incomplete chunks');
+      throw new Error(
+        'Chunked pipeline deadlock: no in-flight work and incomplete chunks'
+      );
     }
 
     const done = await Promise.race(active);
@@ -610,7 +654,7 @@ async function runChunkedTrial(
       done.response.tokenCount !== chunkTokenCounts[done.chunkId]
     ) {
       throw new Error(
-        `Chunked response mismatch at chunk=${done.chunkId}, stage=${done.stageIndex}`,
+        `Chunked response mismatch at chunk=${done.chunkId}, stage=${done.stageIndex}`
       );
     }
 
@@ -634,7 +678,9 @@ async function runChunkedTrial(
   };
 }
 
-async function closeStageServers(servers: readonly StageServer[]): Promise<void> {
+async function closeStageServers(
+  servers: readonly StageServer[]
+): Promise<void> {
   await Promise.all(servers.map((server) => server.close()));
 }
 
@@ -645,7 +691,10 @@ function average(values: readonly number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
-function buildCellId(workload: Gate1Workload, network: Gate1NetworkCondition): string {
+function buildCellId(
+  workload: Gate1Workload,
+  network: Gate1NetworkCondition
+): string {
   return `${workload.name}__${network.name}`;
 }
 
@@ -653,7 +702,7 @@ function assessCellPass(
   pairedTrials: number,
   failedTrials: number,
   speedupMedianCi: BootstrapInterval,
-  improvementMedianMsCi: BootstrapInterval,
+  improvementMedianMsCi: BootstrapInterval
 ): boolean {
   if (pairedTrials === 0 || failedTrials > 0) {
     return false;
@@ -668,7 +717,7 @@ async function runCell(
   cellSeed: number,
   execution: Required<Omit<Gate1ExecutionOptions, 'endpointPool'>> & {
     readonly endpointPool?: readonly string[];
-  },
+  }
 ): Promise<CellResult> {
   const servers = execution.endpointPool
     ? buildExternalStageServers(workload.nodes, execution.endpointPool)
@@ -676,7 +725,7 @@ async function runCell(
         workload.nodes,
         workload.serviceMsPerToken,
         execution.listenHost,
-        execution.advertiseHost,
+        execution.advertiseHost
       );
   const sequentialTimes: number[] = [];
   const chunkedTimes: number[] = [];
@@ -691,17 +740,17 @@ async function runCell(
       workload,
       network,
       servers,
-      mixSeed(cellSeed, 0xAAAA),
+      mixSeed(cellSeed, 0xaaaa),
       config.maxAttemptsPerRequest,
-      config.requestTimeoutMs,
+      config.requestTimeoutMs
     );
     await runChunkedTrial(
       workload,
       network,
       servers,
-      mixSeed(cellSeed, 0xBBBB),
+      mixSeed(cellSeed, 0xbbbb),
       config.maxAttemptsPerRequest,
-      config.requestTimeoutMs,
+      config.requestTimeoutMs
     );
 
     for (let trial = 0; trial < config.trialsPerCell; trial++) {
@@ -720,7 +769,7 @@ async function runCell(
             servers,
             chunkedSeed,
             config.maxAttemptsPerRequest,
-            config.requestTimeoutMs,
+            config.requestTimeoutMs
           );
           sequential = await runSequentialTrial(
             workload,
@@ -728,7 +777,7 @@ async function runCell(
             servers,
             sequentialSeed,
             config.maxAttemptsPerRequest,
-            config.requestTimeoutMs,
+            config.requestTimeoutMs
           );
         } else {
           sequential = await runSequentialTrial(
@@ -737,7 +786,7 @@ async function runCell(
             servers,
             sequentialSeed,
             config.maxAttemptsPerRequest,
-            config.requestTimeoutMs,
+            config.requestTimeoutMs
           );
           chunked = await runChunkedTrial(
             workload,
@@ -745,7 +794,7 @@ async function runCell(
             servers,
             chunkedSeed,
             config.maxAttemptsPerRequest,
-            config.requestTimeoutMs,
+            config.requestTimeoutMs
           );
         }
 
@@ -764,7 +813,10 @@ async function runCell(
   }
 
   if (sequentialTimes.length === 0 || chunkedTimes.length === 0) {
-    const nanInterval: BootstrapInterval = { low: Number.NaN, high: Number.NaN };
+    const nanInterval: BootstrapInterval = {
+      low: Number.NaN,
+      high: Number.NaN,
+    };
     return {
       cellId: buildCellId(workload, network),
       workload,
@@ -796,12 +848,12 @@ async function runCell(
   const sequentialSummary = summarizeDistribution(
     sequentialTimes,
     mixSeed(cellSeed, 0x401),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
   const chunkedSummary = summarizeDistribution(
     chunkedTimes,
     mixSeed(cellSeed, 0x402),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
 
   const speedupMedian = quantile(speedups, 0.5);
@@ -809,7 +861,7 @@ async function runCell(
     speedups,
     (sample) => quantile(sample, 0.5),
     mixSeed(cellSeed, 0x501),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
 
   const improvementMedianMs = quantile(improvements, 0.5);
@@ -817,11 +869,16 @@ async function runCell(
     improvements,
     (sample) => quantile(sample, 0.5),
     mixSeed(cellSeed, 0x502),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
 
   const pairedTrials = sequentialTimes.length;
-  const passed = assessCellPass(pairedTrials, failedTrials, speedupMedianCi, improvementMedianMsCi);
+  const passed = assessCellPass(
+    pairedTrials,
+    failedTrials,
+    speedupMedianCi,
+    improvementMedianMsCi
+  );
 
   return {
     cellId: buildCellId(workload, network),
@@ -847,7 +904,7 @@ export function makeDefaultGate1Config(): Gate1Config {
     maxAttemptsPerRequest: 5,
     requestTimeoutMs: 10_000,
     bootstrapResamples: 2000,
-    seed: 0xC0FFEE,
+    seed: 0xc0ffee,
     workloads: [
       {
         name: 'prompt24-n4-b6',
@@ -912,7 +969,7 @@ export function makeHardSearchGate1Config(): Gate1Config {
     maxAttemptsPerRequest: 4,
     requestTimeoutMs: 20_000,
     bootstrapResamples: 1200,
-    seed: 0x5EA7C001,
+    seed: 0x5ea7c001,
     workloads: [
       {
         name: 'md5-grind-n4-b8',
@@ -964,7 +1021,7 @@ export function makeSemiprimeFactorGate1Config(): Gate1Config {
     maxAttemptsPerRequest: 4,
     requestTimeoutMs: 20_000,
     bootstrapResamples: 1200,
-    seed: 0x5EA7C001,
+    seed: 0x5ea7c001,
     workloads: [
       {
         name: 'factor-semiprime-n4-b6',
@@ -1004,7 +1061,7 @@ export function makeMd5GrindGate1Config(): Gate1Config {
     maxAttemptsPerRequest: 4,
     requestTimeoutMs: 20_000,
     bootstrapResamples: 1200,
-    seed: 0x5EA7C001,
+    seed: 0x5ea7c001,
     workloads: [
       {
         name: 'md5-grind-n4-b8',
@@ -1040,14 +1097,17 @@ export function makeMd5GrindGate1Config(): Gate1Config {
 
 export async function runGate1Matrix(
   config: Gate1Config,
-  executionOptions: Gate1ExecutionOptions = {},
+  executionOptions: Gate1ExecutionOptions = {}
 ): Promise<Gate1Report> {
   const execution: Required<Omit<Gate1ExecutionOptions, 'endpointPool'>> & {
     readonly endpointPool?: readonly string[];
   } = {
     label: executionOptions.label ?? 'loopback-default',
     listenHost: executionOptions.listenHost ?? '127.0.0.1',
-    advertiseHost: executionOptions.advertiseHost ?? executionOptions.listenHost ?? '127.0.0.1',
+    advertiseHost:
+      executionOptions.advertiseHost ??
+      executionOptions.listenHost ??
+      '127.0.0.1',
     endpointPool: executionOptions.endpointPool,
   };
 
@@ -1056,18 +1116,34 @@ export async function runGate1Matrix(
 
   for (const workload of config.workloads) {
     for (const network of config.networkConditions) {
-      const cellSeed = mixSeed(config.seed, cellIndex, workload.tokens, workload.nodes, network.rttMs);
-      const result = await runCell(workload, network, config, cellSeed, execution);
+      const cellSeed = mixSeed(
+        config.seed,
+        cellIndex,
+        workload.tokens,
+        workload.nodes,
+        network.rttMs
+      );
+      const result = await runCell(
+        workload,
+        network,
+        config,
+        cellSeed,
+        execution
+      );
       cells.push(result);
       cellIndex++;
     }
   }
 
-  const primaryCells = cells.filter((cell) => cell.network.primary).map((cell) => cell.cellId);
+  const primaryCells = cells
+    .filter((cell) => cell.network.primary)
+    .map((cell) => cell.cellId);
   const passedPrimaryCells = cells
     .filter((cell) => cell.network.primary && cell.passed)
     .map((cell) => cell.cellId);
-  const failedPrimaryCells = primaryCells.filter((cellId) => !passedPrimaryCells.includes(cellId));
+  const failedPrimaryCells = primaryCells.filter(
+    (cellId) => !passedPrimaryCells.includes(cellId)
+  );
   const endpointHosts = extractEndpointHosts(execution.endpointPool);
   const distinctEndpointHostCount = new Set(endpointHosts).size;
 
@@ -1075,7 +1151,9 @@ export async function runGate1Matrix(
     config,
     execution: {
       label: execution.label,
-      mode: execution.endpointPool ? 'external-endpoints' : 'embedded-stage-servers',
+      mode: execution.endpointPool
+        ? 'external-endpoints'
+        : 'embedded-stage-servers',
       listenHost: execution.listenHost,
       advertiseHost: execution.advertiseHost,
       endpointPoolSize: execution.endpointPool?.length ?? 0,
@@ -1104,7 +1182,9 @@ export function renderGate1Markdown(report: Gate1Report): string {
   const lines: string[] = [];
   lines.push('# Gate 1 Wall-Clock Matrix');
   lines.push('');
-  lines.push('Distributed benchmark with live HTTP stage servers and impairment injection (RTT/jitter/loss).');
+  lines.push(
+    'Distributed benchmark with live HTTP stage servers and impairment injection (RTT/jitter/loss).'
+  );
   lines.push('');
   lines.push('## Execution');
   lines.push('');
@@ -1113,40 +1193,64 @@ export function renderGate1Markdown(report: Gate1Report): string {
   lines.push(`- Listen host: ${report.execution.listenHost}`);
   lines.push(`- Advertise host: ${report.execution.advertiseHost}`);
   if (report.execution.mode === 'external-endpoints') {
-    lines.push(`- External endpoints provided: ${report.execution.endpointPoolSize}`);
-    lines.push(`- Distinct endpoint hosts: ${report.execution.distinctEndpointHostCount}`);
+    lines.push(
+      `- External endpoints provided: ${report.execution.endpointPoolSize}`
+    );
+    lines.push(
+      `- Distinct endpoint hosts: ${report.execution.distinctEndpointHostCount}`
+    );
     if (report.execution.endpointHosts.length > 0) {
-      lines.push(`- Endpoint hosts: ${report.execution.endpointHosts.join(', ')}`);
+      lines.push(
+        `- Endpoint hosts: ${report.execution.endpointHosts.join(', ')}`
+      );
     }
   }
   lines.push('');
   lines.push('## Verdict');
   lines.push('');
   lines.push(`- Overall Gate 1: **${report.gate.pass ? 'PASS' : 'DENY'}**`);
-  lines.push(`- Primary cells passed: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}`);
+  lines.push(
+    `- Primary cells passed: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}`
+  );
   if (report.gate.failedPrimaryCells.length > 0) {
-    lines.push(`- Failed primary cells: ${report.gate.failedPrimaryCells.join(', ')}`);
+    lines.push(
+      `- Failed primary cells: ${report.gate.failedPrimaryCells.join(', ')}`
+    );
   }
   lines.push('');
   lines.push('## Matrix Results');
   lines.push('');
   lines.push(
-    '| Cell | Primary | Trials | Seq p50 / p95 (ms) | Chunked p50 / p95 (ms) | Median Speedup (95% CI) | Median Improvement (95% CI, ms) | Pass |',
+    '| Cell | Primary | Trials | Seq p50 / p95 (ms) | Chunked p50 / p95 (ms) | Median Speedup (95% CI) | Median Improvement (95% CI, ms) | Pass |'
   );
-  lines.push(
-    '|---|---|---:|---:|---:|---:|---:|---|',
-  );
+  lines.push('|---|---|---:|---:|---:|---:|---:|---|');
 
   for (const cell of report.cells) {
     lines.push(
-      `| ${cell.cellId} | ${cell.network.primary ? 'yes' : 'no'} | ${cell.pairedTrials}/${cell.pairedTrials + cell.failedTrials} | ${fmtMs(cell.sequential.p50Ms)} / ${fmtMs(cell.sequential.p95Ms)} | ${fmtMs(cell.chunked.p50Ms)} / ${fmtMs(cell.chunked.p95Ms)} | ${fmtRatio(cell.speedupMedian)} (${fmtRatio(cell.speedupMedianCi.low)} to ${fmtRatio(cell.speedupMedianCi.high)}) | ${fmtMs(cell.improvementMedianMs)} (${fmtMs(cell.improvementMedianMsCi.low)} to ${fmtMs(cell.improvementMedianMsCi.high)}) | ${cell.passed ? 'yes' : 'no'} |`,
+      `| ${cell.cellId} | ${cell.network.primary ? 'yes' : 'no'} | ${
+        cell.pairedTrials
+      }/${cell.pairedTrials + cell.failedTrials} | ${fmtMs(
+        cell.sequential.p50Ms
+      )} / ${fmtMs(cell.sequential.p95Ms)} | ${fmtMs(
+        cell.chunked.p50Ms
+      )} / ${fmtMs(cell.chunked.p95Ms)} | ${fmtRatio(
+        cell.speedupMedian
+      )} (${fmtRatio(cell.speedupMedianCi.low)} to ${fmtRatio(
+        cell.speedupMedianCi.high
+      )}) | ${fmtMs(cell.improvementMedianMs)} (${fmtMs(
+        cell.improvementMedianMsCi.low
+      )} to ${fmtMs(cell.improvementMedianMsCi.high)}) | ${
+        cell.passed ? 'yes' : 'no'
+      } |`
     );
   }
 
   lines.push('');
   lines.push('## Gate Rule');
   lines.push('');
-  lines.push('- Cell pass requires zero failed trials plus 95% bootstrap CI lower bounds above no-improvement for both paired median speedup (>1.0) and paired median latency improvement (>0 ms).');
+  lines.push(
+    '- Cell pass requires zero failed trials plus 95% bootstrap CI lower bounds above no-improvement for both paired median speedup (>1.0) and paired median latency improvement (>0 ms).'
+  );
   lines.push('- Gate 1 pass requires all primary cells to pass.');
 
   return `${lines.join('\n')}\n`;

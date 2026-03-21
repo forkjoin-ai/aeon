@@ -34,7 +34,9 @@ describe('Chapter 17 hetero MoA fabric curvature figure', () => {
     const markdown = renderCh17HeteroMoaFabricCurvatureFigureMarkdown(report);
     const svg = renderCh17HeteroMoaFabricCurvatureFigureSvg(report);
 
-    expect(markdown).toContain('# Chapter 17 Hetero MoA Fabric Curvature Figure');
+    expect(markdown).toContain(
+      '# Chapter 17 Hetero MoA Fabric Curvature Figure'
+    );
     expect(markdown).toContain('curved meta-laminar envelope');
     expect(markdown).toContain('stretched spring');
     expect(markdown).toContain('QDoc decay');

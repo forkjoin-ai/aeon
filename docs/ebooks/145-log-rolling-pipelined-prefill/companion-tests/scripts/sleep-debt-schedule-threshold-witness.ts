@@ -67,18 +67,28 @@ function main(): void {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderSleepDebtScheduleThresholdWitnessMarkdown(report),
     'utf8'
   );
 
-  process.stdout.write(`sleep-debt-schedule-threshold-witness: ${report.label}\n`);
+  process.stdout.write(
+    `sleep-debt-schedule-threshold-witness: ${report.label}\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(
-    `- subcriticalZero=${report.aggregate.subcriticalStaysZero ? 'yes' : 'no'}, supercriticalLinear=${report.aggregate.supercriticalGrowsLinearly ? 'yes' : 'no'}\n`
+    `- subcriticalZero=${
+      report.aggregate.subcriticalStaysZero ? 'yes' : 'no'
+    }, supercriticalLinear=${
+      report.aggregate.supercriticalGrowsLinearly ? 'yes' : 'no'
+    }\n`
   );
 
   if (

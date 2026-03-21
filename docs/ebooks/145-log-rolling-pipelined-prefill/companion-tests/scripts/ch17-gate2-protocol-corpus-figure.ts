@@ -20,15 +20,15 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate2-protocol-corpus-figure.json',
+    '../artifacts/ch17-gate2-protocol-corpus-figure.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate2-protocol-corpus-figure.md',
+    '../artifacts/ch17-gate2-protocol-corpus-figure.md'
   );
   const defaultSvgPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate2-protocol-corpus-figure.svg',
+    '../artifacts/ch17-gate2-protocol-corpus-figure.svg'
   );
 
   let assertSurface = false;
@@ -85,33 +85,49 @@ function main(): void {
   const options = parseCli(process.argv.slice(2));
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const artifactsDir = resolve(moduleDir, '../artifacts');
-  const gate2 = loadJson<Gate2Report>(resolve(artifactsDir, 'gate2-protocol-corpus.json'));
+  const gate2 = loadJson<Gate2Report>(
+    resolve(artifactsDir, 'gate2-protocol-corpus.json')
+  );
   const report = buildCh17Gate2ProtocolCorpusFigureReport(gate2);
 
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderCh17Gate2ProtocolCorpusFigureMarkdown(report),
-    'utf8',
+    'utf8'
   );
-  writeFileSync(options.svgPath, renderCh17Gate2ProtocolCorpusFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.svgPath,
+    renderCh17Gate2ProtocolCorpusFigureSvg(report),
+    'utf8'
+  );
 
   process.stdout.write(`ch17-gate2-protocol-corpus-figure: ${report.label}\n`);
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
-    `- primary cells: ${report.primaryPassed}/${report.primaryTotal}\n`,
+    `- primary cells: ${report.primaryPassed}/${report.primaryTotal}\n`
   );
   process.stdout.write(
-    `- framing gain range: ${report.framingGainRangePct.low.toFixed(3)}% to ${report.framingGainRangePct.high.toFixed(3)}%\n`,
+    `- framing gain range: ${report.framingGainRangePct.low.toFixed(
+      3
+    )}% to ${report.framingGainRangePct.high.toFixed(3)}%\n`
   );
   process.stdout.write(
-    `- minimum primary-cell CI lows: ${report.minPrimaryFramingCiLowPct.toFixed(3)}%, ${report.minPrimaryCompletionMedianCiLowMs.toFixed(2)} ms, ${report.minPrimaryCompletionP95CiLowMs.toFixed(2)} ms\n`,
+    `- minimum primary-cell CI lows: ${report.minPrimaryFramingCiLowPct.toFixed(
+      3
+    )}%, ${report.minPrimaryCompletionMedianCiLowMs.toFixed(
+      2
+    )} ms, ${report.minPrimaryCompletionP95CiLowMs.toFixed(2)} ms\n`
   );
 
   if (

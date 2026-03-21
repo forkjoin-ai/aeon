@@ -23,9 +23,9 @@ import type { FlowTransport } from '../flow/types';
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /** Aeon vendor-specific interface class */
-export const AEON_USB_INTERFACE_CLASS = 0xFF; // Vendor-specific
+export const AEON_USB_INTERFACE_CLASS = 0xff; // Vendor-specific
 /** Aeon vendor-specific subclass */
-export const AEON_USB_SUBCLASS = 0xAE;
+export const AEON_USB_SUBCLASS = 0xae;
 /** Aeon protocol ID within the interface */
 export const AEON_USB_PROTOCOL = 0x01;
 
@@ -111,7 +111,10 @@ export class USBFlowTransport implements FlowTransport {
 
     // Request device — triggers browser permission prompt
     const device = await navigator.usb.requestDevice({
-      filters: filters.length > 0 ? filters : [{ classCode: AEON_USB_INTERFACE_CLASS }],
+      filters:
+        filters.length > 0
+          ? filters
+          : [{ classCode: AEON_USB_INTERFACE_CLASS }],
     });
 
     await device.open();
@@ -121,7 +124,11 @@ export class USBFlowTransport implements FlowTransport {
     let outEp = config?.outEndpoint;
     let inEp = config?.inEndpoint;
 
-    if (interfaceNum === undefined || outEp === undefined || inEp === undefined) {
+    if (
+      interfaceNum === undefined ||
+      outEp === undefined ||
+      inEp === undefined
+    ) {
       // Auto-detect from device configuration
       const iface = device.configuration?.interfaces.find((i) =>
         i.alternates.some(
@@ -154,7 +161,11 @@ export class USBFlowTransport implements FlowTransport {
       }
     }
 
-    if (interfaceNum === undefined || outEp === undefined || inEp === undefined) {
+    if (
+      interfaceNum === undefined ||
+      outEp === undefined ||
+      inEp === undefined
+    ) {
       throw new Error('Could not find bulk endpoints on Aeon USB interface');
     }
 
@@ -223,9 +234,12 @@ export class USBFlowTransport implements FlowTransport {
     this.receiveHandler = null;
 
     // Release interface and close device
-    this.device.releaseInterface(this.interfaceNum).then(() => {
-      this.device.close().catch(() => {});
-    }).catch(() => {});
+    this.device
+      .releaseInterface(this.interfaceNum)
+      .then(() => {
+        this.device.close().catch(() => {});
+      })
+      .catch(() => {});
   }
 
   /** Whether the transport is still open */
@@ -256,7 +270,11 @@ export class USBFlowTransport implements FlowTransport {
             this.transferSize
           );
 
-          if (result.status === 'ok' && result.data && result.data.byteLength > 0) {
+          if (
+            result.status === 'ok' &&
+            result.data &&
+            result.data.byteLength > 0
+          ) {
             const chunk = new Uint8Array(result.data.buffer);
             this.processChunk(chunk);
           }
@@ -277,7 +295,9 @@ export class USBFlowTransport implements FlowTransport {
 
   private processChunk(chunk: Uint8Array): void {
     // Append to reassembly buffer
-    const combined = new Uint8Array(this.rxBuffer.byteLength + chunk.byteLength);
+    const combined = new Uint8Array(
+      this.rxBuffer.byteLength + chunk.byteLength
+    );
     combined.set(this.rxBuffer);
     combined.set(chunk, this.rxBuffer.byteLength);
     this.rxBuffer = combined;

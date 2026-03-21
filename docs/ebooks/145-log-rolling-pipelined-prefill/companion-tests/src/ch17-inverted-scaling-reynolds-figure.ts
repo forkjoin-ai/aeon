@@ -102,7 +102,11 @@ function rangeFor(values: readonly number[]): MetricRange {
   };
 }
 
-function speedup(workload: number, stageCount: number, chunkCount: number): number {
+function speedup(
+  workload: number,
+  stageCount: number,
+  chunkCount: number
+): number {
   return (workload * stageCount) / (chunkCount + stageCount - 1);
 }
 
@@ -141,7 +145,9 @@ function stageColor(stageCount: number): string {
   }
 }
 
-function isPlottedScenario(scenario: FigureScenario): scenario is PlottedScenario {
+function isPlottedScenario(
+  scenario: FigureScenario
+): scenario is PlottedScenario {
   return scenario.workload !== undefined && scenario.speedup !== undefined;
 }
 
@@ -156,7 +162,12 @@ function regimeColor(value: Regime): string {
   }
 }
 
-function logScale(value: number, range: MetricRange, start: number, span: number): number {
+function logScale(
+  value: number,
+  range: MetricRange,
+  start: number,
+  span: number
+): number {
   const logMin = Math.log10(range.low);
   const logMax = Math.log10(range.high);
   const normalized = (Math.log10(value) - logMin) / (logMax - logMin);
@@ -165,7 +176,9 @@ function logScale(value: number, range: MetricRange, start: number, span: number
 
 export function buildCh17InvertedScalingReynoldsFigureReport(): Ch17InvertedScalingReynoldsFigureReport {
   const stageFamilies = [2, 4, 8, 10] as const;
-  const workloads = [10, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512] as const;
+  const workloads = [
+    10, 16, 24, 32, 48, 64, 96, 128, 192, 256, 384, 512,
+  ] as const;
   const reynoldsSamples = [
     0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.7, 1, 1.5, 2, 4, 8, 16,
   ] as const;
@@ -263,19 +276,24 @@ export function buildCh17InvertedScalingReynoldsFigureReport(): Ch17InvertedScal
     speedupFormula: 'Speedup = (P × N) / (C + N - 1)',
     idleFormula: 'idle = (N - 1) / (C + N - 1)',
     reynoldsFormula: 'Re = N / C',
-    balancedChunkRule: 'Left-panel curves use the balanced-chunk cross-section C = N to expose the inverted-scaling slope directly.',
+    balancedChunkRule:
+      'Left-panel curves use the balanced-chunk cross-section C = N to expose the inverted-scaling slope directly.',
     stageFamilies: [...stageFamilies],
     workloadRange: rangeFor(workloads),
     reynoldsRange: { low: 0.1, high: 20 },
     speedupRange: rangeFor(
-      speedupCurves.flatMap((curve) => curve.points.map((point) => point.speedup)).concat(
-        scenarios.flatMap((scenario) => (scenario.speedup === undefined ? [] : [scenario.speedup])),
-      ),
+      speedupCurves
+        .flatMap((curve) => curve.points.map((point) => point.speedup))
+        .concat(
+          scenarios.flatMap((scenario) =>
+            scenario.speedup === undefined ? [] : [scenario.speedup]
+          )
+        )
     ),
     idleRange: rangeFor(
-      regimeCurves.flatMap((curve) => curve.points.map((point) => point.idleFraction)).concat(
-        scenarios.map((scenario) => scenario.idleFraction),
-      ),
+      regimeCurves
+        .flatMap((curve) => curve.points.map((point) => point.idleFraction))
+        .concat(scenarios.map((scenario) => scenario.idleFraction))
     ),
     speedupCurves,
     regimeCurves,
@@ -284,7 +302,7 @@ export function buildCh17InvertedScalingReynoldsFigureReport(): Ch17InvertedScal
 }
 
 export function renderCh17InvertedScalingReynoldsFigureMarkdown(
-  report: Ch17InvertedScalingReynoldsFigureReport,
+  report: Ch17InvertedScalingReynoldsFigureReport
 ): string {
   const lines: string[] = [];
   lines.push('# Chapter 17 Inverted-Scaling and Reynolds Figure');
@@ -295,10 +313,20 @@ export function renderCh17InvertedScalingReynoldsFigureMarkdown(
   lines.push(`- Reynolds formula: \`${report.reynoldsFormula}\``);
   lines.push(`- Balanced-chunk rule: ${report.balancedChunkRule}`);
   lines.push(
-    `- Stage families: \`${report.stageFamilies.join(', ')}\`; workload sweep \`${report.workloadRange.low}\` to \`${report.workloadRange.high}\` items`,
+    `- Stage families: \`${report.stageFamilies.join(
+      ', '
+    )}\`; workload sweep \`${report.workloadRange.low}\` to \`${
+      report.workloadRange.high
+    }\` items`
   );
   lines.push(
-    `- Reynolds sweep: \`${formatRe(report.reynoldsRange.low)}\` to \`${formatRe(report.reynoldsRange.high)}\`; idle range \`${formatPct(report.idleRange.low)}\` to \`${formatPct(report.idleRange.high)}\``,
+    `- Reynolds sweep: \`${formatRe(
+      report.reynoldsRange.low
+    )}\` to \`${formatRe(
+      report.reynoldsRange.high
+    )}\`; idle range \`${formatPct(report.idleRange.low)}\` to \`${formatPct(
+      report.idleRange.high
+    )}\``
   );
   lines.push('');
   lines.push('## Scenarios');
@@ -307,12 +335,18 @@ export function renderCh17InvertedScalingReynoldsFigureMarkdown(
   lines.push('|---|---:|---:|---:|---:|---:|---:|---|');
   for (const scenario of report.scenarios) {
     lines.push(
-      `| ${scenario.label} | ${scenario.workload === undefined ? 'n/a' : scenario.workload} | ${scenario.stageCount} | ${scenario.chunkCount} | ${scenario.speedup === undefined ? 'n/a' : formatRatio(scenario.speedup)} | ${formatRe(scenario.reynolds)} | ${formatPct(scenario.idleFraction)} | ${scenario.regime} |`,
+      `| ${scenario.label} | ${
+        scenario.workload === undefined ? 'n/a' : scenario.workload
+      } | ${scenario.stageCount} | ${scenario.chunkCount} | ${
+        scenario.speedup === undefined ? 'n/a' : formatRatio(scenario.speedup)
+      } | ${formatRe(scenario.reynolds)} | ${formatPct(
+        scenario.idleFraction
+      )} | ${scenario.regime} |`
     );
   }
   lines.push('');
   lines.push(
-    'Interpretation: the left panel isolates the inverted-scaling story under the balanced-chunk cross-section, while the right panel maps the same chunk-count language into laminar/transitional/turbulent bands and overlays the manuscript scenarios plus the HTTP/1.1 vs Aeon Flow transport example.',
+    'Interpretation: the left panel isolates the inverted-scaling story under the balanced-chunk cross-section, while the right panel maps the same chunk-count language into laminar/transitional/turbulent bands and overlays the manuscript scenarios plus the HTTP/1.1 vs Aeon Flow transport example.'
   );
 
   return `${lines.join('\n')}\n`;
@@ -324,16 +358,20 @@ function renderSpeedupPanel(
   x: number,
   y: number,
   width: number,
-  height: number,
+  height: number
 ): void {
   svg.push(
-    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`,
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 34}" font-family="Georgia, serif" font-size="20" fill="#111827">Inverted Scaling Under Balanced Chunks</text>`,
+    `<text x="${x + 24}" y="${
+      y + 34
+    }" font-family="Georgia, serif" font-size="20" fill="#111827">Inverted Scaling Under Balanced Chunks</text>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 56}" font-family="Georgia, serif" font-size="13" fill="#4b5563">Curves use C = N, so the ideal step-count slope is visible as workload grows.</text>`,
+    `<text x="${x + 24}" y="${
+      y + 56
+    }" font-family="Georgia, serif" font-size="13" fill="#4b5563">Curves use C = N, so the ideal step-count slope is visible as workload grows.</text>`
   );
 
   const innerX = x + 74;
@@ -346,20 +384,28 @@ function renderSpeedupPanel(
   for (const workload of [10, 20, 50, 100, 200, 500]) {
     const cx = logScale(workload, xRange, innerX, innerWidth);
     svg.push(
-      `<line x1="${cx}" y1="${innerY}" x2="${cx}" y2="${innerY + innerHeight}" stroke="#e5e7eb" stroke-width="1"/>`,
+      `<line x1="${cx}" y1="${innerY}" x2="${cx}" y2="${
+        innerY + innerHeight
+      }" stroke="#e5e7eb" stroke-width="1"/>`
     );
     svg.push(
-      `<text x="${cx}" y="${innerY + innerHeight + 22}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${workload}</text>`,
+      `<text x="${cx}" y="${
+        innerY + innerHeight + 22
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${workload}</text>`
     );
   }
 
   for (let tick = 0; tick <= yMax; tick += 50) {
     const cy = innerY + innerHeight - (tick / yMax) * innerHeight;
     svg.push(
-      `<line x1="${innerX}" y1="${cy}" x2="${innerX + innerWidth}" y2="${cy}" stroke="#e5e7eb" stroke-width="1"/>`,
+      `<line x1="${innerX}" y1="${cy}" x2="${
+        innerX + innerWidth
+      }" y2="${cy}" stroke="#e5e7eb" stroke-width="1"/>`
     );
     svg.push(
-      `<text x="${innerX - 12}" y="${cy + 4}" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${tick}</text>`,
+      `<text x="${innerX - 12}" y="${
+        cy + 4
+      }" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${tick}</text>`
     );
   }
 
@@ -373,7 +419,7 @@ function renderSpeedupPanel(
       })
       .join(' ');
     svg.push(
-      `<path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`,
+      `<path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`
     );
   });
 
@@ -381,36 +427,51 @@ function renderSpeedupPanel(
     'table-500x8': { dx: 10, dy: -22 },
   };
 
-  report.scenarios
-    .filter(isPlottedScenario)
-    .forEach((scenario) => {
-      const cx = logScale(scenario.workload, xRange, innerX, innerWidth);
-      const cy = innerY + innerHeight - (scenario.speedup / yMax) * innerHeight;
-      const color = stageColor(scenario.stageCount);
-      const offset = leftPanelLabelOffsets[scenario.id] ?? { dx: 10, dy: -10 };
-      svg.push(
-        `<circle cx="${cx}" cy="${cy}" r="6" fill="#ffffff" stroke="${color}" stroke-width="3"/>`,
-      );
-      svg.push(
-        `<text x="${cx + offset.dx}" y="${cy + offset.dy}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">${escapeXml(scenario.label)}</text>`,
-      );
-    });
+  report.scenarios.filter(isPlottedScenario).forEach((scenario) => {
+    const cx = logScale(scenario.workload, xRange, innerX, innerWidth);
+    const cy = innerY + innerHeight - (scenario.speedup / yMax) * innerHeight;
+    const color = stageColor(scenario.stageCount);
+    const offset = leftPanelLabelOffsets[scenario.id] ?? { dx: 10, dy: -10 };
+    svg.push(
+      `<circle cx="${cx}" cy="${cy}" r="6" fill="#ffffff" stroke="${color}" stroke-width="3"/>`
+    );
+    svg.push(
+      `<text x="${cx + offset.dx}" y="${
+        cy + offset.dy
+      }" font-family="system-ui, sans-serif" font-size="11" fill="#374151">${escapeXml(
+        scenario.label
+      )}</text>`
+    );
+  });
 
   svg.push(
-    `<text x="${innerX + innerWidth / 2}" y="${innerY + innerHeight + 48}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Workload P (items, log scale)</text>`,
+    `<text x="${innerX + innerWidth / 2}" y="${
+      innerY + innerHeight + 48
+    }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Workload P (items, log scale)</text>`
   );
   svg.push(
-    `<text x="${innerX - 52}" y="${innerY + innerHeight / 2}" transform="rotate(-90 ${innerX - 52} ${innerY + innerHeight / 2})" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Modeled step-count speedup</text>`,
+    `<text x="${innerX - 52}" y="${
+      innerY + innerHeight / 2
+    }" transform="rotate(-90 ${innerX - 52} ${
+      innerY + innerHeight / 2
+    })" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Modeled step-count speedup</text>`
   );
 
   report.speedupCurves.forEach((curve, index) => {
-    const legendY = y + height - 26 - (report.speedupCurves.length - 1 - index) * 20;
+    const legendY =
+      y + height - 26 - (report.speedupCurves.length - 1 - index) * 20;
     const color = stageColor(curve.stageCount);
     svg.push(
-      `<line x1="${x + width - 148}" y1="${legendY}" x2="${x + width - 120}" y2="${legendY}" stroke="${color}" stroke-width="3"/>`,
+      `<line x1="${x + width - 148}" y1="${legendY}" x2="${
+        x + width - 120
+      }" y2="${legendY}" stroke="${color}" stroke-width="3"/>`
     );
     svg.push(
-      `<text x="${x + width - 112}" y="${legendY + 4}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">N = ${curve.stageCount}, C = ${curve.chunkCount}</text>`,
+      `<text x="${x + width - 112}" y="${
+        legendY + 4
+      }" font-family="system-ui, sans-serif" font-size="11" fill="#374151">N = ${
+        curve.stageCount
+      }, C = ${curve.chunkCount}</text>`
     );
   });
 }
@@ -421,16 +482,20 @@ function renderRegimePanel(
   x: number,
   y: number,
   width: number,
-  height: number,
+  height: number
 ): void {
   svg.push(
-    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#f8fafc" stroke="#cbd5e1"/>`,
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#f8fafc" stroke="#cbd5e1"/>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 34}" font-family="Georgia, serif" font-size="20" fill="#111827">Reynolds Regime Map</text>`,
+    `<text x="${x + 24}" y="${
+      y + 34
+    }" font-family="Georgia, serif" font-size="20" fill="#111827">Reynolds Regime Map</text>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 56}" font-family="Georgia, serif" font-size="13" fill="#4b5563">Idle fraction under the tested formula idle = (N - 1)/(C + N - 1), shaded by the manuscript Re bands.</text>`,
+    `<text x="${x + 24}" y="${
+      y + 56
+    }" font-family="Georgia, serif" font-size="13" fill="#4b5563">Idle fraction under the tested formula idle = (N - 1)/(C + N - 1), shaded by the manuscript Re bands.</text>`
   );
 
   const innerX = x + 72;
@@ -440,39 +505,58 @@ function renderRegimePanel(
   const xRange = report.reynoldsRange;
 
   const bandSpecs = [
-    { low: 0.1, high: 0.3, fill: '#dcfce7', label: 'laminar' },
-    { low: 0.3, high: 0.7, fill: '#fef3c7', label: 'transitional' },
-    { low: 0.7, high: 20, fill: '#fee2e2', label: 'turbulent' },
+    { low: 0.1, high: 1 / 3, fill: '#dcfce7', label: 'laminar' },
+    { low: 1 / 3, high: 2 / 3, fill: '#fef3c7', label: 'transitional' },
+    { low: 2 / 3, high: 20, fill: '#fee2e2', label: 'turbulent' },
   ] as const;
 
   for (const band of bandSpecs) {
     const startX = logScale(band.low, xRange, innerX, innerWidth);
     const endX = logScale(band.high, xRange, innerX, innerWidth);
     svg.push(
-      `<rect x="${startX}" y="${innerY}" width="${endX - startX}" height="${innerHeight}" fill="${band.fill}" opacity="0.55"/>`,
+      `<rect x="${startX}" y="${innerY}" width="${
+        endX - startX
+      }" height="${innerHeight}" fill="${band.fill}" opacity="0.55"/>`
     );
     svg.push(
-      `<text x="${(startX + endX) / 2}" y="${innerY + 22}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#475569">${band.label}</text>`,
+      `<text x="${(startX + endX) / 2}" y="${
+        innerY + 22
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#475569">${
+        band.label
+      }</text>`
     );
   }
 
   for (const reTick of [0.1, 0.2, 0.3, 0.5, 0.7, 1, 2, 5, 10, 20]) {
     const cx = logScale(reTick, xRange, innerX, innerWidth);
     svg.push(
-      `<line x1="${cx}" y1="${innerY}" x2="${cx}" y2="${innerY + innerHeight}" stroke="#e2e8f0" stroke-width="1"/>`,
+      `<line x1="${cx}" y1="${innerY}" x2="${cx}" y2="${
+        innerY + innerHeight
+      }" stroke="#e2e8f0" stroke-width="1"/>`
     );
     svg.push(
-      `<text x="${cx}" y="${innerY + innerHeight + 22}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${formatRe(reTick)}</text>`,
+      `<text x="${cx}" y="${
+        innerY + innerHeight + 22
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${formatRe(
+        reTick
+      )}</text>`
     );
   }
 
   for (let tick = 0; tick <= 1; tick += 0.2) {
     const cy = innerY + innerHeight - tick * innerHeight;
     svg.push(
-      `<line x1="${innerX}" y1="${cy}" x2="${innerX + innerWidth}" y2="${cy}" stroke="#e2e8f0" stroke-width="1"/>`,
+      `<line x1="${innerX}" y1="${cy}" x2="${
+        innerX + innerWidth
+      }" y2="${cy}" stroke="#e2e8f0" stroke-width="1"/>`
     );
     svg.push(
-      `<text x="${innerX - 12}" y="${cy + 4}" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${trimFixed(tick * 100, 0)}%</text>`,
+      `<text x="${innerX - 12}" y="${
+        cy + 4
+      }" text-anchor="end" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${trimFixed(
+        tick * 100,
+        0
+      )}%</text>`
     );
   }
 
@@ -486,7 +570,7 @@ function renderRegimePanel(
       })
       .join(' ');
     svg.push(
-      `<path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`,
+      `<path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`
     );
   });
 
@@ -510,53 +594,84 @@ function renderRegimePanel(
     const needsLeader = Math.abs(offset.dy) > 16;
     if (needsLeader) {
       svg.push(
-        `<line x1="${cx}" y1="${cy - 6}" x2="${labelX}" y2="${labelY + 4}" stroke="#9ca3af" stroke-width="0.75" stroke-dasharray="2,2"/>`,
+        `<line x1="${cx}" y1="${cy - 6}" x2="${labelX}" y2="${
+          labelY + 4
+        }" stroke="#9ca3af" stroke-width="0.75" stroke-dasharray="2,2"/>`
       );
     }
     svg.push(
-      `<circle cx="${cx}" cy="${cy}" r="5.5" fill="${color}" stroke="#ffffff" stroke-width="2"/>`,
+      `<circle cx="${cx}" cy="${cy}" r="5.5" fill="${color}" stroke="#ffffff" stroke-width="2"/>`
     );
     svg.push(
-      `<text x="${labelX}" y="${labelY}" text-anchor="${textAnchor}" font-family="system-ui, sans-serif" font-size="10.5" fill="#374151">${escapeXml(scenario.label)}</text>`,
+      `<text x="${labelX}" y="${labelY}" text-anchor="${textAnchor}" font-family="system-ui, sans-serif" font-size="10.5" fill="#374151">${escapeXml(
+        scenario.label
+      )}</text>`
     );
   });
 
   svg.push(
-    `<text x="${innerX + innerWidth / 2}" y="${innerY + innerHeight + 48}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Pipeline Reynolds number Re = N / C (log scale)</text>`,
+    `<text x="${innerX + innerWidth / 2}" y="${
+      innerY + innerHeight + 48
+    }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Pipeline Reynolds number Re = N / C (log scale)</text>`
   );
   svg.push(
-    `<text x="${innerX - 50}" y="${innerY + innerHeight / 2}" transform="rotate(-90 ${innerX - 50} ${innerY + innerHeight / 2})" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Idle node-slot fraction</text>`,
+    `<text x="${innerX - 50}" y="${
+      innerY + innerHeight / 2
+    }" transform="rotate(-90 ${innerX - 50} ${
+      innerY + innerHeight / 2
+    })" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Idle node-slot fraction</text>`
   );
 
   report.regimeCurves.forEach((curve, index) => {
-    const legendY = y + height - 26 - (report.regimeCurves.length - 1 - index) * 20;
+    const legendY =
+      y + height - 26 - (report.regimeCurves.length - 1 - index) * 20;
     const color = stageColor(curve.stageCount);
     svg.push(
-      `<line x1="${x + width - 120}" y1="${legendY}" x2="${x + width - 92}" y2="${legendY}" stroke="${color}" stroke-width="2.5"/>`,
+      `<line x1="${x + width - 120}" y1="${legendY}" x2="${
+        x + width - 92
+      }" y2="${legendY}" stroke="${color}" stroke-width="2.5"/>`
     );
     svg.push(
-      `<text x="${x + width - 84}" y="${legendY + 4}" font-family="system-ui, sans-serif" font-size="11" fill="#374151">N = ${curve.stageCount}</text>`,
+      `<text x="${x + width - 84}" y="${
+        legendY + 4
+      }" font-family="system-ui, sans-serif" font-size="11" fill="#374151">N = ${
+        curve.stageCount
+      }</text>`
     );
   });
 }
 
 export function renderCh17InvertedScalingReynoldsFigureSvg(
-  report: Ch17InvertedScalingReynoldsFigureReport,
+  report: Ch17InvertedScalingReynoldsFigureReport
 ): string {
   const svg: string[] = [];
-  svg.push('<svg xmlns="http://www.w3.org/2000/svg" width="1380" height="820" viewBox="0 0 1380 820" role="img" aria-labelledby="title desc">');
-  svg.push('<title id="title">Chapter 17 inverted-scaling and Reynolds-regime figure</title>');
   svg.push(
-    '<desc id="desc">Two-panel analytic figure showing workload-speedup curves under balanced chunks and a Reynolds-number regime map with manuscript scenarios overlaid.</desc>',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1380" height="820" viewBox="0 0 1380 820" role="img" aria-labelledby="title desc">'
+  );
+  svg.push(
+    '<title id="title">Chapter 17 inverted-scaling and Reynolds-regime figure</title>'
+  );
+  svg.push(
+    '<desc id="desc">Two-panel analytic figure showing workload-speedup curves under balanced chunks and a Reynolds-number regime map with manuscript scenarios overlaid.</desc>'
   );
   svg.push('<rect width="1380" height="820" fill="#f3efe5"/>');
-  svg.push('<rect x="22" y="22" width="1336" height="776" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>');
-  svg.push('<text x="60" y="82" font-family="Georgia, serif" font-size="32" fill="#111827">Inverted Scaling and Reynolds Regimes</text>');
   svg.push(
-    `<text x="60" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">${escapeXml(report.speedupFormula)} | ${escapeXml(report.idleFormula)} | ${escapeXml(report.reynoldsFormula)}</text>`,
+    '<rect x="22" y="22" width="1336" height="776" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>'
   );
   svg.push(
-    `<text x="60" y="136" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(report.balancedChunkRule)}</text>`,
+    '<text x="60" y="82" font-family="Georgia, serif" font-size="32" fill="#111827">Inverted Scaling and Reynolds Regimes</text>'
+  );
+  svg.push(
+    `<text x="60" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">${escapeXml(
+      report.speedupFormula
+    )} | ${escapeXml(report.idleFormula)} | ${escapeXml(
+      report.reynoldsFormula
+    )}</text>`
+  );
+  svg.push(
+    `<text x="60" y="136" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">${escapeXml(
+      report.balancedChunkRule
+    )}</text>`
   );
 
   renderSpeedupPanel(svg, report, 52, 168, 620, 610);

@@ -101,7 +101,7 @@ describe('P189: concession gradient steers toward least-rejected', () => {
   it('less rejected = more weight', () => {
     const rounds = 10;
     expect(concessionWeight(rounds, 2)).toBeGreaterThan(
-      concessionWeight(rounds, 5),
+      concessionWeight(rounds, 5)
     );
   });
 
@@ -176,7 +176,7 @@ describe('P191: algorithm heat decomposes additively', () => {
     const before = [3, 2, 1];
     const after = [...before, 4];
     expect(after.reduce((a, b) => a + b, 0)).toBeGreaterThan(
-      before.reduce((a, b) => a + b, 0),
+      before.reduce((a, b) => a + b, 0)
     );
   });
 

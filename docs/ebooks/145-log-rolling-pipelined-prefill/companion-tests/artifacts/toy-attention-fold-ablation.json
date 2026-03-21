@@ -47,57 +47,26 @@
       }
     }
   },
-  "rankingByMeanSquaredError": [
-    "linear",
-    "winner-take-all",
-    "early-stop"
-  ],
+  "rankingByMeanSquaredError": ["linear", "winner-take-all", "early-stop"],
   "predictedRankingMatches": true,
   "samplePredictions": [
     {
       "query": -2,
-      "teacher": [
-        0.9572018463528679,
-        -0.41744586635018216
-      ],
-      "winnerTakeAll": [
-        1,
-        -0.5
-      ],
-      "earlyStop": [
-        1,
-        -0.5
-      ]
+      "teacher": [0.9572018463528679, -0.41744586635018216],
+      "winnerTakeAll": [1, -0.5],
+      "earlyStop": [1, -0.5]
     },
     {
       "query": 0,
-      "teacher": [
-        0.03333333333333327,
-        0.36666666666666664
-      ],
-      "winnerTakeAll": [
-        1,
-        -0.5
-      ],
-      "earlyStop": [
-        1,
-        -0.5
-      ]
+      "teacher": [0.03333333333333327, 0.36666666666666664],
+      "winnerTakeAll": [1, -0.5],
+      "earlyStop": [1, -0.5]
     },
     {
       "query": 2,
-      "teacher": [
-        -1.0335447687419559,
-        0.43573125440474225
-      ],
-      "winnerTakeAll": [
-        -1.1,
-        0.4
-      ],
-      "earlyStop": [
-        1,
-        -0.5
-      ]
+      "teacher": [-1.0335447687419559, 0.43573125440474225],
+      "winnerTakeAll": [-1.1, 0.4],
+      "earlyStop": [1, -0.5]
     }
   ]
 }

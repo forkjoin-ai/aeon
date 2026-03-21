@@ -38,8 +38,14 @@ function parseFloatArg(value: string, flag: string): number {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gate3-compression-corpus.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gate3-compression-corpus.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gate3-compression-corpus.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gate3-compression-corpus.md'
+  );
 
   let assertGate = false;
   let seed: number | null = null;
@@ -127,12 +133,17 @@ function parseCli(argv: readonly string[]): CliOptions {
   };
 }
 
-function applyOverrides(defaultConfig: Gate3Config, options: CliOptions): Gate3Config {
+function applyOverrides(
+  defaultConfig: Gate3Config,
+  options: CliOptions
+): Gate3Config {
   return {
     ...defaultConfig,
     seed: options.seed ?? defaultConfig.seed,
-    sampleCountPerFamily: options.sampleCountPerFamily ?? defaultConfig.sampleCountPerFamily,
-    bootstrapResamples: options.bootstrapResamples ?? defaultConfig.bootstrapResamples,
+    sampleCountPerFamily:
+      options.sampleCountPerFamily ?? defaultConfig.sampleCountPerFamily,
+    bootstrapResamples:
+      options.bootstrapResamples ?? defaultConfig.bootstrapResamples,
     chunkSize: options.chunkSize ?? defaultConfig.chunkSize,
     payloadScale: options.payloadScale ?? defaultConfig.payloadScale,
   };
@@ -146,20 +157,36 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(options.markdownPath, renderGate3Markdown(report), 'utf8');
 
-  process.stdout.write(`gate3 verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`);
-  process.stdout.write(`primary cells: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}\n`);
-  process.stdout.write(`corpus: ${report.corpus.sampleCount} samples, ${report.corpus.totalBytes} bytes\n`);
+  process.stdout.write(
+    `gate3 verdict: ${report.gate.pass ? 'PASS' : 'DENY'}\n`
+  );
+  process.stdout.write(
+    `primary cells: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}\n`
+  );
+  process.stdout.write(
+    `corpus: ${report.corpus.sampleCount} samples, ${report.corpus.totalBytes} bytes\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   for (const cell of report.cells) {
     process.stdout.write(
       `- ${cell.cellId}: ${cell.pass ? 'PASS' : 'DENY'} ` +
-        `(gain vs best fixed median ${cell.medianGainVsBestFixedPct.toFixed(3)}%, ` +
-        `gain vs heuristic median ${cell.medianGainVsHeuristicPct.toFixed(3)}%, ` +
-        `wins ${Math.round(cell.winRateVsBestFixed * 100)}%/${Math.round(cell.winRateVsHeuristic * 100)}%)\n`,
+        `(gain vs best fixed median ${cell.medianGainVsBestFixedPct.toFixed(
+          3
+        )}%, ` +
+        `gain vs heuristic median ${cell.medianGainVsHeuristicPct.toFixed(
+          3
+        )}%, ` +
+        `wins ${Math.round(cell.winRateVsBestFixed * 100)}%/${Math.round(
+          cell.winRateVsHeuristic * 100
+        )}%)\n`
     );
   }
 
@@ -169,6 +196,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

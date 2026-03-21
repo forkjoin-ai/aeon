@@ -112,7 +112,12 @@ function qpackRequestSize(resource: SiteResource, isFirst: boolean): number {
   }
 }
 
-function qpackResponseSize(resource: SiteResource, compressedSize: number, algo: CompressionAlgo, isFirst: boolean): number {
+function qpackResponseSize(
+  resource: SiteResource,
+  compressedSize: number,
+  algo: CompressionAlgo,
+  isFirst: boolean
+): number {
   const qpackPrefix = 2;
 
   if (isFirst) {
@@ -138,7 +143,8 @@ function quicTransportOverhead(payloadSize: number): number {
   if (payloadSize === 0) return 0;
 
   // Effective payload per packet = MTU - QUIC header - STREAM frame header
-  const effectivePayload = QUIC_MAX_PACKET_PAYLOAD - QUIC_SHORT_HEADER - QUIC_STREAM_FRAME_HEADER;
+  const effectivePayload =
+    QUIC_MAX_PACKET_PAYLOAD - QUIC_SHORT_HEADER - QUIC_STREAM_FRAME_HEADER;
   const numPackets = Math.ceil(payloadSize / effectivePayload);
 
   // Each packet has QUIC short header + STREAM frame header
@@ -161,12 +167,18 @@ export function serveHttp3(
 
   // QPACK-encoded request and response headers
   const reqQpack = qpackRequestSize(resource, isFirstRequest);
-  const resQpack = qpackResponseSize(resource, compressed.length, algo, isFirstRequest);
+  const resQpack = qpackResponseSize(
+    resource,
+    compressed.length,
+    algo,
+    isFirstRequest
+  );
 
   // HTTP/3 HEADERS frames (variable-length frame headers, much smaller than H2's 9 bytes)
   const reqHeadersFrameHeader = h3HeadersFrameHeaderSize(reqQpack);
   const resHeadersFrameHeader = h3HeadersFrameHeaderSize(resQpack);
-  const headersOverhead = reqHeadersFrameHeader + reqQpack + resHeadersFrameHeader + resQpack;
+  const headersOverhead =
+    reqHeadersFrameHeader + reqQpack + resHeadersFrameHeader + resQpack;
 
   // HTTP/3 DATA frame header (variable-length, typically 2-3 bytes vs H2's 9)
   const dataFrameHeader = h3DataFrameHeaderSize(compressed.length);

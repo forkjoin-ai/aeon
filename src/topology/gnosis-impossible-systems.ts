@@ -19,7 +19,8 @@ export const GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES = [
     id: 'edge-pipeline-parallelism',
     title: 'Edge Pipeline Parallelism',
     aeonSurface: 'federation',
-    gnosisExamplePath: 'open-source/gnosis/examples/edge-pipeline-parallelism.gg',
+    gnosisExamplePath:
+      'open-source/gnosis/examples/edge-pipeline-parallelism.gg',
     gnosisTestPath: 'open-source/gnosis/examples/impossible-systems.test.gg',
     summary:
       'Models a 13B request folding across layer-sharded workers that relay quantized hidden state and race a warm standby for failover.',
@@ -45,7 +46,8 @@ export const GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES = [
     id: 'crdt-split-brain-prevention',
     title: 'CRDT Split-Brain Prevention',
     aeonSurface: 'topology',
-    gnosisExamplePath: 'open-source/gnosis/examples/crdt-split-brain-prevention.gg',
+    gnosisExamplePath:
+      'open-source/gnosis/examples/crdt-split-brain-prevention.gg',
     gnosisTestPath: 'open-source/gnosis/examples/impossible-systems.test.gg',
     summary:
       'Models geographically separated replicas, nonce-scoped replay guards, and deterministic CRDT observation collapsing to one canonical state.',
@@ -72,5 +74,7 @@ export const GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES = [
 export function getGnosisImpossibleSystemTopology(
   id: GnosisImpossibleSystemId
 ): GnosisImpossibleSystemTopology | undefined {
-  return GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES.find((topology) => topology.id === id);
+  return GNOSIS_IMPOSSIBLE_SYSTEM_TOPOLOGIES.find(
+    (topology) => topology.id === id
+  );
 }

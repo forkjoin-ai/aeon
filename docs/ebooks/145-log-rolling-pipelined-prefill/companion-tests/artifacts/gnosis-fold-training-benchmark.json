@@ -366,10 +366,6 @@
       ]
     }
   },
-  "rankingByEvalMeanSquaredError": [
-    "linear",
-    "winner-take-all",
-    "early-stop"
-  ],
+  "rankingByEvalMeanSquaredError": ["linear", "winner-take-all", "early-stop"],
   "predictedRankingMatches": true
 }

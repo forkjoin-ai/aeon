@@ -68,8 +68,7 @@ function utility(offer: OfferTerms, prefs: PartyPreferences): number {
   const dp = (offer.price - prefs.ideal.price) ** 2 * prefs.weights.price;
   const dt =
     (offer.timeline - prefs.ideal.timeline) ** 2 * prefs.weights.timeline;
-  const dq =
-    (offer.quality - prefs.ideal.quality) ** 2 * prefs.weights.quality;
+  const dq = (offer.quality - prefs.ideal.quality) ** 2 * prefs.weights.quality;
   const dr =
     (offer.relationship - prefs.ideal.relationship) ** 2 *
     prefs.weights.relationship;
@@ -117,7 +116,7 @@ function generateOffer(
   rejectionCounts: number[],
   rng: () => number,
   partyIdeal: OfferTerms,
-  noise: number = 5,
+  noise: number = 5
 ): OfferTerms {
   const dist = complementDistribution(rejectionCounts);
 
@@ -138,19 +137,31 @@ function generateOffer(
   return {
     price: Math.max(
       0,
-      Math.min(100, partyIdeal.price * 0.3 + binCenter * 0.7 + (rng() - 0.5) * noise),
+      Math.min(
+        100,
+        partyIdeal.price * 0.3 + binCenter * 0.7 + (rng() - 0.5) * noise
+      )
     ),
     timeline: Math.max(
       0,
-      Math.min(100, partyIdeal.timeline * 0.5 + binCenter * 0.5 + (rng() - 0.5) * noise),
+      Math.min(
+        100,
+        partyIdeal.timeline * 0.5 + binCenter * 0.5 + (rng() - 0.5) * noise
+      )
     ),
     quality: Math.max(
       0,
-      Math.min(100, partyIdeal.quality * 0.5 + binCenter * 0.5 + (rng() - 0.5) * noise),
+      Math.min(
+        100,
+        partyIdeal.quality * 0.5 + binCenter * 0.5 + (rng() - 0.5) * noise
+      )
     ),
     relationship: Math.max(
       0,
-      Math.min(100, partyIdeal.relationship * 0.6 + binCenter * 0.4 + (rng() - 0.5) * noise),
+      Math.min(
+        100,
+        partyIdeal.relationship * 0.6 + binCenter * 0.4 + (rng() - 0.5) * noise
+      )
     ),
   };
 }
@@ -161,7 +172,7 @@ function simulateNegotiation(
   partyB: PartyPreferences,
   maxRounds: number,
   bins: number,
-  rng: () => number,
+  rng: () => number
 ): NegotiationResult {
   const rejectionCountsA = new Array(bins).fill(0);
   const rejectionCountsB = new Array(bins).fill(0);
@@ -199,7 +210,7 @@ function simulateNegotiation(
     // Map the rejected offer to a bin and increment its rejection count
     const binA = Math.min(
       bins - 1,
-      Math.floor((offerA.price / 100) * (bins - 1)),
+      Math.floor((offerA.price / 100) * (bins - 1))
     );
     if (utilB < partyB.batnaUtility) {
       rejectionCountsA[binA]++;
@@ -225,7 +236,7 @@ function simulateNegotiation(
 
     const binB = Math.min(
       bins - 1,
-      Math.floor((offerB.price / 100) * (bins - 1)),
+      Math.floor((offerB.price / 100) * (bins - 1))
     );
     if (utilA2 < partyA.batnaUtility) {
       rejectionCountsB[binB]++;
@@ -288,14 +299,24 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
 
     console.log(`\n  Negotiation settled in ${result.rounds} rounds`);
     console.log(
-      `  Buyer utility:  ${result.partyAUtility.toFixed(1)} (BATNA: ${buyer.batnaUtility})`,
+      `  Buyer utility:  ${result.partyAUtility.toFixed(1)} (BATNA: ${
+        buyer.batnaUtility
+      })`
     );
     console.log(
-      `  Seller utility: ${result.partyBUtility.toFixed(1)} (BATNA: ${seller.batnaUtility})`,
+      `  Seller utility: ${result.partyBUtility.toFixed(1)} (BATNA: ${
+        seller.batnaUtility
+      })`
     );
     if (result.finalOffer) {
       console.log(
-        `  Final offer: price=${result.finalOffer.price.toFixed(0)} timeline=${result.finalOffer.timeline.toFixed(0)} quality=${result.finalOffer.quality.toFixed(0)} relationship=${result.finalOffer.relationship.toFixed(0)}`,
+        `  Final offer: price=${result.finalOffer.price.toFixed(
+          0
+        )} timeline=${result.finalOffer.timeline.toFixed(
+          0
+        )} quality=${result.finalOffer.quality.toFixed(
+          0
+        )} relationship=${result.finalOffer.relationship.toFixed(0)}`
       );
     }
   });
@@ -318,7 +339,7 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
       console.log('\n  Kurtosis trajectory (negotiation convergence):');
       console.log(`  ${sparkline(result.kurtosisTrajectory)}`);
       console.log(
-        `  early κ=${earlyMean.toFixed(2)} → late κ=${lateMean.toFixed(2)}`,
+        `  early κ=${earlyMean.toFixed(2)} → late κ=${lateMean.toFixed(2)}`
       );
     }
   });
@@ -339,7 +360,9 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
 
       console.log('\n  Entropy trajectory (option narrowing):');
       console.log(`  ${sparkline(result.entropyTrajectory)}`);
-      console.log(`  early H=${earlyMean.toFixed(2)} → late H=${lateMean.toFixed(2)}`);
+      console.log(
+        `  early H=${earlyMean.toFixed(2)} → late H=${lateMean.toFixed(2)}`
+      );
     }
   });
 
@@ -374,13 +397,17 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
 
       console.log('\n  BATNA/WATNA dual pair:');
       console.log(
-        `  BATNA bin: ${batnaIdx} (${minRej} rejections) → weight ${(dist[batnaIdx] * 100).toFixed(1)}%`,
+        `  BATNA bin: ${batnaIdx} (${minRej} rejections) → weight ${(
+          dist[batnaIdx] * 100
+        ).toFixed(1)}%`
       );
       console.log(
-        `  WATNA bin: ${watnaIdx} (${maxRej} rejections) → weight ${(dist[watnaIdx] * 100).toFixed(1)}%`,
+        `  WATNA bin: ${watnaIdx} (${maxRej} rejections) → weight ${(
+          dist[watnaIdx] * 100
+        ).toFixed(1)}%`
       );
       console.log(
-        `  The WATNA void surrounds the BATNA -- rejection carves the path to agreement.`,
+        `  The WATNA void surrounds the BATNA -- rejection carves the path to agreement.`
       );
     }
   });
@@ -403,7 +430,7 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
         easySeller,
         100,
         20,
-        makeRng(seed * 100),
+        makeRng(seed * 100)
       );
       if (tResult.settled) transparentResults.push(tResult.rounds);
 
@@ -413,7 +440,7 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
         easySeller,
         100,
         10, // fewer bins = coarser void boundary = less information
-        makeRng(seed * 100 + 50),
+        makeRng(seed * 100 + 50)
       );
       if (oResult.settled) opaqueResults.push(oResult.rounds);
     }
@@ -423,17 +450,20 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
     expect(opaqueResults.length).toBeGreaterThan(5);
 
     const tMean =
-      transparentResults.reduce((a, b) => a + b, 0) /
-      transparentResults.length;
+      transparentResults.reduce((a, b) => a + b, 0) / transparentResults.length;
     const oMean =
       opaqueResults.reduce((a, b) => a + b, 0) / opaqueResults.length;
 
     console.log('\n  Transparent vs Opaque Negotiation:');
     console.log(
-      `  Transparent: ${transparentResults.length}/20 settled, mean ${tMean.toFixed(1)} rounds`,
+      `  Transparent: ${
+        transparentResults.length
+      }/20 settled, mean ${tMean.toFixed(1)} rounds`
     );
     console.log(
-      `  Opaque:      ${opaqueResults.length}/20 settled, mean ${oMean.toFixed(1)} rounds`,
+      `  Opaque:      ${opaqueResults.length}/20 settled, mean ${oMean.toFixed(
+        1
+      )} rounds`
     );
   });
 
@@ -462,7 +492,7 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
         contextSeller,
         100,
         20,
-        makeRng(seed * 200),
+        makeRng(seed * 200)
       );
       if (cResult.settled) withContext.push(cResult.rounds);
 
@@ -472,7 +502,7 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
         { ...seller, batnaUtility: 35 },
         100,
         20,
-        makeRng(seed * 200 + 100),
+        makeRng(seed * 200 + 100)
       );
       if (ncResult.settled) withoutContext.push(ncResult.rounds);
     }
@@ -488,14 +518,20 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
 
     console.log('\n  Shared Context Effect (THM-CONTEXT-REDUCES-DEFICIT):');
     console.log(
-      `  With context:    ${withContext.length}/20 settled, mean ${cMean.toFixed(1)} rounds`,
+      `  With context:    ${
+        withContext.length
+      }/20 settled, mean ${cMean.toFixed(1)} rounds`
     );
     console.log(
-      `  Without context: ${withoutContext.length}/20 settled, mean ${ncMean.toFixed(1)} rounds`,
+      `  Without context: ${
+        withoutContext.length
+      }/20 settled, mean ${ncMean.toFixed(1)} rounds`
     );
 
     // With context should settle at least as often
-    expect(withContext.length).toBeGreaterThanOrEqual(withoutContext.length - 5);
+    expect(withContext.length).toBeGreaterThanOrEqual(
+      withoutContext.length - 5
+    );
   });
 
   it('Monte Carlo: settlement rate across 100 negotiations', () => {
@@ -509,7 +545,7 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
         { ...seller, batnaUtility: 35 },
         150,
         20,
-        makeRng(seed * 1000),
+        makeRng(seed * 1000)
       );
       if (result.settled) {
         settled++;
@@ -520,9 +556,7 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
 
     const settlementRate = settled / 100;
     const meanRounds =
-      roundCounts.length > 0
-        ? totalRounds / roundCounts.length
-        : 0;
+      roundCounts.length > 0 ? totalRounds / roundCounts.length : 0;
     const medianRounds =
       roundCounts.length > 0
         ? [...roundCounts].sort((a, b) => a - b)[
@@ -536,7 +570,9 @@ describe('Negotiation Equilibrium: BATNA Walking Is Void Walking', () => {
     console.log(`  Mean rounds:     ${meanRounds.toFixed(1)}`);
     console.log(`  Median rounds:   ${medianRounds}`);
     if (roundCounts.length > 0) {
-      console.log(`  Round distribution: ${sparkline(roundCounts.slice(0, 60))}`);
+      console.log(
+        `  Round distribution: ${sparkline(roundCounts.slice(0, 60))}`
+      );
     }
     console.log('  ' + '─'.repeat(50) + '\n');
 

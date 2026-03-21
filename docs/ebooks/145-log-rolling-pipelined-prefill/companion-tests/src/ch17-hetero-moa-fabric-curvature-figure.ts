@@ -68,14 +68,16 @@ function label(
     readonly color?: string;
     readonly size?: number;
     readonly weight?: number;
-  } = {},
+  } = {}
 ): void {
   svg.push(
-    `<text x="${x}" y="${y}" text-anchor="${options.anchor ?? 'middle'}" font-family="Georgia, Times New Roman, serif" font-size="${
+    `<text x="${x}" y="${y}" text-anchor="${
+      options.anchor ?? 'middle'
+    }" font-family="Georgia, Times New Roman, serif" font-size="${
       options.size ?? 15
     }" font-weight="${options.weight ?? 400}" fill="${
       options.color ?? '#334155'
-    }">${escapeXml(text)}</text>`,
+    }">${escapeXml(text)}</text>`
   );
 }
 
@@ -90,9 +92,10 @@ function multilineLabel(
     readonly size?: number;
     readonly weight?: number;
     readonly lineHeight?: number;
-  } = {},
+  } = {}
 ): void {
-  const lineHeight = options.lineHeight ?? Math.round((options.size ?? 15) * 1.28);
+  const lineHeight =
+    options.lineHeight ?? Math.round((options.size ?? 15) * 1.28);
   lines.forEach((line, index) => {
     label(svg, x, y + index * lineHeight, line, options);
   });
@@ -106,12 +109,12 @@ function rect(
   height: number,
   fill: string,
   stroke: string,
-  dashed = false,
+  dashed = false
 ): void {
   svg.push(
     `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="22" ry="22" fill="${fill}" stroke="${stroke}" stroke-width="2"${
       dashed ? ' stroke-dasharray="8 7"' : ''
-    }/>`,
+    }/>`
   );
 }
 
@@ -121,10 +124,10 @@ function circle(
   y: number,
   radius: number,
   fill: string,
-  stroke: string,
+  stroke: string
 ): void {
   svg.push(
-    `<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`,
+    `<circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="2"/>`
   );
 }
 
@@ -136,16 +139,14 @@ function curve(
     readonly dashed?: boolean;
     readonly width?: number;
     readonly opacity?: number;
-  } = {},
+  } = {}
 ): void {
   svg.push(
     `<path d="${d}" fill="none" stroke="${color}" stroke-width="${
       options.width ?? 2.6
     }" stroke-linecap="round" stroke-linejoin="round"${
       options.dashed ? ' stroke-dasharray="9 8"' : ''
-    }${
-      options.opacity === undefined ? '' : ` opacity="${options.opacity}"`
-    }/>`,
+    }${options.opacity === undefined ? '' : ` opacity="${options.opacity}"`}/>`
   );
 }
 
@@ -219,8 +220,7 @@ export function buildCh17HeteroMoaFabricCurvatureFigureReport(): Ch17HeteroMoaFa
     label: 'ch17-hetero-moa-fabric-curvature-figure-v1',
     primitive: 'HeteroMoAFabric',
     sourceSurface: {
-      loweringPath:
-        'open-source/gnosis/src/structured-primitives.ts',
+      loweringPath: 'open-source/gnosis/src/structured-primitives.ts',
       runtimePath: 'open-source/gnosis/src/runtime/hetero-fabric.ts',
       benchmarkPath:
         'open-source/gnosis/src/benchmarks/hetero-moa-fabric-benchmark.ts',
@@ -250,7 +250,7 @@ export function buildCh17HeteroMoaFabricCurvatureFigureReport(): Ch17HeteroMoaFa
 }
 
 export function renderCh17HeteroMoaFabricCurvatureFigureMarkdown(
-  report: Ch17HeteroMoaFabricCurvatureFigureReport,
+  report: Ch17HeteroMoaFabricCurvatureFigureReport
 ): string {
   const lines: string[] = [];
   lines.push('# Chapter 17 Hetero MoA Fabric Curvature Figure');
@@ -277,7 +277,9 @@ export function renderCh17HeteroMoaFabricCurvatureFigureMarkdown(
   lines.push('');
   for (const layer of report.layers) {
     lines.push(
-      `- ${layer.label}: ${layer.laneCount} lane(s); bindings ${layer.bindings.join(', ')}`
+      `- ${layer.label}: ${
+        layer.laneCount
+      } lane(s); bindings ${layer.bindings.join(', ')}`
     );
   }
   lines.push('');
@@ -291,7 +293,7 @@ export function renderCh17HeteroMoaFabricCurvatureFigureMarkdown(
 }
 
 export function renderCh17HeteroMoaFabricCurvatureFigureSvg(
-  report: Ch17HeteroMoaFabricCurvatureFigureReport,
+  report: Ch17HeteroMoaFabricCurvatureFigureReport
 ): string {
   const svg: string[] = [];
   const width = 1400;
@@ -304,7 +306,9 @@ export function renderCh17HeteroMoaFabricCurvatureFigureSvg(
   svg.push(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="title desc">`
   );
-  svg.push('<title id="title">Chapter 17 Hetero MoA Fabric curvature figure</title>');
+  svg.push(
+    '<title id="title">Chapter 17 Hetero MoA Fabric curvature figure</title>'
+  );
   svg.push(
     '<desc id="desc">Curved backend-diverse paired-kernel MoA fabric showing a meta-laminar envelope around CPU, GPU, NPU, and WASM lanes.</desc>'
   );
@@ -331,7 +335,15 @@ export function renderCh17HeteroMoaFabricCurvatureFigureSvg(
     color: '#b45309',
   });
 
-  rect(svg, scheduler.x - 190, scheduler.y - 50, 380, 100, '#ffffff', '#c2410c');
+  rect(
+    svg,
+    scheduler.x - 190,
+    scheduler.y - 50,
+    380,
+    100,
+    '#ffffff',
+    '#c2410c'
+  );
   multilineLabel(
     svg,
     scheduler.x,
@@ -378,18 +390,23 @@ export function renderCh17HeteroMoaFabricCurvatureFigureSvg(
     const control1 = polar(center, 205, layerAngles[index]);
     const control2 = polar(center, 280, layerAngles[index]);
     const pairOrbit = layer.kind === 'cpu' ? 160 : 150;
-    const pairStartAngle = layer.kind === 'cpu' ? layerAngles[index] - 16 : layerAngles[index] + 12;
+    const pairStartAngle =
+      layer.kind === 'cpu' ? layerAngles[index] - 16 : layerAngles[index] + 12;
     const pairStep = layer.laneCount === 1 ? 0 : 26;
 
     curve(
       svg,
-      `M ${scheduler.x} ${scheduler.y + 32} C ${control1.x} ${control1.y - 115} ${control2.x} ${control2.y - 48} ${orbital.x} ${orbital.y - 64}`,
+      `M ${scheduler.x} ${scheduler.y + 32} C ${control1.x} ${
+        control1.y - 115
+      } ${control2.x} ${control2.y - 48} ${orbital.x} ${orbital.y - 64}`,
       accent.stroke,
       { width: 2.5, opacity: 0.58 }
     );
     curve(
       svg,
-      `M ${orbital.x} ${orbital.y + 64} C ${control2.x} ${control2.y + 54} ${control1.x} ${control1.y + 120} ${collapse.x} ${collapse.y - 32}`,
+      `M ${orbital.x} ${orbital.y + 64} C ${control2.x} ${control2.y + 54} ${
+        control1.x
+      } ${control1.y + 120} ${collapse.x} ${collapse.y - 32}`,
       accent.stroke,
       { width: 2.5, opacity: 0.58 }
     );
@@ -398,7 +415,11 @@ export function renderCh17HeteroMoaFabricCurvatureFigureSvg(
       const pairCenter = polar(orbital, pairOrbit, laneAngle);
       curve(
         svg,
-        `M ${orbital.x} ${orbital.y - 2} C ${pairCenter.x - 18} ${pairCenter.y - 20} ${pairCenter.x - 4} ${pairCenter.y - 8} ${pairCenter.x} ${pairCenter.y}`,
+        `M ${orbital.x} ${orbital.y - 2} C ${pairCenter.x - 18} ${
+          pairCenter.y - 20
+        } ${pairCenter.x - 4} ${pairCenter.y - 8} ${pairCenter.x} ${
+          pairCenter.y
+        }`,
         accent.pairStroke,
         { width: 1.8, opacity: 0.68 }
       );
@@ -431,7 +452,14 @@ export function renderCh17HeteroMoaFabricCurvatureFigureSvg(
     for (let laneIndex = 0; laneIndex < layer.laneCount; laneIndex++) {
       const laneAngle = pairStartAngle - laneIndex * pairStep;
       const pairCenter = polar(orbital, pairOrbit, laneAngle);
-      circle(svg, pairCenter.x, pairCenter.y, 24, accent.pairFill, accent.pairStroke);
+      circle(
+        svg,
+        pairCenter.x,
+        pairCenter.y,
+        24,
+        accent.pairFill,
+        accent.pairStroke
+      );
       label(svg, pairCenter.x, pairCenter.y + 4, `P${laneIndex + 1}`, {
         size: 15,
         weight: 700,

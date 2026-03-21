@@ -225,9 +225,8 @@ export class TopologySampler {
       if (s.utilization > peakUtilization) peakUtilization = s.utilization;
     }
 
-    const totalWeight = n > 1
-      ? samples[n - 1].timestamp - samples[0].timestamp + 1
-      : 1;
+    const totalWeight =
+      n > 1 ? samples[n - 1].timestamp - samples[0].timestamp + 1 : 1;
 
     const meanBeta1 = sumBeta1 / totalWeight;
     const meanDeficit = sumDeficit / totalWeight;
@@ -239,13 +238,29 @@ export class TopologySampler {
 
     let assessment: string;
     if (meanUtilization >= 0.95) {
-      assessment = `Topology-matched: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}`;
+      assessment = `Topology-matched: mean utilization ${(
+        meanUtilization * 100
+      ).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}`;
     } else if (meanUtilization >= 0.7) {
-      assessment = `Near-matched: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}. Peak β₁ = ${peakBeta1} shows the system CAN reach higher parallelism`;
+      assessment = `Near-matched: mean utilization ${(
+        meanUtilization * 100
+      ).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(
+        1
+      )}. Peak β₁ = ${peakBeta1} shows the system CAN reach higher parallelism`;
     } else if (meanUtilization >= 0.3) {
-      assessment = `Underutilized: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}. The system is forcing a β₁* = ${this.config.intrinsicBeta1} problem through a β₁ ≈ ${meanBeta1.toFixed(1)} pipe`;
+      assessment = `Underutilized: mean utilization ${(
+        meanUtilization * 100
+      ).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(
+        1
+      )}. The system is forcing a β₁* = ${
+        this.config.intrinsicBeta1
+      } problem through a β₁ ≈ ${meanBeta1.toFixed(1)} pipe`;
     } else {
-      assessment = `Sequential bottleneck: mean utilization ${(meanUtilization * 100).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(1)}. Almost all natural parallelism is wasted`;
+      assessment = `Sequential bottleneck: mean utilization ${(
+        meanUtilization * 100
+      ).toFixed(1)}%, mean Δβ = ${meanDeficit.toFixed(
+        1
+      )}. Almost all natural parallelism is wasted`;
     }
 
     return {
@@ -295,7 +310,8 @@ export class TopologySampler {
 
     const intrinsic = this.config.intrinsicBeta1;
     const deficit = intrinsic - beta1;
-    const utilization = intrinsic === 0 ? 1.0 : Math.min(1.0, beta1 / intrinsic);
+    const utilization =
+      intrinsic === 0 ? 1.0 : Math.min(1.0, beta1 / intrinsic);
 
     const sample: Sample = {
       timestamp: Date.now(),

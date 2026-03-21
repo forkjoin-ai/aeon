@@ -35,7 +35,10 @@ function buleyeanTotalWeight(rounds: number, voidBoundary: number[]): number {
 }
 
 /** Buleyean complement distribution (normalized weights). */
-function buleyeanDistribution(rounds: number, voidBoundary: number[]): number[] {
+function buleyeanDistribution(
+  rounds: number,
+  voidBoundary: number[]
+): number[] {
   const total = buleyeanTotalWeight(rounds, voidBoundary);
   return voidBoundary.map((v) => buleyeanWeight(rounds, v) / total);
 }
@@ -117,7 +120,9 @@ describe('data accumulates monotonically', () => {
   it('each rejection round brings deficit closer to zero', () => {
     for (const d of [3, 7, 12, 20, 100]) {
       for (let k = 0; k < d; k++) {
-        expect(futureDeficit(d, k + 1)).toBeLessThanOrEqual(futureDeficit(d, k));
+        expect(futureDeficit(d, k + 1)).toBeLessThanOrEqual(
+          futureDeficit(d, k)
+        );
         expect(futureDeficit(d, k + 1)).toBe(futureDeficit(d, k) - 1);
       }
     }
@@ -133,7 +138,7 @@ describe('answer eventually computable', () => {
     'deficit %d reaches zero at round %d',
     (d) => {
       expect(futureDeficit(d, d)).toBe(0);
-    },
+    }
   );
 
   it('convergence round is exactly the initial deficit', () => {
@@ -151,7 +156,9 @@ describe('answer eventually computable', () => {
 
   it('trajectory is completely deterministic', () => {
     const d = 8;
-    const trajectory = Array.from({ length: d + 3 }, (_, k) => futureDeficit(d, k));
+    const trajectory = Array.from({ length: d + 3 }, (_, k) =>
+      futureDeficit(d, k)
+    );
     expect(trajectory).toEqual([8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0]);
   });
 });
@@ -400,7 +407,9 @@ describe('entropy reversal is complement convergence', () => {
     // Complement entropy is strictly monotonically decreasing
     // under targeted rejection (one choice accumulates all rejections)
     for (let i = 1; i < complementEntropies.length; i++) {
-      expect(complementEntropies[i]).toBeLessThan(complementEntropies[i - 1] + 1e-10);
+      expect(complementEntropies[i]).toBeLessThan(
+        complementEntropies[i - 1] + 1e-10
+      );
     }
   });
 });

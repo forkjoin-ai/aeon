@@ -45,7 +45,9 @@ function loadNodeZlib() {
         }
     }
     try {
-        const dynamicRequire = new Function('moduleSpecifier', 'return typeof require === "function" ? require(moduleSpecifier) : null;');
+        const dynamicRequire = new Function('moduleSpecifier', 
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        'return typeof require === "function" ? require(moduleSpecifier) : null;');
         const requiredModule = dynamicRequire(NODE_ZLIB_SPECIFIER);
         if (isNodeZlibModule(requiredModule)) {
             cachedNodeZlib = requiredModule;
@@ -359,8 +361,11 @@ export class HuffmanCodec {
         }
         if (symbols.length <= 1)
             return data; // single symbol — can't Huffman-encode
-        const nodes = symbols.map(s => ({
-            freq: s.freq, sym: s.sym, left: -1, right: -1,
+        const nodes = symbols.map((s) => ({
+            freq: s.freq,
+            sym: s.sym,
+            left: -1,
+            right: -1,
         }));
         const heap = [...nodes];
         heap.sort((a, b) => a.freq - b.freq);
@@ -370,8 +375,10 @@ export class HuffmanCodec {
             const leftIdx = nodes.indexOf(left);
             const rightIdx = nodes.indexOf(right);
             const parent = {
-                freq: left.freq + right.freq, sym: -1,
-                left: leftIdx, right: rightIdx,
+                freq: left.freq + right.freq,
+                sym: -1,
+                left: leftIdx,
+                right: rightIdx,
             };
             nodes.push(parent);
             let idx = 0;
@@ -580,7 +587,7 @@ const DICTIONARY_STRINGS = [
     'rem', // 3 → 2 = saves 1
 ];
 /** Pre-encoded dictionary entries as byte arrays, sorted longest-first */
-const DICTIONARY = DICTIONARY_STRINGS.map(s => new TextEncoder().encode(s));
+const DICTIONARY = DICTIONARY_STRINGS.map((s) => new TextEncoder().encode(s));
 export class DictionaryCodec {
     id = 7;
     name = 'dictionary';
@@ -665,7 +672,7 @@ export const BUILTIN_CODECS = [
     new GzipCodec(),
 ];
 /** Codec registry map for O(1) lookup */
-const CODEC_MAP = new Map(BUILTIN_CODECS.map(c => [c.id, c]));
+const CODEC_MAP = new Map(BUILTIN_CODECS.map((c) => [c.id, c]));
 /** Look up a codec by ID */
 export function getCodecById(id) {
     const codec = CODEC_MAP.get(id);

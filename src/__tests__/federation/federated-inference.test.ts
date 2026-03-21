@@ -1,6 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { FederatedInferenceCoordinator } from '../../federation/federated-inference';
-import type { PeerCapabilities, FederationEvent } from '../../federation/federated-inference';
+import type {
+  PeerCapabilities,
+  FederationEvent,
+} from '../../federation/federated-inference';
 import type { FlowTransport } from '../../flow/types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -16,9 +19,15 @@ function createMockPeerTransport(): {
   const sent: Uint8Array[] = [];
 
   const transport: FlowTransport = {
-    send: (data) => { sent.push(new Uint8Array(data)); },
-    onReceive: (h) => { handler = h; },
-    close: () => { handler = null; },
+    send: (data) => {
+      sent.push(new Uint8Array(data));
+    },
+    onReceive: (h) => {
+      handler = h;
+    },
+    close: () => {
+      handler = null;
+    },
   };
 
   return {
@@ -51,7 +60,10 @@ describe('FederatedInferenceCoordinator', () => {
       const coordinator = new FederatedInferenceCoordinator();
       const { transport } = createMockPeerTransport();
 
-      coordinator.addPeer('peer-1', transport, { models: ['llama-7b'], acceleration: 'wasm' });
+      coordinator.addPeer('peer-1', transport, {
+        models: ['llama-7b'],
+        acceleration: 'wasm',
+      });
       expect(coordinator.peerCount).toBe(1);
 
       coordinator.removePeer('peer-1');
@@ -66,7 +78,10 @@ describe('FederatedInferenceCoordinator', () => {
       const events: FederationEvent[] = [];
 
       coordinator.on((e) => events.push(e));
-      coordinator.addPeer('peer-1', transport, { models: [], acceleration: 'none' });
+      coordinator.addPeer('peer-1', transport, {
+        models: [],
+        acceleration: 'none',
+      });
       coordinator.removePeer('peer-1');
 
       expect(events.map((e) => e.type)).toEqual(['peer-added', 'peer-removed']);
@@ -78,8 +93,14 @@ describe('FederatedInferenceCoordinator', () => {
       const { transport: t1 } = createMockPeerTransport();
       const { transport: t2 } = createMockPeerTransport();
 
-      coordinator.addPeer('peer-1', t1, { models: ['llama-7b'], acceleration: 'wasm' });
-      coordinator.addPeer('peer-2', t2, { models: ['gemma-1b'], acceleration: 'wasm' });
+      coordinator.addPeer('peer-1', t1, {
+        models: ['llama-7b'],
+        acceleration: 'wasm',
+      });
+      coordinator.addPeer('peer-2', t2, {
+        models: ['gemma-1b'],
+        acceleration: 'wasm',
+      });
 
       const llama = coordinator.getAvailablePeers('llama-7b');
       expect(llama.length).toBe(1);
@@ -108,11 +129,21 @@ describe('FederatedInferenceCoordinator', () => {
   describe('federated inference', () => {
     it('should race peers and return the fastest result', async () => {
       const coordinator = new FederatedInferenceCoordinator({ timeout: 5000 });
-      const { transport: t1, simulateReceive: sim1 } = createMockPeerTransport();
-      const { transport: t2, simulateReceive: sim2 } = createMockPeerTransport();
+      const { transport: t1, simulateReceive: sim1 } =
+        createMockPeerTransport();
+      const { transport: t2, simulateReceive: sim2 } =
+        createMockPeerTransport();
 
-      coordinator.addPeer('fast', t1, { models: ['llama-7b'], acceleration: 'wasm', estimatedTps: 20 });
-      coordinator.addPeer('slow', t2, { models: ['llama-7b'], acceleration: 'wasm', estimatedTps: 5 });
+      coordinator.addPeer('fast', t1, {
+        models: ['llama-7b'],
+        acceleration: 'wasm',
+        estimatedTps: 20,
+      });
+      coordinator.addPeer('slow', t2, {
+        models: ['llama-7b'],
+        acceleration: 'wasm',
+        estimatedTps: 5,
+      });
 
       // Start inference
       const resultPromise = coordinator.infer({ prompt: 'Hello world' });
@@ -132,10 +163,14 @@ describe('FederatedInferenceCoordinator', () => {
 
     it('should handle peer timeout gracefully', async () => {
       const coordinator = new FederatedInferenceCoordinator({ timeout: 100 });
-      const { transport: t1, simulateReceive: sim1 } = createMockPeerTransport();
+      const { transport: t1, simulateReceive: sim1 } =
+        createMockPeerTransport();
       const { transport: t2 } = createMockPeerTransport(); // Never responds
 
-      coordinator.addPeer('responsive', t1, { models: [], acceleration: 'none' });
+      coordinator.addPeer('responsive', t1, {
+        models: [],
+        acceleration: 'none',
+      });
       coordinator.addPeer('silent', t2, { models: [], acceleration: 'none' });
 
       const resultPromise = coordinator.infer({ prompt: 'test' });
@@ -159,7 +194,10 @@ describe('FederatedInferenceCoordinator', () => {
 
       const { transport: t1 } = createMockPeerTransport(); // Never responds
 
-      coordinator.addPeer('slow-peer', t1, { models: [], acceleration: 'none' });
+      coordinator.addPeer('slow-peer', t1, {
+        models: [],
+        acceleration: 'none',
+      });
 
       const result = await coordinator.infer({ prompt: 'hello' });
 
@@ -170,11 +208,14 @@ describe('FederatedInferenceCoordinator', () => {
     });
 
     it('should fail if not enough peers', async () => {
-      const coordinator = new FederatedInferenceCoordinator({ minPeers: 3, includeLocal: false });
+      const coordinator = new FederatedInferenceCoordinator({
+        minPeers: 3,
+        includeLocal: false,
+      });
 
-      await expect(
-        coordinator.infer({ prompt: 'test' })
-      ).rejects.toThrow('Not enough peers');
+      await expect(coordinator.infer({ prompt: 'test' })).rejects.toThrow(
+        'Not enough peers'
+      );
 
       coordinator.destroy();
     });
@@ -247,18 +288,20 @@ describe('FederatedInferenceCoordinator', () => {
       expect(sent.length).toBe(2);
       expect(sent[1][0]).toBe(0x02); // MSG_INFERENCE_RESPONSE
 
-      const responseJson = JSON.parse(new TextDecoder().decode(sent[1].subarray(1)));
+      const responseJson = JSON.parse(
+        new TextDecoder().decode(sent[1].subarray(1))
+      );
       expect(responseJson.text).toBe('response to: hello');
     });
 
     it('should respond to capability requests', () => {
       const { transport, simulateReceive, sent } = createMockPeerTransport();
 
-      FederatedInferenceCoordinator.setupPeer(
-        transport,
-        async () => 'test',
-        { models: ['llama-7b'], acceleration: 'webgpu', estimatedTps: 30 }
-      );
+      FederatedInferenceCoordinator.setupPeer(transport, async () => 'test', {
+        models: ['llama-7b'],
+        acceleration: 'webgpu',
+        estimatedTps: 30,
+      });
 
       // Initial capability announce
       expect(sent.length).toBe(1);

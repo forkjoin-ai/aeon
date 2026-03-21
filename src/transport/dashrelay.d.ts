@@ -32,30 +32,36 @@ import type { FlowTransport } from '../flow/types';
  * Works with @dashrelay/client or any compatible implementation.
  */
 export interface DashRelayLike {
-    /** Broadcast binary data to all peers in the room */
-    broadcast(payload: Uint8Array): void;
-    /** Register handler for incoming messages */
-    on(event: 'message', handler: (senderId: string, payload: Uint8Array) => void): void;
-    /** Unregister handler */
-    off(event: 'message', handler: (senderId: string, payload: Uint8Array) => void): void;
-    /** Peer events */
-    on(event: 'peerJoined', handler: (peerId: string) => void): void;
-    on(event: 'peerLeft', handler: (peerId: string) => void): void;
-    off(event: 'peerJoined', handler: (peerId: string) => void): void;
-    off(event: 'peerLeft', handler: (peerId: string) => void): void;
-    /** Connection events */
-    on(event: 'connected', handler: () => void): void;
-    on(event: 'disconnected', handler: () => void): void;
-    off(event: 'connected', handler: () => void): void;
-    off(event: 'disconnected', handler: () => void): void;
+  /** Broadcast binary data to all peers in the room */
+  broadcast(payload: Uint8Array): void;
+  /** Register handler for incoming messages */
+  on(
+    event: 'message',
+    handler: (senderId: string, payload: Uint8Array) => void
+  ): void;
+  /** Unregister handler */
+  off(
+    event: 'message',
+    handler: (senderId: string, payload: Uint8Array) => void
+  ): void;
+  /** Peer events */
+  on(event: 'peerJoined', handler: (peerId: string) => void): void;
+  on(event: 'peerLeft', handler: (peerId: string) => void): void;
+  off(event: 'peerJoined', handler: (peerId: string) => void): void;
+  off(event: 'peerLeft', handler: (peerId: string) => void): void;
+  /** Connection events */
+  on(event: 'connected', handler: () => void): void;
+  on(event: 'disconnected', handler: () => void): void;
+  off(event: 'connected', handler: () => void): void;
+  off(event: 'disconnected', handler: () => void): void;
 }
 export interface DashRelayFlowConfig {
-    /** Target specific peer (directed mode) or broadcast to all (default) */
-    targetPeerId?: string;
-    /** This peer's ID (for filtering own messages) */
-    localPeerId?: string;
-    /** Channel tag for multiplexing multiple flow protocols in one room */
-    channel?: string;
+  /** Target specific peer (directed mode) or broadcast to all (default) */
+  targetPeerId?: string;
+  /** This peer's ID (for filtering own messages) */
+  localPeerId?: string;
+  /** Channel tag for multiplexing multiple flow protocols in one room */
+  channel?: string;
 }
 /**
  * FlowTransport over DashRelay broadcast.
@@ -68,30 +74,30 @@ export interface DashRelayFlowConfig {
  * Everything talks Aeon internally over DashRelay.
  */
 export declare class DashRelayFlowTransport implements FlowTransport {
-    private relay;
-    private receiveHandler;
-    private closed;
-    private config;
-    private peerHandler;
-    /** Connected peers observed via relay events */
-    private peers;
-    private peerJoinHandler;
-    private peerLeaveHandler;
-    /** Optional handlers for peer lifecycle events */
-    onPeerJoin: ((peerId: string) => void) | null;
-    onPeerLeave: ((peerId: string) => void) | null;
-    constructor(relay: DashRelayLike, config?: DashRelayFlowConfig);
-    send(data: Uint8Array): void;
-    onReceive(handler: (data: Uint8Array) => void): void;
-    close(): void;
-    /** Get all known peers in the room */
-    getPeers(): string[];
-    /** Number of peers in the room */
-    get peerCount(): number;
-    /** Whether the transport is still open */
-    get isOpen(): boolean;
-    /** Send to a specific peer (overrides config.targetPeerId for this call) */
-    sendTo(peerId: string, data: Uint8Array): void;
+  private relay;
+  private receiveHandler;
+  private closed;
+  private config;
+  private peerHandler;
+  /** Connected peers observed via relay events */
+  private peers;
+  private peerJoinHandler;
+  private peerLeaveHandler;
+  /** Optional handlers for peer lifecycle events */
+  onPeerJoin: ((peerId: string) => void) | null;
+  onPeerLeave: ((peerId: string) => void) | null;
+  constructor(relay: DashRelayLike, config?: DashRelayFlowConfig);
+  send(data: Uint8Array): void;
+  onReceive(handler: (data: Uint8Array) => void): void;
+  close(): void;
+  /** Get all known peers in the room */
+  getPeers(): string[];
+  /** Number of peers in the room */
+  get peerCount(): number;
+  /** Whether the transport is still open */
+  get isOpen(): boolean;
+  /** Send to a specific peer (overrides config.targetPeerId for this call) */
+  sendTo(peerId: string, data: Uint8Array): void;
 }
 /**
  * Create a FlowTransport connected to a DashRelay room.
@@ -104,4 +110,8 @@ export declare class DashRelayFlowTransport implements FlowTransport {
  * @param channel - Optional channel tag for multiplexing
  * @param config - Optional transport configuration
  */
-export declare function createDashRelayFlow(relay: DashRelayLike, channel?: string, config?: Omit<DashRelayFlowConfig, 'channel'>): DashRelayFlowTransport;
+export declare function createDashRelayFlow(
+  relay: DashRelayLike,
+  channel?: string,
+  config?: Omit<DashRelayFlowConfig, 'channel'>
+): DashRelayFlowTransport;

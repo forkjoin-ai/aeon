@@ -161,7 +161,9 @@ describe('Map/Reduce Readiness Diagnostic (§6.14)', () => {
     }
 
     expect(mean(noOpportunityGains)).toBeLessThan(0.03);
-    expect(mean(withOpportunityGains)).toBeGreaterThan(mean(noOpportunityGains) + 0.08);
+    expect(mean(withOpportunityGains)).toBeGreaterThan(
+      mean(noOpportunityGains) + 0.08
+    );
   });
 
   it('R_qr rank-orders gain in an independent migration simulator', () => {

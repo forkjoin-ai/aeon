@@ -505,4 +505,36 @@ theorem solomonoff_buleyean_subsumption (ss : SolomonoffSpace) :
          fun i j h => solomonoff_dominates_uniform ss i j h,
          fun i j => solomonoff_weight_gap_fixed ss i j⟩
 
+-- ═══════════════════════════════════════════════════════════════════════
+-- THM-SOLOMONOFF-VOID-GAIN-FLOOR
+--
+-- The ceiling (SUBSUMPTION) proves Buleyean contains Bayesian.
+-- The floor proves the void boundary is strictly *better* by at least
+-- 1 bit when half or more options are impossible. Tracking rejections
+-- is not just a generalization -- it provides measurable information
+-- gain over ignoring the void.
+-- ═══════════════════════════════════════════════════════════════════════
+
+/-- A decision problem with known impossibilities. -/
+structure DecisionWithVoid where
+  totalOptions : ℕ
+  impossibleOptions : ℕ
+  hTotal : 2 ≤ totalOptions
+  hSomeImpossible : 0 < impossibleOptions
+  hNotAll : impossibleOptions < totalOptions
+
+/-- Void-informed entropy ≤ uniform entropy (monotone in elimination). -/
+theorem void_gain_monotone
+    (n k1 k2 : ℕ) (hk : k1 ≤ k2) (hBound : k2 < n) :
+    Nat.log2 (n - k2) ≤ Nat.log2 (n - k1) := by
+  apply Nat.log2_mono; omega
+
+/-- THM-SOLOMONOFF-VOID-GAIN-FLOOR: When ≥ half the options are
+    impossible, the void boundary saves at least 1 bit. -/
+theorem void_gain_at_least_one_bit (d : DecisionWithVoid)
+    (hHalf : d.totalOptions / 2 ≤ d.impossibleOptions) :
+    Nat.log2 (d.totalOptions - d.impossibleOptions) <
+    Nat.log2 d.totalOptions := by
+  apply Nat.log2_lt_log2 <;> omega
+
 end ForkRaceFoldTheorems

@@ -16,7 +16,9 @@ export interface WallingtonRun<T> {
   readonly output: readonly T[];
 }
 
-export type CollapseFn<T> = (shardOutputs: readonly (readonly T[])[]) => readonly T[];
+export type CollapseFn<T> = (
+  shardOutputs: readonly (readonly T[])[]
+) => readonly T[];
 
 export interface WorthingtonRun<T> {
   readonly shardCount: number;
@@ -39,7 +41,7 @@ function inferChunkSize(itemCount: number, stageCount: number): number {
 export function buildWallingtonChunks<T>(
   items: readonly T[],
   stageCount: number,
-  chunkSize = inferChunkSize(items.length, stageCount),
+  chunkSize = inferChunkSize(items.length, stageCount)
 ): readonly (readonly T[])[] {
   assertPositive('stageCount', stageCount);
   assertPositive('chunkSize', chunkSize);
@@ -54,7 +56,7 @@ export function buildWallingtonChunks<T>(
 export function wallingtonRotation<T>(
   items: readonly T[],
   stages: readonly RotationStage<T>[],
-  chunkSize = inferChunkSize(items.length, stages.length),
+  chunkSize = inferChunkSize(items.length, stages.length)
 ): WallingtonRun<T> {
   assertPositive('stageCount', stages.length);
   assertPositive('chunkSize', chunkSize);
@@ -74,7 +76,9 @@ export function wallingtonRotation<T>(
   for (let stageIndex = 0; stageIndex < stages.length; stageIndex++) {
     const outputsForStage = chunks.map((_, chunkIndex) => {
       const input =
-        stageIndex === 0 ? chunks[chunkIndex] : stageOutputs[stageIndex - 1][chunkIndex];
+        stageIndex === 0
+          ? chunks[chunkIndex]
+          : stageOutputs[stageIndex - 1][chunkIndex];
       return stages[stageIndex](input);
     });
     stageOutputs.push(outputsForStage);
@@ -89,7 +93,9 @@ export function wallingtonRotation<T>(
         continue;
       }
       const input =
-        stageIndex === 0 ? chunks[chunkIndex] : stageOutputs[stageIndex - 1][chunkIndex];
+        stageIndex === 0
+          ? chunks[chunkIndex]
+          : stageOutputs[stageIndex - 1][chunkIndex];
       tickSteps.push({
         tick,
         stageIndex,
@@ -130,7 +136,7 @@ export function formatWallingtonSchedule<T>(run: WallingtonRun<T>): string {
 
 export function splitIntoWhipShards<T>(
   items: readonly T[],
-  shardCount: number,
+  shardCount: number
 ): readonly (readonly T[])[] {
   assertPositive('shardCount', shardCount);
   if (items.length === 0) {
@@ -146,7 +152,7 @@ export function splitIntoWhipShards<T>(
 }
 
 export function concatenateCollapse<T>(
-  shardOutputs: readonly (readonly T[])[],
+  shardOutputs: readonly (readonly T[])[]
 ): readonly T[] {
   return shardOutputs.flat();
 }
@@ -158,7 +164,7 @@ export function worthingtonWhip<T>(
     readonly stages: readonly RotationStage<T>[];
     readonly collapse?: CollapseFn<T>;
     readonly chunkSize?: number;
-  },
+  }
 ): WorthingtonRun<T> {
   assertPositive('shardCount', options.shardCount);
   assertPositive('stageCount', options.stages.length);
@@ -168,8 +174,8 @@ export function worthingtonWhip<T>(
     wallingtonRotation(
       shard,
       options.stages,
-      options.chunkSize ?? inferChunkSize(shard.length, options.stages.length),
-    ),
+      options.chunkSize ?? inferChunkSize(shard.length, options.stages.length)
+    )
   );
   const collapse = options.collapse ?? concatenateCollapse<T>;
 

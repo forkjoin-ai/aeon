@@ -14,13 +14,19 @@ describe('Chapter 17 boundary expansion figure', () => {
     const figure = buildCh17BoundaryExpansionFigureReport(
       await runGnosisNearControlSweep(),
       await runGnosisFoldBoundaryRegimeSweep(),
-      await runGnosisAdversarialControlsBenchmark(),
+      await runGnosisAdversarialControlsBenchmark()
     );
 
     expect(figure.label).toBe('ch17-boundary-expansion-figure-v2');
-    expect(figure.sources.nearControlLabel).toBe('gnosis-near-control-sweep-v1');
-    expect(figure.sources.regimeSweepLabel).toBe('gnosis-fold-boundary-regime-sweep-v1');
-    expect(figure.sources.adversarialLabel).toBe('gnosis-adversarial-controls-benchmark-v1');
+    expect(figure.sources.nearControlLabel).toBe(
+      'gnosis-near-control-sweep-v1'
+    );
+    expect(figure.sources.regimeSweepLabel).toBe(
+      'gnosis-fold-boundary-regime-sweep-v1'
+    );
+    expect(figure.sources.adversarialLabel).toBe(
+      'gnosis-adversarial-controls-benchmark-v1'
+    );
     expect(figure.nearControl.affine.lastParityRegimeValue).toBe(0.35);
     expect(figure.nearControl.affine.firstSeparatedRegimeValue).toBe(0.4);
     expect(figure.nearControl.routed.lastParityRegimeValue).toBe(0.6);
@@ -28,10 +34,14 @@ describe('Chapter 17 boundary expansion figure', () => {
     expect(figure.affineRegime.firstSeparatedRegimeValue).toBe(0.5);
     expect(figure.routedRegime.firstSeparatedRegimeValue).toBe(0.75);
     expect(
-      figure.adversarial.rankingByFinalEvalMeanSquaredError['winner-affine-maxabs']?.[0],
+      figure.adversarial.rankingByFinalEvalMeanSquaredError[
+        'winner-affine-maxabs'
+      ]?.[0]
     ).toBe('winner-take-all');
     expect(
-      figure.adversarial.rankingByLearningCurveArea['early-stop-left-priority-short-budget']?.[0],
+      figure.adversarial.rankingByLearningCurveArea[
+        'early-stop-left-priority-short-budget'
+      ]?.[0]
     ).toBe('early-stop');
   }, 20000);
 
@@ -39,7 +49,7 @@ describe('Chapter 17 boundary expansion figure', () => {
     const figure = buildCh17BoundaryExpansionFigureReport(
       await runGnosisNearControlSweep(),
       await runGnosisFoldBoundaryRegimeSweep(),
-      await runGnosisAdversarialControlsBenchmark(),
+      await runGnosisAdversarialControlsBenchmark()
     );
 
     const markdown = renderCh17BoundaryExpansionFigureMarkdown(figure);

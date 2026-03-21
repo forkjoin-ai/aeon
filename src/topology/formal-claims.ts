@@ -115,7 +115,9 @@ function assertNonNegativeInteger(name: string, value: number): number {
   return value;
 }
 
-function assertNonEmptyFrontier(frontierByLayer: readonly number[]): readonly number[] {
+function assertNonEmptyFrontier(
+  frontierByLayer: readonly number[]
+): readonly number[] {
   if (frontierByLayer.length === 0) {
     throw new Error('frontierByLayer must contain at least one layer');
   }
@@ -139,7 +141,7 @@ export function worthingtonWhipSavings(shards: number): WorthingtonWhipResult {
 
 export function speculativeTreeExpectedAccepted(
   alpha: number,
-  depth: number,
+  depth: number
 ): SpeculativeTreeResult {
   const normalizedAlpha = assertUnitIntervalOpen('alpha', alpha);
   const normalizedDepth = assertPositiveInteger('depth', depth);
@@ -155,7 +157,7 @@ export function speculativeTreeExpectedAccepted(
 
 export function turbulentIdleFraction(
   stageCount: number,
-  chunkCount: number,
+  chunkCount: number
 ): TurbulentIdleResult {
   const normalizedStageCount = assertPositiveInteger('stageCount', stageCount);
   const normalizedChunkCount = assertPositiveInteger('chunkCount', chunkCount);
@@ -172,14 +174,17 @@ export function turbulentIdleFraction(
 }
 
 export function frontierFill(
-  frontierByLayer: readonly number[],
+  frontierByLayer: readonly number[]
 ): FrontierFillResult {
   const normalizedFrontier = assertNonEmptyFrontier(frontierByLayer);
   const layerCount = normalizedFrontier.length;
-  const frontierArea = normalizedFrontier.reduce((sum, width) => sum + width, 0);
+  const frontierArea = normalizedFrontier.reduce(
+    (sum, width) => sum + width,
+    0
+  );
   const peakFrontier = normalizedFrontier.reduce(
     (peak, width) => Math.max(peak, width),
-    0,
+    0
   );
   const envelopeArea = layerCount * peakFrontier;
   const fill = envelopeArea === 0 ? 1 : frontierArea / envelopeArea;
@@ -200,14 +205,13 @@ export function frontierFill(
 
 export function pipelineOccupancy(
   stageCount: number,
-  chunkCount: number,
+  chunkCount: number
 ): PipelineOccupancyResult {
   const normalizedStageCount = assertPositiveInteger('stageCount', stageCount);
   const normalizedChunkCount = assertPositiveInteger('chunkCount', chunkCount);
   const frontierArea = normalizedStageCount * normalizedChunkCount;
   const capacityArea =
-    normalizedStageCount *
-    (normalizedChunkCount + normalizedStageCount - 1);
+    normalizedStageCount * (normalizedChunkCount + normalizedStageCount - 1);
   const fill = frontierArea / capacityArea;
 
   return {
@@ -222,7 +226,7 @@ export function pipelineOccupancy(
 
 export function classifyPipelineRegime(
   stageCount: number,
-  chunkCount: number,
+  chunkCount: number
 ): PipelineRegime {
   const normalizedStageCount = assertPositiveInteger('stageCount', stageCount);
   const normalizedChunkCount = assertPositiveInteger('chunkCount', chunkCount);
@@ -245,9 +249,12 @@ export function adaptiveParallelismPolicy(config: {
 }): AdaptiveParallelismPolicyResult {
   const intrinsicBeta1 = assertNonNegativeFinite(
     'intrinsicBeta1',
-    config.intrinsicBeta1,
+    config.intrinsicBeta1
   );
-  const actualBeta1 = assertNonNegativeFinite('actualBeta1', config.actualBeta1);
+  const actualBeta1 = assertNonNegativeFinite(
+    'actualBeta1',
+    config.actualBeta1
+  );
   const occupancy = pipelineOccupancy(config.stageCount, config.chunkCount);
   const topologyDeficit = intrinsicBeta1 - actualBeta1;
   const regime = classifyPipelineRegime(config.stageCount, config.chunkCount);
@@ -309,7 +316,10 @@ export function quantumDeficitIdentity(sqrtN: number): QuantumDeficitResult {
 }
 
 export function protocolDeficits(streamCount: number): ProtocolDeficitResult {
-  const normalizedStreamCount = assertPositiveInteger('streamCount', streamCount);
+  const normalizedStreamCount = assertPositiveInteger(
+    'streamCount',
+    streamCount
+  );
   if (normalizedStreamCount <= 1) {
     throw new Error('streamCount must be greater than 1');
   }
@@ -334,7 +344,7 @@ export function settlementDeficits(): SettlementDeficitResult {
 export function beta2FromBandGap(forbiddenEnergyCount: number): number {
   const normalizedForbiddenCount = assertNonNegativeFinite(
     'forbiddenEnergyCount',
-    forbiddenEnergyCount,
+    forbiddenEnergyCount
   );
   return normalizedForbiddenCount > 0 ? 1 : 0;
 }
@@ -343,16 +353,22 @@ export function firstLawConserved(
   forkEnergy: number,
   foldWork: number,
   ventEnergy: number,
-  tolerance = 1e-9,
+  tolerance = 1e-9
 ): boolean {
-  const normalizedForkEnergy = assertNonNegativeFinite('forkEnergy', forkEnergy);
+  const normalizedForkEnergy = assertNonNegativeFinite(
+    'forkEnergy',
+    forkEnergy
+  );
   const normalizedFoldWork = assertNonNegativeFinite('foldWork', foldWork);
-  const normalizedVentEnergy = assertNonNegativeFinite('ventEnergy', ventEnergy);
+  const normalizedVentEnergy = assertNonNegativeFinite(
+    'ventEnergy',
+    ventEnergy
+  );
   if (normalizedFoldWork > normalizedForkEnergy) {
     return false;
   }
   const delta = Math.abs(
-    normalizedForkEnergy - (normalizedFoldWork + normalizedVentEnergy),
+    normalizedForkEnergy - (normalizedFoldWork + normalizedVentEnergy)
   );
   return delta <= Math.max(tolerance, 0);
 }

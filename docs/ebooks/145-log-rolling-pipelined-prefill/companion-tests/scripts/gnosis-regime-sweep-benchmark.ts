@@ -15,8 +15,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/gnosis-fold-boundary-regime-sweep.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/gnosis-fold-boundary-regime-sweep.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/gnosis-fold-boundary-regime-sweep.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/gnosis-fold-boundary-regime-sweep.md'
+  );
 
   let assertBoundary = false;
   let jsonPath = defaultJsonPath;
@@ -61,23 +67,41 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderGnosisFoldBoundaryRegimeSweepMarkdown(report),
-    'utf8',
+    'utf8'
   );
 
   process.stdout.write(
-    `gnosis-fold-boundary-regime-sweep: ${report.predictedBoundaryRecovered ? 'MATCH' : 'MISMATCH'}\n`,
+    `gnosis-fold-boundary-regime-sweep: ${
+      report.predictedBoundaryRecovered ? 'MATCH' : 'MISMATCH'
+    }\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(
-    `- affine: first-separated=${report.affine.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'}, final-gap=${report.affine.points.at(-1)?.linearAdvantageEvalMeanSquaredError.toFixed(3) ?? '0.000'}\n`,
+    `- affine: first-separated=${
+      report.affine.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'
+    }, final-gap=${
+      report.affine.points
+        .at(-1)
+        ?.linearAdvantageEvalMeanSquaredError.toFixed(3) ?? '0.000'
+    }\n`
   );
   process.stdout.write(
-    `- routed: first-separated=${report.routed.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'}, final-gap=${report.routed.points.at(-1)?.linearAdvantageEvalMeanSquaredError.toFixed(3) ?? '0.000'}\n`,
+    `- routed: first-separated=${
+      report.routed.firstSeparatedRegimeValue?.toFixed(2) ?? 'none'
+    }, final-gap=${
+      report.routed.points
+        .at(-1)
+        ?.linearAdvantageEvalMeanSquaredError.toFixed(3) ?? '0.000'
+    }\n`
   );
 
   if (options.assertBoundary && !report.predictedBoundaryRecovered) {
@@ -86,6 +110,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

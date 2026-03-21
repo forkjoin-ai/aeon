@@ -151,7 +151,7 @@ function sparkline(values: number[]): string {
 type Strategy = (
   history: Array<{ mine: Choice; theirs: Choice }>,
   choices: string[],
-  rng: () => number,
+  rng: () => number
 ) => Choice;
 
 const STRATEGIES: Record<string, Strategy> = {
@@ -164,11 +164,14 @@ const STRATEGIES: Record<string, Strategy> = {
   },
   pavlov: (h, c) => {
     if (h.length === 0) return c[0];
-    return h[h.length - 1].mine === h[h.length - 1].theirs ? c[0] : c[c.length - 1];
+    return h[h.length - 1].mine === h[h.length - 1].theirs
+      ? c[0]
+      : c[c.length - 1];
   },
   'generous-tit-for-tat': (h, c, rng) => {
     if (h.length === 0) return c[0];
-    if (h[h.length - 1].theirs === c[c.length - 1]) return rng() < 0.1 ? c[0] : c[c.length - 1];
+    if (h[h.length - 1].theirs === c[c.length - 1])
+      return rng() < 0.1 ? c[0] : c[c.length - 1];
     return c[0];
   },
   'suspicious-tit-for-tat': (h, c) =>
@@ -228,7 +231,7 @@ function profileStrategy(
   matrix: PayoffMatrix,
   opponents: string[],
   rounds: number,
-  seed: number,
+  seed: number
 ): VoidSignature {
   const strat = STRATEGIES[stratName];
   let totalScore = 0;
@@ -241,7 +244,8 @@ function profileStrategy(
   for (const oppName of opponents) {
     const opp = STRATEGIES[oppName];
     const rng = makeRng(
-      seed + (stratName + oppName).split('').reduce((a, c) => a + c.charCodeAt(0), 0),
+      seed +
+        (stratName + oppName).split('').reduce((a, c) => a + c.charCodeAt(0), 0)
     );
 
     const histMe: Array<{ mine: Choice; theirs: Choice }> = [];
@@ -252,7 +256,9 @@ function profileStrategy(
     for (let r = 0; r < rounds; r++) {
       const myChoice = strat(histMe, matrix.choices, rng);
       const theirChoice = opp(histOpp, matrix.choices, rng);
-      const [myPay, theirPay] = matrix.payoffs[myChoice]?.[theirChoice] ?? [0, 0];
+      const [myPay, theirPay] = matrix.payoffs[myChoice]?.[theirChoice] ?? [
+        0, 0,
+      ];
 
       totalScore += myPay;
       totalRounds++;
@@ -284,14 +290,16 @@ function profileStrategy(
   // Initial entropy = maxEntropy (uniform prior)
   // Final entropy = shannonEntropy(finalDist)
   const finalEntropy = shannonEntropy(finalDist);
-  const inverseBule = totalRounds > 0
-    ? (maxEntropy - finalEntropy) / totalRounds
-    : 0;
+  const inverseBule =
+    totalRounds > 0 ? (maxEntropy - finalEntropy) / totalRounds : 0;
 
   // Void efficiency: payoff per tombstone
-  const voidEfficiency = totalVoidEntries > 0
-    ? totalScore / totalVoidEntries
-    : totalScore > 0 ? Infinity : 0;
+  const voidEfficiency =
+    totalVoidEntries > 0
+      ? totalScore / totalVoidEntries
+      : totalScore > 0
+      ? Infinity
+      : 0;
 
   // Thomas-Kilmann coordinates (heuristic mapping from behavior)
   const coopRate = totalRounds > 0 ? totalCoopChoices / totalRounds : 0.5;
@@ -312,7 +320,12 @@ function profileStrategy(
   const tkAccommodating = coopRate * (1 - scoreNorm);
 
   // Normalize TKI to sum to 1
-  const tkSum = tkCompeting + tkCollaborating + tkCompromising + tkAvoiding + tkAccommodating;
+  const tkSum =
+    tkCompeting +
+    tkCollaborating +
+    tkCompromising +
+    tkAvoiding +
+    tkAccommodating;
   const tkNorm = tkSum > 0 ? tkSum : 1;
 
   return {
@@ -354,37 +367,81 @@ describe('Strategy Void Profiles & Inverse Bule', () => {
 
         // Sort by inverse Bule (best learner first)
         const byInverseBule = [...profiles].sort(
-          (a, b) => b.inverseBule - a.inverseBule,
+          (a, b) => b.inverseBule - a.inverseBule
         );
 
         console.log(`\n  ╔${'═'.repeat(78)}╗`);
         console.log(`  ║ ${gameName.toUpperCase().padEnd(76)} ║`);
-        console.log(`  ║ Strategy Void Profiles ranked by Inverse Bule (B⁻¹)${' '.repeat(25)}║`);
+        console.log(
+          `  ║ Strategy Void Profiles ranked by Inverse Bule (B⁻¹)${' '.repeat(
+            25
+          )}║`
+        );
         console.log(`  ╠${'═'.repeat(78)}╣`);
-        console.log(`  ║ ${'Strategy'.padEnd(24)} ${'B⁻¹'.padStart(8)} ${'Score'.padStart(7)} ${'Coop%'.padStart(6)} ${'κ'.padStart(7)} ${'H'.padStart(6)} ${'Gini'.padStart(6)} ${'VoidR'.padStart(6)} ║`);
+        console.log(
+          `  ║ ${'Strategy'.padEnd(24)} ${'B⁻¹'.padStart(8)} ${'Score'.padStart(
+            7
+          )} ${'Coop%'.padStart(6)} ${'κ'.padStart(7)} ${'H'.padStart(
+            6
+          )} ${'Gini'.padStart(6)} ${'VoidR'.padStart(6)} ║`
+        );
         console.log(`  ╠${'─'.repeat(78)}╣`);
         for (const p of byInverseBule) {
           const buleStr = (p.inverseBule * 1000).toFixed(2); // milli-Bule⁻¹
           console.log(
-            `  ║ ${p.strategy.padEnd(24)} ${buleStr.padStart(8)} ${p.avgScore.toFixed(1).padStart(7)} ${(p.coopRate * 100).toFixed(0).padStart(5)}% ${p.kurtosis.toFixed(2).padStart(7)} ${p.entropy.toFixed(3).padStart(6)} ${p.gini.toFixed(3).padStart(6)} ${p.voidRate.toFixed(3).padStart(6)} ║`,
+            `  ║ ${p.strategy.padEnd(24)} ${buleStr.padStart(8)} ${p.avgScore
+              .toFixed(1)
+              .padStart(7)} ${(p.coopRate * 100)
+              .toFixed(0)
+              .padStart(5)}% ${p.kurtosis.toFixed(2).padStart(7)} ${p.entropy
+              .toFixed(3)
+              .padStart(6)} ${p.gini.toFixed(3).padStart(6)} ${p.voidRate
+              .toFixed(3)
+              .padStart(6)} ║`
           );
         }
         console.log(`  ╠${'═'.repeat(78)}╣`);
 
         // Thomas-Kilmann coordinates
         console.log(`  ║ Thomas-Kilmann Mapping${' '.repeat(55)}║`);
-        console.log(`  ║ ${'Strategy'.padEnd(24)} ${'Comp'.padStart(6)} ${'Coll'.padStart(6)} ${'Compr'.padStart(6)} ${'Avoid'.padStart(6)} ${'Accom'.padStart(6)}${''.padEnd(18)} ║`);
+        console.log(
+          `  ║ ${'Strategy'.padEnd(24)} ${'Comp'.padStart(6)} ${'Coll'.padStart(
+            6
+          )} ${'Compr'.padStart(6)} ${'Avoid'.padStart(6)} ${'Accom'.padStart(
+            6
+          )}${''.padEnd(18)} ║`
+        );
         console.log(`  ╠${'─'.repeat(78)}╣`);
-        for (const p of profiles.sort((a, b) => b.tkCompeting - a.tkCompeting)) {
+        for (const p of profiles.sort(
+          (a, b) => b.tkCompeting - a.tkCompeting
+        )) {
           // Bar visualization of TKI profile
-          const bars = [p.tkCompeting, p.tkCollaborating, p.tkCompromising, p.tkAvoiding, p.tkAccommodating];
+          const bars = [
+            p.tkCompeting,
+            p.tkCollaborating,
+            p.tkCompromising,
+            p.tkAvoiding,
+            p.tkAccommodating,
+          ];
           const maxBar = Math.max(...bars);
-          const barStr = bars.map((b) => {
-            const len = maxBar > 0 ? Math.round((b / maxBar) * 4) : 0;
-            return '█'.repeat(len).padEnd(4);
-          }).join(' ');
+          const barStr = bars
+            .map((b) => {
+              const len = maxBar > 0 ? Math.round((b / maxBar) * 4) : 0;
+              return '█'.repeat(len).padEnd(4);
+            })
+            .join(' ');
           console.log(
-            `  ║ ${p.strategy.padEnd(24)} ${(p.tkCompeting * 100).toFixed(0).padStart(5)}% ${(p.tkCollaborating * 100).toFixed(0).padStart(5)}% ${(p.tkCompromising * 100).toFixed(0).padStart(5)}% ${(p.tkAvoiding * 100).toFixed(0).padStart(5)}% ${(p.tkAccommodating * 100).toFixed(0).padStart(5)}%  ${barStr} ║`,
+            `  ║ ${p.strategy.padEnd(24)} ${(p.tkCompeting * 100)
+              .toFixed(0)
+              .padStart(5)}% ${(p.tkCollaborating * 100)
+              .toFixed(0)
+              .padStart(5)}% ${(p.tkCompromising * 100)
+              .toFixed(0)
+              .padStart(5)}% ${(p.tkAvoiding * 100).toFixed(0).padStart(5)}% ${(
+              p.tkAccommodating * 100
+            )
+              .toFixed(0)
+              .padStart(5)}%  ${barStr} ║`
           );
         }
         console.log(`  ╚${'═'.repeat(78)}╝`);
@@ -396,7 +453,13 @@ describe('Strategy Void Profiles & Inverse Bule', () => {
       });
 
       it('void walker has measurable inverse Bule', () => {
-        const vwProfile = profileStrategy('void-walker', matrix, allStrats, T, 42);
+        const vwProfile = profileStrategy(
+          'void-walker',
+          matrix,
+          allStrats,
+          T,
+          42
+        );
         // Void walker should have non-negative inverse Bule (it learns)
         expect(vwProfile.inverseBule).toBeGreaterThanOrEqual(0);
         // Should have some void entries (it encounters losses)
@@ -404,14 +467,26 @@ describe('Strategy Void Profiles & Inverse Bule', () => {
       });
 
       it('always-cooperate has minimal void learning', () => {
-        const acProfile = profileStrategy('always-cooperate', matrix, allStrats, T, 42);
+        const acProfile = profileStrategy(
+          'always-cooperate',
+          matrix,
+          allStrats,
+          T,
+          42
+        );
         // Always-cooperate never changes behavior, so inverse Bule should be low
         // (entropy doesn't decrease because it doesn't read the void)
         expect(acProfile.coopRate).toBeCloseTo(1.0, 1);
       });
 
       it('grim-trigger has phase-transition void signature', () => {
-        const gtProfile = profileStrategy('grim-trigger', matrix, allStrats, T, 42);
+        const gtProfile = profileStrategy(
+          'grim-trigger',
+          matrix,
+          allStrats,
+          T,
+          42
+        );
         // Grim trigger cooperates until first defection, then defects forever
         // This creates a sharp transition in the void signature
         // High kurtosis after transition (peaked on defect)
@@ -444,20 +519,34 @@ describe('Strategy Void Profiles & Inverse Bule', () => {
 
       const ranked = Object.entries(avgInverseBule).sort((a, b) => b[1] - a[1]);
 
-      console.log('\n  ╔═══════════════════════════════════════════════════════════╗');
-      console.log('  ║   Cross-Game Strategy Fitness (Inverse Bule Landscape)    ║');
-      console.log('  ╠═══════════════════════════════════════════════════════════╣');
-      console.log(`  ║ ${'Strategy'.padEnd(24)} ${'avg B⁻¹'.padStart(9)} ${'avg Score'.padStart(10)} ${'avg VoidEff'.padStart(11)} ║`);
+      console.log(
+        '\n  ╔═══════════════════════════════════════════════════════════╗'
+      );
+      console.log(
+        '  ║   Cross-Game Strategy Fitness (Inverse Bule Landscape)    ║'
+      );
+      console.log(
+        '  ╠═══════════════════════════════════════════════════════════╣'
+      );
+      console.log(
+        `  ║ ${'Strategy'.padEnd(24)} ${'avg B⁻¹'.padStart(
+          9
+        )} ${'avg Score'.padStart(10)} ${'avg VoidEff'.padStart(11)} ║`
+      );
       console.log(`  ╠${'─'.repeat(59)}╣`);
       for (const [strat] of ranked) {
         const ib = (avgInverseBule[strat] * 1000).toFixed(3);
         const sc = avgScore[strat].toFixed(2);
         const ve = avgVoidEfficiency[strat].toFixed(2);
         console.log(
-          `  ║ ${strat.padEnd(24)} ${ib.padStart(9)} ${sc.padStart(10)} ${ve.padStart(11)} ║`,
+          `  ║ ${strat.padEnd(24)} ${ib.padStart(9)} ${sc.padStart(
+            10
+          )} ${ve.padStart(11)} ║`
         );
       }
-      console.log('  ╚═══════════════════════════════════════════════════════════╝\n');
+      console.log(
+        '  ╚═══════════════════════════════════════════════════════════╝\n'
+      );
 
       // All strategies should have finite inverse Bule
       for (const [, ib] of ranked) {
@@ -501,7 +590,9 @@ describe('Strategy Void Profiles & Inverse Bule', () => {
       for (const d of data.sort((a, b) => b.ib - a.ib)) {
         const ibBar = '█'.repeat(Math.max(1, Math.round(d.ib * 10000)));
         console.log(
-          `  ${d.strat.padEnd(24)} B⁻¹=${(d.ib * 1000).toFixed(2).padStart(6)}  score=${d.score.toFixed(2).padStart(6)}  ${ibBar}`,
+          `  ${d.strat.padEnd(24)} B⁻¹=${(d.ib * 1000)
+            .toFixed(2)
+            .padStart(6)}  score=${d.score.toFixed(2).padStart(6)}  ${ibBar}`
         );
       }
     });

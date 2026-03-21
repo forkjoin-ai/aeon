@@ -55,13 +55,14 @@ describe('Prediction 1: Thermodynamic self-cooling during high-β₁* computatio
    */
 
   interface ThermalModel {
-    overheadPerFold: number;    // Joules of circuit dissipation per fold
+    overheadPerFold: number; // Joules of circuit dissipation per fold
     bitsGainedPerFold: (beta1: number) => number;
     landauerCoolingPerBit: number;
   }
 
   function netThermalFlux(model: ThermalModel, beta1: number): number {
-    const cooling = model.landauerCoolingPerBit * model.bitsGainedPerFold(beta1);
+    const cooling =
+      model.landauerCoolingPerBit * model.bitsGainedPerFold(beta1);
     return model.overheadPerFold - cooling; // negative = net cooling
   }
 
@@ -76,16 +77,16 @@ describe('Prediction 1: Thermodynamic self-cooling during high-β₁* computatio
   const foldErasureBits = (beta1: number) => Math.log2(beta1 + 1);
 
   const realisticModel: ThermalModel = {
-    overheadPerFold: 10 * kT_ln2_300K,  // 10× Landauer minimum overhead
+    overheadPerFold: 10 * kT_ln2_300K, // 10× Landauer minimum overhead
     bitsGainedPerFold: foldErasureBits,
     landauerCoolingPerBit: kT_ln2_300K,
   };
 
   it('THM-FOLD-ERASURE: fold from N paths erases log₂(N) bits', () => {
-    expect(foldErasureBits(1)).toBeCloseTo(1.0);      // 2 paths → 1 bit
-    expect(foldErasureBits(3)).toBeCloseTo(2.0);      // 4 paths → 2 bits
-    expect(foldErasureBits(7)).toBeCloseTo(3.0);      // 8 paths → 3 bits
-    expect(foldErasureBits(1023)).toBeCloseTo(10.0);  // 1024 paths → 10 bits
+    expect(foldErasureBits(1)).toBeCloseTo(1.0); // 2 paths → 1 bit
+    expect(foldErasureBits(3)).toBeCloseTo(2.0); // 4 paths → 2 bits
+    expect(foldErasureBits(7)).toBeCloseTo(3.0); // 8 paths → 3 bits
+    expect(foldErasureBits(1023)).toBeCloseTo(10.0); // 1024 paths → 10 bits
   });
 
   it('THM-FOLD-HEAT: Landauer heat per fold = kT ln 2 × bits erased', () => {
@@ -145,10 +146,10 @@ describe('Prediction 1: Thermodynamic self-cooling during high-β₁* computatio
   it('THM-BULE-THERMODYNAMIC: deficit = budget = capacity = energy', () => {
     // For any β₁*, the four quantities are the same number in different units
     for (const beta1Star of [5, 50, 500]) {
-      const deficit = beta1Star;                           // Bules
-      const budget = beta1Star;                            // folds remaining
-      const capacity = kT_ln2_300K * beta1Star;            // max cooling (J)
-      const energy = kT_ln2_300K * beta1Star;              // free energy (J)
+      const deficit = beta1Star; // Bules
+      const budget = beta1Star; // folds remaining
+      const capacity = kT_ln2_300K * beta1Star; // max cooling (J)
+      const energy = kT_ln2_300K * beta1Star; // free energy (J)
       expect(deficit).toBe(budget);
       expect(capacity).toBeCloseTo(energy);
     }
@@ -174,9 +175,9 @@ describe('Prediction 2: Topological complexity predicts CRISPR editing efficienc
 
   interface GenomicLocus {
     name: string;
-    sigma: number;       // local topological complexity
-    gcContent: number;   // GC fraction [0,1]
-    chromatin: number;   // accessibility score [0,1]
+    sigma: number; // local topological complexity
+    gcContent: number; // GC fraction [0,1]
+    chromatin: number; // accessibility score [0,1]
     measuredEta: number; // measured editing efficiency [0,1]
   }
 
@@ -186,22 +187,94 @@ describe('Prediction 2: Topological complexity predicts CRISPR editing efficienc
   // σ(ℓ) integrates both effects plus secondary structure
   const loci: GenomicLocus[] = [
     // Low σ: simple duplex, open chromatin → high efficiency
-    { name: 'open-AT-rich',    sigma: 0, gcContent: 0.35, chromatin: 0.90, measuredEta: 0.92 },
-    { name: 'open-balanced',   sigma: 1, gcContent: 0.50, chromatin: 0.85, measuredEta: 0.78 },
-    { name: 'open-GC-moderate', sigma: 1, gcContent: 0.55, chromatin: 0.80, measuredEta: 0.75 },
+    {
+      name: 'open-AT-rich',
+      sigma: 0,
+      gcContent: 0.35,
+      chromatin: 0.9,
+      measuredEta: 0.92,
+    },
+    {
+      name: 'open-balanced',
+      sigma: 1,
+      gcContent: 0.5,
+      chromatin: 0.85,
+      measuredEta: 0.78,
+    },
+    {
+      name: 'open-GC-moderate',
+      sigma: 1,
+      gcContent: 0.55,
+      chromatin: 0.8,
+      measuredEta: 0.75,
+    },
     // Medium σ: stem-loops present
-    { name: 'stem-loop-1',     sigma: 2, gcContent: 0.58, chromatin: 0.70, measuredEta: 0.55 },
-    { name: 'stem-loop-2',     sigma: 2, gcContent: 0.52, chromatin: 0.75, measuredEta: 0.60 },
-    { name: 'hairpin-region',  sigma: 3, gcContent: 0.62, chromatin: 0.65, measuredEta: 0.40 },
+    {
+      name: 'stem-loop-1',
+      sigma: 2,
+      gcContent: 0.58,
+      chromatin: 0.7,
+      measuredEta: 0.55,
+    },
+    {
+      name: 'stem-loop-2',
+      sigma: 2,
+      gcContent: 0.52,
+      chromatin: 0.75,
+      measuredEta: 0.6,
+    },
+    {
+      name: 'hairpin-region',
+      sigma: 3,
+      gcContent: 0.62,
+      chromatin: 0.65,
+      measuredEta: 0.4,
+    },
     // High σ: G-quadruplexes, cruciforms
-    { name: 'g-quad-1',        sigma: 4, gcContent: 0.72, chromatin: 0.50, measuredEta: 0.22 },
-    { name: 'g-quad-2',        sigma: 4, gcContent: 0.68, chromatin: 0.55, measuredEta: 0.25 },
-    { name: 'cruciform',       sigma: 5, gcContent: 0.60, chromatin: 0.40, measuredEta: 0.12 },
-    { name: 'complex-region',  sigma: 6, gcContent: 0.75, chromatin: 0.30, measuredEta: 0.05 },
+    {
+      name: 'g-quad-1',
+      sigma: 4,
+      gcContent: 0.72,
+      chromatin: 0.5,
+      measuredEta: 0.22,
+    },
+    {
+      name: 'g-quad-2',
+      sigma: 4,
+      gcContent: 0.68,
+      chromatin: 0.55,
+      measuredEta: 0.25,
+    },
+    {
+      name: 'cruciform',
+      sigma: 5,
+      gcContent: 0.6,
+      chromatin: 0.4,
+      measuredEta: 0.12,
+    },
+    {
+      name: 'complex-region',
+      sigma: 6,
+      gcContent: 0.75,
+      chromatin: 0.3,
+      measuredEta: 0.05,
+    },
     // Edge cases: high GC but open → moderate efficiency (σ captures this)
-    { name: 'gc-rich-open',    sigma: 2, gcContent: 0.70, chromatin: 0.85, measuredEta: 0.58 },
+    {
+      name: 'gc-rich-open',
+      sigma: 2,
+      gcContent: 0.7,
+      chromatin: 0.85,
+      measuredEta: 0.58,
+    },
     // Low GC but closed chromatin → σ elevated by structure
-    { name: 'at-rich-closed',  sigma: 3, gcContent: 0.38, chromatin: 0.25, measuredEta: 0.35 },
+    {
+      name: 'at-rich-closed',
+      sigma: 3,
+      gcContent: 0.38,
+      chromatin: 0.25,
+      measuredEta: 0.35,
+    },
   ];
 
   function spearmanCorrelation(x: number[], y: number[]): number {
@@ -209,7 +282,9 @@ describe('Prediction 2: Topological complexity predicts CRISPR editing efficienc
     const rank = (arr: number[]): number[] => {
       const sorted = arr.map((v, i) => ({ v, i })).sort((a, b) => a.v - b.v);
       const ranks = new Array(n);
-      sorted.forEach((item, r) => { ranks[item.i] = r + 1; });
+      sorted.forEach((item, r) => {
+        ranks[item.i] = r + 1;
+      });
       return ranks;
     };
     const rx = rank(x);
@@ -233,7 +308,10 @@ describe('Prediction 2: Topological complexity predicts CRISPR editing efficienc
       bySignma.get(l.sigma)!.push(l.measuredEta);
     }
     const means = [...bySignma.entries()]
-      .map(([sigma, etas]) => ({ sigma, mean: etas.reduce((a, b) => a + b, 0) / etas.length }))
+      .map(([sigma, etas]) => ({
+        sigma,
+        mean: etas.reduce((a, b) => a + b, 0) / etas.length,
+      }))
       .sort((a, b) => a.sigma - b.sigma);
 
     // Check monotone decrease (allowing one violation for noise)
@@ -257,10 +335,10 @@ describe('Prediction 2: Topological complexity predicts CRISPR editing efficienc
   });
 
   it('σ(ℓ) has higher |Spearman ρ| with η than GC content or chromatin alone', () => {
-    const sigmas = loci.map(l => l.sigma);
-    const etas = loci.map(l => l.measuredEta);
-    const gcs = loci.map(l => l.gcContent);
-    const chroms = loci.map(l => l.chromatin);
+    const sigmas = loci.map((l) => l.sigma);
+    const etas = loci.map((l) => l.measuredEta);
+    const gcs = loci.map((l) => l.gcContent);
+    const chroms = loci.map((l) => l.chromatin);
 
     const rhoSigma = Math.abs(spearmanCorrelation(sigmas, etas));
     const rhoGC = Math.abs(spearmanCorrelation(gcs, etas));
@@ -279,10 +357,10 @@ describe('Prediction 2: Topological complexity predicts CRISPR editing efficienc
     // Verify: given σ, the efficiency prediction needs nothing else.
     const alpha = 0.5;
     const eta0 = 0.95;
-    const predictions = loci.map(l => eta0 * Math.exp(-alpha * l.sigma));
-    const actuals = loci.map(l => l.measuredEta);
+    const predictions = loci.map((l) => eta0 * Math.exp(-alpha * l.sigma));
+    const actuals = loci.map((l) => l.measuredEta);
     const rho = Math.abs(spearmanCorrelation(predictions, actuals));
-    expect(rho).toBeGreaterThan(0.80);
+    expect(rho).toBeGreaterThan(0.8);
   });
 });
 
@@ -316,18 +394,20 @@ describe('Prediction 3: Empathy deficit predicts therapeutic alliance quality', 
   interface TherapeuticDyad {
     therapist: PersonalityVector;
     client: PersonalityVector;
-    waiScore: number;        // Working Alliance Inventory [1-7]
+    waiScore: number; // Working Alliance Inventory [1-7]
     sessionsToAlliance: number;
   }
 
   function empathyDeficit(a: PersonalityVector, b: PersonalityVector): number {
     const union = new Set([...a.voidDims, ...b.voidDims]);
-    const intersection = new Set([...a.voidDims].filter(d => b.voidDims.has(d)));
+    const intersection = new Set(
+      [...a.voidDims].filter((d) => b.voidDims.has(d))
+    );
     const isolatedA = a.voidDims.size;
     const isolatedB = b.voidDims.size;
     const merged = union.size;
     // Deficit is the difference between sum of isolated and merged
-    return Math.max(0, (isolatedA + isolatedB - 2 * intersection.size));
+    return Math.max(0, isolatedA + isolatedB - 2 * intersection.size);
   }
 
   function nadirBound(a: PersonalityVector, b: PersonalityVector): number {
@@ -336,10 +416,13 @@ describe('Prediction 3: Empathy deficit predicts therapeutic alliance quality', 
   }
 
   function sharedDimCount(a: PersonalityVector, b: PersonalityVector): number {
-    return [...a.voidDims].filter(d => b.voidDims.has(d)).length;
+    return [...a.voidDims].filter((d) => b.voidDims.has(d)).length;
   }
 
-  function makePersonality(seed: number, numVoidDims: number): PersonalityVector {
+  function makePersonality(
+    seed: number,
+    numVoidDims: number
+  ): PersonalityVector {
     const rng = makeRng(seed);
     const dims = new Set<number>();
     while (dims.size < numVoidDims) {
@@ -408,7 +491,7 @@ describe('Prediction 3: Empathy deficit predicts therapeutic alliance quality', 
     const baseDeficit = empathyDeficit(a, b);
 
     // Simulate sharing one dimension: add one of a's dims to b
-    const unshared = [...a.voidDims].filter(d => !b.voidDims.has(d));
+    const unshared = [...a.voidDims].filter((d) => !b.voidDims.has(d));
     if (unshared.length > 0) {
       const newB: PersonalityVector = {
         voidDims: new Set([...b.voidDims, unshared[0]]),
@@ -429,7 +512,7 @@ describe('Prediction 3: Empathy deficit predicts therapeutic alliance quality', 
 
     // Simulate sessions: each session shares one unshared dimension
     for (let session = 0; session < 10; session++) {
-      const unshared = [...a.voidDims].filter(d => !currentB.voidDims.has(d));
+      const unshared = [...a.voidDims].filter((d) => !currentB.voidDims.has(d));
       if (unshared.length === 0) break;
       currentB = {
         voidDims: new Set([...currentB.voidDims, unshared[0]]),
@@ -445,15 +528,17 @@ describe('Prediction 3: Empathy deficit predicts therapeutic alliance quality', 
   });
 
   it('Δ_empathy negatively correlates with WAI across 200 dyads', () => {
-    const deficits = dyads.map(d => empathyDeficit(d.therapist, d.client));
-    const wais = dyads.map(d => d.waiScore);
+    const deficits = dyads.map((d) => empathyDeficit(d.therapist, d.client));
+    const wais = dyads.map((d) => d.waiScore);
 
     // Spearman correlation
     const n = deficits.length;
     const rank = (arr: number[]): number[] => {
       const sorted = arr.map((v, i) => ({ v, i })).sort((a, b) => a.v - b.v);
       const ranks = new Array(n);
-      sorted.forEach((item, r) => { ranks[item.i] = r + 1; });
+      sorted.forEach((item, r) => {
+        ranks[item.i] = r + 1;
+      });
       return ranks;
     };
     const rx = rank(deficits);
@@ -472,7 +557,7 @@ describe('Prediction 3: Empathy deficit predicts therapeutic alliance quality', 
       // Allow some slack: sessions ≤ bound + 5 (noise margin)
       if (d.sessionsToAlliance <= bound + 5) withinBound++;
     }
-    expect(withinBound / dyads.length).toBeGreaterThan(0.90);
+    expect(withinBound / dyads.length).toBeGreaterThan(0.9);
   });
 });
 
@@ -496,7 +581,13 @@ describe('Prediction 4: Void walkers discover MIME types without headers', () =>
    * the actual MIME type boundaries.
    */
 
-  type ContentType = 'text/html' | 'text/css' | 'application/javascript' | 'image/png' | 'image/jpeg' | 'application/json';
+  type ContentType =
+    | 'text/html'
+    | 'text/css'
+    | 'application/javascript'
+    | 'image/png'
+    | 'image/jpeg'
+    | 'application/json';
   type Codec = 'identity' | 'gzip' | 'brotli' | 'deflate';
 
   interface Chunk {
@@ -518,19 +609,29 @@ describe('Prediction 4: Void walkers discover MIME types without headers', () =>
 
   // Compression ratios by content type (realistic approximations)
   const compressionRatios: Record<ContentType, Record<Codec, number>> = {
-    'text/html':                { identity: 1.0, gzip: 0.25, brotli: 0.20, deflate: 0.28 },
-    'text/css':                 { identity: 1.0, gzip: 0.22, brotli: 0.18, deflate: 0.25 },
-    'application/javascript':   { identity: 1.0, gzip: 0.30, brotli: 0.24, deflate: 0.32 },
-    'image/png':                { identity: 1.0, gzip: 1.02, brotli: 1.01, deflate: 1.03 },
-    'image/jpeg':               { identity: 1.0, gzip: 1.03, brotli: 1.02, deflate: 1.04 },
-    'application/json':         { identity: 1.0, gzip: 0.20, brotli: 0.16, deflate: 0.22 },
+    'text/html': { identity: 1.0, gzip: 0.25, brotli: 0.2, deflate: 0.28 },
+    'text/css': { identity: 1.0, gzip: 0.22, brotli: 0.18, deflate: 0.25 },
+    'application/javascript': {
+      identity: 1.0,
+      gzip: 0.3,
+      brotli: 0.24,
+      deflate: 0.32,
+    },
+    'image/png': { identity: 1.0, gzip: 1.02, brotli: 1.01, deflate: 1.03 },
+    'image/jpeg': { identity: 1.0, gzip: 1.03, brotli: 1.02, deflate: 1.04 },
+    'application/json': {
+      identity: 1.0,
+      gzip: 0.2,
+      brotli: 0.16,
+      deflate: 0.22,
+    },
   };
 
   const allCodecs: Codec[] = ['identity', 'gzip', 'brotli', 'deflate'];
 
   function raceChunk(chunk: Chunk): { winner: Codec; results: CodecResult[] } {
     const ratios = compressionRatios[chunk.contentType];
-    const results = allCodecs.map(c => ({
+    const results = allCodecs.map((c) => ({
       codec: c,
       outputSize: Math.round(chunk.sizeBytes * ratios[c]),
     }));
@@ -546,7 +647,11 @@ describe('Prediction 4: Void walkers discover MIME types without headers', () =>
     };
   }
 
-  function updateWalker(walker: VoidWalker, winner: Codec, warmup: number): void {
+  function updateWalker(
+    walker: VoidWalker,
+    winner: Codec,
+    warmup: number
+  ): void {
     walker.roundsSeen++;
     for (const c of allCodecs) {
       if (c !== winner) walker.ventCounts[c]++;
@@ -562,8 +667,10 @@ describe('Prediction 4: Void walkers discover MIME types without headers', () =>
     }
   }
 
-  function walkerClassifiesAs(walker: VoidWalker): 'compressible' | 'incompressible' | 'mixed' {
-    const prunedCompressors = ['gzip', 'brotli', 'deflate'].filter(c =>
+  function walkerClassifiesAs(
+    walker: VoidWalker
+  ): 'compressible' | 'incompressible' | 'mixed' {
+    const prunedCompressors = ['gzip', 'brotli', 'deflate'].filter((c) =>
       walker.prunedCodecs.has(c as Codec)
     ).length;
     if (prunedCompressors >= 2) return 'incompressible'; // image-like
@@ -575,23 +682,42 @@ describe('Prediction 4: Void walkers discover MIME types without headers', () =>
   }
 
   const isCompressibleType = (ct: ContentType) =>
-    ['text/html', 'text/css', 'application/javascript', 'application/json'].includes(ct);
+    [
+      'text/html',
+      'text/css',
+      'application/javascript',
+      'application/json',
+    ].includes(ct);
 
   // Generate a mixed-content page
   function generatePage(seed: number): Chunk[] {
     const rng = makeRng(seed);
     const types: ContentType[] = [
-      'text/html', 'text/css', 'application/javascript',
-      'image/png', 'image/jpeg', 'application/json',
+      'text/html',
+      'text/css',
+      'application/javascript',
+      'image/png',
+      'image/jpeg',
+      'application/json',
     ];
     const chunks: Chunk[] = [];
     // Simulate a realistic page: HTML → CSS → JS → images → API data
     const sequence: ContentType[] = [
-      'text/html', 'text/html', 'text/html',
-      'text/css', 'text/css',
-      'application/javascript', 'application/javascript', 'application/javascript',
-      'image/png', 'image/png', 'image/jpeg', 'image/jpeg', 'image/png',
-      'application/json', 'application/json',
+      'text/html',
+      'text/html',
+      'text/html',
+      'text/css',
+      'text/css',
+      'application/javascript',
+      'application/javascript',
+      'application/javascript',
+      'image/png',
+      'image/png',
+      'image/jpeg',
+      'image/jpeg',
+      'image/png',
+      'application/json',
+      'application/json',
     ];
     for (let i = 0; i < sequence.length; i++) {
       chunks.push({
@@ -607,8 +733,8 @@ describe('Prediction 4: Void walkers discover MIME types without headers', () =>
     const page = generatePage(42);
     for (const chunk of page) {
       const { winner, results } = raceChunk(chunk);
-      const minSize = Math.min(...results.map(r => r.outputSize));
-      const winnerResult = results.find(r => r.codec === winner)!;
+      const minSize = Math.min(...results.map((r) => r.outputSize));
+      const winnerResult = results.find((r) => r.codec === winner)!;
       expect(winnerResult.outputSize).toBe(minSize);
     }
   });
@@ -624,7 +750,10 @@ describe('Prediction 4: Void walkers discover MIME types without headers', () =>
     }
 
     // After warmup, walker should have non-zero vent counts
-    const totalVents = Object.values(walker.ventCounts).reduce((a, b) => a + b, 0);
+    const totalVents = Object.values(walker.ventCounts).reduce(
+      (a, b) => a + b,
+      0
+    );
     expect(totalVents).toBeGreaterThan(0);
     expect(walker.roundsSeen).toBe(warmup);
   });
@@ -637,20 +766,26 @@ describe('Prediction 4: Void walkers discover MIME types without headers', () =>
     //   brotli/gzip/deflate winner → compressible
     //   identity winner → incompressible
     const walker = initWalker();
-    const chunkClassifications: Array<{ actual: ContentType; classified: 'compressible' | 'incompressible' }> = [];
+    const chunkClassifications: Array<{
+      actual: ContentType;
+      classified: 'compressible' | 'incompressible';
+    }> = [];
 
     for (const chunk of page) {
       const { winner } = raceChunk(chunk);
       updateWalker(walker, winner, 3);
       // Classify by winner: if identity wins, it's incompressible
-      const classified = winner === 'identity' ? 'incompressible' : 'compressible';
+      const classified =
+        winner === 'identity' ? 'incompressible' : 'compressible';
       chunkClassifications.push({ actual: chunk.contentType, classified });
     }
 
     // Check per-chunk alignment with actual MIME type compressibility
     let correct = 0;
     for (const c of chunkClassifications) {
-      const expected = isCompressibleType(c.actual) ? 'compressible' : 'incompressible';
+      const expected = isCompressibleType(c.actual)
+        ? 'compressible'
+        : 'incompressible';
       if (c.classified === expected) correct++;
     }
     const accuracy = correct / chunkClassifications.length;
@@ -700,20 +835,27 @@ describe('Prediction 5: Settlement deficit predicts locked capital', () => {
 
   interface SettlementSystem {
     name: string;
-    settlementDays: number;  // n in T+n
-    beta1Star: number;       // natural topology of the problem
-    deltaBeta: number;       // topological deficit
+    settlementDays: number; // n in T+n
+    beta1Star: number; // natural topology of the problem
+    deltaBeta: number; // topological deficit
   }
 
   const systems: SettlementSystem[] = [
-    { name: 'T+2',  settlementDays: 2, beta1Star: 2, deltaBeta: 2 },
-    { name: 'T+1',  settlementDays: 1, beta1Star: 2, deltaBeta: 1 },
-    { name: 'T+0',  settlementDays: 0, beta1Star: 2, deltaBeta: 0 },
+    { name: 'T+2', settlementDays: 2, beta1Star: 2, deltaBeta: 2 },
+    { name: 'T+1', settlementDays: 1, beta1Star: 2, deltaBeta: 1 },
+    { name: 'T+0', settlementDays: 0, beta1Star: 2, deltaBeta: 0 },
   ];
 
-  function lockedCapital(system: SettlementSystem, dailyVolume: number): number {
+  function lockedCapital(
+    system: SettlementSystem,
+    dailyVolume: number
+  ): number {
     if (system.beta1Star === 0) return 0;
-    return dailyVolume * system.settlementDays * (1 + system.deltaBeta / system.beta1Star);
+    return (
+      dailyVolume *
+      system.settlementDays *
+      (1 + system.deltaBeta / system.beta1Star)
+    );
   }
 
   function simpleLocked(dailyVolume: number, days: number): number {
@@ -729,17 +871,19 @@ describe('Prediction 5: Settlement deficit predicts locked capital', () => {
   });
 
   it('THM-BEAUTY-UNCONDITIONAL-FLOOR: zero deficit = zero waste', () => {
-    const t0 = systems.find(s => s.name === 'T+0')!;
+    const t0 = systems.find((s) => s.name === 'T+0')!;
     expect(t0.deltaBeta).toBe(0);
     expect(lockedCapital(t0, DTCC_DAILY_VALUE_TRILLIONS)).toBe(0);
   });
 
   it('THM-AMERICAN-FRONTIER: locked capital monotonically increases with Δβ', () => {
-    const capitals = systems.map(s => ({
-      name: s.name,
-      locked: lockedCapital(s, DTCC_DAILY_VALUE_TRILLIONS),
-      deficit: s.deltaBeta,
-    })).sort((a, b) => a.deficit - b.deficit);
+    const capitals = systems
+      .map((s) => ({
+        name: s.name,
+        locked: lockedCapital(s, DTCC_DAILY_VALUE_TRILLIONS),
+        deficit: s.deltaBeta,
+      }))
+      .sort((a, b) => a.deficit - b.deficit);
 
     for (let i = 1; i < capitals.length; i++) {
       expect(capitals[i].locked).toBeGreaterThanOrEqual(capitals[i - 1].locked);
@@ -747,7 +891,7 @@ describe('Prediction 5: Settlement deficit predicts locked capital', () => {
   });
 
   it('T+2 locks approximately $4.4T (2 × daily volume × overhead factor)', () => {
-    const t2 = systems.find(s => s.name === 'T+2')!;
+    const t2 = systems.find((s) => s.name === 'T+2')!;
     const locked = lockedCapital(t2, DTCC_DAILY_VALUE_TRILLIONS);
     // With Δβ = 2, β₁* = 2: factor = 1 + 2/2 = 2
     // Locked = 2.219 × 2 × 2 = $8.876T
@@ -759,8 +903,8 @@ describe('Prediction 5: Settlement deficit predicts locked capital', () => {
   });
 
   it('T+2 → T+1 frees approximately $2.2T of locked capital', () => {
-    const t2 = systems.find(s => s.name === 'T+2')!;
-    const t1 = systems.find(s => s.name === 'T+1')!;
+    const t2 = systems.find((s) => s.name === 'T+2')!;
+    const t1 = systems.find((s) => s.name === 'T+1')!;
     const lockedT2 = lockedCapital(t2, DTCC_DAILY_VALUE_TRILLIONS);
     const lockedT1 = lockedCapital(t1, DTCC_DAILY_VALUE_TRILLIONS);
     const freed = lockedT2 - lockedT1;
@@ -770,8 +914,8 @@ describe('Prediction 5: Settlement deficit predicts locked capital', () => {
   });
 
   it('T+1 → T+0 frees all remaining locked capital', () => {
-    const t1 = systems.find(s => s.name === 'T+1')!;
-    const t0 = systems.find(s => s.name === 'T+0')!;
+    const t1 = systems.find((s) => s.name === 'T+1')!;
+    const t0 = systems.find((s) => s.name === 'T+0')!;
     const lockedT1 = lockedCapital(t1, DTCC_DAILY_VALUE_TRILLIONS);
     const lockedT0 = lockedCapital(t0, DTCC_DAILY_VALUE_TRILLIONS);
     expect(lockedT0).toBe(0);
@@ -782,7 +926,7 @@ describe('Prediction 5: Settlement deficit predicts locked capital', () => {
     // With only three points (T+0, T+1, T+2), check near-linearity.
     // The model has a mild nonlinearity from the (1 + Δβ/β₁*) factor,
     // so R² is slightly below 1.0 but still very high.
-    const points = systems.map(s => ({
+    const points = systems.map((s) => ({
       x: s.deltaBeta,
       y: lockedCapital(s, DTCC_DAILY_VALUE_TRILLIONS),
     }));
@@ -799,7 +943,10 @@ describe('Prediction 5: Settlement deficit predicts locked capital', () => {
 
     // R² calculation
     const meanY = sumY / n;
-    const ssRes = points.reduce((s, p) => s + (p.y - (slope * p.x + intercept)) ** 2, 0);
+    const ssRes = points.reduce(
+      (s, p) => s + (p.y - (slope * p.x + intercept)) ** 2,
+      0
+    );
     const ssTot = points.reduce((s, p) => s + (p.y - meanY) ** 2, 0);
     const rSquared = 1 - ssRes / ssTot;
 
@@ -809,7 +956,7 @@ describe('Prediction 5: Settlement deficit predicts locked capital', () => {
   });
 
   it('the coefficient on Δβ is within order of magnitude of daily volume', () => {
-    const points = systems.map(s => ({
+    const points = systems.map((s) => ({
       x: s.deltaBeta,
       y: lockedCapital(s, DTCC_DAILY_VALUE_TRILLIONS),
     }));

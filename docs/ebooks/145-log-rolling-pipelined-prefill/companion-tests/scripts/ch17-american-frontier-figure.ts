@@ -19,15 +19,15 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/ch17-american-frontier-figure.json',
+    '../artifacts/ch17-american-frontier-figure.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-american-frontier-figure.md',
+    '../artifacts/ch17-american-frontier-figure.md'
   );
   const defaultSvgPath = resolve(
     moduleDir,
-    '../artifacts/ch17-american-frontier-figure.svg',
+    '../artifacts/ch17-american-frontier-figure.svg'
   );
 
   let assertSurface = false;
@@ -84,11 +84,15 @@ function main(): void {
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderAmericanFrontierMarkdown(report),
-    'utf8',
+    'utf8'
   );
   writeFileSync(options.svgPath, renderAmericanFrontierSvg(report), 'utf8');
 
@@ -100,7 +104,8 @@ function main(): void {
       (firstTransport.aeonWins + firstTransport.httpWins)) *
     100;
   const lastWinShare =
-    (lastTransport.aeonWins / (lastTransport.aeonWins + lastTransport.httpWins)) *
+    (lastTransport.aeonWins /
+      (lastTransport.aeonWins + lastTransport.httpWins)) *
     100;
 
   process.stdout.write(`ch17-american-frontier-figure: ${report.label}\n`);
@@ -108,7 +113,13 @@ function main(): void {
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
-    `- recursive wire frontier: ${firstWinShare.toFixed(2)}% -> ${lastWinShare.toFixed(2)}% Aeon share, ${firstTransport.wasteBytesPerWin.toFixed(2)} -> ${lastTransport.wasteBytesPerWin.toFixed(2)} waste bytes/win\n`,
+    `- recursive wire frontier: ${firstWinShare.toFixed(
+      2
+    )}% -> ${lastWinShare.toFixed(
+      2
+    )}% Aeon share, ${firstTransport.wasteBytesPerWin.toFixed(
+      2
+    )} -> ${lastTransport.wasteBytesPerWin.toFixed(2)} waste bytes/win\n`
   );
 
   if (

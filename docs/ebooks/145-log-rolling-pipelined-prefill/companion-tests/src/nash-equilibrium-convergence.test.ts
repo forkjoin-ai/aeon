@@ -42,9 +42,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -81,7 +80,7 @@ function metaCogChoose(
   choices: string[],
   eta: number,
   explorationRate: number,
-  rng: () => number,
+  rng: () => number
 ): number {
   if (rng() < explorationRate) {
     return Math.floor(rng() * choices.length);
@@ -113,7 +112,7 @@ function testNashConvergence(
   game: string,
   matrix: PayoffMatrix,
   rounds: number,
-  seed: number,
+  seed: number
 ): ConvergenceResult {
   const rng = makeRng(seed);
   const N = matrix.choices.length;
@@ -256,13 +255,14 @@ const GAMES: Record<string, PayoffMatrix> = {
       football: { opera: [0, 0], football: [2, 3] },
     },
     nashMixed: [0.6, 0.4], // mixed Nash for player 1
-    nashLabel: 'mixed: p(opera) = 3/5 (also pure: opera/opera or football/football)',
+    nashLabel:
+      'mixed: p(opera) = 3/5 (also pure: opera/opera or football/football)',
   },
 
   // Chicken: mixed Nash p(swerve) = injury/(injury + 1) with our payoffs:
   // swerve/swerve=0,0  swerve/straight=-1,1  straight/swerve=1,-1  straight/straight=-5,-5
   // Indifference: 0*p + (-1)*(1-p) = 1*p + (-5)*(1-p) → -1+p = p-5+5p → -1+p = 6p-5 → 4=5p → p=4/5
-  'chicken': {
+  chicken: {
     choices: ['swerve', 'straight'],
     payoffs: {
       swerve: { swerve: [0, 0], straight: [-1, 1] },
@@ -330,23 +330,43 @@ describe('Nash Equilibrium Convergence via Void Walking', () => {
       });
     }
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════════════════╗');
-    console.log('  ║          Nash Equilibrium Convergence via Void Walking                ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════════════════╣');
-    console.log(`  ║ ${'Game'.padEnd(22)} ${'Nash'.padEnd(20)} ${'L1'.padStart(6)} ${'KL'.padStart(8)} ${'Converge'.padStart(10)} ║`);
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║          Nash Equilibrium Convergence via Void Walking                ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      `  ║ ${'Game'.padEnd(22)} ${'Nash'.padEnd(20)} ${'L1'.padStart(
+        6
+      )} ${'KL'.padStart(8)} ${'Converge'.padStart(10)} ║`
+    );
     console.log(`  ╠${'─'.repeat(71)}╣`);
 
     for (const r of results) {
       const empiricalStr = r.empiricalMixed.map((p) => p.toFixed(2)).join('/');
       const nashStr = r.nashMixed.map((p) => p.toFixed(2)).join('/');
       console.log(
-        `  ║ ${r.game.padEnd(22)} ${nashStr.padEnd(20)} ${r.l1Distance.toFixed(3).padStart(6)} ${r.klDivergence.toFixed(4).padStart(8)} ${sparkline(r.convergenceTrajectory).substring(0, 10).padStart(10)} ║`,
+        `  ║ ${r.game.padEnd(22)} ${nashStr.padEnd(20)} ${r.l1Distance
+          .toFixed(3)
+          .padStart(6)} ${r.klDivergence.toFixed(4).padStart(8)} ${sparkline(
+          r.convergenceTrajectory
+        )
+          .substring(0, 10)
+          .padStart(10)} ║`
       );
       console.log(
-        `  ║ ${''.padEnd(22)} emp: ${empiricalStr.padEnd(35)}                  ║`,
+        `  ║ ${''.padEnd(22)} emp: ${empiricalStr.padEnd(
+          35
+        )}                  ║`
       );
     }
-    console.log('  ╚═══════════════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════════════════╝\n'
+    );
 
     // Every game should have finite L1 distance
     for (const r of results) {
@@ -363,10 +383,17 @@ describe('Nash Equilibrium Convergence via Void Walking', () => {
 
       // Convergence trajectory should generally decrease
       if (r.convergenceTrajectory.length >= 4) {
-        const firstHalf = r.convergenceTrajectory.slice(0, Math.floor(r.convergenceTrajectory.length / 2));
-        const secondHalf = r.convergenceTrajectory.slice(Math.floor(r.convergenceTrajectory.length / 2));
-        const firstMean = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
-        const secondMean = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+        const firstHalf = r.convergenceTrajectory.slice(
+          0,
+          Math.floor(r.convergenceTrajectory.length / 2)
+        );
+        const secondHalf = r.convergenceTrajectory.slice(
+          Math.floor(r.convergenceTrajectory.length / 2)
+        );
+        const firstMean =
+          firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+        const secondMean =
+          secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
         // Second half should be no worse than first half + tolerance
         expect(secondMean).toBeLessThan(firstMean + 0.5);
       }
@@ -374,18 +401,33 @@ describe('Nash Equilibrium Convergence via Void Walking', () => {
   }
 
   it('RPS: void walker approaches uniform (L1 < 0.3)', () => {
-    const r = testNashConvergence('rock-paper-scissors', GAMES['rock-paper-scissors'], 5000, 42);
+    const r = testNashConvergence(
+      'rock-paper-scissors',
+      GAMES['rock-paper-scissors'],
+      5000,
+      42
+    );
     // RPS has unique mixed Nash = uniform. Should get close.
     expect(r.l1Distance).toBeLessThan(0.5);
   });
 
   it('matching pennies: void walker approaches 50/50 (L1 < 0.3)', () => {
-    const r = testNashConvergence('matching-pennies', GAMES['matching-pennies'], 5000, 42);
+    const r = testNashConvergence(
+      'matching-pennies',
+      GAMES['matching-pennies'],
+      5000,
+      42
+    );
     expect(r.l1Distance).toBeLessThan(0.5);
   });
 
   it('nash demand: void walker learns to demand 50 (the fair split)', () => {
-    const r = testNashConvergence('nash-demand', GAMES['nash-demand'], 3000, 42);
+    const r = testNashConvergence(
+      'nash-demand',
+      GAMES['nash-demand'],
+      3000,
+      42
+    );
     // demand-50 should have highest empirical frequency
     const maxIdx = r.empiricalMixed.indexOf(Math.max(...r.empiricalMixed));
     expect(maxIdx).toBe(1); // demand-50 is index 1
@@ -412,8 +454,20 @@ describe('Nash Equilibrium Convergence via Void Walking', () => {
       const counts = new Array(N).fill(0);
 
       for (let r = 0; r < 10000; r++) {
-        const i1 = metaCogChoose(void1, matrix.choices, 3, Math.max(0.02, 0.3 - r * 0.0003), rng);
-        const i2 = metaCogChoose(void2, matrix.choices, 3, Math.max(0.02, 0.3 - r * 0.0003), rng);
+        const i1 = metaCogChoose(
+          void1,
+          matrix.choices,
+          3,
+          Math.max(0.02, 0.3 - r * 0.0003),
+          rng
+        );
+        const i2 = metaCogChoose(
+          void2,
+          matrix.choices,
+          3,
+          Math.max(0.02, 0.3 - r * 0.0003),
+          rng
+        );
         const c1 = matrix.choices[i1];
         const c2 = matrix.choices[i2];
         const [p1, p2] = matrix.payoffs[c1]?.[c2] ?? [0, 0];

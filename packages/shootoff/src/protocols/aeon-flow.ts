@@ -69,11 +69,12 @@ export function serveAeonFlow(
   const encodeEnd = performance.now();
 
   // FORK frame overhead (amortized): 10 bytes header + 2 bytes per child stream ID
-  const forkFrameTotal = AEON_FRAME_HEADER + (totalResources * 2);
+  const forkFrameTotal = AEON_FRAME_HEADER + totalResources * 2;
   const forkFrameShare = forkFrameTotal / totalResources;
 
   // Per-resource framing: DATA header + FIN header + share of FORK
-  const framingOverhead = AEON_FRAME_HEADER + AEON_FRAME_HEADER + forkFrameShare;
+  const framingOverhead =
+    AEON_FRAME_HEADER + AEON_FRAME_HEADER + forkFrameShare;
 
   // Decode
   const decodeStart = performance.now();

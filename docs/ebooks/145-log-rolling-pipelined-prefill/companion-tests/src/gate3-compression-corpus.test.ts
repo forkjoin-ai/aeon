@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { makeDefaultGate3Config, renderGate3Markdown, runGate3Corpus } from './gate3-compression-corpus';
+import {
+  makeDefaultGate3Config,
+  renderGate3Markdown,
+  runGate3Corpus,
+} from './gate3-compression-corpus';
 
 function makeFastConfig() {
   const base = makeDefaultGate3Config();
@@ -27,7 +31,7 @@ describe('Gate 3 compression corpus harness', () => {
       expect(report.gate.pass).toBe(true);
       expect(report.gate.primaryCells.length).toBeGreaterThan(0);
       expect(report.gate.failedPrimaryCells).toHaveLength(0);
-    },
+    }
   );
 
   it(
@@ -46,7 +50,7 @@ describe('Gate 3 compression corpus harness', () => {
       const report = runGate3Corpus(strict);
       expect(report.gate.pass).toBe(false);
       expect(report.gate.failedPrimaryCells.length).toBeGreaterThan(0);
-    },
+    }
   );
 
   it(
@@ -58,6 +62,6 @@ describe('Gate 3 compression corpus harness', () => {
       expect(markdown).toContain('# Gate 3 Compression Corpus Matrix');
       expect(markdown).toContain('## Verdict');
       expect(markdown).toContain('| Cell | Primary | Samples |');
-    },
+    }
   );
 });

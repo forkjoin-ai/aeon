@@ -11,19 +11,27 @@ describe('Formal witness catalog', () => {
 
     expect(report.label).toBe('formal-fold-boundary-witness-catalog-v1');
     expect(report.witnesses).toHaveLength(7);
-    expect(report.witnesses.some((witness) => witness.id === 'winner-partition-counterexample')).toBe(
-      true,
-    );
-    expect(report.witnesses.some((witness) => witness.theoremRef.includes('Claims.early_stop_not_order_invariant'))).toBe(
-      true,
-    );
+    expect(
+      report.witnesses.some(
+        (witness) => witness.id === 'winner-partition-counterexample'
+      )
+    ).toBe(true);
+    expect(
+      report.witnesses.some((witness) =>
+        witness.theoremRef.includes('Claims.early_stop_not_order_invariant')
+      )
+    ).toBe(true);
   });
 
   it('renders a markdown manifest for the witness catalog', () => {
-    const markdown = renderFormalWitnessCatalogMarkdown(loadCheckedInFormalWitnessCatalog());
+    const markdown = renderFormalWitnessCatalogMarkdown(
+      loadCheckedInFormalWitnessCatalog()
+    );
 
     expect(markdown).toContain('# Formal Witness Catalog');
     expect(markdown).toContain('winner-partition-counterexample');
-    expect(markdown).toContain('Claims.winner_selection_not_partition_additive');
+    expect(markdown).toContain(
+      'Claims.winner_selection_not_partition_additive'
+    );
   });
 });

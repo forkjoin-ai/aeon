@@ -13,13 +13,14 @@ import type { SiteManifest } from '../types';
 
 export const bigContentSite: SiteManifest = {
   name: 'big-content',
-  description: 'Content-heavy site: blog with hero images, big bundles, web fonts (~2.5 MB, 12 resources)',
+  description:
+    'Content-heavy site: blog with hero images, big bundles, web fonts (~2.5 MB, 12 resources)',
   resources: [
     // HTML — the document itself
     {
       path: '/index.html',
       contentType: 'text/html',
-      size: 45_000,       // 45 KB HTML
+      size: 45_000, // 45 KB HTML
       renderBlocking: true,
       priority: 10,
     },
@@ -27,7 +28,7 @@ export const bigContentSite: SiteManifest = {
     {
       path: '/css/main.css',
       contentType: 'text/css',
-      size: 185_000,      // 185 KB CSS (Tailwind-like)
+      size: 185_000, // 185 KB CSS (Tailwind-like)
       renderBlocking: true,
       priority: 9,
     },
@@ -35,7 +36,7 @@ export const bigContentSite: SiteManifest = {
     {
       path: '/js/app.bundle.js',
       contentType: 'application/javascript',
-      size: 750_000,      // 750 KB JS bundle
+      size: 750_000, // 750 KB JS bundle
       renderBlocking: true,
       priority: 8,
     },
@@ -43,7 +44,7 @@ export const bigContentSite: SiteManifest = {
     {
       path: '/js/vendor.bundle.js',
       contentType: 'application/javascript',
-      size: 420_000,      // 420 KB vendor libs
+      size: 420_000, // 420 KB vendor libs
       renderBlocking: false,
       priority: 5,
     },
@@ -51,7 +52,7 @@ export const bigContentSite: SiteManifest = {
     {
       path: '/img/hero.webp',
       contentType: 'image/webp',
-      size: 280_000,      // 280 KB hero
+      size: 280_000, // 280 KB hero
       renderBlocking: false,
       priority: 7,
     },
@@ -81,14 +82,14 @@ export const bigContentSite: SiteManifest = {
     {
       path: '/fonts/inter-var.woff2',
       contentType: 'font/woff2',
-      size: 110_000,      // Variable font
+      size: 110_000, // Variable font
       renderBlocking: true,
       priority: 8,
     },
     {
       path: '/fonts/fira-code.woff2',
       contentType: 'font/woff2',
-      size: 85_000,       // Code font
+      size: 85_000, // Code font
       renderBlocking: false,
       priority: 3,
     },

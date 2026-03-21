@@ -267,7 +267,7 @@ export class TopologicalCompressor {
         // Total independent cycles = outer_paths - 1 + inner_β₁
         const outerPaths = globalCandidates.length + 1; // +1 for per-chunk
         const innerBeta = Math.max(0, codecs.length - 1);
-        const totalBeta = (outerPaths - 1) + innerBeta;
+        const totalBeta = outerPaths - 1 + innerBeta;
         if (bestStrategy === 0) {
             // Per-chunk topological won — prefix with stream header
             const output = new Uint8Array(STREAM_HEADER_SIZE + chunkedResult.data.length);

@@ -17,11 +17,11 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/adaptive-supremum-family-sweep.json',
+    '../artifacts/adaptive-supremum-family-sweep.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/adaptive-supremum-family-sweep.md',
+    '../artifacts/adaptive-supremum-family-sweep.md'
   );
 
   let assertChecks = false;
@@ -69,20 +69,32 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderAdaptiveSupremumFamilySweepMarkdown(report),
-    'utf8',
+    'utf8'
   );
 
   process.stdout.write(
-    `adaptive-supremum-family-sweep: ${report.summary.familyClosureRecovered ? 'READY' : 'FAILED'}\n`,
+    `adaptive-supremum-family-sweep: ${
+      report.summary.familyClosureRecovered ? 'READY' : 'FAILED'
+    }\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(
-    `- cases=${report.summary.caseCount}, min-drift-gap=${report.summary.minDriftGap.toFixed(3)}, min-right-slack=${report.summary.minRightSlack.toFixed(3)}, max-states=${report.summary.maxStateCount}\n`,
+    `- cases=${
+      report.summary.caseCount
+    }, min-drift-gap=${report.summary.minDriftGap.toFixed(
+      3
+    )}, min-right-slack=${report.summary.minRightSlack.toFixed(
+      3
+    )}, max-states=${report.summary.maxStateCount}\n`
   );
   process.stdout.write(`- tightest-case=${report.summary.worstCaseId}\n`);
 
@@ -92,6 +104,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

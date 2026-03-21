@@ -6,24 +6,60 @@
 import { describe, expect, it } from 'bun:test';
 
 // Buleyean engine (inline)
-interface BuleyeanSpace { numChoices: number; rounds: number; voidBoundary: number[]; }
-function createSpace(n: number): BuleyeanSpace { return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) }; }
-function weight(s: BuleyeanSpace, i: number): number { return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1; }
-function totalWeight(s: BuleyeanSpace): number { let sum = 0; for (let i = 0; i < s.numChoices; i++) sum += weight(s, i); return sum; }
-function probability(s: BuleyeanSpace, i: number): number { return weight(s, i) / totalWeight(s); }
-function reject(s: BuleyeanSpace, r: number): BuleyeanSpace { const b = [...s.voidBoundary]; b[r]! += 1; return { numChoices: s.numChoices, rounds: s.rounds + 1, voidBoundary: b }; }
+interface BuleyeanSpace {
+  numChoices: number;
+  rounds: number;
+  voidBoundary: number[];
+}
+function createSpace(n: number): BuleyeanSpace {
+  return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) };
+}
+function weight(s: BuleyeanSpace, i: number): number {
+  return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1;
+}
+function totalWeight(s: BuleyeanSpace): number {
+  let sum = 0;
+  for (let i = 0; i < s.numChoices; i++) sum += weight(s, i);
+  return sum;
+}
+function probability(s: BuleyeanSpace, i: number): number {
+  return weight(s, i) / totalWeight(s);
+}
+function reject(s: BuleyeanSpace, r: number): BuleyeanSpace {
+  const b = [...s.voidBoundary];
+  b[r]! += 1;
+  return { numChoices: s.numChoices, rounds: s.rounds + 1, voidBoundary: b };
+}
 
-const DIVIDE = 0, ARREST = 1, QUIESCENCE = 2;
+const DIVIDE = 0,
+  ARREST = 1,
+  QUIESCENCE = 2;
 const PATHWAYS: Record<string, { beta1: number; isVent: boolean }> = {
-  p53: { beta1: 3, isVent: true }, rb: { beta1: 2, isVent: true },
-  apc: { beta1: 2, isVent: true }, atm_atr: { beta1: 2, isVent: true },
-  mapk: { beta1: 1, isVent: false }, pi3k: { beta1: 1, isVent: false }, wnt: { beta1: 1, isVent: false },
+  p53: { beta1: 3, isVent: true },
+  rb: { beta1: 2, isVent: true },
+  apc: { beta1: 2, isVent: true },
+  atm_atr: { beta1: 2, isVent: true },
+  mapk: { beta1: 1, isVent: false },
+  pi3k: { beta1: 1, isVent: false },
+  wnt: { beta1: 1, isVent: false },
 };
 
-function simulateCheckpoint(space: BuleyeanSpace, active: Set<string>): BuleyeanSpace {
+function simulateCheckpoint(
+  space: BuleyeanSpace,
+  active: Set<string>
+): BuleyeanSpace {
   let s = space;
-  for (const name of active) { const p = PATHWAYS[name]; if (p?.isVent) for (let b = 0; b < p.beta1; b++) s = reject(s, DIVIDE); }
-  for (const name of active) { const p = PATHWAYS[name]; if (p && !p.isVent) { s = reject(s, ARREST); s = reject(s, QUIESCENCE); } }
+  for (const name of active) {
+    const p = PATHWAYS[name];
+    if (p?.isVent) for (let b = 0; b < p.beta1; b++) s = reject(s, DIVIDE);
+  }
+  for (const name of active) {
+    const p = PATHWAYS[name];
+    if (p && !p.isVent) {
+      s = reject(s, ARREST);
+      s = reject(s, QUIESCENCE);
+    }
+  }
   return s;
 }
 
@@ -35,7 +71,12 @@ describe('Prediction 11: Restore highest-β₁ pathway first', () => {
   it('p53-first vs Rb-first restoration produces different trajectories', () => {
     const baseCancer = new Set(['atm_atr', 'mapk', 'pi3k', 'wnt']); // deficit 7B
 
-    function simulateRestore(first: string, second: string, firstCycle: number, secondCycle: number) {
+    function simulateRestore(
+      first: string,
+      second: string,
+      firstCycle: number,
+      secondCycle: number
+    ) {
       let space = createSpace(5);
       for (let c = 0; c < 30; c++) {
         const active = new Set(baseCancer);
@@ -70,7 +111,10 @@ describe('Prediction 11: Restore highest-β₁ pathway first', () => {
     const lateRejections = (totalCycles - lateRestore) * beta1;
 
     expect(earlyRejections).toBeGreaterThan(lateRejections);
-    console.log('Rejections:', { early: earlyRejections, late: lateRejections });
+    console.log('Rejections:', {
+      early: earlyRejections,
+      late: lateRejections,
+    });
   });
 });
 
@@ -95,7 +139,9 @@ describe('Prediction 12: Tumor heterogeneity = evolutionary β₁', () => {
     for (const s of survivors) {
       const postBeta1 = s - 1;
       expect(postBeta1).toBeLessThan(pretreatment.beta1);
-      console.log(`${pretreatment.clones} clones → ${s} survivors: β₁ ${pretreatment.beta1} → ${postBeta1}`);
+      console.log(
+        `${pretreatment.clones} clones → ${s} survivors: β₁ ${pretreatment.beta1} → ${postBeta1}`
+      );
     }
   });
 
@@ -107,7 +153,7 @@ describe('Prediction 12: Tumor heterogeneity = evolutionary β₁', () => {
     // Simulate: post-treatment evolutionary dynamics
     // More survivors = more evolutionary paths = higher relapse β₁
     const residuals = [1, 3, 5, 10];
-    const relapseBeta1 = residuals.map(s => s - 1);
+    const relapseBeta1 = residuals.map((s) => s - 1);
 
     for (let i = 1; i < relapseBeta1.length; i++) {
       expect(relapseBeta1[i]!).toBeGreaterThan(relapseBeta1[i - 1]!);
@@ -141,7 +187,10 @@ describe('Prediction 13: BCL-2 blocks vent without destroying checkpoint', () =>
     const afterBeta1 = apoptosisBeta1;
 
     expect(afterBeta1).toBeGreaterThan(beforeBeta1);
-    console.log('Venetoclax restoration:', { before: beforeBeta1, after: afterBeta1 });
+    console.log('Venetoclax restoration:', {
+      before: beforeBeta1,
+      after: afterBeta1,
+    });
   });
 
   it('simulation: unblocking apoptosis vent reduces P(divide)', () => {
@@ -160,7 +209,9 @@ describe('Prediction 13: BCL-2 blocks vent without destroying checkpoint', () =>
       for (let b = 0; b < 2; b++) sUnblocked = reject(sUnblocked, DIVIDE);
     }
 
-    expect(probability(sUnblocked, DIVIDE)).toBeLessThan(probability(sBlocked, DIVIDE));
+    expect(probability(sUnblocked, DIVIDE)).toBeLessThan(
+      probability(sBlocked, DIVIDE)
+    );
   });
 });
 
@@ -201,7 +252,7 @@ describe('Prediction 14: Metastasis harder from diverse primaries', () => {
 
   it('prediction: homogeneous tumors metastasize more efficiently', () => {
     // Metastatic efficiency ∝ 1/primaryBeta1
-    const efficiencies = [1, 5, 10, 50].map(clones => ({
+    const efficiencies = [1, 5, 10, 50].map((clones) => ({
       clones,
       beta1: clones - 1,
       efficiency: 1 / Math.max(clones - 1, 1),
@@ -211,7 +262,9 @@ describe('Prediction 14: Metastasis harder from diverse primaries', () => {
 
     // Efficiency decreases with clonality
     for (let i = 1; i < efficiencies.length; i++) {
-      expect(efficiencies[i]!.efficiency).toBeLessThanOrEqual(efficiencies[i - 1]!.efficiency);
+      expect(efficiencies[i]!.efficiency).toBeLessThanOrEqual(
+        efficiencies[i - 1]!.efficiency
+      );
     }
   });
 });
@@ -250,14 +303,21 @@ describe('Prediction 15: Fork/vent ratio predicts growth rate', () => {
   it('simulation: higher fork/vent ratio = higher P(divide)', () => {
     const configs = [
       { name: 'balanced (9B vent)', pathways: new Set(Object.keys(PATHWAYS)) },
-      { name: 'unbalanced (2B vent)', pathways: new Set(['atm_atr', 'mapk', 'pi3k', 'wnt']) },
-      { name: 'maximally unbalanced (0B vent)', pathways: new Set(['mapk', 'pi3k', 'wnt']) },
+      {
+        name: 'unbalanced (2B vent)',
+        pathways: new Set(['atm_atr', 'mapk', 'pi3k', 'wnt']),
+      },
+      {
+        name: 'maximally unbalanced (0B vent)',
+        pathways: new Set(['mapk', 'pi3k', 'wnt']),
+      },
     ];
 
     const results: { name: string; pDivide: number }[] = [];
     for (const config of configs) {
       let space = createSpace(5);
-      for (let i = 0; i < 20; i++) space = simulateCheckpoint(space, config.pathways);
+      for (let i = 0; i < 20; i++)
+        space = simulateCheckpoint(space, config.pathways);
       results.push({ name: config.name, pDivide: probability(space, DIVIDE) });
     }
 
@@ -271,7 +331,7 @@ describe('Prediction 15: Fork/vent ratio predicts growth rate', () => {
 
 describe('Master: Predictions 11-15 all verified', () => {
   it('all pass', () => {
-    [11, 12, 13, 14, 15].forEach(id => {
+    [11, 12, 13, 14, 15].forEach((id) => {
       console.log(`Prediction ${id}: PROVEN`);
     });
   });

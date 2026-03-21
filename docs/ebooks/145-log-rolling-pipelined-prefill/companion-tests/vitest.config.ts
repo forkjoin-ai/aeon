@@ -13,8 +13,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@aeon/flow': resolve(aeonSrc, 'flow/index.ts'),
-      '@aeon/compression': resolve(aeonSrc, 'compression/index.ts'),
+      '@a0n/aeon/flow': resolve(aeonSrc, 'flow/index.ts'),
+      '@a0n/aeon/compression': resolve(aeonSrc, 'compression/index.ts'),
     },
   },
 });

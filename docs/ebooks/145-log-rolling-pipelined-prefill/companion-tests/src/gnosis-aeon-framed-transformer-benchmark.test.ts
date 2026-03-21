@@ -20,11 +20,19 @@ describe('Gnosis aeon-framed transformer benchmark (§7.1, §7.3)', () => {
     ]);
 
     expect(report.strategies.linear.meanFrameCount).toBe(16);
-    expect(report.strategies.linear.meanEvalMeanSquaredError).toBeLessThan(0.02);
-    expect(report.strategies.linear.meanExactWithinToleranceFraction).toBeGreaterThan(0.9);
-    expect(report.strategies['winner-take-all'].meanEvalMeanSquaredError).toBeGreaterThan(0.2);
-    expect(report.strategies['early-stop'].meanEvalMeanSquaredError).toBeGreaterThan(
-      report.strategies['winner-take-all'].meanEvalMeanSquaredError,
+    expect(report.strategies.linear.meanEvalMeanSquaredError).toBeLessThan(
+      0.02
+    );
+    expect(
+      report.strategies.linear.meanExactWithinToleranceFraction
+    ).toBeGreaterThan(0.9);
+    expect(
+      report.strategies['winner-take-all'].meanEvalMeanSquaredError
+    ).toBeGreaterThan(0.2);
+    expect(
+      report.strategies['early-stop'].meanEvalMeanSquaredError
+    ).toBeGreaterThan(
+      report.strategies['winner-take-all'].meanEvalMeanSquaredError
     );
     expect(report.strategies.linear.meanCodecRoundTripExactFraction).toBe(1);
     expect(report.strategies.linear.meanReassemblyExactFraction).toBe(1);
@@ -33,7 +41,7 @@ describe('Gnosis aeon-framed transformer benchmark (§7.1, §7.3)', () => {
 
   it('renders a markdown report with interval-backed semantic and frame metrics', async () => {
     const markdown = renderGnosisAeonFramedTransformerBenchmarkMarkdown(
-      await runGnosisAeonFramedTransformerBenchmark(),
+      await runGnosisAeonFramedTransformerBenchmark()
     );
 
     expect(markdown).toContain('# Gnosis Aeon-Framed Transformer Benchmark');

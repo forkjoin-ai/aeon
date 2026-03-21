@@ -20,27 +20,33 @@ import type { FlowTransport } from '../flow/types';
  * Covers Web Workers, worker_threads, BroadcastChannel.
  */
 export interface MessagePortLike {
-    postMessage(data: unknown, transfer?: Transferable[]): void;
-    addEventListener?(type: 'message', handler: (event: MessageEvent) => void): void;
-    removeEventListener?(type: 'message', handler: (event: MessageEvent) => void): void;
-    onmessage?: ((event: MessageEvent) => void) | null;
-    close?(): void;
-    start?(): void;
+  postMessage(data: unknown, transfer?: Transferable[]): void;
+  addEventListener?(
+    type: 'message',
+    handler: (event: MessageEvent) => void
+  ): void;
+  removeEventListener?(
+    type: 'message',
+    handler: (event: MessageEvent) => void
+  ): void;
+  onmessage?: ((event: MessageEvent) => void) | null;
+  close?(): void;
+  start?(): void;
 }
 /**
  * Minimal child_process-like interface for IPC.
  * Covers Node child_process.fork() results.
  */
 export interface ChildProcessLike {
-    send(data: unknown): boolean;
-    on(event: 'message', handler: (data: unknown) => void): void;
-    on(event: 'exit', handler: (code: number | null) => void): void;
-    removeListener?(event: string, handler: (...args: unknown[]) => void): void;
-    kill?(): void;
+  send(data: unknown): boolean;
+  on(event: 'message', handler: (data: unknown) => void): void;
+  on(event: 'exit', handler: (code: number | null) => void): void;
+  removeListener?(event: string, handler: (...args: unknown[]) => void): void;
+  kill?(): void;
 }
 export interface IPCFlowConfig {
-    /** Whether to transfer ArrayBuffers (zero-copy but invalidates sender's ref) */
-    transferBuffers?: boolean;
+  /** Whether to transfer ArrayBuffers (zero-copy but invalidates sender's ref) */
+  transferBuffers?: boolean;
 }
 /**
  * FlowTransport over MessagePort (Web Workers, worker_threads, BroadcastChannel).
@@ -50,17 +56,17 @@ export interface IPCFlowConfig {
  * than cloned. This is faster but invalidates the sender's reference.
  */
 export declare class MessagePortFlowTransport implements FlowTransport {
-    private port;
-    private receiveHandler;
-    private closed;
-    private transferBuffers;
-    private messageHandler;
-    constructor(port: MessagePortLike, config?: IPCFlowConfig);
-    send(data: Uint8Array): void;
-    onReceive(handler: (data: Uint8Array) => void): void;
-    close(): void;
-    /** Whether the transport is still open */
-    get isOpen(): boolean;
+  private port;
+  private receiveHandler;
+  private closed;
+  private transferBuffers;
+  private messageHandler;
+  constructor(port: MessagePortLike, config?: IPCFlowConfig);
+  send(data: Uint8Array): void;
+  onReceive(handler: (data: Uint8Array) => void): void;
+  close(): void;
+  /** Whether the transport is still open */
+  get isOpen(): boolean;
 }
 /**
  * FlowTransport over Node child_process IPC.
@@ -70,16 +76,16 @@ export declare class MessagePortFlowTransport implements FlowTransport {
  * arrives as a Buffer on the other side.
  */
 export declare class ChildProcessFlowTransport implements FlowTransport {
-    private process;
-    private receiveHandler;
-    private closed;
-    private ipcHandler;
-    constructor(childProcess: ChildProcessLike);
-    send(data: Uint8Array): void;
-    onReceive(handler: (data: Uint8Array) => void): void;
-    close(): void;
-    /** Whether the transport is still open */
-    get isOpen(): boolean;
+  private process;
+  private receiveHandler;
+  private closed;
+  private ipcHandler;
+  constructor(childProcess: ChildProcessLike);
+  send(data: Uint8Array): void;
+  onReceive(handler: (data: Uint8Array) => void): void;
+  close(): void;
+  /** Whether the transport is still open */
+  get isOpen(): boolean;
 }
 /**
  * Create a pair of linked MessagePort FlowTransports.
@@ -89,4 +95,6 @@ export declare class ChildProcessFlowTransport implements FlowTransport {
  *
  * Works in browsers, Bun, and Node (with worker_threads).
  */
-export declare function createIPCPair(config?: IPCFlowConfig): [MessagePortFlowTransport, MessagePortFlowTransport];
+export declare function createIPCPair(
+  config?: IPCFlowConfig
+): [MessagePortFlowTransport, MessagePortFlowTransport];

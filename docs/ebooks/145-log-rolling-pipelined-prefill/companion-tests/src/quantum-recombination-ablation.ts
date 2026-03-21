@@ -3,7 +3,10 @@ export interface Complex {
   readonly im: number;
 }
 
-type Kernel2 = readonly [readonly [Complex, Complex], readonly [Complex, Complex]];
+type Kernel2 = readonly [
+  readonly [Complex, Complex],
+  readonly [Complex, Complex]
+];
 
 export interface InvariantProfile {
   readonly preservesKernelAgreement: boolean;
@@ -59,11 +62,15 @@ function enumeratePathAmplitudes(
   kernel: Kernel2,
   startNode: 0 | 1,
   endNode: 0 | 1,
-  steps: number,
+  steps: number
 ): Complex[] {
   const amplitudes: Complex[] = [];
 
-  function recurse(currentNode: 0 | 1, remaining: number, amplitude: Complex): void {
+  function recurse(
+    currentNode: 0 | 1,
+    remaining: number,
+    amplitude: Complex
+  ): void {
     if (remaining === 0) {
       if (currentNode === endNode) {
         amplitudes.push(amplitude);
@@ -83,16 +90,21 @@ function enumeratePathSum(
   kernel: Kernel2,
   startNode: 0 | 1,
   endNode: 0 | 1,
-  steps: number,
+  steps: number
 ): Complex {
-  return enumeratePathAmplitudes(kernel, startNode, endNode, steps).reduce<Complex>(
-    (acc, amplitude) => cAdd(acc, amplitude),
-    { re: 0, im: 0 },
-  );
+  return enumeratePathAmplitudes(
+    kernel,
+    startNode,
+    endNode,
+    steps
+  ).reduce<Complex>((acc, amplitude) => cAdd(acc, amplitude), { re: 0, im: 0 });
 }
 
 export function linearFold(amplitudes: readonly Complex[]): Complex {
-  return amplitudes.reduce<Complex>((acc, next) => cAdd(acc, next), { re: 0, im: 0 });
+  return amplitudes.reduce<Complex>((acc, next) => cAdd(acc, next), {
+    re: 0,
+    im: 0,
+  });
 }
 
 export function winnerTakeAllFold(amplitudes: readonly Complex[]): Complex {
@@ -151,11 +163,20 @@ const expectedProfiles: Record<FoldStrategy['name'], InvariantProfile> = {
   },
 };
 
-function buildStrategyReport(strategy: FoldStrategy, tolerance: number): StrategyReport {
+function buildStrategyReport(
+  strategy: FoldStrategy,
+  tolerance: number
+): StrategyReport {
   const invSqrt2 = 1 / Math.sqrt(2);
   const hadamardKernel: Kernel2 = [
-    [{ re: invSqrt2, im: 0 }, { re: invSqrt2, im: 0 }],
-    [{ re: invSqrt2, im: 0 }, { re: -invSqrt2, im: 0 }],
+    [
+      { re: invSqrt2, im: 0 },
+      { re: invSqrt2, im: 0 },
+    ],
+    [
+      { re: invSqrt2, im: 0 },
+      { re: -invSqrt2, im: 0 },
+    ],
   ];
 
   const kernelPaths = enumeratePathAmplitudes(hadamardKernel, 0, 0, 3);
@@ -169,23 +190,42 @@ function buildStrategyReport(strategy: FoldStrategy, tolerance: number): Strateg
   ];
   const partitionA = partitionWitness.slice(0, 2);
   const partitionB = partitionWitness.slice(2);
-  const partitionCombined = cAdd(strategy.fold(partitionA), strategy.fold(partitionB));
+  const partitionCombined = cAdd(
+    strategy.fold(partitionA),
+    strategy.fold(partitionB)
+  );
 
-  const orderForward: readonly Complex[] = [{ re: 1, im: 0 }, { re: -1, im: 0 }];
-  const orderReversed: readonly Complex[] = [{ re: -1, im: 0 }, { re: 1, im: 0 }];
-  const cancellationWitness: readonly Complex[] = [{ re: 1, im: 0 }, { re: -1, im: 0 }];
+  const orderForward: readonly Complex[] = [
+    { re: 1, im: 0 },
+    { re: -1, im: 0 },
+  ];
+  const orderReversed: readonly Complex[] = [
+    { re: -1, im: 0 },
+    { re: 1, im: 0 },
+  ];
+  const cancellationWitness: readonly Complex[] = [
+    { re: 1, im: 0 },
+    { re: -1, im: 0 },
+  ];
 
   const distances: InvariantDistances = {
     kernelAgreementDistance: cDistance(kernelActual, kernelExpected),
-    partitionAdditivityDistance: cDistance(strategy.fold(partitionWitness), partitionCombined),
-    orderInvarianceDistance: cDistance(strategy.fold(orderForward), strategy.fold(orderReversed)),
+    partitionAdditivityDistance: cDistance(
+      strategy.fold(partitionWitness),
+      partitionCombined
+    ),
+    orderInvarianceDistance: cDistance(
+      strategy.fold(orderForward),
+      strategy.fold(orderReversed)
+    ),
     cancellationMagnitude2: cMag2(strategy.fold(cancellationWitness)),
   };
 
   return {
     profile: {
       preservesKernelAgreement: distances.kernelAgreementDistance <= tolerance,
-      preservesPartitionAdditivity: distances.partitionAdditivityDistance <= tolerance,
+      preservesPartitionAdditivity:
+        distances.partitionAdditivityDistance <= tolerance,
       preservesOrderInvariance: distances.orderInvarianceDistance <= tolerance,
       preservesCancellation: distances.cancellationMagnitude2 <= tolerance,
     },
@@ -194,16 +234,19 @@ function buildStrategyReport(strategy: FoldStrategy, tolerance: number): Strateg
 }
 
 export function runQuantumRecombinationAblation(
-  tolerance = 1e-10,
+  tolerance = 1e-10
 ): QuantumRecombinationAblationReport {
   const strategies = Object.fromEntries(
-    foldStrategies.map((strategy) => [strategy.name, buildStrategyReport(strategy, tolerance)]),
+    foldStrategies.map((strategy) => [
+      strategy.name,
+      buildStrategyReport(strategy, tolerance),
+    ])
   ) as Record<FoldStrategy['name'], StrategyReport>;
 
   const predictedLossMatrixMatches = foldStrategies.every(
     (strategy) =>
       JSON.stringify(strategies[strategy.name].profile) ===
-      JSON.stringify(expectedProfiles[strategy.name]),
+      JSON.stringify(expectedProfiles[strategy.name])
   );
 
   return {
@@ -223,42 +266,68 @@ function formatDistance(value: number): string {
 }
 
 export function renderQuantumRecombinationAblationMarkdown(
-  report: QuantumRecombinationAblationReport,
+  report: QuantumRecombinationAblationReport
 ): string {
   const lines: string[] = [];
   lines.push('# Quantum Recombination Ablation');
   lines.push('');
   lines.push(`- Label: \`${report.label}\``);
   lines.push(`- Tolerance: \`${report.tolerance}\``);
-  lines.push(`- Predicted loss matrix recovered: \`${report.predictedLossMatrixMatches ? 'yes' : 'no'}\``);
+  lines.push(
+    `- Predicted loss matrix recovered: \`${
+      report.predictedLossMatrixMatches ? 'yes' : 'no'
+    }\``
+  );
   lines.push('');
   lines.push('## Invariant Matrix');
   lines.push('');
-  lines.push('| Strategy | Kernel agreement | Partition additivity | Order invariance | Cancellation |');
+  lines.push(
+    '| Strategy | Kernel agreement | Partition additivity | Order invariance | Cancellation |'
+  );
   lines.push('|---|---:|---:|---:|---:|');
 
-  for (const strategyName of Object.keys(report.strategies) as FoldStrategy['name'][]) {
+  for (const strategyName of Object.keys(
+    report.strategies
+  ) as FoldStrategy['name'][]) {
     const profile = report.strategies[strategyName].profile;
     lines.push(
-      `| \`${strategyName}\` | ${formatBoolean(profile.preservesKernelAgreement)} | ${formatBoolean(profile.preservesPartitionAdditivity)} | ${formatBoolean(profile.preservesOrderInvariance)} | ${formatBoolean(profile.preservesCancellation)} |`,
+      `| \`${strategyName}\` | ${formatBoolean(
+        profile.preservesKernelAgreement
+      )} | ${formatBoolean(
+        profile.preservesPartitionAdditivity
+      )} | ${formatBoolean(profile.preservesOrderInvariance)} | ${formatBoolean(
+        profile.preservesCancellation
+      )} |`
     );
   }
 
   lines.push('');
   lines.push('## Distances');
   lines.push('');
-  lines.push('| Strategy | Kernel distance | Partition distance | Order distance | Cancellation magnitude² |');
+  lines.push(
+    '| Strategy | Kernel distance | Partition distance | Order distance | Cancellation magnitude² |'
+  );
   lines.push('|---|---:|---:|---:|---:|');
 
-  for (const strategyName of Object.keys(report.strategies) as FoldStrategy['name'][]) {
+  for (const strategyName of Object.keys(
+    report.strategies
+  ) as FoldStrategy['name'][]) {
     const distances = report.strategies[strategyName].distances;
     lines.push(
-      `| \`${strategyName}\` | ${formatDistance(distances.kernelAgreementDistance)} | ${formatDistance(distances.partitionAdditivityDistance)} | ${formatDistance(distances.orderInvarianceDistance)} | ${formatDistance(distances.cancellationMagnitude2)} |`,
+      `| \`${strategyName}\` | ${formatDistance(
+        distances.kernelAgreementDistance
+      )} | ${formatDistance(
+        distances.partitionAdditivityDistance
+      )} | ${formatDistance(
+        distances.orderInvarianceDistance
+      )} | ${formatDistance(distances.cancellationMagnitude2)} |`
     );
   }
 
   lines.push('');
-  lines.push('Interpretation: hold the path family fixed, then swap only the recombination rule. Linear fold preserves the path-sum invariants; winner-take-all and early-stop do not.');
+  lines.push(
+    'Interpretation: hold the path family fixed, then swap only the recombination rule. Linear fold preserves the path-sum invariants; winner-take-all and early-stop do not.'
+  );
   lines.push('');
 
   return `${lines.join('\n')}\n`;

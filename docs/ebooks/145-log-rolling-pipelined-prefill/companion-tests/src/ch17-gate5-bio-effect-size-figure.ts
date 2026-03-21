@@ -1,4 +1,8 @@
-import type { BootstrapInterval, Gate5PairResult, Gate5Report } from './gate5-bio-effect-size';
+import type {
+  BootstrapInterval,
+  Gate5PairResult,
+  Gate5Report,
+} from './gate5-bio-effect-size';
 
 interface MetricRange {
   readonly low: number;
@@ -54,9 +58,10 @@ function multilineText(
     readonly size?: number;
     readonly color?: string;
     readonly lineHeight?: number;
-  } = {},
+  } = {}
 ): void {
-  const lineHeight = options.lineHeight ?? Math.round((options.size ?? 13) * 1.35);
+  const lineHeight =
+    options.lineHeight ?? Math.round((options.size ?? 13) * 1.35);
   const tspans = lines
     .map((line, index) => {
       const dy = index === 0 ? '0' : String(lineHeight);
@@ -64,9 +69,11 @@ function multilineText(
     })
     .join('');
   svg.push(
-    `<text x="${x}" y="${y}" text-anchor="${options.anchor ?? 'start'}" font-family="Georgia, serif" font-size="${
-      options.size ?? 13
-    }" fill="${options.color ?? '#4b5563'}">${tspans}</text>`,
+    `<text x="${x}" y="${y}" text-anchor="${
+      options.anchor ?? 'start'
+    }" font-family="Georgia, serif" font-size="${options.size ?? 13}" fill="${
+      options.color ?? '#4b5563'
+    }">${tspans}</text>`
   );
 }
 
@@ -88,7 +95,10 @@ function formatRatio(value: number): string {
   return `${trimFixed(value, 3)}x`;
 }
 
-function shortLabels(pair: Gate5FigurePair): { readonly numerator: string; readonly denominator: string } {
+function shortLabels(pair: Gate5FigurePair): {
+  readonly numerator: string;
+  readonly denominator: string;
+} {
   switch (pair.id) {
     case 'saltatory_velocity':
       return {
@@ -120,7 +130,12 @@ function rangeFor(values: readonly number[]): MetricRange {
   };
 }
 
-function ratioScale(value: number, range: MetricRange, left: number, width: number): number {
+function ratioScale(
+  value: number,
+  range: MetricRange,
+  left: number,
+  width: number
+): number {
   const logMin = Math.log10(range.low);
   const logMax = Math.log10(range.high);
   const normalized = (Math.log10(value) - logMin) / (logMax - logMin);
@@ -144,7 +159,7 @@ function sortedPairs(pairs: readonly Gate5PairResult[]): Gate5FigurePair[] {
 }
 
 export function buildCh17Gate5BioEffectSizeFigureReport(
-  report: Gate5Report,
+  report: Gate5Report
 ): Ch17Gate5BioEffectSizeFigureReport {
   const pairs = sortedPairs(report.pairs);
   const primaryPairs = pairs.filter((pair) => pair.primary);
@@ -168,11 +183,17 @@ export function buildCh17Gate5BioEffectSizeFigureReport(
     pairThresholdRatio: report.config.thresholds.minPairRatioLowerCi,
     pooledRatio,
     pooledRatioCi95,
-    pooledThresholdRatio: Math.exp(report.config.thresholds.pooledLogRatioLowerCi),
+    pooledThresholdRatio: Math.exp(
+      report.config.thresholds.pooledLogRatioLowerCi
+    ),
     ratioRange: rangeFor([
       report.config.thresholds.minPairRatioLowerCi,
       Math.exp(report.config.thresholds.pooledLogRatioLowerCi),
-      ...pairs.flatMap((pair) => [pair.ratioCi95.low, pair.ratioCi95.high, pair.medianRatio]),
+      ...pairs.flatMap((pair) => [
+        pair.ratioCi95.low,
+        pair.ratioCi95.high,
+        pair.medianRatio,
+      ]),
       pooledRatioCi95.low,
       pooledRatioCi95.high,
       pooledRatio,
@@ -182,7 +203,7 @@ export function buildCh17Gate5BioEffectSizeFigureReport(
 }
 
 export function renderCh17Gate5BioEffectSizeFigureMarkdown(
-  report: Ch17Gate5BioEffectSizeFigureReport,
+  report: Ch17Gate5BioEffectSizeFigureReport
 ): string {
   const lines: string[] = [];
   lines.push('# Chapter 17 Gate 5 Biological Effect-Size Figure');
@@ -190,29 +211,47 @@ export function renderCh17Gate5BioEffectSizeFigureMarkdown(
   lines.push(`- Label: \`${report.label}\``);
   lines.push(`- Source: \`${report.sourceLabel}\``);
   lines.push(
-    `- Pairs: \`${report.pairCount}\` total, \`${report.primaryPairCount}\` primary, \`${report.primaryPairsPassed}\` primary passed`,
+    `- Pairs: \`${report.pairCount}\` total, \`${report.primaryPairCount}\` primary, \`${report.primaryPairsPassed}\` primary passed`
   );
-  lines.push(`- Criteria passed: \`${report.criteriaPassed}/${report.criteriaTotal}\``);
+  lines.push(
+    `- Criteria passed: \`${report.criteriaPassed}/${report.criteriaTotal}\``
+  );
   lines.push(`- Median pair ratio: \`${formatRatio(report.medianPairRatio)}\``);
   lines.push(
-    `- Minimum primary-pair CI low: \`${formatRatio(report.minPrimaryPairRatioCiLow)}\` (threshold \`${formatRatio(report.pairThresholdRatio)}\`)`,
+    `- Minimum primary-pair CI low: \`${formatRatio(
+      report.minPrimaryPairRatioCiLow
+    )}\` (threshold \`${formatRatio(report.pairThresholdRatio)}\`)`
   );
   lines.push(
-    `- Pooled geometric ratio: \`${formatRatio(report.pooledRatio)}\` (95% CI \`${formatRatio(report.pooledRatioCi95.low)}\` to \`${formatRatio(report.pooledRatioCi95.high)}\`; threshold \`${formatRatio(report.pooledThresholdRatio)}\`)`,
+    `- Pooled geometric ratio: \`${formatRatio(
+      report.pooledRatio
+    )}\` (95% CI \`${formatRatio(
+      report.pooledRatioCi95.low
+    )}\` to \`${formatRatio(
+      report.pooledRatioCi95.high
+    )}\`; threshold \`${formatRatio(report.pooledThresholdRatio)}\`)`
   );
   lines.push('');
   lines.push('## Pairs');
   lines.push('');
-  lines.push('| Domain | Numerator / Denominator | Median Ratio | 95% CI | Unit | Primary | Pass |');
+  lines.push(
+    '| Domain | Numerator / Denominator | Median Ratio | 95% CI | Unit | Primary | Pass |'
+  );
   lines.push('|---|---|---:|---:|---|---|---|');
   for (const pair of report.pairs) {
     lines.push(
-      `| ${pair.domain} | ${pair.numeratorLabel} / ${pair.denominatorLabel} | ${formatRatio(pair.medianRatio)} | ${formatRatio(pair.ratioCi95.low)} to ${formatRatio(pair.ratioCi95.high)} | ${pair.unit} | ${pair.primary ? 'yes' : 'no'} | ${pair.pass ? 'yes' : 'no'} |`,
+      `| ${pair.domain} | ${pair.numeratorLabel} / ${
+        pair.denominatorLabel
+      } | ${formatRatio(pair.medianRatio)} | ${formatRatio(
+        pair.ratioCi95.low
+      )} to ${formatRatio(pair.ratioCi95.high)} | ${pair.unit} | ${
+        pair.primary ? 'yes' : 'no'
+      } | ${pair.pass ? 'yes' : 'no'} |`
     );
   }
   lines.push('');
   lines.push(
-    'Interpretation: the figure turns the biological analogy section into a transparent effect-size forest plot, with the pooled geometric summary kept on the same log scale so reviewers can see the spread instead of reading only one pooled number.',
+    'Interpretation: the figure turns the biological analogy section into a transparent effect-size forest plot, with the pooled geometric summary kept on the same log scale so reviewers can see the spread instead of reading only one pooled number.'
   );
 
   return `${lines.join('\n')}\n`;
@@ -224,16 +263,20 @@ function renderForestPlot(
   x: number,
   y: number,
   width: number,
-  height: number,
+  height: number
 ): void {
   svg.push(
-    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`,
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#fffdfa" stroke="#d6d3c7"/>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 34}" font-family="Georgia, serif" font-size="20" fill="#111827">Pairwise Ratios on Log Scale</text>`,
+    `<text x="${x + 24}" y="${
+      y + 34
+    }" font-family="Georgia, serif" font-size="20" fill="#111827">Pairwise Ratios on Log Scale</text>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 56}" font-family="Georgia, serif" font-size="11" fill="#4b5563">Median ratios with 95% CIs and pooled summary.</text>`,
+    `<text x="${x + 24}" y="${
+      y + 56
+    }" font-family="Georgia, serif" font-size="11" fill="#4b5563">Median ratios with 95% CIs and pooled summary.</text>`
   );
 
   const innerX = x + 270;
@@ -251,63 +294,128 @@ function renderForestPlot(
   for (const tick of tickValues) {
     const cx = ratioScale(tick, plotRange, innerX, innerWidth);
     svg.push(
-      `<line x1="${cx}" y1="${innerY - 16}" x2="${cx}" y2="${pooledRowY + 22}" stroke="#e5e7eb" stroke-width="1"/>`,
+      `<line x1="${cx}" y1="${innerY - 16}" x2="${cx}" y2="${
+        pooledRowY + 22
+      }" stroke="#e5e7eb" stroke-width="1"/>`
     );
     svg.push(
-      `<text x="${cx}" y="${pooledRowY + 42}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${formatRatio(tick)}</text>`,
+      `<text x="${cx}" y="${
+        pooledRowY + 42
+      }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${formatRatio(
+        tick
+      )}</text>`
     );
   }
 
-  const pooledThresholdX = ratioScale(report.pooledThresholdRatio, plotRange, innerX, innerWidth);
-  svg.push(
-    `<line x1="${pooledThresholdX}" y1="${innerY - 24}" x2="${pooledThresholdX}" y2="${pooledRowY + 22}" stroke="#92400e" stroke-width="2" stroke-dasharray="5 5"/>`,
+  const pooledThresholdX = ratioScale(
+    report.pooledThresholdRatio,
+    plotRange,
+    innerX,
+    innerWidth
   );
   svg.push(
-    `<text x="${pooledThresholdX}" y="${innerY - 32}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#92400e">pooled floor ${formatRatio(report.pooledThresholdRatio)}</text>`,
+    `<line x1="${pooledThresholdX}" y1="${
+      innerY - 24
+    }" x2="${pooledThresholdX}" y2="${
+      pooledRowY + 22
+    }" stroke="#92400e" stroke-width="2" stroke-dasharray="5 5"/>`
+  );
+  svg.push(
+    `<text x="${pooledThresholdX}" y="${
+      innerY - 32
+    }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#92400e">pooled floor ${formatRatio(
+      report.pooledThresholdRatio
+    )}</text>`
   );
 
   report.pairs.forEach((pair, index) => {
     const cy = innerY + rowGap * index + rowGap / 2;
     const lowX = ratioScale(pair.ratioCi95.low, plotRange, innerX, innerWidth);
-    const highX = ratioScale(pair.ratioCi95.high, plotRange, innerX, innerWidth);
+    const highX = ratioScale(
+      pair.ratioCi95.high,
+      plotRange,
+      innerX,
+      innerWidth
+    );
     const medianX = ratioScale(pair.medianRatio, plotRange, innerX, innerWidth);
     const labels = shortLabels(pair);
 
     svg.push(
-      `<text x="${x + 24}" y="${cy - 10}" font-family="Georgia, serif" font-size="15" fill="#111827">${escapeXml(pair.domain)}</text>`,
+      `<text x="${x + 24}" y="${
+        cy - 10
+      }" font-family="Georgia, serif" font-size="15" fill="#111827">${escapeXml(
+        pair.domain
+      )}</text>`
     );
     svg.push(
-      `<text x="${x + 24}" y="${cy + 14}" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${escapeXml(labels.numerator)} / ${escapeXml(labels.denominator)}${pair.unit === 'ratio' ? '' : ` (${escapeXml(pair.unit)})`}</text>`,
+      `<text x="${x + 24}" y="${
+        cy + 14
+      }" font-family="system-ui, sans-serif" font-size="11" fill="#6b7280">${escapeXml(
+        labels.numerator
+      )} / ${escapeXml(labels.denominator)}${
+        pair.unit === 'ratio' ? '' : ` (${escapeXml(pair.unit)})`
+      }</text>`
     );
     svg.push(
-      `<line x1="${lowX}" y1="${cy}" x2="${highX}" y2="${cy}" stroke="${pair.pass ? '#1d4ed8' : '#b91c1c'}" stroke-width="4" stroke-linecap="round"/>`,
+      `<line x1="${lowX}" y1="${cy}" x2="${highX}" y2="${cy}" stroke="${
+        pair.pass ? '#1d4ed8' : '#b91c1c'
+      }" stroke-width="4" stroke-linecap="round"/>`
     );
     svg.push(
-      `<line x1="${lowX}" y1="${cy - 8}" x2="${lowX}" y2="${cy + 8}" stroke="${pair.pass ? '#1d4ed8' : '#b91c1c'}" stroke-width="1.5"/>`,
+      `<line x1="${lowX}" y1="${cy - 8}" x2="${lowX}" y2="${cy + 8}" stroke="${
+        pair.pass ? '#1d4ed8' : '#b91c1c'
+      }" stroke-width="1.5"/>`
     );
     svg.push(
-      `<line x1="${highX}" y1="${cy - 8}" x2="${highX}" y2="${cy + 8}" stroke="${pair.pass ? '#1d4ed8' : '#b91c1c'}" stroke-width="1.5"/>`,
+      `<line x1="${highX}" y1="${cy - 8}" x2="${highX}" y2="${
+        cy + 8
+      }" stroke="${pair.pass ? '#1d4ed8' : '#b91c1c'}" stroke-width="1.5"/>`
     );
     svg.push(
-      `<rect x="${medianX - 6}" y="${cy - 6}" width="12" height="12" rx="2" fill="${pair.primary ? '#0f766e' : '#64748b'}" stroke="#eff6ff" stroke-width="2"/>`,
+      `<rect x="${medianX - 6}" y="${
+        cy - 6
+      }" width="12" height="12" rx="2" fill="${
+        pair.primary ? '#0f766e' : '#64748b'
+      }" stroke="#eff6ff" stroke-width="2"/>`
     );
-    const labelText = `${formatRatio(pair.medianRatio)} (${formatRatio(pair.ratioCi95.low)} to ${formatRatio(pair.ratioCi95.high)})`;
+    const labelText = `${formatRatio(pair.medianRatio)} (${formatRatio(
+      pair.ratioCi95.low
+    )} to ${formatRatio(pair.ratioCi95.high)})`;
     const labelRightEdge = x + width - 18;
     const labelFitsRight = highX + 10 + labelText.length * 7 < labelRightEdge;
     if (labelFitsRight) {
       svg.push(
-        `<text x="${highX + 10}" y="${cy - 14}" text-anchor="start" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${labelText}</text>`,
+        `<text x="${highX + 10}" y="${
+          cy - 14
+        }" text-anchor="start" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${labelText}</text>`
       );
     } else {
       svg.push(
-        `<text x="${labelRightEdge}" y="${cy - 14}" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${labelText}</text>`,
+        `<text x="${labelRightEdge}" y="${
+          cy - 14
+        }" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${labelText}</text>`
       );
     }
   });
 
-  const pooledLowX = ratioScale(report.pooledRatioCi95.low, plotRange, innerX, innerWidth);
-  const pooledHighX = ratioScale(report.pooledRatioCi95.high, plotRange, innerX, innerWidth);
-  const pooledMidX = ratioScale(report.pooledRatio, plotRange, innerX, innerWidth);
+  const pooledLowX = ratioScale(
+    report.pooledRatioCi95.low,
+    plotRange,
+    innerX,
+    innerWidth
+  );
+  const pooledHighX = ratioScale(
+    report.pooledRatioCi95.high,
+    plotRange,
+    innerX,
+    innerWidth
+  );
+  const pooledMidX = ratioScale(
+    report.pooledRatio,
+    plotRange,
+    innerX,
+    innerWidth
+  );
   const diamondHalfWidth = 16;
   const diamondHalfHeight = 10;
   const diamondPoints = [
@@ -317,20 +425,30 @@ function renderForestPlot(
     `${pooledMidX - diamondHalfWidth},${pooledRowY}`,
   ].join(' ');
   svg.push(
-    `<text x="${x + 24}" y="${pooledRowY + 5}" font-family="Georgia, serif" font-size="16" fill="#111827">Pooled geometric summary</text>`,
+    `<text x="${x + 24}" y="${
+      pooledRowY + 5
+    }" font-family="Georgia, serif" font-size="16" fill="#111827">Pooled geometric summary</text>`
   );
   svg.push(
-    `<line x1="${pooledLowX}" y1="${pooledRowY}" x2="${pooledHighX}" y2="${pooledRowY}" stroke="#b45309" stroke-width="4" stroke-linecap="round"/>`,
+    `<line x1="${pooledLowX}" y1="${pooledRowY}" x2="${pooledHighX}" y2="${pooledRowY}" stroke="#b45309" stroke-width="4" stroke-linecap="round"/>`
   );
   svg.push(
-    `<polygon points="${diamondPoints}" fill="#f59e0b" stroke="#78350f" stroke-width="2"/>`,
+    `<polygon points="${diamondPoints}" fill="#f59e0b" stroke="#78350f" stroke-width="2"/>`
   );
   svg.push(
-    `<text x="${x + width - 18}" y="${pooledRowY - 18}" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${formatRatio(report.pooledRatio)} (${formatRatio(report.pooledRatioCi95.low)} to ${formatRatio(report.pooledRatioCi95.high)})</text>`,
+    `<text x="${x + width - 18}" y="${
+      pooledRowY - 18
+    }" text-anchor="end" font-family="system-ui, sans-serif" font-size="12" fill="#334155">${formatRatio(
+      report.pooledRatio
+    )} (${formatRatio(report.pooledRatioCi95.low)} to ${formatRatio(
+      report.pooledRatioCi95.high
+    )})</text>`
   );
 
   svg.push(
-    `<text x="${innerX + innerWidth / 2}" y="${pooledRowY + 66}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Multiplicative effect-size ratio</text>`,
+    `<text x="${innerX + innerWidth / 2}" y="${
+      pooledRowY + 66
+    }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Multiplicative effect-size ratio</text>`
   );
 }
 
@@ -340,13 +458,15 @@ function renderSummaryCard(
   x: number,
   y: number,
   width: number,
-  height: number,
+  height: number
 ): void {
   svg.push(
-    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#f8fafc" stroke="#cbd5e1"/>`,
+    `<rect x="${x}" y="${y}" width="${width}" height="${height}" rx="18" fill="#f8fafc" stroke="#cbd5e1"/>`
   );
   svg.push(
-    `<text x="${x + 24}" y="${y + 34}" font-family="Georgia, serif" font-size="20" fill="#111827">Gate Summary</text>`,
+    `<text x="${x + 24}" y="${
+      y + 34
+    }" font-family="Georgia, serif" font-size="20" fill="#111827">Gate Summary</text>`
   );
   multilineText(
     svg,
@@ -361,7 +481,7 @@ function renderSummaryCard(
       size: 13,
       color: '#4b5563',
       lineHeight: 17,
-    },
+    }
   );
 
   const summaryLines = [
@@ -379,42 +499,67 @@ function renderSummaryCard(
     const cy = y + 122 + index * 40;
     svg.push(`<circle cx="${x + 28}" cy="${cy - 4}" r="4.5" fill="#0f766e"/>`);
     svg.push(
-      `<text x="${x + 42}" y="${cy}" font-family="system-ui, sans-serif" font-size="13" fill="#334155">${escapeXml(line)}</text>`,
+      `<text x="${
+        x + 42
+      }" y="${cy}" font-family="system-ui, sans-serif" font-size="13" fill="#334155">${escapeXml(
+        line
+      )}</text>`
     );
   });
 
   const barX = x + 24;
   const barY = y + height - 92;
   const barWidth = width - 48;
-  const fillWidth = (report.primaryPairsPassed / report.primaryPairCount) * barWidth;
+  const fillWidth =
+    (report.primaryPairsPassed / report.primaryPairCount) * barWidth;
   svg.push(
-    `<text x="${barX}" y="${barY - 14}" font-family="system-ui, sans-serif" font-size="12" fill="#334155">Primary-pair pass rate</text>`,
+    `<text x="${barX}" y="${
+      barY - 14
+    }" font-family="system-ui, sans-serif" font-size="12" fill="#334155">Primary-pair pass rate</text>`
   );
   svg.push(
-    `<rect x="${barX}" y="${barY}" width="${barWidth}" height="16" rx="8" fill="#e2e8f0"/>`,
+    `<rect x="${barX}" y="${barY}" width="${barWidth}" height="16" rx="8" fill="#e2e8f0"/>`
   );
   svg.push(
-    `<rect x="${barX}" y="${barY}" width="${fillWidth}" height="16" rx="8" fill="#0f766e"/>`,
+    `<rect x="${barX}" y="${barY}" width="${fillWidth}" height="16" rx="8" fill="#0f766e"/>`
   );
   svg.push(
-    `<text x="${barX + barWidth / 2}" y="${barY + 12}" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#0f172a">${report.primaryPairsPassed}/${report.primaryPairCount} primary pairs pass</text>`,
+    `<text x="${barX + barWidth / 2}" y="${
+      barY + 12
+    }" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#0f172a">${
+      report.primaryPairsPassed
+    }/${report.primaryPairCount} primary pairs pass</text>`
   );
 }
 
 export function renderCh17Gate5BioEffectSizeFigureSvg(
-  report: Ch17Gate5BioEffectSizeFigureReport,
+  report: Ch17Gate5BioEffectSizeFigureReport
 ): string {
   const svg: string[] = [];
-  svg.push('<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="780" viewBox="0 0 1240 780" role="img" aria-labelledby="title desc">');
-  svg.push('<title id="title">Chapter 17 Gate 5 biological effect-size figure</title>');
   svg.push(
-    '<desc id="desc">Log-scale forest plot of three biological effect-size ratios with a pooled geometric summary and gate-threshold summary card.</desc>',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="780" viewBox="0 0 1240 780" role="img" aria-labelledby="title desc">'
+  );
+  svg.push(
+    '<title id="title">Chapter 17 Gate 5 biological effect-size figure</title>'
+  );
+  svg.push(
+    '<desc id="desc">Log-scale forest plot of three biological effect-size ratios with a pooled geometric summary and gate-threshold summary card.</desc>'
   );
   svg.push('<rect width="1240" height="780" fill="#f3efe5"/>');
-  svg.push('<rect x="22" y="22" width="1196" height="736" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>');
-  svg.push('<text x="60" y="82" font-family="Georgia, serif" font-size="32" fill="#111827">Gate 5 Biological Effect-Size Mapping</text>');
   svg.push(
-    `<text x="60" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">Source ${escapeXml(report.sourceLabel)} | pooled effect ${formatRatio(report.pooledRatio)} | smallest primary CI low ${formatRatio(report.minPrimaryPairRatioCiLow)}</text>`,
+    '<rect x="22" y="22" width="1196" height="736" rx="28" fill="#f7f4ea" stroke="#d6d3c7"/>'
+  );
+  svg.push(
+    '<text x="60" y="82" font-family="Georgia, serif" font-size="32" fill="#111827">Gate 5 Biological Effect-Size Mapping</text>'
+  );
+  svg.push(
+    `<text x="60" y="114" font-family="Georgia, serif" font-size="15" fill="#4b5563">Source ${escapeXml(
+      report.sourceLabel
+    )} | pooled effect ${formatRatio(
+      report.pooledRatio
+    )} | smallest primary CI low ${formatRatio(
+      report.minPrimaryPairRatioCiLow
+    )}</text>`
   );
 
   renderForestPlot(svg, report, 52, 148, 814, 570);

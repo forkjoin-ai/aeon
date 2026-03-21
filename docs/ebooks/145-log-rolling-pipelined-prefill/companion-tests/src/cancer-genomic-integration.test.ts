@@ -76,7 +76,12 @@ describe('PROP-GENOME-SELF-DESCRIBING: Multi-Gene Topological Maps', () => {
 
   it('IDH1 codon 132 region sigma is computable', () => {
     const profile = computeSigma(IDH1_CODON_132_REGION, 45); // approximate codon 132 position
-    console.log('IDH1 R132 region sigma:', profile.sigma, 'beta1:', profile.beta1);
+    console.log(
+      'IDH1 R132 region sigma:',
+      profile.sigma,
+      'beta1:',
+      profile.beta1
+    );
     expect(profile.sigma).toBeGreaterThanOrEqual(0);
   });
 });
@@ -91,12 +96,12 @@ describe('THM-TOPO-MUTATION-DETECTION: Real Mutation Catalogs', () => {
       const result = computeMutationTopology(
         TP53_EXONS_5_8,
         driver.position,
-        driver.mutBase,
+        driver.mutBase
       );
 
       console.log(
         `TP53 ${driver.proteinChange}: σ_ref=${result.sigmaRef}, σ_mut=${result.sigmaMutant}, ` +
-        `Δσ=${result.deltaSigma}, severity=${result.severity} (${result.severityBules}B)`,
+          `Δσ=${result.deltaSigma}, severity=${result.severity} (${result.severityBules}B)`
       );
 
       // Accounting identity: σ_ref + Δσ = σ_mutant
@@ -111,12 +116,12 @@ describe('THM-TOPO-MUTATION-DETECTION: Real Mutation Catalogs', () => {
       const result = computeMutationTopology(
         TP53_EXONS_5_8,
         passenger.position,
-        passenger.mutBase,
+        passenger.mutBase
       );
 
       console.log(
         `TP53 ${passenger.proteinChange}: σ_ref=${result.sigmaRef}, σ_mut=${result.sigmaMutant}, ` +
-        `Δσ=${result.deltaSigma}, severity=${result.severity} (${result.severityBules}B)`,
+          `Δσ=${result.deltaSigma}, severity=${result.severity} (${result.severityBules}B)`
       );
 
       expect(result.sigmaRef + result.deltaSigma).toBe(result.sigmaMutant);
@@ -128,12 +133,12 @@ describe('THM-TOPO-MUTATION-DETECTION: Real Mutation Catalogs', () => {
       const result = computeMutationTopology(
         KRAS_EXON_2,
         driver.position,
-        driver.mutBase,
+        driver.mutBase
       );
 
       console.log(
         `KRAS ${driver.proteinChange}: σ_ref=${result.sigmaRef}, σ_mut=${result.sigmaMutant}, ` +
-        `Δσ=${result.deltaSigma}, severity=${result.severity} (${result.severityBules}B)`,
+          `Δσ=${result.deltaSigma}, severity=${result.severity} (${result.severityBules}B)`
       );
 
       expect(result.sigmaRef + result.deltaSigma).toBe(result.sigmaMutant);
@@ -152,7 +157,7 @@ describe('THM-TOPO-MUTATION-DETECTION: Real Mutation Catalogs', () => {
         locus: p.position,
         mutantBase: p.mutBase,
         label: p.proteinChange,
-      })),
+      }))
     );
 
     console.log('TP53 Driver vs Passenger (full catalog):', {
@@ -163,10 +168,16 @@ describe('THM-TOPO-MUTATION-DETECTION: Real Mutation Catalogs', () => {
     });
 
     // Log individual results
-    console.log('  Drivers:', report.drivers.map((d) =>
-      `Δσ=${d.deltaSigma} (${d.severity})`).join(', '));
-    console.log('  Passengers:', report.passengers.map((p) =>
-      `Δσ=${p.deltaSigma} (${p.severity})`).join(', '));
+    console.log(
+      '  Drivers:',
+      report.drivers.map((d) => `Δσ=${d.deltaSigma} (${d.severity})`).join(', ')
+    );
+    console.log(
+      '  Passengers:',
+      report.passengers
+        .map((p) => `Δσ=${p.deltaSigma} (${p.severity})`)
+        .join(', ')
+    );
   });
 });
 
@@ -179,7 +190,7 @@ describe('Cancer Hotspot Topological Enrichment', () => {
     const report = analyzeCancerTopology(
       TP53_EXONS_5_8,
       'TP53',
-      TP53_DRIVERS.map((d) => d.position),
+      TP53_DRIVERS.map((d) => d.position)
     );
 
     console.log('TP53 hotspot enrichment:', {
@@ -196,7 +207,7 @@ describe('Cancer Hotspot Topological Enrichment', () => {
     const report = analyzeCancerTopology(
       KRAS_EXON_2,
       'KRAS',
-      KRAS_DRIVERS.map((d) => d.position),
+      KRAS_DRIVERS.map((d) => d.position)
     );
 
     console.log('KRAS hotspot enrichment:', {
@@ -213,7 +224,7 @@ describe('Cancer Hotspot Topological Enrichment', () => {
     const report = analyzeCancerTopology(
       EGFR_KINASE_DOMAIN,
       'EGFR',
-      [210, 150, 100], // approximate kinase domain hotspots
+      [210, 150, 100] // approximate kinase domain hotspots
     );
 
     console.log('EGFR hotspot enrichment:', {
@@ -230,7 +241,7 @@ describe('Cancer Hotspot Topological Enrichment', () => {
     const report = analyzeCancerTopology(
       PTEN_EXONS_5_7,
       'PTEN',
-      [50, 100, 150, 200], // approximate hotspot positions
+      [50, 100, 150, 200] // approximate hotspot positions
     );
 
     console.log('PTEN hotspot enrichment:', {
@@ -292,7 +303,9 @@ describe('GBM Subtype Genomic Validation', () => {
 
     // Proneural has IDH1 mutations (30%) which paradoxically improve prognosis
     expect(proneural.disruptions.idh1Mutation).toBeGreaterThan(0);
-    expect(proneural.medianSurvival).toBeGreaterThan(mesenchymal.medianSurvival);
+    expect(proneural.medianSurvival).toBeGreaterThan(
+      mesenchymal.medianSurvival
+    );
 
     console.log('IDH1 effect:', {
       proneuralIDH1: proneural.disruptions.idh1Mutation,
@@ -304,12 +317,16 @@ describe('GBM Subtype Genomic Validation', () => {
 
   it('weighted topological deficit correlates with survival', () => {
     // Compute weighted deficit: sum of (disruption_frequency * pathway_beta1)
-    const subtypeDeficits: { name: string; weightedDeficit: number; survival: number }[] = [];
+    const subtypeDeficits: {
+      name: string;
+      weightedDeficit: number;
+      survival: number;
+    }[] = [];
 
     for (const [name, profile] of Object.entries(GBM_GENOMIC_PROFILES)) {
       const weightedDeficit =
         profile.disruptions.p53Pathway * 3 + // p53 beta-1 = 3
-        profile.disruptions.rbPathway * 2;   // Rb beta-1 = 2
+        profile.disruptions.rbPathway * 2; // Rb beta-1 = 2
 
       subtypeDeficits.push({
         name,
@@ -330,7 +347,7 @@ describe('GBM Subtype Genomic Validation', () => {
     // This is a soft prediction -- log it for inspection
     console.log(
       `Lowest deficit: ${bestDeficit.name} (${bestDeficit.weightedDeficit}B, ${bestDeficit.survival}mo), ` +
-      `Highest deficit: ${worstDeficit.name} (${worstDeficit.weightedDeficit}B, ${worstDeficit.survival}mo)`,
+        `Highest deficit: ${worstDeficit.name} (${worstDeficit.weightedDeficit}B, ${worstDeficit.survival}mo)`
     );
   });
 });
@@ -345,8 +362,8 @@ describe('Checkpoint Immunotherapy: External Vent Restoration', () => {
       expect(inhibitor.restoredBeta1).toBeGreaterThan(0);
       console.log(
         `${inhibitor.name} (${inhibitor.target}): ` +
-        `restores beta-1 = ${inhibitor.restoredBeta1}, ` +
-        `approved for GBM: ${inhibitor.approvedForGBM}`,
+          `restores beta-1 = ${inhibitor.restoredBeta1}, ` +
+          `approved for GBM: ${inhibitor.approvedForGBM}`
       );
     }
   });
@@ -362,12 +379,14 @@ describe('Checkpoint Immunotherapy: External Vent Restoration', () => {
     expect(comboBeta1).toBeGreaterThan(monoBeta1);
     console.log(
       `Mono (PD-1): beta-1 += ${monoBeta1}, ` +
-      `Combo (PD-1 + CTLA-4): beta-1 += ${comboBeta1}`,
+        `Combo (PD-1 + CTLA-4): beta-1 += ${comboBeta1}`
     );
   });
 
   it('none currently approved for GBM (but model predicts utility)', () => {
-    const approvedForGBM = CHECKPOINT_INHIBITORS.filter((i) => i.approvedForGBM);
+    const approvedForGBM = CHECKPOINT_INHIBITORS.filter(
+      (i) => i.approvedForGBM
+    );
     expect(approvedForGBM.length).toBe(0);
 
     // The topological model predicts: checkpoint inhibitors SHOULD work
@@ -375,7 +394,7 @@ describe('Checkpoint Immunotherapy: External Vent Restoration', () => {
     // The clinical challenge is the blood-brain barrier, not the topology.
     console.log(
       'Prediction: checkpoint inhibitors should have topological benefit in GBM ' +
-      '(external vent restoration), but BBB limits delivery.',
+        '(external vent restoration), but BBB limits delivery.'
     );
   });
 });
@@ -453,8 +472,8 @@ describe('End-to-End: Sequence → Topology → Cell Cycle → Therapy', () => {
     // remaining checkpoints (if any are functional)
     console.log(
       'Topological paradox: MGMT silencing removes a vent (bad) ' +
-      'but makes alkylating chemotherapy more effective (good) ' +
-      'because the unrepaired damage triggers other remaining vents.',
+        'but makes alkylating chemotherapy more effective (good) ' +
+        'because the unrepaired damage triggers other remaining vents.'
     );
   });
 });

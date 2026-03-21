@@ -16,21 +16,14 @@ import {
   HEADER_SIZE,
   MAX_PAYLOAD_LENGTH,
   FrameReassembler,
-} from '@aeon/flow';
-import {
-  FORK,
-  RACE,
-  FOLD,
-  VENT,
-  FIN,
-} from '@aeon/flow';
-import type { FlowFrame } from '@aeon/flow';
+} from '@a0n/aeon/flow';
+import { FORK, RACE, FOLD, VENT, FIN } from '@a0n/aeon/flow';
+import type { FlowFrame } from '@a0n/aeon/flow';
 
 // FlowCodec uses instance methods — create once
 const codec = FlowCodec.createSync();
 
 describe('Flow Protocol (§8)', () => {
-
   describe('§8.2.1 Self-Describing Frame Header', () => {
     /**
      * FlowFrame {
@@ -78,7 +71,7 @@ describe('Flow Protocol (§8)', () => {
     });
 
     it('u24 payload length cap is enforced', () => {
-      expect(MAX_PAYLOAD_LENGTH).toBe(0xFFFFFF);
+      expect(MAX_PAYLOAD_LENGTH).toBe(0xffffff);
 
       const oversized = new Uint8Array(MAX_PAYLOAD_LENGTH + 1);
       const frame: FlowFrame = {
@@ -105,12 +98,11 @@ describe('Flow Protocol (§8)', () => {
 
       // All flags can be combined
       const all = FORK | RACE | FOLD | VENT | FIN;
-      expect(all).toBe(0x1F);
+      expect(all).toBe(0x1f);
     });
   });
 
   describe('§8.4 Fork/Race/Fold on the Wire', () => {
-
     it('fork creates child streams', () => {
       // Parent forks 3 child streams
       const forkFrame = codec.encode({
@@ -134,7 +126,7 @@ describe('Flow Protocol (§8)', () => {
       // Three racing streams send data
       const results = [
         { streamId: 2, size: 100, timeUs: 500 },
-        { streamId: 4, size: 80, timeUs: 200 },  // ← winner (fastest)
+        { streamId: 4, size: 80, timeUs: 200 }, // ← winner (fastest)
         { streamId: 6, size: 120, timeUs: 800 },
       ];
 
@@ -151,13 +143,15 @@ describe('Flow Protocol (§8)', () => {
       });
 
       const ventFrames = results
-        .filter(r => r.streamId !== winner.streamId)
-        .map(r => codec.encode({
-          streamId: r.streamId,
-          sequence: 0,
-          flags: VENT,
-          payload: new Uint8Array(0),
-        }));
+        .filter((r) => r.streamId !== winner.streamId)
+        .map((r) =>
+          codec.encode({
+            streamId: r.streamId,
+            sequence: 0,
+            flags: VENT,
+            payload: new Uint8Array(0),
+          })
+        );
 
       expect(codec.decode(winFrame).frame.flags & FIN).toBeTruthy();
       expect(ventFrames).toHaveLength(2);
@@ -255,8 +249,18 @@ describe('Flow Protocol (§8)', () => {
     it('out-of-order on one stream does not block another stream', () => {
       const reassembler = new FrameReassembler();
 
-      const a1: FlowFrame = { streamId: 1, sequence: 1, flags: 0, payload: new Uint8Array([1]) };
-      const b0: FlowFrame = { streamId: 2, sequence: 0, flags: FIN, payload: new Uint8Array([9]) };
+      const a1: FlowFrame = {
+        streamId: 1,
+        sequence: 1,
+        flags: 0,
+        payload: new Uint8Array([1]),
+      };
+      const b0: FlowFrame = {
+        streamId: 2,
+        sequence: 0,
+        flags: FIN,
+        payload: new Uint8Array([9]),
+      };
 
       // Stream 1 is missing sequence 0, so sequence 1 buffers.
       expect(reassembler.push(a1)).toEqual([]);

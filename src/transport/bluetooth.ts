@@ -43,13 +43,17 @@ declare global {
     readonly device: BluetoothDevice;
     connect(): Promise<BluetoothRemoteGATTServer>;
     disconnect(): void;
-    getPrimaryService(service: BluetoothServiceUUID): Promise<BluetoothRemoteGATTService>;
+    getPrimaryService(
+      service: BluetoothServiceUUID
+    ): Promise<BluetoothRemoteGATTService>;
   }
 
   interface BluetoothRemoteGATTService {
     readonly device: BluetoothDevice;
     readonly uuid: string;
-    getCharacteristic(characteristic: string): Promise<BluetoothRemoteGATTCharacteristic>;
+    getCharacteristic(
+      characteristic: string
+    ): Promise<BluetoothRemoteGATTCharacteristic>;
   }
 
   interface BluetoothRemoteGATTCharacteristic extends EventTarget {
@@ -91,7 +95,7 @@ export const AEON_FLOW_RX_UUID = '0000af12-0000-1000-8000-00805f9b34fb';
 const DEFAULT_MTU = 512 - 3;
 
 /** Frame boundary marker (4 bytes) to reassemble fragmented frames */
-const FRAME_BOUNDARY = new Uint8Array([0xAE, 0x0F, 0x10, 0xFF]);
+const FRAME_BOUNDARY = new Uint8Array([0xae, 0x0f, 0x10, 0xff]);
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Types
@@ -221,7 +225,9 @@ export class BluetoothFlowTransport implements FlowTransport {
 
         if (isLast) {
           // Last fragment gets boundary marker
-          const packet = new Uint8Array(chunk.byteLength + FRAME_BOUNDARY.length);
+          const packet = new Uint8Array(
+            chunk.byteLength + FRAME_BOUNDARY.length
+          );
           packet.set(chunk);
           packet.set(FRAME_BOUNDARY, chunk.byteLength);
           this.writeCharacteristic(packet);
@@ -287,7 +293,10 @@ export class BluetoothFlowTransport implements FlowTransport {
     // Check if chunk ends with frame boundary
     if (this.endsWithBoundary(chunk)) {
       // Complete frame (or last fragment)
-      const frameData = chunk.subarray(0, chunk.byteLength - FRAME_BOUNDARY.length);
+      const frameData = chunk.subarray(
+        0,
+        chunk.byteLength - FRAME_BOUNDARY.length
+      );
 
       if (this.rxBuffer.length > 0) {
         // Reassemble fragments

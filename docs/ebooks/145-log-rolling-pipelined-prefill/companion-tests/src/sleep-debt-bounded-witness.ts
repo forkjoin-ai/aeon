@@ -80,7 +80,11 @@ export function buildSleepDebtBoundedWitnessReport(): SleepDebtBoundedWitnessRep
       effectiveCapacityNextWake: effectiveCapacity(constants.maxCapacity, 0),
       nextWakeLoad: 1,
       intrusionThreshold: constants.intrusionThreshold,
-      intrusionEnabledNextWake: intrusionEnabled(1, 0, constants.intrusionThreshold),
+      intrusionEnabledNextWake: intrusionEnabled(
+        1,
+        0,
+        constants.intrusionThreshold
+      ),
       theoremRefs: [
         'SleepDebt.full_recovery_clears_residual_debt',
         'SleepDebt.full_recovery_restores_capacity',
@@ -99,7 +103,11 @@ export function buildSleepDebtBoundedWitnessReport(): SleepDebtBoundedWitnessRep
       effectiveCapacityNextWake: effectiveCapacity(constants.maxCapacity, 2),
       nextWakeLoad: 1,
       intrusionThreshold: constants.intrusionThreshold,
-      intrusionEnabledNextWake: intrusionEnabled(1, 2, constants.intrusionThreshold),
+      intrusionEnabledNextWake: intrusionEnabled(
+        1,
+        2,
+        constants.intrusionThreshold
+      ),
       theoremRefs: [
         'SleepDebt.partial_recovery_leaves_positive_debt',
         'SleepDebt.partial_recovery_lowers_next_capacity',
@@ -118,7 +126,11 @@ export function buildSleepDebtBoundedWitnessReport(): SleepDebtBoundedWitnessRep
       effectiveCapacityNextWake: effectiveCapacity(constants.maxCapacity, 3),
       nextWakeLoad: 2,
       intrusionThreshold: constants.intrusionThreshold,
-      intrusionEnabledNextWake: intrusionEnabled(2, 3, constants.intrusionThreshold),
+      intrusionEnabledNextWake: intrusionEnabled(
+        2,
+        3,
+        constants.intrusionThreshold
+      ),
       theoremRefs: [
         'SleepDebt.repeated_truncation_preserves_debt',
         'SleepDebt.debt_at_or_above_intrusion_threshold_enables_intrusion',
@@ -138,7 +150,8 @@ export function buildSleepDebtBoundedWitnessReport(): SleepDebtBoundedWitnessRep
         (scenarios[1]?.effectiveCapacityNextWake ?? constants.maxCapacity) <
           constants.maxCapacity,
       chronicTruncationEnablesIntrusion:
-        (scenarios[2]?.residualDebtAfterSleep ?? 0) >= constants.intrusionThreshold &&
+        (scenarios[2]?.residualDebtAfterSleep ?? 0) >=
+          constants.intrusionThreshold &&
         scenarios[2]?.intrusionEnabledNextWake === true,
     },
     scenarios,
@@ -148,7 +161,9 @@ export function buildSleepDebtBoundedWitnessReport(): SleepDebtBoundedWitnessRep
 export function loadCheckedInSleepDebtBoundedWitness(
   artifactPath = defaultArtifactPath
 ): SleepDebtBoundedWitnessReport {
-  return JSON.parse(readFileSync(artifactPath, 'utf8')) as SleepDebtBoundedWitnessReport;
+  return JSON.parse(
+    readFileSync(artifactPath, 'utf8')
+  ) as SleepDebtBoundedWitnessReport;
 }
 
 export function renderSleepDebtBoundedWitnessMarkdown(
@@ -160,26 +175,42 @@ export function renderSleepDebtBoundedWitnessMarkdown(
   lines.push(`- Label: \`${report.label}\``);
   lines.push(`- Max capacity: \`${report.constants.maxCapacity}\``);
   lines.push(`- Recovery quota: \`${report.constants.recoveryQuota}\``);
-  lines.push(`- Intrusion threshold: \`${report.constants.intrusionThreshold}\``);
+  lines.push(
+    `- Intrusion threshold: \`${report.constants.intrusionThreshold}\``
+  );
   lines.push('');
-  lines.push('| Scenario | Sleep | Demand | Residual debt | Next capacity | Intrusion next wake | Theorems |');
+  lines.push(
+    '| Scenario | Sleep | Demand | Residual debt | Next capacity | Intrusion next wake | Theorems |'
+  );
   lines.push('| --- | --- | ---: | ---: | ---: | --- | --- |');
 
   for (const scenario of report.scenarios) {
     lines.push(
-      `| \`${scenario.id}\` | \`${scenario.sleepType}\` | ${scenario.totalRecoveryDemand} | ${scenario.residualDebtAfterSleep} | ${scenario.effectiveCapacityNextWake} | \`${scenario.intrusionEnabledNextWake ? 'yes' : 'no'}\` | \`${scenario.theoremRefs.join(', ')}\` |`
+      `| \`${scenario.id}\` | \`${scenario.sleepType}\` | ${
+        scenario.totalRecoveryDemand
+      } | ${scenario.residualDebtAfterSleep} | ${
+        scenario.effectiveCapacityNextWake
+      } | \`${
+        scenario.intrusionEnabledNextWake ? 'yes' : 'no'
+      }\` | \`${scenario.theoremRefs.join(', ')}\` |`
     );
   }
 
   lines.push('');
   lines.push(
-    `- Full recovery restores baseline: \`${report.aggregate.fullRecoveryRestoresBaseline ? 'yes' : 'no'}\``
+    `- Full recovery restores baseline: \`${
+      report.aggregate.fullRecoveryRestoresBaseline ? 'yes' : 'no'
+    }\``
   );
   lines.push(
-    `- Partial recovery leaves positive debt: \`${report.aggregate.partialRecoveryLeavesPositiveDebt ? 'yes' : 'no'}\``
+    `- Partial recovery leaves positive debt: \`${
+      report.aggregate.partialRecoveryLeavesPositiveDebt ? 'yes' : 'no'
+    }\``
   );
   lines.push(
-    `- Chronic truncation enables intrusion: \`${report.aggregate.chronicTruncationEnablesIntrusion ? 'yes' : 'no'}\``
+    `- Chronic truncation enables intrusion: \`${
+      report.aggregate.chronicTruncationEnablesIntrusion ? 'yes' : 'no'
+    }\``
   );
   lines.push('');
   lines.push(

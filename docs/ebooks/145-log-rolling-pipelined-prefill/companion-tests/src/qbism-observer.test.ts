@@ -55,7 +55,10 @@ function buleyeanTotalWeight(rounds: number, voidBoundary: number[]): number {
 }
 
 /** Buleyean complement distribution (normalized weights). */
-function buleyeanDistribution(rounds: number, voidBoundary: number[]): number[] {
+function buleyeanDistribution(
+  rounds: number,
+  voidBoundary: number[]
+): number[] {
   const total = buleyeanTotalWeight(rounds, voidBoundary);
   return voidBoundary.map((v) => buleyeanWeight(rounds, v) / total);
 }
@@ -67,9 +70,12 @@ function buleyeanDistribution(rounds: number, voidBoundary: number[]): number[] 
 describe('observer fold collapses beta1', () => {
   const rootNValues = [2, 3, 4, 5, 8, 10, 16, 32, 64, 100];
 
-  it.each(rootNValues)('rootN=%d: pre-measurement beta1 = rootN - 1', (rootN) => {
-    expect(intrinsicBeta1(rootN)).toBe(rootN - 1);
-  });
+  it.each(rootNValues)(
+    'rootN=%d: pre-measurement beta1 = rootN - 1',
+    (rootN) => {
+      expect(intrinsicBeta1(rootN)).toBe(rootN - 1);
+    }
+  );
 
   it.each(rootNValues)('rootN=%d: post-measurement beta1 = 0', (rootN) => {
     // After fold, all cycles collapse
@@ -107,7 +113,7 @@ describe('deficit exactness', () => {
     'rootN=$rootN: classical deficit = $expectedDeficit',
     ({ rootN, expectedDeficit }) => {
       expect(classicalDeficit(rootN)).toBe(expectedDeficit);
-    },
+    }
   );
 
   it.each(cases)('rootN=$rootN: quantum deficit = 0', ({ rootN }) => {
@@ -120,13 +126,17 @@ describe('deficit exactness', () => {
       const N = rootN * rootN;
       const speedup = N / rootN;
       expect(speedup).toBe(classicalDeficit(rootN) + 1);
-    },
+    }
   );
 
   it('deficit + quantum beta1 = intrinsic beta1', () => {
     for (const rootN of [2, 4, 8, 16, 32]) {
-      expect(quantumDeficit(rootN) + quantumBeta1(rootN)).toBe(intrinsicBeta1(rootN));
-      expect(classicalDeficit(rootN) + classicalBeta1()).toBe(intrinsicBeta1(rootN));
+      expect(quantumDeficit(rootN) + quantumBeta1(rootN)).toBe(
+        intrinsicBeta1(rootN)
+      );
+      expect(classicalDeficit(rootN) + classicalBeta1()).toBe(
+        intrinsicBeta1(rootN)
+      );
     }
   });
 });
@@ -341,7 +351,7 @@ describe('superposition-as-fork algebra', () => {
 
     // Total deficit = sum of individual deficits
     // (each fold independently vents its paths)
-    expect(deficit1 + deficit2).toBe((rootN1 - 1) + (rootN2 - 1));
+    expect(deficit1 + deficit2).toBe(rootN1 - 1 + (rootN2 - 1));
     expect(deficit1 + deficit2).toBe(5);
   });
 
@@ -354,7 +364,9 @@ describe('superposition-as-fork algebra', () => {
   it('deficit is monotone in rootN', () => {
     const values = [2, 4, 8, 16, 32, 64];
     for (let i = 0; i < values.length - 1; i++) {
-      expect(classicalDeficit(values[i])).toBeLessThan(classicalDeficit(values[i + 1]));
+      expect(classicalDeficit(values[i])).toBeLessThan(
+        classicalDeficit(values[i + 1])
+      );
     }
   });
 });

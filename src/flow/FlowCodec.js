@@ -18,7 +18,7 @@
 /** Header size in bytes */
 export const HEADER_SIZE = 10;
 /** Maximum payload length (2^24 - 1 = 16,777,215 bytes ≈ 16 MB) */
-export const MAX_PAYLOAD_LENGTH = 0xFFFFFF;
+export const MAX_PAYLOAD_LENGTH = 0xffffff;
 /**
  * FlowCodec — binary encoder/decoder for FlowFrames.
  *
@@ -114,9 +114,9 @@ export class FlowCodec {
         // flags: u8
         buf[6] = frame.flags;
         // length: u24 big-endian
-        buf[7] = (payloadLen >>> 16) & 0xFF;
-        buf[8] = (payloadLen >>> 8) & 0xFF;
-        buf[9] = payloadLen & 0xFF;
+        buf[7] = (payloadLen >>> 16) & 0xff;
+        buf[8] = (payloadLen >>> 8) & 0xff;
+        buf[9] = payloadLen & 0xff;
         // payload
         buf.set(frame.payload, HEADER_SIZE);
         return buf;
@@ -274,9 +274,7 @@ export class FlowCodec {
         if (result instanceof WebAssembly.Instance) {
             return result;
         }
-        if (typeof result === 'object' &&
-            result !== null &&
-            'instance' in result) {
+        if (typeof result === 'object' && result !== null && 'instance' in result) {
             const maybeInstance = result.instance;
             if (maybeInstance instanceof WebAssembly.Instance) {
                 return maybeInstance;

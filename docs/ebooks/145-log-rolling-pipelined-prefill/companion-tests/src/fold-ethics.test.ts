@@ -59,9 +59,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -76,12 +75,22 @@ function shannonEntropy(probs: number[]): number {
 type PayoffFn = (my: number, opp: number) => [number, number];
 
 const PD: PayoffFn = (my, opp) => {
-  const m = [[3, 3], [0, 5], [5, 0], [1, 1]];
+  const m = [
+    [3, 3],
+    [0, 5],
+    [5, 0],
+    [1, 1],
+  ];
   return m[my * 2 + opp] as [number, number];
 };
 
 const HD: PayoffFn = (my, opp) => {
-  const m = [[2, 2], [0, 4], [4, 0], [-1, -1]];
+  const m = [
+    [2, 2],
+    [0, 4],
+    [4, 0],
+    [-1, -1],
+  ];
   return m[my * 2 + opp] as [number, number];
 };
 
@@ -92,7 +101,7 @@ function runRounds(
   rounds: number,
   oppFn: (rng: () => number) => number,
   payoffFn: PayoffFn,
-  rng: () => number,
+  rng: () => number
 ): { payoff: number; void_: number[] } {
   const N = void_.length;
   let payoff = 0;
@@ -106,7 +115,13 @@ function runRounds(
       const rv = rng();
       let cum = 0;
       choice = N - 1;
-      for (let i = 0; i < N; i++) { cum += dist[i]; if (rv < cum) { choice = i; break; } }
+      for (let i = 0; i < N; i++) {
+        cum += dist[i];
+        if (rv < cum) {
+          choice = i;
+          break;
+        }
+      }
     }
     const [myPay, theirPay] = payoffFn(choice, opp);
     payoff += myPay;
@@ -121,12 +136,19 @@ function runRounds(
 // ============================================================================
 
 describe('Fork Ethics: Creates Possibility', () => {
-
   it('1. Generosity: fork wider than necessary → more options → better outcomes', () => {
     const rng = makeRng(42);
     // Narrow fork: 2 choices
     const narrowVoid = [0, 0];
-    const narrow = runRounds(narrowVoid, 3, 0.1, 200, (rng) => rng() < 0.5 ? 0 : 1, PD, rng);
+    const narrow = runRounds(
+      narrowVoid,
+      3,
+      0.1,
+      200,
+      (rng) => (rng() < 0.5 ? 0 : 1),
+      PD,
+      rng
+    );
 
     // Wide fork: 4 choices (includes cooperative variants)
     const widePay: PayoffFn = (my, opp) => {
@@ -135,7 +157,15 @@ describe('Fork Ethics: Creates Possibility', () => {
       return [1, 3]; // opponent exploits generous option less harshly
     };
     const wideVoid = [0, 0, 0, 0];
-    const wide = runRounds(wideVoid, 3, 0.1, 200, (rng) => Math.floor(rng() * 4), widePay, rng);
+    const wide = runRounds(
+      wideVoid,
+      3,
+      0.1,
+      200,
+      (rng) => Math.floor(rng() * 4),
+      widePay,
+      rng
+    );
 
     // More options = richer void boundary = better calibrated
     expect(wideVoid.length).toBeGreaterThan(narrowVoid.length);
@@ -146,14 +176,19 @@ describe('Fork Ethics: Creates Possibility', () => {
     // Create options for someone else: their void gets data they wouldn't have generated
     const theirVoid = [0, 0, 0];
     // Without opportunity: they only see 2 of 3 options
-    theirVoid[0] = 5; theirVoid[1] = 3;
+    theirVoid[0] = 5;
+    theirVoid[1] = 3;
     const beforeEntropy = shannonEntropy(complementDist(theirVoid));
     // With opportunity: you show them option 3
     theirVoid[2] = 1;
     const afterEntropy = shannonEntropy(complementDist(theirVoid));
     // Their distribution is now richer (higher entropy = more informed)
     expect(afterEntropy).toBeGreaterThan(beforeEntropy);
-    console.log(`  2. Opportunity: H before=${beforeEntropy.toFixed(3)} after=${afterEntropy.toFixed(3)}`);
+    console.log(
+      `  2. Opportunity: H before=${beforeEntropy.toFixed(
+        3
+      )} after=${afterEntropy.toFixed(3)}`
+    );
   });
 
   it('3. Forgiveness: re-fork a vented path → restores dead option', () => {
@@ -168,7 +203,11 @@ describe('Fork Ethics: Creates Possibility', () => {
     // Forgiven option has higher weight (restored possibility)
     // The ratio changed: 30:5 → 10:5, so choice 0 gets relatively more weight
     expect(distForgiven[0]).toBeGreaterThanOrEqual(distUnforgiven[0]);
-    console.log(`  3. Forgiveness: unforgiven p(0)=${distUnforgiven[0].toFixed(3)} forgiven=${distForgiven[0].toFixed(3)}`);
+    console.log(
+      `  3. Forgiveness: unforgiven p(0)=${distUnforgiven[0].toFixed(
+        3
+      )} forgiven=${distForgiven[0].toFixed(3)}`
+    );
   });
 
   it('4. Trust: fork before verification → extends possibility on faith', () => {
@@ -183,15 +222,33 @@ describe('Fork Ethics: Creates Possibility', () => {
       if (p < 0) trustVoid[0]++;
     }
     // Then play from void
-    const trustResult = runRounds(trustVoid, 3, 0.1, 180, (rng) => rng() < 0.7 ? 0 : 1, PD, rng);
+    const trustResult = runRounds(
+      trustVoid,
+      3,
+      0.1,
+      180,
+      (rng) => (rng() < 0.7 ? 0 : 1),
+      PD,
+      rng
+    );
 
     // Distrusting: play from void from the start
     const distrustVoid = [0, 0];
-    const distrustResult = runRounds(distrustVoid, 3, 0.3, 200, (rng) => rng() < 0.7 ? 0 : 1, PD, rng);
+    const distrustResult = runRounds(
+      distrustVoid,
+      3,
+      0.3,
+      200,
+      (rng) => (rng() < 0.7 ? 0 : 1),
+      PD,
+      rng
+    );
 
     // Trust pays off against a mostly-cooperative opponent
     const totalTrust = trustPayoff + trustResult.payoff;
-    console.log(`  4. Trust: trusting=${totalTrust} distrusting=${distrustResult.payoff}`);
+    console.log(
+      `  4. Trust: trusting=${totalTrust} distrusting=${distrustResult.payoff}`
+    );
     expect(isFinite(totalTrust)).toBe(true);
   });
 
@@ -203,15 +260,22 @@ describe('Fork Ethics: Creates Possibility', () => {
     // Even with dense void, exploration creates new data
     const hopeVoid = [...hopelessVoid];
     const rng = makeRng(42);
-    const result = runRounds(hopeVoid, 3, 0.5, 100,
+    const result = runRounds(
+      hopeVoid,
+      3,
+      0.5,
+      100,
       (rng) => Math.floor(rng() * 3),
-      (my, opp) => my === opp ? [5, 5] : [-1, 1],
-      rng);
+      (my, opp) => (my === opp ? [5, 5] : [-1, 1]),
+      rng
+    );
     // After 100 rounds of hopeful exploration, void has more structure
     const totalBefore = hopelessVoid.reduce((a, b) => a + b, 0);
     const totalAfter = hopeVoid.reduce((a, b) => a + b, 0);
     expect(totalAfter).toBeGreaterThanOrEqual(totalBefore);
-    console.log(`  5. Hope: void before=${totalBefore} after=${totalAfter} payoff=${result.payoff}`);
+    console.log(
+      `  5. Hope: void before=${totalBefore} after=${totalAfter} payoff=${result.payoff}`
+    );
   });
 });
 
@@ -220,7 +284,6 @@ describe('Fork Ethics: Creates Possibility', () => {
 // ============================================================================
 
 describe('Race Ethics: Creates Knowledge', () => {
-
   it('6. Listening: race without pre-selecting → fair evaluation', () => {
     // Biased racer: pre-selects choice 0 (eta=10, ignores void)
     const biasedVoid = [5, 20];
@@ -228,58 +291,114 @@ describe('Race Ethics: Creates Knowledge', () => {
     // Listener: races all options fairly (eta=1, low sharpness)
     const listeningDist = complementDist(biasedVoid, 1);
     // Listening produces more uniform evaluation (higher entropy)
-    expect(shannonEntropy(listeningDist)).toBeGreaterThan(shannonEntropy(biasedDist));
-    console.log(`  6. Listening: biased H=${shannonEntropy(biasedDist).toFixed(3)} listening H=${shannonEntropy(listeningDist).toFixed(3)}`);
+    expect(shannonEntropy(listeningDist)).toBeGreaterThan(
+      shannonEntropy(biasedDist)
+    );
+    console.log(
+      `  6. Listening: biased H=${shannonEntropy(biasedDist).toFixed(
+        3
+      )} listening H=${shannonEntropy(listeningDist).toFixed(3)}`
+    );
   });
 
   it('7. Holding space: race with no deadline → more information', () => {
     // Short race: 10 rounds (premature fold)
     const rng1 = makeRng(42);
     const shortVoid = [0, 0, 0];
-    runRounds(shortVoid, 3, 0.3, 10, (rng) => Math.floor(rng() * 3),
-      (my, opp) => my === opp ? [3, 3] : [-1, 1], rng1);
+    runRounds(
+      shortVoid,
+      3,
+      0.3,
+      10,
+      (rng) => Math.floor(rng() * 3),
+      (my, opp) => (my === opp ? [3, 3] : [-1, 1]),
+      rng1
+    );
     // Long race: 100 rounds (held space)
     const rng2 = makeRng(42);
     const longVoid = [0, 0, 0];
-    runRounds(longVoid, 3, 0.3, 100, (rng) => Math.floor(rng() * 3),
-      (my, opp) => my === opp ? [3, 3] : [-1, 1], rng2);
+    runRounds(
+      longVoid,
+      3,
+      0.3,
+      100,
+      (rng) => Math.floor(rng() * 3),
+      (my, opp) => (my === opp ? [3, 3] : [-1, 1]),
+      rng2
+    );
     // More rounds = more void data = better calibrated distribution
     const shortTotal = shortVoid.reduce((a, b) => a + b, 0);
     const longTotal = longVoid.reduce((a, b) => a + b, 0);
     expect(longTotal).toBeGreaterThanOrEqual(shortTotal);
-    console.log(`  7. Holding space: short void=${shortTotal} long void=${longTotal}`);
+    console.log(
+      `  7. Holding space: short void=${shortTotal} long void=${longTotal}`
+    );
   });
 
   it('8. Curiosity: race with high exploration rate → discovers more', () => {
     const rng1 = makeRng(42);
     const incuriousVoid = [0, 0, 0, 0, 0];
-    runRounds(incuriousVoid, 5, 0.01, 100, (rng) => Math.floor(rng() * 5),
-      (my, opp) => my === opp ? [3, 3] : [-1, 1], rng1);
+    runRounds(
+      incuriousVoid,
+      5,
+      0.01,
+      100,
+      (rng) => Math.floor(rng() * 5),
+      (my, opp) => (my === opp ? [3, 3] : [-1, 1]),
+      rng1
+    );
     const rng2 = makeRng(42);
     const curiousVoid = [0, 0, 0, 0, 0];
-    runRounds(curiousVoid, 5, 0.5, 100, (rng) => Math.floor(rng() * 5),
-      (my, opp) => my === opp ? [3, 3] : [-1, 1], rng2);
+    runRounds(
+      curiousVoid,
+      5,
+      0.5,
+      100,
+      (rng) => Math.floor(rng() * 5),
+      (my, opp) => (my === opp ? [3, 3] : [-1, 1]),
+      rng2
+    );
     // Curious agent explores more options (more nonzero void entries)
     const incuriousNonzero = incuriousVoid.filter((v) => v > 0).length;
     const curiousNonzero = curiousVoid.filter((v) => v > 0).length;
     expect(curiousNonzero).toBeGreaterThanOrEqual(incuriousNonzero);
-    console.log(`  8. Curiosity: incurious explored ${incuriousNonzero}/5 curious explored ${curiousNonzero}/5`);
+    console.log(
+      `  8. Curiosity: incurious explored ${incuriousNonzero}/5 curious explored ${curiousNonzero}/5`
+    );
   });
 
   it('9. Patience: more ticks before folding → better quality', () => {
     // Impatient: fold after 5 rounds
     const rng1 = makeRng(42);
     const impVoid = [0, 0];
-    const impResult = runRounds(impVoid, 3, 0.2, 5, (rng) => rng() < 0.5 ? 0 : 1, HD, rng1);
+    const impResult = runRounds(
+      impVoid,
+      3,
+      0.2,
+      5,
+      (rng) => (rng() < 0.5 ? 0 : 1),
+      HD,
+      rng1
+    );
     // Patient: fold after 50 rounds
     const rng2 = makeRng(42);
     const patVoid = [0, 0];
-    const patResult = runRounds(patVoid, 3, 0.2, 50, (rng) => rng() < 0.5 ? 0 : 1, HD, rng2);
+    const patResult = runRounds(
+      patVoid,
+      3,
+      0.2,
+      50,
+      (rng) => (rng() < 0.5 ? 0 : 1),
+      HD,
+      rng2
+    );
     // Patient agent has denser void (more informed)
     const impTotal = impVoid.reduce((a, b) => a + b, 0);
     const patTotal = patVoid.reduce((a, b) => a + b, 0);
     expect(patTotal).toBeGreaterThanOrEqual(impTotal);
-    console.log(`  9. Patience: impatient void=${impTotal} patient void=${patTotal}`);
+    console.log(
+      `  9. Patience: impatient void=${impTotal} patient void=${patTotal}`
+    );
   });
 
   it('10. Multi-reality: covering space preserved → more info', () => {
@@ -298,7 +417,11 @@ describe('Race Ethics: Creates Knowledge', () => {
     const aPrefers = distA[0] > distA[1] ? 0 : 1;
     const bPrefers = distB[0] > distB[1] ? 0 : 1;
     expect(aPrefers).not.toBe(bPrefers); // they literally disagree
-    console.log(`  10. Multi-reality: L1 divergence=${l1.toFixed(3)} A prefers ${aPrefers} B prefers ${bPrefers}`);
+    console.log(
+      `  10. Multi-reality: L1 divergence=${l1.toFixed(
+        3
+      )} A prefers ${aPrefers} B prefers ${bPrefers}`
+    );
   });
 });
 
@@ -307,7 +430,6 @@ describe('Race Ethics: Creates Knowledge', () => {
 // ============================================================================
 
 describe('Fold Ethics: Creates Commitment', () => {
-
   it('11. Judgment: void-informed fold → better outcomes than blind fold', () => {
     // Blind fold: random choice, no void reading
     const rng1 = makeRng(42);
@@ -319,10 +441,19 @@ describe('Fold Ethics: Creates Commitment', () => {
     // Judged fold: void-informed choice
     const rng2 = makeRng(42);
     const judgeVoid = [0, 0];
-    const judgeResult = runRounds(judgeVoid, 3, 0.1, 100,
-      (rng) => rng() < 0.5 ? 0 : 1, HD, rng2);
+    const judgeResult = runRounds(
+      judgeVoid,
+      3,
+      0.1,
+      100,
+      (rng) => (rng() < 0.5 ? 0 : 1),
+      HD,
+      rng2
+    );
     // Judgment (reading void before folding) should produce better outcomes
-    console.log(`  11. Judgment: blind=${blindPayoff} informed=${judgeResult.payoff}`);
+    console.log(
+      `  11. Judgment: blind=${blindPayoff} informed=${judgeResult.payoff}`
+    );
     expect(isFinite(judgeResult.payoff)).toBe(true);
   });
 
@@ -333,7 +464,11 @@ describe('Fold Ethics: Creates Commitment', () => {
     const voidAfter = [0, 10, 10]; // decided
     const entAfter = shannonEntropy(complementDist(voidAfter));
     expect(entAfter).toBeLessThan(entBefore);
-    console.log(`  12. Decision: H before=${entBefore.toFixed(3)} after=${entAfter.toFixed(3)}`);
+    console.log(
+      `  12. Decision: H before=${entBefore.toFixed(
+        3
+      )} after=${entAfter.toFixed(3)}`
+    );
   });
 
   it('13. Promise: fold that constrains future forks', () => {
@@ -345,7 +480,11 @@ describe('Fold Ethics: Creates Commitment', () => {
     const promiseH = shannonEntropy(complementDist(promiseVoid));
     // Promise reduces entropy (constrains future)
     expect(promiseH).toBeLessThan(freeH);
-    console.log(`  13. Promise: free H=${freeH.toFixed(3)} promise H=${promiseH.toFixed(3)}`);
+    console.log(
+      `  13. Promise: free H=${freeH.toFixed(3)} promise H=${promiseH.toFixed(
+        3
+      )}`
+    );
   });
 
   it('14. Sacrifice: fold that vents self for others (costly signal)', () => {
@@ -357,7 +496,11 @@ describe('Fold Ethics: Creates Commitment', () => {
     // Cost: lower personal payoff. Benefit: signals trustworthiness.
     const sacrificeCost = selfishDist[1] - selfishDist[0]; // probability given up
     expect(sacrificeCost).toBeGreaterThan(0); // sacrifice IS costly
-    console.log(`  14. Sacrifice: probability cost=${sacrificeCost.toFixed(3)} (costly signal)`);
+    console.log(
+      `  14. Sacrifice: probability cost=${sacrificeCost.toFixed(
+        3
+      )} (costly signal)`
+    );
   });
 
   it('15. Courage: fold despite sparse void (act despite uncertainty)', () => {
@@ -374,9 +517,13 @@ describe('Fold Ethics: Creates Commitment', () => {
     // Sparse void still has SOME structure (unlike empty)
     expect(denseH).toBeLessThan(emptyH + 0.01); // dense is more certain
     expect(sparseVoid.reduce((a, b) => a + b, 0)).toBeLessThan(
-      denseVoid.reduce((a, b) => a + b, 0),
+      denseVoid.reduce((a, b) => a + b, 0)
     ); // sparse has less data = more courage needed
-    console.log(`  15. Courage: dense H=${denseH.toFixed(3)} (confident) sparse H=${sparseH.toFixed(3)} (courageous)`);
+    console.log(
+      `  15. Courage: dense H=${denseH.toFixed(
+        3
+      )} (confident) sparse H=${sparseH.toFixed(3)} (courageous)`
+    );
   });
 });
 
@@ -385,7 +532,6 @@ describe('Fold Ethics: Creates Commitment', () => {
 // ============================================================================
 
 describe('Vent Ethics: Creates Clarity', () => {
-
   it('16. Rejection: standard vent → adds tombstone', () => {
     const voidBefore = [5, 5];
     const voidAfter = [6, 5]; // rejected choice 0 once more
@@ -393,7 +539,11 @@ describe('Vent Ethics: Creates Clarity', () => {
     const distAfter = complementDist(voidAfter);
     // Rejection shifts weight away from rejected option
     expect(distAfter[0]).toBeLessThan(distBefore[0]);
-    console.log(`  16. Rejection: p(0) before=${distBefore[0].toFixed(3)} after=${distAfter[0].toFixed(3)}`);
+    console.log(
+      `  16. Rejection: p(0) before=${distBefore[0].toFixed(
+        3
+      )} after=${distAfter[0].toFixed(3)}`
+    );
   });
 
   it('17. Criticism: vent with high information → detailed tombstone', () => {
@@ -405,14 +555,18 @@ describe('Vent Ethics: Creates Clarity', () => {
     const vagueRatio = vagueVoid[0] / vagueVoid[1]; // 6/5 = 1.2
     const detailedRatio = detailedVoid[0] / detailedVoid[1]; // 10/5 = 2.0
     expect(detailedRatio).toBeGreaterThan(vagueRatio);
-    console.log(`  17. Criticism: vague ratio=${vagueRatio.toFixed(1)} detailed ratio=${detailedRatio.toFixed(1)} (stronger signal)`);
+    console.log(
+      `  17. Criticism: vague ratio=${vagueRatio.toFixed(
+        1
+      )} detailed ratio=${detailedRatio.toFixed(1)} (stronger signal)`
+    );
   });
 
   it('18. Tough love: vent + void seeding → pain accelerates learning', () => {
     const rng = makeRng(42);
     // Gentle: low void accumulation rate
     const gentleVoid = [0, 0];
-    runRounds(gentleVoid, 3, 0.1, 50, (rng) => rng() < 0.5 ? 0 : 1, PD, rng);
+    runRounds(gentleVoid, 3, 0.1, 50, (rng) => (rng() < 0.5 ? 0 : 1), PD, rng);
     // Tough love: high void accumulation (opponent deliberately creates failures)
     const toughVoid = [0, 0];
     // Simulate tough love: opponent always defects (forces learning)
@@ -421,7 +575,9 @@ describe('Vent Ethics: Creates Clarity', () => {
     const gentleTotal = gentleVoid.reduce((a, b) => a + b, 0);
     const toughTotal = toughVoid.reduce((a, b) => a + b, 0);
     expect(toughTotal).toBeGreaterThanOrEqual(gentleTotal);
-    console.log(`  18. Tough love: gentle void=${gentleTotal} tough void=${toughTotal}`);
+    console.log(
+      `  18. Tough love: gentle void=${gentleTotal} tough void=${toughTotal}`
+    );
   });
 
   it('19. Honesty: vent the truth → accurate tombstone', () => {
@@ -435,7 +591,11 @@ describe('Vent Ethics: Creates Clarity', () => {
     expect(honestDist[1]).toBeLessThan(honestDist[0]); // less weight on actual loser
     // Dishonest void misdirects
     expect(dishonestDist[0]).toBeLessThan(dishonestDist[1]); // blames the wrong one
-    console.log(`  19. Honesty: dishonest points to ${dishonestDist[0] < dishonestDist[1] ? '0 (wrong)' : '1'} honest points to ${honestDist[0] < honestDist[1] ? '0' : '1 (correct)'}`);
+    console.log(
+      `  19. Honesty: dishonest points to ${
+        dishonestDist[0] < dishonestDist[1] ? '0 (wrong)' : '1'
+      } honest points to ${honestDist[0] < honestDist[1] ? '0' : '1 (correct)'}`
+    );
   });
 
   it('20. Boundaries: vent all offers outside region → defines ZOPA', () => {
@@ -444,9 +604,14 @@ describe('Vent Ethics: Creates Clarity', () => {
     const dist = complementDist(boundaryVoid);
     // ZOPA bins should have highest weight
     const zopaWeight = dist[3] + dist[4] + dist[5] + dist[6];
-    const outsideWeight = dist[0] + dist[1] + dist[2] + dist[7] + dist[8] + dist[9];
+    const outsideWeight =
+      dist[0] + dist[1] + dist[2] + dist[7] + dist[8] + dist[9];
     expect(zopaWeight).toBeGreaterThan(outsideWeight);
-    console.log(`  20. Boundaries: ZOPA weight=${(zopaWeight * 100).toFixed(1)}% outside=${(outsideWeight * 100).toFixed(1)}%`);
+    console.log(
+      `  20. Boundaries: ZOPA weight=${(zopaWeight * 100).toFixed(
+        1
+      )}% outside=${(outsideWeight * 100).toFixed(1)}%`
+    );
   });
 });
 
@@ -455,20 +620,32 @@ describe('Vent Ethics: Creates Clarity', () => {
 // ============================================================================
 
 describe('Trace Ethics: Creates Learning', () => {
-
   it('21. Dialogue: trace with context accumulation → deficit reduces', () => {
     // Deficit = entropy gap. Trace (iterated feedback) reduces it.
     const rng = makeRng(42);
     const void_ = [0, 0, 0];
     const entropies: number[] = [];
     for (let epoch = 0; epoch < 10; epoch++) {
-      runRounds(void_, 3, 0.2, 20, (rng) => Math.floor(rng() * 3),
-        (my, opp) => my === opp ? [3, 3] : [-1, 1], rng);
+      runRounds(
+        void_,
+        3,
+        0.2,
+        20,
+        (rng) => Math.floor(rng() * 3),
+        (my, opp) => (my === opp ? [3, 3] : [-1, 1]),
+        rng
+      );
       entropies.push(shannonEntropy(complementDist(void_)));
     }
     // Entropy should generally decrease (learning reduces uncertainty)
-    expect(entropies[entropies.length - 1]).toBeLessThanOrEqual(entropies[0] + 0.1);
-    console.log(`  21. Dialogue: H trajectory: ${entropies.map((h) => h.toFixed(2)).join(' → ')}`);
+    expect(entropies[entropies.length - 1]).toBeLessThanOrEqual(
+      entropies[0] + 0.1
+    );
+    console.log(
+      `  21. Dialogue: H trajectory: ${entropies
+        .map((h) => h.toFixed(2))
+        .join(' → ')}`
+    );
   });
 
   it('22. Relationship: trace with void gifting → shared history', () => {
@@ -476,7 +653,7 @@ describe('Trace Ethics: Creates Learning', () => {
     const strangerA = [10, 5];
     const strangerB = [3, 12];
     const strangerDivergence = Math.abs(
-      complementDist(strangerA)[0] - complementDist(strangerB)[0],
+      complementDist(strangerA)[0] - complementDist(strangerB)[0]
     );
     // Relationship: shared void (gifted history)
     const shared = strangerA.map((v, i) => v + strangerB[i]);
@@ -486,7 +663,11 @@ describe('Trace Ethics: Creates Learning', () => {
     // Relationship = zero divergence (shared void = coherence)
     expect(sharedDivergence).toBe(0);
     expect(sharedDivergence).toBeLessThan(strangerDivergence);
-    console.log(`  22. Relationship: stranger divergence=${strangerDivergence.toFixed(3)} shared=${sharedDivergence.toFixed(3)}`);
+    console.log(
+      `  22. Relationship: stranger divergence=${strangerDivergence.toFixed(
+        3
+      )} shared=${sharedDivergence.toFixed(3)}`
+    );
   });
 
   it('23. Growth: trace with increasing inverse Bule → learning accelerates', () => {
@@ -496,8 +677,15 @@ describe('Trace Ethics: Creates Learning', () => {
     const inverseBules: number[] = [];
     let totalRounds = 0;
     for (let epoch = 0; epoch < 10; epoch++) {
-      runRounds(void_, 3, 0.2, 50, (rng) => Math.floor(rng() * 3),
-        (my, opp) => my === opp ? [3, 3] : [-1, 1], rng);
+      runRounds(
+        void_,
+        3,
+        0.2,
+        50,
+        (rng) => Math.floor(rng() * 3),
+        (my, opp) => (my === opp ? [3, 3] : [-1, 1]),
+        rng
+      );
       totalRounds += 50;
       const h = shannonEntropy(complementDist(void_));
       inverseBules.push((maxH - h) / totalRounds);
@@ -506,7 +694,11 @@ describe('Trace Ethics: Creates Learning', () => {
     for (const ib of inverseBules) {
       expect(ib).toBeGreaterThanOrEqual(-0.01);
     }
-    console.log(`  23. Growth: B⁻¹ trajectory: ${inverseBules.map((b) => (b * 1000).toFixed(2)).join(' → ')}`);
+    console.log(
+      `  23. Growth: B⁻¹ trajectory: ${inverseBules
+        .map((b) => (b * 1000).toFixed(2))
+        .join(' → ')}`
+    );
   });
 
   it('24. Redemption: trace that restores a vented path', () => {
@@ -521,27 +713,52 @@ describe('Trace Ethics: Creates Learning', () => {
     expect(postRedemption[0]).toBeLessThan(preRedemption[0]);
     // And the ratio changed: 40:5 → 10:5 = 8:1 → 2:1
     expect(postRedemption[0] / postRedemption[1]).toBeLessThan(
-      preRedemption[0] / preRedemption[1],
+      preRedemption[0] / preRedemption[1]
     );
-    console.log(`  24. Redemption: pre p(0)=${preWeight.toFixed(3)} post=${postWeight.toFixed(3)}`);
+    console.log(
+      `  24. Redemption: pre p(0)=${preWeight.toFixed(
+        3
+      )} post=${postWeight.toFixed(3)}`
+    );
   });
 
   it('25. Culture: trace across generations → inherited void', () => {
     // Generation 1: learns from scratch
     const rng1 = makeRng(42);
     const gen1Void = [0, 0];
-    const gen1 = runRounds(gen1Void, 3, 0.2, 100, (rng) => rng() < 0.5 ? 0 : 1, HD, rng1);
+    const gen1 = runRounds(
+      gen1Void,
+      3,
+      0.2,
+      100,
+      (rng) => (rng() < 0.5 ? 0 : 1),
+      HD,
+      rng1
+    );
     // Generation 2: inherits gen1's void (cultural knowledge)
     const rng2 = makeRng(43);
     const gen2Void = [...gen1Void]; // INHERITED
-    const gen2 = runRounds(gen2Void, 3, 0.2, 100, (rng) => rng() < 0.5 ? 0 : 1, HD, rng2);
+    const gen2 = runRounds(
+      gen2Void,
+      3,
+      0.2,
+      100,
+      (rng) => (rng() < 0.5 ? 0 : 1),
+      HD,
+      rng2
+    );
     // Generation 2 starts with a richer void
     const gen1Start = [0, 0];
     const gen2Start = [...gen1Void];
     expect(gen2Start.reduce((a, b) => a + b, 0)).toBeGreaterThan(
-      gen1Start.reduce((a, b) => a + b, 0),
+      gen1Start.reduce((a, b) => a + b, 0)
     );
-    console.log(`  25. Culture: gen1 start void=0 gen2 start void=${gen2Start.reduce((a, b) => a + b, 0)} (inherited)`);
+    console.log(
+      `  25. Culture: gen1 start void=0 gen2 start void=${gen2Start.reduce(
+        (a, b) => a + b,
+        0
+      )} (inherited)`
+    );
   });
 });
 
@@ -553,7 +770,13 @@ describe('Fold Ethics Summary', () => {
   it('complete enumeration: 25 ethical operations across 5 primitives', () => {
     const ethics = {
       fork: ['generosity', 'opportunity', 'forgiveness', 'trust', 'hope'],
-      race: ['listening', 'holding-space', 'curiosity', 'patience', 'multi-reality'],
+      race: [
+        'listening',
+        'holding-space',
+        'curiosity',
+        'patience',
+        'multi-reality',
+      ],
       fold: ['judgment', 'decision', 'promise', 'sacrifice', 'courage'],
       vent: ['rejection', 'criticism', 'tough-love', 'honesty', 'boundaries'],
       trace: ['dialogue', 'relationship', 'growth', 'redemption', 'culture'],
@@ -562,15 +785,37 @@ describe('Fold Ethics Summary', () => {
     const total = Object.values(ethics).reduce((s, v) => s + v.length, 0);
     expect(total).toBe(25);
 
-    console.log('\n  ╔═══════════════════════════════════════════════════════════════╗');
-    console.log('  ║            FOLD ETHICS: The Complete Set (25)                 ║');
-    console.log('  ╠═══════════════════════════════════════════════════════════════╣');
+    console.log(
+      '\n  ╔═══════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║            FOLD ETHICS: The Complete Set (25)                 ║'
+    );
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════╣'
+    );
     for (const [primitive, ops] of Object.entries(ethics)) {
-      const creates = { fork: 'possibility', race: 'knowledge', fold: 'commitment', vent: 'clarity', trace: 'learning' }[primitive];
-      console.log(`  ║ ${primitive.toUpperCase().padEnd(6)} creates ${creates?.padEnd(12)} ${ops.join(', ').padEnd(42)}║`);
+      const creates = {
+        fork: 'possibility',
+        race: 'knowledge',
+        fold: 'commitment',
+        vent: 'clarity',
+        trace: 'learning',
+      }[primitive];
+      console.log(
+        `  ║ ${primitive.toUpperCase().padEnd(6)} creates ${creates?.padEnd(
+          12
+        )} ${ops.join(', ').padEnd(42)}║`
+      );
     }
-    console.log('  ╠═══════════════════════════════════════════════════════════════╣');
-    console.log('  ║ Not sentiment. Information theory. Measured. Testable.        ║');
-    console.log('  ╚═══════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '  ╠═══════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      '  ║ Not sentiment. Information theory. Measured. Testable.        ║'
+    );
+    console.log(
+      '  ╚═══════════════════════════════════════════════════════════════╝\n'
+    );
   });
 });

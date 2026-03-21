@@ -24,8 +24,14 @@ function parsePositiveNumberArg(value: string, flag: string): number {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/quantum-recombination-ablation.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/quantum-recombination-ablation.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/quantum-recombination-ablation.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/quantum-recombination-ablation.md'
+  );
 
   let assertMatrix = false;
   let tolerance: number | null = null;
@@ -75,23 +81,45 @@ function parseCli(argv: readonly string[]): CliOptions {
 
 async function main(): Promise<void> {
   const options = parseCli(process.argv.slice(2));
-  const report = runQuantumRecombinationAblation(options.tolerance ?? undefined);
+  const report = runQuantumRecombinationAblation(
+    options.tolerance ?? undefined
+  );
 
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  writeFileSync(options.markdownPath, renderQuantumRecombinationAblationMarkdown(report), 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
+  writeFileSync(
+    options.markdownPath,
+    renderQuantumRecombinationAblationMarkdown(report),
+    'utf8'
+  );
 
   process.stdout.write(
-    `quantum-recombination-ablation: ${report.predictedLossMatrixMatches ? 'MATCH' : 'MISMATCH'}\n`,
+    `quantum-recombination-ablation: ${
+      report.predictedLossMatrixMatches ? 'MATCH' : 'MISMATCH'
+    }\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
 
-  for (const [strategyName, strategyReport] of Object.entries(report.strategies)) {
+  for (const [strategyName, strategyReport] of Object.entries(
+    report.strategies
+  )) {
     process.stdout.write(
-      `- ${strategyName}: kernel=${strategyReport.profile.preservesKernelAgreement ? 'yes' : 'no'}, partition=${strategyReport.profile.preservesPartitionAdditivity ? 'yes' : 'no'}, order=${strategyReport.profile.preservesOrderInvariance ? 'yes' : 'no'}, cancellation=${strategyReport.profile.preservesCancellation ? 'yes' : 'no'}\n`,
+      `- ${strategyName}: kernel=${
+        strategyReport.profile.preservesKernelAgreement ? 'yes' : 'no'
+      }, partition=${
+        strategyReport.profile.preservesPartitionAdditivity ? 'yes' : 'no'
+      }, order=${
+        strategyReport.profile.preservesOrderInvariance ? 'yes' : 'no'
+      }, cancellation=${
+        strategyReport.profile.preservesCancellation ? 'yes' : 'no'
+      }\n`
     );
   }
 
@@ -101,6 +129,8 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  process.stderr.write(
+    `${error instanceof Error ? error.message : String(error)}\n`
+  );
   process.exitCode = 1;
 });

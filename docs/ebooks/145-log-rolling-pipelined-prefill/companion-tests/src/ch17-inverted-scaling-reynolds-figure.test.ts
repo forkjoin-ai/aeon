@@ -16,9 +16,15 @@ describe('Chapter 17 inverted-scaling and Reynolds figure', () => {
     expect(figure.regimeCurves).toHaveLength(3);
     expect(figure.scenarios).toHaveLength(6);
 
-    const table500x8 = figure.scenarios.find((scenario) => scenario.id === 'table-500x8');
-    const aeonFlow = figure.scenarios.find((scenario) => scenario.id === 'aeon-flow-microfrontend');
-    const http1 = figure.scenarios.find((scenario) => scenario.id === 'http1-microfrontend');
+    const table500x8 = figure.scenarios.find(
+      (scenario) => scenario.id === 'table-500x8'
+    );
+    const aeonFlow = figure.scenarios.find(
+      (scenario) => scenario.id === 'aeon-flow-microfrontend'
+    );
+    const http1 = figure.scenarios.find(
+      (scenario) => scenario.id === 'http1-microfrontend'
+    );
 
     expect(table500x8?.speedup).toBeCloseTo(266.667, 3);
     expect(table500x8?.regime).toBe('turbulent');
@@ -34,7 +40,9 @@ describe('Chapter 17 inverted-scaling and Reynolds figure', () => {
     const markdown = renderCh17InvertedScalingReynoldsFigureMarkdown(figure);
     const svg = renderCh17InvertedScalingReynoldsFigureSvg(figure);
 
-    expect(markdown).toContain('# Chapter 17 Inverted-Scaling and Reynolds Figure');
+    expect(markdown).toContain(
+      '# Chapter 17 Inverted-Scaling and Reynolds Figure'
+    );
     expect(markdown).toContain('## Scenarios');
     expect(markdown).toContain('95 resources / Aeon Flow');
     expect(svg).toContain('<svg');

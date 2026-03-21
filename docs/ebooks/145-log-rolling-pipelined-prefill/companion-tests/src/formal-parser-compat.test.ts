@@ -21,7 +21,7 @@ describe('Formal parser compatibility (aeon-logic)', () => {
     const cfgBases = new Set(
       files
         .filter((entry) => extname(entry) === '.cfg')
-        .map((entry) => basename(entry, '.cfg')),
+        .map((entry) => basename(entry, '.cfg'))
     );
     const tlaFiles = files
       .filter((entry) => extname(entry) === '.tla')
@@ -55,7 +55,9 @@ describe('Formal parser compatibility (aeon-logic)', () => {
       const reparsed = parseTlcConfig(rendered);
 
       expect(reparsed).toEqual(parsed);
-      expect(Boolean(parsed.specification || (parsed.init && parsed.next))).toBe(true);
+      expect(
+        Boolean(parsed.specification || (parsed.init && parsed.next))
+      ).toBe(true);
     }
   });
 
@@ -64,12 +66,12 @@ describe('Formal parser compatibility (aeon-logic)', () => {
     const modules = new Set(
       files
         .filter((entry) => extname(entry) === '.tla')
-        .map((entry) => basename(entry, '.tla')),
+        .map((entry) => basename(entry, '.tla'))
     );
     const configs = new Set(
       files
         .filter((entry) => extname(entry) === '.cfg')
-        .map((entry) => basename(entry, '.cfg')),
+        .map((entry) => basename(entry, '.cfg'))
     );
 
     for (const configName of configs) {
@@ -88,28 +90,72 @@ describe('Formal parser compatibility (aeon-logic)', () => {
     expect(result.report.project.toolchain).not.toBeNull();
     expect(result.report.project.moduleCount).toBeGreaterThan(0);
     expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureComposition');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureDurability');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureEntropy');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureFamilies');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureTrilemma');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.FailureUniversality');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.InterferenceCoarsening');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.QuorumAsyncNetwork');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.QuorumConsistency');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.QuorumLinearizability');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.QuorumOrdering');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.QuorumVisibility');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.JacksonEnvelopeClosure');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.JacksonExactClosure');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.JacksonFeedForwardClosure');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.JacksonQueueing');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.JacksonRawClosure');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.AdaptiveWitnesses');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.QueueBoundary');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.MeasureQueueing');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.QueueStability');
-    expect(result.report.project.moduleNames).toContain('ForkRaceFoldTheorems.StateDependentQueueFamilies');
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.FailureComposition'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.FailureDurability'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.FailureEntropy'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.FailureFamilies'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.FailureTrilemma'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.FailureUniversality'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.InterferenceCoarsening'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.QuorumAsyncNetwork'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.QuorumConsistency'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.QuorumLinearizability'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.QuorumOrdering'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.QuorumVisibility'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.JacksonEnvelopeClosure'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.JacksonExactClosure'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.JacksonFeedForwardClosure'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.JacksonQueueing'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.JacksonRawClosure'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.AdaptiveWitnesses'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.QueueBoundary'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.MeasureQueueing'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.QueueStability'
+    );
+    expect(result.report.project.moduleNames).toContain(
+      'ForkRaceFoldTheorems.StateDependentQueueFamilies'
+    );
     expect(result.report.build.attempted).toBe(false);
   });
 });

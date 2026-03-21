@@ -51,7 +51,11 @@ const UNIT: CompGraph = {
   payload: [],
 };
 
-function makeGraph(label: string, beta1: number, payload: readonly number[]): CompGraph {
+function makeGraph(
+  label: string,
+  beta1: number,
+  payload: readonly number[]
+): CompGraph {
   return { label, beta0: 1, beta1, beta2: 0, payload };
 }
 
@@ -147,7 +151,6 @@ const D = makeGraph('D', 0, [10]);
 // ============================================================================
 
 describe('Monoidal Coherence of Fork/Race/Fold', () => {
-
   // ── 1. Unit laws ──────────────────────────────────────────────────
 
   describe('unit laws: I ⊗ A ≅ A ≅ A ⊗ I', () => {
@@ -338,15 +341,15 @@ describe('Monoidal Coherence of Fork/Race/Fold', () => {
       //  (B⊗C)⊗A --α→ B⊗(C⊗A)           =           B⊗(C⊗A)
 
       // Path 1 (top): A⊗(B⊗C) → (A⊗B)⊗C → (B⊗A)⊗C → B⊗(A⊗C) → B⊗(C⊗A)
-      const path1_s1 = tensor(A, tensor(B, C));             // A⊗(B⊗C)
-      const path1_s2 = tensor(tensor(A, B), C);             // (A⊗B)⊗C
-      const path1_s3 = tensor(braid(A, B), C);              // (B⊗A)⊗C
-      const path1_s4 = tensor(B, tensor(A, C));             // B⊗(A⊗C)
-      const path1_end = tensor(B, braid(A, C));             // B⊗(C⊗A)
+      const path1_s1 = tensor(A, tensor(B, C)); // A⊗(B⊗C)
+      const path1_s2 = tensor(tensor(A, B), C); // (A⊗B)⊗C
+      const path1_s3 = tensor(braid(A, B), C); // (B⊗A)⊗C
+      const path1_s4 = tensor(B, tensor(A, C)); // B⊗(A⊗C)
+      const path1_end = tensor(B, braid(A, C)); // B⊗(C⊗A)
 
       // Path 2 (bottom): A⊗(B⊗C) → (B⊗C)⊗A → B⊗(C⊗A)
-      const path2_s1 = braid(A, tensor(B, C));              // (B⊗C)⊗A
-      const path2_end = tensor(B, tensor(C, A));            // B⊗(C⊗A)
+      const path2_s1 = braid(A, tensor(B, C)); // (B⊗C)⊗A
+      const path2_end = tensor(B, tensor(C, A)); // B⊗(C⊗A)
 
       // Both paths preserve payload
       expect(payloadEqual(path1_end, path2_end)).toBe(true);
@@ -449,11 +452,11 @@ describe('Monoidal Coherence of Fork/Race/Fold', () => {
       // the same result.
 
       const bracketings = [
-        tensor(tensor(tensor(A, B), C), D),    // ((A⊗B)⊗C)⊗D
-        tensor(tensor(A, tensor(B, C)), D),    // (A⊗(B⊗C))⊗D
-        tensor(tensor(A, B), tensor(C, D)),    // (A⊗B)⊗(C⊗D)
-        tensor(A, tensor(tensor(B, C), D)),    // A⊗((B⊗C)⊗D)
-        tensor(A, tensor(B, tensor(C, D))),    // A⊗(B⊗(C⊗D))
+        tensor(tensor(tensor(A, B), C), D), // ((A⊗B)⊗C)⊗D
+        tensor(tensor(A, tensor(B, C)), D), // (A⊗(B⊗C))⊗D
+        tensor(tensor(A, B), tensor(C, D)), // (A⊗B)⊗(C⊗D)
+        tensor(A, tensor(tensor(B, C), D)), // A⊗((B⊗C)⊗D)
+        tensor(A, tensor(B, tensor(C, D))), // A⊗(B⊗(C⊗D))
       ];
 
       // All 5 bracketings (the Catalan number C₃ = 5) must agree

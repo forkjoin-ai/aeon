@@ -79,8 +79,12 @@ describe('aeon object envelope', () => {
       },
     };
 
-    expect(envelope.projections.app?.bootstrap.href).toContain('projection=app');
-    expect(envelope.projections.agent?.entrypoint).toContain('projection=agent');
+    expect(envelope.projections.app?.bootstrap.href).toContain(
+      'projection=app'
+    );
+    expect(envelope.projections.agent?.entrypoint).toContain(
+      'projection=agent'
+    );
     expect(envelope.projections.stream?.framing).toBe('10-byte-frame');
   });
 });

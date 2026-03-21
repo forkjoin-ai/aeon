@@ -6,7 +6,9 @@ import { runLeanSandbox } from '@a0n/aeon-logic';
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(scriptDir, '..');
 const leanDir = join(rootDir, 'formal', 'lean');
-const buildTargets = (process.env.AEON_LEAN_BUILD_TARGETS ?? 'ForkRaceFoldTheorems')
+const buildTargets = (
+  process.env.AEON_LEAN_BUILD_TARGETS ?? 'ForkRaceFoldTheorems'
+)
   .split(',')
   .map((target) => target.trim())
   .filter((target) => target.length > 0);
@@ -20,7 +22,9 @@ function fail(message: string, details?: readonly string[]): never {
 }
 
 function main(): void {
-  process.stdout.write('Running Lean mechanized theorem build via aeon-logic Lean sandbox\n');
+  process.stdout.write(
+    'Running Lean mechanized theorem build via aeon-logic Lean sandbox\n'
+  );
 
   const result = runLeanSandbox({
     path: leanDir,
@@ -66,7 +70,7 @@ function main(): void {
   }
 
   process.stdout.write(
-    `aeon-logic Lean sandbox validation passed (${result.report.project.moduleCount} Lean modules)\n`,
+    `aeon-logic Lean sandbox validation passed (${result.report.project.moduleCount} Lean modules)\n`
   );
 }
 

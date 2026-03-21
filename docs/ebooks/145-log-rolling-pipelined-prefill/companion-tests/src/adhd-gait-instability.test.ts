@@ -57,9 +57,8 @@ function complementDist(counts: number[], eta: number): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -87,8 +86,8 @@ function excessKurtosis(values: number[]): number {
 
 /** Gaits from the c3 metacognitive layer (ch17 section 15.4) */
 enum Gait {
-  Stand = 0,  // depth 0: no exploration, frozen
-  Trot = 1,   // depth 1: safe, sequential
+  Stand = 0, // depth 0: no exploration, frozen
+  Trot = 1, // depth 1: safe, sequential
   Canter = 2, // depth 4: overlapped search
   Gallop = 3, // depth 16: full pipeline
 }
@@ -127,12 +126,12 @@ interface GaitProfile {
 const NT_PROFILE: GaitProfile = {
   name: 'Neurotypical',
   eta: 5.0,
-  upshiftThreshold: 2.0,     // needs strong kurtosis signal to accelerate
-  downshiftThreshold: 0.5,   // disengages at moderate kurtosis drop
-  habituationRate: 0.01,     // slow habituation
-  voidDecay: 0.005,          // near-perfect void memory
-  regimeDetectionWindow: 5,  // detects regime changes in ~5 ticks
-  mentalHealthGain: 1.0,     // standard rejection amplification
+  upshiftThreshold: 2.0, // needs strong kurtosis signal to accelerate
+  downshiftThreshold: 0.5, // disengages at moderate kurtosis drop
+  habituationRate: 0.01, // slow habituation
+  voidDecay: 0.005, // near-perfect void memory
+  regimeDetectionWindow: 5, // detects regime changes in ~5 ticks
+  mentalHealthGain: 1.0, // standard rejection amplification
   focusMultiplier: 1.0,
   bandwidth: 50,
   activeDimensions: 3,
@@ -140,30 +139,30 @@ const NT_PROFILE: GaitProfile = {
 
 const ADHD_PROFILE: GaitProfile = {
   name: 'ADHD',
-  eta: 5.0,                  // SAME perceptual eta as NT (ADHD is not an aperture difference)
-  upshiftThreshold: 0.5,     // shifts up easily -- low barrier to acceleration
-  downshiftThreshold: 3.0,   // high barrier to deceleration -- hard to disengage
-  habituationRate: 0.08,     // fast habituation on familiar dimensions
-  voidDecay: 0.05,           // void fades 10x faster -- shorter working memory
+  eta: 5.0, // SAME perceptual eta as NT (ADHD is not an aperture difference)
+  upshiftThreshold: 0.5, // shifts up easily -- low barrier to acceleration
+  downshiftThreshold: 3.0, // high barrier to deceleration -- hard to disengage
+  habituationRate: 0.08, // fast habituation on familiar dimensions
+  voidDecay: 0.05, // void fades 10x faster -- shorter working memory
   regimeDetectionWindow: 20, // slow to detect regime changes -- time blindness
-  mentalHealthGain: 2.5,     // rejection signals amplified 2.5x (emotional dysregulation)
-  focusMultiplier: 1.0,      // same focus depth as NT (hyperfocus comes from gait lock, not eta)
-  bandwidth: 50,             // SAME bandwidth -- same hardware
-  activeDimensions: 3,       // SAME active dimensions -- ADHD is not an aperture issue
+  mentalHealthGain: 2.5, // rejection signals amplified 2.5x (emotional dysregulation)
+  focusMultiplier: 1.0, // same focus depth as NT (hyperfocus comes from gait lock, not eta)
+  bandwidth: 50, // SAME bandwidth -- same hardware
+  activeDimensions: 3, // SAME active dimensions -- ADHD is not an aperture issue
 };
 
 const AUDHD_PROFILE: GaitProfile = {
   name: 'AuDHD',
-  eta: 1.0,                  // LOW eta from autism (wide aperture, covering space open)
-  upshiftThreshold: 0.5,     // LOW from ADHD (shifts up easily)
-  downshiftThreshold: 3.0,   // HIGH from ADHD (hard to disengage)
-  habituationRate: 0.08,     // FAST from ADHD
-  voidDecay: 0.05,           // FAST from ADHD
+  eta: 1.0, // LOW eta from autism (wide aperture, covering space open)
+  upshiftThreshold: 0.5, // LOW from ADHD (shifts up easily)
+  downshiftThreshold: 3.0, // HIGH from ADHD (hard to disengage)
+  habituationRate: 0.08, // FAST from ADHD
+  voidDecay: 0.05, // FAST from ADHD
   regimeDetectionWindow: 20, // SLOW from ADHD
-  mentalHealthGain: 2.5,     // HIGH from ADHD
-  focusMultiplier: 3.0,      // HIGH from autism (deep focus on special interest)
-  bandwidth: 50,             // SAME hardware
-  activeDimensions: 8,       // HIGH from autism (covering space open)
+  mentalHealthGain: 2.5, // HIGH from ADHD
+  focusMultiplier: 3.0, // HIGH from autism (deep focus on special interest)
+  bandwidth: 50, // SAME hardware
+  activeDimensions: 8, // HIGH from autism (covering space open)
 };
 
 // ============================================================================
@@ -184,7 +183,7 @@ function simulateWalk(
   environment: number[],
   profile: GaitProfile,
   rounds: number,
-  rng: () => number,
+  rng: () => number
 ): WalkState {
   const dims = environment.length;
   const voidBoundary = new Array(dims).fill(0);
@@ -229,7 +228,7 @@ function simulateWalk(
 
     // Apply void decay
     for (let i = 0; i < dims; i++) {
-      voidBoundary[i] *= (1 - profile.voidDecay);
+      voidBoundary[i] *= 1 - profile.voidDecay;
     }
 
     // Apply habituation: eta effectively increases on recently-visited dims
@@ -259,7 +258,14 @@ function simulateWalk(
     gaitHistory.push(gait);
   }
 
-  return { voidBoundary, gait, gaitHistory, payoffHistory, kurtosisHistory, ticksSinceGaitChange };
+  return {
+    voidBoundary,
+    gait,
+    gaitHistory,
+    payoffHistory,
+    kurtosisHistory,
+    ticksSinceGaitChange,
+  };
 }
 
 /** Count gait transitions in a history */
@@ -281,7 +287,7 @@ function variance(values: number[]): number {
 /** Detect how long it takes to notice a regime change */
 function measureRegimeDetection(
   profile: GaitProfile,
-  rng: () => number,
+  rng: () => number
 ): number {
   // Phase 1: stable environment for 50 ticks
   // Phase 2: environment shifts -- how long until kurtosis responds?
@@ -299,10 +305,13 @@ function measureRegimeDetection(
     let chosenDim = 0;
     for (let i = 0; i < dims; i++) {
       cumulative += dist[i];
-      if (r <= cumulative) { chosenDim = i; break; }
+      if (r <= cumulative) {
+        chosenDim = i;
+        break;
+      }
     }
     voidBoundary[chosenDim] += stableEnv[chosenDim] * 0.1;
-    for (let i = 0; i < dims; i++) voidBoundary[i] *= (1 - profile.voidDecay);
+    for (let i = 0; i < dims; i++) voidBoundary[i] *= 1 - profile.voidDecay;
   }
 
   // Snapshot kurtosis at transition
@@ -320,11 +329,14 @@ function measureRegimeDetection(
     let chosenDim = 0;
     for (let i = 0; i < dims; i++) {
       cumulative += dist[i];
-      if (r <= cumulative) { chosenDim = i; break; }
+      if (r <= cumulative) {
+        chosenDim = i;
+        break;
+      }
     }
     // Use shifted environment
     voidBoundary[chosenDim] += shiftedEnv[chosenDim] * 0.1;
-    for (let i = 0; i < dims; i++) voidBoundary[i] *= (1 - profile.voidDecay);
+    for (let i = 0; i < dims; i++) voidBoundary[i] *= 1 - profile.voidDecay;
 
     const currentDist = complementDist(voidBoundary, profile.eta);
     const currentKurtosis = excessKurtosis(currentDist);
@@ -343,21 +355,29 @@ function measureRegimeDetection(
 // ============================================================================
 
 describe('ADHD as Gait Dysregulation', () => {
-
   const environment = [15, 8, 22, 5, 30, 12, 18, 3, 25, 10];
   const ROUNDS = 200;
 
   it('prediction 1: ADHD reaches gallop faster and stays there (gait lock)', () => {
     const ntWalk = simulateWalk(environment, NT_PROFILE, ROUNDS, makeRng(42));
-    const adhdWalk = simulateWalk(environment, ADHD_PROFILE, ROUNDS, makeRng(42));
+    const adhdWalk = simulateWalk(
+      environment,
+      ADHD_PROFILE,
+      ROUNDS,
+      makeRng(42)
+    );
 
     // Find tick when each first reaches gallop
     const ntFirstGallop = ntWalk.gaitHistory.indexOf(Gait.Gallop);
     const adhdFirstGallop = adhdWalk.gaitHistory.indexOf(Gait.Gallop);
 
     // Count ticks spent at gallop (lock duration)
-    const ntGallopTicks = ntWalk.gaitHistory.filter(g => g === Gait.Gallop).length;
-    const adhdGallopTicks = adhdWalk.gaitHistory.filter(g => g === Gait.Gallop).length;
+    const ntGallopTicks = ntWalk.gaitHistory.filter(
+      (g) => g === Gait.Gallop
+    ).length;
+    const adhdGallopTicks = adhdWalk.gaitHistory.filter(
+      (g) => g === Gait.Gallop
+    ).length;
 
     // ADHD: low upshift threshold means faster entry to gallop
     // high downshift threshold means it stays locked there
@@ -370,11 +390,21 @@ describe('ADHD as Gait Dysregulation', () => {
 
     console.log('\n  Prediction 1: Gait lock (time to gallop + lock duration)');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  NT:   first gallop at tick ${ntFirstGallop}, ${ntGallopTicks}/${ROUNDS} ticks at gallop`);
-    console.log(`  ADHD: first gallop at tick ${adhdFirstGallop}, ${adhdGallopTicks}/${ROUNDS} ticks at gallop`);
-    console.log('  Low upshift threshold = accelerates fast. High downshift = stays locked.');
-    console.log('  Inattention is not random shifting. It is premature lock at max speed.');
-    console.log('  The walker sprints when it should trot. Not broken. Different threshold.');
+    console.log(
+      `  NT:   first gallop at tick ${ntFirstGallop}, ${ntGallopTicks}/${ROUNDS} ticks at gallop`
+    );
+    console.log(
+      `  ADHD: first gallop at tick ${adhdFirstGallop}, ${adhdGallopTicks}/${ROUNDS} ticks at gallop`
+    );
+    console.log(
+      '  Low upshift threshold = accelerates fast. High downshift = stays locked.'
+    );
+    console.log(
+      '  Inattention is not random shifting. It is premature lock at max speed.'
+    );
+    console.log(
+      '  The walker sprints when it should trot. Not broken. Different threshold.'
+    );
   });
 
   it('prediction 2: ADHD hyperfocus = gallop lock on high-reward dimension', () => {
@@ -382,15 +412,28 @@ describe('ADHD as Gait Dysregulation', () => {
     const hyperfocusEnv = [5, 5, 5, 100, 5, 5, 5, 5, 5, 5]; // dim 3 = high reward
 
     const ntWalk = simulateWalk(hyperfocusEnv, NT_PROFILE, ROUNDS, makeRng(42));
-    const adhdWalk = simulateWalk(hyperfocusEnv, ADHD_PROFILE, ROUNDS, makeRng(42));
+    const adhdWalk = simulateWalk(
+      hyperfocusEnv,
+      ADHD_PROFILE,
+      ROUNDS,
+      makeRng(42)
+    );
 
     // Count ticks spent at gallop
-    const ntGallopTicks = ntWalk.gaitHistory.filter(g => g === Gait.Gallop).length;
-    const adhdGallopTicks = adhdWalk.gaitHistory.filter(g => g === Gait.Gallop).length;
+    const ntGallopTicks = ntWalk.gaitHistory.filter(
+      (g) => g === Gait.Gallop
+    ).length;
+    const adhdGallopTicks = adhdWalk.gaitHistory.filter(
+      (g) => g === Gait.Gallop
+    ).length;
 
     // Count ticks spent at canter or gallop (high engagement)
-    const ntHighEngagement = ntWalk.gaitHistory.filter(g => g >= Gait.Canter).length;
-    const adhdHighEngagement = adhdWalk.gaitHistory.filter(g => g >= Gait.Canter).length;
+    const ntHighEngagement = ntWalk.gaitHistory.filter(
+      (g) => g >= Gait.Canter
+    ).length;
+    const adhdHighEngagement = adhdWalk.gaitHistory.filter(
+      (g) => g >= Gait.Canter
+    ).length;
 
     // ADHD's low upshift threshold + high downshift threshold = faster lock into gallop
     // and harder to come out of it
@@ -398,10 +441,18 @@ describe('ADHD as Gait Dysregulation', () => {
 
     console.log('\n  Prediction 2: Hyperfocus as gallop lock');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  NT:   gallop=${ntGallopTicks}, high-engagement=${ntHighEngagement}/${ROUNDS}`);
-    console.log(`  ADHD: gallop=${adhdGallopTicks}, high-engagement=${adhdHighEngagement}/${ROUNDS}`);
-    console.log('  Low upshift threshold + high downshift threshold = gallop lock.');
-    console.log('  Hyperfocus is not willpower. It is a gait the walker cannot leave.');
+    console.log(
+      `  NT:   gallop=${ntGallopTicks}, high-engagement=${ntHighEngagement}/${ROUNDS}`
+    );
+    console.log(
+      `  ADHD: gallop=${adhdGallopTicks}, high-engagement=${adhdHighEngagement}/${ROUNDS}`
+    );
+    console.log(
+      '  Low upshift threshold + high downshift threshold = gallop lock.'
+    );
+    console.log(
+      '  Hyperfocus is not willpower. It is a gait the walker cannot leave.'
+    );
   });
 
   it('prediction 3: ADHD impulsivity = premature fold (gallop explores 16x but commits to first result)', () => {
@@ -411,11 +462,22 @@ describe('ADHD as Gait Dysregulation', () => {
     // to its exploration depth. The ratio of exploration-to-commitment differs.
 
     const ntWalk = simulateWalk(environment, NT_PROFILE, ROUNDS, makeRng(42));
-    const adhdWalk = simulateWalk(environment, ADHD_PROFILE, ROUNDS, makeRng(42));
+    const adhdWalk = simulateWalk(
+      environment,
+      ADHD_PROFILE,
+      ROUNDS,
+      makeRng(42)
+    );
 
     // Measure total exploration depth (sum of gait depths across all ticks)
-    const ntTotalDepth = ntWalk.gaitHistory.reduce((s, g) => s + Math.max(1, GAIT_DEPTH[g]), 0);
-    const adhdTotalDepth = adhdWalk.gaitHistory.reduce((s, g) => s + Math.max(1, GAIT_DEPTH[g]), 0);
+    const ntTotalDepth = ntWalk.gaitHistory.reduce(
+      (s, g) => s + Math.max(1, GAIT_DEPTH[g]),
+      0
+    );
+    const adhdTotalDepth = adhdWalk.gaitHistory.reduce(
+      (s, g) => s + Math.max(1, GAIT_DEPTH[g]),
+      0
+    );
 
     // ADHD explores more territory per unit time (higher total depth)
     // but each fold covers that territory in one tick -- premature commitment
@@ -430,12 +492,28 @@ describe('ADHD as Gait Dysregulation', () => {
 
     console.log('\n  Prediction 3: Impulsivity as premature fold');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  NT:   total exploration depth = ${ntTotalDepth} (avg ${(ntTotalDepth / ROUNDS).toFixed(1)}/tick)`);
-    console.log(`  ADHD: total exploration depth = ${adhdTotalDepth} (avg ${(adhdTotalDepth / ROUNDS).toFixed(1)}/tick)`);
-    console.log(`  NT:   fold rate = ${ntFoldRate.toFixed(4)} folds per unit exploration`);
-    console.log(`  ADHD: fold rate = ${adhdFoldRate.toFixed(4)} folds per unit exploration`);
+    console.log(
+      `  NT:   total exploration depth = ${ntTotalDepth} (avg ${(
+        ntTotalDepth / ROUNDS
+      ).toFixed(1)}/tick)`
+    );
+    console.log(
+      `  ADHD: total exploration depth = ${adhdTotalDepth} (avg ${(
+        adhdTotalDepth / ROUNDS
+      ).toFixed(1)}/tick)`
+    );
+    console.log(
+      `  NT:   fold rate = ${ntFoldRate.toFixed(4)} folds per unit exploration`
+    );
+    console.log(
+      `  ADHD: fold rate = ${adhdFoldRate.toFixed(
+        4
+      )} folds per unit exploration`
+    );
     console.log('  More territory per tick. But each tick is a fold.');
-    console.log('  The walker runs deep but commits every step. Sprint-and-fold.');
+    console.log(
+      '  The walker runs deep but commits every step. Sprint-and-fold.'
+    );
   });
 
   it('prediction 4: ADHD novelty seeking = accelerated habituation', () => {
@@ -462,8 +540,8 @@ describe('ADHD as Gait Dysregulation', () => {
 
       // Apply decay to ALL dims
       for (let i = 0; i < dims; i++) {
-        voidNT[i] *= (1 - NT_PROFILE.voidDecay);
-        voidADHD[i] *= (1 - ADHD_PROFILE.voidDecay);
+        voidNT[i] *= 1 - NT_PROFILE.voidDecay;
+        voidADHD[i] *= 1 - ADHD_PROFILE.voidDecay;
       }
 
       // Measure raw void ratio: target dim vs baseline
@@ -482,7 +560,7 @@ describe('ADHD as Gait Dysregulation', () => {
     // The novelty seeking is in the TIME CONSTANT, not the steady state.
 
     // Time constant: 1/decay rate
-    const ntTimeConstant = 1 / NT_PROFILE.voidDecay;    // 200 ticks
+    const ntTimeConstant = 1 / NT_PROFILE.voidDecay; // 200 ticks
     const adhdTimeConstant = 1 / ADHD_PROFILE.voidDecay; // 20 ticks
 
     // ADHD reaches 63% of steady state in 20 ticks. NT takes 200 ticks.
@@ -492,7 +570,8 @@ describe('ADHD as Gait Dysregulation', () => {
 
     // At tick 20, ADHD should be closer to its steady state than NT
     const ntSteadyState = NT_PROFILE.habituationRate / NT_PROFILE.voidDecay;
-    const adhdSteadyState = ADHD_PROFILE.habituationRate / ADHD_PROFILE.voidDecay;
+    const adhdSteadyState =
+      ADHD_PROFILE.habituationRate / ADHD_PROFILE.voidDecay;
     const ntFractionAt20 = ntRatios[19] / ntSteadyState;
     const adhdFractionAt20 = adhdRatios[19] / adhdSteadyState;
 
@@ -500,12 +579,30 @@ describe('ADHD as Gait Dysregulation', () => {
 
     console.log('\n  Prediction 4: Novelty seeking as accelerated habituation');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  NT:   time constant = ${ntTimeConstant} ticks, steady state = ${ntSteadyState.toFixed(2)}`);
-    console.log(`  ADHD: time constant = ${adhdTimeConstant} ticks, steady state = ${adhdSteadyState.toFixed(2)}`);
-    console.log(`  NT at tick 20:   void = ${ntRatios[19].toFixed(4)} (${(ntFractionAt20 * 100).toFixed(1)}% of steady state)`);
-    console.log(`  ADHD at tick 20: void = ${adhdRatios[19].toFixed(4)} (${(adhdFractionAt20 * 100).toFixed(1)}% of steady state)`);
+    console.log(
+      `  NT:   time constant = ${ntTimeConstant} ticks, steady state = ${ntSteadyState.toFixed(
+        2
+      )}`
+    );
+    console.log(
+      `  ADHD: time constant = ${adhdTimeConstant} ticks, steady state = ${adhdSteadyState.toFixed(
+        2
+      )}`
+    );
+    console.log(
+      `  NT at tick 20:   void = ${ntRatios[19].toFixed(4)} (${(
+        ntFractionAt20 * 100
+      ).toFixed(1)}% of steady state)`
+    );
+    console.log(
+      `  ADHD at tick 20: void = ${adhdRatios[19].toFixed(4)} (${(
+        adhdFractionAt20 * 100
+      ).toFixed(1)}% of steady state)`
+    );
     console.log('  ADHD habituates in 20 ticks. NT takes 200.');
-    console.log('  Not distracted. Bored faster. The familiar dimension is exhausted sooner.');
+    console.log(
+      '  Not distracted. Bored faster. The familiar dimension is exhausted sooner.'
+    );
   });
 
   it('prediction 5: ADHD void decay = shorter complement memory', () => {
@@ -542,14 +639,14 @@ describe('ADHD as Gait Dysregulation', () => {
       // Phase 2: decay only
       for (let t = 0; t < 50; t++) {
         for (let i = 0; i < dims; i++) {
-          void_[i] *= (1 - profile.voidDecay);
+          void_[i] *= 1 - profile.voidDecay;
         }
       }
       const energyAfter50 = void_.reduce((a, b) => a + b, 0);
 
       for (let t = 0; t < 50; t++) {
         for (let i = 0; i < dims; i++) {
-          void_[i] *= (1 - profile.voidDecay);
+          void_[i] *= 1 - profile.voidDecay;
         }
       }
       const energyAfter100 = void_.reduce((a, b) => a + b, 0);
@@ -573,10 +670,26 @@ describe('ADHD as Gait Dysregulation', () => {
 
     console.log('\n  Prediction 5: Void decay (complement memory)');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  NT:   peak=${ntDecay.peakEnergy.toFixed(0)}, retention@50t=${(ntDecay.retentionAt50 * 100).toFixed(1)}%, @100t=${(ntDecay.retentionAt100 * 100).toFixed(1)}%`);
-    console.log(`  ADHD: peak=${adhdDecay.peakEnergy.toFixed(0)}, retention@50t=${(adhdDecay.retentionAt50 * 100).toFixed(1)}%, @100t=${(adhdDecay.retentionAt100 * 100).toFixed(1)}%`);
-    console.log(`  NT retains ${(ntDecay.retentionAt50 * 100).toFixed(0)}% after 50 ticks. ADHD retains ${(adhdDecay.retentionAt50 * 100).toFixed(0)}%.`);
-    console.log('  The tombstones fade faster. New signals easily overwrite old ones.');
+    console.log(
+      `  NT:   peak=${ntDecay.peakEnergy.toFixed(0)}, retention@50t=${(
+        ntDecay.retentionAt50 * 100
+      ).toFixed(1)}%, @100t=${(ntDecay.retentionAt100 * 100).toFixed(1)}%`
+    );
+    console.log(
+      `  ADHD: peak=${adhdDecay.peakEnergy.toFixed(0)}, retention@50t=${(
+        adhdDecay.retentionAt50 * 100
+      ).toFixed(1)}%, @100t=${(adhdDecay.retentionAt100 * 100).toFixed(1)}%`
+    );
+    console.log(
+      `  NT retains ${(ntDecay.retentionAt50 * 100).toFixed(
+        0
+      )}% after 50 ticks. ADHD retains ${(
+        adhdDecay.retentionAt50 * 100
+      ).toFixed(0)}%.`
+    );
+    console.log(
+      '  The tombstones fade faster. New signals easily overwrite old ones.'
+    );
     console.log('  Not forgetful. The boundary has a shorter time constant.');
   });
 
@@ -604,7 +717,7 @@ describe('ADHD as Gait Dysregulation', () => {
       // Let 30 ticks pass with decay
       for (let t = 0; t < 30; t++) {
         for (let i = 0; i < dims; i++) {
-          void_[i] *= (1 - profile.voidDecay);
+          void_[i] *= 1 - profile.voidDecay;
         }
       }
 
@@ -636,17 +749,37 @@ describe('ADHD as Gait Dysregulation', () => {
     expect(adhdRetention).toBeLessThan(ntRetention);
 
     // ADHD event A magnitude should be lower (more decayed)
-    expect(adhdTemporal.eventAMagnitude).toBeLessThan(ntTemporal.eventAMagnitude);
+    expect(adhdTemporal.eventAMagnitude).toBeLessThan(
+      ntTemporal.eventAMagnitude
+    );
 
     console.log('\n  Prediction 6: Time blindness as temporal signal decay');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  30-tick retention: NT=${(ntRetention * 100).toFixed(1)}%, ADHD=${(adhdRetention * 100).toFixed(1)}%`);
-    console.log(`  Event A (30 ticks ago): NT=${ntTemporal.eventAMagnitude.toFixed(3)}, ADHD=${adhdTemporal.eventAMagnitude.toFixed(3)}`);
-    console.log(`  Event B (just now):     NT=${ntTemporal.eventBMagnitude.toFixed(3)}, ADHD=${adhdTemporal.eventBMagnitude.toFixed(3)}`);
-    console.log(`  B/A ratio:              NT=${ntTemporal.ratio.toFixed(1)}, ADHD=${adhdTemporal.ratio.toFixed(1)}`);
+    console.log(
+      `  30-tick retention: NT=${(ntRetention * 100).toFixed(1)}%, ADHD=${(
+        adhdRetention * 100
+      ).toFixed(1)}%`
+    );
+    console.log(
+      `  Event A (30 ticks ago): NT=${ntTemporal.eventAMagnitude.toFixed(
+        3
+      )}, ADHD=${adhdTemporal.eventAMagnitude.toFixed(3)}`
+    );
+    console.log(
+      `  Event B (just now):     NT=${ntTemporal.eventBMagnitude.toFixed(
+        3
+      )}, ADHD=${adhdTemporal.eventBMagnitude.toFixed(3)}`
+    );
+    console.log(
+      `  B/A ratio:              NT=${ntTemporal.ratio.toFixed(
+        1
+      )}, ADHD=${adhdTemporal.ratio.toFixed(1)}`
+    );
     console.log('  NT retains 86% of a 30-tick-old event. ADHD retains 21%.');
     console.log('  The past fades. The boundary loses its clock.');
-    console.log('  Not careless about time. The tombstones that mark it are gone.');
+    console.log(
+      '  Not careless about time. The tombstones that mark it are gone.'
+    );
   });
 
   it('prediction 7: ADHD emotional amplification = excess rejection gain', () => {
@@ -664,7 +797,7 @@ describe('ADHD as Gait Dysregulation', () => {
     const rejectionMagnitude = 10;
 
     // Amplified void magnitudes
-    const ntVoid = rejectionMagnitude * NT_PROFILE.mentalHealthGain;     // 10
+    const ntVoid = rejectionMagnitude * NT_PROFILE.mentalHealthGain; // 10
     const adhdVoid = rejectionMagnitude * ADHD_PROFILE.mentalHealthGain; // 25
 
     // The amplified signal is 2.5x stronger
@@ -676,7 +809,7 @@ describe('ADHD as Gait Dysregulation', () => {
       let v = initialVoid;
       let t = 0;
       while (v > threshold && t < 1000) {
-        v *= (1 - decayRate);
+        v *= 1 - decayRate;
         t++;
       }
       return t;
@@ -700,15 +833,31 @@ describe('ADHD as Gait Dysregulation', () => {
     // ADHD has a steeper emotional curve (higher peak per recovery tick)
     expect(adhdPeakRecoveryRatio).toBeGreaterThan(ntPeakRecoveryRatio);
 
-    console.log('\n  Prediction 7: Emotional amplification (rejection sensitive dysphoria)');
+    console.log(
+      '\n  Prediction 7: Emotional amplification (rejection sensitive dysphoria)'
+    );
     console.log('  ' + '─'.repeat(55));
     console.log(`  Rejection magnitude: ${rejectionMagnitude}`);
-    console.log(`  NT:   gain=${NT_PROFILE.mentalHealthGain}x, peak void=${ntVoid}, recovery=${ntRecovery} ticks`);
-    console.log(`  ADHD: gain=${ADHD_PROFILE.mentalHealthGain}x, peak void=${adhdVoid}, recovery=${adhdRecovery} ticks`);
-    console.log(`  NT peak/recovery ratio:   ${ntPeakRecoveryRatio.toFixed(4)} (low plateau, slow fade)`);
-    console.log(`  ADHD peak/recovery ratio: ${adhdPeakRecoveryRatio.toFixed(4)} (sharp spike, fast fade)`);
+    console.log(
+      `  NT:   gain=${NT_PROFILE.mentalHealthGain}x, peak void=${ntVoid}, recovery=${ntRecovery} ticks`
+    );
+    console.log(
+      `  ADHD: gain=${ADHD_PROFILE.mentalHealthGain}x, peak void=${adhdVoid}, recovery=${adhdRecovery} ticks`
+    );
+    console.log(
+      `  NT peak/recovery ratio:   ${ntPeakRecoveryRatio.toFixed(
+        4
+      )} (low plateau, slow fade)`
+    );
+    console.log(
+      `  ADHD peak/recovery ratio: ${adhdPeakRecoveryRatio.toFixed(
+        4
+      )} (sharp spike, fast fade)`
+    );
     console.log('  Higher peak. Faster decay. The spike IS the dysphoria.');
-    console.log('  Not oversensitive. The amplifier is louder AND the echo is shorter.');
+    console.log(
+      '  Not oversensitive. The amplifier is louder AND the echo is shorter.'
+    );
   });
 });
 
@@ -717,7 +866,6 @@ describe('ADHD as Gait Dysregulation', () => {
 // ============================================================================
 
 describe('AuDHD: Wide Aperture + Gait Instability', () => {
-
   const environment = [15, 8, 22, 5, 30, 12, 18, 3, 25, 10];
   const ROUNDS = 200;
 
@@ -731,9 +879,15 @@ describe('AuDHD: Wide Aperture + Gait Instability', () => {
 
     // AuDHD: wide aperture (sees the dimension deeply like AUT) + gallop lock (like ADHD)
     // This combination should produce the highest engagement on the special interest
-    const ntHighEngagement = ntWalk.gaitHistory.filter(g => g >= Gait.Canter).length;
-    const adhdHighEngagement = adhdWalk.gaitHistory.filter(g => g >= Gait.Canter).length;
-    const audhdHighEngagement = audhdWalk.gaitHistory.filter(g => g >= Gait.Canter).length;
+    const ntHighEngagement = ntWalk.gaitHistory.filter(
+      (g) => g >= Gait.Canter
+    ).length;
+    const adhdHighEngagement = adhdWalk.gaitHistory.filter(
+      (g) => g >= Gait.Canter
+    ).length;
+    const audhdHighEngagement = audhdWalk.gaitHistory.filter(
+      (g) => g >= Gait.Canter
+    ).length;
 
     // AuDHD should have high engagement (from ADHD gait lock) AND
     // the complement distribution should show deeper focus on the special interest dim
@@ -745,10 +899,16 @@ describe('AuDHD: Wide Aperture + Gait Instability', () => {
     console.log(`  NT:    high-engagement = ${ntHighEngagement}/${ROUNDS}`);
     console.log(`  ADHD:  high-engagement = ${adhdHighEngagement}/${ROUNDS}`);
     console.log(`  AuDHD: high-engagement = ${audhdHighEngagement}/${ROUNDS}`);
-    console.log(`  AuDHD complement on special interest: ${audhdDist[3]?.toFixed(4)}`);
-    console.log(`  NT complement on special interest:    ${ntDist[3]?.toFixed(4)}`);
+    console.log(
+      `  AuDHD complement on special interest: ${audhdDist[3]?.toFixed(4)}`
+    );
+    console.log(
+      `  NT complement on special interest:    ${ntDist[3]?.toFixed(4)}`
+    );
     console.log('  Wide aperture + gallop lock = flow state.');
-    console.log('  When aperture and gait align: the walker runs deep and fast.');
+    console.log(
+      '  When aperture and gait align: the walker runs deep and fast.'
+    );
 
     // AuDHD should match or exceed ADHD's high engagement
     expect(audhdHighEngagement).toBeGreaterThanOrEqual(adhdHighEngagement);
@@ -763,7 +923,9 @@ describe('AuDHD: Wide Aperture + Gait Instability', () => {
     // Environment 1: focused, few dims, one standout (matches AuDHD)
     const matchedEnv = [5, 5, 100, 5, 5];
     // Environment 2: chaotic, many dims, all different (mismatches AuDHD)
-    const mismatchedEnv = [30, 5, 22, 8, 15, 3, 25, 12, 18, 10, 7, 28, 4, 20, 9];
+    const mismatchedEnv = [
+      30, 5, 22, 8, 15, 3, 25, 12, 18, 10, 7, 28, 4, 20, 9,
+    ];
 
     const seeds = [42, 123, 456, 789, 1011];
     const audhdMatchedPayoffs: number[] = [];
@@ -772,12 +934,33 @@ describe('AuDHD: Wide Aperture + Gait Instability', () => {
     const ntMismatchedPayoffs: number[] = [];
 
     for (const seed of seeds) {
-      const audhdMatched = simulateWalk(matchedEnv, AUDHD_PROFILE, 100, makeRng(seed));
-      const audhdMismatched = simulateWalk(mismatchedEnv, AUDHD_PROFILE, 100, makeRng(seed));
-      const ntMatched = simulateWalk(matchedEnv, NT_PROFILE, 100, makeRng(seed));
-      const ntMismatched = simulateWalk(mismatchedEnv, NT_PROFILE, 100, makeRng(seed));
+      const audhdMatched = simulateWalk(
+        matchedEnv,
+        AUDHD_PROFILE,
+        100,
+        makeRng(seed)
+      );
+      const audhdMismatched = simulateWalk(
+        mismatchedEnv,
+        AUDHD_PROFILE,
+        100,
+        makeRng(seed)
+      );
+      const ntMatched = simulateWalk(
+        matchedEnv,
+        NT_PROFILE,
+        100,
+        makeRng(seed)
+      );
+      const ntMismatched = simulateWalk(
+        mismatchedEnv,
+        NT_PROFILE,
+        100,
+        makeRng(seed)
+      );
 
-      const avg = (arr: number[]) => arr.reduce((a, b) => a + b, 0) / arr.length;
+      const avg = (arr: number[]) =>
+        arr.reduce((a, b) => a + b, 0) / arr.length;
       audhdMatchedPayoffs.push(avg(audhdMatched.payoffHistory));
       audhdMismatchedPayoffs.push(avg(audhdMismatched.payoffHistory));
       ntMatchedPayoffs.push(avg(ntMatched.payoffHistory));
@@ -802,8 +985,12 @@ describe('AuDHD: Wide Aperture + Gait Instability', () => {
     console.log(`  NT matched env avg:       ${ntMatchedAvg.toFixed(2)}`);
     console.log(`  NT mismatched env avg:    ${ntMismatchedAvg.toFixed(2)}`);
     console.log(`  NT context delta:         ${ntContextDelta.toFixed(2)}`);
-    console.log('  The paradox of capability and disability is a context-matching problem.');
-    console.log('  Right environment: extraordinary. Wrong environment: overwhelmed.');
+    console.log(
+      '  The paradox of capability and disability is a context-matching problem.'
+    );
+    console.log(
+      '  Right environment: extraordinary. Wrong environment: overwhelmed.'
+    );
 
     // Both profiles should show measurable performance differences across contexts
     // The key insight: the environment match matters MORE for AuDHD
@@ -820,21 +1007,35 @@ describe('AuDHD: Wide Aperture + Gait Instability', () => {
     // and gait instability as time-to-gallop-lock
 
     // Unaccommodated: high-dimensional, variable reward
-    const unaccommodatedEnv = [5, 30, 8, 22, 3, 18, 25, 10, 15, 12,
-                               7, 28, 4, 20, 9, 16, 23, 11, 14, 6];
+    const unaccommodatedEnv = [
+      5, 30, 8, 22, 3, 18, 25, 10, 15, 12, 7, 28, 4, 20, 9, 16, 23, 11, 14, 6,
+    ];
 
     // Full AuDHD accommodation: fewer dimensions AND structured
     const fullAccom = [15, 18, 12, 16, 14]; // low-dim, moderate variability
 
-    const unaccWalk = simulateWalk(unaccommodatedEnv, AUDHD_PROFILE, ROUNDS, makeRng(42));
-    const fullAccWalk = simulateWalk(fullAccom, AUDHD_PROFILE, ROUNDS, makeRng(42));
+    const unaccWalk = simulateWalk(
+      unaccommodatedEnv,
+      AUDHD_PROFILE,
+      ROUNDS,
+      makeRng(42)
+    );
+    const fullAccWalk = simulateWalk(
+      fullAccom,
+      AUDHD_PROFILE,
+      ROUNDS,
+      makeRng(42)
+    );
 
     // Measure perceptual overwhelm: how many dims does the AuDHD aperture see?
     const unaccDist = complementDist(unaccWalk.voidBoundary, AUDHD_PROFILE.eta);
-    const fullAccDist = complementDist(fullAccWalk.voidBoundary, AUDHD_PROFILE.eta);
+    const fullAccDist = complementDist(
+      fullAccWalk.voidBoundary,
+      AUDHD_PROFILE.eta
+    );
 
-    const unaccDimsPerceived = unaccDist.filter(d => d > 0.01).length;
-    const fullAccDimsPerceived = fullAccDist.filter(d => d > 0.01).length;
+    const unaccDimsPerceived = unaccDist.filter((d) => d > 0.01).length;
+    const fullAccDimsPerceived = fullAccDist.filter((d) => d > 0.01).length;
 
     // Accommodation should reduce the number of perceived dimensions
     expect(fullAccDimsPerceived).toBeLessThanOrEqual(unaccDimsPerceived);
@@ -846,38 +1047,98 @@ describe('AuDHD: Wide Aperture + Gait Instability', () => {
 
     console.log('\n  Prediction 10: AuDHD accommodation');
     console.log('  ' + '─'.repeat(55));
-    console.log(`  Unaccommodated: ${unaccommodatedEnv.length} dims, perceived=${unaccDimsPerceived}, H=${unaccEntropy.toFixed(3)}`);
-    console.log(`  Accommodated:   ${fullAccom.length} dims, perceived=${fullAccDimsPerceived}, H=${fullAccEntropy.toFixed(3)}`);
-    console.log('  Fewer dimensions for the telescope. The aperture stays wide.');
-    console.log('  The environment shrinks to fit the bandwidth, not the other way around.');
+    console.log(
+      `  Unaccommodated: ${
+        unaccommodatedEnv.length
+      } dims, perceived=${unaccDimsPerceived}, H=${unaccEntropy.toFixed(3)}`
+    );
+    console.log(
+      `  Accommodated:   ${
+        fullAccom.length
+      } dims, perceived=${fullAccDimsPerceived}, H=${fullAccEntropy.toFixed(3)}`
+    );
+    console.log(
+      '  Fewer dimensions for the telescope. The aperture stays wide.'
+    );
+    console.log(
+      '  The environment shrinks to fit the bandwidth, not the other way around.'
+    );
     console.log('  Same person. Same aperture. Same stride. Smaller stage.');
   });
 
   it('summary: the gait model', () => {
-    console.log('\n  ╔════════════════════════════════════════════════════════════════════╗');
-    console.log('  ║  ADHD as Gait Dysregulation: The Stride Model                      ║');
-    console.log('  ╠════════════════════════════════════════════════════════════════════╣');
-    console.log('  ║  NT:    η=5.0  c3 stable.    Smooth gait transitions.              ║');
-    console.log('  ║  ADHD:  η=5.0  c3 unstable.  Low upshift, high downshift barrier.  ║');
-    console.log('  ║  AuDHD: η=1.0  c3 unstable.  Wide aperture + gait instability.     ║');
-    console.log('  ║                                                                    ║');
-    console.log('  ║  Same void. Same tombstones. Different stride.                     ║');
-    console.log('  ║                                                                    ║');
-    console.log('  ║  Inattention       = gallop lock on wrong dim, can\'t downshift     ║');
-    console.log('  ║  Hyperfocus        = gallop lock on right dim, can\'t disengage      ║');
-    console.log('  ║  Impulsivity       = sprint-and-fold, 16x depth but commits each    ║');
-    console.log('  ║  Novelty seeking   = fast habituation, familiar dims lose weight    ║');
-    console.log('  ║  Time blindness    = fast void decay, temporal structure dissolves   ║');
-    console.log('  ║  Emotional dysreg  = excess gain in the mental health layer          ║');
-    console.log('  ║  AuDHD flow state  = wide aperture + gallop lock = deep and fast    ║');
-    console.log('  ║  AuDHD variance    = context-dependent, right env = extraordinary   ║');
-    console.log('  ║  AuDHD accommod    = fewer dims + structured reward landscape        ║');
-    console.log('  ║                                                                    ║');
-    console.log('  ║  Autism is aperture. ADHD is stride. AuDHD is both.                 ║');
-    console.log('  ║                                                                    ║');
-    console.log('  ║  The ADHD brain is not broken.                                      ║');
-    console.log('  ║  It is a walker with a different stride.                             ║');
-    console.log('  ╚════════════════════════════════════════════════════════════════════╝\n');
+    console.log(
+      '\n  ╔════════════════════════════════════════════════════════════════════╗'
+    );
+    console.log(
+      '  ║  ADHD as Gait Dysregulation: The Stride Model                      ║'
+    );
+    console.log(
+      '  ╠════════════════════════════════════════════════════════════════════╣'
+    );
+    console.log(
+      '  ║  NT:    η=5.0  c3 stable.    Smooth gait transitions.              ║'
+    );
+    console.log(
+      '  ║  ADHD:  η=5.0  c3 unstable.  Low upshift, high downshift barrier.  ║'
+    );
+    console.log(
+      '  ║  AuDHD: η=1.0  c3 unstable.  Wide aperture + gait instability.     ║'
+    );
+    console.log(
+      '  ║                                                                    ║'
+    );
+    console.log(
+      '  ║  Same void. Same tombstones. Different stride.                     ║'
+    );
+    console.log(
+      '  ║                                                                    ║'
+    );
+    console.log(
+      "  ║  Inattention       = gallop lock on wrong dim, can't downshift     ║"
+    );
+    console.log(
+      "  ║  Hyperfocus        = gallop lock on right dim, can't disengage      ║"
+    );
+    console.log(
+      '  ║  Impulsivity       = sprint-and-fold, 16x depth but commits each    ║'
+    );
+    console.log(
+      '  ║  Novelty seeking   = fast habituation, familiar dims lose weight    ║'
+    );
+    console.log(
+      '  ║  Time blindness    = fast void decay, temporal structure dissolves   ║'
+    );
+    console.log(
+      '  ║  Emotional dysreg  = excess gain in the mental health layer          ║'
+    );
+    console.log(
+      '  ║  AuDHD flow state  = wide aperture + gallop lock = deep and fast    ║'
+    );
+    console.log(
+      '  ║  AuDHD variance    = context-dependent, right env = extraordinary   ║'
+    );
+    console.log(
+      '  ║  AuDHD accommod    = fewer dims + structured reward landscape        ║'
+    );
+    console.log(
+      '  ║                                                                    ║'
+    );
+    console.log(
+      '  ║  Autism is aperture. ADHD is stride. AuDHD is both.                 ║'
+    );
+    console.log(
+      '  ║                                                                    ║'
+    );
+    console.log(
+      '  ║  The ADHD brain is not broken.                                      ║'
+    );
+    console.log(
+      '  ║  It is a walker with a different stride.                             ║'
+    );
+    console.log(
+      '  ╚════════════════════════════════════════════════════════════════════╝\n'
+    );
 
     expect(true).toBe(true);
   });

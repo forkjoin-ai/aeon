@@ -50,7 +50,6 @@ function futureDeficit(d: number, k: number): number {
 // ═══════════════════════════════════════════════════════════════════════
 
 describe('Grand Unification: The Void Boundary Is the Sufficient Statistic for Everything', () => {
-
   // Part I: The Void Boundary Is Real
   describe('Part I: The Void Boundary Is Real', () => {
     it('1. Positivity: no choice is impossible', () => {
@@ -75,7 +74,10 @@ describe('Grand Unification: The Void Boundary Is the Sufficient Statistic for E
     it('4. Coherence: same boundary → same distribution', () => {
       let s1 = createSpace(3);
       let s2 = createSpace(3);
-      for (const r of [0, 1, 2, 0, 1]) { s1 = reject(s1, r); s2 = reject(s2, r); }
+      for (const r of [0, 1, 2, 0, 1]) {
+        s1 = reject(s1, r);
+        s2 = reject(s2, r);
+      }
       for (let i = 0; i < 3; i++) {
         expect(probability(s1, i)).toBe(probability(s2, i));
       }
@@ -91,7 +93,8 @@ describe('Grand Unification: The Void Boundary Is the Sufficient Statistic for E
   // Part II: The Void Dominates
   describe('Part II: The Void Dominates', () => {
     it('6. Failure data ≥ success data', () => {
-      const N = 10, T = 100;
+      const N = 10,
+        T = 100;
       expect(T * (N - 1)).toBeGreaterThanOrEqual(T);
     });
 
@@ -110,7 +113,8 @@ describe('Grand Unification: The Void Boundary Is the Sufficient Statistic for E
   // Part III: Collapse Has Universal Cost
   describe('Part III: Collapse Has Universal Cost', () => {
     it('9. Halting programs are a strict minority', () => {
-      const total = 256, halting = 100;
+      const total = 256,
+        halting = 100;
       expect(halting).toBeLessThan(total);
     });
 
@@ -150,13 +154,15 @@ describe('Grand Unification: The Void Boundary Is the Sufficient Statistic for E
   // Part V: Dialogue Converges
   describe('Part V: Dialogue Converges', () => {
     it('15. Negotiation deficit is positive (confusion exists)', () => {
-      const partyA = 5, partyB = 4;
+      const partyA = 5,
+        partyB = 4;
       const deficit = partyA + partyB - 1;
       expect(deficit).toBeGreaterThan(0);
     });
 
     it('16. Context reduces deficit monotonically', () => {
-      const F = 9, D = 1;
+      const F = 9,
+        D = 1;
       const trajectory: number[] = [];
       for (let ctx = 0; ctx <= F; ctx++) {
         trajectory.push(Math.max(0, F - D - ctx));
@@ -167,7 +173,8 @@ describe('Grand Unification: The Void Boundary Is the Sufficient Statistic for E
     });
 
     it('17. Sufficient context eliminates deficit (peace is reachable)', () => {
-      const F = 9, D = 1;
+      const F = 9,
+        D = 1;
       expect(Math.max(0, F - D - (F - D))).toBe(0);
     });
   });

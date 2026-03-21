@@ -48,7 +48,12 @@ function hpackRequestSize(resource: SiteResource, isFirst: boolean): number {
   }
 }
 
-function hpackResponseSize(resource: SiteResource, compressedSize: number, algo: CompressionAlgo, isFirst: boolean): number {
+function hpackResponseSize(
+  resource: SiteResource,
+  compressedSize: number,
+  algo: CompressionAlgo,
+  isFirst: boolean
+): number {
   if (isFirst) {
     // :status 200 = 1 byte (static table)
     // content-type = ~contentType.length * 0.8
@@ -89,9 +94,15 @@ export function serveHttp2(
 
   // HEADERS frame: HPACK-compressed request + response headers
   const reqHpack = hpackRequestSize(resource, isFirstRequest);
-  const resHpack = hpackResponseSize(resource, compressed.length, algo, isFirstRequest);
+  const resHpack = hpackResponseSize(
+    resource,
+    compressed.length,
+    algo,
+    isFirstRequest
+  );
   // HEADERS frame itself has a 9-byte frame header
-  const headersOverhead = H2_FRAME_HEADER + reqHpack + H2_FRAME_HEADER + resHpack;
+  const headersOverhead =
+    H2_FRAME_HEADER + reqHpack + H2_FRAME_HEADER + resHpack;
 
   // DATA frames for the payload
   const dataOverhead = dataFrameOverhead(compressed.length);

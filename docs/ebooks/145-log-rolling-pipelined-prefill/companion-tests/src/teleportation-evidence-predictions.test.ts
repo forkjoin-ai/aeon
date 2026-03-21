@@ -25,7 +25,9 @@ describe('Prediction 212: Federated learning = statistical teleportation', () =>
 
   it('convergence trajectory determined by certainty alone', () => {
     const certainty = 10;
-    const trajectory = Array.from({ length: 11 }, (_, k) => Math.max(0, certainty - k));
+    const trajectory = Array.from({ length: 11 }, (_, k) =>
+      Math.max(0, certainty - k)
+    );
     expect(trajectory[0]).toBe(10);
     expect(trajectory[10]).toBe(0);
     for (let i = 1; i < trajectory.length; i++)
@@ -51,7 +53,7 @@ describe('Prediction 213: Guilty verdict requires zero evidentiary deficit', () 
 
   it('evidence monotonically reduces deficit', () => {
     const threads = 5;
-    const deficits = [0, 1, 2, 3, 4, 5].map(c => threads - c);
+    const deficits = [0, 1, 2, 3, 4, 5].map((c) => threads - c);
     for (let i = 1; i < deficits.length; i++)
       expect(deficits[i]).toBeLessThanOrEqual(deficits[i - 1]!);
   });
@@ -94,7 +96,7 @@ describe('Prediction 214: Identical LLM agents waste k-1 compute', () => {
 
   it('diversity reduces waste monotonically', () => {
     const k = 10;
-    const wastes = [1, 3, 5, 7, 10].map(d => k - d);
+    const wastes = [1, 3, 5, 7, 10].map((d) => k - d);
     for (let i = 1; i < wastes.length; i++)
       expect(wastes[i]).toBeLessThanOrEqual(wastes[i - 1]!);
   });
@@ -103,14 +105,18 @@ describe('Prediction 214: Identical LLM agents waste k-1 compute', () => {
     const identical = { agents: 3, distinct: 1, wasted: 2 };
     const diverse = { agents: 3, distinct: 3, wasted: 0 };
     expect(diverse.wasted).toBeLessThan(identical.wasted);
-    console.log(`Identical: ${identical.wasted} wasted, Diverse: ${diverse.wasted} wasted`);
+    console.log(
+      `Identical: ${identical.wasted} wasted, Diverse: ${diverse.wasted} wasted`
+    );
   });
 });
 
 describe('Prediction 215: Causal direction is a frame artifact', () => {
   it('both deficits decrease simultaneously on shared rejection', () => {
-    const defA = 5, defB = 7;
-    const afterA = defA - 1, afterB = defB - 1;
+    const defA = 5,
+      defB = 7;
+    const afterA = defA - 1,
+      afterB = defB - 1;
     expect(afterA).toBeLessThan(defA);
     expect(afterB).toBeLessThan(defB);
   });
@@ -118,7 +124,8 @@ describe('Prediction 215: Causal direction is a frame artifact', () => {
   it('neither observer is "cause": both are effects of shared boundary', () => {
     // Simultaneous decrease proves no causal precedence
     const shared = { boundary: 3 };
-    const deltaA = 1, deltaB = 1;
+    const deltaA = 1,
+      deltaB = 1;
     expect(deltaA).toBe(deltaB); // symmetric decrease
   });
 
@@ -132,23 +139,24 @@ describe('Prediction 215: Causal direction is a frame artifact', () => {
 
   it('two walkers on same boundary compute same distribution', () => {
     const sharedBoundary = [3, 1, 2, 0]; // rejection counts per dimension
-    const complementA = sharedBoundary.map(v => 1 / (v + 1));
-    const complementB = sharedBoundary.map(v => 1 / (v + 1));
+    const complementA = sharedBoundary.map((v) => 1 / (v + 1));
+    const complementB = sharedBoundary.map((v) => 1 / (v + 1));
     expect(complementA).toEqual(complementB);
   });
 });
 
 describe('Prediction 216: Defense motions increase conviction difficulty monotonically', () => {
   it('adding threads increases deficit', () => {
-    const threads = 5, covered = 3;
+    const threads = 5,
+      covered = 3;
     const deficitBefore = threads - covered;
-    const deficitAfter = (threads + 2) - covered;
+    const deficitAfter = threads + 2 - covered;
     expect(deficitAfter).toBeGreaterThan(deficitBefore);
   });
 
   it('defense difficulty is monotone in thread count', () => {
     const covered = 2;
-    const deficits = [3, 4, 5, 6, 7].map(t => t - covered);
+    const deficits = [3, 4, 5, 6, 7].map((t) => t - covered);
     for (let i = 1; i < deficits.length; i++)
       expect(deficits[i]).toBeGreaterThan(deficits[i - 1]!);
   });
@@ -157,7 +165,8 @@ describe('Prediction 216: Defense motions increase conviction difficulty monoton
     const original = { threads: 4, covered: 1 };
     const doubled = { threads: 8, covered: 1 };
     expect(doubled.threads - doubled.covered).toBeGreaterThan(
-      original.threads - original.covered);
+      original.threads - original.covered
+    );
   });
 
   it('Brady violation: withheld evidence maintains artificially low deficit', () => {
@@ -168,14 +177,15 @@ describe('Prediction 216: Defense motions increase conviction difficulty monoton
   });
 
   it('full discovery yields accurate deficit assessment', () => {
-    const total = 10, disclosed = 10;
+    const total = 10,
+      disclosed = 10;
     expect(total - disclosed).toBe(0); // no Brady violation
   });
 });
 
 describe('Master: Predictions 212-216 all verified', () => {
   it('three novel theorem families exhausted', () => {
-    [212, 213, 214, 215, 216].forEach(id => console.log(`P${id}: PROVEN`));
+    [212, 213, 214, 215, 216].forEach((id) => console.log(`P${id}: PROVEN`));
     console.log('StatisticalTeleportation + BuleyeanEvidence + DaisyChainMOA.');
     console.log('216 predictions. All novel algebraic structure exhausted.');
   });

@@ -17,7 +17,10 @@ function buleyeanWeight(rounds: number, voidCount: number): number {
   return rounds - Math.min(voidCount, rounds) + 1;
 }
 
-function interpolationWeight(neighborRounds: number, neighborVoid: number): number {
+function interpolationWeight(
+  neighborRounds: number,
+  neighborVoid: number
+): number {
   return neighborRounds - Math.min(neighborVoid, neighborRounds) + 1;
 }
 
@@ -48,7 +51,8 @@ describe('THM-RETROCAUSAL-NEI: terminal boundary predicts structural holes', () 
   });
 
   it('two observers with same data produce same prediction (coherence)', () => {
-    const nRounds = 10, nVoid = 4;
+    const nRounds = 10,
+      nVoid = 4;
     const obs1 = interpolationWeight(nRounds, nVoid);
     const obs2 = interpolationWeight(nRounds, nVoid);
     expect(obs1).toBe(obs2);
@@ -142,7 +146,7 @@ describe('THM-DOUBLE-COMPLEMENT: complement involution preserves ordering', () =
       for (let v2 = v1; v2 <= rounds; v2++) {
         // v1 ≤ v2 → doubleComplement(v1) ≤ doubleComplement(v2)
         expect(doubleComplement(rounds, v1)).toBeLessThanOrEqual(
-          doubleComplement(rounds, v2),
+          doubleComplement(rounds, v2)
         );
       }
     }

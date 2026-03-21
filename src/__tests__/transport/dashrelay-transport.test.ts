@@ -1,5 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { DashRelayFlowTransport, createDashRelayFlow } from '../../transport/dashrelay';
+import {
+  DashRelayFlowTransport,
+  createDashRelayFlow,
+} from '../../transport/dashrelay';
 import type { DashRelayLike } from '../../transport/dashrelay';
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -67,7 +70,11 @@ function createEnvelope(
   if (channel) flags |= 0x02;
 
   const headerSize = 10;
-  const totalSize = headerSize + targetBytes.byteLength + channelBytes.byteLength + payload.byteLength;
+  const totalSize =
+    headerSize +
+    targetBytes.byteLength +
+    channelBytes.byteLength +
+    payload.byteLength;
   const envelope = new Uint8Array(totalSize);
   const view = new DataView(envelope.buffer);
 
@@ -77,8 +84,10 @@ function createEnvelope(
   view.setUint32(6, channelBytes.byteLength, false);
 
   let offset = headerSize;
-  envelope.set(targetBytes, offset); offset += targetBytes.byteLength;
-  envelope.set(channelBytes, offset); offset += channelBytes.byteLength;
+  envelope.set(targetBytes, offset);
+  offset += targetBytes.byteLength;
+  envelope.set(channelBytes, offset);
+  offset += channelBytes.byteLength;
   envelope.set(payload, offset);
 
   return envelope;
@@ -101,7 +110,9 @@ describe('DashRelay FlowTransport', () => {
 
     it('should receive and unwrap broadcast messages', () => {
       const { relay, simulateMessage } = createMockRelay();
-      const transport = new DashRelayFlowTransport(relay, { localPeerId: 'me' });
+      const transport = new DashRelayFlowTransport(relay, {
+        localPeerId: 'me',
+      });
       const received: string[] = [];
 
       transport.onReceive((data) => {
@@ -118,7 +129,9 @@ describe('DashRelay FlowTransport', () => {
 
     it('should ignore own messages', () => {
       const { relay, simulateMessage } = createMockRelay();
-      const transport = new DashRelayFlowTransport(relay, { localPeerId: 'me' });
+      const transport = new DashRelayFlowTransport(relay, {
+        localPeerId: 'me',
+      });
       const received: string[] = [];
 
       transport.onReceive((data) => {
@@ -137,7 +150,9 @@ describe('DashRelay FlowTransport', () => {
   describe('directed mode', () => {
     it('should accept messages directed to us', () => {
       const { relay, simulateMessage } = createMockRelay();
-      const transport = new DashRelayFlowTransport(relay, { localPeerId: 'me' });
+      const transport = new DashRelayFlowTransport(relay, {
+        localPeerId: 'me',
+      });
       const received: string[] = [];
 
       transport.onReceive((data) => {
@@ -153,14 +168,19 @@ describe('DashRelay FlowTransport', () => {
 
     it('should ignore messages directed to other peers', () => {
       const { relay, simulateMessage } = createMockRelay();
-      const transport = new DashRelayFlowTransport(relay, { localPeerId: 'me' });
+      const transport = new DashRelayFlowTransport(relay, {
+        localPeerId: 'me',
+      });
       const received: string[] = [];
 
       transport.onReceive((data) => {
         received.push(new TextDecoder().decode(data));
       });
 
-      const envelope = createEnvelope(new TextEncoder().encode('not for me'), 'someone-else');
+      const envelope = createEnvelope(
+        new TextEncoder().encode('not for me'),
+        'someone-else'
+      );
       simulateMessage('peer-1', envelope);
 
       expect(received.length).toBe(0);
@@ -169,7 +189,9 @@ describe('DashRelay FlowTransport', () => {
 
     it('should send directed messages with target peer ID', () => {
       const { relay, broadcasts } = createMockRelay();
-      const transport = new DashRelayFlowTransport(relay, { targetPeerId: 'peer-2' });
+      const transport = new DashRelayFlowTransport(relay, {
+        targetPeerId: 'peer-2',
+      });
 
       transport.send(new TextEncoder().encode('directed'));
 
@@ -195,11 +217,19 @@ describe('DashRelay FlowTransport', () => {
       });
 
       // Message on our channel
-      const right = createEnvelope(new TextEncoder().encode('right channel'), undefined, 'inference');
+      const right = createEnvelope(
+        new TextEncoder().encode('right channel'),
+        undefined,
+        'inference'
+      );
       simulateMessage('peer-1', right);
 
       // Message on wrong channel
-      const wrong = createEnvelope(new TextEncoder().encode('wrong channel'), undefined, 'deploy');
+      const wrong = createEnvelope(
+        new TextEncoder().encode('wrong channel'),
+        undefined,
+        'deploy'
+      );
       simulateMessage('peer-1', wrong);
 
       expect(received).toEqual(['right channel']);
@@ -299,7 +329,9 @@ describe('DashRelay FlowTransport', () => {
   describe('lifecycle', () => {
     it('should not receive after close', () => {
       const { relay, simulateMessage } = createMockRelay();
-      const transport = new DashRelayFlowTransport(relay, { localPeerId: 'me' });
+      const transport = new DashRelayFlowTransport(relay, {
+        localPeerId: 'me',
+      });
       const received: string[] = [];
 
       transport.onReceive((data) => {

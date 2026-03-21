@@ -16,10 +16,53 @@
  * fork/race/fold works identically regardless of transport.
  * Everything speaks Aeon internally. HTTP is just the projection.
  */
-export { DashRelayFlowTransport, createDashRelayFlow, type DashRelayLike, type DashRelayFlowConfig, } from './dashrelay';
-export { BluetoothFlowTransport, AEON_FLOW_SERVICE_UUID, AEON_FLOW_TX_UUID, AEON_FLOW_RX_UUID, type BluetoothFlowConfig, } from './bluetooth';
-export { WebRTCFlowTransport, createP2PFlow, type WebRTCFlowConfig, type SignalingMessage, } from './webrtc';
-export { TCPFlowTransport, connectTCPFlow, listenTCPFlow, type TCPFlowConfig, } from './tcp';
-export { MessagePortFlowTransport, ChildProcessFlowTransport, createIPCPair, type MessagePortLike, type ChildProcessLike, type IPCFlowConfig, } from './ipc';
-export { USBFlowTransport, AEON_USB_INTERFACE_CLASS, AEON_USB_SUBCLASS, AEON_USB_PROTOCOL, type USBFlowConfig, } from './usb';
-export { HTTPAeonBridge, encodeHTTPRequest, decodeHTTPRequest, encodeHTTPResponse, decodeHTTPResponse, type AeonHTTPRequest, type AeonHTTPResponse, type HTTPBridgeConfig, } from './http';
+export {
+  DashRelayFlowTransport,
+  createDashRelayFlow,
+  type DashRelayLike,
+  type DashRelayFlowConfig,
+} from './dashrelay';
+export {
+  BluetoothFlowTransport,
+  AEON_FLOW_SERVICE_UUID,
+  AEON_FLOW_TX_UUID,
+  AEON_FLOW_RX_UUID,
+  type BluetoothFlowConfig,
+} from './bluetooth';
+export {
+  WebRTCFlowTransport,
+  createP2PFlow,
+  type WebRTCFlowConfig,
+  type SignalingMessage,
+} from './webrtc';
+export {
+  TCPFlowTransport,
+  connectTCPFlow,
+  listenTCPFlow,
+  type TCPFlowConfig,
+} from './tcp';
+export {
+  MessagePortFlowTransport,
+  ChildProcessFlowTransport,
+  createIPCPair,
+  type MessagePortLike,
+  type ChildProcessLike,
+  type IPCFlowConfig,
+} from './ipc';
+export {
+  USBFlowTransport,
+  AEON_USB_INTERFACE_CLASS,
+  AEON_USB_SUBCLASS,
+  AEON_USB_PROTOCOL,
+  type USBFlowConfig,
+} from './usb';
+export {
+  HTTPAeonBridge,
+  encodeHTTPRequest,
+  decodeHTTPRequest,
+  encodeHTTPResponse,
+  decodeHTTPResponse,
+  type AeonHTTPRequest,
+  type AeonHTTPResponse,
+  type HTTPBridgeConfig,
+} from './http';

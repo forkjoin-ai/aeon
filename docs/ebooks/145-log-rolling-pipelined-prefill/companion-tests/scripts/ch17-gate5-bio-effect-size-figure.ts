@@ -20,15 +20,15 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate5-bio-effect-size-figure.json',
+    '../artifacts/ch17-gate5-bio-effect-size-figure.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate5-bio-effect-size-figure.md',
+    '../artifacts/ch17-gate5-bio-effect-size-figure.md'
   );
   const defaultSvgPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate5-bio-effect-size-figure.svg',
+    '../artifacts/ch17-gate5-bio-effect-size-figure.svg'
   );
 
   let assertSurface = false;
@@ -85,29 +85,49 @@ function main(): void {
   const options = parseCli(process.argv.slice(2));
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const artifactsDir = resolve(moduleDir, '../artifacts');
-  const gate5 = loadJson<Gate5Report>(resolve(artifactsDir, 'gate5-bio-effect-size.json'));
+  const gate5 = loadJson<Gate5Report>(
+    resolve(artifactsDir, 'gate5-bio-effect-size.json')
+  );
   const report = buildCh17Gate5BioEffectSizeFigureReport(gate5);
 
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  writeFileSync(options.markdownPath, renderCh17Gate5BioEffectSizeFigureMarkdown(report), 'utf8');
-  writeFileSync(options.svgPath, renderCh17Gate5BioEffectSizeFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
+  writeFileSync(
+    options.markdownPath,
+    renderCh17Gate5BioEffectSizeFigureMarkdown(report),
+    'utf8'
+  );
+  writeFileSync(
+    options.svgPath,
+    renderCh17Gate5BioEffectSizeFigureSvg(report),
+    'utf8'
+  );
 
   process.stdout.write(`ch17-gate5-bio-effect-size-figure: ${report.label}\n`);
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
-    `- primary pairs: ${report.primaryPairsPassed}/${report.primaryPairCount}\n`,
+    `- primary pairs: ${report.primaryPairsPassed}/${report.primaryPairCount}\n`
   );
   process.stdout.write(
-    `- minimum primary CI low: ${report.minPrimaryPairRatioCiLow.toFixed(3)}x (threshold ${report.pairThresholdRatio.toFixed(3)}x)\n`,
+    `- minimum primary CI low: ${report.minPrimaryPairRatioCiLow.toFixed(
+      3
+    )}x (threshold ${report.pairThresholdRatio.toFixed(3)}x)\n`
   );
   process.stdout.write(
-    `- pooled effect: ${report.pooledRatio.toFixed(3)}x (${report.pooledRatioCi95.low.toFixed(3)}x to ${report.pooledRatioCi95.high.toFixed(3)}x)\n`,
+    `- pooled effect: ${report.pooledRatio.toFixed(
+      3
+    )}x (${report.pooledRatioCi95.low.toFixed(
+      3
+    )}x to ${report.pooledRatioCi95.high.toFixed(3)}x)\n`
   );
 
   if (

@@ -19,16 +19,21 @@ export interface FormalWitnessCatalogReport {
 }
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
-const defaultArtifactPath = resolve(moduleDir, '../artifacts/formal-witness-catalog.json');
+const defaultArtifactPath = resolve(
+  moduleDir,
+  '../artifacts/formal-witness-catalog.json'
+);
 
 export function loadCheckedInFormalWitnessCatalog(
-  artifactPath = defaultArtifactPath,
+  artifactPath = defaultArtifactPath
 ): FormalWitnessCatalogReport {
-  return JSON.parse(readFileSync(artifactPath, 'utf8')) as FormalWitnessCatalogReport;
+  return JSON.parse(
+    readFileSync(artifactPath, 'utf8')
+  ) as FormalWitnessCatalogReport;
 }
 
 export function renderFormalWitnessCatalogMarkdown(
-  report: FormalWitnessCatalogReport,
+  report: FormalWitnessCatalogReport
 ): string {
   const lines: string[] = [];
   lines.push('# Formal Witness Catalog');
@@ -36,16 +41,22 @@ export function renderFormalWitnessCatalogMarkdown(
   lines.push(`- Label: \`${report.label}\``);
   lines.push(`- Witness count: \`${report.witnesses.length}\``);
   lines.push('');
-  lines.push('| Witness | Kind | Fold | Inputs | Observed | Alternate | Theorem |');
+  lines.push(
+    '| Witness | Kind | Fold | Inputs | Observed | Alternate | Theorem |'
+  );
   lines.push('| --- | --- | --- | --- | ---: | ---: | --- |');
   for (const witness of report.witnesses) {
     lines.push(
-      `| \`${witness.id}\` | \`${witness.kind}\` | \`${witness.fold}\` | \`${witness.inputs.join(', ')}\` | ${witness.observed} | ${witness.alternate ?? 'null'} | \`${witness.theoremRef}\` |`,
+      `| \`${witness.id}\` | \`${witness.kind}\` | \`${
+        witness.fold
+      }\` | \`${witness.inputs.join(', ')}\` | ${witness.observed} | ${
+        witness.alternate ?? 'null'
+      } | \`${witness.theoremRef}\` |`
     );
   }
   lines.push('');
   lines.push(
-    'Interpretation: these witnesses are emitted directly from the Lean theorem package and consumed by the runtime boundary tests, so the formal layer now supplies concrete executable counterexamples instead of merely describing them.',
+    'Interpretation: these witnesses are emitted directly from the Lean theorem package and consumed by the runtime boundary tests, so the formal layer now supplies concrete executable counterexamples instead of merely describing them.'
   );
   lines.push('');
   return `${lines.join('\n')}\n`;

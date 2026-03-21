@@ -22,14 +22,17 @@ import { describe, it, expect } from 'vitest';
 
 interface FoldingFunnel {
   depth: number;
-  beta1AtLevel: number[];  // β₁ at each level, index 0 = unfolded
+  beta1AtLevel: number[]; // β₁ at each level, index 0 = unfolded
 }
 
 function createFunnel(unfoldedBeta1: number, depth: number): FoldingFunnel {
   const beta1AtLevel: number[] = [];
   for (let i = 0; i <= depth; i++) {
     // Linear descent from unfoldedBeta1 to 1
-    const beta1 = Math.max(1, Math.round(unfoldedBeta1 - (unfoldedBeta1 - 1) * (i / depth)));
+    const beta1 = Math.max(
+      1,
+      Math.round(unfoldedBeta1 - (unfoldedBeta1 - 1) * (i / depth))
+    );
     beta1AtLevel.push(beta1);
   }
   return { depth, beta1AtLevel };
@@ -74,7 +77,10 @@ function evolutionaryBeta1(g: EvolutionaryGeneration): number {
   return g.population - 1;
 }
 
-function selectionFold(g: EvolutionaryGeneration, survivors: number): {
+function selectionFold(
+  g: EvolutionaryGeneration,
+  survivors: number
+): {
   newGeneration: EvolutionaryGeneration;
   vented: number;
   beta1Reduction: number;
@@ -108,7 +114,7 @@ function gravityModifiesTopology(g: SelfReferentialFold): boolean {
 const BOLTZMANN_K = 1.380649e-23; // J/K
 const TEMPERATURE = 300; // K (room temperature)
 const LANDAUER_PER_BIT = BOLTZMANN_K * TEMPERATURE * Math.LN2;
-const C_SQUARED = (3e8) ** 2; // (m/s)²
+const C_SQUARED = 3e8 ** 2; // (m/s)²
 
 function landauerHeat(bitsErased: number): number {
   return bitsErased * LANDAUER_PER_BIT;
@@ -136,10 +142,10 @@ const FULL_SCALE_TOWER: ScaleLevel[] = [
   { name: 'Quarks → Hadrons', coveringBeta1: 3, baseBeta1: 0 },
   { name: 'Nucleons → Nuclei', coveringBeta1: 1, baseBeta1: 0 },
   { name: 'Atoms → Molecules', coveringBeta1: 1, baseBeta1: 0 },
-  { name: 'Molecules → Proteins', coveringBeta1: 10, baseBeta1: 1 },  // folding funnel
-  { name: 'Proteins → Cells', coveringBeta1: 3, baseBeta1: 0 },       // enzyme catalysis
-  { name: 'Cells → Organisms', coveringBeta1: 1, baseBeta1: 0 },      // development
-  { name: 'Organisms → Species', coveringBeta1: 100, baseBeta1: 1 },   // evolution
+  { name: 'Molecules → Proteins', coveringBeta1: 10, baseBeta1: 1 }, // folding funnel
+  { name: 'Proteins → Cells', coveringBeta1: 3, baseBeta1: 0 }, // enzyme catalysis
+  { name: 'Cells → Organisms', coveringBeta1: 1, baseBeta1: 0 }, // development
+  { name: 'Organisms → Species', coveringBeta1: 100, baseBeta1: 1 }, // evolution
   { name: 'Species → Ecosystems', coveringBeta1: 10, baseBeta1: 0 },
   { name: 'Ecosystems → Pipelines', coveringBeta1: 1, baseBeta1: 0 },
 ];
@@ -153,7 +159,9 @@ describe('Protein Folding — Energy Funnel Filtration', () => {
 
   it('β₁ is monotonically non-increasing along the funnel', () => {
     for (let i = 1; i < funnel.beta1AtLevel.length; i++) {
-      expect(funnel.beta1AtLevel[i]).toBeLessThanOrEqual(funnel.beta1AtLevel[i - 1]);
+      expect(funnel.beta1AtLevel[i]).toBeLessThanOrEqual(
+        funnel.beta1AtLevel[i - 1]
+      );
     }
   });
 
@@ -211,7 +219,9 @@ describe('Enzyme Catalysis — β₁ Modification', () => {
   });
 
   it('catalyzed activation energy is strictly lower', () => {
-    expect(enzyme.activationCatalyzed).toBeLessThan(enzyme.activationUncatalyzed);
+    expect(enzyme.activationCatalyzed).toBeLessThan(
+      enzyme.activationUncatalyzed
+    );
   });
 
   it('enzyme does not change the reaction thermodynamics (same products)', () => {
@@ -240,7 +250,9 @@ describe('Evolution — Self-Modifying Fork/Race/Fold', () => {
 
   it('selection fold reduces β₁', () => {
     const result = selectionFold(gen0, 100);
-    expect(evolutionaryBeta1(result.newGeneration)).toBeLessThan(evolutionaryBeta1(gen0));
+    expect(evolutionaryBeta1(result.newGeneration)).toBeLessThan(
+      evolutionaryBeta1(gen0)
+    );
   });
 
   it('selection vents (population - survivors) individuals', () => {
@@ -288,12 +300,20 @@ describe('Evolution — Self-Modifying Fork/Race/Fold', () => {
 
 describe('Gravity — Self-Referential Fold', () => {
   it('positive fold energy → topology changes (gravity modifies space)', () => {
-    const g: SelfReferentialFold = { foldEnergy: 10, beta1Before: 3, beta1After: 2 };
+    const g: SelfReferentialFold = {
+      foldEnergy: 10,
+      beta1Before: 3,
+      beta1After: 2,
+    };
     expect(g.beta1Before).not.toBe(g.beta1After);
   });
 
   it('zero fold energy → flat spacetime (topology unchanged)', () => {
-    const g: SelfReferentialFold = { foldEnergy: 0, beta1Before: 3, beta1After: 3 };
+    const g: SelfReferentialFold = {
+      foldEnergy: 0,
+      beta1Before: 3,
+      beta1After: 3,
+    };
     expect(g.beta1Before).toBe(g.beta1After);
   });
 
@@ -328,15 +348,15 @@ describe('Gravity — Self-Referential Fold', () => {
     // folded into the base space. Gravity is what happens when that
     // folded energy modifies the topology it was folded into.
     const coveringBeta1 = 3; // color charges (SU(3))
-    const baseBeta1 = 0;     // color-neutral hadron
+    const baseBeta1 = 0; // color-neutral hadron
     const foldedEnergy = coveringBeta1 - baseBeta1; // = 3 units
 
     // The folded energy (mass) modifies the base-space topology
     // This IS general relativity: mass curves spacetime
     const g: SelfReferentialFold = {
       foldEnergy: foldedEnergy,
-      beta1Before: 0,  // flat spacetime before mass
-      beta1After: 1,   // curved spacetime after mass (geodesic cycles)
+      beta1Before: 0, // flat spacetime before mass
+      beta1After: 1, // curved spacetime after mass (geodesic cycles)
     };
     expect(g.foldEnergy).toBe(3);
     expect(g.beta1After).toBeGreaterThan(g.beta1Before);
@@ -381,7 +401,7 @@ describe('Information-Matter Bridge — Landauer → E=mc²', () => {
     const heat = landauerHeat(bits);
     const mass = heatToMass(heat);
     // Direct computation matches chain composition
-    expect(mass).toBeCloseTo(bits * LANDAUER_PER_BIT / C_SQUARED, 50);
+    expect(mass).toBeCloseTo((bits * LANDAUER_PER_BIT) / C_SQUARED, 50);
   });
 });
 
@@ -399,19 +419,28 @@ describe('Scale Tower — Full Composition', () => {
   });
 
   it('total fold reduction across the tower is the sum of individual reductions', () => {
-    const totalReduction = FULL_SCALE_TOWER.reduce((sum, l) => sum + foldReduction(l), 0);
+    const totalReduction = FULL_SCALE_TOWER.reduce(
+      (sum, l) => sum + foldReduction(l),
+      0
+    );
     const individualReductions = FULL_SCALE_TOWER.map(foldReduction);
-    expect(totalReduction).toBe(individualReductions.reduce((a, b) => a + b, 0));
+    expect(totalReduction).toBe(
+      individualReductions.reduce((a, b) => a + b, 0)
+    );
   });
 
   it('the tower spans quarks to ecosystems (9 levels)', () => {
     expect(FULL_SCALE_TOWER.length).toBe(9);
     expect(FULL_SCALE_TOWER[0].name).toContain('Quarks');
-    expect(FULL_SCALE_TOWER[FULL_SCALE_TOWER.length - 1].name).toContain('Pipelines');
+    expect(FULL_SCALE_TOWER[FULL_SCALE_TOWER.length - 1].name).toContain(
+      'Pipelines'
+    );
   });
 
   it('protein folding level has the largest fold reduction in biology', () => {
-    const proteinLevel = FULL_SCALE_TOWER.find(l => l.name.includes('Proteins'));
+    const proteinLevel = FULL_SCALE_TOWER.find((l) =>
+      l.name.includes('Proteins')
+    );
     expect(proteinLevel).toBeDefined();
     expect(foldReduction(proteinLevel!)).toBe(9); // 10 → 1
   });

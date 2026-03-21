@@ -18,12 +18,18 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/ch17-gate4-rqr-holdout-figure.json');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-gate4-rqr-holdout-figure.json'
+  );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-gate4-rqr-holdout-figure.md',
+    '../artifacts/ch17-gate4-rqr-holdout-figure.md'
   );
-  const defaultSvgPath = resolve(moduleDir, '../artifacts/ch17-gate4-rqr-holdout-figure.svg');
+  const defaultSvgPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-gate4-rqr-holdout-figure.svg'
+  );
 
   let assertSurface = false;
   let jsonPath = defaultJsonPath;
@@ -79,27 +85,47 @@ function main(): void {
   const options = parseCli(process.argv.slice(2));
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const artifactsDir = resolve(moduleDir, '../artifacts');
-  const gate4 = loadJson<Gate4Report>(resolve(artifactsDir, 'gate4-rqr-holdout.json'));
+  const gate4 = loadJson<Gate4Report>(
+    resolve(artifactsDir, 'gate4-rqr-holdout.json')
+  );
   const report = buildCh17Gate4RqrHoldoutFigureReport(gate4);
 
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  writeFileSync(options.markdownPath, renderCh17Gate4RqrHoldoutFigureMarkdown(report), 'utf8');
-  writeFileSync(options.svgPath, renderCh17Gate4RqrHoldoutFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
+  writeFileSync(
+    options.markdownPath,
+    renderCh17Gate4RqrHoldoutFigureMarkdown(report),
+    'utf8'
+  );
+  writeFileSync(
+    options.svgPath,
+    renderCh17Gate4RqrHoldoutFigureSvg(report),
+    'utf8'
+  );
 
   process.stdout.write(`ch17-gate4-rqr-holdout-figure: ${report.label}\n`);
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
-  process.stdout.write(`- criteria: ${report.criteriaPassed}/${report.criteriaTotal}\n`);
   process.stdout.write(
-    `- quartile delta: ${report.quartileDelta.value.toFixed(3)} (${report.quartileDelta.ci95.low.toFixed(3)} to ${report.quartileDelta.ci95.high.toFixed(3)})\n`,
+    `- criteria: ${report.criteriaPassed}/${report.criteriaTotal}\n`
   );
   process.stdout.write(
-    `- monotonicity: ${report.monotonicViolations}/${report.maxMonotonicViolations} allowed violations\n`,
+    `- quartile delta: ${report.quartileDelta.value.toFixed(
+      3
+    )} (${report.quartileDelta.ci95.low.toFixed(
+      3
+    )} to ${report.quartileDelta.ci95.high.toFixed(3)})\n`
+  );
+  process.stdout.write(
+    `- monotonicity: ${report.monotonicViolations}/${report.maxMonotonicViolations} allowed violations\n`
   );
 
   if (

@@ -19,15 +19,15 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/ch17-hetero-moa-fabric-curvature-figure.json',
+    '../artifacts/ch17-hetero-moa-fabric-curvature-figure.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-hetero-moa-fabric-curvature-figure.md',
+    '../artifacts/ch17-hetero-moa-fabric-curvature-figure.md'
   );
   const defaultSvgPath = resolve(
     moduleDir,
-    '../artifacts/ch17-hetero-moa-fabric-curvature-figure.svg',
+    '../artifacts/ch17-hetero-moa-fabric-curvature-figure.svg'
   );
 
   let assertSurface = false;
@@ -84,26 +84,30 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderCh17HeteroMoaFabricCurvatureFigureMarkdown(report),
-    'utf8',
+    'utf8'
   );
   writeFileSync(
     options.svgPath,
     renderCh17HeteroMoaFabricCurvatureFigureSvg(report),
-    'utf8',
+    'utf8'
   );
 
   process.stdout.write(
-    `ch17-hetero-moa-fabric-curvature-figure: ${report.label}\n`,
+    `ch17-hetero-moa-fabric-curvature-figure: ${report.label}\n`
   );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
-    `- primitive: ${report.primitive}, lanes=${report.totalLanes}, pairs=${report.pairCount}, frame=${report.frameProtocol}\n`,
+    `- primitive: ${report.primitive}, lanes=${report.totalLanes}, pairs=${report.pairCount}, frame=${report.frameProtocol}\n`
   );
 
   if (
@@ -122,7 +126,7 @@ async function main(): Promise<void> {
 
 main().catch((error) => {
   process.stderr.write(
-    `${error instanceof Error ? error.message : String(error)}\n`,
+    `${error instanceof Error ? error.message : String(error)}\n`
   );
   process.exitCode = 1;
 });

@@ -61,7 +61,7 @@ describe('IPC FlowTransport', () => {
       });
 
       // Send binary data including null bytes and high values
-      const binary = new Uint8Array([0x00, 0xFF, 0xAE, 0x0F, 0x10, 0x80]);
+      const binary = new Uint8Array([0x00, 0xff, 0xae, 0x0f, 0x10, 0x80]);
       a.send(binary);
       await new Promise((r) => setTimeout(r, 50));
 

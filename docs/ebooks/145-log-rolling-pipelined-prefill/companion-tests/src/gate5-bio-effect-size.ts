@@ -112,7 +112,8 @@ const BIOLOGICAL_PAIRS: readonly BiologicalPairSpec[] = [
     numeratorRange: { min: 0.95, max: 0.99 },
     denominatorRange: { min: 0.03, max: 0.06 },
     unit: 'ratio',
-    source: 'Step-level and system-level efficiency ranges from cited literature.',
+    source:
+      'Step-level and system-level efficiency ranges from cited literature.',
     citationIds: [6, 44],
     primary: true,
   },
@@ -124,7 +125,8 @@ const BIOLOGICAL_PAIRS: readonly BiologicalPairSpec[] = [
     numeratorRange: { min: 1000, max: 2000 },
     denominatorRange: { min: 100, max: 200 },
     unit: 'nt',
-    source: 'Okazaki-fragment length ranges from cited molecular biology literature.',
+    source:
+      'Okazaki-fragment length ranges from cited molecular biology literature.',
     citationIds: [45],
     primary: true,
   },
@@ -160,7 +162,9 @@ function quantile(values: readonly number[], q: number): number {
 
 function sampleRange(range: NumericRange, rng: () => number): number {
   if (range.min <= 0 || range.max <= 0) {
-    throw new Error(`Ranges must be strictly positive; got ${range.min}-${range.max}`);
+    throw new Error(
+      `Ranges must be strictly positive; got ${range.min}-${range.max}`
+    );
   }
   if (range.max < range.min) {
     throw new Error(`Range max must be >= min; got ${range.min}-${range.max}`);
@@ -175,7 +179,7 @@ function simulatePair(
   pair: BiologicalPairSpec,
   seed: number,
   drawsPerPair: number,
-  minPairRatioLowerCi: number,
+  minPairRatioLowerCi: number
 ): PairSimulation {
   const rng = makeRng(seed);
   const ratios = new Array<number>(drawsPerPair);
@@ -216,7 +220,7 @@ function simulatePair(
 function bootstrapPooledLogRatio(
   simulations: readonly PairSimulation[],
   seed: number,
-  bootstrapResamples: number,
+  bootstrapResamples: number
 ): BootstrapInterval {
   if (simulations.length === 0) {
     return { low: Number.NaN, high: Number.NaN };
@@ -270,23 +274,25 @@ export function runGate5BioEffectSize(config: Gate5Config): Gate5Report {
       pair,
       hashString(config.seed, pair.id),
       config.drawsPerPair,
-      config.thresholds.minPairRatioLowerCi,
-    ),
+      config.thresholds.minPairRatioLowerCi
+    )
   );
 
   const pairs = simulations.map((entry) => entry.result);
   const primaryPairs = pairs.filter((pair) => pair.primary);
   const primaryPasses = primaryPairs.filter((pair) => pair.pass).length;
-  const primaryPassRate = primaryPairs.length === 0 ? 0 : primaryPasses / primaryPairs.length;
+  const primaryPassRate =
+    primaryPairs.length === 0 ? 0 : primaryPasses / primaryPairs.length;
   const pooledLogRatio = mean(pairs.map((pair) => pair.meanLogRatio));
   const pooledLogRatioCi95 = bootstrapPooledLogRatio(
     simulations,
     hashString(config.seed ^ 0x9e3779b9, 'pooled_log_ratio_ci'),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
-  const minPrimaryPairRatioCiLow = primaryPairs.length === 0
-    ? Number.NaN
-    : Math.min(...primaryPairs.map((pair) => pair.ratioCi95.low));
+  const minPrimaryPairRatioCiLow =
+    primaryPairs.length === 0
+      ? Number.NaN
+      : Math.min(...primaryPairs.map((pair) => pair.ratioCi95.low));
 
   const criteria: Gate5Criterion[] = [
     {
@@ -298,7 +304,8 @@ export function runGate5BioEffectSize(config: Gate5Config): Gate5Report {
     },
     {
       id: 'primary_pair_ratio_ci_low',
-      description: 'Every primary biological pair has a ratio CI low above the minimum.',
+      description:
+        'Every primary biological pair has a ratio CI low above the minimum.',
       threshold: `>= ${config.thresholds.minPairRatioLowerCi.toFixed(3)}`,
       observed: minPrimaryPairRatioCiLow,
       pass: minPrimaryPairRatioCiLow >= config.thresholds.minPairRatioLowerCi,
@@ -312,7 +319,8 @@ export function runGate5BioEffectSize(config: Gate5Config): Gate5Report {
     },
     {
       id: 'pooled_log_ratio_ci_low',
-      description: 'Pooled effect (log ratio) CI low clears the minimum magnitude threshold.',
+      description:
+        'Pooled effect (log ratio) CI low clears the minimum magnitude threshold.',
       threshold: `>= ${config.thresholds.pooledLogRatioLowerCi.toFixed(3)}`,
       observed: pooledLogRatio,
       ci95: pooledLogRatioCi95,
@@ -320,8 +328,12 @@ export function runGate5BioEffectSize(config: Gate5Config): Gate5Report {
     },
   ];
 
-  const passedCriterionIds = criteria.filter((criterion) => criterion.pass).map((criterion) => criterion.id);
-  const failedCriterionIds = criteria.filter((criterion) => !criterion.pass).map((criterion) => criterion.id);
+  const passedCriterionIds = criteria
+    .filter((criterion) => criterion.pass)
+    .map((criterion) => criterion.id);
+  const failedCriterionIds = criteria
+    .filter((criterion) => !criterion.pass)
+    .map((criterion) => criterion.id);
 
   return {
     protocol: {
@@ -342,7 +354,10 @@ export function runGate5BioEffectSize(config: Gate5Config): Gate5Report {
     aggregate: {
       pairCount: pairs.length,
       primaryPairCount: primaryPairs.length,
-      medianPairRatio: quantile(pairs.map((pair) => pair.medianRatio), 0.5),
+      medianPairRatio: quantile(
+        pairs.map((pair) => pair.medianRatio),
+        0.5
+      ),
       minPrimaryPairRatioCiLow,
       pooledLogRatio,
       pooledLogRatioCi95,
@@ -370,20 +385,40 @@ export function renderGate5Markdown(report: Gate5Report): string {
   lines.push('');
   lines.push(`- Protocol: \`${report.protocol.id}\``);
   lines.push(`- Verdict: **${report.gate.pass ? 'PASS' : 'DENY'}**`);
-  lines.push(`- Pair count: **${report.aggregate.pairCount}** (primary ${report.aggregate.primaryPairCount})`);
-  lines.push(`- Median pair ratio: **${formatNumber(report.aggregate.medianPairRatio)}x**`);
   lines.push(
-    `- Pooled log-ratio: **${formatNumber(report.aggregate.pooledLogRatio)}** (95% CI ${formatNumber(report.aggregate.pooledLogRatioCi95.low)}-${formatNumber(report.aggregate.pooledLogRatioCi95.high)})`,
+    `- Pair count: **${report.aggregate.pairCount}** (primary ${report.aggregate.primaryPairCount})`
+  );
+  lines.push(
+    `- Median pair ratio: **${formatNumber(
+      report.aggregate.medianPairRatio
+    )}x**`
+  );
+  lines.push(
+    `- Pooled log-ratio: **${formatNumber(
+      report.aggregate.pooledLogRatio
+    )}** (95% CI ${formatNumber(
+      report.aggregate.pooledLogRatioCi95.low
+    )}-${formatNumber(report.aggregate.pooledLogRatioCi95.high)})`
   );
   lines.push('');
   lines.push('## Pair Results');
   lines.push('');
-  lines.push('| Pair | Numerator / Denominator | Median Ratio | 95% CI Ratio | Primary | Verdict | Sources |');
+  lines.push(
+    '| Pair | Numerator / Denominator | Median Ratio | 95% CI Ratio | Primary | Verdict | Sources |'
+  );
   lines.push('|---|---|---:|---:|---:|---:|---|');
 
   for (const pair of report.pairs) {
     lines.push(
-      `| ${pair.domain} (\`${pair.id}\`) | ${pair.numeratorLabel} / ${pair.denominatorLabel} | ${formatNumber(pair.medianRatio)}x | ${formatNumber(pair.ratioCi95.low)}x-${formatNumber(pair.ratioCi95.high)}x | ${pair.primary ? 'yes' : 'no'} | ${pair.pass ? 'PASS' : 'DENY'} | ${pair.source} (refs: ${pair.citationIds.map((id) => `[${id}]`).join(', ')}) |`,
+      `| ${pair.domain} (\`${pair.id}\`) | ${pair.numeratorLabel} / ${
+        pair.denominatorLabel
+      } | ${formatNumber(pair.medianRatio)}x | ${formatNumber(
+        pair.ratioCi95.low
+      )}x-${formatNumber(pair.ratioCi95.high)}x | ${
+        pair.primary ? 'yes' : 'no'
+      } | ${pair.pass ? 'PASS' : 'DENY'} | ${
+        pair.source
+      } (refs: ${pair.citationIds.map((id) => `[${id}]`).join(', ')}) |`
     );
   }
 
@@ -394,10 +429,14 @@ export function renderGate5Markdown(report: Gate5Report): string {
   lines.push('|---|---:|---:|---:|---:|');
   for (const criterion of report.gate.criteria) {
     const ci = criterion.ci95
-      ? `${formatNumber(criterion.ci95.low)}-${formatNumber(criterion.ci95.high)}`
+      ? `${formatNumber(criterion.ci95.low)}-${formatNumber(
+          criterion.ci95.high
+        )}`
       : 'n/a';
     lines.push(
-      `| ${criterion.id} | ${formatNumber(criterion.observed)} | ${ci} | ${criterion.threshold} | ${criterion.pass ? 'PASS' : 'DENY'} |`,
+      `| ${criterion.id} | ${formatNumber(criterion.observed)} | ${ci} | ${
+        criterion.threshold
+      } | ${criterion.pass ? 'PASS' : 'DENY'} |`
     );
   }
 

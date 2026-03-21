@@ -110,8 +110,12 @@ export function encodeHTTPRequest(req: AeonHTTPRequest): Uint8Array {
   const bodyBytes = req.body ?? new Uint8Array(0);
 
   const headerSize = 16;
-  const totalSize = headerSize + methodBytes.byteLength + pathBytes.byteLength +
-    headersBytes.byteLength + bodyBytes.byteLength;
+  const totalSize =
+    headerSize +
+    methodBytes.byteLength +
+    pathBytes.byteLength +
+    headersBytes.byteLength +
+    bodyBytes.byteLength;
   const encoded = new Uint8Array(totalSize);
   const view = new DataView(encoded.buffer);
 
@@ -121,9 +125,12 @@ export function encodeHTTPRequest(req: AeonHTTPRequest): Uint8Array {
   view.setUint32(12, bodyBytes.byteLength, false);
 
   let offset = headerSize;
-  encoded.set(methodBytes, offset); offset += methodBytes.byteLength;
-  encoded.set(pathBytes, offset); offset += pathBytes.byteLength;
-  encoded.set(headersBytes, offset); offset += headersBytes.byteLength;
+  encoded.set(methodBytes, offset);
+  offset += methodBytes.byteLength;
+  encoded.set(pathBytes, offset);
+  offset += pathBytes.byteLength;
+  encoded.set(headersBytes, offset);
+  offset += headersBytes.byteLength;
   encoded.set(bodyBytes, offset);
 
   return encoded;
@@ -148,7 +155,9 @@ export function decodeHTTPRequest(data: Uint8Array): AeonHTTPRequest {
   const fullPath = decoder.decode(data.subarray(offset, offset + pathLen));
   offset += pathLen;
 
-  const headersJson = decoder.decode(data.subarray(offset, offset + headersLen));
+  const headersJson = decoder.decode(
+    data.subarray(offset, offset + headersLen)
+  );
   offset += headersLen;
 
   const body = bodyLen > 0 ? data.slice(offset, offset + bodyLen) : undefined;
@@ -182,7 +191,9 @@ export function decodeHTTPRequest(data: Uint8Array): AeonHTTPRequest {
  *   [...]   headers JSON bytes
  *   [...]   body bytes
  */
-export function encodeHTTPResponse(res: Omit<AeonHTTPResponse, 'requestId'>): Uint8Array {
+export function encodeHTTPResponse(
+  res: Omit<AeonHTTPResponse, 'requestId'>
+): Uint8Array {
   const headersBytes = encoder.encode(JSON.stringify(res.headers));
   const bodyBytes = res.body;
 
@@ -196,7 +207,8 @@ export function encodeHTTPResponse(res: Omit<AeonHTTPResponse, 'requestId'>): Ui
   view.setUint32(6, bodyBytes.byteLength, false);
 
   let offset = headerSize;
-  encoded.set(headersBytes, offset); offset += headersBytes.byteLength;
+  encoded.set(headersBytes, offset);
+  offset += headersBytes.byteLength;
   encoded.set(bodyBytes, offset);
 
   return encoded;
@@ -205,7 +217,9 @@ export function encodeHTTPResponse(res: Omit<AeonHTTPResponse, 'requestId'>): Ui
 /**
  * Decode a flow frame payload back into an HTTP response.
  */
-export function decodeHTTPResponse(data: Uint8Array): Omit<AeonHTTPResponse, 'requestId'> {
+export function decodeHTTPResponse(
+  data: Uint8Array
+): Omit<AeonHTTPResponse, 'requestId'> {
   if (data.byteLength < 10) throw new Error('Invalid HTTP response frame');
 
   const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
@@ -214,7 +228,9 @@ export function decodeHTTPResponse(data: Uint8Array): Omit<AeonHTTPResponse, 're
   const bodyLen = view.getUint32(6, false);
 
   let offset = 10;
-  const headersJson = decoder.decode(data.subarray(offset, offset + headersLen));
+  const headersJson = decoder.decode(
+    data.subarray(offset, offset + headersLen)
+  );
   offset += headersLen;
 
   const body = data.slice(offset, offset + bodyLen);
@@ -246,15 +262,20 @@ export class HTTPAeonBridge {
   private config: HTTPBridgeConfig;
 
   /** Pending HTTP requests waiting for flow responses */
-  private pending = new Map<string, {
-    resolve: (res: AeonHTTPResponse) => void;
-    reject: (err: Error) => void;
-    timer: ReturnType<typeof setTimeout>;
-    chunks: Uint8Array[];
-  }>();
+  private pending = new Map<
+    string,
+    {
+      resolve: (res: AeonHTTPResponse) => void;
+      reject: (err: Error) => void;
+      timer: ReturnType<typeof setTimeout>;
+      chunks: Uint8Array[];
+    }
+  >();
 
   /** Handler for incoming HTTP requests (from nginx side) */
-  private requestHandler: ((req: AeonHTTPRequest) => Promise<AeonHTTPResponse>) | null = null;
+  private requestHandler:
+    | ((req: AeonHTTPRequest) => Promise<AeonHTTPResponse>)
+    | null = null;
 
   constructor(transport: FlowTransport, config?: HTTPBridgeConfig) {
     this.transport = transport;
@@ -271,7 +292,9 @@ export class HTTPAeonBridge {
    * This is used on the Aeon side — the bridge receives HTTP requests
    * from nginx, translates them to flow, and calls this handler.
    */
-  onRequest(handler: (req: AeonHTTPRequest) => Promise<AeonHTTPResponse>): void {
+  onRequest(
+    handler: (req: AeonHTTPRequest) => Promise<AeonHTTPResponse>
+  ): void {
     this.requestHandler = handler;
   }
 
@@ -286,7 +309,9 @@ export class HTTPAeonBridge {
     return new Promise<AeonHTTPResponse>((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(req.requestId);
-        reject(new Error(`Flow response timeout for ${req.method} ${req.path}`));
+        reject(
+          new Error(`Flow response timeout for ${req.method} ${req.path}`)
+        );
       }, timeout);
 
       this.pending.set(req.requestId, { resolve, reject, timer, chunks: [] });
@@ -296,7 +321,9 @@ export class HTTPAeonBridge {
 
       // Prefix with request ID so the other side can correlate
       const reqIdBytes = encoder.encode(req.requestId);
-      const frame = new Uint8Array(4 + reqIdBytes.byteLength + payload.byteLength);
+      const frame = new Uint8Array(
+        4 + reqIdBytes.byteLength + payload.byteLength
+      );
       const view = new DataView(frame.buffer);
       view.setUint32(0, reqIdBytes.byteLength, false);
       frame.set(reqIdBytes, 4);
@@ -314,7 +341,9 @@ export class HTTPAeonBridge {
     const reqIdBytes = encoder.encode(res.requestId);
 
     // Prefix with request ID and a response marker byte
-    const frame = new Uint8Array(5 + reqIdBytes.byteLength + payload.byteLength);
+    const frame = new Uint8Array(
+      5 + reqIdBytes.byteLength + payload.byteLength
+    );
     const view = new DataView(frame.buffer);
     frame[0] = 0x02; // Response marker
     view.setUint32(1, reqIdBytes.byteLength, false);
@@ -382,7 +411,9 @@ export class HTTPAeonBridge {
         requestId,
         status: 502,
         headers: { 'content-type': 'text/plain' },
-        body: encoder.encode(err instanceof Error ? err.message : 'Internal flow error'),
+        body: encoder.encode(
+          err instanceof Error ? err.message : 'Internal flow error'
+        ),
       });
     }
   }

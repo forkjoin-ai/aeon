@@ -151,7 +151,9 @@ export function createProjectionArtifactId(
 export function canonicalizeFeatureFlags(
   featureFlags: readonly string[]
 ): string[] {
-  return [...new Set(featureFlags.map((flag) => flag.trim()).filter(Boolean))].sort();
+  return [
+    ...new Set(featureFlags.map((flag) => flag.trim()).filter(Boolean)),
+  ].sort();
 }
 
 export function normalizeRequestSignature(
@@ -185,7 +187,9 @@ export function computeProjectionCacheKey(
   signature: RequestSignature
 ): string {
   return stableContentHash(
-    `${artifact.artifactId}:${artifact.buildHash}:${requestSignatureKey(signature)}`
+    `${artifact.artifactId}:${artifact.buildHash}:${requestSignatureKey(
+      signature
+    )}`
   );
 }
 
@@ -201,7 +205,10 @@ export function matchesRequestGuard(
   if (guard.locales?.length && !guard.locales.includes(normalized.locale)) {
     return false;
   }
-  if (guard.authTiers?.length && !guard.authTiers.includes(normalized.authTier)) {
+  if (
+    guard.authTiers?.length &&
+    !guard.authTiers.includes(normalized.authTier)
+  ) {
     return false;
   }
   if (

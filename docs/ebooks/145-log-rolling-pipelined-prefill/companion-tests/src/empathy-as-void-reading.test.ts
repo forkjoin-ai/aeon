@@ -31,9 +31,8 @@ function complementDist(counts: number[], eta: number = 3.0): number[] {
   const max = Math.max(...counts);
   const min = Math.min(...counts);
   const range = max - min;
-  const norm = range > 0
-    ? counts.map((v) => (v - min) / range)
-    : counts.map(() => 0);
+  const norm =
+    range > 0 ? counts.map((v) => (v - min) / range) : counts.map(() => 0);
   const w = norm.map((v) => Math.exp(-eta * v));
   const s = w.reduce((a, b) => a + b, 0);
   return w.map((v) => v / s);
@@ -109,7 +108,8 @@ describe('Claim 1: Vulnerability -- shared void produces faster convergence', ()
         const pdist2 = complementDist(pvoid2);
         const pc1 = rng() < pdist1[0] ? 0 : 1;
         const pc2 = rng() < pdist2[0] ? 0 : 1;
-        const [pp1, pp2] = HAWK_DOVE.payoffs[HAWK_DOVE.choices[pc1]][HAWK_DOVE.choices[pc2]];
+        const [pp1, pp2] =
+          HAWK_DOVE.payoffs[HAWK_DOVE.choices[pc1]][HAWK_DOVE.choices[pc2]];
         if (pp1 < pp2) pvoid1[pc1]++;
         if (pp1 < 0) pvoid1[pc1]++;
         if (pp2 < pp1) pvoid2[pc2]++;
@@ -120,7 +120,8 @@ describe('Claim 1: Vulnerability -- shared void produces faster convergence', ()
         const sdist2 = complementDist(svoid);
         const sc1 = rng() < sdist1[0] ? 0 : 1;
         const sc2 = rng() < sdist2[0] ? 0 : 1;
-        const [sp1, sp2] = HAWK_DOVE.payoffs[HAWK_DOVE.choices[sc1]][HAWK_DOVE.choices[sc2]];
+        const [sp1, sp2] =
+          HAWK_DOVE.payoffs[HAWK_DOVE.choices[sc1]][HAWK_DOVE.choices[sc2]];
         if (sp1 < sp2) svoid[sc1]++;
         if (sp1 < 0) svoid[sc1]++;
         if (sp2 < sp1) svoid[sc2]++;
@@ -150,7 +151,9 @@ describe('Claim 1: Vulnerability -- shared void produces faster convergence', ()
 
     console.log('\n  Claim 1: Vulnerability (shared vs private void)');
     console.log('  ' + '─'.repeat(50));
-    console.log(`  Private void avg L1: ${avgPrivateL1.toFixed(4)} (divergent)`);
+    console.log(
+      `  Private void avg L1: ${avgPrivateL1.toFixed(4)} (divergent)`
+    );
     console.log(`  Shared void avg L1:  ${avgSharedL1.toFixed(4)} (coherent)`);
     console.log(`  Vulnerability produces coherence. QED.`);
   });
@@ -176,14 +179,20 @@ describe('Claim 1: Vulnerability -- shared void produces faster convergence', ()
       for (let r = 0; r < maxRounds; r++) {
         const d1 = complementDist(pv1);
         const d2 = complementDist(pv2);
-        if (l1Distance(d1, d2) < threshold) { pSettledAt = r; break; }
+        if (l1Distance(d1, d2) < threshold) {
+          pSettledAt = r;
+          break;
+        }
         const c1 = rng() < d1[0] ? 0 : 1;
         const c2 = rng() < d2[0] ? 0 : 1;
         const [p1, p2] = PD.payoffs[PD.choices[c1]][PD.choices[c2]];
         if (p1 < p2) pv1[c1]++;
         if (p2 < p1) pv2[c2]++;
       }
-      if (pSettledAt < maxRounds) { privateSettled++; privateRoundsTotal += pSettledAt; }
+      if (pSettledAt < maxRounds) {
+        privateSettled++;
+        privateRoundsTotal += pSettledAt;
+      }
 
       // Shared
       const sv = new Array(N).fill(0);
@@ -194,8 +203,16 @@ describe('Claim 1: Vulnerability -- shared void produces faster convergence', ()
     }
 
     console.log('\n  Claim 1b: Settlement speed');
-    console.log(`  Private: ${privateSettled}/${trials} settled, avg ${privateSettled > 0 ? (privateRoundsTotal / privateSettled).toFixed(0) : 'N/A'} rounds`);
-    console.log(`  Shared:  ${sharedSettled}/${trials} settled, avg 0 rounds (immediate coherence)`);
+    console.log(
+      `  Private: ${privateSettled}/${trials} settled, avg ${
+        privateSettled > 0
+          ? (privateRoundsTotal / privateSettled).toFixed(0)
+          : 'N/A'
+      } rounds`
+    );
+    console.log(
+      `  Shared:  ${sharedSettled}/${trials} settled, avg 0 rounds (immediate coherence)`
+    );
 
     // Shared always settles (by construction: same void = same strategy)
     expect(sharedSettled).toBe(trials);
@@ -240,14 +257,16 @@ describe('Claim 2: Empathy -- reading their void raises inverse Bule', () => {
       // Solipsistic agent
       const solDist = complementDist(solVoid);
       const solChoice = rng1() < solDist[0] ? 0 : 1;
-      const [sp1, sp2] = PD.payoffs[PD.choices[solChoice]][PD.choices[oppChoice]];
+      const [sp1, sp2] =
+        PD.payoffs[PD.choices[solChoice]][PD.choices[oppChoice]];
       if (sp1 < sp2) solVoid[solChoice]++;
 
       // Empathetic agent: reads merged void (own + opponent's)
       const mergedVoid = empVoidSelf.map((v, i) => v + empVoidOther[i]);
       const empDist = complementDist(mergedVoid);
       const empChoice = rng2() < empDist[0] ? 0 : 1;
-      const [ep1, ep2] = PD.payoffs[PD.choices[empChoice]][PD.choices[oppChoice]];
+      const [ep1, ep2] =
+        PD.payoffs[PD.choices[empChoice]][PD.choices[oppChoice]];
       if (ep1 < ep2) empVoidSelf[empChoice]++;
       // Empathetic agent also observes opponent's losses (reading their void)
       if (ep2 < ep1) empVoidOther[oppChoice]++;
@@ -266,9 +285,22 @@ describe('Claim 2: Empathy -- reading their void raises inverse Bule', () => {
 
     console.log('\n  Claim 2: Empathy (reading their void)');
     console.log('  ' + '─'.repeat(50));
-    console.log(`  Solipsistic B⁻¹: ${(solIB * 1000).toFixed(4)} mB⁻¹  (entropy: ${solEntropy.toFixed(4)})`);
-    console.log(`  Empathetic B⁻¹:  ${(empIB * 1000).toFixed(4)} mB⁻¹  (entropy: ${empEntropy.toFixed(4)})`);
-    console.log(`  Empathy gains:   ${((empIB - solIB) / Math.max(solIB, 0.0001) * 100).toFixed(1)}% higher inverse Bule`);
+    console.log(
+      `  Solipsistic B⁻¹: ${(solIB * 1000).toFixed(
+        4
+      )} mB⁻¹  (entropy: ${solEntropy.toFixed(4)})`
+    );
+    console.log(
+      `  Empathetic B⁻¹:  ${(empIB * 1000).toFixed(
+        4
+      )} mB⁻¹  (entropy: ${empEntropy.toFixed(4)})`
+    );
+    console.log(
+      `  Empathy gains:   ${(
+        ((empIB - solIB) / Math.max(solIB, 0.0001)) *
+        100
+      ).toFixed(1)}% higher inverse Bule`
+    );
     console.log(`  Doubled data → faster convergence. QED.`);
 
     // Empathetic should have at least as high inverse Bule
@@ -299,7 +331,11 @@ describe('Claim 3: Holding Space -- delayed fold preserves information', () => {
 
     // Space holder: accumulates 10 rounds of observation before updating void
     const holdVoid = new Array(N).fill(0);
-    const holdBuffer: Array<{ choice: number; payoff: number; oppPayoff: number }> = [];
+    const holdBuffer: Array<{
+      choice: number;
+      payoff: number;
+      oppPayoff: number;
+    }> = [];
     let holdTotalPayoff = 0;
     const windowSize = 10;
 
@@ -311,7 +347,13 @@ describe('Claim 3: Holding Space -- delayed fold preserves information', () => {
       let immCum = 0;
       const immR = rng();
       let immChoice = N - 1;
-      for (let i = 0; i < N; i++) { immCum += immDist[i]; if (immR < immCum) { immChoice = i; break; } }
+      for (let i = 0; i < N; i++) {
+        immCum += immDist[i];
+        if (immR < immCum) {
+          immChoice = i;
+          break;
+        }
+      }
 
       // Simple payoff: choosing same as opponent = 0, else = 1 (coordination game)
       const immPayoff = immChoice === oppChoice ? 3 : -1;
@@ -325,12 +367,22 @@ describe('Claim 3: Holding Space -- delayed fold preserves information', () => {
       let holdCum = 0;
       const holdR = rng();
       let holdChoice = N - 1;
-      for (let i = 0; i < N; i++) { holdCum += holdDist[i]; if (holdR < holdCum) { holdChoice = i; break; } }
+      for (let i = 0; i < N; i++) {
+        holdCum += holdDist[i];
+        if (holdR < holdCum) {
+          holdChoice = i;
+          break;
+        }
+      }
 
       const holdPayoff = holdChoice === oppChoice ? 3 : -1;
       const holdOppPayoff = holdChoice === oppChoice ? 3 : -1;
       holdTotalPayoff += holdPayoff;
-      holdBuffer.push({ choice: holdChoice, payoff: holdPayoff, oppPayoff: holdOppPayoff });
+      holdBuffer.push({
+        choice: holdChoice,
+        payoff: holdPayoff,
+        oppPayoff: holdOppPayoff,
+      });
 
       // Only fold (update void) every windowSize rounds
       if (holdBuffer.length >= windowSize) {
@@ -350,8 +402,16 @@ describe('Claim 3: Holding Space -- delayed fold preserves information', () => {
 
     console.log('\n  Claim 3: Holding Space (delayed fold)');
     console.log('  ' + '─'.repeat(50));
-    console.log(`  Immediate fold entropy: ${immEntropy.toFixed(4)} (${immTotalPayoff} total payoff)`);
-    console.log(`  Held space entropy:     ${holdEntropy.toFixed(4)} (${holdTotalPayoff} total payoff)`);
+    console.log(
+      `  Immediate fold entropy: ${immEntropy.toFixed(
+        4
+      )} (${immTotalPayoff} total payoff)`
+    );
+    console.log(
+      `  Held space entropy:     ${holdEntropy.toFixed(
+        4
+      )} (${holdTotalPayoff} total payoff)`
+    );
 
     // The key metric: void density distribution should be less extreme
     // (holding preserves options that immediate folding would have killed)
@@ -409,11 +469,11 @@ describe('Claim 4: Multi-Reality -- covering preservation retains information', 
 
       // Folded (collapsed): single position = average
       const folded = (posA + posB) / 2;
-      const foldedBin = Math.min(bins - 1, Math.floor(folded / 100 * bins));
+      const foldedBin = Math.min(bins - 1, Math.floor((folded / 100) * bins));
 
       // Covering (both maintained): two positions
-      const binA = Math.min(bins - 1, Math.floor(posA / 100 * bins));
-      const binB = Math.min(bins - 1, Math.floor(posB / 100 * bins));
+      const binA = Math.min(bins - 1, Math.floor((posA / 100) * bins));
+      const binB = Math.min(bins - 1, Math.floor((posB / 100) * bins));
 
       // Information: number of distinct bins occupied
       // Folded: always 1 bin
@@ -427,10 +487,21 @@ describe('Claim 4: Multi-Reality -- covering preservation retains information', 
 
     console.log('\n  Claim 4: Multi-Reality (covering preservation)');
     console.log('  ' + '─'.repeat(50));
-    console.log(`  Collapsed (fold):    ${avgFoldedBins.toFixed(2)} avg bins occupied`);
-    console.log(`  Multi-reality (cover): ${avgCoveringBins.toFixed(2)} avg bins occupied`);
-    console.log(`  Information ratio:   ${(avgCoveringBins / avgFoldedBins).toFixed(2)}x`);
-    console.log(`  Covering space preserves ${((avgCoveringBins / avgFoldedBins - 1) * 100).toFixed(0)}% more information. QED.`);
+    console.log(
+      `  Collapsed (fold):    ${avgFoldedBins.toFixed(2)} avg bins occupied`
+    );
+    console.log(
+      `  Multi-reality (cover): ${avgCoveringBins.toFixed(2)} avg bins occupied`
+    );
+    console.log(
+      `  Information ratio:   ${(avgCoveringBins / avgFoldedBins).toFixed(2)}x`
+    );
+    console.log(
+      `  Covering space preserves ${(
+        (avgCoveringBins / avgFoldedBins - 1) *
+        100
+      ).toFixed(0)}% more information. QED.`
+    );
 
     // Covering should preserve strictly more information
     expect(avgCoveringBins).toBeGreaterThan(avgFoldedBins);
@@ -463,12 +534,24 @@ describe('Claim 4: Multi-Reality -- covering preservation retains information', 
       let cumA = 0;
       const rA = rng();
       let cA = N - 1;
-      for (let i = 0; i < N; i++) { cumA += distA[i]; if (rA < cumA) { cA = i; break; } }
+      for (let i = 0; i < N; i++) {
+        cumA += distA[i];
+        if (rA < cumA) {
+          cA = i;
+          break;
+        }
+      }
 
       let cumB = 0;
       const rB = rng();
       let cB = N - 1;
-      for (let i = 0; i < N; i++) { cumB += distB[i]; if (rB < cumB) { cB = i; break; } }
+      for (let i = 0; i < N; i++) {
+        cumB += distB[i];
+        if (rB < cumB) {
+          cB = i;
+          break;
+        }
+      }
 
       // Overlap = they chose the same thing (agreement)
       if (cA === cB) multiRealityOverlap++;
@@ -481,14 +564,30 @@ describe('Claim 4: Multi-Reality -- covering preservation retains information', 
       let cumAvg = 0;
       const rAvg = rng();
       let cAvg = N - 1;
-      for (let i = 0; i < N; i++) { cumAvg += avgPrefs[i]; if (rAvg < cumAvg) { cAvg = i; break; } }
+      for (let i = 0; i < N; i++) {
+        cumAvg += avgPrefs[i];
+        if (rAvg < cumAvg) {
+          cAvg = i;
+          break;
+        }
+      }
       // Agreement with BOTH parties
       if (prefsA[cAvg] > 0.2 && prefsB[cAvg] > 0.2) singleRealityOverlap++;
     }
 
     console.log('\n  Claim 4b: Premature fold loses settlement-aiding info');
-    console.log(`  Multi-reality agreement rate:  ${(multiRealityOverlap / T * 100).toFixed(1)}%`);
-    console.log(`  Single-reality agreement rate: ${(singleRealityOverlap / T * 100).toFixed(1)}%`);
+    console.log(
+      `  Multi-reality agreement rate:  ${(
+        (multiRealityOverlap / T) *
+        100
+      ).toFixed(1)}%`
+    );
+    console.log(
+      `  Single-reality agreement rate: ${(
+        (singleRealityOverlap / T) *
+        100
+      ).toFixed(1)}%`
+    );
 
     // Both should be finite
     expect(multiRealityOverlap).toBeGreaterThanOrEqual(0);

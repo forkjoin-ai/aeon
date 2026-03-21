@@ -21,17 +21,40 @@
 import { describe, it, expect } from 'vitest';
 import { bigContentSite } from '../fixtures/big-content';
 import { microfrontendSite } from '../fixtures/microfrontend';
-import { bigContentFluxSite, bigContentFluxMeta } from '../fixtures/big-content-flux';
-import { microfrontendFluxSite, microfrontendFluxMeta } from '../fixtures/microfrontend-flux';
+import {
+  bigContentFluxSite,
+  bigContentFluxMeta,
+} from '../fixtures/big-content-flux';
+import {
+  microfrontendFluxSite,
+  microfrontendFluxMeta,
+} from '../fixtures/microfrontend-flux';
 import { serveHttp1, http1RoundTrips } from '../protocols/http1';
 import { serveHttp2, http2RoundTrips } from '../protocols/http2';
 import { serveHttp3, http3RoundTrips } from '../protocols/http3';
 import { serveAeonFlow, aeonFlowRoundTrips } from '../protocols/aeon-flow';
-import { serveAeonFluxHttp, serveAeonFluxFlow, aeonFluxHttpRoundTrips, aeonFluxFlowRoundTrips } from '../protocols/aeon-flux';
+import {
+  serveAeonFluxHttp,
+  serveAeonFluxFlow,
+  aeonFluxHttpRoundTrips,
+  aeonFluxFlowRoundTrips,
+} from '../protocols/aeon-flux';
 import { serveXGnosis, xGnosisRoundTrips } from '../protocols/x-gnosis';
-import { serveXGnosisTopo, xGnosisTopoRoundTrips } from '../protocols/x-gnosis-topo';
-import { serveHellaWhipped, hellaWhippedRoundTrips } from '../protocols/hella-whipped';
-import type { SiteManifest, SiteResult, Protocol, CompressionAlgo, ComparisonRow } from '../types';
+import {
+  serveXGnosisTopo,
+  xGnosisTopoRoundTrips,
+} from '../protocols/x-gnosis-topo';
+import {
+  serveHellaWhipped,
+  hellaWhippedRoundTrips,
+} from '../protocols/hella-whipped';
+import type {
+  SiteManifest,
+  SiteResult,
+  Protocol,
+  CompressionAlgo,
+  ComparisonRow,
+} from '../types';
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // Test runner
@@ -66,8 +89,14 @@ function runSite(
   });
 
   const totalRawBytes = results.reduce((s, r) => s + r.rawSize, 0);
-  const totalCompressedBytes = results.reduce((s, r) => s + r.compressedSize, 0);
-  const totalFramingOverhead = results.reduce((s, r) => s + r.framingOverhead, 0);
+  const totalCompressedBytes = results.reduce(
+    (s, r) => s + r.compressedSize,
+    0
+  );
+  const totalFramingOverhead = results.reduce(
+    (s, r) => s + r.framingOverhead,
+    0
+  );
   const totalWireBytes = results.reduce((s, r) => s + r.wireBytes, 0);
   const totalEncodeUs = results.reduce((s, r) => s + r.encodeUs, 0);
   const totalDecodeUs = results.reduce((s, r) => s + r.decodeUs, 0);
@@ -138,10 +167,12 @@ function formatBytes(bytes: number): string {
 }
 
 function buildTable(results: SiteResult[]): ComparisonRow[] {
-  const baseline = results.find(r => r.protocol === 'http1' && r.compression === 'none');
+  const baseline = results.find(
+    (r) => r.protocol === 'http1' && r.compression === 'none'
+  );
   const baselineWire = baseline?.totalWireBytes ?? 1;
 
-  return results.map(r => ({
+  return results.map((r) => ({
     protocol: r.protocol,
     compression: r.compression,
     totalRaw: formatBytes(r.totalRawBytes),
@@ -162,43 +193,52 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
   console.log(`${'═'.repeat(140)}`);
   console.log(
     '  ' +
-    'Protocol'.padEnd(18) +
-    'Compress'.padEnd(10) +
-    'Raw'.padEnd(12) +
-    'Wire'.padEnd(12) +
-    'Overhead'.padEnd(12) +
-    'Ovhd %'.padEnd(10) +
-    'Comp Ratio'.padEnd(12) +
-    'RTTs'.padEnd(6) +
-    'Encode'.padEnd(12) +
-    'Decode'.padEnd(12) +
-    'Savings'
+      'Protocol'.padEnd(18) +
+      'Compress'.padEnd(10) +
+      'Raw'.padEnd(12) +
+      'Wire'.padEnd(12) +
+      'Overhead'.padEnd(12) +
+      'Ovhd %'.padEnd(10) +
+      'Comp Ratio'.padEnd(12) +
+      'RTTs'.padEnd(6) +
+      'Encode'.padEnd(12) +
+      'Decode'.padEnd(12) +
+      'Savings'
   );
   console.log(`  ${'─'.repeat(136)}`);
 
   for (const row of rows) {
     const protoLabel =
-      row.protocol === 'aeon-flow' ? 'Aeon Flow' :
-      row.protocol === 'aeon-flux-http' ? 'Aeon-Flux/HTTP' :
-      row.protocol === 'aeon-flux-flow' ? 'Aeon-Flux/Flow' :
-      row.protocol === 'x-gnosis-topo' ? 'x-gnosis/topo' :
-      row.protocol === 'x-gnosis' ? 'x-gnosis' :
-      row.protocol === 'hella-whipped' ? 'hella-whipped' :
-      row.protocol === 'http3' ? 'HTTP/3' :
-      row.protocol === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
+      row.protocol === 'aeon-flow'
+        ? 'Aeon Flow'
+        : row.protocol === 'aeon-flux-http'
+        ? 'Aeon-Flux/HTTP'
+        : row.protocol === 'aeon-flux-flow'
+        ? 'Aeon-Flux/Flow'
+        : row.protocol === 'x-gnosis-topo'
+        ? 'x-gnosis/topo'
+        : row.protocol === 'x-gnosis'
+        ? 'x-gnosis'
+        : row.protocol === 'hella-whipped'
+        ? 'hella-whipped'
+        : row.protocol === 'http3'
+        ? 'HTTP/3'
+        : row.protocol === 'http1'
+        ? 'HTTP/1.1'
+        : 'HTTP/2';
     console.log(
       '  ' +
-      protoLabel.padEnd(18) +
-      row.compression.padEnd(10) +
-      row.totalRaw.padEnd(12) +
-      row.totalWire.padEnd(12) +
-      row.overhead.padEnd(12) +
-      row.overheadPct.padEnd(10) +
-      row.compressionRatio.padEnd(12) +
-      String(row.roundTrips).padEnd(6) +
-      row.encodeMs.padEnd(12) +
-      row.decodeMs.padEnd(12) +
-      row.savings
+        protoLabel.padEnd(18) +
+        row.compression.padEnd(10) +
+        row.totalRaw.padEnd(12) +
+        row.totalWire.padEnd(12) +
+        row.overhead.padEnd(12) +
+        row.overheadPct.padEnd(10) +
+        row.compressionRatio.padEnd(12) +
+        String(row.roundTrips).padEnd(6) +
+        row.encodeMs.padEnd(12) +
+        row.decodeMs.padEnd(12) +
+        row.savings
     );
   }
   console.log();
@@ -208,12 +248,36 @@ function printTable(siteName: string, rows: ComparisonRow[]): void {
 // Original Protocol Tests (HTTP/1.1, HTTP/2, Aeon Flow)
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const protocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow', 'x-gnosis', 'x-gnosis-topo', 'hella-whipped'];
-const allProtocols: Protocol[] = ['http1', 'http2', 'http3', 'aeon-flow', 'x-gnosis', 'x-gnosis-topo', 'hella-whipped', 'aeon-flux-http', 'aeon-flux-flow'];
-const compressions: CompressionAlgo[] = ['none', 'gzip', 'brotli', 'topo-pure', 'topo-full'];
+const protocols: Protocol[] = [
+  'http1',
+  'http2',
+  'http3',
+  'aeon-flow',
+  'x-gnosis',
+  'x-gnosis-topo',
+  'hella-whipped',
+];
+const allProtocols: Protocol[] = [
+  'http1',
+  'http2',
+  'http3',
+  'aeon-flow',
+  'x-gnosis',
+  'x-gnosis-topo',
+  'hella-whipped',
+  'aeon-flux-http',
+  'aeon-flux-flow',
+];
+const compressions: CompressionAlgo[] = [
+  'none',
+  'gzip',
+  'brotli',
+  'topo-pure',
+  'topo-full',
+];
 
 describe('Protocol Shootoff', () => {
-  describe('Whip Worthington\'s Flaxseed Empire (big content site)', () => {
+  describe("Whip Worthington's Flaxseed Empire (big content site)", () => {
     const allResults: SiteResult[] = [];
 
     for (const proto of protocols) {
@@ -224,7 +288,9 @@ describe('Protocol Shootoff', () => {
 
           expect(result.totalWireBytes).toBeGreaterThan(0);
           expect(result.totalFramingOverhead).toBeGreaterThan(0);
-          expect(result.totalCompressedBytes).toBeLessThanOrEqual(result.totalRawBytes * 1.1);
+          expect(result.totalCompressedBytes).toBeLessThanOrEqual(
+            result.totalRawBytes * 1.1
+          );
         });
       }
     }
@@ -238,11 +304,20 @@ describe('Protocol Shootoff', () => {
         }
       }
       const rows = buildTable(allResults);
-      printTable('Whip Worthington\'s Flaxseed Empire — Big Content Site (12 resources, ~2.5 MB)', rows);
+      printTable(
+        "Whip Worthington's Flaxseed Empire — Big Content Site (12 resources, ~2.5 MB)",
+        rows
+      );
 
-      const aeonBrotli = allResults.find(r => r.protocol === 'aeon-flow' && r.compression === 'brotli')!;
-      const http1Brotli = allResults.find(r => r.protocol === 'http1' && r.compression === 'brotli')!;
-      expect(aeonBrotli.totalFramingOverhead).toBeLessThan(http1Brotli.totalFramingOverhead);
+      const aeonBrotli = allResults.find(
+        (r) => r.protocol === 'aeon-flow' && r.compression === 'brotli'
+      )!;
+      const http1Brotli = allResults.find(
+        (r) => r.protocol === 'http1' && r.compression === 'brotli'
+      )!;
+      expect(aeonBrotli.totalFramingOverhead).toBeLessThan(
+        http1Brotli.totalFramingOverhead
+      );
     });
   });
 
@@ -257,7 +332,9 @@ describe('Protocol Shootoff', () => {
 
           expect(result.totalWireBytes).toBeGreaterThan(0);
           expect(result.totalFramingOverhead).toBeGreaterThan(0);
-          expect(result.totalCompressedBytes).toBeLessThanOrEqual(result.totalRawBytes * 1.1);
+          expect(result.totalCompressedBytes).toBeLessThanOrEqual(
+            result.totalRawBytes * 1.1
+          );
         });
       }
     }
@@ -271,14 +348,27 @@ describe('Protocol Shootoff', () => {
         }
       }
       const rows = buildTable(allResults);
-      printTable('The Wally Wallington Wonder Archive — Microfrontend (95 resources, ~1.8 MB)', rows);
+      printTable(
+        'The Wally Wallington Wonder Archive — Microfrontend (95 resources, ~1.8 MB)',
+        rows
+      );
 
-      const aeonBrotli = allResults.find(r => r.protocol === 'aeon-flow' && r.compression === 'brotli')!;
-      const http1Brotli = allResults.find(r => r.protocol === 'http1' && r.compression === 'brotli')!;
-      const http2Brotli = allResults.find(r => r.protocol === 'http2' && r.compression === 'brotli')!;
+      const aeonBrotli = allResults.find(
+        (r) => r.protocol === 'aeon-flow' && r.compression === 'brotli'
+      )!;
+      const http1Brotli = allResults.find(
+        (r) => r.protocol === 'http1' && r.compression === 'brotli'
+      )!;
+      const http2Brotli = allResults.find(
+        (r) => r.protocol === 'http2' && r.compression === 'brotli'
+      )!;
 
-      expect(aeonBrotli.totalFramingOverhead).toBeLessThan(http1Brotli.totalFramingOverhead);
-      expect(aeonBrotli.totalFramingOverhead).toBeLessThan(http2Brotli.totalFramingOverhead);
+      expect(aeonBrotli.totalFramingOverhead).toBeLessThan(
+        http1Brotli.totalFramingOverhead
+      );
+      expect(aeonBrotli.totalFramingOverhead).toBeLessThan(
+        http2Brotli.totalFramingOverhead
+      );
       expect(aeonBrotli.roundTrips).toBeLessThan(http1Brotli.roundTrips);
     });
   });
@@ -297,7 +387,9 @@ describe('Protocol Shootoff', () => {
 
           expect(result.totalWireBytes).toBeGreaterThan(0);
           expect(result.totalFramingOverhead).toBeGreaterThan(0);
-          expect(result.totalCompressedBytes).toBeLessThanOrEqual(result.totalRawBytes * 1.1);
+          expect(result.totalCompressedBytes).toBeLessThanOrEqual(
+            result.totalRawBytes * 1.1
+          );
           // Only 1 resource
           expect(result.resources.length).toBe(1);
         });
@@ -315,7 +407,9 @@ describe('Protocol Shootoff', () => {
 
           expect(result.totalWireBytes).toBeGreaterThan(0);
           expect(result.totalFramingOverhead).toBeGreaterThan(0);
-          expect(result.totalCompressedBytes).toBeLessThanOrEqual(result.totalRawBytes * 1.1);
+          expect(result.totalCompressedBytes).toBeLessThanOrEqual(
+            result.totalRawBytes * 1.1
+          );
           expect(result.resources.length).toBe(1);
         });
       }
@@ -344,7 +438,7 @@ describe('Protocol Shootoff', () => {
 
       // Use HTTP/1.1 original as baseline for savings
       const baseline = results[0].totalWireBytes;
-      const rows = results.map(r => ({
+      const rows = results.map((r) => ({
         protocol: r.protocol,
         compression: r.compression,
         totalRaw: formatBytes(r.totalRawBytes),
@@ -361,9 +455,11 @@ describe('Protocol Shootoff', () => {
       printTable('BIG CONTENT CROSS-COMPARISON (brotli)', rows);
 
       // Flux/Flow should have lowest framing overhead
-      const fluxFlow = results.find(r => r.protocol === 'aeon-flux-flow')!;
-      const http1 = results.find(r => r.protocol === 'http1')!;
-      expect(fluxFlow.totalFramingOverhead).toBeLessThan(http1.totalFramingOverhead);
+      const fluxFlow = results.find((r) => r.protocol === 'aeon-flux-flow')!;
+      const http1 = results.find((r) => r.protocol === 'http1')!;
+      expect(fluxFlow.totalFramingOverhead).toBeLessThan(
+        http1.totalFramingOverhead
+      );
       expect(fluxFlow.roundTrips).toBeLessThanOrEqual(http1.roundTrips);
     });
 
@@ -381,7 +477,7 @@ describe('Protocol Shootoff', () => {
       ];
 
       const baseline = results[0].totalWireBytes;
-      const rows = results.map(r => ({
+      const rows = results.map((r) => ({
         protocol: r.protocol,
         compression: r.compression,
         totalRaw: formatBytes(r.totalRawBytes),
@@ -398,11 +494,13 @@ describe('Protocol Shootoff', () => {
       printTable('MICROFRONTEND CROSS-COMPARISON (brotli)', rows);
 
       // Flux should be dramatically smaller — 230KB vs 1.8MB raw
-      const fluxFlow = results.find(r => r.protocol === 'aeon-flux-flow')!;
-      const http1 = results.find(r => r.protocol === 'http1')!;
+      const fluxFlow = results.find((r) => r.protocol === 'aeon-flux-flow')!;
+      const http1 = results.find((r) => r.protocol === 'http1')!;
       expect(fluxFlow.totalWireBytes).toBeLessThan(http1.totalWireBytes);
       // Flux should have lowest overhead percentage
-      expect(fluxFlow.framingOverheadPercent).toBeLessThan(http1.framingOverheadPercent);
+      expect(fluxFlow.framingOverheadPercent).toBeLessThan(
+        http1.framingOverheadPercent
+      );
     });
   });
 
@@ -420,16 +518,27 @@ describe('Protocol Shootoff', () => {
       }
 
       const rows = buildTable(results);
-      printTable('BROTLI vs TOPO-PURE vs TOPO-FULL — Big Content (12 resources, ~2.5 MB)', rows);
+      printTable(
+        'BROTLI vs TOPO-PURE vs TOPO-FULL — Big Content (12 resources, ~2.5 MB)',
+        rows
+      );
 
       // Topo-full (with brotli in the race) should beat or match standalone brotli
-      const aeonBrotli = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'brotli')!;
-      const aeonTopoFull = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'topo-full')!;
+      const aeonBrotli = results.find(
+        (r) => r.protocol === 'aeon-flow' && r.compression === 'brotli'
+      )!;
+      const aeonTopoFull = results.find(
+        (r) => r.protocol === 'aeon-flow' && r.compression === 'topo-full'
+      )!;
       expect(aeonTopoFull.totalWireBytes).toBeGreaterThan(0);
-      expect(aeonTopoFull.totalCompressedBytes).toBeLessThanOrEqual(aeonTopoFull.totalRawBytes);
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThanOrEqual(
+        aeonTopoFull.totalRawBytes
+      );
       // Topo-full should be within 10% of brotli (9-byte per-chunk header overhead)
-      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonBrotli.totalCompressedBytes * 1.15);
-    });
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(
+        aeonBrotli.totalCompressedBytes * 1.15
+      );
+    }, 120_000);
 
     it('Microfrontend: brotli vs topo-pure vs topo-full across all protocols', () => {
       const results: SiteResult[] = [];
@@ -440,18 +549,33 @@ describe('Protocol Shootoff', () => {
       }
 
       const rows = buildTable(results);
-      printTable('BROTLI vs TOPO-PURE vs TOPO-FULL — Microfrontend (95 resources, ~1.8 MB)', rows);
+      printTable(
+        'BROTLI vs TOPO-PURE vs TOPO-FULL — Microfrontend (95 resources, ~1.8 MB)',
+        rows
+      );
 
-      const aeonBrotli = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'brotli')!;
-      const aeonTopoPure = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'topo-pure')!;
-      const aeonTopoFull = results.find(r => r.protocol === 'aeon-flow' && r.compression === 'topo-full')!;
+      const aeonBrotli = results.find(
+        (r) => r.protocol === 'aeon-flow' && r.compression === 'brotli'
+      )!;
+      const aeonTopoPure = results.find(
+        (r) => r.protocol === 'aeon-flow' && r.compression === 'topo-pure'
+      )!;
+      const aeonTopoFull = results.find(
+        (r) => r.protocol === 'aeon-flow' && r.compression === 'topo-full'
+      )!;
       expect(aeonTopoFull.totalWireBytes).toBeGreaterThan(0);
-      expect(aeonTopoFull.totalCompressedBytes).toBeLessThanOrEqual(aeonTopoFull.totalRawBytes);
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThanOrEqual(
+        aeonTopoFull.totalRawBytes
+      );
       // Topo-full should beat topo-pure significantly
-      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonTopoPure.totalCompressedBytes);
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(
+        aeonTopoPure.totalCompressedBytes
+      );
       // Topo-full trades 9-byte/chunk headers for per-chunk adaptivity — within 25% of brotli
-      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(aeonBrotli.totalCompressedBytes * 1.25);
-    });
+      expect(aeonTopoFull.totalCompressedBytes).toBeLessThan(
+        aeonBrotli.totalCompressedBytes * 1.25
+      );
+    }, 120_000);
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -461,8 +585,18 @@ describe('Protocol Shootoff', () => {
   describe('Head-to-head summary', () => {
     it('prints winner analysis', () => {
       const sites = [
-        { manifest: bigContentSite, fluxManifest: bigContentFluxSite, fluxMeta: bigContentFluxMeta, label: 'Big Content (Whip Worthington)' },
-        { manifest: microfrontendSite, fluxManifest: microfrontendFluxSite, fluxMeta: microfrontendFluxMeta, label: 'Microfrontend (Wally Wallington)' },
+        {
+          manifest: bigContentSite,
+          fluxManifest: bigContentFluxSite,
+          fluxMeta: bigContentFluxMeta,
+          label: 'Big Content (Whip Worthington)',
+        },
+        {
+          manifest: microfrontendSite,
+          fluxManifest: microfrontendFluxSite,
+          fluxMeta: microfrontendFluxMeta,
+          label: 'Microfrontend (Wally Wallington)',
+        },
       ];
 
       console.log(`\n${'═'.repeat(100)}`);
@@ -472,8 +606,16 @@ describe('Protocol Shootoff', () => {
       for (const { manifest, fluxManifest, fluxMeta, label } of sites) {
         console.log(`\n  ${label}:`);
 
-        const bestByWire = { protocol: '' as Protocol, comp: '' as CompressionAlgo, wire: Infinity };
-        const bestByOverhead = { protocol: '' as Protocol, comp: '' as CompressionAlgo, pct: Infinity };
+        const bestByWire = {
+          protocol: '' as Protocol,
+          comp: '' as CompressionAlgo,
+          wire: Infinity,
+        };
+        const bestByOverhead = {
+          protocol: '' as Protocol,
+          comp: '' as CompressionAlgo,
+          pct: Infinity,
+        };
 
         // Test original site through original protocols
         for (const proto of protocols) {
@@ -526,30 +668,60 @@ describe('Protocol Shootoff', () => {
         }
 
         const protoLabel = (p: Protocol) =>
-          p === 'aeon-flow' ? 'Aeon Flow' :
-          p === 'aeon-flux-http' ? 'Aeon-Flux/HTTP' :
-          p === 'aeon-flux-flow' ? 'Aeon-Flux/Flow' :
-          p === 'x-gnosis-topo' ? 'x-gnosis/topo' :
-          p === 'x-gnosis' ? 'x-gnosis' :
-          p === 'http3' ? 'HTTP/3' :
-          p === 'http1' ? 'HTTP/1.1' : 'HTTP/2';
+          p === 'aeon-flow'
+            ? 'Aeon Flow'
+            : p === 'aeon-flux-http'
+            ? 'Aeon-Flux/HTTP'
+            : p === 'aeon-flux-flow'
+            ? 'Aeon-Flux/Flow'
+            : p === 'x-gnosis-topo'
+            ? 'x-gnosis/topo'
+            : p === 'x-gnosis'
+            ? 'x-gnosis'
+            : p === 'http3'
+            ? 'HTTP/3'
+            : p === 'http1'
+            ? 'HTTP/1.1'
+            : 'HTTP/2';
 
-        console.log(`    Smallest wire size:     ${protoLabel(bestByWire.protocol)} + ${bestByWire.comp} (${formatBytes(bestByWire.wire)})`);
-        console.log(`    Lowest framing overhead: ${protoLabel(bestByOverhead.protocol)} + ${bestByOverhead.comp} (${bestByOverhead.pct.toFixed(3)}%)`);
+        console.log(
+          `    Smallest wire size:     ${protoLabel(bestByWire.protocol)} + ${
+            bestByWire.comp
+          } (${formatBytes(bestByWire.wire)})`
+        );
+        console.log(
+          `    Lowest framing overhead: ${protoLabel(
+            bestByOverhead.protocol
+          )} + ${bestByOverhead.comp} (${bestByOverhead.pct.toFixed(3)}%)`
+        );
 
         const h1rtt = http1RoundTrips(manifest.resources.length);
         const xgRtt = xGnosisRoundTrips(manifest.resources.length);
         const xgtRtt = xGnosisTopoRoundTrips(manifest.resources.length);
-        console.log(`    Round trips:            HTTP/1.1=${h1rtt}, HTTP/2=2, HTTP/3=1, Aeon Flow=1, x-gnosis=${xgRtt}, x-gnosis/topo=${xgtRtt}, Aeon-Flux/HTTP=2, Aeon-Flux/Flow=1`);
+        console.log(
+          `    Round trips:            HTTP/1.1=${h1rtt}, HTTP/2=2, HTTP/3=1, Aeon Flow=1, x-gnosis=${xgRtt}, x-gnosis/topo=${xgtRtt}, Aeon-Flux/HTTP=2, Aeon-Flux/Flow=1`
+        );
 
         // Show the raw payload reduction from Flux
         const origRaw = manifest.resources.reduce((s, r) => s + r.size, 0);
         const fluxRaw = fluxManifest.resources.reduce((s, r) => s + r.size, 0);
         const reduction = ((1 - fluxRaw / origRaw) * 100).toFixed(1);
-        console.log(`    Flux payload reduction: ${formatBytes(origRaw)} → ${formatBytes(fluxRaw)} (${reduction}% smaller via tree-shaking + inlining)`);
-        console.log(`    Pre-rendered HTML:      ${formatBytes(fluxMeta.htmlSize)} (from prerenderPage())`);
-        console.log(`    Tree-shaken CSS:        ${formatBytes(fluxMeta.cssSize)}`);
-        console.log(`    Normie features:        0 (static HTML, no intelligence)`);
+        console.log(
+          `    Flux payload reduction: ${formatBytes(origRaw)} → ${formatBytes(
+            fluxRaw
+          )} (${reduction}% smaller via tree-shaking + inlining)`
+        );
+        console.log(
+          `    Pre-rendered HTML:      ${formatBytes(
+            fluxMeta.htmlSize
+          )} (from prerenderPage())`
+        );
+        console.log(
+          `    Tree-shaken CSS:        ${formatBytes(fluxMeta.cssSize)}`
+        );
+        console.log(
+          `    Normie features:        0 (static HTML, no intelligence)`
+        );
         console.log(`    Flux features (${fluxMeta.features.length}):`);
         for (const feat of fluxMeta.features) {
           console.log(`      + ${feat}`);
@@ -557,6 +729,6 @@ describe('Protocol Shootoff', () => {
       }
 
       console.log();
-    });
+    }, 300_000);
   });
 });

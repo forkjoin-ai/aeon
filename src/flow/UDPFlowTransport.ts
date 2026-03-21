@@ -36,6 +36,8 @@
  *   const protocol = new AeonFlowProtocol(transport, { role: 'server' });
  */
 
+/// <reference types="node" />
+
 import type { FlowTransport } from './types';
 import { FlowCodec, HEADER_SIZE } from './FlowCodec';
 import { FrameReassembler } from './frame-reassembler';
@@ -205,7 +207,10 @@ export class UDPFlowTransport implements FlowTransport {
     // Start ACK and retransmit timers if reliable
     if (this.config.reliable) {
       this.ackTimer = setInterval(() => this.sendAcks(), ACK_INTERVAL_MS);
-      this.retransmitTimer = setInterval(() => this.retransmitLost(), RETRANSMIT_TIMEOUT_MS);
+      this.retransmitTimer = setInterval(
+        () => this.retransmitLost(),
+        RETRANSMIT_TIMEOUT_MS
+      );
     }
   }
 
@@ -224,13 +229,13 @@ export class UDPFlowTransport implements FlowTransport {
 
     if (data.length <= maxPayload) {
       // Fits in one datagram — no fragmentation needed
-      const frameId = this.nextFrameId++ & 0xFFFF;
+      const frameId = this.nextFrameId++ & 0xffff;
       const datagram = this.wrapFragment(frameId, 0, 1, data);
       this.sendDatagram(datagram);
       this.trackInflight(data, frameId);
     } else {
       // Fragment into MTU-sized chunks
-      const frameId = this.nextFrameId++ & 0xFFFF;
+      const frameId = this.nextFrameId++ & 0xffff;
       const totalFragments = Math.ceil(data.length / maxPayload);
 
       if (totalFragments > 255) {
@@ -492,7 +497,11 @@ export class UDPFlowTransport implements FlowTransport {
   private handleAck(data: Uint8Array): void {
     // Skip the 10-byte flow header
     const payload = data.subarray(HEADER_SIZE);
-    const view = new DataView(payload.buffer, payload.byteOffset, payload.byteLength);
+    const view = new DataView(
+      payload.buffer,
+      payload.byteOffset,
+      payload.byteLength
+    );
 
     for (let offset = 0; offset + 14 <= payload.length; offset += 14) {
       const streamId = view.getUint16(offset);
@@ -503,9 +512,10 @@ export class UDPFlowTransport implements FlowTransport {
       // Check each bit in the bitmap
       for (let bit = 0; bit < 64; bit++) {
         const seq = baseSeq + bit;
-        const isAcked = bit < 32
-          ? (bitmapLo & (1 << bit)) !== 0
-          : (bitmapHi & (1 << (bit - 32))) !== 0;
+        const isAcked =
+          bit < 32
+            ? (bitmapLo & (1 << bit)) !== 0
+            : (bitmapHi & (1 << (bit - 32))) !== 0;
 
         if (isAcked) {
           const key = `${streamId}:${seq}`;
@@ -548,9 +558,9 @@ export class UDPFlowTransport implements FlowTransport {
         const bit = seq - baseSeq;
         if (bit >= 0 && bit < 64) {
           if (bit < 32) {
-            bitmapLo |= (1 << bit);
+            bitmapLo |= 1 << bit;
           } else {
-            bitmapHi |= (1 << (bit - 32));
+            bitmapHi |= 1 << (bit - 32);
           }
         }
       }
@@ -587,7 +597,7 @@ export class UDPFlowTransport implements FlowTransport {
 
     // Encode as a flow frame with ACK_FLAG
     const ackFrame = this.codec.encode({
-      streamId: 0xFFFF, // Reserved stream for transport-level control
+      streamId: 0xffff, // Reserved stream for transport-level control
       sequence: 0,
       flags: ACK_FLAG,
       payload,
@@ -595,7 +605,7 @@ export class UDPFlowTransport implements FlowTransport {
 
     // Send as a single datagram (ACKs are always small)
     const datagram = this.wrapFragment(
-      this.nextFrameId++ & 0xFFFF,
+      this.nextFrameId++ & 0xffff,
       0,
       1,
       ackFrame
@@ -625,7 +635,7 @@ export class UDPFlowTransport implements FlowTransport {
         frame.retransmits++;
         frame.sentAt = now;
 
-        const frameId = this.nextFrameId++ & 0xFFFF;
+        const frameId = this.nextFrameId++ & 0xffff;
         const maxPayload = this.config.mtu - FRAGMENT_HEADER_SIZE;
 
         if (frame.data.length <= maxPayload) {
@@ -637,7 +647,12 @@ export class UDPFlowTransport implements FlowTransport {
             const start = i * maxPayload;
             const end = Math.min(start + maxPayload, frame.data.length);
             const chunk = frame.data.slice(start, end);
-            const datagram = this.wrapFragment(frameId, i, totalFragments, chunk);
+            const datagram = this.wrapFragment(
+              frameId,
+              i,
+              totalFragments,
+              chunk
+            );
             this.sendDatagram(datagram);
           }
         }
@@ -681,9 +696,15 @@ async function createUDPSocket(host: string, port: number): Promise<UDPSocket> {
           socket.send(data, 0, data.length, remotePort, remoteHost);
         },
         onMessage(handler: (data: Uint8Array, rinfo: RemoteInfo) => void) {
-          socket.on('message', (msg: Buffer, rinfo: { address: string; port: number }) => {
-            handler(new Uint8Array(msg), { address: rinfo.address, port: rinfo.port });
-          });
+          socket.on(
+            'message',
+            (msg: Buffer, rinfo: { address: string; port: number }) => {
+              handler(new Uint8Array(msg), {
+                address: rinfo.address,
+                port: rinfo.port,
+              });
+            }
+          );
         },
         close() {
           socket.close();
@@ -754,7 +775,7 @@ export class WebTransportFlowTransport implements FlowTransport {
     const maxPayload = UDP_MTU - FRAGMENT_HEADER_SIZE;
 
     if (data.length <= maxPayload) {
-      const frameId = this.nextFrameId++ & 0xFFFF;
+      const frameId = this.nextFrameId++ & 0xffff;
       const datagram = new Uint8Array(FRAGMENT_HEADER_SIZE + data.length);
       const view = new DataView(datagram.buffer);
       view.setUint16(0, frameId);
@@ -763,7 +784,7 @@ export class WebTransportFlowTransport implements FlowTransport {
       datagram.set(data, FRAGMENT_HEADER_SIZE);
       this.writer.write(datagram).catch(() => undefined);
     } else {
-      const frameId = this.nextFrameId++ & 0xFFFF;
+      const frameId = this.nextFrameId++ & 0xffff;
       const totalFragments = Math.ceil(data.length / maxPayload);
       if (totalFragments > 255) return;
 
@@ -802,7 +823,11 @@ export class WebTransportFlowTransport implements FlowTransport {
         const data = new Uint8Array(value);
         if (data.length < FRAGMENT_HEADER_SIZE) continue;
 
-        const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+        const view = new DataView(
+          data.buffer,
+          data.byteOffset,
+          data.byteLength
+        );
         const frameId = view.getUint16(0);
         const fragIndex = data[2];
         const fragTotal = data[3];
@@ -815,7 +840,12 @@ export class WebTransportFlowTransport implements FlowTransport {
         } else {
           let group = this.fragmentGroups.get(frameId);
           if (!group) {
-            group = { frameId, total: fragTotal, received: new Map(), createdAt: Date.now() };
+            group = {
+              frameId,
+              total: fragTotal,
+              received: new Map(),
+              createdAt: Date.now(),
+            };
             this.fragmentGroups.set(frameId, group);
           }
           group.received.set(fragIndex, payload.slice());
@@ -823,7 +853,8 @@ export class WebTransportFlowTransport implements FlowTransport {
           if (group.received.size < group.total) continue;
 
           let totalLen = 0;
-          for (let i = 0; i < group.total; i++) totalLen += group.received.get(i)!.length;
+          for (let i = 0; i < group.total; i++)
+            totalLen += group.received.get(i)!.length;
           reassembled = new Uint8Array(totalLen);
           let offset = 0;
           for (let i = 0; i < group.total; i++) {

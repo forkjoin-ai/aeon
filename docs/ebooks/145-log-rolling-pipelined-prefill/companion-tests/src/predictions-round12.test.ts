@@ -5,14 +5,28 @@
 import { describe, expect, it } from 'bun:test';
 
 // Buleyean Engine
-interface BuleyeanSpace { numChoices: number; rounds: number; voidBoundary: number[]; }
-function createSpace(n: number): BuleyeanSpace { return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) }; }
-function weight(s: BuleyeanSpace, i: number): number { return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1; }
+interface BuleyeanSpace {
+  numChoices: number;
+  rounds: number;
+  voidBoundary: number[];
+}
+function createSpace(n: number): BuleyeanSpace {
+  return { numChoices: n, rounds: 0, voidBoundary: new Array(n).fill(0) };
+}
+function weight(s: BuleyeanSpace, i: number): number {
+  return s.rounds - Math.min(s.voidBoundary[i]!, s.rounds) + 1;
+}
 
 // Reynolds/BFT helpers
-function idleStages(N: number, C: number): number { return N - Math.min(N, C); }
-function quorumSafe(N: number, C: number): boolean { return 3 * idleStages(N, C) < N; }
-function majoritySafe(N: number, C: number): boolean { return 2 * idleStages(N, C) < N; }
+function idleStages(N: number, C: number): number {
+  return N - Math.min(N, C);
+}
+function quorumSafe(N: number, C: number): boolean {
+  return 3 * idleStages(N, C) < N;
+}
+function majoritySafe(N: number, C: number): boolean {
+  return 2 * idleStages(N, C) < N;
+}
 
 // War trajectory helpers
 function buleDeficit(F: number, D: number, context: number): number {
@@ -59,7 +73,8 @@ describe('Prediction 178: Arrow Impossibility from Failure Trilemma', () => {
 
 describe('Prediction 179: War Prevention via Community Context', () => {
   it('war heat rate decreases monotonically with context', () => {
-    const F = 10, D = 1;
+    const F = 10,
+      D = 1;
     const trajectory: number[] = [];
     for (let ctx = 0; ctx <= 12; ctx++) {
       trajectory.push(buleDeficit(F, D, ctx));
@@ -73,7 +88,8 @@ describe('Prediction 179: War Prevention via Community Context', () => {
     console.log('War trajectory:', trajectory);
   });
   it('sufficient context eliminates war entirely', () => {
-    const F = 8, D = 2;
+    const F = 8,
+      D = 2;
     expect(buleDeficit(F, D, F - D)).toBe(0);
     expect(buleDeficit(F, D, F - D + 5)).toBe(0); // stays zero
   });
@@ -114,14 +130,15 @@ describe('Prediction 181: War Total Cost Is Bounded', () => {
     expect(buleDeficit(5, 1, 0)).toBe(4);
   });
   it('total cost ≤ triangular number', () => {
-    const F = 10, D = 2;
+    const F = 10,
+      D = 2;
     const maxD = F - D; // 8
     let totalCost = 0;
     for (let ctx = 0; ctx < maxD; ctx++) {
       totalCost += buleDeficit(F, D, ctx);
     }
     // Triangular bound: maxD*(maxD+1)/2
-    const triangularBound = maxD * (maxD + 1) / 2; // 36
+    const triangularBound = (maxD * (maxD + 1)) / 2; // 36
     expect(totalCost).toBeLessThanOrEqual(triangularBound);
     console.log('War total cost:', totalCost, '≤', triangularBound);
   });

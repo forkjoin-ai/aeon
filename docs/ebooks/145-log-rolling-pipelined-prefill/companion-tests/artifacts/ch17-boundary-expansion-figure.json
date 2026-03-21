@@ -5895,11 +5895,7 @@
       }
     },
     "rankingByFinalEvalMeanSquaredError": {
-      "winner-affine-maxabs": [
-        "winner-take-all",
-        "linear",
-        "early-stop"
-      ],
+      "winner-affine-maxabs": ["winner-take-all", "linear", "early-stop"],
       "early-stop-routing-first-expert-short-budget": [
         "early-stop",
         "linear",
@@ -5912,11 +5908,7 @@
       ]
     },
     "rankingByLearningCurveArea": {
-      "winner-affine-maxabs": [
-        "winner-take-all",
-        "linear",
-        "early-stop"
-      ],
+      "winner-affine-maxabs": ["winner-take-all", "linear", "early-stop"],
       "early-stop-routing-first-expert-short-budget": [
         "early-stop",
         "linear",

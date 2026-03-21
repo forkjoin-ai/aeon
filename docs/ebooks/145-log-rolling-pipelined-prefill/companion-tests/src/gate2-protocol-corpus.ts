@@ -134,7 +134,11 @@ function quantile(values: readonly number[], q: number): number {
   return sorted[lower] * (1 - weight) + sorted[upper] * weight;
 }
 
-function bootstrapMedianCi(values: readonly number[], seed: number, resamples: number): BootstrapInterval {
+function bootstrapMedianCi(
+  values: readonly number[],
+  seed: number,
+  resamples: number
+): BootstrapInterval {
   if (values.length === 0) {
     return { low: Number.NaN, high: Number.NaN };
   }
@@ -193,13 +197,16 @@ function sampleContentType(rng: Lcg, family: number): string {
 }
 
 function sampleRawBytes(rng: Lcg, contentType: string): number {
-  if (contentType === 'application/javascript') return uniformInt(rng, 8_000, 260_000);
+  if (contentType === 'application/javascript')
+    return uniformInt(rng, 8_000, 260_000);
   if (contentType === 'text/css') return uniformInt(rng, 2_000, 85_000);
-  if (contentType === 'application/json') return uniformInt(rng, 1_200, 140_000);
+  if (contentType === 'application/json')
+    return uniformInt(rng, 1_200, 140_000);
   if (contentType === 'text/html') return uniformInt(rng, 6_000, 180_000);
   if (contentType === 'image/svg+xml') return uniformInt(rng, 1_100, 42_000);
   if (contentType === 'font/woff2') return uniformInt(rng, 18_000, 210_000);
-  if (contentType === 'application/wasm') return uniformInt(rng, 45_000, 1_250_000);
+  if (contentType === 'application/wasm')
+    return uniformInt(rng, 45_000, 1_250_000);
   if (contentType === 'video/mp4') return uniformInt(rng, 250_000, 6_500_000);
   if (contentType === 'image/jpeg') return uniformInt(rng, 12_000, 1_600_000);
   return uniformInt(rng, 10_000, 1_100_000); // image/webp fallback
@@ -229,37 +236,47 @@ function generateCorpus(config: Gate2Config): readonly SiteProfile[] {
       family === 0
         ? uniformInt(rng, 70, 240)
         : family === 1
-          ? uniformInt(rng, 25, 130)
-          : uniformInt(rng, 8, 52);
+        ? uniformInt(rng, 25, 130)
+        : uniformInt(rng, 8, 52);
 
     const entropy = 0.9 + 0.25 * rng.next();
     const resources: ResourceProfile[] = [];
-    for (let resourceIndex = 0; resourceIndex < resourceCount; resourceIndex++) {
+    for (
+      let resourceIndex = 0;
+      resourceIndex < resourceCount;
+      resourceIndex++
+    ) {
       const contentType = sampleContentType(rng, family);
       const rawBytes = Math.round(sampleRawBytes(rng, contentType) * entropy);
       const extension =
         contentType === 'application/javascript'
           ? 'js'
           : contentType === 'text/css'
-            ? 'css'
-            : contentType === 'application/json'
-              ? 'json'
-              : contentType === 'text/html'
-                ? 'html'
-                : contentType === 'image/svg+xml'
-                  ? 'svg'
-                  : contentType === 'font/woff2'
-                    ? 'woff2'
-                    : contentType === 'application/wasm'
-                      ? 'wasm'
-                      : contentType === 'video/mp4'
-                        ? 'mp4'
-                        : contentType === 'image/jpeg'
-                          ? 'jpg'
-                          : 'webp';
+          ? 'css'
+          : contentType === 'application/json'
+          ? 'json'
+          : contentType === 'text/html'
+          ? 'html'
+          : contentType === 'image/svg+xml'
+          ? 'svg'
+          : contentType === 'font/woff2'
+          ? 'woff2'
+          : contentType === 'application/wasm'
+          ? 'wasm'
+          : contentType === 'video/mp4'
+          ? 'mp4'
+          : contentType === 'image/jpeg'
+          ? 'jpg'
+          : 'webp';
       const pathDepth = uniformInt(rng, 1, 5);
       const pathParts = new Array<string>(pathDepth).fill('asset');
-      const path = `/${pathParts.join('/')}/s${siteIndex}-r${resourceIndex}-${uniformInt(rng, 0, 999)}.${extension}`;
+      const path = `/${pathParts.join(
+        '/'
+      )}/s${siteIndex}-r${resourceIndex}-${uniformInt(
+        rng,
+        0,
+        999
+      )}.${extension}`;
       resources.push({
         path,
         contentType,
@@ -298,7 +315,11 @@ function qpackRequestSize(path: string, first: boolean): number {
   return qpackPrefix + 1 + 1 + 1 + pathBytes + 6;
 }
 
-function qpackResponseSize(contentType: string, compressedSize: number, first: boolean): number {
+function qpackResponseSize(
+  contentType: string,
+  compressedSize: number,
+  first: boolean
+): number {
   const qpackPrefix = 2;
   const ctBytes = Math.ceil(contentType.length * 0.8);
   if (first) {
@@ -315,14 +336,25 @@ function summarizeHttp3(site: SiteProfile, seed: number): ProtocolSiteStats {
   for (let index = 0; index < site.resources.length; index++) {
     const resource = site.resources[index];
     const ratio = sampleCompressionRatio(rng, resource.contentType);
-    const compressedBytes = Math.max(256, Math.round(resource.rawBytes * ratio));
+    const compressedBytes = Math.max(
+      256,
+      Math.round(resource.rawBytes * ratio)
+    );
     totalCompressedBytes += compressedBytes;
 
     const reqQpack = qpackRequestSize(resource.path, index === 0);
-    const resQpack = qpackResponseSize(resource.contentType, compressedBytes, index === 0);
+    const resQpack = qpackResponseSize(
+      resource.contentType,
+      compressedBytes,
+      index === 0
+    );
     const headersOverhead =
-      h3HeadersFrameHeaderSize(reqQpack) + reqQpack + h3HeadersFrameHeaderSize(resQpack) + resQpack;
-    totalFramingBytes += headersOverhead + h3DataFrameHeaderSize(compressedBytes);
+      h3HeadersFrameHeaderSize(reqQpack) +
+      reqQpack +
+      h3HeadersFrameHeaderSize(resQpack) +
+      resQpack;
+    totalFramingBytes +=
+      headersOverhead + h3DataFrameHeaderSize(compressedBytes);
   }
 
   return {
@@ -339,7 +371,10 @@ function summarizeAeonFlow(site: SiteProfile, seed: number): ProtocolSiteStats {
 
   for (const resource of site.resources) {
     const ratio = sampleCompressionRatio(rng, resource.contentType);
-    const compressedBytes = Math.max(256, Math.round(resource.rawBytes * ratio));
+    const compressedBytes = Math.max(
+      256,
+      Math.round(resource.rawBytes * ratio)
+    );
     totalCompressedBytes += compressedBytes;
   }
 
@@ -363,10 +398,17 @@ interface TrialFactors {
   readonly lossShock: number;
 }
 
-function sampleTrialFactors(rng: Lcg, environment: Gate2Environment): TrialFactors {
+function sampleTrialFactors(
+  rng: Lcg,
+  environment: Gate2Environment
+): TrialFactors {
   const congestionFactor = 0.88 + rng.next() * 0.52;
-  const jitterMs = environment.jitterMs * (0.35 + 1.9 * rng.next() * rng.next());
-  const spikeMs = rng.next() < 0.03 + environment.lossRate * 3.5 ? environment.rttMs * (1 + 4 * rng.next()) : 0;
+  const jitterMs =
+    environment.jitterMs * (0.35 + 1.9 * rng.next() * rng.next());
+  const spikeMs =
+    rng.next() < 0.03 + environment.lossRate * 3.5
+      ? environment.rttMs * (1 + 4 * rng.next())
+      : 0;
   const lossShock = environment.lossRate * (0.3 + 2.2 * rng.next());
   return {
     congestionFactor,
@@ -381,13 +423,17 @@ function completionMs(
   environment: Gate2Environment,
   factors: TrialFactors,
   protocol: 'http3' | 'aeon-flow',
-  rng: Lcg,
+  rng: Lcg
 ): number {
-  const transferMs = (stats.totalWireBytes * 8) / (environment.bandwidthMbps * 1000) * factors.congestionFactor;
+  const transferMs =
+    ((stats.totalWireBytes * 8) / (environment.bandwidthMbps * 1000)) *
+    factors.congestionFactor;
   const schedulerMs =
     protocol === 'http3'
-      ? Math.sqrt(stats.resourceCount) * 0.82 + Math.log2(1 + stats.resourceCount) * 0.3
-      : Math.sqrt(stats.resourceCount) * 0.33 + Math.log2(1 + stats.resourceCount) * 0.12;
+      ? Math.sqrt(stats.resourceCount) * 0.82 +
+        Math.log2(1 + stats.resourceCount) * 0.3
+      : Math.sqrt(stats.resourceCount) * 0.33 +
+        Math.log2(1 + stats.resourceCount) * 0.12;
   const parseMs =
     protocol === 'http3'
       ? stats.totalFramingBytes * 0.0032 + stats.resourceCount * 0.018
@@ -412,7 +458,7 @@ function evaluateSiteOnEnvironment(
   site: SiteProfile,
   environment: Gate2Environment,
   config: Gate2Config,
-  siteIndex: number,
+  siteIndex: number
 ): SiteCellMetrics {
   const statsSeed = mixSeed(config.seed, siteIndex, 17);
   const http3Stats = summarizeHttp3(site, statsSeed);
@@ -425,13 +471,22 @@ function evaluateSiteOnEnvironment(
     const trialSeed = mixSeed(config.seed, siteIndex, trial, 311);
     const trialRng = new Lcg(trialSeed);
     const factors = sampleTrialFactors(trialRng, environment);
-    h3Trials.push(completionMs(http3Stats, environment, factors, 'http3', trialRng));
-    aeonTrials.push(completionMs(aeonStats, environment, factors, 'aeon-flow', trialRng));
+    h3Trials.push(
+      completionMs(http3Stats, environment, factors, 'http3', trialRng)
+    );
+    aeonTrials.push(
+      completionMs(aeonStats, environment, factors, 'aeon-flow', trialRng)
+    );
   }
 
-  const framingGainPct = ((http3Stats.totalFramingBytes - aeonStats.totalFramingBytes) / http3Stats.totalFramingBytes) * 100;
-  const completionMedianGainMs = quantile(h3Trials, 0.5) - quantile(aeonTrials, 0.5);
-  const completionP95GainMs = quantile(h3Trials, 0.95) - quantile(aeonTrials, 0.95);
+  const framingGainPct =
+    ((http3Stats.totalFramingBytes - aeonStats.totalFramingBytes) /
+      http3Stats.totalFramingBytes) *
+    100;
+  const completionMedianGainMs =
+    quantile(h3Trials, 0.5) - quantile(aeonTrials, 0.5);
+  const completionP95GainMs =
+    quantile(h3Trials, 0.95) - quantile(aeonTrials, 0.95);
 
   return {
     framingGainPct,
@@ -444,9 +499,11 @@ function evaluateCell(
   sites: readonly SiteProfile[],
   environment: Gate2Environment,
   config: Gate2Config,
-  envIndex: number,
+  envIndex: number
 ): Gate2CellResult {
-  const perSite = sites.map((site, siteIndex) => evaluateSiteOnEnvironment(site, environment, config, siteIndex));
+  const perSite = sites.map((site, siteIndex) =>
+    evaluateSiteOnEnvironment(site, environment, config, siteIndex)
+  );
   const framingValues = perSite.map((item) => item.framingGainPct);
   const medianValues = perSite.map((item) => item.completionMedianGainMs);
   const p95Values = perSite.map((item) => item.completionP95GainMs);
@@ -458,28 +515,33 @@ function evaluateCell(
   const framingMedianGainPctCi = bootstrapMedianCi(
     framingValues,
     mixSeed(config.seed, envIndex, 401),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
   const completionMedianGainMsCi = bootstrapMedianCi(
     medianValues,
     mixSeed(config.seed, envIndex, 409),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
   const completionP95GainMsCi = bootstrapMedianCi(
     p95Values,
     mixSeed(config.seed, envIndex, 419),
-    config.bootstrapResamples,
+    config.bootstrapResamples
   );
 
-  const framingWinRate = framingValues.filter((value) => value > 0).length / framingValues.length;
-  const completionMedianWinRate = medianValues.filter((value) => value > 0).length / medianValues.length;
-  const completionP95WinRate = p95Values.filter((value) => value > 0).length / p95Values.length;
+  const framingWinRate =
+    framingValues.filter((value) => value > 0).length / framingValues.length;
+  const completionMedianWinRate =
+    medianValues.filter((value) => value > 0).length / medianValues.length;
+  const completionP95WinRate =
+    p95Values.filter((value) => value > 0).length / p95Values.length;
 
   const failedCriteria: string[] = [];
   if (framingMedianGainPctCi.low <= config.thresholds.framingMedianLowerCiPct) {
     failedCriteria.push('framing_median_ci_low');
   }
-  if (completionMedianGainMsCi.low <= config.thresholds.completionMedianLowerCiMs) {
+  if (
+    completionMedianGainMsCi.low <= config.thresholds.completionMedianLowerCiMs
+  ) {
     failedCriteria.push('completion_median_ci_low');
   }
   if (completionP95GainMsCi.low <= config.thresholds.completionP95LowerCiMs) {
@@ -515,8 +577,13 @@ function evaluateCell(
 
 function summarizeCorpus(sites: readonly SiteProfile[]): Gate2Report['corpus'] {
   const resourcesPerSite = sites.map((site) => site.resources.length);
-  const rawBytesPerSite = sites.map((site) => site.resources.reduce((sum, resource) => sum + resource.rawBytes, 0));
-  const totalResources = resourcesPerSite.reduce((sum, count) => sum + count, 0);
+  const rawBytesPerSite = sites.map((site) =>
+    site.resources.reduce((sum, resource) => sum + resource.rawBytes, 0)
+  );
+  const totalResources = resourcesPerSite.reduce(
+    (sum, count) => sum + count,
+    0
+  );
   return {
     siteCount: sites.length,
     totalResources,
@@ -533,14 +600,70 @@ export function makeDefaultGate2Config(): Gate2Config {
     trialsPerSite: 8,
     bootstrapResamples: 2000,
     environments: [
-      { name: 'rtt4-bw120-loss0', rttMs: 4, jitterMs: 0.4, bandwidthMbps: 120, lossRate: 0, primary: false },
-      { name: 'rtt12-bw80-loss0', rttMs: 12, jitterMs: 1.2, bandwidthMbps: 80, lossRate: 0, primary: true },
-      { name: 'rtt24-bw40-loss0.2pct', rttMs: 24, jitterMs: 2.4, bandwidthMbps: 40, lossRate: 0.002, primary: true },
-      { name: 'rtt35-bw28-loss0.5pct', rttMs: 35, jitterMs: 3.5, bandwidthMbps: 28, lossRate: 0.005, primary: true },
-      { name: 'rtt48-bw18-loss1pct', rttMs: 48, jitterMs: 4.8, bandwidthMbps: 18, lossRate: 0.01, primary: true },
-      { name: 'rtt75-bw10-loss1.5pct', rttMs: 75, jitterMs: 7.5, bandwidthMbps: 10, lossRate: 0.015, primary: true },
-      { name: 'rtt110-bw7-loss2pct', rttMs: 110, jitterMs: 11, bandwidthMbps: 7, lossRate: 0.02, primary: true },
-      { name: 'rtt150-bw4-loss3pct', rttMs: 150, jitterMs: 15, bandwidthMbps: 4, lossRate: 0.03, primary: false },
+      {
+        name: 'rtt4-bw120-loss0',
+        rttMs: 4,
+        jitterMs: 0.4,
+        bandwidthMbps: 120,
+        lossRate: 0,
+        primary: false,
+      },
+      {
+        name: 'rtt12-bw80-loss0',
+        rttMs: 12,
+        jitterMs: 1.2,
+        bandwidthMbps: 80,
+        lossRate: 0,
+        primary: true,
+      },
+      {
+        name: 'rtt24-bw40-loss0.2pct',
+        rttMs: 24,
+        jitterMs: 2.4,
+        bandwidthMbps: 40,
+        lossRate: 0.002,
+        primary: true,
+      },
+      {
+        name: 'rtt35-bw28-loss0.5pct',
+        rttMs: 35,
+        jitterMs: 3.5,
+        bandwidthMbps: 28,
+        lossRate: 0.005,
+        primary: true,
+      },
+      {
+        name: 'rtt48-bw18-loss1pct',
+        rttMs: 48,
+        jitterMs: 4.8,
+        bandwidthMbps: 18,
+        lossRate: 0.01,
+        primary: true,
+      },
+      {
+        name: 'rtt75-bw10-loss1.5pct',
+        rttMs: 75,
+        jitterMs: 7.5,
+        bandwidthMbps: 10,
+        lossRate: 0.015,
+        primary: true,
+      },
+      {
+        name: 'rtt110-bw7-loss2pct',
+        rttMs: 110,
+        jitterMs: 11,
+        bandwidthMbps: 7,
+        lossRate: 0.02,
+        primary: true,
+      },
+      {
+        name: 'rtt150-bw4-loss3pct',
+        rttMs: 150,
+        jitterMs: 15,
+        bandwidthMbps: 4,
+        lossRate: 0.03,
+        primary: false,
+      },
     ],
     thresholds: {
       framingMedianLowerCiPct: 0,
@@ -556,9 +679,11 @@ export function makeDefaultGate2Config(): Gate2Config {
 export function runGate2Corpus(config: Gate2Config): Gate2Report {
   const sites = generateCorpus(config);
   const cells = config.environments.map((environment, envIndex) =>
-    evaluateCell(sites, environment, config, envIndex),
+    evaluateCell(sites, environment, config, envIndex)
   );
-  const primaryCells = cells.filter((cell) => cell.environment.primary).map((cell) => cell.cellId);
+  const primaryCells = cells
+    .filter((cell) => cell.environment.primary)
+    .map((cell) => cell.cellId);
   const passedPrimaryCells = cells
     .filter((cell) => cell.environment.primary && cell.passed)
     .map((cell) => cell.cellId);
@@ -597,34 +722,64 @@ export function renderGate2Markdown(report: Gate2Report): string {
   const lines: string[] = [];
   lines.push('# Gate 2 Protocol Corpus Matrix');
   lines.push('');
-  lines.push('Large heterogeneous protocol corpus benchmark (Aeon Flow vs HTTP/3) with seeded site generation and environment matrix evaluation.');
+  lines.push(
+    'Large heterogeneous protocol corpus benchmark (Aeon Flow vs HTTP/3) with seeded site generation and environment matrix evaluation.'
+  );
   lines.push('');
   lines.push('## Corpus');
   lines.push('');
   lines.push(`- Protocol id: ${report.protocol.id}`);
   lines.push(`- Site count: ${report.corpus.siteCount}`);
   lines.push(`- Total resources: ${report.corpus.totalResources}`);
-  lines.push(`- Median resources/site: ${report.corpus.medianResourcesPerSite.toFixed(1)}`);
-  lines.push(`- Median raw bytes/site: ${report.corpus.medianRawBytesPerSite.toFixed(0)}`);
-  lines.push(`- p95 raw bytes/site: ${report.corpus.p95RawBytesPerSite.toFixed(0)}`);
+  lines.push(
+    `- Median resources/site: ${report.corpus.medianResourcesPerSite.toFixed(
+      1
+    )}`
+  );
+  lines.push(
+    `- Median raw bytes/site: ${report.corpus.medianRawBytesPerSite.toFixed(0)}`
+  );
+  lines.push(
+    `- p95 raw bytes/site: ${report.corpus.p95RawBytesPerSite.toFixed(0)}`
+  );
   lines.push('');
   lines.push('## Verdict');
   lines.push('');
   lines.push(`- Overall Gate 2: **${report.gate.pass ? 'PASS' : 'DENY'}**`);
-  lines.push(`- Primary cells passed: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}`);
+  lines.push(
+    `- Primary cells passed: ${report.gate.passedPrimaryCells.length}/${report.gate.primaryCells.length}`
+  );
   lines.push('');
   lines.push('## Matrix Results');
   lines.push('');
-  lines.push('| Cell | Primary | Sites | Framing Median Gain % (95% CI) | Completion Median Gain ms (95% CI) | Completion p95 Gain ms (95% CI) | Win Rates (framing/median/p95) | Pass |');
+  lines.push(
+    '| Cell | Primary | Sites | Framing Median Gain % (95% CI) | Completion Median Gain ms (95% CI) | Completion p95 Gain ms (95% CI) | Win Rates (framing/median/p95) | Pass |'
+  );
   lines.push('|---|---|---:|---:|---:|---:|---:|---|');
   for (const cell of report.cells) {
     lines.push(
-      `| ${cell.cellId} | ${cell.environment.primary ? 'yes' : 'no'} | ${cell.siteCount}` +
-        ` | ${cell.framingMedianGainPct.toFixed(3)} (${cell.framingMedianGainPctCi.low.toFixed(3)} to ${cell.framingMedianGainPctCi.high.toFixed(3)})` +
-        ` | ${cell.completionMedianGainMs.toFixed(3)} (${cell.completionMedianGainMsCi.low.toFixed(3)} to ${cell.completionMedianGainMsCi.high.toFixed(3)})` +
-        ` | ${cell.completionP95GainMs.toFixed(3)} (${cell.completionP95GainMsCi.low.toFixed(3)} to ${cell.completionP95GainMsCi.high.toFixed(3)})` +
-        ` | ${formatPercent(cell.framingWinRate)}/${formatPercent(cell.completionMedianWinRate)}/${formatPercent(cell.completionP95WinRate)}` +
-        ` | ${cell.passed ? 'yes' : 'no'} |`,
+      `| ${cell.cellId} | ${cell.environment.primary ? 'yes' : 'no'} | ${
+        cell.siteCount
+      }` +
+        ` | ${cell.framingMedianGainPct.toFixed(
+          3
+        )} (${cell.framingMedianGainPctCi.low.toFixed(
+          3
+        )} to ${cell.framingMedianGainPctCi.high.toFixed(3)})` +
+        ` | ${cell.completionMedianGainMs.toFixed(
+          3
+        )} (${cell.completionMedianGainMsCi.low.toFixed(
+          3
+        )} to ${cell.completionMedianGainMsCi.high.toFixed(3)})` +
+        ` | ${cell.completionP95GainMs.toFixed(
+          3
+        )} (${cell.completionP95GainMsCi.low.toFixed(
+          3
+        )} to ${cell.completionP95GainMsCi.high.toFixed(3)})` +
+        ` | ${formatPercent(cell.framingWinRate)}/${formatPercent(
+          cell.completionMedianWinRate
+        )}/${formatPercent(cell.completionP95WinRate)}` +
+        ` | ${cell.passed ? 'yes' : 'no'} |`
     );
   }
   lines.push('');

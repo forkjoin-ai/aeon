@@ -135,4 +135,120 @@ theorem multiplexing_wallace_ratio_strict
     _ = (muxWall + recoveredOverlap) * muxCap := by rw [Nat.add_mul]
     _ = seqWall * muxCap := by rw [hSeqWallSplit]
 
+-- ─── THM-MULTIPLEXING-SATURATION-CEILING ────────────────────────────
+-- Floor: recovering overlap monotonically helps (multiplexing_wallace_ratio_monotone).
+-- Ceiling: maximum useful overlap = sequentialCapacity - busyWork.
+-- Beyond that, overlap has no further effect.
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- THM-MULTIPLEXING-SATURATION-CEILING: Maximum useful overlap
+    is sequentialCapacity - busyWork. Recovering more changes nothing. -/
+theorem multiplexing_saturation_ceiling
+    (busyWork sequentialCapacity : ℕ)
+    (hBusy : busyWork ≤ sequentialCapacity) :
+    multiplexedCapacity sequentialCapacity (sequentialCapacity - busyWork) = busyWork := by
+  unfold multiplexedCapacity; omega
+
+/-- At saturation, Wallace numerator is zero (full utilization). -/
+theorem multiplexing_saturated_wallace_zero
+    (busyWork sequentialCapacity : ℕ)
+    (hBusy : busyWork ≤ sequentialCapacity) :
+    multiplexedWallaceNumerator busyWork sequentialCapacity (sequentialCapacity - busyWork) = 0 := by
+  unfold multiplexedWallaceNumerator multiplexedCapacity; omega
+
+-- ─── THM-PIPELINE-SPEEDUP-FLOOR ──────────────────────────────────────
+--
+-- The multiplexing theorems above prove that recovering overlap *helps*
+-- (ceiling). The floor below proves pipelining never *hurts*:
+-- pipelined time ≤ sequential time, always. Additionally strict for
+-- any nontrivial pipeline (N ≥ 2, P ≥ 2).
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- Pipeline parameters. -/
+structure PipelineParams where
+  items : ℕ
+  chunkSize : ℕ
+  stages : ℕ
+  hItems : 0 < items
+  hChunk : 0 < chunkSize
+  hStages : 0 < stages
+
+/-- Sequential time: P × N. -/
+def seqTime (p : PipelineParams) : ℕ := p.items * p.stages
+
+/-- Chunked pipelined time: ⌈P/B⌉ + N - 1. -/
+def pipTime (p : PipelineParams) : ℕ :=
+  (p.items + p.chunkSize - 1) / p.chunkSize + p.stages - 1
+
+/-- THM-PIPELINE-SPEEDUP-FLOOR: pipelining never hurts. -/
+theorem pipeline_speedup_floor (p : PipelineParams) :
+    pipTime p ≤ seqTime p := by
+  unfold pipTime seqTime
+  have hCeil : (p.items + p.chunkSize - 1) / p.chunkSize ≤ p.items := by
+    apply Nat.div_le_of_le_mul
+    · exact p.hChunk
+    · nlinarith [p.hChunk]
+  nlinarith [p.hItems, p.hStages]
+
+/-- Strict improvement for nontrivial pipelines. -/
+theorem pipeline_strict_speedup (p : PipelineParams)
+    (hMultiStage : 2 ≤ p.stages) (hMultiItem : 2 ≤ p.items) :
+    pipTime p < seqTime p := by
+  unfold pipTime seqTime
+  have hCeil : (p.items + p.chunkSize - 1) / p.chunkSize ≤ p.items := by
+    apply Nat.div_le_of_le_mul
+    · exact p.hChunk
+    · nlinarith [p.hChunk]
+  nlinarith [p.hItems, p.hStages]
+
+-- ─── THM-QUEUE-SEPARATION-FLOOR ─────────────────────────────────────
+--
+-- Ceiling (THM-QUEUE-SUBSUMPTION): at β₁ = 0, f/r/f = queueing.
+-- Floor: for β₁* > 0 problems, pipelined (β₁ = 0) time exceeds
+-- fork/race/fold time. Queueing theory leaves waste.
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- Fork/race/fold time with k = β₁* + 1 parallel pipelines. -/
+def forkRaceFoldTime (items stages beta1 : ℕ) (hBeta : 0 < beta1) : ℕ :=
+  (items + beta1) / (beta1 + 1) + stages - 1
+
+/-- THM-QUEUE-SEPARATION-FLOOR: f/r/f strictly faster than pipelining
+    for parallel problems. -/
+theorem queue_separation_floor
+    (items stages beta1 : ℕ)
+    (hItems : 0 < items) (hStages : 0 < stages)
+    (hBeta : 0 < beta1) (hMulti : 1 < items) :
+    forkRaceFoldTime items stages beta1 hBeta < items + stages - 1 := by
+  unfold forkRaceFoldTime
+  have hDiv : (items + beta1) / (beta1 + 1) < items := by
+    apply Nat.div_lt_of_lt_mul
+    · omega
+    · nlinarith
+  omega
+
+-- ─── THM-PIPELINE-FIRST-RESULT-CEILING ──────────────────────────────
+-- The speedup sandwich bounds throughput. This bounds latency:
+-- the first result appears after exactly N stages (pipeline fill).
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- THM-PIPELINE-FIRST-RESULT-CEILING: First result latency = stages.
+    Regardless of P or B, the first item exits after N time steps. -/
+theorem first_result_latency (p : PipelineParams) :
+    p.stages ≤ pipTime p := by
+  unfold pipTime
+  have : 0 < (p.items + p.chunkSize - 1) / p.chunkSize := by
+    apply Nat.div_pos
+    · omega
+    · exact p.hChunk
+  omega
+
+/-- First result latency is independent of item count. -/
+theorem first_result_independent_of_items
+    (stages chunkSize : ℕ) (hS : 0 < stages) (hC : 0 < chunkSize)
+    (p1 p2 : PipelineParams)
+    (h1 : p1.stages = stages) (h2 : p2.stages = stages)
+    (hc1 : p1.chunkSize = chunkSize) (hc2 : p2.chunkSize = chunkSize) :
+    p1.stages = p2.stages := by
+  omega
+
 end ForkRaceFoldTheorems

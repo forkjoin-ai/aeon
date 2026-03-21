@@ -164,7 +164,7 @@ function spectralRadius(A: Matrix): number {
     const w = matVecMul(AtA, v);
     const norm = Math.sqrt(w.reduce((s, x) => s + x * x, 0));
     if (norm < 1e-15) return 0;
-    v = w.map(x => x / norm);
+    v = w.map((x) => x / norm);
   }
 
   const Av = matVecMul(AtA, v);
@@ -222,13 +222,15 @@ interface NetworkEvent {
 function simulateOpenNetwork(
   config: OpenNetworkConfig,
   maxEvents: number,
-  rng: () => number,
+  rng: () => number
 ): NetworkSimResult {
   const { nodes, classes, arrivalRates, serviceRates, routing } = config;
 
   // Per-node queues: queue[node] = list of {jobClass, arrivalTime}
-  const queues: { jobClass: number; arrivalTime: number }[][] =
-    Array.from({ length: nodes }, () => []);
+  const queues: { jobClass: number; arrivalTime: number }[][] = Array.from(
+    { length: nodes },
+    () => []
+  );
 
   // Per-node server busy until
   const serverFreeAt: number[] = new Array(nodes).fill(0);
@@ -252,7 +254,12 @@ function simulateOpenNetwork(
       // Pick a random entry node based on routing -- for simplicity, class c enters node c % nodes
       const entryNode = c % nodes;
       const interarrival = exponentialSample(rng, arrivalRates[c]!);
-      events.push({ time: interarrival, type: 'arrival', node: entryNode, jobClass: c });
+      events.push({
+        time: interarrival,
+        type: 'arrival',
+        node: entryNode,
+        jobClass: c,
+      });
     }
   }
 
@@ -263,7 +270,12 @@ function simulateOpenNetwork(
   function scheduleNextArrival(c: number) {
     const entryNode = c % nodes;
     const interarrival = exponentialSample(rng, arrivalRates[c]!);
-    events.push({ time: clock + interarrival, type: 'arrival', node: entryNode, jobClass: c });
+    events.push({
+      time: clock + interarrival,
+      type: 'arrival',
+      node: entryNode,
+      jobClass: c,
+    });
   }
 
   function scheduleService(node: number) {
@@ -273,7 +285,12 @@ function simulateOpenNetwork(
     const svcTime = exponentialSample(rng, svcRate);
     const departTime = Math.max(clock, serverFreeAt[node]!) + svcTime;
     serverFreeAt[node] = departTime;
-    events.push({ time: departTime, type: 'departure', node, jobClass: job.jobClass });
+    events.push({
+      time: departTime,
+      type: 'departure',
+      node,
+      jobClass: job.jobClass,
+    });
   }
 
   while (processedEvents < maxEvents && events.length > 0) {
@@ -300,7 +317,10 @@ function simulateOpenNetwork(
     if (event.type === 'arrival') {
       totalArrivals[event.jobClass]!++;
       inSystem[event.jobClass]!++;
-      queues[event.node]!.push({ jobClass: event.jobClass, arrivalTime: clock });
+      queues[event.node]!.push({
+        jobClass: event.jobClass,
+        arrivalTime: clock,
+      });
 
       if (queues[event.node]!.length === 1) {
         scheduleService(event.node);
@@ -326,7 +346,10 @@ function simulateOpenNetwork(
 
       if (nextNode >= 0) {
         // Route to next node
-        queues[nextNode]!.push({ jobClass: job.jobClass, arrivalTime: job.arrivalTime });
+        queues[nextNode]!.push({
+          jobClass: job.jobClass,
+          arrivalTime: job.arrivalTime,
+        });
         if (queues[nextNode]!.length === 1) {
           scheduleService(nextNode);
         }
@@ -348,11 +371,13 @@ function simulateOpenNetwork(
 
   const totalTime = clock - startTime;
 
-  const L: number[] = classArea.map(a => (totalTime > 0 ? a / totalTime : 0));
+  const L: number[] = classArea.map((a) => (totalTime > 0 ? a / totalTime : 0));
   const W: number[] = totalSojourn.map((s, c) =>
-    totalDepartures[c]! > 0 ? s / totalDepartures[c]! : 0,
+    totalDepartures[c]! > 0 ? s / totalDepartures[c]! : 0
   );
-  const lambda: number[] = totalDepartures.map(d => (totalTime > 0 ? d / totalTime : 0));
+  const lambda: number[] = totalDepartures.map((d) =>
+    totalTime > 0 ? d / totalTime : 0
+  );
 
   return {
     arrivals: totalArrivals,
@@ -360,7 +385,7 @@ function simulateOpenNetwork(
     L,
     W,
     lambda,
-    nodePopulations: nodeArea.map(a => (totalTime > 0 ? a / totalTime : 0)),
+    nodePopulations: nodeArea.map((a) => (totalTime > 0 ? a / totalTime : 0)),
   };
 }
 
@@ -381,7 +406,7 @@ function estimateLyapunovDrift(
   compactSet: (x: number[]) => boolean,
   initialState: number[],
   steps: number,
-  rng: () => number,
+  rng: () => number
 ): LyapunovResult {
   let state = [...initialState];
   let sumDriftInside = 0;
@@ -442,27 +467,27 @@ function mm1MeanReturnToZero(mu: number, lambda: number): number {
 describe('Gap 1: Arbitrary exact probabilistic multiclass/open networks', () => {
   const MONTE_CARLO_TOL = 0.15; // 15% relative tolerance for MC
 
-  it('4-class, 5-node open network: conservation, Little\'s Law, product-form', () => {
+  it("4-class, 5-node open network: conservation, Little's Law, product-form", () => {
     // 4 classes, 5 nodes, class-dependent routing
     const config: OpenNetworkConfig = {
       nodes: 5,
       classes: 4,
       arrivalRates: [2.0, 1.5, 1.0, 0.8],
       serviceRates: [
-        [10, 8, 12, 9],   // node 0
-        [9, 10, 8, 11],   // node 1
-        [11, 9, 10, 8],   // node 2
-        [8, 12, 9, 10],   // node 3
+        [10, 8, 12, 9], // node 0
+        [9, 10, 8, 11], // node 1
+        [11, 9, 10, 8], // node 2
+        [8, 12, 9, 10], // node 3
         [10, 10, 10, 10], // node 4
       ],
       routing: [
         // Class 0: 0 -> 1 (0.3), 0 -> 2 (0.2), else depart
         [
-          [0, 0.3, 0.2, 0, 0],   // from node 0
-          [0, 0, 0, 0.4, 0],     // from node 1
-          [0, 0, 0, 0, 0.3],     // from node 2
-          [0, 0, 0, 0, 0.2],     // from node 3
-          [0, 0, 0, 0, 0],       // from node 4
+          [0, 0.3, 0.2, 0, 0], // from node 0
+          [0, 0, 0, 0.4, 0], // from node 1
+          [0, 0, 0, 0, 0.3], // from node 2
+          [0, 0, 0, 0, 0.2], // from node 3
+          [0, 0, 0, 0, 0], // from node 4
         ],
         // Class 1
         [
@@ -506,7 +531,8 @@ describe('Gap 1: Arbitrary exact probabilistic multiclass/open networks', () => 
         const expectedL = result.lambda[c]! * result.W[c]!;
         const actualL = result.L[c]!;
         if (actualL > 0.01) {
-          const relError = Math.abs(actualL - expectedL) / Math.max(actualL, expectedL);
+          const relError =
+            Math.abs(actualL - expectedL) / Math.max(actualL, expectedL);
           expect(relError).toBeLessThan(MONTE_CARLO_TOL);
         }
       }
@@ -518,18 +544,19 @@ describe('Gap 1: Arbitrary exact probabilistic multiclass/open networks', () => 
     const totalL = result.L.reduce((s, l) => s + l, 0);
     const totalNodePop = result.nodePopulations.reduce((s, p) => s + p, 0);
     if (totalL > 0.01) {
-      const relError = Math.abs(totalL - totalNodePop) / Math.max(totalL, totalNodePop);
+      const relError =
+        Math.abs(totalL - totalNodePop) / Math.max(totalL, totalNodePop);
       expect(relError).toBeLessThan(MONTE_CARLO_TOL);
     }
   });
 
-  it('6-class, 8-node network with feedback loops: conservation and Little\'s Law', () => {
+  it("6-class, 8-node network with feedback loops: conservation and Little's Law", () => {
     const config: OpenNetworkConfig = {
       nodes: 8,
       classes: 6,
       arrivalRates: [1.5, 1.2, 1.0, 0.8, 0.7, 0.5],
       serviceRates: Array.from({ length: 8 }, (_, n) =>
-        Array.from({ length: 6 }, (_, c) => 6 + (n + c) % 5),
+        Array.from({ length: 6 }, (_, c) => 6 + ((n + c) % 5))
       ),
       routing: Array.from({ length: 6 }, (_, c) =>
         Array.from({ length: 8 }, (_, fromNode) => {
@@ -540,7 +567,7 @@ describe('Gap 1: Arbitrary exact probabilistic multiclass/open networks', () => 
           row[(fromNode + 3) % 8] = 0.1;
           // Remaining 0.7 probability = depart
           return row;
-        }),
+        })
       ),
     };
 
@@ -557,7 +584,9 @@ describe('Gap 1: Arbitrary exact probabilistic multiclass/open networks', () => 
     for (let c = 0; c < config.classes; c++) {
       if (result.lambda[c]! > 0 && result.W[c]! > 0 && result.L[c]! > 0.01) {
         const expectedL = result.lambda[c]! * result.W[c]!;
-        const relError = Math.abs(result.L[c]! - expectedL) / Math.max(result.L[c]!, expectedL);
+        const relError =
+          Math.abs(result.L[c]! - expectedL) /
+          Math.max(result.L[c]!, expectedL);
         expect(relError).toBeLessThan(MONTE_CARLO_TOL);
       }
     }
@@ -622,14 +651,20 @@ describe('Gap 1: Arbitrary exact probabilistic multiclass/open networks', () => 
     }
 
     // Little's Law for entire tandem
-    const totalSojourn = dep2.reduce((s, d, i) => s + (d - arrivalTimes[i]!), 0);
+    const totalSojourn = dep2.reduce(
+      (s, d, i) => s + (d - arrivalTimes[i]!),
+      0
+    );
     const W = totalSojourn / rounds;
     const totalTime = dep2[rounds - 1]! - arrivalTimes[0]!;
     const lambdaEff = rounds / totalTime;
     const expectedL = lambdaEff * W;
 
     // Compute L via area method
-    interface Evt { time: number; delta: number }
+    interface Evt {
+      time: number;
+      delta: number;
+    }
     const events: Evt[] = [];
     for (let i = 0; i < rounds; i++) {
       events.push({ time: arrivalTimes[i]!, delta: 1 });
@@ -660,7 +695,11 @@ describe('Gap 2: Constructive derivation of exact traffic fixed points', () => {
   const EPSILON = 1e-9;
 
   /** Build a sub-stochastic routing matrix (rows sum to < 1 for open networks). */
-  function makeRoutingMatrix(n: number, rng: () => number, maxRowSum: number): Matrix {
+  function makeRoutingMatrix(
+    n: number,
+    rng: () => number,
+    maxRowSum: number
+  ): Matrix {
     const P: Matrix = Array.from({ length: n }, () => {
       const row = new Array(n).fill(0);
       let remaining = maxRowSum * rng();
@@ -906,7 +945,14 @@ describe('Gap 3: Richer adaptive Lyapunov decompositions', () => {
     const compact = (x: number[]) => x[0]! <= 3;
 
     const rng = makeRng(42);
-    const result = estimateLyapunovDrift(V, transition, compact, [10], STEPS, rng);
+    const result = estimateLyapunovDrift(
+      V,
+      transition,
+      compact,
+      [10],
+      STEPS,
+      rng
+    );
 
     // Foster's criterion: E[dV | x outside C] < 0
     expect(result.meanDriftOutside).toBeLessThan(0);
@@ -922,7 +968,14 @@ describe('Gap 3: Richer adaptive Lyapunov decompositions', () => {
     const compact = (x: number[]) => x[0]! <= 5 && x[1]! <= 5;
 
     const rng = makeRng(99);
-    const result = estimateLyapunovDrift(V, transition, compact, [15, 15], STEPS, rng);
+    const result = estimateLyapunovDrift(
+      V,
+      transition,
+      compact,
+      [15, 15],
+      STEPS,
+      rng
+    );
 
     expect(result.meanDriftOutside).toBeLessThan(0);
   });
@@ -933,10 +986,17 @@ describe('Gap 3: Richer adaptive Lyapunov decompositions', () => {
     const transition = multiclassTransition(lambdas, mus);
 
     const V = (x: number[]) => x.reduce((s, xi) => s + Math.log(1 + xi), 0);
-    const compact = (x: number[]) => x.every(xi => xi <= 4);
+    const compact = (x: number[]) => x.every((xi) => xi <= 4);
 
     const rng = makeRng(314);
-    const result = estimateLyapunovDrift(V, transition, compact, [20, 20], STEPS, rng);
+    const result = estimateLyapunovDrift(
+      V,
+      transition,
+      compact,
+      [20, 20],
+      STEPS,
+      rng
+    );
 
     expect(result.meanDriftOutside).toBeLessThan(0);
   });
@@ -952,7 +1012,14 @@ describe('Gap 3: Richer adaptive Lyapunov decompositions', () => {
     const compact = (x: number[]) => x[0]! <= 5;
 
     const rng = makeRng(271);
-    const result = estimateLyapunovDrift(V, transition, compact, [20], STEPS, rng);
+    const result = estimateLyapunovDrift(
+      V,
+      transition,
+      compact,
+      [20],
+      STEPS,
+      rng
+    );
 
     expect(result.meanDriftOutside).toBeLessThan(0);
   });
@@ -964,10 +1031,17 @@ describe('Gap 3: Richer adaptive Lyapunov decompositions', () => {
     const transition = multiclassTransition(lambdas, mus);
 
     const V = (x: number[]) => x.reduce((s, xi) => s + xi * xi, 0);
-    const compact = (x: number[]) => x.every(xi => xi <= 5);
+    const compact = (x: number[]) => x.every((xi) => xi <= 5);
 
     const rng = makeRng(628);
-    const result = estimateLyapunovDrift(V, transition, compact, [15, 15, 15], STEPS, rng);
+    const result = estimateLyapunovDrift(
+      V,
+      transition,
+      compact,
+      [15, 15, 15],
+      STEPS,
+      rng
+    );
 
     // MaxWeight guarantees negative drift when load is within capacity
     expect(result.meanDriftOutside).toBeLessThan(0);
@@ -1009,17 +1083,38 @@ describe('Gap 3: Richer adaptive Lyapunov decompositions', () => {
 
     // Verify V1 alone
     const rng1 = makeRng(100);
-    const r1 = estimateLyapunovDrift(V1, transition, compact, [15, 15], STEPS, rng1);
+    const r1 = estimateLyapunovDrift(
+      V1,
+      transition,
+      compact,
+      [15, 15],
+      STEPS,
+      rng1
+    );
     expect(r1.meanDriftOutside).toBeLessThan(0);
 
     // Verify V2 alone
     const rng2 = makeRng(200);
-    const r2 = estimateLyapunovDrift(V2, transition, compact, [15, 15], STEPS, rng2);
+    const r2 = estimateLyapunovDrift(
+      V2,
+      transition,
+      compact,
+      [15, 15],
+      STEPS,
+      rng2
+    );
     expect(r2.meanDriftOutside).toBeLessThan(0);
 
     // Verify V1 + V2
     const rng3 = makeRng(300);
-    const r3 = estimateLyapunovDrift(Vcomposed, transition, compact, [15, 15], STEPS, rng3);
+    const r3 = estimateLyapunovDrift(
+      Vcomposed,
+      transition,
+      compact,
+      [15, 15],
+      STEPS,
+      rng3
+    );
     expect(r3.meanDriftOutside).toBeLessThan(0);
   });
 });
@@ -1029,14 +1124,14 @@ describe('Gap 3: Richer adaptive Lyapunov decompositions', () => {
 // ===========================================================================
 
 describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', () => {
-  const MONTE_CARLO_TOL = 0.20; // 20% for return time estimates
+  const MONTE_CARLO_TOL = 0.2; // 20% for return time estimates
 
   /** Simulate M/M/1 and measure mean return time to state 0. */
   function simulateMM1ReturnTime(
     lambda: number,
     mu: number,
     trials: number,
-    rng: () => number,
+    rng: () => number
   ): { meanReturnTime: number; allFinite: boolean } {
     let totalReturnTime = 0;
     let allFinite = true;
@@ -1084,7 +1179,12 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
     expect(rho).toBeLessThan(1);
 
     const rng = makeRng(42);
-    const { meanReturnTime, allFinite } = simulateMM1ReturnTime(lambda, mu, 10000, rng);
+    const { meanReturnTime, allFinite } = simulateMM1ReturnTime(
+      lambda,
+      mu,
+      10000,
+      rng
+    );
     const exactReturnTime = mm1MeanReturnToZero(mu, lambda);
 
     expect(allFinite).toBe(true);
@@ -1092,8 +1192,9 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
     expect(Number.isFinite(meanReturnTime)).toBe(true);
 
     // Return time is heavy-tailed so MC estimate has higher variance
-    const relError = Math.abs(meanReturnTime - exactReturnTime) / exactReturnTime;
-    expect(relError).toBeLessThan(0.30);
+    const relError =
+      Math.abs(meanReturnTime - exactReturnTime) / exactReturnTime;
+    expect(relError).toBeLessThan(0.3);
   });
 
   it('tandem queue: positive recurrence when both rho_i < 1', () => {
@@ -1229,7 +1330,14 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
     const compact = (x: number[]) => x[0]! <= 3 && x[1]! <= 3 && x[2]! <= 3;
 
     const rng = makeRng(999);
-    const result = estimateLyapunovDrift(V, transition, compact, [10, 10, 10], 40000, rng);
+    const result = estimateLyapunovDrift(
+      V,
+      transition,
+      compact,
+      [10, 10, 10],
+      40000,
+      rng
+    );
 
     expect(result.meanDriftOutside).toBeLessThan(0);
   });
@@ -1244,7 +1352,7 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
     // Priority: class 1 always served before class 2
     const transition = (x: number[], rng: () => number): number[] => {
       const next = [...x];
-      const svcRate = (next[0]! > 0 || next[1]! > 0) ? mu : 0;
+      const svcRate = next[0]! > 0 || next[1]! > 0 ? mu : 0;
       const totalRate = lambda1 + lambda2 + svcRate;
       const u = rng() * totalRate;
 
@@ -1267,7 +1375,14 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
     const compact = (x: number[]) => x[0]! <= 5 && x[1]! <= 5;
 
     const rng = makeRng(777);
-    const result = estimateLyapunovDrift(V, transition, compact, [10, 10], 30000, rng);
+    const result = estimateLyapunovDrift(
+      V,
+      transition,
+      compact,
+      [10, 10],
+      30000,
+      rng
+    );
 
     expect(result.meanDriftOutside).toBeLessThan(0);
   });
@@ -1284,7 +1399,10 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
       let totalRate = 0;
       for (let c = 0; c < 4; c++) totalRate += lambdas[c]!;
       for (let n = 0; n < 3; n++) {
-        const nodeLoad = x.reduce((s, _, c) => s + (c % 3 === n ? x[c]! : 0), 0);
+        const nodeLoad = x.reduce(
+          (s, _, c) => s + (c % 3 === n ? x[c]! : 0),
+          0
+        );
         if (nodeLoad > 0) totalRate += mus[n]!;
       }
 
@@ -1302,7 +1420,9 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
 
       // Service completions (pick the first node that has work)
       for (let n = 0; n < 3; n++) {
-        const nodeClasses = [0, 1, 2, 3].filter(c => c % 3 === n && next[c]! > 0);
+        const nodeClasses = [0, 1, 2, 3].filter(
+          (c) => c % 3 === n && next[c]! > 0
+        );
         if (nodeClasses.length > 0) {
           cumul += mus[n]!;
           if (u < cumul) {
@@ -1323,10 +1443,17 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
 
     // Quadratic Lyapunov: V(x) = sum x_c^2
     const V = (x: number[]) => x.reduce((s, xi) => s + xi * xi, 0);
-    const compact = (x: number[]) => x.every(xi => xi <= 5);
+    const compact = (x: number[]) => x.every((xi) => xi <= 5);
 
     const rng = makeRng(1234);
-    const result = estimateLyapunovDrift(V, transition, compact, [12, 12, 12, 12], 40000, rng);
+    const result = estimateLyapunovDrift(
+      V,
+      transition,
+      compact,
+      [12, 12, 12, 12],
+      40000,
+      rng
+    );
 
     expect(result.meanDriftOutside).toBeLessThan(0);
   });
@@ -1342,7 +1469,12 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
     const returnTimes: number[] = [];
     for (const { lambda, mu } of systems) {
       const rng = makeRng(42 + lambda * 100 + mu);
-      const { meanReturnTime, allFinite } = simulateMM1ReturnTime(lambda, mu, 8000, rng);
+      const { meanReturnTime, allFinite } = simulateMM1ReturnTime(
+        lambda,
+        mu,
+        8000,
+        rng
+      );
       const exact = mm1MeanReturnToZero(mu, lambda);
 
       expect(allFinite).toBe(true);
@@ -1384,7 +1516,10 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
       const holdingTime = exponentialSample(rng, totalRate);
 
       // Check if we cross a checkpoint during this holding period
-      while (cpIdx < checkpoints.length && clock + holdingTime >= checkpoints[cpIdx]!) {
+      while (
+        cpIdx < checkpoints.length &&
+        clock + holdingTime >= checkpoints[cpIdx]!
+      ) {
         // Accumulate time up to checkpoint
         const dt = checkpoints[cpIdx]! - clock;
         if (state < maxState) timeInState[state] += dt;
@@ -1420,9 +1555,11 @@ describe('Gap 4: Positive-recurrence for unbounded open stochastic networks', ()
     }
 
     // TV distance should broadly decrease over time
-    expect(tvDistances[tvDistances.length - 1]!).toBeLessThan(tvDistances[0]! + 0.02);
+    expect(tvDistances[tvDistances.length - 1]!).toBeLessThan(
+      tvDistances[0]! + 0.02
+    );
 
     // Final TV distance should be small with continuous-time simulation
-    expect(tvDistances[tvDistances.length - 1]!).toBeLessThan(0.10);
+    expect(tvDistances[tvDistances.length - 1]!).toBeLessThan(0.1);
   });
 });

@@ -9,12 +9,18 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import { FrameReassembler } from '../../flow/frame-reassembler';
 import type { FlowFrame } from '../../flow/types';
 
-function makeFrame(streamId: number, sequence: number, payload?: string): FlowFrame {
+function makeFrame(
+  streamId: number,
+  sequence: number,
+  payload?: string
+): FlowFrame {
   return {
     streamId,
     sequence,
     flags: 0,
-    payload: new TextEncoder().encode(payload ?? `frame-${streamId}-${sequence}`),
+    payload: new TextEncoder().encode(
+      payload ?? `frame-${streamId}-${sequence}`
+    ),
   };
 }
 

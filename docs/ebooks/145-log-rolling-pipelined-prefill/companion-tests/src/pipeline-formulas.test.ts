@@ -22,7 +22,7 @@ function whipTotalTime(
   items: number,
   stages: number,
   shardCount: number,
-  correctionCostPerShard: number,
+  correctionCostPerShard: number
 ): number {
   const itemsPerShard = Math.ceil(items / shardCount);
   const shardTime = itemsPerShard + stages - 1;
@@ -34,13 +34,18 @@ function findWhipOptimalShardCount(
   items: number,
   stages: number,
   correctionCostPerShard: number,
-  maxShardCount: number,
+  maxShardCount: number
 ): { shardCount: number; totalTime: number } {
   let bestShardCount = 1;
   let bestTime = whipTotalTime(items, stages, 1, correctionCostPerShard);
 
   for (let shardCount = 2; shardCount <= maxShardCount; shardCount++) {
-    const candidate = whipTotalTime(items, stages, shardCount, correctionCostPerShard);
+    const candidate = whipTotalTime(
+      items,
+      stages,
+      shardCount,
+      correctionCostPerShard
+    );
     if (candidate < bestTime) {
       bestTime = candidate;
       bestShardCount = shardCount;
@@ -54,11 +59,21 @@ function findWhipStrictCrossoverShard(
   items: number,
   stages: number,
   correctionCostPerShard: number,
-  maxShardCount: number,
+  maxShardCount: number
 ): number {
   for (let shardCount = 1; shardCount < maxShardCount; shardCount++) {
-    const current = whipTotalTime(items, stages, shardCount, correctionCostPerShard);
-    const next = whipTotalTime(items, stages, shardCount + 1, correctionCostPerShard);
+    const current = whipTotalTime(
+      items,
+      stages,
+      shardCount,
+      correctionCostPerShard
+    );
+    const next = whipTotalTime(
+      items,
+      stages,
+      shardCount + 1,
+      correctionCostPerShard
+    );
     if (next > current) {
       return shardCount;
     }
@@ -101,7 +116,7 @@ describe('Worthington Whip: Superposition Sharding (§7.3)', () => {
       expect(finitePSavings).toBeCloseTo(expectedSavings, 3);
 
       // Monte Carlo validation of queue-depth interpretation
-      const rng = makeRng(0xC0FFEE + S);
+      const rng = makeRng(0xc0ffee + S);
       const trials = 20_000;
       let totalSequentialWait = 0;
       let totalShardedWait = 0;
@@ -114,8 +129,7 @@ describe('Worthington Whip: Superposition Sharding (§7.3)', () => {
 
       const avgSequentialWait = totalSequentialWait / trials;
       const avgShardedWait = totalShardedWait / trials;
-      const empiricalSavings =
-        (avgSequentialWait - avgShardedWait) / P;
+      const empiricalSavings = (avgSequentialWait - avgShardedWait) / P;
 
       expect(Math.abs(empiricalSavings - expectedSavings)).toBeLessThan(0.03);
     }
@@ -181,13 +195,13 @@ describe('Worthington Whip: Superposition Sharding (§7.3)', () => {
       items,
       stages,
       correctionCostPerShard,
-      maxShardCount,
+      maxShardCount
     );
     const crossover = findWhipStrictCrossoverShard(
       items,
       stages,
       correctionCostPerShard,
-      maxShardCount,
+      maxShardCount
     );
 
     // Characterization target:
@@ -196,8 +210,18 @@ describe('Worthington Whip: Superposition Sharding (§7.3)', () => {
     expect(optimum.shardCount).toBeGreaterThan(1);
     expect(crossover).toBeGreaterThanOrEqual(optimum.shardCount);
 
-    const atCrossover = whipTotalTime(items, stages, crossover, correctionCostPerShard);
-    const afterCrossover = whipTotalTime(items, stages, crossover + 1, correctionCostPerShard);
+    const atCrossover = whipTotalTime(
+      items,
+      stages,
+      crossover,
+      correctionCostPerShard
+    );
+    const afterCrossover = whipTotalTime(
+      items,
+      stages,
+      crossover + 1,
+      correctionCostPerShard
+    );
     expect(afterCrossover).toBeGreaterThan(atCrossover);
   });
 
@@ -217,9 +241,11 @@ describe('Worthington Whip: Superposition Sharding (§7.3)', () => {
         scenario.items,
         stages,
         scenario.correctionCostPerShard,
-        maxShardCount,
+        maxShardCount
       );
-      const relaxedApprox = Math.sqrt(scenario.items / scenario.correctionCostPerShard);
+      const relaxedApprox = Math.sqrt(
+        scenario.items / scenario.correctionCostPerShard
+      );
 
       // Integer ceilings create plateaus, so keep a moderate tolerance.
       expect(Math.abs(crossover - relaxedApprox)).toBeLessThanOrEqual(5);
@@ -236,16 +262,19 @@ describe('Worthington Whip: Superposition Sharding (§7.3)', () => {
       items,
       stages,
       correctionCostPerShard,
-      maxShardCount,
+      maxShardCount
     );
 
     // Far beyond optimum, correction dominates and total time rises.
-    const aggressiveShardCount = Math.min(maxShardCount, optimum.shardCount * 4);
+    const aggressiveShardCount = Math.min(
+      maxShardCount,
+      optimum.shardCount * 4
+    );
     const aggressiveTime = whipTotalTime(
       items,
       stages,
       aggressiveShardCount,
-      correctionCostPerShard,
+      correctionCostPerShard
     );
 
     expect(aggressiveTime).toBeGreaterThan(optimum.totalTime);
@@ -270,7 +299,12 @@ describe('Speculative Tree (§7.4)', () => {
     return (1 - Math.pow(alpha, K)) / (1 - alpha);
   }
 
-  function simulateAccepted(alpha: number, K: number, trials: number, seed: number): number {
+  function simulateAccepted(
+    alpha: number,
+    K: number,
+    trials: number,
+    seed: number
+  ): number {
     const rng = makeRng(seed);
     let totalAccepted = 0;
 
@@ -302,7 +336,7 @@ describe('Speculative Tree (§7.4)', () => {
           alpha,
           K,
           20_000,
-          Math.floor(alpha * 1_000_000) + K,
+          Math.floor(alpha * 1_000_000) + K
         );
 
         expect(Math.abs(empirical - expected)).toBeLessThan(0.12);
@@ -314,7 +348,7 @@ describe('Speculative Tree (§7.4)', () => {
     const alpha = 0.7;
     const K = 1;
     const expected = expectedAccepted(alpha, K);
-    const empirical = simulateAccepted(alpha, K, 2000, 0xACE1);
+    const empirical = simulateAccepted(alpha, K, 2000, 0xace1);
 
     expect(expected).toBe(1);
     expect(empirical).toBe(1);
@@ -379,9 +413,9 @@ describe('Turbulent Multiplexing (§7.2)', () => {
     const testCases = [
       { C: 10, N: 4 },
       { C: 100, N: 4 },
-      { C: 4, N: 4 },  // C ≈ N case
-      { C: 5, N: 5 },  // C = N case
-      { C: 8, N: 8 },  // C = N case
+      { C: 4, N: 4 }, // C ≈ N case
+      { C: 5, N: 5 }, // C = N case
+      { C: 8, N: 8 }, // C = N case
     ];
 
     for (const { C, N } of testCases) {
@@ -401,16 +435,13 @@ describe('Turbulent Multiplexing (§7.2)', () => {
     // For practical N (4-10): around 43%
 
     const practicalN = [4, 5, 6, 7, 8, 9, 10];
-    const idleFractions = practicalN.map(
-      (N) => (N - 1) / (2 * N - 1),
-    );
+    const idleFractions = practicalN.map((N) => (N - 1) / (2 * N - 1));
 
     // Average across practical N values
-    const avg =
-      idleFractions.reduce((s, f) => s + f, 0) / idleFractions.length;
+    const avg = idleFractions.reduce((s, f) => s + f, 0) / idleFractions.length;
 
     // Should be around 43%
-    expect(avg).toBeGreaterThan(0.40);
+    expect(avg).toBeGreaterThan(0.4);
     expect(avg).toBeLessThan(0.47);
 
     // Specific: N=4: (3/7) ≈ 42.9%
@@ -453,7 +484,7 @@ describe('Turbulent Multiplexing (§7.2)', () => {
     // With turbulent multiplexing: interleave during ramp phases
     // Request 2 can start filling idle slots during request 1's ramp-down
     // Overlap: min(ramp-down idle slots, request 2 ramp-up needed)
-    const overlapSlots = Math.min(N * (N - 1) / 2, C2);
+    const overlapSlots = Math.min((N * (N - 1)) / 2, C2);
     expect(overlapSlots).toBeGreaterThan(0);
 
     // Total time with multiplexing is less than sequential
@@ -470,7 +501,11 @@ function modeledSerialStepDepth(items: number, stages: number): number {
   return items * stages;
 }
 
-function modeledChunkedStepDepth(items: number, stages: number, chunkSize: number): number {
+function modeledChunkedStepDepth(
+  items: number,
+  stages: number,
+  chunkSize: number
+): number {
   const chunks = Math.ceil(items / chunkSize);
   return chunks + stages - 1;
 }
@@ -478,7 +513,7 @@ function modeledChunkedStepDepth(items: number, stages: number, chunkSize: numbe
 function simulateSerialWallClock(
   items: number,
   stageServiceTimes: readonly number[],
-  interStageLatency: number,
+  interStageLatency: number
 ): number {
   const stages = stageServiceTimes.length;
   let total = 0;
@@ -497,7 +532,7 @@ function simulateChunkedPipelineWallClock(
   items: number,
   stageServiceTimes: readonly number[],
   interStageLatency: number,
-  chunkSize: number,
+  chunkSize: number
 ): number {
   const stages = stageServiceTimes.length;
   const chunks = Math.ceil(items / chunkSize);
@@ -506,8 +541,7 @@ function simulateChunkedPipelineWallClock(
   for (let chunk = 0; chunk < chunks; chunk++) {
     let upstreamFinish = 0;
     for (let stage = 0; stage < stages; stage++) {
-      const arrival =
-        stage === 0 ? 0 : upstreamFinish + interStageLatency;
+      const arrival = stage === 0 ? 0 : upstreamFinish + interStageLatency;
       const start = Math.max(arrival, lastFinishByStage[stage]);
       const finish = start + stageServiceTimes[stage];
       lastFinishByStage[stage] = finish;
@@ -532,20 +566,20 @@ describe('Chunked prefill speedup assumption boundaries (§7.1 A1/A2)', () => {
     const simulatedSerial = simulateSerialWallClock(
       items,
       stageServiceTimes,
-      interStageLatency,
+      interStageLatency
     );
     const simulatedChunked = simulateChunkedPipelineWallClock(
       items,
       stageServiceTimes,
       interStageLatency,
-      chunkSize,
+      chunkSize
     );
 
     expect(simulatedSerial).toBe(modeledSerial);
     expect(simulatedChunked).toBe(modeledChunked);
     expect(simulatedSerial / simulatedChunked).toBeCloseTo(
       modeledSerial / modeledChunked,
-      12,
+      12
     );
   });
 
@@ -565,7 +599,7 @@ describe('Chunked prefill speedup assumption boundaries (§7.1 A1/A2)', () => {
         items,
         stageServiceTimes,
         interStageLatency,
-        chunkSize,
+        chunkSize
       );
 
     expect(Math.abs(simulatedSpeedup - modeledSpeedup)).toBeGreaterThan(1.0);
@@ -587,7 +621,7 @@ describe('Chunked prefill speedup assumption boundaries (§7.1 A1/A2)', () => {
         items,
         stageServiceTimes,
         interStageLatency,
-        chunkSize,
+        chunkSize
       );
 
     expect(simulatedSpeedup).toBeLessThan(modeledSpeedup);

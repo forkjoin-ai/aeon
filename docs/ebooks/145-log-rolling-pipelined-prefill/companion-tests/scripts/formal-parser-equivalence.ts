@@ -69,7 +69,9 @@ function safeMessage(error: unknown): string {
 }
 
 function loadFormalPairs(): readonly FormalPair[] {
-  const files = readdirSync(formalDir).filter((entry) => !entry.startsWith('.'));
+  const files = readdirSync(formalDir).filter(
+    (entry) => !entry.startsWith('.')
+  );
   const cfgBases = files
     .filter((entry) => extname(entry) === '.cfg')
     .map((entry) => basename(entry, '.cfg'))
@@ -140,7 +142,11 @@ function resolveJavaBinary(): string | null {
   return null;
 }
 
-function runSany(javaBin: string, jarPath: string, tlaPath: string): SanyResult {
+function runSany(
+  javaBin: string,
+  jarPath: string,
+  tlaPath: string
+): SanyResult {
   const start = nowMs();
   const result = spawnSync(
     javaBin,
@@ -149,7 +155,7 @@ function runSany(javaBin: string, jarPath: string, tlaPath: string): SanyResult 
       cwd: formalDir,
       encoding: 'utf8',
       timeout: 30_000,
-    },
+    }
   );
   const elapsedMs = nowMs() - start;
 
@@ -167,8 +173,10 @@ function runSany(javaBin: string, jarPath: string, tlaPath: string): SanyResult 
         !line.startsWith('****** SANY2 Version') &&
         !line.startsWith('Parsing file') &&
         !line.startsWith('Semantic processing') &&
-        !line.startsWith('Linting'),
-    ) ?? lines[0] ?? 'SANY parse failed';
+        !line.startsWith('Linting')
+    ) ??
+    lines[0] ??
+    'SANY parse failed';
   return {
     ok: false,
     elapsedMs,
@@ -197,7 +205,7 @@ function compareOutcomes(
   caseLabel: string,
   aeon: ParseOutcome,
   sany: ParseOutcome,
-  bucket: 'original' | 'roundtrip' | 'invalid',
+  bucket: 'original' | 'roundtrip' | 'invalid'
 ): void {
   if (bucket === 'original') {
     counters.originalsCompared += 1;
@@ -223,18 +231,26 @@ function compareOutcomes(
   });
 }
 
-function printRatio(label: string, numerator: number, denominator: number): void {
+function printRatio(
+  label: string,
+  numerator: number,
+  denominator: number
+): void {
   const pct = denominator > 0 ? (numerator / denominator) * 100 : 0;
-  process.stdout.write(`${label}: ${numerator}/${denominator} (${pct.toFixed(1)}%)\n`);
+  process.stdout.write(
+    `${label}: ${numerator}/${denominator} (${pct.toFixed(1)}%)\n`
+  );
 }
 
 function main(): void {
   const filter = equivalenceFilter();
   const formalPairs = loadFormalPairs().filter(
-    (pair) => filter === null || pair.baseName.includes(filter),
+    (pair) => filter === null || pair.baseName.includes(filter)
   );
   if (formalPairs.length === 0) {
-    throw new Error('No formal .tla/.cfg pairs found for equivalence benchmark');
+    throw new Error(
+      'No formal .tla/.cfg pairs found for equivalence benchmark'
+    );
   }
 
   process.stdout.write('\n=== Formal Semantic-Equivalence Benchmark ===\n');
@@ -262,7 +278,7 @@ function main(): void {
   const javaAvailable = Boolean(javaBin && existsSync(jarPath));
   if (!javaAvailable) {
     process.stdout.write(
-      'java SANY differential checks: skipped (java and/or tla2tools.jar unavailable)\n',
+      'java SANY differential checks: skipped (java and/or tla2tools.jar unavailable)\n'
     );
   }
 
@@ -274,7 +290,10 @@ function main(): void {
 
     let tlaRoundTrip = '';
     let cfgRoundTrip = '';
-    let roundTripParse: ParseOutcome = { ok: false, message: 'roundtrip unavailable' };
+    let roundTripParse: ParseOutcome = {
+      ok: false,
+      message: 'roundtrip unavailable',
+    };
     if (aeonTla.ok && aeonCfg.ok) {
       try {
         tlaRoundTrip = roundTripTla(pair.tlaSource);
@@ -283,7 +302,9 @@ function main(): void {
         const reparseCfg = tryAeonParseCfg(cfgRoundTrip);
         roundTripParse = {
           ok: reparseTla.ok && reparseCfg.ok,
-          message: [reparseTla.message, reparseCfg.message].filter(Boolean).join(' | '),
+          message: [reparseTla.message, reparseCfg.message]
+            .filter(Boolean)
+            .join(' | '),
         };
         if (roundTripParse.ok) {
           aeonRoundTripStable += 1;
@@ -304,7 +325,11 @@ function main(): void {
     const moduleTmpDir = join(tmpRoot, pair.baseName);
     mkdirSync(moduleTmpDir, { recursive: true });
     const renderedTlaPath = join(moduleTmpDir, `${pair.baseName}.tla`);
-    writeFileSync(renderedTlaPath, tlaRoundTrip.length > 0 ? tlaRoundTrip : pair.tlaSource, 'utf8');
+    writeFileSync(
+      renderedTlaPath,
+      tlaRoundTrip.length > 0 ? tlaRoundTrip : pair.tlaSource,
+      'utf8'
+    );
 
     const sanyOriginal = runSany(javaBin, jarPath, pair.tlaPath);
     const sanyRoundTrip = runSany(javaBin, jarPath, renderedTlaPath);
@@ -315,7 +340,7 @@ function main(): void {
       `${pair.baseName}:original`,
       aeonTla,
       sanyOriginal,
-      'original',
+      'original'
     );
     compareOutcomes(
       counters,
@@ -323,7 +348,7 @@ function main(): void {
       `${pair.baseName}:roundtrip`,
       roundTripParse,
       sanyRoundTrip,
-      'roundtrip',
+      'roundtrip'
     );
 
     const invalidVariants = invalidMutations(pair.baseName);
@@ -342,7 +367,7 @@ function main(): void {
         `${pair.baseName}:invalid:${i + 1}`,
         aeonRejects,
         sanyRejects,
-        'invalid',
+        'invalid'
       );
     }
   }
@@ -350,16 +375,34 @@ function main(): void {
   process.stdout.write('\n[aeon-logic self-checks]\n');
   printRatio('tla parse success', aeonTlaParses, formalPairs.length);
   printRatio('cfg parse success', aeonCfgParses, formalPairs.length);
-  printRatio('roundtrip parse stability', aeonRoundTripStable, formalPairs.length);
+  printRatio(
+    'roundtrip parse stability',
+    aeonRoundTripStable,
+    formalPairs.length
+  );
 
   if (javaAvailable) {
     process.stdout.write('\n[differential agreement: aeon-logic vs SANY]\n');
-    printRatio('original acceptance agreement', counters.originalsAgreement, counters.originalsCompared);
-    printRatio('roundtrip acceptance agreement', counters.roundTripsAgreement, counters.roundTripsCompared);
-    printRatio('invalid-rejection agreement', counters.invalidAgreement, counters.invalidCompared);
+    printRatio(
+      'original acceptance agreement',
+      counters.originalsAgreement,
+      counters.originalsCompared
+    );
+    printRatio(
+      'roundtrip acceptance agreement',
+      counters.roundTripsAgreement,
+      counters.roundTripsCompared
+    );
+    printRatio(
+      'invalid-rejection agreement',
+      counters.invalidAgreement,
+      counters.invalidCompared
+    );
     if (skippedSany.length > 0) {
       process.stdout.write(
-        `SANY skipped (${skippedSany.length}): ${skippedSany.sort().join(', ')}\n`,
+        `SANY skipped (${skippedSany.length}): ${skippedSany
+          .sort()
+          .join(', ')}\n`
       );
     }
 
@@ -367,10 +410,14 @@ function main(): void {
       process.stdout.write('\nDisagreements:\n');
       for (const item of disagreements) {
         process.stdout.write(
-          `- ${item.caseLabel}: aeon=${item.aeonOk ? 'ok' : 'fail'} | sany=${item.sanyOk ? 'ok' : 'fail'}\n`,
+          `- ${item.caseLabel}: aeon=${item.aeonOk ? 'ok' : 'fail'} | sany=${
+            item.sanyOk ? 'ok' : 'fail'
+          }\n`
         );
-        if (item.aeonMessage) process.stdout.write(`  aeon: ${item.aeonMessage}\n`);
-        if (item.sanyMessage) process.stdout.write(`  sany: ${item.sanyMessage}\n`);
+        if (item.aeonMessage)
+          process.stdout.write(`  aeon: ${item.aeonMessage}\n`);
+        if (item.sanyMessage)
+          process.stdout.write(`  sany: ${item.sanyMessage}\n`);
       }
       process.exitCode = 1;
     }
@@ -378,10 +425,10 @@ function main(): void {
 
   process.stdout.write('\n[capability delta beyond parsing]\n');
   process.stdout.write(
-    '- aeon-logic ships superposition chains, quorum temporal operators, topology bridges, TLC trace adapters and an embedded model checker in the same runtime surface.\n',
+    '- aeon-logic ships superposition chains, quorum temporal operators, topology bridges, TLC trace adapters and an embedded model checker in the same runtime surface.\n'
   );
   process.stdout.write(
-    '- SANY baseline in this harness is used as a parser acceptance oracle only.\n',
+    '- SANY baseline in this harness is used as a parser acceptance oracle only.\n'
   );
 
   rmSync(tmpRoot, { recursive: true, force: true });

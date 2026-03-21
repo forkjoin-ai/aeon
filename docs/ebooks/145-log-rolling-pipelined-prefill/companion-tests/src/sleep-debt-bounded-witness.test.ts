@@ -28,9 +28,11 @@ describe('Sleep debt bounded witness', () => {
 
     expect(report.label).toBe('sleep-debt-bounded-witness-v1');
     expect(report.aggregate.partialRecoveryLeavesPositiveDebt).toBe(true);
-    expect(report.scenarios.some((scenario) => scenario.id === 'full-recovery-baseline')).toBe(
-      true
-    );
+    expect(
+      report.scenarios.some(
+        (scenario) => scenario.id === 'full-recovery-baseline'
+      )
+    ).toBe(true);
   });
 
   it('renders a markdown summary for the bounded witness', () => {
@@ -40,6 +42,8 @@ describe('Sleep debt bounded witness', () => {
 
     expect(markdown).toContain('# Sleep-Debt Bounded Witness');
     expect(markdown).toContain('partial-recovery-residual-debt');
-    expect(markdown).toContain('SleepDebt.partial_recovery_lowers_next_capacity');
+    expect(markdown).toContain(
+      'SleepDebt.partial_recovery_lowers_next_capacity'
+    );
   });
 });

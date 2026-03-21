@@ -18,10 +18,14 @@ import type { FlowFrame } from '../../flow/types';
 
 const codec = FlowCodec.createSync();
 
-function makeFlowFrame(streamId: number, sequence: number, payloadSize: number = 10): Uint8Array {
+function makeFlowFrame(
+  streamId: number,
+  sequence: number,
+  payloadSize: number = 10
+): Uint8Array {
   const payload = new Uint8Array(payloadSize);
   for (let i = 0; i < payloadSize; i++) {
-    payload[i] = (streamId + sequence + i) & 0xFF;
+    payload[i] = (streamId + sequence + i) & 0xff;
   }
 
   return codec.encode({
@@ -53,7 +57,11 @@ function unwrapFragment(datagram: Uint8Array): {
   fragTotal: number;
   payload: Uint8Array;
 } {
-  const view = new DataView(datagram.buffer, datagram.byteOffset, datagram.byteLength);
+  const view = new DataView(
+    datagram.buffer,
+    datagram.byteOffset,
+    datagram.byteLength
+  );
   return {
     frameId: view.getUint16(0),
     fragIndex: datagram[2],
@@ -150,7 +158,9 @@ describe('Fragment Encoding', () => {
     for (let i = 0; i < totalFragments; i++) {
       const start = i * maxPayload;
       const end = Math.min(start + maxPayload, flowFrame.length);
-      fragments.push(wrapFragment(99, i, totalFragments, flowFrame.slice(start, end)));
+      fragments.push(
+        wrapFragment(99, i, totalFragments, flowFrame.slice(start, end))
+      );
     }
 
     // Receive in reverse order
@@ -193,9 +203,9 @@ describe('ACK Bitmap Encoding', () => {
     for (const seq of ackedSeqs) {
       const bit = seq - baseSeq;
       if (bit < 32) {
-        bitmapLo |= (1 << bit);
+        bitmapLo |= 1 << bit;
       } else if (bit < 64) {
-        bitmapHi |= (1 << (bit - 32));
+        bitmapHi |= 1 << (bit - 32);
       }
     }
 
@@ -212,9 +222,10 @@ describe('ACK Bitmap Encoding', () => {
     // Check each acked sequence
     for (const seq of ackedSeqs) {
       const bit = seq - baseSeq;
-      const isAcked = bit < 32
-        ? (readBitmapLo & (1 << bit)) !== 0
-        : (readBitmapHi & (1 << (bit - 32))) !== 0;
+      const isAcked =
+        bit < 32
+          ? (readBitmapLo & (1 << bit)) !== 0
+          : (readBitmapHi & (1 << (bit - 32))) !== 0;
       expect(isAcked).toBe(true);
     }
 
@@ -250,7 +261,11 @@ describe('Protocol Properties', () => {
     };
 
     const encoded = codec.encode(frame);
-    const view = new DataView(encoded.buffer, encoded.byteOffset, encoded.byteLength);
+    const view = new DataView(
+      encoded.buffer,
+      encoded.byteOffset,
+      encoded.byteLength
+    );
 
     // First 6 bytes are stream_id (u16) + sequence (u32) — enough to reassemble
     expect(view.getUint16(0)).toBe(12345);

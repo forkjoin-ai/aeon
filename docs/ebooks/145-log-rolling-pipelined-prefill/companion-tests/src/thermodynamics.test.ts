@@ -18,8 +18,8 @@ import {
   RawCodec,
   RLECodec,
   type CompressionCodec,
-} from '@aeon/compression';
-import { FlowCodec, HEADER_SIZE } from '@aeon/flow';
+} from '@a0n/aeon/compression';
+import { FlowCodec, HEADER_SIZE } from '@a0n/aeon/flow';
 
 function makeRng(seed: number): () => number {
   let state = seed >>> 0;
@@ -93,7 +93,7 @@ interface ChunkRaceSummary {
 
 function analyzeChunkRace(
   chunk: Uint8Array,
-  codecs: ReadonlyArray<CompressionCodec>,
+  codecs: ReadonlyArray<CompressionCodec>
 ): ChunkRaceSummary {
   let bestCodecId = 0;
   let bestPayload = chunk;
@@ -145,7 +145,7 @@ function splitHeads(input: Matrix, heads: number): Matrix[] {
   }
   const dHead = dModel / heads;
   return Array.from({ length: heads }, (_, headIndex) =>
-    input.map((row) => row.slice(headIndex * dHead, (headIndex + 1) * dHead)),
+    input.map((row) => row.slice(headIndex * dHead, (headIndex + 1) * dHead))
   );
 }
 
@@ -166,9 +166,8 @@ function multiHeadAttentionDirect(input: Matrix, heads: number): Matrix {
   const seqLen = input.length;
   const dModel = input[0]?.length ?? 0;
   const dHead = dModel / heads;
-  const output: Matrix = Array.from(
-    { length: seqLen },
-    () => Array.from({ length: dModel }, () => 0),
+  const output: Matrix = Array.from({ length: seqLen }, () =>
+    Array.from({ length: dModel }, () => 0)
   );
 
   for (let head = 0; head < heads; head++) {
@@ -205,13 +204,12 @@ interface RotationAttentionDiagnostics {
 
 function attentionHeadRotation(
   headMatrix: Matrix,
-  ventCutoff: number,
+  ventCutoff: number
 ): { output: Matrix; ventedWeights: number } {
   const seqLen = headMatrix.length;
   const dHead = headMatrix[0]?.length ?? 0;
-  const output: Matrix = Array.from(
-    { length: seqLen },
-    () => Array.from({ length: dHead }, () => 0),
+  const output: Matrix = Array.from({ length: seqLen }, () =>
+    Array.from({ length: dHead }, () => 0)
   );
 
   let ventedWeights = 0;
@@ -242,7 +240,7 @@ function attentionHeadRotation(
 function multiHeadAttentionRotation(
   input: Matrix,
   heads: number,
-  ventCutoff = 0.05,
+  ventCutoff = 0.05
 ): { output: Matrix; diagnostics: RotationAttentionDiagnostics } {
   const headInputs = splitHeads(input, heads);
   const headOutputs: Matrix[] = [];
@@ -251,7 +249,7 @@ function multiHeadAttentionRotation(
   for (const headInput of headInputs) {
     const { output, ventedWeights: headVented } = attentionHeadRotation(
       headInput,
-      ventCutoff,
+      ventCutoff
     );
     headOutputs.push(output);
     ventedWeights += headVented;
@@ -275,13 +273,13 @@ function ffnExpandVentFold(input: Matrix): Matrix {
       const expanded = [value, value * 0.5, -value, value * 2];
       const vented = expanded.map((entry) => Math.max(0, entry));
       return vented[0] + vented[1] + vented[2] + vented[3];
-    }),
+    })
   );
 }
 
 function addMatrices(a: Matrix, b: Matrix): Matrix {
   return a.map((row, rowIndex) =>
-    row.map((value, colIndex) => value + b[rowIndex][colIndex]),
+    row.map((value, colIndex) => value + b[rowIndex][colIndex])
   );
 }
 
@@ -293,7 +291,7 @@ function transformerLayerDirect(input: Matrix, heads: number): Matrix {
 
 function transformerLayerRotation(
   input: Matrix,
-  heads: number,
+  heads: number
 ): { output: Matrix; diagnostics: RotationAttentionDiagnostics } {
   const attention = multiHeadAttentionRotation(input, heads);
   const transformed = ffnExpandVentFold(attention.output);
@@ -303,7 +301,11 @@ function transformerLayerRotation(
   };
 }
 
-function applyLayersDirect(input: Matrix, layers: number, heads: number): Matrix {
+function applyLayersDirect(
+  input: Matrix,
+  layers: number,
+  heads: number
+): Matrix {
   let output = input;
   for (let layer = 0; layer < layers; layer++) {
     output = transformerLayerDirect(output, heads);
@@ -314,13 +316,13 @@ function applyLayersDirect(input: Matrix, layers: number, heads: number): Matrix
 function applyLayersRecursiveRotation(
   input: Matrix,
   layers: number,
-  heads: number,
+  heads: number
 ): Matrix {
   if (layers === 0) return input;
   return applyLayersRecursiveRotation(
     transformerLayerRotation(input, heads).output,
     layers - 1,
-    heads,
+    heads
   );
 }
 
@@ -338,7 +340,7 @@ function maxAbsDiff(a: Matrix, b: Matrix): number {
 function makeTokenMatrix(tokens: number, dModel: number, seed: number): Matrix {
   const rng = makeRng(seed);
   return Array.from({ length: tokens }, () =>
-    Array.from({ length: dModel }, () => rng() * 2 - 1),
+    Array.from({ length: dModel }, () => rng() * 2 - 1)
   );
 }
 
@@ -354,7 +356,7 @@ describe('Thermodynamics (§6)', () => {
   describe('First Law: V_fork = W_fold + Q_vent', () => {
     it('accounts for every forked codec path as folded work or vented heat', () => {
       const chunkSize = 1024;
-      const data = makeRandom(chunkSize * 6, 0xA11CE);
+      const data = makeRandom(chunkSize * 6, 0xa11ce);
       const compressor = new TopologicalCompressor({
         chunkSize,
         codecs: PURE_JS_CODECS,
@@ -393,7 +395,7 @@ describe('Thermodynamics (§6)', () => {
   describe('Second Law: fold irreversibility', () => {
     it('cannot recover fork-state multiplicity from the folded frame', () => {
       const data = new TextEncoder().encode(
-        'I test fold irreversibility with a single chunk. '.repeat(80),
+        'I test fold irreversibility with a single chunk. '.repeat(80)
       );
       const full = new TopologicalCompressor({
         chunkSize: data.length,
@@ -402,7 +404,9 @@ describe('Thermodynamics (§6)', () => {
       const fullResult = full.compress(data);
       const winnerCodecId = fullResult.chunks[0].codecId;
 
-      const winnerCodec = BUILTIN_CODECS.find((codec) => codec.id === winnerCodecId);
+      const winnerCodec = BUILTIN_CODECS.find(
+        (codec) => codec.id === winnerCodecId
+      );
       expect(winnerCodec).toBeDefined();
 
       const reducedCodecs =
@@ -417,7 +421,9 @@ describe('Thermodynamics (§6)', () => {
       const reducedResult = reduced.compress(data);
 
       expect(reducedResult.bettiNumber).not.toBe(fullResult.bettiNumber);
-      expect(reducedResult.chunks[0].codecId).toBe(fullResult.chunks[0].codecId);
+      expect(reducedResult.chunks[0].codecId).toBe(
+        fullResult.chunks[0].codecId
+      );
       expect(reducedResult.data).toEqual(fullResult.data);
     });
   });
@@ -426,7 +432,7 @@ describe('Thermodynamics (§6)', () => {
     it('selects the best forked path per chunk and cannot improve beyond it', () => {
       const chunkSize = 2048;
       const text = makeTextPayload(chunkSize * 3);
-      const random = makeRandom(chunkSize * 3, 0xBADC0DE);
+      const random = makeRandom(chunkSize * 3, 0xbadc0de);
       const data = new Uint8Array(text.length + random.length);
       data.set(text, 0);
       data.set(random, text.length);
@@ -480,7 +486,7 @@ describe('Thermodynamics (§6)', () => {
   describe('Carnot and Shannon bounds', () => {
     it('two-level race reaches the best participating strategy and cannot beat it', () => {
       const data = new TextEncoder().encode(
-        'the quick brown fox jumps over the lazy dog\n'.repeat(900),
+        'the quick brown fox jumps over the lazy dog\n'.repeat(900)
       );
 
       const chunkedResult = new TopologicalCompressor({
@@ -509,7 +515,7 @@ describe('Thermodynamics (§6)', () => {
     });
 
     it('high-entropy data remains above the Shannon lower bound', () => {
-      const data = makeRandom(32_768, 0xFACEFEED);
+      const data = makeRandom(32_768, 0xfacefeed);
       const entropyBits = empiricalEntropyBits(data);
 
       const result = new TopologicalCompressor({
@@ -529,7 +535,7 @@ describe('Thermodynamics (§6)', () => {
       const tokens = 5;
       const heads = 4;
       const dModel = 16;
-      const input = makeTokenMatrix(tokens, dModel, 0xC0FFEE);
+      const input = makeTokenMatrix(tokens, dModel, 0xc0ffee);
 
       const direct = multiHeadAttentionDirect(input, heads);
       const rotated = multiHeadAttentionRotation(input, heads, 0.1);
@@ -547,10 +553,14 @@ describe('Thermodynamics (§6)', () => {
       const heads = 4;
       const dModel = 16;
       const tokens = 4;
-      const input = makeTokenMatrix(tokens, dModel, 0xABCD1234);
+      const input = makeTokenMatrix(tokens, dModel, 0xabcd1234);
 
       const directPipeline = applyLayersDirect(input, layers, heads);
-      const recursiveRotation = applyLayersRecursiveRotation(input, layers, heads);
+      const recursiveRotation = applyLayersRecursiveRotation(
+        input,
+        layers,
+        heads
+      );
 
       expect(maxAbsDiff(directPipeline, recursiveRotation)).toBeLessThan(1e-10);
     });

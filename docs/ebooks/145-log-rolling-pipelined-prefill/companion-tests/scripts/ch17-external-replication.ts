@@ -15,8 +15,14 @@ interface CliOptions {
 
 function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const defaultJsonPath = resolve(moduleDir, '../artifacts/ch17-external-replication.json');
-  const defaultMarkdownPath = resolve(moduleDir, '../artifacts/ch17-external-replication.md');
+  const defaultJsonPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-external-replication.json'
+  );
+  const defaultMarkdownPath = resolve(
+    moduleDir,
+    '../artifacts/ch17-external-replication.md'
+  );
 
   let assertRun = false;
   let jsonPath = defaultJsonPath;
@@ -61,14 +67,20 @@ function main(): void {
   mkdirSync(dirname(options.jsonPath), { recursive: true });
   mkdirSync(dirname(options.markdownPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
   writeFileSync(
     options.markdownPath,
     renderCh17ExternalReplicationMarkdown(report),
-    'utf8',
+    'utf8'
   );
 
-  process.stdout.write(`ch17-external-replication: ${report.ok ? 'PASS' : 'FAIL'}\n`);
+  process.stdout.write(
+    `ch17-external-replication: ${report.ok ? 'PASS' : 'FAIL'}\n`
+  );
   process.stdout.write(`json: ${options.jsonPath}\n`);
   process.stdout.write(`markdown: ${options.markdownPath}\n`);
   process.stdout.write(`hashes: ${report.hashChecks.length} verified\n`);

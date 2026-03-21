@@ -27,12 +27,7 @@ describe('AeonEventEmitter', () => {
     emitter.emit('alpha', 'x');
     emitter.emit('alpha', 'y');
 
-    expect(calls).toEqual([
-      'first:x',
-      'second:x',
-      'first:y',
-      'late:y',
-    ]);
+    expect(calls).toEqual(['first:x', 'second:x', 'first:y', 'late:y']);
   });
 
   it('supports once listeners with an explicit context', () => {

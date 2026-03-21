@@ -23,15 +23,15 @@ function parseCli(argv: readonly string[]): CliOptions {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const defaultJsonPath = resolve(
     moduleDir,
-    '../artifacts/ch17-whip-exhaustion-figure.json',
+    '../artifacts/ch17-whip-exhaustion-figure.json'
   );
   const defaultMarkdownPath = resolve(
     moduleDir,
-    '../artifacts/ch17-whip-exhaustion-figure.md',
+    '../artifacts/ch17-whip-exhaustion-figure.md'
   );
   const defaultSvgPath = resolve(
     moduleDir,
-    '../artifacts/ch17-whip-exhaustion-figure.svg',
+    '../artifacts/ch17-whip-exhaustion-figure.svg'
   );
 
   let assertSurface = false;
@@ -86,7 +86,16 @@ function parseCli(argv: readonly string[]): CliOptions {
     throw new Error(`Unknown flag: ${arg}`);
   }
 
-  return { assertSurface, jsonPath, markdownPath, svgPath, heads, ffnExpansion, moeExperts, moeTopK };
+  return {
+    assertSurface,
+    jsonPath,
+    markdownPath,
+    svgPath,
+    heads,
+    ffnExpansion,
+    moeExperts,
+    moeTopK,
+  };
 }
 
 async function main(): Promise<void> {
@@ -103,9 +112,21 @@ async function main(): Promise<void> {
   mkdirSync(dirname(options.markdownPath), { recursive: true });
   mkdirSync(dirname(options.svgPath), { recursive: true });
 
-  writeFileSync(options.jsonPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
-  writeFileSync(options.markdownPath, renderCh17WhipExhaustionFigureMarkdown(report), 'utf8');
-  writeFileSync(options.svgPath, renderCh17WhipExhaustionFigureSvg(report), 'utf8');
+  writeFileSync(
+    options.jsonPath,
+    `${JSON.stringify(report, null, 2)}\n`,
+    'utf8'
+  );
+  writeFileSync(
+    options.markdownPath,
+    renderCh17WhipExhaustionFigureMarkdown(report),
+    'utf8'
+  );
+  writeFileSync(
+    options.svgPath,
+    renderCh17WhipExhaustionFigureSvg(report),
+    'utf8'
+  );
 
   process.stdout.write(`ch17-whip-exhaustion-figure: ${report.label}\n`);
   process.stdout.write(`json: ${options.jsonPath}\n`);
@@ -113,8 +134,12 @@ async function main(): Promise<void> {
   process.stdout.write(`svg: ${options.svgPath}\n`);
   process.stdout.write(
     `- heads=${report.config.heads}, ` +
-    `${report.config.moeExperts > 0 ? `moe=${report.config.moeExperts}` : `ffn=${report.config.ffnExpansion}x`}, ` +
-    `total_beta1=${report.totalBeta1}, whips=${report.whipCount}\n`,
+      `${
+        report.config.moeExperts > 0
+          ? `moe=${report.config.moeExperts}`
+          : `ffn=${report.config.ffnExpansion}x`
+      }, ` +
+      `total_beta1=${report.totalBeta1}, whips=${report.whipCount}\n`
   );
 
   if (
@@ -131,7 +156,7 @@ async function main(): Promise<void> {
 
 main().catch((error) => {
   process.stderr.write(
-    `${error instanceof Error ? error.message : String(error)}\n`,
+    `${error instanceof Error ? error.message : String(error)}\n`
   );
   process.exitCode = 1;
 });

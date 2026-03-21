@@ -15,7 +15,7 @@ function loadGate1Report(): Gate1Report {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
   const artifactPath = resolve(
     moduleDir,
-    '../artifacts/gate1-wallclock-external-multihost.json',
+    '../artifacts/gate1-wallclock-external-multihost.json'
   );
   return JSON.parse(readFileSync(artifactPath, 'utf8')) as Gate1Report;
 }

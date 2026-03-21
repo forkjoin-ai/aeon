@@ -89,6 +89,7 @@ function loadNodeZlib(): NodeZlibModule | null {
   try {
     const dynamicRequire = new Function(
       'moduleSpecifier',
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       'return typeof require === "function" ? require(moduleSpecifier) : null;'
     ) as (moduleSpecifier: string) => unknown;
     const requiredModule = dynamicRequire(NODE_ZLIB_SPECIFIER);
@@ -256,7 +257,9 @@ export class LZ77Codec implements CompressionCodec {
     if (data.length === 0) return new Uint8Array(0);
 
     // Generous output buffer (worst case ~1.125x)
-    const output = new Uint8Array(data.length + Math.ceil(data.length / 8) + 16);
+    const output = new Uint8Array(
+      data.length + Math.ceil(data.length / 8) + 16
+    );
     let writePos = 0;
     let readPos = 0;
 
@@ -312,7 +315,11 @@ export class LZ77Codec implements CompressionCodec {
     while (readPos < data.length && writePos < originalSize) {
       const controlByte = data[readPos++];
 
-      for (let bit = 0; bit < 8 && readPos < data.length && writePos < originalSize; bit++) {
+      for (
+        let bit = 0;
+        bit < 8 && readPos < data.length && writePos < originalSize;
+        bit++
+      ) {
         if (controlByte & (1 << bit)) {
           // Back-reference
           const byte1 = data[readPos++];
@@ -366,11 +373,13 @@ export class BrotliCodec implements CompressionCodec {
       return data;
     }
 
-    return new Uint8Array(zlib.brotliCompressSync(data, {
-      params: {
-        [zlib.constants.BROTLI_PARAM_QUALITY]: this.quality,
-      },
-    }));
+    return new Uint8Array(
+      zlib.brotliCompressSync(data, {
+        params: {
+          [zlib.constants.BROTLI_PARAM_QUALITY]: this.quality,
+        },
+      })
+    );
   }
 
   decode(data: Uint8Array): Uint8Array {
@@ -408,9 +417,11 @@ export class GzipCodec implements CompressionCodec {
       return data;
     }
 
-    return new Uint8Array(zlib.gzipSync(data, {
-      level: this.level,
-    }));
+    return new Uint8Array(
+      zlib.gzipSync(data, {
+        level: this.level,
+      })
+    );
   }
 
   decode(data: Uint8Array): Uint8Array {
@@ -462,8 +473,11 @@ export class HuffmanCodec implements CompressionCodec {
 
     // Build Huffman tree using sorted-array priority queue
     type HNode = { freq: number; sym: number; left: number; right: number };
-    const nodes: HNode[] = symbols.map(s => ({
-      freq: s.freq, sym: s.sym, left: -1, right: -1,
+    const nodes: HNode[] = symbols.map((s) => ({
+      freq: s.freq,
+      sym: s.sym,
+      left: -1,
+      right: -1,
     }));
     const heap = [...nodes];
     heap.sort((a, b) => a.freq - b.freq);
@@ -474,8 +488,10 @@ export class HuffmanCodec implements CompressionCodec {
       const leftIdx = nodes.indexOf(left);
       const rightIdx = nodes.indexOf(right);
       const parent: HNode = {
-        freq: left.freq + right.freq, sym: -1,
-        left: leftIdx, right: rightIdx,
+        freq: left.freq + right.freq,
+        sym: -1,
+        left: leftIdx,
+        right: rightIdx,
       };
       nodes.push(parent);
       let idx = 0;
@@ -553,7 +569,9 @@ export class HuffmanCodec implements CompressionCodec {
     // Read code lengths and total bits
     const codeLengths = data.subarray(0, 256);
     const totalBits = new DataView(
-      data.buffer, data.byteOffset + 256, 4,
+      data.buffer,
+      data.byteOffset + 256,
+      4
     ).getUint32(0);
 
     // Reconstruct canonical codes and build decode tree
@@ -631,75 +649,75 @@ export class HuffmanCodec implements CompressionCodec {
 
 const DICTIONARY_STRINGS = [
   // Long patterns first (most savings per match)
-  'addEventListener',        // 16 bytes → 2 = saves 14
-  'querySelector',           // 13 → 2 = saves 11
-  'createElement',           // 13 → 2 = saves 11
-  'justify-content',         // 15 → 2 = saves 13
-  'align-items:center',      // 19 → 2 = saves 17
-  'textContent',             // 11 → 2 = saves 9
-  'display:flex',            // 12 → 2 = saves 10
-  'display:grid',            // 12 → 2 = saves 10
-  'display:none',            // 12 → 2 = saves 10
-  'background:',             // 11 → 2 = saves 9
-  'font-weight:',            // 12 → 2 = saves 10
-  'font-size:',              // 10 → 2 = saves 8
-  'className',               // 9 → 2 = saves 7
-  'undefined',               // 9 → 2 = saves 7
-  'container',               // 9 → 2 = saves 7
-  'transform:',              // 10 → 2 = saves 8
-  'overflow:',               // 9 → 2 = saves 7
-  'position:',               // 9 → 2 = saves 7
-  'function ',               // 9 → 2 = saves 7
-  'children',                // 8 → 2 = saves 6
-  'document',                // 8 → 2 = saves 6
-  'display:',                // 8 → 2 = saves 6
-  'padding:',                // 8 → 2 = saves 6
-  'onClick',                 // 7 → 2 = saves 5
-  'useState',                // 8 → 2 = saves 6
-  'https://',                // 8 → 2 = saves 6
-  'default',                 // 7 → 2 = saves 5
-  'extends',                 // 7 → 2 = saves 5
-  'return ',                 // 7 → 2 = saves 5
-  'export ',                 // 7 → 2 = saves 5
-  'import ',                 // 7 → 2 = saves 5
-  'margin:',                 // 7 → 2 = saves 5
-  'border:',                 // 7 → 2 = saves 5
-  'cursor:',                 // 7 → 2 = saves 5
-  'height:',                 // 7 → 2 = saves 5
-  '</span>',                 // 7 → 2 = saves 5
-  'color:',                  // 6 → 2 = saves 4
-  'width:',                  // 6 → 2 = saves 4
-  'const ',                  // 6 → 2 = saves 4
-  'class ',                  // 6 → 2 = saves 4
-  '</div>',                  // 6 → 2 = saves 4
-  '<span ',                  // 6 → 2 = saves 4
-  '<div ',                   // 5 → 2 = saves 3
-  'async',                   // 5 → 2 = saves 3
-  'await',                   // 5 → 2 = saves 3
-  'false',                   // 5 → 2 = saves 3
-  'this.',                   // 5 → 2 = saves 3
-  'props',                   // 5 → 2 = saves 3
-  'state',                   // 5 → 2 = saves 3
-  '</p>',                    // 4 → 2 = saves 2
-  'null',                    // 4 → 2 = saves 2
-  'true',                    // 4 → 2 = saves 2
-  'flex',                    // 4 → 2 = saves 2
-  'grid',                    // 4 → 2 = saves 2
-  'none',                    // 4 → 2 = saves 2
-  'auto',                    // 4 → 2 = saves 2
-  'self',                    // 4 → 2 = saves 2
-  '.css',                    // 4 → 2 = saves 2
-  '.com',                    // 4 → 2 = saves 2
-  'var(',                    // 4 → 2 = saves 2
-  '<p>',                     // 3 → 2 = saves 1
-  '.js',                     // 3 → 2 = saves 1
-  'px;',                     // 3 → 2 = saves 1
-  'rem',                     // 3 → 2 = saves 1
+  'addEventListener', // 16 bytes → 2 = saves 14
+  'querySelector', // 13 → 2 = saves 11
+  'createElement', // 13 → 2 = saves 11
+  'justify-content', // 15 → 2 = saves 13
+  'align-items:center', // 19 → 2 = saves 17
+  'textContent', // 11 → 2 = saves 9
+  'display:flex', // 12 → 2 = saves 10
+  'display:grid', // 12 → 2 = saves 10
+  'display:none', // 12 → 2 = saves 10
+  'background:', // 11 → 2 = saves 9
+  'font-weight:', // 12 → 2 = saves 10
+  'font-size:', // 10 → 2 = saves 8
+  'className', // 9 → 2 = saves 7
+  'undefined', // 9 → 2 = saves 7
+  'container', // 9 → 2 = saves 7
+  'transform:', // 10 → 2 = saves 8
+  'overflow:', // 9 → 2 = saves 7
+  'position:', // 9 → 2 = saves 7
+  'function ', // 9 → 2 = saves 7
+  'children', // 8 → 2 = saves 6
+  'document', // 8 → 2 = saves 6
+  'display:', // 8 → 2 = saves 6
+  'padding:', // 8 → 2 = saves 6
+  'onClick', // 7 → 2 = saves 5
+  'useState', // 8 → 2 = saves 6
+  'https://', // 8 → 2 = saves 6
+  'default', // 7 → 2 = saves 5
+  'extends', // 7 → 2 = saves 5
+  'return ', // 7 → 2 = saves 5
+  'export ', // 7 → 2 = saves 5
+  'import ', // 7 → 2 = saves 5
+  'margin:', // 7 → 2 = saves 5
+  'border:', // 7 → 2 = saves 5
+  'cursor:', // 7 → 2 = saves 5
+  'height:', // 7 → 2 = saves 5
+  '</span>', // 7 → 2 = saves 5
+  'color:', // 6 → 2 = saves 4
+  'width:', // 6 → 2 = saves 4
+  'const ', // 6 → 2 = saves 4
+  'class ', // 6 → 2 = saves 4
+  '</div>', // 6 → 2 = saves 4
+  '<span ', // 6 → 2 = saves 4
+  '<div ', // 5 → 2 = saves 3
+  'async', // 5 → 2 = saves 3
+  'await', // 5 → 2 = saves 3
+  'false', // 5 → 2 = saves 3
+  'this.', // 5 → 2 = saves 3
+  'props', // 5 → 2 = saves 3
+  'state', // 5 → 2 = saves 3
+  '</p>', // 4 → 2 = saves 2
+  'null', // 4 → 2 = saves 2
+  'true', // 4 → 2 = saves 2
+  'flex', // 4 → 2 = saves 2
+  'grid', // 4 → 2 = saves 2
+  'none', // 4 → 2 = saves 2
+  'auto', // 4 → 2 = saves 2
+  'self', // 4 → 2 = saves 2
+  '.css', // 4 → 2 = saves 2
+  '.com', // 4 → 2 = saves 2
+  'var(', // 4 → 2 = saves 2
+  '<p>', // 3 → 2 = saves 1
+  '.js', // 3 → 2 = saves 1
+  'px;', // 3 → 2 = saves 1
+  'rem', // 3 → 2 = saves 1
 ];
 
 /** Pre-encoded dictionary entries as byte arrays, sorted longest-first */
-const DICTIONARY: Uint8Array[] = DICTIONARY_STRINGS.map(
-  s => new TextEncoder().encode(s),
+const DICTIONARY: Uint8Array[] = DICTIONARY_STRINGS.map((s) =>
+  new TextEncoder().encode(s)
 );
 
 export class DictionaryCodec implements CompressionCodec {
@@ -722,7 +740,10 @@ export class DictionaryCodec implements CompressionCodec {
 
         let match = true;
         for (let j = 0; j < entry.length; j++) {
-          if (data[pos + j] !== entry[j]) { match = false; break; }
+          if (data[pos + j] !== entry[j]) {
+            match = false;
+            break;
+          }
         }
 
         if (match) {
@@ -793,7 +814,7 @@ export const BUILTIN_CODECS: CompressionCodec[] = [
 
 /** Codec registry map for O(1) lookup */
 const CODEC_MAP = new Map<number, CompressionCodec>(
-  BUILTIN_CODECS.map(c => [c.id, c]),
+  BUILTIN_CODECS.map((c) => [c.id, c])
 );
 
 /** Look up a codec by ID */

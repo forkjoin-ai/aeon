@@ -11,21 +11,26 @@ function buleyeanWeight(rounds: number, voidCount: number): number {
 
 describe('T1: negotiation IS dialogue (SemioticPeace + Negotiation + VoidWalking)', () => {
   it('confusion deficit positive for multi-dimensional negotiation', () => {
-    const partyA = 5, partyB = 4;
+    const partyA = 5,
+      partyB = 4;
     expect(partyA + partyB - 1).toBeGreaterThan(0);
   });
   it('void gradient steers toward least-confused terms', () => {
     const rounds = 10;
-    expect(buleyeanWeight(rounds, 2)).toBeGreaterThan(buleyeanWeight(rounds, 7));
+    expect(buleyeanWeight(rounds, 2)).toBeGreaterThan(
+      buleyeanWeight(rounds, 7)
+    );
   });
   it('every term retains positive weight', () => {
-    for (let v = 0; v <= 15; v++) expect(buleyeanWeight(10, v)).toBeGreaterThanOrEqual(1);
+    for (let v = 0; v <= 15; v++)
+      expect(buleyeanWeight(10, v)).toBeGreaterThanOrEqual(1);
   });
 });
 
 describe('T2: Arrow bounds negotiation (Arrow + Negotiation + Buleyean)', () => {
   it('Arrow deficit < negotiation deficit', () => {
-    const parties = 5, terms = 4;
+    const parties = 5,
+      terms = 4;
     const arrow = parties - 1; // 4
     const negot = parties + terms - 1; // 8
     expect(arrow).toBeLessThan(negot);
@@ -71,7 +76,9 @@ describe('T4: Arrow heat (Arrow + SemioticPeace + VoidWalking)', () => {
   });
   it('void walking on voting: complement concentrates on least-rejected', () => {
     const rounds = 5;
-    expect(buleyeanWeight(rounds, 1)).toBeGreaterThan(buleyeanWeight(rounds, 4));
+    expect(buleyeanWeight(rounds, 1)).toBeGreaterThan(
+      buleyeanWeight(rounds, 4)
+    );
   });
 });
 
@@ -87,17 +94,18 @@ describe('T5: BATNA append-only (Negotiation + Grandfather + VoidWalking)', () =
     const rounds = 10;
     for (let v1 = 0; v1 < rounds; v1++) {
       expect(buleyeanWeight(rounds, v1 + 1)).toBeLessThanOrEqual(
-        buleyeanWeight(rounds, v1));
+        buleyeanWeight(rounds, v1)
+      );
     }
   });
 });
 
 describe('Master: all five semiotic triples', () => {
   it('all five hold simultaneously', () => {
-    expect(5 + 4 - 1).toBeGreaterThan(0);        // T1: confusion positive
-    expect(5 - 1).toBeLessThan(5 + 4 - 1);       // T2: Arrow < negotiation
-    expect(buleyeanWeight(10, 10)).not.toBe(0);   // T3: sliver of hope
-    expect(2 * 3 - 1).toBeGreaterThan(0);         // T4: Arrow heat
+    expect(5 + 4 - 1).toBeGreaterThan(0); // T1: confusion positive
+    expect(5 - 1).toBeLessThan(5 + 4 - 1); // T2: Arrow < negotiation
+    expect(buleyeanWeight(10, 10)).not.toBe(0); // T3: sliver of hope
+    expect(2 * 3 - 1).toBeGreaterThan(0); // T4: Arrow heat
     expect(buleyeanWeight(10, 5)).toBeGreaterThanOrEqual(1); // T5: BATNA positive
   });
 });

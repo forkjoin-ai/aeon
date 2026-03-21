@@ -25,7 +25,9 @@ describe('Prediction 76: Metabolic gate sequencing (mTOR-first)', () => {
     // Therapy-first: therapy at t=1, gate at t=6 → active from t=6, rejections = 4*3 = 12
     const therapyFirst = (T - Math.max(6, 1)) * beta1;
     expect(gateFirst).toBeGreaterThan(therapyFirst);
-    console.log(`Gate-first: ${gateFirst} rejections vs therapy-first: ${therapyFirst}`);
+    console.log(
+      `Gate-first: ${gateFirst} rejections vs therapy-first: ${therapyFirst}`
+    );
   });
 
   it('gated checkpoint has zero rejections when gate not removed', () => {
@@ -33,7 +35,8 @@ describe('Prediction 76: Metabolic gate sequencing (mTOR-first)', () => {
     const beta1 = 3;
     const gateRemovalTime = 15; // never removed within window
     const therapyTime = 5;
-    const rejections = Math.max(0, T - Math.max(gateRemovalTime, therapyTime)) * beta1;
+    const rejections =
+      Math.max(0, T - Math.max(gateRemovalTime, therapyTime)) * beta1;
     expect(rejections).toBe(0);
   });
 
@@ -45,7 +48,9 @@ describe('Prediction 76: Metabolic gate sequencing (mTOR-first)', () => {
     // Nutlin-3a at day 1, rapamycin at day 7
     const therapyFirst = (T - Math.max(7, 1)) * p53Beta1;
     expect(gateFirst).toBeGreaterThan(therapyFirst);
-    console.log(`RCC: gate-first ${gateFirst} vs therapy-first ${therapyFirst} p53 activation-days`);
+    console.log(
+      `RCC: gate-first ${gateFirst} vs therapy-first ${therapyFirst} p53 activation-days`
+    );
   });
 });
 
@@ -56,10 +61,15 @@ describe('Prediction 77: Checkpoint cascade amplification', () => {
       { name: 'ATM/ATR', beta1: 2 },
       { name: 'p21→Rb', beta1: 2 },
     ];
-    const totalRestored = hub.beta1 + dependents.reduce((sum, d) => sum + d.beta1, 0);
+    const totalRestored =
+      hub.beta1 + dependents.reduce((sum, d) => sum + d.beta1, 0);
     expect(totalRestored).toBeGreaterThan(hub.beta1);
     expect(totalRestored).toBe(7);
-    console.log(`p53 cascade: hub=${hub.beta1}, total=${totalRestored} (${totalRestored / hub.beta1}x multiplier)`);
+    console.log(
+      `p53 cascade: hub=${hub.beta1}, total=${totalRestored} (${
+        totalRestored / hub.beta1
+      }x multiplier)`
+    );
   });
 
   it('cascade multiplier >= 2 when dependent beta-1 >= hub beta-1', () => {
@@ -91,7 +101,9 @@ describe('Prediction 78: Senescence-then-senolytic two-step', () => {
     const dormancyThreshold = 8;
     const totalSignals = fractions * ventPerFraction;
     expect(totalSignals).toBeGreaterThanOrEqual(dormancyThreshold);
-    console.log(`${fractions} fractions × ${ventPerFraction} signals = ${totalSignals} >= ${dormancyThreshold} threshold`);
+    console.log(
+      `${fractions} fractions × ${ventPerFraction} signals = ${totalSignals} >= ${dormancyThreshold} threshold`
+    );
   });
 
   it('insufficient fractions do not induce senescence', () => {
@@ -107,7 +119,9 @@ describe('Prediction 78: Senescence-then-senolytic two-step', () => {
     const senolyticBonus = 25; // additional clearance of dormant cells
     const twoStepReduction = radiationOnlyReduction + senolyticBonus;
     expect(twoStepReduction).toBeGreaterThan(radiationOnlyReduction);
-    console.log(`Radiation alone: ${radiationOnlyReduction}%, two-step: ${twoStepReduction}%`);
+    console.log(
+      `Radiation alone: ${radiationOnlyReduction}%, two-step: ${twoStepReduction}%`
+    );
   });
 
   it('dormancy is a topological trap: no division without new forks', () => {
@@ -122,7 +136,12 @@ describe('Prediction 78: Senescence-then-senolytic two-step', () => {
     const standardRadiation = { relapseRate: 0.7 };
     const twoStep = { relapseRate: 0.3 };
     expect(twoStep.relapseRate).toBeLessThan(standardRadiation.relapseRate);
-    console.log('Day 60 relapse: standard =', standardRadiation.relapseRate, ', two-step =', twoStep.relapseRate);
+    console.log(
+      'Day 60 relapse: standard =',
+      standardRadiation.relapseRate,
+      ', two-step =',
+      twoStep.relapseRate
+    );
   });
 });
 
@@ -146,11 +165,14 @@ describe('Prediction 79: Viral oncoprotein displacement (HPV+)', () => {
     const displacementBeta1 = 5; // p53 + Rb
     const immuneBeta1 = 2; // anti-PD-1 + anti-CTLA-4
     const remainingCheckpoints = 2; // ATM/ATR still intact
-    const totalRestored = displacementBeta1 + immuneBeta1 + remainingCheckpoints;
+    const totalRestored =
+      displacementBeta1 + immuneBeta1 + remainingCheckpoints;
     expect(totalRestored).toBeGreaterThanOrEqual(healthyBeta1);
     const deficit = healthyBeta1 - totalRestored;
     expect(deficit).toBeLessThanOrEqual(0);
-    console.log(`HPV+ total: ${totalRestored} vs healthy ${healthyBeta1}, deficit = ${deficit}`);
+    console.log(
+      `HPV+ total: ${totalRestored} vs healthy ${healthyBeta1}, deficit = ${deficit}`
+    );
   });
 
   it('LXCXE peptide displaces E7 from Rb: function test', () => {
@@ -158,14 +180,24 @@ describe('Prediction 79: Viral oncoprotein displacement (HPV+)', () => {
     const rbFunctionPre = 0; // blocked by E7
     const rbFunctionPost = 2; // restored after displacement
     expect(rbFunctionPost).toBeGreaterThan(rbFunctionPre);
-    console.log('Rb function: blocked =', rbFunctionPre, '→ displaced =', rbFunctionPost);
+    console.log(
+      'Rb function: blocked =',
+      rbFunctionPre,
+      '→ displaced =',
+      rbFunctionPost
+    );
   });
 
   it('cervical cancer: displacement as first-line prediction', () => {
     // HPV+ cervical: E6 blocks p53, E7 blocks Rb
     const currentStandard = { modality: 'chemo-radiation', restoredBeta1: 1 };
-    const displacementFirst = { modality: 'LXCXE + nutlin-3a', restoredBeta1: 5 };
-    expect(displacementFirst.restoredBeta1).toBeGreaterThan(currentStandard.restoredBeta1);
+    const displacementFirst = {
+      modality: 'LXCXE + nutlin-3a',
+      restoredBeta1: 5,
+    };
+    expect(displacementFirst.restoredBeta1).toBeGreaterThan(
+      currentStandard.restoredBeta1
+    );
   });
 });
 
@@ -175,7 +207,14 @@ describe('Prediction 80: Counter-vent depletion before immunotherapy', () => {
     const suppression = 3; // MDSCs + Tregs
     const effectiveImmune = Math.max(0, rawImmune - suppression);
     expect(effectiveImmune).toBe(0);
-    console.log('Suppressed: raw =', rawImmune, ', suppression =', suppression, ', effective =', effectiveImmune);
+    console.log(
+      'Suppressed: raw =',
+      rawImmune,
+      ', suppression =',
+      suppression,
+      ', effective =',
+      effectiveImmune
+    );
   });
 
   it('depletion increases effective immune beta-1', () => {
@@ -193,7 +232,7 @@ describe('Prediction 80: Counter-vent depletion before immunotherapy', () => {
     const suppression = 5;
     const immunotherapyBoost = 2;
     // Even with immunotherapy, still suppressed
-    const effective = Math.max(0, (rawImmune + immunotherapyBoost) - suppression);
+    const effective = Math.max(0, rawImmune + immunotherapyBoost - suppression);
     expect(effective).toBeLessThanOrEqual(0);
     console.log('Immunotherapy alone in cold tumor: effective =', effective);
   });
@@ -204,14 +243,22 @@ describe('Prediction 80: Counter-vent depletion before immunotherapy', () => {
     const immunotherapyBoost = 2;
 
     // Immunotherapy alone (still suppressed)
-    const immunoAlone = Math.max(0, (rawImmune + immunotherapyBoost) - suppression);
+    const immunoAlone = Math.max(
+      0,
+      rawImmune + immunotherapyBoost - suppression
+    );
 
     // Depletion then immunotherapy
     const postDepletion = 0; // suppression removed
-    const depletionThenImmuno = Math.max(0, (rawImmune + immunotherapyBoost) - postDepletion);
+    const depletionThenImmuno = Math.max(
+      0,
+      rawImmune + immunotherapyBoost - postDepletion
+    );
 
     expect(depletionThenImmuno).toBeGreaterThan(immunoAlone);
-    console.log(`Cold tumor: immuno-alone = ${immunoAlone}, depletion-first = ${depletionThenImmuno}`);
+    console.log(
+      `Cold tumor: immuno-alone = ${immunoAlone}, depletion-first = ${depletionThenImmuno}`
+    );
   });
 
   it('syngeneic models: anti-PD-1 alone vs depletion+anti-PD-1 vs simultaneous', () => {
@@ -223,8 +270,12 @@ describe('Prediction 80: Counter-vent depletion before immunotherapy', () => {
     ];
 
     for (let i = 1; i < scenarios.length; i++) {
-      expect(scenarios[i]!.effectiveImmune).toBeGreaterThan(scenarios[i - 1]!.effectiveImmune);
-      expect(scenarios[i]!.tumorReduction).toBeGreaterThan(scenarios[i - 1]!.tumorReduction);
+      expect(scenarios[i]!.effectiveImmune).toBeGreaterThan(
+        scenarios[i - 1]!.effectiveImmune
+      );
+      expect(scenarios[i]!.tumorReduction).toBeGreaterThan(
+        scenarios[i - 1]!.tumorReduction
+      );
     }
     console.log('Syngeneic model predictions:', scenarios);
   });
@@ -232,9 +283,13 @@ describe('Prediction 80: Counter-vent depletion before immunotherapy', () => {
 
 describe('Master: Predictions 76-80 all verified (Treatment Strategies)', () => {
   it('all five treatment predictions compose', () => {
-    [76, 77, 78, 79, 80].forEach(id => console.log(`Prediction ${id}: PROVEN`));
+    [76, 77, 78, 79, 80].forEach((id) =>
+      console.log(`Prediction ${id}: PROVEN`)
+    );
     console.log('\n--- FIVE NOVEL TREATMENT STRATEGIES ---');
-    console.log('30 cancer predictions total across 6 rounds (25 existing + 5 new).');
+    console.log(
+      '30 cancer predictions total across 6 rounds (25 existing + 5 new).'
+    );
     console.log('All mechanized in Lean4 (0 sorry) + TLA+ + executable tests.');
     console.log('For Sandy.');
   });

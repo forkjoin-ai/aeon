@@ -8,7 +8,7 @@ describe('Prediction 232: Gradient-weighted allocation dominates uniform', () =>
     const slacks = [10, 2, 3, 5]; // node 0 is bottleneck (most slack)
     const total = slacks.reduce((a, b) => a + b, 0);
     const uniform = total / slacks.length;
-    const gradientWeights = slacks.map(s => s / total);
+    const gradientWeights = slacks.map((s) => s / total);
     const gradientBottleneck = gradientWeights[0]! * total;
     expect(gradientBottleneck).toBeGreaterThanOrEqual(uniform);
   });
@@ -60,7 +60,7 @@ describe('Prediction 233: Frame-native bisimulates with 7x fewer allocations', (
   });
 
   it('frame advantage grows linearly with N', () => {
-    const savings = [1, 5, 10, 50].map(N => 7 * N - (N + 1));
+    const savings = [1, 5, 10, 50].map((N) => 7 * N - (N + 1));
     for (let i = 1; i < savings.length; i++)
       expect(savings[i]).toBeGreaterThan(savings[i - 1]!);
   });
@@ -114,7 +114,8 @@ describe('Prediction 235: Dual-protocol Pareto-dominates single-protocol', () =>
   });
 
   it('dual throughput >= max(individual)', () => {
-    const http = 100, flow = 50;
+    const http = 100,
+      flow = 50;
     expect(http + flow).toBeGreaterThanOrEqual(Math.max(http, flow));
   });
 
@@ -137,7 +138,7 @@ describe('Prediction 236: Metacognitive monitoring depth has diminishing returns
     let cumulative = 100;
     const influences: number[] = [cumulative];
     for (let i = 1; i < weights.length; i++) {
-      cumulative = Math.floor(cumulative * weights[i]! / 100);
+      cumulative = Math.floor((cumulative * weights[i]!) / 100);
       influences.push(cumulative);
     }
     for (let i = 1; i < influences.length; i++)
@@ -148,14 +149,16 @@ describe('Prediction 236: Metacognitive monitoring depth has diminishing returns
   it('C3 (framework eval) has much less influence than C0 (base)', () => {
     const w = [100, 80, 60, 40];
     const c0 = 100;
-    const c3 = Math.floor(c0 * w[1]! / 100 * w[2]! / 100 * w[3]! / 100);
+    const c3 = Math.floor(
+      (((((c0 * w[1]!) / 100) * w[2]!) / 100) * w[3]!) / 100
+    );
     expect(c3).toBeLessThan(c0);
     console.log(`C0: ${c0}%, C3: ${c3}%`);
   });
 
   it('all weights in (0, 100] guarantee positive influence', () => {
     const weights = [70, 50, 30];
-    weights.forEach(w => {
+    weights.forEach((w) => {
       expect(w).toBeGreaterThan(0);
       expect(w).toBeLessThanOrEqual(100);
     });
@@ -165,7 +168,8 @@ describe('Prediction 236: Metacognitive monitoring depth has diminishing returns
     const w = 80; // 80% at each level
     const depth = 4;
     const influences = Array.from({ length: depth }, (_, k) =>
-      Math.floor(100 * Math.pow(w / 100, k)));
+      Math.floor(100 * Math.pow(w / 100, k))
+    );
     expect(influences[0]).toBe(100);
     expect(influences[influences.length - 1]!).toBeLessThan(influences[0]!);
   });
@@ -173,7 +177,9 @@ describe('Prediction 236: Metacognitive monitoring depth has diminishing returns
 
 describe('Master: Predictions 232-236 all verified', () => {
   it('five untapped modules exhausted', () => {
-    [232, 233, 234, 235, 236].forEach(id => console.log(`P${id}: PROVEN`));
-    console.log('AdaptiveDecomposition + FrameNativeBisim + InfiniteErasure + DualProtocol + MetaCog.');
+    [232, 233, 234, 235, 236].forEach((id) => console.log(`P${id}: PROVEN`));
+    console.log(
+      'AdaptiveDecomposition + FrameNativeBisim + InfiniteErasure + DualProtocol + MetaCog.'
+    );
   });
 });

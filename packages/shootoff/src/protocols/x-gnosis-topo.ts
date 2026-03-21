@@ -31,7 +31,12 @@
 
 import type { SiteResource, ResourceResult, CompressionAlgo } from '../types';
 import { generatePayload, compress } from '../compression/index';
-import { gzipSync, brotliCompressSync, deflateSync, constants } from 'node:zlib';
+import {
+  gzipSync,
+  brotliCompressSync,
+  deflateSync,
+  constants,
+} from 'node:zlib';
 
 /** x-gnosis response headers with topo-race Content-Encoding */
 function xGnosisTopoResponseHeaderSize(
@@ -101,22 +106,40 @@ function raceCodecs(payload: Uint8Array): CodecResult {
   // Gzip level 6 (nginx default)
   try {
     const gz = gzipSync(Buffer.from(payload), { level: 6 });
-    candidates.push({ data: new Uint8Array(gz), encoding: 'gzip', size: gz.length });
-  } catch { /* skip on error */ }
+    candidates.push({
+      data: new Uint8Array(gz),
+      encoding: 'gzip',
+      size: gz.length,
+    });
+  } catch {
+    /* skip on error */
+  }
 
   // Brotli quality 4 (nginx on-the-fly default)
   try {
     const br = brotliCompressSync(Buffer.from(payload), {
       params: { [constants.BROTLI_PARAM_QUALITY]: 4 },
     });
-    candidates.push({ data: new Uint8Array(br), encoding: 'br', size: br.length });
-  } catch { /* skip on error */ }
+    candidates.push({
+      data: new Uint8Array(br),
+      encoding: 'br',
+      size: br.length,
+    });
+  } catch {
+    /* skip on error */
+  }
 
   // Deflate level 6
   try {
     const df = deflateSync(Buffer.from(payload), { level: 6 });
-    candidates.push({ data: new Uint8Array(df), encoding: 'deflate', size: df.length });
-  } catch { /* skip on error */ }
+    candidates.push({
+      data: new Uint8Array(df),
+      encoding: 'deflate',
+      size: df.length,
+    });
+  } catch {
+    /* skip on error */
+  }
 
   // Race: smallest wins
   let winner = candidates[0];
@@ -148,10 +171,16 @@ export function serveXGnosisTopo(
   const encodeEnd = performance.now();
 
   const reqHeaders = xGnosisTopoRequestHeaderSize(resource);
-  const resHeaders = xGnosisTopoResponseHeaderSize(resource, winner.size, winner.encoding);
+  const resHeaders = xGnosisTopoResponseHeaderSize(
+    resource,
+    winner.size,
+    winner.encoding
+  );
 
   const httpFraming = reqHeaders + resHeaders;
-  const internalFraming = Math.ceil(AEON_INTERNAL_TOPO_OVERHEAD / totalResources);
+  const internalFraming = Math.ceil(
+    AEON_INTERNAL_TOPO_OVERHEAD / totalResources
+  );
   const framingOverhead = httpFraming + internalFraming;
 
   const decodeStart = performance.now();

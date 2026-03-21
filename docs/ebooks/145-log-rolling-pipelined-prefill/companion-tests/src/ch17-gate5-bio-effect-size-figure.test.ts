@@ -13,7 +13,10 @@ import type { Gate5Report } from './gate5-bio-effect-size';
 
 function loadGate5Report(): Gate5Report {
   const moduleDir = dirname(fileURLToPath(import.meta.url));
-  const artifactPath = resolve(moduleDir, '../artifacts/gate5-bio-effect-size.json');
+  const artifactPath = resolve(
+    moduleDir,
+    '../artifacts/gate5-bio-effect-size.json'
+  );
   return JSON.parse(readFileSync(artifactPath, 'utf8')) as Gate5Report;
 }
 
@@ -41,7 +44,9 @@ describe('Chapter 17 Gate 5 biological effect-size figure', () => {
     const markdown = renderCh17Gate5BioEffectSizeFigureMarkdown(figure);
     const svg = renderCh17Gate5BioEffectSizeFigureSvg(figure);
 
-    expect(markdown).toContain('# Chapter 17 Gate 5 Biological Effect-Size Figure');
+    expect(markdown).toContain(
+      '# Chapter 17 Gate 5 Biological Effect-Size Figure'
+    );
     expect(markdown).toContain('## Pairs');
     expect(markdown).toContain('Pooled geometric ratio');
     expect(svg).toContain('<svg');

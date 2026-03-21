@@ -40,7 +40,11 @@ function requestHeaderSize(resource: SiteResource): number {
 }
 
 /** Typical HTTP/1.1 response headers */
-function responseHeaderSize(resource: SiteResource, compressedSize: number, algo: CompressionAlgo): number {
+function responseHeaderSize(
+  resource: SiteResource,
+  compressedSize: number,
+  algo: CompressionAlgo
+): number {
   // HTTP/1.1 200 OK\r\n
   // Content-Type: text/html; charset=utf-8\r\n
   // Content-Length: 12345\r\n
@@ -56,7 +60,9 @@ function responseHeaderSize(resource: SiteResource, compressedSize: number, algo
   const headers = [
     `Content-Type: ${resource.contentType}; charset=utf-8`,
     `Content-Length: ${compressedSize}`,
-    ...(algo !== 'none' ? [`Content-Encoding: ${algo === 'brotli' ? 'br' : 'gzip'}`] : []),
+    ...(algo !== 'none'
+      ? [`Content-Encoding: ${algo === 'brotli' ? 'br' : 'gzip'}`]
+      : []),
     'Cache-Control: public, max-age=31536000, immutable',
     'ETag: "W/a1b2c3d4e5f6"',
     'X-Content-Type-Options: nosniff',
@@ -71,10 +77,12 @@ function responseHeaderSize(resource: SiteResource, compressedSize: number, algo
 }
 
 function acceptForType(contentType: string): string {
-  if (contentType.startsWith('text/html')) return 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
+  if (contentType.startsWith('text/html'))
+    return 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8';
   if (contentType.startsWith('text/css')) return 'text/css,*/*;q=0.1';
   if (contentType === 'application/javascript') return '*/*';
-  if (contentType.startsWith('image/')) return 'image/avif,image/webp,image/apng,*/*;q=0.8';
+  if (contentType.startsWith('image/'))
+    return 'image/avif,image/webp,image/apng,*/*;q=0.8';
   if (contentType.startsWith('font/')) return '*/*';
   return '*/*';
 }
@@ -82,7 +90,10 @@ function acceptForType(contentType: string): string {
 /**
  * Simulate serving a resource over HTTP/1.1.
  */
-export function serveHttp1(resource: SiteResource, algo: CompressionAlgo): ResourceResult {
+export function serveHttp1(
+  resource: SiteResource,
+  algo: CompressionAlgo
+): ResourceResult {
   const payload = generatePayload(resource.size, resource.contentType);
 
   const encodeStart = performance.now();

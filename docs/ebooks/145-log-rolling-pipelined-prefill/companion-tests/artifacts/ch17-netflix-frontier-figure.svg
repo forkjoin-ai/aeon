@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 526" font-family="'Avenir Next', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+<rect width="980" height="526" rx="20" fill="#fcfaf5" stroke="#d7dee7" stroke-width="1"/>
+<text x="490" y="34" text-anchor="middle" font-size="24" font-weight="700" fill="#0f172a" font-family="'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif">The Netflix Frontier</text>
+<text x="490" y="56" text-anchor="middle" font-size="13" fill="#334155">Ensemble diversity reduces prediction waste -- the American Frontier in recommendation.</text>
+<rect x="28" y="74" width="448" height="332" rx="16" fill="#fffef9" stroke="#d7dee7" stroke-width="1.25"/>
+<rect x="28" y="74" width="448" height="60" rx="16" fill="#b91c1c" opacity="0.08"/>
+<line x1="28" y1="134" x2="476" y2="134" stroke="#d7dee7" stroke-width="1"/>
+<circle cx="52" cy="98" r="14" fill="#b91c1c"/>
+<text x="52" y="103" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">E</text>
+<text x="74" y="103" text-anchor="start" font-size="15" font-weight="700" fill="#0f172a">Algorithm-Family Diversity Frontier</text>
+<text x="46" y="124" text-anchor="start" font-size="10.5" fill="#334155">Each milestone adds a new paradigm to the ensemble.</text>
+<line x1="94" y1="342" x2="448" y2="342" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="86" y="346" text-anchor="end" font-size="10" fill="#334155">0</text>
+<line x1="94" y1="305.2" x2="448" y2="305.2" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="86" y="309.2" text-anchor="end" font-size="10" fill="#334155">0.02</text>
+<line x1="94" y1="268.4" x2="448" y2="268.4" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="86" y="272.4" text-anchor="end" font-size="10" fill="#334155">0.04</text>
+<line x1="94" y1="231.60000000000002" x2="448" y2="231.60000000000002" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="86" y="235.60000000000002" text-anchor="end" font-size="10" fill="#334155">0.06</text>
+<line x1="94" y1="194.8" x2="448" y2="194.8" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="86" y="198.8" text-anchor="end" font-size="10" fill="#334155">0.08</text>
+<line x1="94" y1="158" x2="448" y2="158" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="86" y="162" text-anchor="end" font-size="10" fill="#334155">0.1</text>
+<text x="46" y="250" text-anchor="middle" font-size="12" font-weight="600" fill="#0f172a" transform="rotate(-90,46,250)">RMSE waste above floor</text>
+<path d="M94,163.52 L164.8,255.52 L235.6,276.5 L306.4,303.91 L377.2,313.11 L448,325.81 L448,342 L94,342 Z" fill="#fca5a5" opacity="0.24"/>
+<path d="M94,163.52 L164.8,255.52 L235.6,276.5 L306.4,303.91 L377.2,313.11 L448,325.81" fill="none" stroke="#b91c1c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="102" cy="255.52000000000012" r="3" fill="#a16207" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+<circle cx="102" cy="244.11200000000017" r="3" fill="#a16207" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+<circle cx="102" cy="281.28000000000014" r="3" fill="#a16207" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+<circle cx="102" cy="276.4960000000001" r="3" fill="#a16207" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+<circle cx="102" cy="303.9120000000001" r="3" fill="#a16207" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+<circle cx="102" cy="265.0880000000001" r="3" fill="#a16207" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+<circle cx="94" cy="163.52000000000004" r="4" fill="#b91c1c" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="73.25" y="138.52" width="41.5" height="18" rx="9" fill="#ffffff" stroke="#b91c1c" stroke-width="1" opacity="0.96"/>
+<text x="94" y="151.02000000000004" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">0.097</text>
+<text x="94" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">Cinematch</text>
+<circle cx="164.8" cy="255.52000000000012" r="4" fill="#b91c1c" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="144.05" y="262.52" width="41.5" height="18" rx="9" fill="#ffffff" stroke="#b91c1c" stroke-width="1" opacity="0.96"/>
+<text x="164.8" y="275.0200000000001" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">0.047</text>
+<text x="164.8" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">+SVD</text>
+<circle cx="235.6" cy="276.4960000000001" r="4" fill="#b91c1c" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="214.85" y="251.5" width="41.5" height="18" rx="9" fill="#ffffff" stroke="#b91c1c" stroke-width="1" opacity="0.96"/>
+<text x="235.6" y="263.9960000000001" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">0.036</text>
+<text x="235.6" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">+implicit</text>
+<circle cx="306.4" cy="303.9120000000001" r="4" fill="#b91c1c" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="285.65" y="310.91" width="41.5" height="18" rx="9" fill="#ffffff" stroke="#b91c1c" stroke-width="1" opacity="0.96"/>
+<text x="306.4" y="323.4120000000001" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">0.021</text>
+<text x="306.4" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">+temporal</text>
+<circle cx="377.2" cy="313.11200000000014" r="4" fill="#b91c1c" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="356.45" y="288.11" width="41.5" height="18" rx="9" fill="#ffffff" stroke="#b91c1c" stroke-width="1" opacity="0.96"/>
+<text x="377.2" y="300.61200000000014" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">0.016</text>
+<text x="377.2" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">+k-NN</text>
+<circle cx="448" cy="325.80800000000016" r="4" fill="#b91c1c" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="427.25" y="332.81" width="41.5" height="18" rx="9" fill="#ffffff" stroke="#b91c1c" stroke-width="1" opacity="0.96"/>
+<text x="448" y="345.30800000000016" text-anchor="middle" font-size="10" font-weight="700" fill="#b91c1c">0.009</text>
+<text x="448" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">+RBM+NNMF</text>
+<line x1="94" y1="342" x2="448" y2="342" stroke="#a16207" stroke-width="1.25" stroke-dasharray="4,3"/>
+<rect x="363.1" y="321" width="76.9" height="18" rx="9" fill="#ffffff" stroke="#a16207" stroke-width="1" opacity="0.96"/>
+<text x="440" y="333.5" text-anchor="end" font-size="10" font-weight="700" fill="#a16207">noise floor</text>
+<text x="271" y="388" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">algorithm-family diversity (d →)</text>
+<rect x="504" y="74" width="448" height="332" rx="16" fill="#fffef9" stroke="#d7dee7" stroke-width="1.25"/>
+<rect x="504" y="74" width="448" height="60" rx="16" fill="#4338ca" opacity="0.08"/>
+<line x1="504" y1="134" x2="952" y2="134" stroke="#d7dee7" stroke-width="1"/>
+<circle cx="528" cy="98" r="14" fill="#4338ca"/>
+<text x="528" y="103" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">F</text>
+<text x="550" y="103" text-anchor="start" font-size="15" font-weight="700" fill="#0f172a">Team-of-Teams Recursive Frontier</text>
+<text x="522" y="124" text-anchor="start" font-size="10.5" fill="#334155">Each milestone merges a distinct team into the meta-blend.</text>
+<line x1="570" y1="342" x2="924" y2="342" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="562" y="346" text-anchor="end" font-size="10" fill="#334155">0</text>
+<line x1="570" y1="305.2" x2="924" y2="305.2" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="562" y="309.2" text-anchor="end" font-size="10" fill="#334155">0.002</text>
+<line x1="570" y1="268.4" x2="924" y2="268.4" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="562" y="272.4" text-anchor="end" font-size="10" fill="#334155">0.004</text>
+<line x1="570" y1="231.60000000000002" x2="924" y2="231.60000000000002" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="562" y="235.60000000000002" text-anchor="end" font-size="10" fill="#334155">0.006</text>
+<line x1="570" y1="194.79999999999998" x2="924" y2="194.79999999999998" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="562" y="198.79999999999998" text-anchor="end" font-size="10" fill="#334155">0.008</text>
+<line x1="570" y1="158" x2="924" y2="158" stroke="#d7dee7" stroke-width="0.75"/>
+<text x="562" y="162" text-anchor="end" font-size="10" fill="#334155">0.01</text>
+<text x="522" y="250" text-anchor="middle" font-size="12" font-weight="600" fill="#0f172a" transform="rotate(-90,522,250)">RMSE waste above floor</text>
+<path d="M570,180.08 L688,229.76 L806,319.85 L924,342 L924,342 L570,342 Z" fill="#a5b4fc" opacity="0.24"/>
+<path d="M570,180.08 L688,229.76 L806,319.85 L924,342" fill="none" stroke="#4338ca" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="570" cy="180.0800000000015" r="4" fill="#4338ca" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="546.3" y="155.08" width="47.4" height="18" rx="9" fill="#ffffff" stroke="#4338ca" stroke-width="1" opacity="0.96"/>
+<text x="570" y="167.5800000000015" text-anchor="middle" font-size="10" font-weight="700" fill="#4338ca">0.0088</text>
+<text x="570" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">BellKor</text>
+<circle cx="688" cy="229.7600000000001" r="4" fill="#4338ca" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="664.3" y="236.76" width="47.4" height="18" rx="9" fill="#ffffff" stroke="#4338ca" stroke-width="1" opacity="0.96"/>
+<text x="688" y="249.2600000000001" text-anchor="middle" font-size="10" font-weight="700" fill="#4338ca">0.0061</text>
+<text x="688" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">+BigChaos</text>
+<circle cx="806" cy="319.8464000000003" r="4" fill="#4338ca" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="782.3" y="294.85" width="47.4" height="18" rx="9" fill="#ffffff" stroke="#4338ca" stroke-width="1" opacity="0.96"/>
+<text x="806" y="307.3464000000003" text-anchor="middle" font-size="10" font-weight="700" fill="#4338ca">0.0012</text>
+<text x="806" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">+PragTheory</text>
+<circle cx="924" cy="342" r="4" fill="#4338ca" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="915.05" y="349" width="17.9" height="18" rx="9" fill="#ffffff" stroke="#4338ca" stroke-width="1" opacity="0.96"/>
+<text x="924" y="361.5" text-anchor="middle" font-size="10" font-weight="700" fill="#4338ca">0</text>
+<text x="924" y="358" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">+Ensemble</text>
+<line x1="570" y1="342" x2="924" y2="342" stroke="#a16207" stroke-width="1.25" stroke-dasharray="4,3"/>
+<rect x="839.1" y="321" width="76.9" height="18" rx="9" fill="#ffffff" stroke="#a16207" stroke-width="1" opacity="0.96"/>
+<text x="916" y="333.5" text-anchor="end" font-size="10" font-weight="700" fill="#a16207">noise floor</text>
+<text x="570" y="370" text-anchor="middle" font-size="8" fill="#64748b">~107</text>
+<text x="747" y="388" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">team diversity (recursive d →)</text>
+<rect x="28" y="440" width="924" height="76" rx="14" fill="#ffffff" stroke="#d7dee7" stroke-width="1"/>
+<text x="42" y="458" text-anchor="start" font-size="11" font-weight="600" fill="#0f172a">Recursive reading of THM-AMERICAN-FRONTIER on Netflix Prize data</text>
+<text x="42" y="474" text-anchor="start" font-size="10.5" fill="#334155">Panel E: diversity first selects the prediction strategy (algorithm-family blending within a team).</text>
+<text x="42" y="488" text-anchor="start" font-size="10.5" fill="#334155">Panel F: diversity then blends the strategies (team-of-teams meta-ensemble). Same theorem, adjacent layers.</text>
+<text x="42" y="504" text-anchor="start" font-size="10" fill="#64748b">All RMSE values from published papers: Koren KDD 2008/2009, BellKor 2007/2008 Progress Prize, Grand Prize 2009.  Gold dots = best single-family ceilings.</text>
+</svg>

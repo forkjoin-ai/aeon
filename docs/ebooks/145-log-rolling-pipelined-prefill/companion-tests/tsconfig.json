@@ -14,8 +14,12 @@
     "paths": {
       "@a0n/gnosis": ["../../../../../gnosis/src/lib.ts"],
       "@a0n/gnosis/*": ["../../../../../gnosis/src/*"],
-      "@a0n/aeon/flow": ["../../../../../aeon/src/flow/index.ts"],
-      "@a0n/aeon/flow/*": ["../../../../../aeon/src/flow/*"]
+      "@a0n/aeon/flow": ["../../../../src/flow/index.ts"],
+      "@a0n/aeon/flow/*": ["../../../../src/flow/*"],
+      "@a0n/aeon/compression": ["../../../../src/compression/index.ts"],
+      "@a0n/aeon/compression/*": ["../../../../src/compression/*"],
+      "@aeon/flow": ["../../../../src/flow/index.ts"],
+      "@aeon/compression": ["../../../../src/compression/index.ts"]
     }
   },
   "include": ["src"]

@@ -11,15 +11,26 @@
 import { describe, expect, it } from 'bun:test';
 
 // Scheduling deficit helpers
-function schedulingDeficit(failurePaths: number, decisionStreams: number): number {
+function schedulingDeficit(
+  failurePaths: number,
+  decisionStreams: number
+): number {
   return Math.max(0, failurePaths - decisionStreams);
 }
 
-function communityReducedDeficit(failurePaths: number, decisionStreams: number, context: number): number {
+function communityReducedDeficit(
+  failurePaths: number,
+  decisionStreams: number,
+  context: number
+): number {
   return Math.max(0, failurePaths - decisionStreams - context);
 }
 
-function buleDeficit(failurePaths: number, decisionStreams: number, context: number): number {
+function buleDeficit(
+  failurePaths: number,
+  decisionStreams: number,
+  context: number
+): number {
   return communityReducedDeficit(failurePaths, decisionStreams, context);
 }
 
@@ -37,14 +48,16 @@ describe('Prediction 122: Nadir Is Algebraic', () => {
   });
 
   it('at nadir context, Bule deficit is zero', () => {
-    const totalDims = 9, decisionStreams = 1;
+    const totalDims = 9,
+      decisionStreams = 1;
     const nadir = nadirContext(totalDims);
     const deficit = buleDeficit(totalDims, decisionStreams, nadir);
     expect(deficit).toBe(0);
   });
 
   it('below nadir, Bule deficit is positive', () => {
-    const totalDims = 9, decisionStreams = 1;
+    const totalDims = 9,
+      decisionStreams = 1;
     const belowNadir = nadirContext(totalDims) - 2;
     const deficit = buleDeficit(totalDims, decisionStreams, belowNadir);
     expect(deficit).toBeGreaterThan(0);
@@ -53,7 +66,8 @@ describe('Prediction 122: Nadir Is Algebraic', () => {
 
 describe('Prediction 123: Community Attenuation Monotone', () => {
   it('community context reduces deficit monotonically', () => {
-    const failurePaths = 10, streams = 1;
+    const failurePaths = 10,
+      streams = 1;
     const deficits = [];
     for (let c = 0; c <= 10; c++) {
       deficits.push(communityReducedDeficit(failurePaths, streams, c));
@@ -99,7 +113,8 @@ describe('Prediction 125: Mediation Progress Bound', () => {
   });
 
   it('mediation terminates in at most totalDims - 1 rounds', () => {
-    const walkerA = 5, walkerB = 4;
+    const walkerA = 5,
+      walkerB = 4;
     const totalDims = walkerA + walkerB;
     const maxRounds = nadirContext(totalDims);
     expect(maxRounds).toBe(8);
@@ -111,7 +126,8 @@ describe('Prediction 125: Mediation Progress Bound', () => {
 
 describe('Prediction 126: Void Dominance in Computation', () => {
   it('void volume grows linearly with steps', () => {
-    const forkWidth = 4, steps = 10;
+    const forkWidth = 4,
+      steps = 10;
     const voidVolume = steps * (forkWidth - 1);
     expect(voidVolume).toBe(30);
     expect(voidVolume).toBeGreaterThanOrEqual(steps);

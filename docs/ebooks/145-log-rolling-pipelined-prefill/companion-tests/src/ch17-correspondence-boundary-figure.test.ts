@@ -16,18 +16,26 @@ describe('Chapter 17 correspondence boundary figure', () => {
       runQuantumRecombinationAblation(),
       runToyAttentionFoldAblation(),
       await runGnosisFoldTrainingBenchmark(),
-      await runGnosisMiniMoeRoutingBenchmark(),
+      await runGnosisMiniMoeRoutingBenchmark()
     );
 
-    expect(figure.sources.quantumLabel).toBe('quantum-recombination-ablation-v1');
-    expect(figure.sources.toyAttentionLabel).toBe('toy-attention-fold-ablation-v2');
-    expect(figure.sources.gnosisTrainingLabel).toBe('gnosis-fold-training-benchmark-v2');
-    expect(figure.sources.gnosisMiniMoeLabel).toBe('gnosis-moe-routing-benchmark-v1');
+    expect(figure.sources.quantumLabel).toBe(
+      'quantum-recombination-ablation-v1'
+    );
+    expect(figure.sources.toyAttentionLabel).toBe(
+      'toy-attention-fold-ablation-v2'
+    );
+    expect(figure.sources.gnosisTrainingLabel).toBe(
+      'gnosis-fold-training-benchmark-v2'
+    );
+    expect(figure.sources.gnosisMiniMoeLabel).toBe(
+      'gnosis-moe-routing-benchmark-v1'
+    );
     expect(figure.quantum.matrix.linear.kernelAgreement).toBe(true);
     expect(figure.gnosisTraining.evalMse.linear).toBeLessThan(1e-6);
     expect(figure.gnosisMiniMoe.evalMse.linear).toBeLessThan(0.01);
     expect(figure.gnosisTraining.evalMse['early-stop']).toBeGreaterThan(
-      figure.gnosisTraining.evalMse['winner-take-all'],
+      figure.gnosisTraining.evalMse['winner-take-all']
     );
   });
 
@@ -36,7 +44,7 @@ describe('Chapter 17 correspondence boundary figure', () => {
       runQuantumRecombinationAblation(),
       runToyAttentionFoldAblation(),
       await runGnosisFoldTrainingBenchmark(),
-      await runGnosisMiniMoeRoutingBenchmark(),
+      await runGnosisMiniMoeRoutingBenchmark()
     );
 
     const markdown = renderCh17CorrespondenceBoundaryFigureMarkdown(figure);

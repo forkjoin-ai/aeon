@@ -175,11 +175,18 @@ const SWEEP_CASES = [
   },
 ] as const satisfies readonly AdaptiveSupremumFamilySweepCase[];
 
-function buildCandidateRight(parameters: TwoNodeAdaptiveWitnessParameters): number {
-  return parameters.arrivalRight + parameters.arrivalLeft * parameters.rerouteProbability;
+function buildCandidateRight(
+  parameters: TwoNodeAdaptiveWitnessParameters
+): number {
+  return (
+    parameters.arrivalRight +
+    parameters.arrivalLeft * parameters.rerouteProbability
+  );
 }
 
-function rawAssumptionsSatisfied(parameters: TwoNodeAdaptiveWitnessParameters): boolean {
+function rawAssumptionsSatisfied(
+  parameters: TwoNodeAdaptiveWitnessParameters
+): boolean {
   const candidateRight = buildCandidateRight(parameters);
 
   return (
@@ -214,13 +221,14 @@ export function runAdaptiveSupremumFamilySweep(): AdaptiveSupremumFamilySweepRep
       smallSetCount: report.drift.smallSetCount,
       schedulesRecovered: report.schedules.every(
         (schedule) =>
-          schedule.allApproximantsBoundedByCandidate && schedule.recoveredExpectedSupremum,
+          schedule.allApproximantsBoundedByCandidate &&
+          schedule.recoveredExpectedSupremum
       ),
     } satisfies AdaptiveSupremumFamilySweepCaseReport;
   });
 
   const worstCase = cases.reduce((currentWorst, entry) =>
-    entry.driftGap < currentWorst.driftGap ? entry : currentWorst,
+    entry.driftGap < currentWorst.driftGap ? entry : currentWorst
   );
 
   return {
@@ -229,13 +237,13 @@ export function runAdaptiveSupremumFamilySweep(): AdaptiveSupremumFamilySweepRep
     summary: {
       caseCount: cases.length,
       familyClosureRecovered: cases.every(
-        (entry) => entry.rawAssumptionsSatisfied && entry.allChecksPass,
+        (entry) => entry.rawAssumptionsSatisfied && entry.allChecksPass
       ),
       allRawAssumptionsSatisfied: cases.every(
-        (entry) => entry.rawAssumptionsSatisfied,
+        (entry) => entry.rawAssumptionsSatisfied
       ),
       schedulesRecoveredInEveryCase: cases.every(
-        (entry) => entry.schedulesRecovered,
+        (entry) => entry.schedulesRecovered
       ),
       allSpectralRadiusZero: cases.every((entry) => entry.spectralRadius === 0),
       minDriftGap: Math.min(...cases.map((entry) => entry.driftGap)),
@@ -249,12 +257,18 @@ export function runAdaptiveSupremumFamilySweep(): AdaptiveSupremumFamilySweepRep
 }
 
 export function renderAdaptiveSupremumFamilySweepMarkdown(
-  report: AdaptiveSupremumFamilySweepReport,
+  report: AdaptiveSupremumFamilySweepReport
 ): string {
   const caseLines = report.cases
     .map(
       (entry) =>
-        `| ${entry.id} | ${entry.parameters.maxLeftQueue}x${entry.parameters.maxRightQueue} | ${entry.candidateLeft.toFixed(3)} | ${entry.candidateRight.toFixed(3)} | ${entry.driftGap.toFixed(3)} | ${entry.rightSlack.toFixed(3)} | ${entry.stateCount} | ${entry.allChecksPass ? 'yes' : 'no'} |`,
+        `| ${entry.id} | ${entry.parameters.maxLeftQueue}x${
+          entry.parameters.maxRightQueue
+        } | ${entry.candidateLeft.toFixed(3)} | ${entry.candidateRight.toFixed(
+          3
+        )} | ${entry.driftGap.toFixed(3)} | ${entry.rightSlack.toFixed(3)} | ${
+          entry.stateCount
+        } | ${entry.allChecksPass ? 'yes' : 'no'} |`
     )
     .join('\n');
 
@@ -266,13 +280,25 @@ export function renderAdaptiveSupremumFamilySweepMarkdown(
     '## Summary',
     '',
     `- Cases: ${report.summary.caseCount}`,
-    `- Family closure recovered: ${report.summary.familyClosureRecovered ? 'yes' : 'no'}`,
-    `- Raw assumptions satisfied in every case: ${report.summary.allRawAssumptionsSatisfied ? 'yes' : 'no'}`,
-    `- Schedules recovered in every case: ${report.summary.schedulesRecoveredInEveryCase ? 'yes' : 'no'}`,
-    `- All spectral radii are zero: ${report.summary.allSpectralRadiusZero ? 'yes' : 'no'}`,
+    `- Family closure recovered: ${
+      report.summary.familyClosureRecovered ? 'yes' : 'no'
+    }`,
+    `- Raw assumptions satisfied in every case: ${
+      report.summary.allRawAssumptionsSatisfied ? 'yes' : 'no'
+    }`,
+    `- Schedules recovered in every case: ${
+      report.summary.schedulesRecoveredInEveryCase ? 'yes' : 'no'
+    }`,
+    `- All spectral radii are zero: ${
+      report.summary.allSpectralRadiusZero ? 'yes' : 'no'
+    }`,
     `- Minimum drift gap: ${report.summary.minDriftGap.toFixed(3)}`,
-    `- Minimum left-node service slack: ${report.summary.minLeftSlack.toFixed(3)}`,
-    `- Minimum right-node service slack: ${report.summary.minRightSlack.toFixed(3)}`,
+    `- Minimum left-node service slack: ${report.summary.minLeftSlack.toFixed(
+      3
+    )}`,
+    `- Minimum right-node service slack: ${report.summary.minRightSlack.toFixed(
+      3
+    )}`,
     `- Maximum left-row sum: ${report.summary.maxLeftRowSum.toFixed(3)}`,
     `- Maximum bounded state count: ${report.summary.maxStateCount}`,
     `- Tightest case: ${report.summary.worstCaseId}`,

@@ -64,7 +64,9 @@ function colorBeta1(colors: ColorCharge[]): number {
  * Color-neutral hadrons have β₁ = 0 in the color sector.
  */
 function hadronBeta1(hadron: Hadron): number {
-  return hadron.colorNeutral ? 0 : colorBeta1(hadron.quarks.map(q => q.color));
+  return hadron.colorNeutral
+    ? 0
+    : colorBeta1(hadron.quarks.map((q) => q.color));
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -159,9 +161,15 @@ interface HadronizationResult {
   beta1Values: number[];
 }
 
-function hadronize(totalEnergy_GeV: number, avgHadronMass_GeV = 0.3): HadronizationResult {
+function hadronize(
+  totalEnergy_GeV: number,
+  avgHadronMass_GeV = 0.3
+): HadronizationResult {
   // Number of hadrons from energy conservation
-  const hadronCount = Math.max(1, Math.floor(totalEnergy_GeV / avgHadronMass_GeV));
+  const hadronCount = Math.max(
+    1,
+    Math.floor(totalEnergy_GeV / avgHadronMass_GeV)
+  );
   const totalRestMass = hadronCount * avgHadronMass_GeV;
   const totalKineticEnergy = totalEnergy_GeV - totalRestMass;
 
@@ -170,7 +178,8 @@ function hadronize(totalEnergy_GeV: number, avgHadronMass_GeV = 0.3): Hadronizat
     hadronCount,
     totalRestMass,
     totalKineticEnergy: Math.max(0, totalKineticEnergy),
-    firstLawResidual: totalEnergy_GeV - totalRestMass - Math.max(0, totalKineticEnergy),
+    firstLawResidual:
+      totalEnergy_GeV - totalRestMass - Math.max(0, totalKineticEnergy),
     beta1Values: Array(hadronCount).fill(0), // all color-neutral
   };
 }
@@ -194,10 +203,30 @@ interface ScaleLevel {
 }
 
 const SCALE_TOWER: ScaleLevel[] = [
-  { name: 'Quarks → Hadrons', coveringBeta1: 3, baseBeta1: 0, foldMechanism: 'confinement' },
-  { name: 'Nucleons → Nuclei', coveringBeta1: 1, baseBeta1: 0, foldMechanism: 'nuclear binding' },
-  { name: 'Atoms → Molecules', coveringBeta1: 1, baseBeta1: 0, foldMechanism: 'chemical bonding' },
-  { name: 'Molecules → Pipelines', coveringBeta1: 1, baseBeta1: 0, foldMechanism: 'THM-TOPO-MOLECULAR-ISO' },
+  {
+    name: 'Quarks → Hadrons',
+    coveringBeta1: 3,
+    baseBeta1: 0,
+    foldMechanism: 'confinement',
+  },
+  {
+    name: 'Nucleons → Nuclei',
+    coveringBeta1: 1,
+    baseBeta1: 0,
+    foldMechanism: 'nuclear binding',
+  },
+  {
+    name: 'Atoms → Molecules',
+    coveringBeta1: 1,
+    baseBeta1: 0,
+    foldMechanism: 'chemical bonding',
+  },
+  {
+    name: 'Molecules → Pipelines',
+    coveringBeta1: 1,
+    baseBeta1: 0,
+    foldMechanism: 'THM-TOPO-MOLECULAR-ISO',
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -231,7 +260,7 @@ describe('THM-TOPO-CONFINEMENT — Part 1: Color Topology', () => {
       kineticEnergy: 0,
     };
     expect(hadronBeta1(baryon)).toBe(0);
-    expect(isColorNeutral(baryon.quarks.map(q => q.color))).toBe(true);
+    expect(isColorNeutral(baryon.quarks.map((q) => q.color))).toBe(true);
   });
 
   it('covering space β₁ = 3, base space β₁ = 0: fold projects correctly', () => {
@@ -264,7 +293,9 @@ describe('THM-TOPO-CONFINEMENT — Part 2: Anti-Vent (Mandatory Fold)', () => {
   it('anti-vent fork count increases with separation energy', () => {
     const small = attemptVent(0.5);
     const large = attemptVent(5.0);
-    expect(large.newParticlesProduced).toBeGreaterThan(small.newParticlesProduced);
+    expect(large.newParticlesProduced).toBeGreaterThan(
+      small.newParticlesProduced
+    );
   });
 
   it('β₁ = 0 at base space for ALL vent attempts (confinement holds)', () => {
@@ -282,7 +313,10 @@ describe('THM-TOPO-CONFINEMENT — Part 3: Whip Snap (Hadronization)', () => {
     for (const energy of [1.0, 5.0, 10.0, 91.2, 200.0]) {
       const result = hadronize(energy);
       expect(Math.abs(result.firstLawResidual)).toBeLessThan(1e-10);
-      expect(result.totalRestMass + result.totalKineticEnergy).toBeCloseTo(energy, 10);
+      expect(result.totalRestMass + result.totalKineticEnergy).toBeCloseTo(
+        energy,
+        10
+      );
     }
   });
 
@@ -345,14 +379,14 @@ describe('Quantitative Anchor 1 — Linear Confinement Potential', () => {
 
 describe('Quantitative Anchor 2 — Deconfinement Phase Transition', () => {
   it('system is confined below T_c ≈ 155 MeV', () => {
-    expect(isDeconfined(0.100)).toBe(false); // 100 MeV: confined
-    expect(isDeconfined(0.150)).toBe(false); // 150 MeV: still confined
+    expect(isDeconfined(0.1)).toBe(false); // 100 MeV: confined
+    expect(isDeconfined(0.15)).toBe(false); // 150 MeV: still confined
   });
 
   it('system is deconfined above T_c ≈ 155 MeV', () => {
     expect(isDeconfined(0.155)).toBe(true); // T_c: deconfined
-    expect(isDeconfined(0.200)).toBe(true); // 200 MeV: QGP
-    expect(isDeconfined(1.000)).toBe(true); // 1 GeV: deep QGP
+    expect(isDeconfined(0.2)).toBe(true); // 200 MeV: QGP
+    expect(isDeconfined(1.0)).toBe(true); // 1 GeV: deep QGP
   });
 
   it('transition is sharp (fold failure is discontinuous)', () => {
@@ -363,7 +397,7 @@ describe('Quantitative Anchor 2 — Deconfinement Phase Transition', () => {
   });
 
   it('T_c matches RHIC/LHC measured range (155-170 MeV)', () => {
-    expect(T_DECONFINEMENT_GEV).toBeGreaterThanOrEqual(0.150);
+    expect(T_DECONFINEMENT_GEV).toBeGreaterThanOrEqual(0.15);
     expect(T_DECONFINEMENT_GEV).toBeLessThanOrEqual(0.175);
   });
 });
@@ -405,7 +439,9 @@ describe('Scale Tower — Homology Is Functorial', () => {
   it('quark level has the highest covering β₁ (deepest covering space)', () => {
     const quarkLevel = SCALE_TOWER[0];
     for (const level of SCALE_TOWER.slice(1)) {
-      expect(quarkLevel.coveringBeta1).toBeGreaterThanOrEqual(level.coveringBeta1);
+      expect(quarkLevel.coveringBeta1).toBeGreaterThanOrEqual(
+        level.coveringBeta1
+      );
     }
   });
 
@@ -458,7 +494,9 @@ describe('Integration — Confinement + Molecular Topology Unified', () => {
   it('energy conservation holds identically at quark and pipeline scales', () => {
     // Quark scale: V_color = W_hadron + Q_kinetic
     const hadronResult = hadronize(10.0);
-    expect(hadronResult.totalRestMass + hadronResult.totalKineticEnergy).toBeCloseTo(10.0, 10);
+    expect(
+      hadronResult.totalRestMass + hadronResult.totalKineticEnergy
+    ).toBeCloseTo(10.0, 10);
 
     // Pipeline scale: V_in = W_out + Q_dissipated (same First Law)
     const V_in = 10.0;

@@ -15,7 +15,7 @@ describe('Formal adaptive witness catalog', () => {
     expect(report.witnesses).toHaveLength(1);
     expect(report.witnesses[0]?.id).toBe('two-node-adaptive-raw-ceiling');
     expect(report.witnesses[0]?.stationaryBalanceRef).toContain(
-      'kernelFamily_stationary_balance_from_supremum_schema',
+      'kernelFamily_stationary_balance_from_supremum_schema'
     );
   });
 
@@ -25,20 +25,41 @@ describe('Formal adaptive witness catalog', () => {
     const runtime = runAdaptiveSupremumWitness();
 
     expect(formal).toBeDefined();
-    expect(parseRationalLiteral(formal!.arrivalLeft)).toBeCloseTo(runtime.parameters.arrivalLeft, 12);
-    expect(parseRationalLiteral(formal!.arrivalRight)).toBeCloseTo(runtime.parameters.arrivalRight, 12);
+    expect(parseRationalLiteral(formal!.arrivalLeft)).toBeCloseTo(
+      runtime.parameters.arrivalLeft,
+      12
+    );
+    expect(parseRationalLiteral(formal!.arrivalRight)).toBeCloseTo(
+      runtime.parameters.arrivalRight,
+      12
+    );
     expect(parseRationalLiteral(formal!.rerouteProbability)).toBeCloseTo(
       runtime.parameters.rerouteProbability,
-      12,
+      12
     );
-    expect(parseRationalLiteral(formal!.serviceLeft)).toBeCloseTo(runtime.parameters.serviceLeft, 12);
-    expect(parseRationalLiteral(formal!.serviceRight)).toBeCloseTo(runtime.parameters.serviceRight, 12);
-    expect(parseRationalLiteral(formal!.alphaLeft)).toBeCloseTo(runtime.candidate.left, 12);
-    expect(parseRationalLiteral(formal!.alphaRight)).toBeCloseTo(runtime.candidate.right, 12);
-    expect(parseRationalLiteral(formal!.driftGap)).toBeCloseTo(runtime.drift.gap, 12);
+    expect(parseRationalLiteral(formal!.serviceLeft)).toBeCloseTo(
+      runtime.parameters.serviceLeft,
+      12
+    );
+    expect(parseRationalLiteral(formal!.serviceRight)).toBeCloseTo(
+      runtime.parameters.serviceRight,
+      12
+    );
+    expect(parseRationalLiteral(formal!.alphaLeft)).toBeCloseTo(
+      runtime.candidate.left,
+      12
+    );
+    expect(parseRationalLiteral(formal!.alphaRight)).toBeCloseTo(
+      runtime.candidate.right,
+      12
+    );
+    expect(parseRationalLiteral(formal!.driftGap)).toBeCloseTo(
+      runtime.drift.gap,
+      12
+    );
     expect(parseRationalLiteral(formal!.spectralRadius)).toBeCloseTo(
       runtime.ceiling.spectralRadius,
-      12,
+      12
     );
     expect(formal!.stateCount).toBe(runtime.drift.stateCount);
     expect(formal!.smallSetCount).toBe(runtime.drift.smallSetCount);
@@ -46,7 +67,7 @@ describe('Formal adaptive witness catalog', () => {
 
   it('renders a markdown manifest for the adaptive witness catalog', () => {
     const markdown = renderFormalAdaptiveWitnessCatalogMarkdown(
-      loadCheckedInFormalAdaptiveWitnessCatalog(),
+      loadCheckedInFormalAdaptiveWitnessCatalog()
     );
 
     expect(markdown).toContain('# Formal Adaptive Witness Catalog');

@@ -220,7 +220,8 @@ function multilineLabel(
     readonly lineHeight?: number;
   } = {}
 ): void {
-  const lineHeight = options.lineHeight ?? Math.round((options.size ?? 12) * 1.2);
+  const lineHeight =
+    options.lineHeight ?? Math.round((options.size ?? 12) * 1.2);
   const tspans = lines
     .map((line, index) => {
       const dy = index === 0 ? '0' : String(lineHeight);
@@ -389,7 +390,9 @@ function drawPanel(
   const outerRouterLabelWidth = 96;
   const outerRouterLabelHeight = 20;
   svg.push(
-    `<rect x="${centerX - outerRouterLabelWidth / 2}" y="${outerRouterLabelY - outerRouterLabelHeight / 2 - 2}" width="${outerRouterLabelWidth}" height="${outerRouterLabelHeight}" fill="#fffdf8" rx="4" ry="4"/>`
+    `<rect x="${centerX - outerRouterLabelWidth / 2}" y="${
+      outerRouterLabelY - outerRouterLabelHeight / 2 - 2
+    }" width="${outerRouterLabelWidth}" height="${outerRouterLabelHeight}" fill="#fffdf8" rx="4" ry="4"/>`
   );
   label(svg, centerX, outerRouterY + 40, 'outer router', {
     size: 13,

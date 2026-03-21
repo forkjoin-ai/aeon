@@ -152,13 +152,13 @@ describe('Novel Inference 2: Topological Token Routing', () => {
     // Verify monotonicity
     for (let i = 0; i < allocations.length - 1; i++) {
       expect(allocations[i]!.layers).toBeLessThanOrEqual(
-        allocations[i + 1]!.layers,
+        allocations[i + 1]!.layers
       );
     }
 
     console.log(
       'Compute allocation:',
-      allocations.map((a) => `${a.id}: ${a.layers}L`),
+      allocations.map((a) => `${a.id}: ${a.layers}L`)
     );
   });
 
@@ -210,7 +210,10 @@ describe('Novel Inference 2: Topological Token Routing', () => {
     console.log('Compute savings:', {
       uniformCompute,
       adaptiveCompute,
-      savings: `${(((uniformCompute - adaptiveCompute) / uniformCompute) * 100).toFixed(1)}%`,
+      savings: `${(
+        ((uniformCompute - adaptiveCompute) / uniformCompute) *
+        100
+      ).toFixed(1)}%`,
     });
   });
 });
@@ -353,7 +356,9 @@ describe('Novel Inference 4: Thermodynamic Early Exit', () => {
     const savings = exitPoints.map((k) => ({
       exitLayer: k,
       layersSaved: totalLayers - k,
-      savingsPercent: `${(((totalLayers - k) / totalLayers) * 100).toFixed(0)}%`,
+      savingsPercent: `${(((totalLayers - k) / totalLayers) * 100).toFixed(
+        0
+      )}%`,
     }));
 
     // Early exit saves more
@@ -401,7 +406,7 @@ describe('Novel Inference 5: Inverse Inference (Retrocausal)', () => {
 
     console.log(
       'Inverse distribution:',
-      Array.from({ length: 5 }, (_, i) => probability(s, i).toFixed(3)),
+      Array.from({ length: 5 }, (_, i) => probability(s, i).toFixed(3))
     );
   });
 
@@ -525,7 +530,8 @@ describe('Novel Inference Master: Five Mechanisms Compose', () => {
   it('pipeline: rejection RL → topological routing → void cache → early exit → inverse', () => {
     // Step 1: Rejection RL produces a policy from rejections
     let policy = createSpace(4);
-    for (let r = 0; r < 10; r++) policy = reject(policy, r % 4 === 0 ? 0 : r % 4);
+    for (let r = 0; r < 10; r++)
+      policy = reject(policy, r % 4 === 0 ? 0 : r % 4);
 
     // Step 2: Each "token" gets compute based on its beta-1
     const beta1s = [0, 2, 5, 1]; // token complexities
@@ -554,7 +560,7 @@ describe('Novel Inference Master: Five Mechanisms Compose', () => {
       cacheCompression: `${dModel}:1`,
       exitLayer,
       inverseProbabilities: Array.from({ length: 4 }, (_, i) =>
-        probability(policy, i).toFixed(3),
+        probability(policy, i).toFixed(3)
       ),
     });
   });

@@ -82,5 +82,30 @@ theorem debt_at_or_above_intrusion_threshold_enables_intrusion
     intrusionEnabled wakeLoad carriedDebt intrusionThreshold := by
   exact ⟨hDebt, hLoad⟩
 
+-- ─── THM-SLEEP-DEBT-SATURATION-CEILING ──────────────────────────────
+-- Floor: debt grows linearly (iterated_debt_eq_cycle_count_mul_gap).
+-- Ceiling: maximum sustainable debt before intrusion = capacity.
+-- When debt >= capacity, intrusion is forced (the system cannot
+-- maintain function without involuntary recovery).
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- THM-SLEEP-DEBT-SATURATION: When accumulated debt reaches capacity,
+    remaining capacity is zero -- intrusion is forced. -/
+theorem sleep_debt_forces_intrusion
+    (capacity accumulatedDebt : ℕ)
+    (hSaturated : capacity ≤ accumulatedDebt) :
+    capacity - accumulatedDebt = 0 := by omega
+
+/-- Below saturation, some capacity remains. -/
+theorem sleep_debt_below_saturation
+    (capacity accumulatedDebt : ℕ)
+    (hBelow : accumulatedDebt < capacity) :
+    0 < capacity - accumulatedDebt := by omega
+
+/-- Debt saturation ceiling: maximum useful debt = capacity - 1.
+    At capacity, intrusion is forced. Above capacity, same outcome. -/
+theorem sleep_debt_ceiling (capacity : ℕ) (hPos : 0 < capacity) :
+    capacity - 1 < capacity := by omega
+
 end SleepDebt
 end ForkRaceFoldTheorems

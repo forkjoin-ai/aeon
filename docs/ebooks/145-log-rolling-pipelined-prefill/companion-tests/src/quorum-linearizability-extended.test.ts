@@ -105,7 +105,12 @@ interface PartitionConfig {
 }
 
 interface LinearizabilityHistory {
-  readonly writes: { ballot: number; value: string; startTime: number; endTime: number }[];
+  readonly writes: {
+    ballot: number;
+    value: string;
+    startTime: number;
+    endTime: number;
+  }[];
   readonly reads: { value: string | null; time: number }[];
 }
 
@@ -169,7 +174,10 @@ class QuorumCluster {
    * Write a value to the cluster using ballot-based ordering.
    * Returns the set of replicas that acknowledged the write.
    */
-  write(value: string, options?: { maxRetries?: number }): {
+  write(
+    value: string,
+    options?: { maxRetries?: number }
+  ): {
     ballot: number;
     acked: Set<number>;
     committed: boolean;
@@ -199,7 +207,7 @@ class QuorumCluster {
           replica.committedBallot = ballot;
           replica.committedValue = value;
           replica.pendingWrites = replica.pendingWrites.filter(
-            (w) => w.ballot > ballot,
+            (w) => w.ballot > ballot
           );
           acked.add(replica.id);
         } else {
@@ -229,7 +237,11 @@ class QuorumCluster {
   } {
     const maxRetries = options?.maxRetries ?? 0;
 
-    let responses: { replicaId: number; ballot: number; value: string | null }[] = [];
+    let responses: {
+      replicaId: number;
+      ballot: number;
+      value: string | null;
+    }[] = [];
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       for (const replica of this.replicas) {
@@ -255,7 +267,7 @@ class QuorumCluster {
       }
 
       const honestResponses = responses.filter(
-        (r) => this.replicas[r.replicaId].honest,
+        (r) => this.replicas[r.replicaId].honest
       );
 
       if (honestResponses.length >= this.majority) break;
@@ -263,16 +275,21 @@ class QuorumCluster {
 
     // Filter to honest responses for determining the read value
     const honestResponses = responses.filter(
-      (r) => this.replicas[r.replicaId].honest,
+      (r) => this.replicas[r.replicaId].honest
     );
 
     if (honestResponses.length < this.majority) {
-      return { value: null, ballot: 0, respondedCount: honestResponses.length, linearizable: false };
+      return {
+        value: null,
+        ballot: 0,
+        respondedCount: honestResponses.length,
+        linearizable: false,
+      };
     }
 
     // Quorum read: take the value with the highest ballot among honest responses
     const best = honestResponses.reduce((a, b) =>
-      a.ballot >= b.ballot ? a : b,
+      a.ballot >= b.ballot ? a : b
     );
 
     this.currentTime++;
@@ -293,7 +310,7 @@ class QuorumCluster {
       .filter(
         (r) =>
           !this.partition.cannotReceive.has(r.id) &&
-          !this.partition.cannotSend.has(r.id),
+          !this.partition.cannotSend.has(r.id)
       )
       .map((r) => r.id);
   }
@@ -334,7 +351,10 @@ class QuorumCluster {
       }
     }
 
-    const finalState = new Map<number, { ballot: number; value: string | null }>();
+    const finalState = new Map<
+      number,
+      { ballot: number; value: string | null }
+    >();
     for (const replica of this.replicas) {
       finalState.set(replica.id, {
         ballot: replica.committedBallot,
@@ -349,7 +369,10 @@ class QuorumCluster {
   /**
    * Write with potential duplication: same message delivered multiple times.
    */
-  writeWithDuplication(value: string, duplications: number): {
+  writeWithDuplication(
+    value: string,
+    duplications: number
+  ): {
     ballot: number;
     acked: Set<number>;
   } {
@@ -433,7 +456,7 @@ class QuorumCluster {
  */
 function checkLinearizability(
   writes: { ballot: number; value: string }[],
-  reads: { value: string | null; ballot: number }[],
+  reads: { value: string | null; ballot: number }[]
 ): { linearizable: boolean; violation?: string } {
   // Sort writes by ballot (the total order)
   const sortedWrites = [...writes].sort((a, b) => a.ballot - b.ballot);
@@ -837,7 +860,10 @@ describe('Quorum Linearizability under Arbitrary Partitions', () => {
     it('100 reordered writes converge deterministically across seeds', () => {
       for (let seed = 0; seed < 5; seed++) {
         const cluster = new QuorumCluster(5, 100 + seed);
-        const values = Array.from({ length: 100 }, (_, i) => `seed${seed}-v${i}`);
+        const values = Array.from(
+          { length: 100 },
+          (_, i) => `seed${seed}-v${i}`
+        );
         const result = cluster.writeWithReordering(values);
 
         const maxBallot = Math.max(...result.ballots);

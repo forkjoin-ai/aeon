@@ -93,20 +93,21 @@ describe('Prediction 111: Tariff dispersion predicts GDP loss better than tariff
 
   interface Economy {
     name: string;
-    sectors: number[];          // tariff rate per sector (0-100)
+    sectors: number[]; // tariff rate per sector (0-100)
     averageTariff: number;
-    tariffDispersion: number;   // std dev of sector tariffs
-    beta1Star: number;          // natural topology
-    effectiveBeta1: number;     // after tariffs
+    tariffDispersion: number; // std dev of sector tariffs
+    beta1Star: number; // natural topology
+    effectiveBeta1: number; // after tariffs
   }
 
   function computeEconomy(name: string, sectors: number[]): Economy {
     const avg = sectors.reduce((a, b) => a + b, 0) / sectors.length;
-    const variance = sectors.reduce((a, b) => a + (b - avg) ** 2, 0) / sectors.length;
+    const variance =
+      sectors.reduce((a, b) => a + (b - avg) ** 2, 0) / sectors.length;
     const dispersion = Math.sqrt(variance);
     const beta1Star = sectors.length;
     // Each sector with tariff > 50% blocks that trade path
-    const blocked = sectors.filter(t => t > 50).length;
+    const blocked = sectors.filter((t) => t > 50).length;
     return {
       name,
       sectors,
@@ -118,9 +119,18 @@ describe('Prediction 111: Tariff dispersion predicts GDP loss better than tariff
   }
 
   // Two economies with SAME average tariff but DIFFERENT dispersion
-  const uniform = computeEconomy('Uniform (25% everywhere)', [25, 25, 25, 25, 25, 25, 25, 25]);
-  const concentrated = computeEconomy('Concentrated (0% or 50%)', [0, 0, 0, 0, 50, 50, 50, 50]);
-  const extreme = computeEconomy('Extreme (0% or 100%)', [0, 0, 0, 0, 100, 100, 100, 100]);
+  const uniform = computeEconomy(
+    'Uniform (25% everywhere)',
+    [25, 25, 25, 25, 25, 25, 25, 25]
+  );
+  const concentrated = computeEconomy(
+    'Concentrated (0% or 50%)',
+    [0, 0, 0, 0, 50, 50, 50, 50]
+  );
+  const extreme = computeEconomy(
+    'Extreme (0% or 100%)',
+    [0, 0, 0, 0, 100, 100, 100, 100]
+  );
 
   it('uniform tariffs have zero Δβ (no paths blocked)', () => {
     const deficit = uniform.beta1Star - uniform.effectiveBeta1;
@@ -260,7 +270,11 @@ describe('Prediction 113: Trade agreement count predicts settlement efficiency',
   });
 
   it('excess agreements do not degrade (nondegradation)', () => {
-    const ts: TradeSettlement = { partners: 8, agreements: 10, failurePaths: 6 };
+    const ts: TradeSettlement = {
+      partners: 8,
+      agreements: 10,
+      failurePaths: 6,
+    };
     expect(settlementDeficit(ts)).toBe(0);
   });
 });
@@ -280,20 +294,35 @@ describe('Prediction 114: Autarky-to-trade transition follows pipeline Reynolds 
 
   interface Economy {
     name: string;
-    gdp: number;              // proxy for pipeline capacity
-    tradePaths: number;        // diversity
-    throughputPerUnit: number;  // GDP per trade path
+    gdp: number; // proxy for pipeline capacity
+    tradePaths: number; // diversity
+    throughputPerUnit: number; // GDP per trade path
   }
 
   function reynoldsNumber(economy: Economy): number {
     // Re = throughput × diversity / viscosity
     // Higher Re = more turbulent = more efficient multiplexing
-    return economy.gdp * economy.tradePaths / 1000;
+    return (economy.gdp * economy.tradePaths) / 1000;
   }
 
-  const small: Economy = { name: 'Small', gdp: 100, tradePaths: 2, throughputPerUnit: 50 };
-  const medium: Economy = { name: 'Medium', gdp: 1000, tradePaths: 8, throughputPerUnit: 125 };
-  const large: Economy = { name: 'Large', gdp: 10000, tradePaths: 20, throughputPerUnit: 500 };
+  const small: Economy = {
+    name: 'Small',
+    gdp: 100,
+    tradePaths: 2,
+    throughputPerUnit: 50,
+  };
+  const medium: Economy = {
+    name: 'Medium',
+    gdp: 1000,
+    tradePaths: 8,
+    throughputPerUnit: 125,
+  };
+  const large: Economy = {
+    name: 'Large',
+    gdp: 10000,
+    tradePaths: 20,
+    throughputPerUnit: 500,
+  };
 
   it('larger economies have higher Reynolds numbers', () => {
     expect(reynoldsNumber(large)).toBeGreaterThan(reynoldsNumber(medium));
@@ -307,8 +336,8 @@ describe('Prediction 114: Autarky-to-trade transition follows pipeline Reynolds 
 
   it('marginal benefit of first trade path is scale-dependent', () => {
     // Adding 1 trade path: benefit proportional to existing GDP
-    const smallBenefit = small.gdp * 0.1;  // 10% GDP gain from first trade
-    const largeBenefit = large.gdp * 0.1;  // same percentage, larger absolute
+    const smallBenefit = small.gdp * 0.1; // 10% GDP gain from first trade
+    const largeBenefit = large.gdp * 0.1; // same percentage, larger absolute
     expect(largeBenefit).toBeGreaterThan(smallBenefit);
     // But also: percentage gain is HIGHER for larger economies
     // due to network effects (Reynolds scaling)
@@ -319,7 +348,12 @@ describe('Prediction 114: Autarky-to-trade transition follows pipeline Reynolds 
   });
 
   it('autarky (Re ≈ 0) has minimum throughput', () => {
-    const autarky: Economy = { name: 'Autarky', gdp: 100, tradePaths: 0, throughputPerUnit: 0 };
+    const autarky: Economy = {
+      name: 'Autarky',
+      gdp: 100,
+      tradePaths: 0,
+      throughputPerUnit: 0,
+    };
     expect(reynoldsNumber(autarky)).toBe(0);
   });
 });
@@ -340,7 +374,7 @@ describe('Prediction 115: Retaliatory tariff cascades have bounded maximum cost'
 
   interface TradeWar {
     tradePaths: number;
-    rounds: number[];  // blocked paths per round (monotonically non-decreasing)
+    rounds: number[]; // blocked paths per round (monotonically non-decreasing)
   }
 
   function warDeficitAtRound(tw: TradeWar, round: number): number {
@@ -362,7 +396,9 @@ describe('Prediction 115: Retaliatory tariff cascades have bounded maximum cost'
 
   it('deficit monotonically non-decreasing through war rounds', () => {
     for (let i = 1; i < escalation.rounds.length; i++) {
-      expect(escalation.rounds[i]).toBeGreaterThanOrEqual(escalation.rounds[i - 1]);
+      expect(escalation.rounds[i]).toBeGreaterThanOrEqual(
+        escalation.rounds[i - 1]
+      );
     }
   });
 
@@ -401,7 +437,10 @@ describe('Prediction 115: Retaliatory tariff cascades have bounded maximum cost'
   it('deadweight loss per round is kT ln 2 per blocked bit', () => {
     const bitsPerPath = 1;
     for (const blocked of escalation.rounds) {
-      const dwl = deadweightLoss(blocked * bitsPerPath, kT_ln2_300K / Math.log(2));
+      const dwl = deadweightLoss(
+        blocked * bitsPerPath,
+        kT_ln2_300K / Math.log(2)
+      );
       expect(dwl).toBeGreaterThanOrEqual(0);
       if (blocked > 0) {
         expect(dwl).toBeGreaterThan(0);
@@ -426,7 +465,7 @@ describe('Prediction 116: Comparative advantage persistence follows hole invaria
 
   interface ProductSpaceNode {
     product: string;
-    rca: number;  // Revealed Comparative Advantage (> 1 = advantage)
+    rca: number; // Revealed Comparative Advantage (> 1 = advantage)
     beta1: number; // topological complexity of production
   }
 
@@ -436,13 +475,17 @@ describe('Prediction 116: Comparative advantage persistence follows hole invaria
   }
 
   function comparativeAdvantages(country: Country): ProductSpaceNode[] {
-    return country.products.filter(p => p.rca > 1);
+    return country.products.filter((p) => p.rca > 1);
   }
 
-  function applyShock(country: Country, magnitude: number, rng: () => number): Country {
+  function applyShock(
+    country: Country,
+    magnitude: number,
+    rng: () => number
+  ): Country {
     return {
       name: country.name,
-      products: country.products.map(p => ({
+      products: country.products.map((p) => ({
         ...p,
         rca: p.rca * (1 + magnitude * (rng() - 0.5)),
       })),
@@ -471,8 +514,10 @@ describe('Prediction 116: Comparative advantage persistence follows hole invaria
   it('small shocks preserve comparative advantage (hole invariance)', () => {
     const rng = makeRng(42);
     const shocked = applyShock(korea, 0.1, rng); // 10% shock
-    const beforeAdvantages = comparativeAdvantages(korea).map(p => p.product);
-    const afterAdvantages = comparativeAdvantages(shocked).map(p => p.product);
+    const beforeAdvantages = comparativeAdvantages(korea).map((p) => p.product);
+    const afterAdvantages = comparativeAdvantages(shocked).map(
+      (p) => p.product
+    );
     // High-RCA products should survive small shocks
     expect(afterAdvantages).toContain('semiconductors'); // RCA 3.2 survives 10% shock
     expect(afterAdvantages).toContain('ships'); // RCA 2.8 survives 10% shock
@@ -485,18 +530,22 @@ describe('Prediction 116: Comparative advantage persistence follows hole invaria
     // With a massive shock, some advantages may be destroyed
     // and new ones may emerge -- the topology is deformed
     // The test verifies the deformation actually changes the advantage set
-    const beforeSet = new Set(comparativeAdvantages(korea).map(p => p.product));
-    const afterSet = new Set(afterAdvantages.map(p => p.product));
+    const beforeSet = new Set(
+      comparativeAdvantages(korea).map((p) => p.product)
+    );
+    const afterSet = new Set(afterAdvantages.map((p) => p.product));
     // At least one change should occur with such a large shock
-    const unchanged = [...beforeSet].filter(p => afterSet.has(p));
+    const unchanged = [...beforeSet].filter((p) => afterSet.has(p));
     expect(unchanged.length).toBeLessThan(beforeSet.size);
   });
 
   it('β₁ of product determines persistence: high-β₁ products resist shocks', () => {
     // Products with higher topological complexity (more production paths)
     // are more resilient to shocks -- same as diversity_necessity
-    const highBeta1 = korea.products.find(p => p.product === 'semiconductors')!;
-    const lowBeta1 = korea.products.find(p => p.product === 'agriculture')!;
+    const highBeta1 = korea.products.find(
+      (p) => p.product === 'semiconductors'
+    )!;
+    const lowBeta1 = korea.products.find((p) => p.product === 'agriculture')!;
     expect(highBeta1.beta1).toBeGreaterThan(lowBeta1.beta1);
     // High-β₁ product needs larger shock to lose advantage
     // This is the American frontier: more diversity = more resilience
@@ -617,7 +666,10 @@ describe('Deadweight loss is Landauer heat', () => {
     const pathsAfter = 4;
     const bitsErased = Math.log2(pathsBefore / pathsAfter);
     expect(bitsErased).toBeCloseTo(1, 5); // log₂(2) = 1
-    const topologicalDWL = deadweightLoss(bitsErased, kT_ln2_300K / Math.log(2));
+    const topologicalDWL = deadweightLoss(
+      bitsErased,
+      kT_ln2_300K / Math.log(2)
+    );
     expect(topologicalDWL).toBeGreaterThan(0);
   });
 });
@@ -641,16 +693,16 @@ describe('EMH is β₁ = 0 (thermal equilibrium)', () => {
   it('pre-crash: β₁ spike appears', () => {
     // Simulate: arbitrage opportunities accumulate before crash
     const timeline: ArbitrageGraph[] = [
-      { assets: 500, arbitrageCycles: 0 },   // t=0: efficient
-      { assets: 500, arbitrageCycles: 2 },   // t=1: small inefficiency
-      { assets: 500, arbitrageCycles: 8 },   // t=2: growing
-      { assets: 500, arbitrageCycles: 25 },  // t=3: spike (pre-crash)
-      { assets: 500, arbitrageCycles: 3 },   // t=4: crash resolves most cycles
-      { assets: 500, arbitrageCycles: 0 },   // t=5: recovery to efficiency
+      { assets: 500, arbitrageCycles: 0 }, // t=0: efficient
+      { assets: 500, arbitrageCycles: 2 }, // t=1: small inefficiency
+      { assets: 500, arbitrageCycles: 8 }, // t=2: growing
+      { assets: 500, arbitrageCycles: 25 }, // t=3: spike (pre-crash)
+      { assets: 500, arbitrageCycles: 3 }, // t=4: crash resolves most cycles
+      { assets: 500, arbitrageCycles: 0 }, // t=5: recovery to efficiency
     ];
 
     // β₁ spikes before crash
-    const maxBeta1 = Math.max(...timeline.map(t => t.arbitrageCycles));
+    const maxBeta1 = Math.max(...timeline.map((t) => t.arbitrageCycles));
     expect(maxBeta1).toBe(25);
     // Spike at t=3, resolution at t=4-5
     expect(timeline[3].arbitrageCycles).toBe(maxBeta1);
@@ -660,7 +712,7 @@ describe('EMH is β₁ = 0 (thermal equilibrium)', () => {
   it('β₁ = 0 is unique ground state', () => {
     // Only one state has zero arbitrage: full efficiency
     const states = [0, 1, 2, 5, 10];
-    const groundStates = states.filter(s => s === 0);
+    const groundStates = states.filter((s) => s === 0);
     expect(groundStates.length).toBe(1);
   });
 });

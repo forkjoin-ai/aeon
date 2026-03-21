@@ -10,22 +10,28 @@ describe('Gnosis adversarial controls benchmark (§1.7, §6.12)', () => {
     const report = await runGnosisAdversarialControlsBenchmark();
 
     expect(report.allAdversarialPredictionsRecovered).toBe(true);
-    expect(report.tasks['winner-affine-maxabs'].favoredStrategy).toBe('winner-take-all');
-    expect(report.tasks['winner-affine-maxabs'].favoredStrategyWinsFinal).toBe(true);
-    expect(report.tasks['winner-affine-maxabs'].favoredStrategyWinsSampleEfficiency).toBe(true);
+    expect(report.tasks['winner-affine-maxabs'].favoredStrategy).toBe(
+      'winner-take-all'
+    );
+    expect(report.tasks['winner-affine-maxabs'].favoredStrategyWinsFinal).toBe(
+      true
+    );
+    expect(
+      report.tasks['winner-affine-maxabs'].favoredStrategyWinsSampleEfficiency
+    ).toBe(true);
     expect(
       report.tasks['early-stop-routing-first-expert-short-budget']
-        .favoredStrategyWinsSampleEfficiency,
+        .favoredStrategyWinsSampleEfficiency
     ).toBe(true);
     expect(
       report.tasks['early-stop-left-priority-short-budget']
-        .favoredStrategyWinsSampleEfficiency,
+        .favoredStrategyWinsSampleEfficiency
     ).toBe(true);
   });
 
   it('renders a markdown report with all adversarial tasks', async () => {
     const markdown = renderGnosisAdversarialControlsBenchmarkMarkdown(
-      await runGnosisAdversarialControlsBenchmark(),
+      await runGnosisAdversarialControlsBenchmark()
     );
 
     expect(markdown).toContain('# Gnosis Adversarial Controls Benchmark');

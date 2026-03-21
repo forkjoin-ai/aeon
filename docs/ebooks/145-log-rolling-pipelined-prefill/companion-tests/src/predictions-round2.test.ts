@@ -57,7 +57,11 @@ describe('Prediction 22: Dark matter/energy ratio predicts dynamics', () => {
   }
 
   it('conservation: total = BATNA + WATNA', () => {
-    for (const [b, w] of [[70, 30], [50, 50], [20, 80]]) {
+    for (const [b, w] of [
+      [70, 30],
+      [50, 50],
+      [20, 80],
+    ]) {
       expect(b + w).toBe(100);
     }
   });
@@ -71,7 +75,9 @@ describe('Prediction 22: Dark matter/energy ratio predicts dynamics', () => {
 
   it('trichotomy: every partition is one of three modes', () => {
     const modes = new Set([
-      dominance(70, 30), dominance(50, 50), dominance(30, 70),
+      dominance(70, 30),
+      dominance(50, 50),
+      dominance(30, 70),
     ]);
     expect(modes.size).toBe(3);
     expect(modes).toContain('batna-heavy');
@@ -86,7 +92,7 @@ describe('Prediction 22: Dark matter/energy ratio predicts dynamics', () => {
     expect(dominance(20, 80)).toBe('watna-heavy');
   });
 
-  it('falsification: if void partition doesn\'t predict gravitational behavior', () => {
+  it("falsification: if void partition doesn't predict gravitational behavior", () => {
     // If BATNA/WATNA ratio doesn't correlate with observed dynamics
     const stableCluster = dominance(75, 25);
     const expandingCluster = dominance(25, 75);
@@ -99,7 +105,10 @@ describe('Prediction 22: Dark matter/energy ratio predicts dynamics', () => {
 // ============================================================================
 
 describe('Prediction 23: Semiotic deficit predicts translation loss', () => {
-  function semioticDeficit(semanticPaths: number, articulationStreams: number): number {
+  function semioticDeficit(
+    semanticPaths: number,
+    articulationStreams: number
+  ): number {
     return Math.max(0, semanticPaths - articulationStreams);
   }
 
@@ -113,7 +122,11 @@ describe('Prediction 23: Semiotic deficit predicts translation loss', () => {
   });
 
   it('deficit is bounded by semantic count', () => {
-    for (const [s, a] of [[100, 1], [50, 25], [10, 10]]) {
+    for (const [s, a] of [
+      [100, 1],
+      [50, 25],
+      [10, 10],
+    ]) {
       expect(semioticDeficit(s, a)).toBeLessThanOrEqual(s);
     }
   });
@@ -179,11 +192,13 @@ describe('Prediction 24: Metacognitive C0-C3 walker predicts skill acquisition',
     expect(currentStage).toBe(2); // evaluate
   });
 
-  it('falsification: if skill stages don\'t follow monotone void density', () => {
+  it("falsification: if skill stages don't follow monotone void density", () => {
     // Prediction fails if stage transitions are random
     const monotonicThresholds = [0, 5, 15, 30];
     for (let i = 0; i < monotonicThresholds.length - 1; i++) {
-      expect(monotonicThresholds[i + 1]).toBeGreaterThan(monotonicThresholds[i]);
+      expect(monotonicThresholds[i + 1]).toBeGreaterThan(
+        monotonicThresholds[i]
+      );
     }
   });
 });
@@ -206,7 +221,12 @@ describe('Prediction 25: Reynolds-BFT threshold predicts consensus failure', () 
   }
 
   it('quorum safety implies majority safety', () => {
-    for (const [n, c] of [[3, 3], [4, 3], [5, 4], [10, 8]]) {
+    for (const [n, c] of [
+      [3, 3],
+      [4, 3],
+      [5, 4],
+      [10, 8],
+    ]) {
       if (isQuorumSafe(n, c)) {
         expect(isMajoritySafe(n, c)).toBe(true);
       }

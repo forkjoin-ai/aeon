@@ -25,14 +25,14 @@ function interpolationWeight(nRounds: number, nVoid: number): number {
 
 describe('T1: quantum + cancer retrocausally indistinguishable', () => {
   it('both collapse to beta1 = 0', () => {
-    const quantumPostBeta1 = 0;   // Post-measurement
-    const cancerPostBeta1 = 0;     // Post-checkpoint-loss
+    const quantumPostBeta1 = 0; // Post-measurement
+    const cancerPostBeta1 = 0; // Post-checkpoint-loss
     expect(quantumPostBeta1).toBe(cancerPostBeta1);
   });
 
   it('collapse deficit is positive (something was lost)', () => {
-    const quantumPreBeta1 = 5;  // rootN - 1
-    const cancerPreBeta1 = 3;   // checkpoint count
+    const quantumPreBeta1 = 5; // rootN - 1
+    const cancerPreBeta1 = 3; // checkpoint count
     expect(quantumPreBeta1).toBeGreaterThan(0);
     expect(cancerPreBeta1).toBeGreaterThan(0);
   });
@@ -73,8 +73,9 @@ describe('T2: BATNA walking predicts structural holes', () => {
     const rounds = 10;
     const priceRejections = 8;
     const timelineRejections = 2;
-    expect(buleyeanWeight(rounds, timelineRejections))
-      .toBeGreaterThan(buleyeanWeight(rounds, priceRejections));
+    expect(buleyeanWeight(rounds, timelineRejections)).toBeGreaterThan(
+      buleyeanWeight(rounds, priceRejections)
+    );
   });
 
   it('untried configuration (structural hole) has max interpolation weight', () => {
@@ -82,7 +83,9 @@ describe('T2: BATNA walking predicts structural holes', () => {
     const holeWeight = interpolationWeight(20, 5);
     expect(holeWeight).toBeGreaterThan(0);
     // The less rejection the neighbors report, the higher the hole weight
-    expect(interpolationWeight(20, 3)).toBeGreaterThan(interpolationWeight(20, 10));
+    expect(interpolationWeight(20, 3)).toBeGreaterThan(
+      interpolationWeight(20, 10)
+    );
   });
 });
 
@@ -101,8 +104,8 @@ describe('T3: neither collapse is reversible', () => {
   });
 
   it('branching increases beta1 but does not reverse collapse', () => {
-    const preBeta1 = 0;  // Collapsed state
-    const postBeta1 = preBeta1 + 1;  // After branching
+    const preBeta1 = 0; // Collapsed state
+    const postBeta1 = preBeta1 + 1; // After branching
     expect(postBeta1).toBeGreaterThan(preBeta1);
     // But the original collapsed state still exists in its branch
     // (existence weights are all positive)
@@ -131,8 +134,8 @@ describe('T4: terminal settlement constrains negotiation trajectory', () => {
   it('coherence: same terminal → same concession gradient', () => {
     const rounds = 15;
     const rejections = [3, 7, 2, 5];
-    const gradient1 = rejections.map(r => buleyeanWeight(rounds, r));
-    const gradient2 = rejections.map(r => buleyeanWeight(rounds, r));
+    const gradient1 = rejections.map((r) => buleyeanWeight(rounds, r));
+    const gradient2 = rejections.map((r) => buleyeanWeight(rounds, r));
     expect(gradient1).toEqual(gradient2);
   });
 
@@ -166,7 +169,9 @@ describe('T5: cancer holes predict treatment targets', () => {
     const rounds = 10;
     // Treatment A: tried 2x, partially effective
     // Treatment B: tried 7x, mostly failed
-    expect(buleyeanWeight(rounds, 2)).toBeGreaterThan(buleyeanWeight(rounds, 7));
+    expect(buleyeanWeight(rounds, 2)).toBeGreaterThan(
+      buleyeanWeight(rounds, 7)
+    );
   });
 
   it('cancer cell has zero rejection capacity (motivates treatment)', () => {

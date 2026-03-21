@@ -35,7 +35,9 @@ function xGnosisResponseHeaderSize(
   const headers = [
     `Content-Type: ${resource.contentType}; charset=utf-8`,
     `Content-Length: ${compressedSize}`,
-    ...(algo !== 'none' ? [`Content-Encoding: ${algo === 'brotli' ? 'br' : 'gzip'}`] : []),
+    ...(algo !== 'none'
+      ? [`Content-Encoding: ${algo === 'brotli' ? 'br' : 'gzip'}`]
+      : []),
     'Cache-Control: public, max-age=3600',
     'ETag: "W/a1b2c3d4e5f6"',
     'Server: x-gnosis',
@@ -92,7 +94,11 @@ export function serveXGnosis(
   const encodeEnd = performance.now();
 
   const reqHeaders = xGnosisRequestHeaderSize(resource);
-  const resHeaders = xGnosisResponseHeaderSize(resource, compressed.length, algo);
+  const resHeaders = xGnosisResponseHeaderSize(
+    resource,
+    compressed.length,
+    algo
+  );
 
   // HTTP framing (what goes on the browser wire)
   const httpFraming = reqHeaders + resHeaders;

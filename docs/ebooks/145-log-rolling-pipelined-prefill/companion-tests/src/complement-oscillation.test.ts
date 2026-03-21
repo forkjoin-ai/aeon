@@ -10,12 +10,12 @@ import { describe, expect, it } from 'bun:test';
 
 function buleyeanWeights(voidBoundary: number[]): number[] {
   const T = voidBoundary.reduce((a, b) => a + b, 0);
-  return voidBoundary.map(v => T + 1 - v);
+  return voidBoundary.map((v) => T + 1 - v);
 }
 
 function normalized(w: number[]): number[] {
   const total = w.reduce((a, b) => a + b, 0);
-  return w.map(x => x / total);
+  return w.map((x) => x / total);
 }
 
 function argmax(arr: number[]): number {
@@ -24,7 +24,7 @@ function argmax(arr: number[]): number {
 
 function deviation(p: number[]): number[] {
   const uniform = 1 / p.length;
-  return p.map(x => x - uniform);
+  return p.map((x) => x - uniform);
 }
 
 describe('THM-COMPLEMENT-ORDER-REVERSAL', () => {
@@ -61,13 +61,15 @@ describe('THM-COMPLEMENT-SIGN-ALTERNATION', () => {
       const w = buleyeanWeights(current);
       const p = normalized(w);
       const dev = deviation(p);
-      signs.push(dev.map(d => Math.sign(d)));
+      signs.push(dev.map((d) => Math.sign(d)));
       current = w;
     }
     // Sign of dev[0] should alternate
     for (let step = 1; step < signs.length; step++) {
       // At least one dimension flips sign (the extremes always do)
-      const flipped = signs[step]!.some((s, i) => s !== 0 && s !== signs[step - 1]![i]);
+      const flipped = signs[step]!.some(
+        (s, i) => s !== 0 && s !== signs[step - 1]![i]
+      );
       expect(flipped).toBe(true);
     }
   });
@@ -128,7 +130,7 @@ describe('THM-COMPLEMENT-AMPLITUDE-DECAY', () => {
     for (let i = 2; i < amplitudes.length; i++) {
       expect(amplitudes[i]).toBeLessThan(amplitudes[i - 1]!);
     }
-    console.log('Amplitudes:', amplitudes.map(a => a.toFixed(6)).join(', '));
+    console.log('Amplitudes:', amplitudes.map((a) => a.toFixed(6)).join(', '));
   });
 
   it('decay ratio is approximately constant (geometric)', () => {
@@ -149,8 +151,8 @@ describe('THM-COMPLEMENT-AMPLITUDE-DECAY', () => {
       }
     }
     // All ratios should be < 1 (damped) and approximately constant
-    ratios.forEach(r => expect(r).toBeLessThan(1));
-    console.log('Decay ratios:', ratios.map(r => r.toFixed(4)).join(', '));
+    ratios.forEach((r) => expect(r).toBeLessThan(1));
+    console.log('Decay ratios:', ratios.map((r) => r.toFixed(4)).join(', '));
   });
 });
 
@@ -162,7 +164,7 @@ describe('THM-COMPLEMENT-DAMPED-OSCILLATION (unified)', () => {
     }
     const p = normalized(current);
     const uniform = 1 / p.length;
-    p.forEach(pi => {
+    p.forEach((pi) => {
       expect(Math.abs(pi - uniform)).toBeLessThan(0.001);
     });
   });
@@ -181,7 +183,8 @@ describe('THM-COMPLEMENT-DAMPED-OSCILLATION (unified)', () => {
     // Signed deviation should change sign (oscillate)
     let signChanges = 0;
     for (let i = 1; i < distances.length; i++) {
-      if (Math.sign(distances[i]!) !== Math.sign(distances[i - 1]!)) signChanges++;
+      if (Math.sign(distances[i]!) !== Math.sign(distances[i - 1]!))
+        signChanges++;
     }
     expect(signChanges).toBeGreaterThanOrEqual(5); // many sign changes
     console.log('Sign changes in 10 steps:', signChanges);
@@ -191,14 +194,16 @@ describe('THM-COMPLEMENT-DAMPED-OSCILLATION (unified)', () => {
     const uniform = [3, 3, 3]; // equal rejections
     const w = buleyeanWeights(uniform);
     const p = normalized(w);
-    p.forEach(pi => expect(Math.abs(pi - 1 / 3)).toBeLessThan(1e-10));
+    p.forEach((pi) => expect(Math.abs(pi - 1 / 3)).toBeLessThan(1e-10));
   });
 
   it('non-uniform is NOT a fixed point (always moves)', () => {
     const nonUniform = [5, 1, 2];
     const w = buleyeanWeights(nonUniform);
     const p = normalized(w);
-    const q = normalized(nonUniform.map(v => v / nonUniform.reduce((a, b) => a + b, 0)));
+    const q = normalized(
+      nonUniform.map((v) => v / nonUniform.reduce((a, b) => a + b, 0))
+    );
     // p should NOT equal the original distribution
     const different = p.some((pi, i) => Math.abs(pi - q[i]!) > 0.01);
     expect(different).toBe(true);
@@ -215,7 +220,8 @@ describe('THM-COMPLEMENT-DAMPED-OSCILLATION (unified)', () => {
       const w = buleyeanWeights(current);
       const p = normalized(w);
       const dev0 = p[0]! - 1 / p.length;
-      if (step > 0 && Math.sign(dev0) !== Math.sign(prevDev0)) oscillates = true;
+      if (step > 0 && Math.sign(dev0) !== Math.sign(prevDev0))
+        oscillates = true;
       prevDev0 = dev0;
       current = w;
     }
@@ -229,7 +235,11 @@ describe('Master: Complement oscillation theorems verified', () => {
     console.log('THM-COMPLEMENT-ORDER-REVERSAL: complement reverses ordering');
     console.log('THM-COMPLEMENT-SIGN-ALTERNATION: deviation alternates sign');
     console.log('THM-COMPLEMENT-PERIOD-2-ORDERING: ordering has period 2');
-    console.log('THM-COMPLEMENT-AMPLITUDE-DECAY: amplitude decays geometrically');
-    console.log('THM-COMPLEMENT-DAMPED-OSCILLATION: limit is uniform via oscillation');
+    console.log(
+      'THM-COMPLEMENT-AMPLITUDE-DECAY: amplitude decays geometrically'
+    );
+    console.log(
+      'THM-COMPLEMENT-DAMPED-OSCILLATION: limit is uniform via oscillation'
+    );
   });
 });

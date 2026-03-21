@@ -11,13 +11,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { HEADER_SIZE } from '@aeon/flow';
-import { TopologicalCompressor } from '@aeon/compression';
-import { PURE_JS_CODECS, BUILTIN_CODECS } from '@aeon/compression';
+import { HEADER_SIZE } from '@a0n/aeon/flow';
+import { TopologicalCompressor } from '@a0n/aeon/compression';
+import { PURE_JS_CODECS, BUILTIN_CODECS } from '@a0n/aeon/compression';
 import { brotliCompressSync, gzipSync, constants } from 'node:zlib';
 
 describe('Shootoff (§8.5)', () => {
-
   describe('Framing Overhead — Paper Table Verification', () => {
     /**
      * The paper claims (§8.5):
@@ -27,9 +26,9 @@ describe('Shootoff (§8.5)', () => {
      *   Aeon Flow: ~20 bytes/resource overhead (DATA + FIN frames)
      */
 
-    const HTTP1_OVERHEAD_PER_RESOURCE = 660;  // request + response headers
-    const HTTP2_OVERHEAD_PER_RESOURCE = 84;   // HEADERS + DATA frame headers, HPACK
-    const HTTP3_OVERHEAD_PER_RESOURCE = 62;   // QPACK + QUIC frame headers
+    const HTTP1_OVERHEAD_PER_RESOURCE = 660; // request + response headers
+    const HTTP2_OVERHEAD_PER_RESOURCE = 84; // HEADERS + DATA frame headers, HPACK
+    const HTTP3_OVERHEAD_PER_RESOURCE = 62; // QPACK + QUIC frame headers
     const AEON_FLOW_OVERHEAD_PER_RESOURCE = HEADER_SIZE * 2; // DATA + FIN
 
     it('Aeon Flow overhead is 20 bytes per resource', () => {
@@ -123,7 +122,9 @@ describe('Shootoff (§8.5)', () => {
       let offset = 0;
       let idx = 0;
       while (offset < size) {
-        const bytes = new TextEncoder().encode(patterns[idx % patterns.length] + '\n');
+        const bytes = new TextEncoder().encode(
+          patterns[idx % patterns.length] + '\n'
+        );
         const toCopy = Math.min(bytes.length, size - offset);
         buf.set(bytes.subarray(0, toCopy), offset);
         offset += toCopy;
@@ -134,10 +135,10 @@ describe('Shootoff (§8.5)', () => {
 
     function makeRandomPayload(size: number): Uint8Array {
       const buf = new Uint8Array(size);
-      let seed = 0xDEADBEEF;
+      let seed = 0xdeadbeef;
       for (let i = 0; i < size; i++) {
-        seed = (seed * 1664525 + 1013904223) & 0xFFFFFFFF;
-        buf[i] = (seed >>> 24) & 0xFF;
+        seed = (seed * 1664525 + 1013904223) & 0xffffffff;
+        buf[i] = (seed >>> 24) & 0xff;
       }
       return buf;
     }
@@ -172,7 +173,8 @@ describe('Shootoff (§8.5)', () => {
       // On highly repetitive text, global brotli wins dramatically because it
       // builds a dictionary across the entire input.
       // The point is: adding brotli to the race DRAMATICALLY improves over pure-JS.
-      const improvement = 1 - fullResult.compressedSize / pureResult.compressedSize;
+      const improvement =
+        1 - fullResult.compressedSize / pureResult.compressedSize;
       expect(improvement).toBeGreaterThan(0.1); // At least 10% improvement
 
       // Topo-full should still compress well (better than 50% ratio)
@@ -240,8 +242,8 @@ describe('Shootoff (§8.5)', () => {
       expect(fullResult.compressedSize).toBeLessThan(pureResult.compressedSize);
 
       // β₁ values
-      expect(pureResult.bettiNumber).toBe(5);  // 6 codecs - 1
-      expect(fullResult.bettiNumber).toBe(7);  // 8 codecs - 1
+      expect(pureResult.bettiNumber).toBe(5); // 6 codecs - 1
+      expect(fullResult.bettiNumber).toBe(7); // 8 codecs - 1
 
       // Both roundtrip
       expect(pure.decompress(pureResult.data)).toEqual(data);

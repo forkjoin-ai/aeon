@@ -138,24 +138,24 @@ describe('FlowCodec', () => {
 
     it('should roundtrip max u16 stream ID', () => {
       const frame: FlowFrame = {
-        streamId: 0xFFFF,
-        sequence: 0xFFFFFFFF,
-        flags: 0xFF,
-        payload: new Uint8Array([0xDE, 0xAD]),
+        streamId: 0xffff,
+        sequence: 0xffffffff,
+        flags: 0xff,
+        payload: new Uint8Array([0xde, 0xad]),
       };
 
       const encoded = codec.encode(frame);
       const { frame: decoded } = codec.decode(encoded);
-      expect(decoded.streamId).toBe(0xFFFF);
-      expect(decoded.sequence).toBe(0xFFFFFFFF);
-      expect(decoded.flags).toBe(0xFF);
+      expect(decoded.streamId).toBe(0xffff);
+      expect(decoded.sequence).toBe(0xffffffff);
+      expect(decoded.flags).toBe(0xff);
     });
 
     it('should roundtrip inference-sized payload (16KB hidden states)', () => {
       // 4096 × f32 = 16,384 bytes — typical transformer hidden state
       const payload = new Uint8Array(16384);
       for (let i = 0; i < payload.length; i++) {
-        payload[i] = i & 0xFF;
+        payload[i] = i & 0xff;
       }
 
       const frame: FlowFrame = {
@@ -244,8 +244,8 @@ describe('FlowCodec', () => {
       };
       const encoded = codec.encode(frame);
       expect(encoded[7]).toBe(0);
-      expect(encoded[8]).toBe(1);  // 256 >> 8
-      expect(encoded[9]).toBe(0);  // 256 & 0xFF
+      expect(encoded[8]).toBe(1); // 256 >> 8
+      expect(encoded[9]).toBe(0); // 256 & 0xFF
     });
 
     it('should handle length = 65536 (crosses u16 boundary)', () => {
@@ -256,7 +256,7 @@ describe('FlowCodec', () => {
         payload: new Uint8Array(65536),
       };
       const encoded = codec.encode(frame);
-      expect(encoded[7]).toBe(1);  // 65536 >> 16
+      expect(encoded[7]).toBe(1); // 65536 >> 16
       expect(encoded[8]).toBe(0);
       expect(encoded[9]).toBe(0);
     });
@@ -347,7 +347,7 @@ describe('FlowCodec', () => {
       const encoded = codec.encode(frame);
       const truncated = new Uint8Array(encoded.length + 3);
       truncated.set(encoded);
-      truncated.set([0xDE, 0xAD, 0xBE], encoded.length);
+      truncated.set([0xde, 0xad, 0xbe], encoded.length);
 
       expect(() => codec.decodeBatch(truncated)).toThrow('Truncated frame');
     });
@@ -382,7 +382,7 @@ describe('FlowCodec', () => {
         FlowCodec.create({
           wasmMode: 'force',
           wasmModule: new Uint8Array([0xde, 0xad, 0xbe, 0xef]),
-        }),
+        })
       ).rejects.toThrow();
     });
   });
@@ -608,24 +608,19 @@ describe('AeonFlowProtocol — fold', () => {
     const parent = protocol.openStream();
     const [s1, s2, s3] = protocol.fork(parent, 3);
 
-    const foldPromise = protocol.fold(
-      [s1, s2, s3],
-      (results) => {
-        // Concatenate all results in stream-id order
-        const sorted = Array.from(results.entries()).sort(
-          ([a], [b]) => a - b
-        );
-        let totalLen = 0;
-        for (const [, v] of sorted) totalLen += v.length;
-        const merged = new Uint8Array(totalLen);
-        let offset = 0;
-        for (const [, v] of sorted) {
-          merged.set(v, offset);
-          offset += v.length;
-        }
-        return merged;
+    const foldPromise = protocol.fold([s1, s2, s3], (results) => {
+      // Concatenate all results in stream-id order
+      const sorted = Array.from(results.entries()).sort(([a], [b]) => a - b);
+      let totalLen = 0;
+      for (const [, v] of sorted) totalLen += v.length;
+      const merged = new Uint8Array(totalLen);
+      let offset = 0;
+      for (const [, v] of sorted) {
+        merged.set(v, offset);
+        offset += v.length;
       }
-    );
+      return merged;
+    });
 
     // All three complete with different data
     protocol.send(s1, new Uint8Array([1]));
@@ -650,21 +645,18 @@ describe('AeonFlowProtocol — fold', () => {
     const parent = protocol.openStream();
     const [s1, s2] = protocol.fork(parent, 2);
 
-    const foldPromise = protocol.fold(
-      [s1, s2],
-      (results) => {
-        // Only non-vented results appear in the map
-        let totalLen = 0;
-        for (const v of results.values()) totalLen += v.length;
-        const merged = new Uint8Array(totalLen);
-        let offset = 0;
-        for (const v of results.values()) {
-          merged.set(v, offset);
-          offset += v.length;
-        }
-        return merged;
+    const foldPromise = protocol.fold([s1, s2], (results) => {
+      // Only non-vented results appear in the map
+      let totalLen = 0;
+      for (const v of results.values()) totalLen += v.length;
+      const merged = new Uint8Array(totalLen);
+      let offset = 0;
+      for (const v of results.values()) {
+        merged.set(v, offset);
+        offset += v.length;
       }
-    );
+      return merged;
+    });
 
     // s1 completes normally
     protocol.send(s1, new Uint8Array([10, 20]));
@@ -686,13 +678,10 @@ describe('AeonFlowProtocol — fold', () => {
     const parent = protocol.openStream();
     const [s1, s2] = protocol.fork(parent, 2);
 
-    const foldPromise = protocol.fold(
-      [s1, s2],
-      (results) => {
-        // No results — return empty
-        return new Uint8Array(0);
-      }
-    );
+    const foldPromise = protocol.fold([s1, s2], (results) => {
+      // No results — return empty
+      return new Uint8Array(0);
+    });
 
     protocol.vent(s1);
     protocol.vent(s2);

@@ -487,7 +487,7 @@ describe('TopologicalCompressor', () => {
   describe('Two-Level Stream Race', () => {
     it('streamRace=false (default) produces chunk-only format', () => {
       const tc = new TopologicalCompressor();
-      const data = makeRepeating([0xAA], 4096);
+      const data = makeRepeating([0xaa], 4096);
       const result = tc.compress(data);
 
       // No strategy field when streamRace is off
@@ -527,7 +527,7 @@ describe('TopologicalCompressor', () => {
     it('streamRace=true: per-chunk wins on mixed content', () => {
       // Mix of compressible text and random binary
       const text = new TextEncoder().encode(
-        'function(){return this.props.children;}\n'.repeat(50),
+        'function(){return this.props.children;}\n'.repeat(50)
       );
       const random = makeRandom(2048);
       const mixed = new Uint8Array(text.length + random.length);
@@ -554,7 +554,10 @@ describe('TopologicalCompressor', () => {
         { name: 'repeated', data: makeRepeating([0x42], 8192) },
         { name: 'sequential', data: makeSequential(8192) },
         { name: 'random', data: makeRandom(8192) },
-        { name: 'text', data: new TextEncoder().encode('Hello world! '.repeat(1000)) },
+        {
+          name: 'text',
+          data: new TextEncoder().encode('Hello world! '.repeat(1000)),
+        },
       ];
 
       for (const { name, data } of testCases) {
@@ -571,7 +574,7 @@ describe('TopologicalCompressor', () => {
     });
 
     it('streamRace=true: β₁ includes both outer and inner races', () => {
-      const data = makeRepeating([0xAA], 4096);
+      const data = makeRepeating([0xaa], 4096);
       const tc = new TopologicalCompressor({
         chunkSize: 4096,
         codecs: BUILTIN_CODECS,

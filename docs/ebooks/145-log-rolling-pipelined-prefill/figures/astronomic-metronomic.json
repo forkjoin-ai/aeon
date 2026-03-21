@@ -109,7 +109,7 @@
       "power_W": 1000000000000,
       "noise_density": 1e-22,
       "snr_threshold": 1,
-      "d_max_m": 3.162277660168379e+24,
+      "d_max_m": 3.162277660168379e24,
       "bule": "nearly everything (but not all)",
       "color": "#0891b2"
     }

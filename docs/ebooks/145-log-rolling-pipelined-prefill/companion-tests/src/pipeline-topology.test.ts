@@ -59,7 +59,9 @@ describe('Pipeline Topology', () => {
 
         // Items that completed all stages exit
         // Sort by entry time to verify FIFO
-        completed.sort((a, b) => positions.get(a)!.entered - positions.get(b)!.entered);
+        completed.sort(
+          (a, b) => positions.get(a)!.entered - positions.get(b)!.entered
+        );
         for (const item of completed) {
           exitOrder.push(item);
           positions.delete(item);
@@ -160,8 +162,8 @@ describe('Pipeline Topology', () => {
     });
 
     it('pipeline equation: T = (N + C - 1) × t_stage', () => {
-      const N = 100;     // items to process
-      const C = 8;       // pipeline capacity (β₁ + 1)
+      const N = 100; // items to process
+      const C = 8; // pipeline capacity (β₁ + 1)
       const tStage = 10; // ms per stage
 
       // Sequential (β₁ = 0, C = 1):
@@ -218,8 +220,8 @@ describe('Pipeline Topology', () => {
     }
 
     function regime(Re: number): 'laminar' | 'transitional' | 'turbulent' {
-      if (Re < 1/3) return 'laminar';
-      if (Re <= 2/3) return 'transitional';
+      if (Re < 1 / 3) return 'laminar';
+      if (Re <= 2 / 3) return 'transitional';
       return 'turbulent';
     }
 
@@ -270,10 +272,38 @@ describe('Pipeline Topology', () => {
       const scenarios = [
         // First scenario in the manuscript table includes one orchestration step
         // on top of the ideal chunked formula.
-        { P: 14, N: 2, B: 2, overhead: 1, expectedChunkedMeasured: 9, expectedSerial: 28 },
-        { P: 100, N: 4, B: 25, overhead: 0, expectedChunkedMeasured: 7, expectedSerial: 400 },
-        { P: 500, N: 8, B: 64, overhead: 0, expectedChunkedMeasured: 15, expectedSerial: 4000 },
-        { P: 100, N: 10, B: 10, overhead: 0, expectedChunkedMeasured: 19, expectedSerial: 1000 },
+        {
+          P: 14,
+          N: 2,
+          B: 2,
+          overhead: 1,
+          expectedChunkedMeasured: 9,
+          expectedSerial: 28,
+        },
+        {
+          P: 100,
+          N: 4,
+          B: 25,
+          overhead: 0,
+          expectedChunkedMeasured: 7,
+          expectedSerial: 400,
+        },
+        {
+          P: 500,
+          N: 8,
+          B: 64,
+          overhead: 0,
+          expectedChunkedMeasured: 15,
+          expectedSerial: 4000,
+        },
+        {
+          P: 100,
+          N: 10,
+          B: 10,
+          overhead: 0,
+          expectedChunkedMeasured: 19,
+          expectedSerial: 1000,
+        },
       ];
 
       for (const s of scenarios) {

@@ -485,4 +485,42 @@ theorem ChoiceTrajectory.no_depth_realizes_free_deterministic_collapse
     (trajectory.prefixSystem depth).trilemma
       hForked
 
+-- ─── THM-FAIL-COST-CEILING ──────────────────────────────────────────
+-- Floor (THM-FAIL-MINCOST): collapse costs ≥ N-1 per stage.
+-- Ceiling: total collapse cost ≤ stages × (maxForkWidth - 1).
+-- Together: (N-1) ≤ cost_per_stage ≤ (W-1), total ≤ S × (W-1).
+-- ─────────────────────────────────────────────────────────────────────
+
+/-- THM-FAIL-COST-CEILING: Total pipeline collapse cost is bounded
+    by the sum of per-stage ceilings. Each stage with fork width w
+    pays at most w - 1. -/
+theorem pipeline_collapse_cost_ceiling
+    (stageCosts : List ℕ) (maxPerStage : ℕ)
+    (hBound : ∀ c ∈ stageCosts, c ≤ maxPerStage) :
+    stageCosts.sum ≤ stageCosts.length * maxPerStage := by
+  induction stageCosts with
+  | nil => simp
+  | cons hd tl ih =>
+    simp only [List.sum_cons, List.length_cons]
+    have hhd := hBound hd (List.mem_cons_self _ _)
+    have htl := ih (fun c hc => hBound c (List.mem_cons_of_mem _ hc))
+    omega
+
+/-- The ceiling is tight: equality when every stage pays maximum. -/
+theorem pipeline_collapse_cost_ceiling_tight
+    (n maxPerStage : ℕ)
+    (stageCosts : List ℕ)
+    (hLen : stageCosts.length = n)
+    (hAll : ∀ c ∈ stageCosts, c = maxPerStage) :
+    stageCosts.sum = n * maxPerStage := by
+  induction stageCosts generalizing n with
+  | nil => simp at hLen; subst hLen; simp
+  | cons hd tl ih =>
+    simp only [List.length_cons] at hLen
+    simp only [List.sum_cons]
+    have hhd := hAll hd (List.mem_cons_self _ _)
+    have htl := ih (n - 1) (by omega)
+      (fun c hc => hAll c (List.mem_cons_of_mem _ hc))
+    subst hhd; subst hLen; omega
+
 end ForkRaceFoldTheorems
