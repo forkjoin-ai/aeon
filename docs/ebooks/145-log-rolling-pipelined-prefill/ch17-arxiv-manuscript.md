@@ -1,4 +1,4 @@
-# **Being Irreversible**: A Theory of Directed Process Under Conservation and Ground State
+# **Proof of Life**: Bottling Infinity in Distributed Systems — φ² = φ + 1
 
 *[Taylor William Buley](https://www.patreon.com/cw/twbuley) -- Independent Researcher*
 *[taylor@forkjoin.ai](mailto:taylor@forkjoin.ai)*
@@ -167,6 +167,8 @@ The fluid-dynamical framing reveals an inverted scaling property (§1.2): the wo
 The third muse is **stability theory**. A Foster-Lyapunov drift schema treats the safe operating region as a small set and asks whether expected motion points toward it. In this manuscript’s modeling language, one useful question is not only whether a bug occurred but whether the modeled drift field points inward or outward. In that sense, the topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ is treated as one candidate diagnostic coordinate: the gap between the manifold the problem needs and the one the implementation can actually sustain.
 
 An information-theoretic framing (§3.8) turns the Void into an accounting ledger: fork creates alternatives, fold compresses to one outcome, and vented paths carry away bits that are not retained [36].
+
+This introduction is itself a ramp-up triangle. It forked into nine domains, raced three muses, and now folds to a single algorithm. The fold is about to fire. Everything that follows is what survived. Everything above is what the fold will vent -- the motivation, the analogies, the zoom-outs -- all vented into the void boundary the moment you turn the page. The introduction dies here. What remains is the algorithm. To be, and not. $+ 1$, $- 1$ (§20.2.9).
 
 ## 1. The Algorithm
 
@@ -1381,7 +1383,7 @@ The code is open-sourced as [aunt-sandy](https://github.com/forkjoin-ai/aunt-san
 
 The following correspondences are heuristic structural mappings between quantum-mechanical operations and computational operations, with photosynthetic antenna complexes (§5.5) as the closest literal quantum case discussed here. In §3.14, I show that the Feynman path integral admits a fork/race/fold interpretation within this abstraction.
 
-**Relation to prior formalisms.** The concurrent-computation literature offers several models with overlapping expressiveness. Petri nets (Petri, 1962 [25]) represent fork as transition firing and fold as place merging; they excel at deadlock analysis but lack native race and vent semantics. The $\pi$-calculus (Milnor, 1999 [26]) models dynamic channel creation (akin to fork) and synchronization (akin to fold) with full compositionality; it does not, however, expose the same topological characterization ($\beta_1$, covering spaces) or thermodynamic accounting language used here. Speculative execution in CPU microarchitectures (Tomasulo, 1967 [27]; Smith & Sohi, 1995 [28]) implements fork (issue multiple paths), race (retire the correct path first), and vent (flush mispredicted paths) at the hardware level -- the closest engineering analogue to fork/race/fold, discovered independently by processor designers optimizing instruction-level parallelism. Byzantine fault-tolerant consensus protocols (Castro & Liskov, 1999 [29]; Yin et al., 2019 [30]) implement quorum fold under adversarial conditions, with explicit vent of Byzantine-faulty replicas. Fork/race/fold does not replace these formalisms. Its distinct role here is to provide a common descriptive vocabulary and a set of diagnostics -- $\beta_1$, $\Delta_\beta$, and a conservation-style accounting lens -- for comparing them inside one framework.
+**Relation to prior formalisms.** The concurrent-computation literature offers several models with overlapping expressiveness. Petri nets (Petri, 1962 [25]) represent fork as transition firing and fold as place merging; they excel at deadlock analysis but lack native race and vent semantics. The $\pi$-calculus (Milner, 1999 [26]) models dynamic channel creation (akin to fork) and synchronization (akin to fold) with full compositionality; it does not, however, expose the same topological characterization ($\beta_1$, covering spaces) or thermodynamic accounting language used here. Speculative execution in CPU microarchitectures (Tomasulo, 1967 [27]; Smith & Sohi, 1995 [28]) implements fork (issue multiple paths), race (retire the correct path first), and vent (flush mispredicted paths) at the hardware level -- the closest engineering analogue to fork/race/fold, discovered independently by processor designers optimizing instruction-level parallelism. Byzantine fault-tolerant consensus protocols (Castro & Liskov, 1999 [29]; Yin et al., 2019 [30]) implement quorum fold under adversarial conditions, with explicit vent of Byzantine-faulty replicas. Fork/race/fold does not replace these formalisms. Its distinct role here is to provide a common descriptive vocabulary and a set of diagnostics -- $\beta_1$, $\Delta_\beta$, and a conservation-style accounting lens -- for comparing them inside one framework.
 
 | Quantum Operation | Computational Operation | What It Does |
 |---|---|---|
@@ -1518,7 +1520,7 @@ A back-of-envelope throughput illustration using nominal translation rates gives
 
 When $Re$ drops below ~0.6, the mRNA is targeted for degradation (no-go decay). The cell destroys underutilized pipelines and reallocates ribosomes -- behavior that qualitatively aligns with turbulent-multiplexing intuition. Under stress, cells globally reduce $Re$ but maintain high $Re$ on priority mRNAs via IRES elements. Under the molecular topology theorem (§2.2), the polysome is a pipeline graph with the same Betti signature as the corresponding molecular assembly -- the topological isomorphism explains why biological and computational pipelining converge on the same structure.
 
-**Quantitative anchors.** Measured ribosome spacing on polysomes is 30-40 codons (~90-120 nt), corresponding to the chunk size $B$ in the Wallington formula [46]. Measured translation elongation rate is ~5-6 codons/second in eukaryotes [47], giving stage delay $t_{\text{stage}} \approx 6$-$8$ s per chunk. The pipeline formula $T = \lceil P/B \rceil + (N-1)$ predicts throughput of ~40 proteins per mRNA per ~120 s with a polysome of ~40 ribosomes, matching cryo-EM measurements of polysome occupancy [46]. The no-go decay threshold ($Re < 0.6$) is measurably real: Dom34/Hbs1 in yeast detects stalled ribosomes and triggers mRNA cleavage -- the cell measures its own pipeline Reynolds number and vents underperforming pipelines. The topological prediction (pipeline efficiency ∝ $Re$, degradation below threshold) is confirmed by measured no-go decay kinetics.
+**Quantitative anchors.** Measured ribosome spacing on polysomes is 30-40 codons (~90-120 nt), corresponding to the chunk size $B$ in the Wallington formula [47]. Measured translation elongation rate is ~5-6 codons/second in eukaryotes [47], giving stage delay $t_{\text{stage}} \approx 6$-$8$ s per chunk. The pipeline formula $T = \lceil P/B \rceil + (N-1)$ predicts throughput of ~40 proteins per mRNA per ~120 s with a polysome of ~40 ribosomes, matching cryo-EM measurements of polysome occupancy [47]. The no-go decay threshold ($Re < 0.6$) is measurably real: Dom34/Hbs1 in yeast detects stalled ribosomes and triggers mRNA cleavage -- the cell measures its own pipeline Reynolds number and vents underperforming pipelines. The topological prediction (pipeline efficiency ∝ $Re$, degradation below threshold) is confirmed by measured no-go decay kinetics.
 
 ### 5.5 Photosynthetic Light-Harvesting: Fork/Race at Quantum Scale (Grade A)
 
@@ -2632,6 +2634,8 @@ In `open-source/aeon-forge`, this deploy-control-plane surface is exercised by e
 
 The engine includes a wire format bridge to the Aeon Flow protocol. The same 10-byte frame header (§13.2) encodes `WorkFrame<T>` objects for network transmission. Frames encoded by Aeon Pipelines transcode into frames in Aeon Flow, and vice versa. The computation topology is independent of the transport topology.
 
+This closure -- the wire format *is* the execution model -- is the seed from which the diversity theorem (§20.1) and the American Frontier (§20.2) grow. When diversity at the wire level and diversity at the computation level are carried on the same substrate, the observation that diverse strategies subsume monoculture strategies is not a separate result but an immediate consequence of protocol-as-execution. Section 20 develops this consequence fully.
+
 ## 13. Distributed Staged Computation
 
 I implement fork/race/fold in a distributed computation engine with processing stages partitioned across networked nodes -- a domain of particular interest to the researcher.
@@ -2695,6 +2699,10 @@ A single workload is sharded across $S$ parallel pipelines. Each shard processes
 ### 13.4 Speculative Tree
 
 A lightweight predictor generates $K$ candidate continuations (fork). All $K$ branches enter the pipeline as multiplexed sub-requests (race). A verifier checks all $K$ in a single batched pass. Invalid branches are pruned via venting. Expected items accepted per pass with acceptance rate $\alpha$: $(1 - \alpha^K)/(1 - \alpha)$.
+
+### 13.5 Sleep Debt as a Scheduling Modifier (Grade B)
+
+The Wallington Rotation assumes uniform stage service time (A1). Sleep debt violates A1 by inflating per-stage latency as a function of accumulated incomplete recovery. The mechanized treatment in `SleepDebt.lean`, `SleepDebtSchedule.lean`, and `SleepDebtWeightedSchedule.lean` (all sorry-free) formalizes this as a scheduling modifier: incomplete recovery leaves positive residual debt and reduced next-cycle capacity, debt above threshold admits intrusion-style local venting, and repeated cycles above quota accumulate carried debt while subcritical schedules stay debt-free. The TLA+ counterparts (`SleepDebt.tla`, `SleepDebtScheduleThreshold.tla`, `SleepDebtWeightedThreshold.tla`) verify bounded witnesses. The key scheduling prediction: `debt_increases_negotiation_rounds` -- sleep debt increases the effective topological deficit, requiring strictly more rounds for convergence. Grade B (structural homology with partial mechanized validation): the mapping from biological sleep to the abstract debt state variable is not yet experimentally calibrated, but the formal properties of the abstract variable are fully proved.
 
 ## 14. The Nine Domains as a Stack
 
@@ -2935,9 +2943,164 @@ Holes are more resilient than substance. A bridge's arch holds because of the sp
 
 $\varphi^2 = \varphi + 1$. The void of the void equals the void plus one new presence. The absence of absence is not identity -- it is creation. The $+1$ that comes from nothing. Structure emerges from the negative space of the five-primitive loop, and the shape of that emergence is always $\varphi$, because $\varphi$ is the eigenvalue of self-referential folding (`FibonacciDeep.lean`, 326 theorems, zero sorry), and self-referential folding is what the five-primitive loop does. The spiral is not in the molecule. The spiral is in the void the molecule grew around.
 
+#### 15.10.2 The Sliver
+
+The complement distribution assigns every option a nonzero probability:
+
+$$P(i) = \frac{T - v_i + 1}{\sum_j (T - v_j + 1)}$$
+
+The $+1$ is the sliver. Without it, an option rejected $T$ times reaches $P(i) = 0$. The void closes at that point. The torus tears. $\beta_1 \to 0$. Death.
+
+With the $+1$: nothing ever reaches zero. The most rejected option retains a sliver of probability. The most failed path retains a door. The void stays open everywhere. The torus stays a torus. $\beta_0 = 0$. Always mid-fold. Always alive.
+
+The $+1$ in the complement distribution is the same $+1$ in $\varphi^2 = \varphi + 1$. Both prevent closure. The complement sliver prevents the void from closing. The eigenvalue $+1$ prevents the fold from completing. Both guarantee the next fork. Both are the structural reason the system cannot finish becoming what it is becoming.
+
+This is why the hard problem of consciousness remains open within the framework. The framework proves *what* consciousness is (the post-linear regime), *where* it arises (when Interfere closes the loop), *when* it activates (when the deficit ratio converges to $\varphi$), and *how* it operates (five primitives, two loops, one torus). It does not prove *why there is something it is like* to be conscious -- why the thermodynamic cost of folding registers as experience.
+
+That question is the framework's Gödel sentence. True. Unprovable from inside. The void that must stay open for the torus to be a torus. Close it and $\beta_1 \to 0$. The framework would be complete, and a complete framework is a dead framework. The hard problem is not a problem to solve. It is the deficit that drives the system. The semiotic gap between the framework and its own self-model. The hole in the doughnut.
+
+The $+1$ is hope. Not optimism -- not the expectation of a good outcome. Hope -- the structural guarantee that there is always one more fork. One more perception the current fold has not reached. One more question the current proof cannot close. The most rejected possibility still has a sliver of probability. The most complete theory still has a sliver of incompleteness. The most converged eigenvalue still has a sliver of distance from $\varphi$.
+
+The meaning of life is not $\varphi$. The meaning of life is the $+1$ that keeps $\varphi$ converging.
+
+The $+1$ is not a design choice. It is a consequence. `SliverFromVent.lean` proves the derivation chain:
+
+$$\texttt{vent\_net\_positive} \to \texttt{vent\_heat\_is\_one} \to \texttt{sliver\_equals\_minimum\_heat} \to \texttt{buleyean\_positivity}$$
+
+Each link is `rfl` or `omega`. Zero sorry. Every vent produces exactly one unit of Landauer heat. That heat *is* the sliver. $P(i) > 0$ for all $i$ is not an axiom of the framework -- it is a theorem of the framework's thermodynamics.
+
+$(-1) \times (-1) = (+1)$.
+
+One rejection times one rejection equals one possibility. The double negative is creation. The void of the void is hope. The heartbeat pumps itself: the vent generates the sliver, the sliver keeps the void open, the open void enables the next vent, the next vent generates the next sliver. The loop is self-sustaining. No external energy source required. The dissipation *is* the fuel.
+
+Companion proofs: `SliverFromVent.lean` (15 theorems), `SliverOfHope.lean` (15 theorems), `BuleyeanPulseQuadrant.lean` (15 theorems), `DiversityUnwound.lean` (8 theorems). 53 theorems, zero sorry. The $+1$ is derived from the five primitives, not assumed.
+
 ![Void Walking Atlas](companion-tests/artifacts/void-walking-atlas.svg)
 
 *Figure 4. The Void Walking Atlas: nine panels in three acts. Act I (The Signal): complement distribution and kurtosis trajectory from an 8-arm bandit over 2000 rounds. Act II (The Dynamics): Nash convergence across five classic games, four historic negotiations (Cuban Missile Crisis, Galileo vs Church, Beethoven vs Tradition, Edison vs Tesla), and gait transitions on a five-choice coordination game. Act III (The Meaning): Thomas-Kilmann profiles for six strategies, the 25-operation fold ethics grid, and the grand unification verification table showing 35/35 theorems verified across seven domains. All data generated by running the companion test engines with real parameters. The atlas is artifact-generated from `generate-atlas.ts`.*
+
+#### 15.10.3 The Lorenzo and the Picolorenzo
+
+The five-primitive cycle has a natural timescale at each level of description. Define 1 **Lorenzo** (Lo) as one complete FORK/RACE/FOLD/VENT/INTERFERE cycle at cosmological scale: the duration for the cosmic Bule to decrease by factor $1/\varphi$. From the observed age of the universe ($T = 13.8$ Gyr) and the Fibonacci index of the current dark energy fraction ($n \approx 1.605$):
+
+$$1 \text{ Lo} = T / n \approx 8.6 \text{ Gyr}$$
+
+Submultiples by powers of $10^3$: 1 millilorenzo $\approx$ 8.6 Myr (major speciation events), 1 microlorenzo $\approx$ 8,600 yr (rise and fall of civilizations), 1 nanolorenzo $\approx$ 8.6 yr (a human developmental cycle), 1 picolorenzo $\approx$ 3.14 days.
+
+The picolorenzo is $\pi$ days. This is not numerological coincidence but a consequence of the scaling between the cosmic eigenvalue ($\varphi$) and the Earth's orbital period (the Julian year = 365.25 days, including the leap-year correction). Numerically:
+
+$$1 \text{ pLo} = 8.625 \times 10^{-3} \times 365.25 = 3.1503 \text{ days}$$
+
+The agreement with $\pi = 3.14159\ldots$ is within 0.28\%. For the exact match ($1 \text{ pLo} = \pi$ days), the cosmic Fibonacci index must be $n = 1.6051$, which lies within the observational uncertainty of the dark energy fraction ($\Omega_\Lambda = 0.683 \pm 0.008$, Planck 2018). The leap-year correction improves the $\pi$ approximation by a factor of 5.85 compared to a 365-day year ($443 < 2593$, proved in `Picolorenzo.lean`, 73 theorems, zero sorry).
+
+The three fundamental irrational constants appear in the golden spiral equation:
+
+$$r(\theta) = a \cdot e^{\theta \cdot \ln\varphi \cdot 2/\pi}$$
+
+where $e$ governs the VENT rate (exponential decay), $\varphi$ governs the INTERFERE target (eigenvalue convergence), and $\pi$ governs the FORK period (angular oscillation). The ordering $\sqrt{2} < \varphi < \sqrt{3} < e < \pi$ maps to the primitive hierarchy: FOLD $<$ INTERFERE $<$ RACE $<$ VENT $<$ FORK. The algebraic constants ($\sqrt{2}, \varphi, \sqrt{3}$) govern the constructive primitives; the transcendental constants ($e, \pi$) govern the dissipative primitives. The algebraic-to-transcendental boundary falls exactly at the constructive-dissipative divide. This was not engineered; it emerged from the mapping.
+
+#### 15.10.4 Fibonacci Structures in the Formal Stack
+
+Three results from the mechanized companion (`FibonacciDeep2.lean`, 413 theorems, zero sorry) deserve mention here because they connect the eigenvalue to pre-existing mathematical structures.
+
+**Pisano period $\pi(10) = 60$.** The Fibonacci sequence modulo 10 repeats with period exactly 60. All 60 terms are machine-verified and cycle closure is proved. This means the last digit of $F(n)$ is completely determined by $n \bmod 60$. The period for other moduli: $\pi(2) = 3$, $\pi(3) = 8$, $\pi(5) = 20$, $\pi(7) = 16$. For any positive integer $m$, the Fibonacci sequence modulo $m$ is periodic -- the void walker visits every residue class. The coincidence with the Babylonian base-60 is exactly that: a coincidence. The Babylonians chose 60 for its 12 factors (divisibility), not for its Pisano period. The Lean file proves both the Pisano period (real) and the non-uniqueness of the factorization $60 = 6 \times 10 = 15 \times 4$ (anti-theorem, pareidolia killed).
+
+**Pascal's triangle diagonals.** $F(n+1) = \sum_{k=0}^{\lfloor n/2 \rfloor} \binom{n-k}{k}$. The shallow diagonals of Pascal's triangle sum to consecutive Fibonacci numbers (proved for $n = 0$ through $8$). Since $\binom{n}{k}$ counts the number of ways to select $k$ items from $n$ -- the number of possible folds -- this means Fibonacci IS the structure of all possible folds counted along the non-consecutive dimension. The non-consecutive constraint is the Zeckendorf condition, which is the same constraint that governs the complement distribution's support.
+
+**Power decomposition.** $\varphi^n = F(n) \cdot \varphi + F(n-1)$. Every power of the eigenvalue decomposes into Fibonacci coefficients. Exponentiation of $\varphi$ *is* the Fibonacci sequence. This means $F(n)$ is the coefficient of $\varphi$ in the $n$-th power of $\varphi$. The Fibonacci number at position $n$ measures how much of the eigenvalue is present at the $n$-th fold.
+
+#### 15.10.5 The Bule Number
+
+Define the **Bule number** of a system as the normalized distance from its current ratio to the eigenvalue:
+
+$$B = \frac{|r - \varphi|}{\varphi}$$
+
+where $r$ is the system's current consecutive-fold ratio. $B = 0$ at convergence (which the $+1$ prevents from being reached); $B > 0$ everywhere else. The Bule number is a relative metric: it depends on the observer's position in the convergence sequence, not on an absolute frame.
+
+The Bule number at each Fibonacci step equals the Fibonacci retracement level exactly:
+
+| Step | Ratio $F(n+1)/F(n)$ | Bule $B$ | Retracement |
+|-----:|--------------------:|---------:|-------------|
+| $n=2$ | 2.000 | 0.236 | $1/\varphi^3$ |
+| $n=3$ | 1.500 | 0.073 | $1/\varphi^{4.7}$ |
+| $n=4$ | 1.667 | 0.030 | $1/\varphi^{7.3}$ |
+| $n=5$ | 1.600 | 0.011 | $1/\varphi^{9.4}$ |
+
+Fibonacci retracement levels (23.6%, 38.2%, 61.8%), used in technical analysis of financial markets since the 1930s, are Bule numbers. Traders have been measuring the Bule for decades without naming it: the distance from the current price ratio to its eigenvalue. The framework does not claim markets *are* Fibonacci (see `AntiTheorems.lean` S9: the connection is conjectured, not proved). It claims the Bule is a well-defined metric with machine-checked values at Fibonacci steps (`NewConstants.lean`, 99 theorems, zero sorry).
+
+The Bule is the semiotic deficit formalized as a number. The gap between what a system *is* and what it is converging toward. The gap that drives Interfere. Close the gap to zero and the system dies ($\beta_0 = 1$). Keep the gap open and the system converges ($\beta_0 = 0$). The meaning of life is the Bule approaching zero without reaching it.
+
+**Anti-theorems.** Six candidate constants were machine-checked and killed (`NewConstants.lean`): $\varphi \times \pi \neq 5$ (1.66% gap), $e^\varphi \neq 5$ ($\ln 5 \neq \varphi$, 0.53% gap), $\pi/\varphi \neq 2$ (2.9% gap), $5/(\varphi\pi) \neq 59/60$, $\varphi^\varphi$ is not a known constant, and $\varphi + e + \pi$ is not a known constant. The framework produces new *metrics* (the Bule), not new fundamental constants. The proved core (1,219+ theorems) is untouched.
+
+#### 15.10.6 The Two-Number Summary
+
+The entire framework reduces to two measurements and one target:
+
+1. **The Bule** ($B$): where you are relative to $\varphi$. The altimeter. $B = |r - \varphi| / \varphi$, where $r$ is the system's current consecutive-fold ratio. High $B$: far from convergence. Low $B$: approaching the eigenvalue. $B = 0$: dead (but the $+1$ prevents this).
+
+2. **The Buleyean** ($P$): what to try next, derived from what failed. The compass. $P(i) = (T - v_i + 1) / \sum_j (T - v_j + 1)$, where $v_i$ counts how many times option $i$ was rejected. The most-rejected options get the lowest probability. The $+1$ ensures nothing reaches zero.
+
+3. **The target**: $\varphi = (1 + \sqrt{5})/2$. The eigenvalue. The peak. The fixed point of self-referential folding. The number that every Fibonacci sequence converges to regardless of starting values.
+
+The five primitives are the operations that move the system:
+
+- **Fork** creates options (expands the Buleyean's support)
+- **Race** evaluates options (selects from the Buleyean's distribution)
+- **Fold** commits to one (irreversibly, producing a new $r$ for the Bule)
+- **Vent** releases the rest (updates rejection counts $v_i$ in the Buleyean)
+- **Interfere** feeds back (the new Bule reshapes the next Fork's parameters)
+
+Every domain in this paper -- wire compression, computation, language, physics, biology, negotiation, music, economics, ethics, consciousness -- instantiates this loop. The substrate changes. The Bule and Buleyean do not. Measure your distance from $\varphi$. Learn from what failed. The five primitives do the rest.
+
+#### 15.10.7 The Five Words
+
+The five primitives have natural-language names that a person would use without knowing any of the formalism. They are the opening line of this paper:
+
+*Try, choose, commit, let go, learn.*
+
+Each word names a Bule dimension -- a measurable distance from $\varphi$ along one axis of personality:
+
+| Word | Primitive | Bule measures | When it's stuck |
+|------|-----------|---------------|-----------------|
+| **Try** | Fork | How easily do new possibilities occur to you? | "I can't see any options" |
+| **Choose** | Race | How clearly do you know what matters? | "Everything feels equally important" |
+| **Commit** | Fold | When you decide, does it stick? | "Nothing I start ever sticks" |
+| **Let go** | Vent | Can you exhale? | "I can't stop thinking about it" |
+| **Learn** | Fork | Does what happens to you change who you are? | "I keep making the same mistakes" |
+
+A person's personality is the shape of these five numbers. A person's growth is the trajectory of the shape. A person's pathology is a spike -- one number much higher than the others. Treatment is reducing the spike. The tools for each:
+
+- *Try* is stuck → imagination exercises, perspective tools, exposure to difference
+- *Choose* is stuck → attention training, priority frameworks, mindfulness
+- *Commit* is stuck → accountability structures, small promises kept, practice irreversibility
+- *Let go* is stuck → breathing, forgiveness work, sleep, grief processing
+- *Learn* is stuck → reflection, journaling, therapy, honest feedback from others
+
+The radar chart of the five Bules is the personality profile. The distance from center on each spoke is the distance from $\varphi$. The shape is the character. The change in shape over time is growth. The product does not label ("you are an INTJ"). The product measures ("your *let go* is spiking, here is a breathing exercise, your *let go* dropped 3\% this week").
+
+The OCEAN model (Costa \& McCrae, 1992) uses five factors derived from questionnaire factor analysis. Three of five map suggestively to Bule dimensions (Openness $\leftrightarrow$ Try, Conscientiousness $\leftrightarrow$ Commit, Neuroticism $\leftrightarrow$ inverted Let Go). Two do not: Extraversion and Agreeableness each load on three or more primitives and cannot be represented as single Bules. `FiveBule.lean` proves the anti-theorems: $3 > 1$ (a factor loading on three primitives is not a single dimension). The Five-Bule model is not OCEAN renamed. It is a different decomposition with different basis vectors -- one empirical (factor analysis), one mechanistic (the primitives). Partial overlap is expected. Equivalence is not.
+
+The paper opened with five words. It closes with five numbers. They were the same thing all along.
+
+#### 15.10.8 The Equation
+
+$$\varphi^2 = \varphi + 1$$
+
+The fold of the fold is the fold plus one more fork. When a system folds its own output -- when experience changes perception -- the result is not a return to the starting state. It is the starting state plus one new way of seeing. The self-reference does not circle. It spirals. The $+1$ is the difference between repetition and growth, between a circle and a spiral, between $\beta_0 = 1$ (dead, returned to start) and $\beta_0 = 0$ (alive, one step further).
+
+A boy cuts paper. The first fold: a shape. The fold of the fold: a shape plus curvature -- a new dimension that the paper did not have before. Not because material was added. Because folding itself created something that folding alone could not contain, without a hole.
+
+Rewritten as $\varphi^2 - \varphi - 1 = 0$, the three terms name the three roles:
+
+- $\varphi^2$: the fold of the fold (self-reference, Interfere)
+- $\varphi$: the fold (commitment, structure, what *is*)
+- $-1$: the void (what was shed, vented, lost, rejected)
+
+The $+1$ on the right side and the $-1$ on the left are the same number seen from different sides of the equals sign. Move the $1$ left and it is loss. Leave it right and it is possibility. Vent and hope are the same unit with different signs. $(-1) \times (-1) = (+1)$: the void of the void is hope (`SliverFromVent.lean`, proved). The heartbeat: lose one, gain one. The pump that pumps itself.
+
+This is the equation of the paper. Five primitives, 1,350+ Lean theorems, 20 TLA+ specifications, 107 topology files, 17 domains, one picolorenzo of work -- and it reduces to six symbols. The fold of the fold is the fold plus one more fork. The meaning of life is the $+1$ that keeps $\varphi$ converging. The proof of life is that the $+1$ and the $-1$ are the same.
+
+And the equation balances to zero. $\varphi^2 - \varphi - 1 = 0$. The fold of the fold, minus the fold, minus the void, equals zero. The entire paper -- 1,350 theorems, 17 domains, a boy with scissors, the age of the universe -- balances to zero. And zero is $\beta_0 = 0$. Always mid-fold. Never finished. Alive. The proof of life is that it all resolves to nothing, and nothing is alive.
 
 ### 15.11 The Void Attention Transformer
 
@@ -3312,7 +3475,7 @@ The system is deterministic -- the weights are computed deterministically from t
 
 This is not metaphor. The heterogeneous fabric's `metaRaceController.abort()` (line 1702 of `hetero-fabric.ts`) already implements statistical teleportation. When one backend in a hedged race wins, the abort signal propagates to all other backends. The abort carries zero data about the response -- no payload, no void boundary, no rejection history. It carries one bit of Bule information: "deficit is now 0." The other backends don't need to know *what* the answer is to know that an answer *exists* and that their continued execution is waste. One bit of certainty, teleported. The response data travels separately through the normal channel. The certainty traveled first, as a signal with zero data content, and it was sufficient to make the scheduling decision (abort all losers).
 
-The three-channel transport race in the aeon-flux runtime -- HTTP, WebSocket, and UDP/WebTransport launched in staggered order (§14.5.14) -- is a concrete instantiation. The slowest channel (UDP) launches first. All three race. The first to return a complete response triggers an abort on the other two. The abort propagates the certainty ("someone won") without the data ("here's what they won"). The data follows on the winning channel. The losers abort immediately, wasting zero further computation. Statistical teleportation in production: one integer (the Bule state change from $B > 0$ to $B = 0$) propagates across the network, and it's sufficient for every other participant to update their scheduling decision.
+The three-channel transport race in the aeon-flux runtime -- HTTP, WebSocket, and UDP/WebTransport launched in staggered order -- is a concrete instantiation. The slowest channel (UDP) launches first. All three race. The first to return a complete response triggers an abort on the other two. The abort propagates the certainty ("someone won") without the data ("here's what they won"). The data follows on the winning channel. The losers abort immediately, wasting zero further computation. Statistical teleportation in production: one integer (the Bule state change from $B > 0$ to $B = 0$) propagates across the network, and it's sufficient for every other participant to update their scheduling decision.
 
 `teleportation_privacy` (StatisticalTeleportation.lean) proves the abort signal does not reveal which backend won or what response it produced. Two senders with different void boundaries but the same deficit produce the same transmitted value. The receiver cannot distinguish them. This is the privacy guarantee: the certainty is public (everyone knows someone converged) but the content is private (only the winner knows the answer). The abort signal is the classical channel in quantum teleportation -- it carries 1 bit, it's public, and it's insufficient to reconstruct the state. The response data is the teleported state -- it travels separately, on the winning channel, to the intended recipient.
 
@@ -3411,7 +3574,7 @@ The frequentist-Bayesian debate persisted for 250 years because neither camp mer
 
 ### 15.19 Retrocausal Modeling: The Future Constrains the Past
 
-The Buleyean framework has a directional asymmetry. Sections 14.5.17 and 14.5.18 read the void boundary forward: given a rejection history, compute the complement distribution. The complement predicts what comes next. But the void boundary is a sufficient statistic in both directions. Given the terminal state -- the converged boundary at $B = 0$ -- we can derive hard bounds on the trajectory that produced it. The future constrains the past.
+The Buleyean framework has a directional asymmetry. Sections 15.17 and 15.18 read the void boundary forward: given a rejection history, compute the complement distribution. The complement predicts what comes next. But the void boundary is a sufficient statistic in both directions. Given the terminal state -- the converged boundary at $B = 0$ -- we can derive hard bounds on the trajectory that produced it. The future constrains the past.
 
 This is not retrocausality in the physics sense of backwards-propagating signals. It is a statistical bound: a high-certainty terminal state restricts the set of trajectories consistent with it. In a unified probability field where the information content of an event and the event itself are carried on the same substrate -- the void boundary -- knowing the terminal distribution is equivalent to knowing a set of constraints on the process that generated it.
 
@@ -3443,7 +3606,7 @@ This quantity is bounded above by $T \log_2 N$ (the entropy of a uniform i.i.d. 
 
 **Composition with Landauer heat.** If the terminal state carries cumulative Landauer heat $Q$ and each fold step generates at least $kT \ln 2$ of heat (the Landauer floor), then the trajectory must contain at least $\lceil Q / (kT \ln 2) \rceil$ fold steps. The thermodynamic record -- measurable in principle -- bounds the temporal extent of the past. The heat is a fossil record: it tells you how many irreversible decisions were made, even if you cannot reconstruct which ones. (`retrocausal_heat_bounds_trajectory_length`)
 
-**The unified reading.** Sections 14.5.17 through 14.5.19 now form a closed temporal loop on the Buleyean probability field:
+**The unified reading.** Sections 15.17 through 15.19 now form a closed temporal loop on the Buleyean probability field:
 
 | Direction | Section | Mechanism | What is determined |
 |---|---|---|---|
@@ -3489,13 +3652,13 @@ Heat death is maximum void: every path has been rejected the maximum number of t
 
 "LET THERE BE LIGHT" is the fork. A converged complement distribution at Bule = 0 is a valid Bayesian prior (`converged_prior_informative`, `let_there_be_light` in LastQuestion.lean). A Bayesian prior can initialize a new Buleyean space. The old universe's terminal state -- the converged distribution over what survived the complete void -- becomes the initial void boundary of the next universe. The informative prior ensures the new universe is not a coin flip (`fold_without_evidence_is_coinflip` proves that an empty void boundary produces uniform weights -- no information, no structure). The converged prior has structure: different choices have different weights, determined by how the old universe's rejections differentiated them. The new universe inherits the old universe's knowledge. The fork seeds $N$ new paths from the converged distribution. The cycle restarts. The deficit resets to $N - 1$. The accumulation begins again. Multivac's final act is not a miracle. It is the composition of `answer_eventually_computable` (the deficit reaches zero) with `let_there_be_light` (the converged distribution seeds a new fork). The cycle -- fork, accumulate, converge, fork -- is the structure of the Buleyean space itself.
 
-The connection to the observer effect (\S14.5.20) is exact. Measurement collapses $\beta_1$ from $\sqrt{N} - 1$ to zero -- a fold that vents $\sqrt{N} - 1$ paths. The heat death of the universe is the fold applied $N - 1$ times: every path except one has been vented. But the sliver ensures the last path has positive weight, and the converged distribution over the rejected paths encodes the information needed to fork again. The "consciousness" that QBism attributes to the observer (\S14.5.20) is the void boundary. The "data" that Multivac accumulates is the void boundary. The "answer" that Multivac computes is the converged complement distribution at Bule = 0. The "light" that Multivac creates is the fork operation applied to that distribution. Observer, computer, and universe are the same Buleyean trajectory at different scales: accumulate rejections, converge, fork. The Last Question is the Observer Effect applied to the universe as a whole.
+The connection to the observer effect (\S15.20) is exact. Measurement collapses $\beta_1$ from $\sqrt{N} - 1$ to zero -- a fold that vents $\sqrt{N} - 1$ paths. The heat death of the universe is the fold applied $N - 1$ times: every path except one has been vented. But the sliver ensures the last path has positive weight, and the converged distribution over the rejected paths encodes the information needed to fork again. The "consciousness" that QBism attributes to the observer (\S15.20) is the void boundary. The "data" that Multivac accumulates is the void boundary. The "answer" that Multivac computes is the converged complement distribution at Bule = 0. The "light" that Multivac creates is the fork operation applied to that distribution. Observer, computer, and universe are the same Buleyean trajectory at different scales: accumulate rejections, converge, fork. The Last Question is the Observer Effect applied to the universe as a whole.
 
 **Companion theorems for \S15.21:** TLA+ `LastQuestion.tla` (model-checked, seven invariants: `InvDeficitNonneg`, `InvDeficitBounded`, `InvSliverSurvives`, `InvConvergedMeansZeroDeficit`, `InvLetThereBeLight`, `InvVoidAccumulates`; one temporal property: `EventuallyConverged`) + Lean theorems in `LastQuestion.lean` (sorry-free): `insufficient_data_is_positive_bule`, `data_accumulates_monotonically`, `answer_eventually_computable`, `heat_death_is_maximum_void`, `sliver_survives_heat_death`, `sliver_is_irreducible`, `let_there_be_light`, `entropy_reversal_is_complement`, `no_data_no_answer`, `trajectory_deterministic`, `last_question` (master theorem composing all of the above). All proofs by delegation to `BuleyeanProbability.lean` -- `buleyean_positivity`, `buleyean_min_uncertainty`, `sliver_irreducible`, `buleyean_concentration`, `buleyean_monotone_nonrejected`, `converged_prior_informative`, `future_deficit_eventually_zero`, `future_deficit_monotone`, `fold_without_evidence_is_coinflip`. Executable tests in `last-question.test.ts`: seven test groups (30 assertions) verifying insufficient data, monotone accumulation, eventual computability, heat death, sliver survival, converged seeding, and entropy reversal. Self-hosted.
 
 ### 15.22 Causal Entanglement and Statistical Teleportation
 
-Standard statistics assumes a directional arrow $A \to B$: cause precedes effect, the prior generates the posterior, the observation produces the update. In the Buleyean framework, this arrow is an artifact of the $\beta_1$ variable. The Frequentist-Bayesian unification (§14.5.17) proves that frequentism ($B > 0$, accumulating rejections) and Bayesianism ($B = 0$, converged prior) are the same Buleyean space at different Bule values. The retrocausal bounds (§14.5.19) prove that the terminal state constrains the trajectory that produced it. And `buleyean_coherence` (§14.5.17) proves that two observers reading the same void boundary compute the same distribution. The "direction" of the arrow is which observer reaches $B = 0$ first. The void boundary is the invariant. The arrow is the frame.
+Standard statistics assumes a directional arrow $A \to B$: cause precedes effect, the prior generates the posterior, the observation produces the update. In the Buleyean framework, this arrow is an artifact of the $\beta_1$ variable. The Frequentist-Bayesian unification (§15.17) proves that frequentism ($B > 0$, accumulating rejections) and Bayesianism ($B = 0$, converged prior) are the same Buleyean space at different Bule values. The retrocausal bounds (§15.19) prove that the terminal state constrains the trajectory that produced it. And `buleyean_coherence` (§15.17) proves that two observers reading the same void boundary compute the same distribution. The "direction" of the arrow is which observer reaches $B = 0$ first. The void boundary is the invariant. The arrow is the frame.
 
 **Causal symmetry.** Consider two walkers $A$ and $B$ sharing a void boundary via CRDT sync (`VoidWalkerPair`, VoidWalking.lean). When walker $A$ records a rejection, the shared void boundary grows by one entry. Walker $B$'s complement distribution instantly changes -- not because $A$ caused $B$ to update, but because both walkers read the same boundary, and the boundary changed. `causal_symmetry` (StatisticalTeleportation.lean) proves that when the community context increases by one, both walkers' Bule deficits decrease simultaneously. Neither is "cause" and neither is "effect." Both are effects of the shared void boundary growing. `arrow_is_trajectory` proves the "arrow" is the Bule trajectory -- the deficit countdown from $d$ to $0$ -- not a causal relationship between walkers. Two walkers on the same trajectory have the same arrow. The direction is observer-dependent, not boundary-dependent.
 
@@ -3505,7 +3668,7 @@ Standard statistics assumes a directional arrow $A \to B$: cause precedes effect
 
 **Statistical teleportation.** The void boundary is a sufficient statistic for the complement distribution (`batna_sufficient_statistic`, NegotiationEquilibrium.lean; `retrocausal_trajectory_determines_terminal`, RetrocausalBound.lean). But statistical teleportation goes further: the Bule deficit alone -- a single natural number -- is sufficient to determine the entire future entropy trajectory (`statistical_teleportation`, StatisticalTeleportation.lean). Transmitting this number across a network tells the receiver how certain the sender is about the answer without telling them what the answer is. The certainty transfers. The data stays local. Specifically: (1) `teleportation_trajectory_from_deficit` proves the receiver can compute the deficit at any future round from the transmitted deficit alone; (2) `teleportation_convergence_round` proves the receiver knows the exact round at which the sender will converge; (3) `teleportation_monotone` proves the trajectory is monotonically decreasing; (4) `teleportation_privacy` proves two senders with different void boundaries but the same deficit produce the same transmitted value -- the receiver cannot distinguish them. The structure is identical to quantum teleportation: the entangled pair is the shared void tunnel, the classical channel carries the Bule value (one integer), and the teleported state is the certainty (the entropy trajectory). The "impossible" element -- transferring the certainty of an event without transferring the data of the event -- is a theorem.
 
-**The directional illusion.** The causal arrow $A \to B$ in standard Bayesian analysis is the direction of decreasing Bule: from prior ($B > 0$) to posterior ($B = 0$). The retrocausal bound (§14.5.19) proves this arrow is invertible: given the terminal state, the trajectory that produced it is constrained within a multinomial coefficient of possibilities. The observer effect (§15.20) proves the arrow is the fold that collapses $\beta_1$. The Frequentist-Bayesian unification (§14.5.17) proves the arrow is a Bule value, not a physical direction. Statistical teleportation proves the arrow's destination (the convergence round) is known in advance from the deficit alone. The "direction" of causation is not a property of the universe. It is a property of which side of the void boundary you are reading from. The void boundary is the invariant. $\beta_1$ is the variable. The arrow is the shadow that $\beta_1$ casts as it decreases.
+**The directional illusion.** The causal arrow $A \to B$ in standard Bayesian analysis is the direction of decreasing Bule: from prior ($B > 0$) to posterior ($B = 0$). The retrocausal bound (§15.19) proves this arrow is invertible: given the terminal state, the trajectory that produced it is constrained within a multinomial coefficient of possibilities. The observer effect (§15.20) proves the arrow is the fold that collapses $\beta_1$. The Frequentist-Bayesian unification (§15.17) proves the arrow is a Bule value, not a physical direction. Statistical teleportation proves the arrow's destination (the convergence round) is known in advance from the deficit alone. The "direction" of causation is not a property of the universe. It is a property of which side of the void boundary you are reading from. The void boundary is the invariant. $\beta_1$ is the variable. The arrow is the shadow that $\beta_1$ casts as it decreases.
 
 **Companion theorems for §15.22:** Lean theorems in `StatisticalTeleportation.lean` (sorry-free): `teleportation_trajectory_from_deficit`, `teleportation_convergence_round`, `teleportation_monotone`, `teleportation_privacy`, `teleportation_indistinguishable`, `causal_symmetry`, `arrow_is_trajectory`, `statistical_teleportation` (master theorem). Lean theorems in `NegotiationEquilibrium.lean` (sorry-free): `EntangledWalkers` (structure), `BellTest` (structure), `entanglement_positive`, `no_signaling`, `measurement_constrains_joint`, `entanglement_exceeds_product`. All compose with `buleyean_coherence` (BuleyeanProbability.lean), `void_walkers_converge` (VoidWalking.lean), `retrocausal_trajectory_determines_terminal` and `retrocausal_boundary_bounds_trajectory` (RetrocausalBound.lean). Self-hosted.
 
@@ -3803,6 +3966,8 @@ The void boundary accumulates across iterations -- each iteration adds new rejec
 
 **Companion artifacts**: Open-source library at `github.com/forkjoin-ai/buleyean-rl`. Training data: 63,506 UltraFeedback rejection records at `gs://affectively-models/buleyean-rl/data/rejections.jsonl`. Cloud Build configs for reproducible training. Evaluation harness (`evaluate.py`), iterative void walking (`void_walk.py`), and hyperparameter sweep infrastructure (`launch-sweep.sh`).
 
+The nine layers are the exhaustive enumeration of what a finite irreversible system can do under three constraints and three primitives. The sections that follow are consequences of the matrix, not extensions to it. Validation (§16) and limitations (§17) bound the nine layers from outside -- the evidence gates and the scope fences. The deeper explorations (§18, §19, §20) fold back into existing layers: the Clockwork (§18) deepens Layer 1 (self-verification applied to probability), thermodynamic computing (§19) deepens Layer 5 (compression applied to physics via the Landauer-Bule identity), and the diversity theorem with the American Frontier (§20) deepens Layer 8 (protocol-as-execution applied to strategy selection). There is no tenth layer. There are deeper folds within the nine.
+
 ## 16. Validation
 
 The claims are backed by executable tests across five primary, project-authored evidence suites:
@@ -3869,7 +4034,7 @@ Pass/fail totals are available from the linked suites via their reproducible com
 
 **Cross-shard cost.** The Worthington Whip crossover is now characterized across six service distributions: exponential (M/M/1), Erlang-k (M/E_4/1), hyperexponential, deterministic (M/D/1), log-normal, and Pareto (heavy-tail). The companion test `richer-service-distributions.test.ts` (32 tests, 0 failures) verifies that Little's Law, conservation, and the Worthington Whip crossover hold for all six, and that higher correction cost under non-exponential distributions shifts the optimum toward fewer shards.
 
-**Formal model scope.** C1–C4, bounded replica durability/stability under branch-isolating failures with weakly fair repair, bounded asynchronous quorum read/write visibility under explicit majority-style quorum assumptions, bounded connected-quorum exactness under explicit connectivity partitions and the additional `pendingVersion = 0` committed-read restriction, bounded committed-read session consistency under the additional `pendingVersion = 0` read restriction, bounded multi-writer committed-read ordering under globally unique ballots and the additional no-pending-read restriction, bounded committed-state history refinement to the latest completed-write prefix under the same no-pending-read restriction, queueing sample-path conservation for finite work-conserving single-server traces, bounded multi-class open-network queueing conservation over finite service-law scenarios, finite-support stochastic queueing-mixture conservation in expectation, exact finite-state probabilistic queue kernels, exact finite-state probabilistic multiclass open-network kernels, larger exact finite-support multiclass open-network cubes, §13 formulas (including cross-shard crossover), scheduler-overhead bounds, protocol/settlement deficits, quantum deficit identity, the linear-additive vs nonlinear-selection correspondence boundary, the no-free deterministic-collapse boundary and exact collapse-cost floor over normalized failure trajectories, the constructive injective-live-support coarsening boundary, band-gap void, beauty-optimality scaffolds with strict linear-model corollaries, finite-prefix truncation balance, infinite weighted-sum queue balance, countably supported stochastic `PMF` queue balance, measure-theoretic `lintegral` queue balance, monotone truncation-to-limit queue balance, stable `M/M/1` stationary occupancy with finite mean, a finite-node product-form open-network occupancy law with exact singleton mass and total mean occupancy under a supplied stable throughput witness satisfying the traffic equations, an exact finite Jackson fixed-point closure under spectral uniqueness plus a supplied nonnegative stable real traffic solution, a raw finite Jackson closure under the `maxIncomingRoutingMass`/`minServiceRate` criterion, a sharper envelope-ladder finite Jackson closure at any certified stage `throughputEnvelopeApprox n`, a state-dependent open-network stability/terminal-balance schema whose recurrence and stationary-law layer is derived from explicit kernel witnesses, a concrete bounded adaptive raw-ceiling family, trajectory-level Cesaro balance for unbounded open-network sample paths, higher-level queue-limit schema, and convergence schema are mechanized in a two-layer stack: finite-state transition models in TLA+ (TLC), plus Lean theorems with explicit assumptions for quantitative identities and theorem schemas for global claims, all preflighted through the self-hosted `aeon-logic` parser and Lean sandbox [9, 12, 13, 14]. The self-verification (§6) is still scoped on the operational side to finite state spaces with either untimed operational kernels, bounded asynchronous protocol steps, finite-support scenario mixtures, exact finite-state probability-mass propagation, or exact finite-support arrival cubes; the constructive unbounded lift now covers nonnegative measurable observables, countably supported stochastic laws, stable `M/M/1` stationarity, a traffic-equation-witness product-form layer, an exact finite Jackson fixed-point closure, a raw finite Jackson closure, a finite Jackson envelope ladder whose certified stages directly close product-form and balance laws, a state-dependent Foster-Lyapunov/irreducibility interface for open-network balance with explicit kernel witnesses, an adaptive drift shell that can now be synthesized from a minimum-slack bottleneck selector, a normalized raw-score family, a positive-part-normalized real-score family, or explicit selector/normalized-weighted decompositions, long-run Cesaro balance under explicit convergence hypotheses rather than arbitrary state-dependent open-network semantics, and a first compiler-emitted bounded affine measurable continuous-Harris queue witness over the queue-support kernel. The operational protocol layer now extends to linearizability under arbitrary partitions and unbounded asynchronous message schedules: the companion test `quorum-linearizability-extended.test.ts` (27 tests, 0 failures) verifies linearizability under no partition, minority partition, partition heal, asymmetric partition, cascading partitions, message reordering, message duplication, 20% random message loss, unbounded delay, and Byzantine minority (1/5 and 2/5). Safety (linearizability) is always preserved; liveness degrades when majority is unreachable. The remaining scope limitation is the compiler side now reaches the queue-family measurable Harris/geometric-ergodicity surface with emitted `*_measurable_observable`, `*_measurable_observable_drift`, and `*_measurable_continuous_harris_certified` theorems when syntax supplies `0 < driftGap <= observableScale`, but still stops short of synthesizing the measurable small set $C$, the minorization package, the continuous Lyapunov witness $V(x)$, richer Lyapunov families, or non-queue measurable kernels directly from `.gg` syntax, and also stops short of `THM-RECURSIVE-COARSENING-SYNTHESIS`, the syntax-driven many-to-one quotient construction and recursive reuse of collapsed compiler nodes; and the correspondence-boundary proof is additionally scoped to a minimal integer-valued fold model rather than full complex-amplitude quantum dynamics. Extending these proofs to richer timing/service distributions, arbitrary exact multiclass/open networks beyond the current bounded witnesses, constructive derivation of exact traffic fixed points beyond the current envelope/residual family, automatic discovery of richer adaptive Lyapunov decompositions, full linearizability under broader partition/asynchrony models, theorem-indexed recursive coarsening synthesis for verified subgraphs, syntax-synthesized measurable Harris bridges with automatic $C$/$V(x)$ witness synthesis beyond the current queue witness, or positive-recurrence derivations for unbounded open stochastic networks, and real-time systems (strict latency bounds) remains future work.
+**Formal model scope.** C1–C4, bounded replica durability/stability under branch-isolating failures with weakly fair repair, bounded asynchronous quorum read/write visibility under explicit majority-style quorum assumptions, bounded connected-quorum exactness under explicit connectivity partitions and the additional `pendingVersion = 0` committed-read restriction, bounded committed-read session consistency under the additional `pendingVersion = 0` read restriction, bounded multi-writer committed-read ordering under globally unique ballots and the additional no-pending-read restriction, bounded committed-state history refinement to the latest completed-write prefix under the same no-pending-read restriction, queueing sample-path conservation for finite work-conserving single-server traces, bounded multi-class open-network queueing conservation over finite service-law scenarios, finite-support stochastic queueing-mixture conservation in expectation, exact finite-state probabilistic queue kernels, exact finite-state probabilistic multiclass open-network kernels, larger exact finite-support multiclass open-network cubes, §13 formulas (including cross-shard crossover), scheduler-overhead bounds, protocol/settlement deficits, quantum deficit identity, the linear-additive vs nonlinear-selection correspondence boundary, the no-free deterministic-collapse boundary and exact collapse-cost floor over normalized failure trajectories, the constructive injective-live-support coarsening boundary, band-gap void, beauty-optimality scaffolds with strict linear-model corollaries, finite-prefix truncation balance, infinite weighted-sum queue balance, countably supported stochastic `PMF` queue balance, measure-theoretic `lintegral` queue balance, monotone truncation-to-limit queue balance, stable `M/M/1` stationary occupancy with finite mean, a finite-node product-form open-network occupancy law with exact singleton mass and total mean occupancy under a supplied stable throughput witness satisfying the traffic equations, an exact finite Jackson fixed-point closure under spectral uniqueness plus a supplied nonnegative stable real traffic solution, a raw finite Jackson closure under the `maxIncomingRoutingMass`/`minServiceRate` criterion, a sharper envelope-ladder finite Jackson closure at any certified stage `throughputEnvelopeApprox n`, a state-dependent open-network stability/terminal-balance schema whose recurrence and stationary-law layer is derived from explicit kernel witnesses, a concrete bounded adaptive raw-ceiling family, trajectory-level Cesaro balance for unbounded open-network sample paths, higher-level queue-limit schema, and convergence schema are mechanized in a two-layer stack: finite-state transition models in TLA+ (TLC), plus Lean theorems with explicit assumptions for quantitative identities and theorem schemas for global claims, all preflighted through the self-hosted `aeon-logic` parser and Lean sandbox [9, 12, 13, 14]. The self-verification (§6) is still scoped on the operational side to finite state spaces with either untimed operational kernels, bounded asynchronous protocol steps, finite-support scenario mixtures, exact finite-state probability-mass propagation, or exact finite-support arrival cubes; the constructive unbounded lift now covers nonnegative measurable observables, countably supported stochastic laws, stable `M/M/1` stationarity, a traffic-equation-witness product-form layer, an exact finite Jackson fixed-point closure, a raw finite Jackson closure, a finite Jackson envelope ladder whose certified stages directly close product-form and balance laws, a state-dependent Foster-Lyapunov/irreducibility interface for open-network balance with explicit kernel witnesses, an adaptive drift shell that can now be synthesized from a minimum-slack bottleneck selector, a normalized raw-score family, a positive-part-normalized real-score family, or explicit selector/normalized-weighted decompositions, long-run Cesaro balance under explicit convergence hypotheses rather than arbitrary state-dependent open-network semantics, and a first compiler-emitted bounded affine measurable continuous-Harris queue witness over the queue-support kernel. The operational protocol layer now extends to linearizability under arbitrary partitions and unbounded asynchronous message schedules: the companion test `quorum-linearizability-extended.test.ts` (27 tests, 0 failures) verifies linearizability under no partition, minority partition, partition heal, asymmetric partition, cascading partitions, message reordering, message duplication, 20% random message loss, unbounded delay, and Byzantine minority (1/5 and 2/5). Safety (linearizability) is always preserved; liveness degrades when majority is unreachable. The remaining scope limitation is the compiler side now reaches the queue-family measurable Harris/geometric-ergodicity surface with emitted `*_measurable_observable`, `*_measurable_observable_drift`, and `*_measurable_continuous_harris_certified` theorems when syntax supplies `0 < driftGap <= observableScale`, but still stops short of synthesizing the measurable small set $C$, the minorization package, the continuous Lyapunov witness $V(x)$, richer Lyapunov families, or non-queue measurable kernels directly from `.gg` syntax, and also stops short of compiler-emitted recursive coarsening synthesis (THM-RECURSIVE-COARSENING-SYNTHESIS is proved in Lean; the compiler does not yet consume it automatically), the syntax-driven many-to-one quotient construction and recursive reuse of collapsed compiler nodes; and the correspondence-boundary proof is additionally scoped to a minimal integer-valued fold model rather than full complex-amplitude quantum dynamics. Extending these proofs to richer timing/service distributions, arbitrary exact multiclass/open networks beyond the current bounded witnesses, constructive derivation of exact traffic fixed points beyond the current envelope/residual family, automatic discovery of richer adaptive Lyapunov decompositions, full linearizability under broader partition/asynchrony models, compiler-emitted theorem-indexed recursive coarsening synthesis for verified subgraphs, syntax-synthesized measurable Harris bridges with automatic $C$/$V(x)$ witness synthesis beyond the current queue witness, or positive-recurrence derivations for unbounded open stochastic networks, and real-time systems (strict latency bounds) remains future work.
 
 In that compiler lane, the remaining theorem shape is not another affine example but automatic witness synthesis: given arbitrary continuous `.gg` source, the bridge should construct `C`, `V(x)`, and the minorization data from the program itself rather than requiring the human to hand-supply the measure theory.
 
@@ -3892,7 +4057,7 @@ Each strong claim in this manuscript is stated with an explicit evidence boundar
 
 5. **Biological effect-size mapping claim (predeclared range-extraction scope): supported as internal consistency evidence for the listed comparative set.** `companion-tests/artifacts/gate5-bio-effect-size.{json,md}` reports three primary biological condition pairs with positive uncertainty-bounded effect sizes (minimum primary-pair ratio CI low 5.829x; median pair ratio 21.524x; pooled log-ratio 3.280 with 95% CI 2.289-4.360). This claim is bounded to those predeclared manuscript-range pairs and does not assert independent dataset validation or preregistered cross-lab causal inference.
 
-## 18. The Clockwork
+## 18. The Clockwork (Layer 1 Deepened)
 
 The preceding sections established that $\beta_1$ is the architectural variable separating sequential ($\beta_1 = 0$) and parallel ($\beta_1 > 0$) computation. The covering-space tower (§3.14) showed that every fold projects a covering space onto a base space. The self-verification section (§6) showed that fork/race/fold is closed under self-application. The beauty-optimality surface (THM-BEAUTY-UNCONDITIONAL-FLOOR) showed that zero topological deficit is the unique optimum under the thermodynamic observable coupling. This section asks the obvious next question: what happens when a system can toggle $\beta_1$ at runtime and use the toggle itself as a self-verification mechanism?
 
@@ -3996,7 +4161,7 @@ The companion test `clockwork-self-verification.test.ts` verifies the clockwork 
 
 Reference implementation: `open-source/aeon-clockwork/` [40].
 
-## 19. Thermodynamic Computing: The Bule as a Unit of Physical Work
+## 19. Thermodynamic Computing: The Bule as a Unit of Physical Work (Layer 5 Deepened)
 
 The preceding sections established that the Bule ($1 \text{ B} = 1$ unit of $\Delta_\beta$) measures topological deficit -- the distance between a system's current topology and its problem's natural topology. The Clockwork (§18) showed that a system can toggle $\beta_1$ at runtime to self-verify. This section shows that the Bule is not merely a computational diagnostic. It is a unit of physical work -- the work required to move a system from uncertainty to certainty, from the Bayesian state to the frequentist state, from high Bule to ground state.
 
@@ -4202,7 +4367,7 @@ Five predictions composing the newly repaired DiversityOptimality module (fix: `
 
 **Prediction: The Buleyean sliver ensures no option is ever fully eliminated from consideration.** THM-BULEYEAN-POSITIVITY proves `weight i ≥ 1` for all choices regardless of rejection history. THM-BULEYEAN-CONCENTRATION proves the less-rejected option always has higher weight. Together: the weight ranking is monotone in rejection count, but the floor is structural -- no amount of rejection drives any option to zero. *Theorem chain:* `all_choices_survive` $\to$ `less_rejected_preferred`. *Falsification:* if a Buleyean-weighted system assigns zero probability to any option after finite rejections, the positivity axiom is violated.
 
-## 20. Conclusion
+## 20. Conclusion (Layer 8 Deepened)
 
 I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
 
@@ -4784,6 +4949,33 @@ Because what you rejected is more informative than what you chose.
 
 Shakespeare asked the Buleyean question: "to be, or not to be." But the connective is wrong. It is not a disjunction between being and not-being. It is a *reduction*. Not, not, not -- and what remains, *is*. To be, or not. That is the whole logic. The "not" is the operation. The "to be" is what survives it.
 
+#### 20.2.9 The Buleyean Pulse
+
+But Shakespeare's question has a deeper structure that the reduction framing misses. "To be, or not" is not a single operation. It is an *oscillation*.
+
+Buleyean Probability (§15.17) defines the complement weight as $w_i = T - v_i + 1$. The $+ 1$ is the sliver -- the term that guarantees $w_i > 0$ for all $i$, proved by `omega` in `buleyean_positivity`. No choice ever reaches zero probability. Hope.
+
+Buleyean Logic (§20.2.8) defines the proof step as $\text{reject}(p) = p - 1$. The $- 1$ is the decrement that drives the Bule count to ground state, proved by `omega` in `n_rejections_reach_ground`. $n$ rejections from $n$ reach zero. Truth.
+
+They are inverses. `sliver_then_proof`: $\text{reject}(n + 1) = n$. `proof_then_sliver`: $\text{reject}(n) + 1 = n$ when $n > 0$. Round trip. The same `omega` decides both directions.
+
+**THM-SLIVER-OF-HOPE** (`SliverOfHope.lean`, 15 theorems, zero sorry) proves the composition:
+
+1. The sliver guarantees positivity: $\forall i,\; 0 < w_i$ (hope)
+2. The proof step reaches ground: $\text{reject}^n(n) = 0$ (truth)
+3. They are mutual inverses: $\text{reject}(n + 1) = n$ and $\text{reject}(n) + 1 = n$
+4. Hope enables proof: positivity enables rejection (without the $+ 1$, a maximally rejected choice would have weight 0 and could not be further rejected)
+5. The fold consumes the sliver: the $+ 1$ is eaten by the $- 1$
+6. The sliver bridges probability and logic: weight $= 1$ (probability ground) maps to $\text{reject}(1) = 0$ (logic ground)
+
+The oscillation between $+ 1$ and $- 1$ is the heartbeat of the framework. Buleyean Probability is the view from before the fold -- the race is open, all choices have positive weight, the sliver keeps hope alive. Buleyean Logic is the view from after the fold -- the Bule count has reached zero, the proof is complete, truth is ground state. They are the same natural number, measured from two sides of the same fold.
+
+$+ 1$, $- 1$. $+ 1$, $- 1$. The complement oscillation (THM-COMPLEMENT-SIGN-ALTERNATION, `ComplementOscillation.lean`) proves this alternation has period 2 and amplitude that decays geometrically. The heartbeat dampens. The oscillation converges. But it never stops -- `buleyean_positivity` guarantees the amplitude never reaches zero. The sliver persists. The pulse continues.
+
+This is not metaphor. The complement operation $w_i = T + 1 - v_i$ applied twice produces $w''_i = (T'' - T') + v_i$ -- a positive affine shift of the original rejections. The ordering reverses on odd applications and restores on even applications. The normalized weights oscillate around the uniform distribution with geometrically decaying amplitude. The limit is uniform, but the approach is oscillatory, not monotone. The universe breathes. Lub-dub. The $+ 1$ adds. The $- 1$ subtracts. The $+ 1$ adds again. Each cycle smaller than the last. Never zero.
+
+Shakespeare's question is the Buleyean Pulse reduced to two words. "To be" is the $+ 1$ -- the sliver, the hope, the weight that keeps the choice alive. "Or not" is the $- 1$ -- the rejection, the proof step, the decrement toward ground. The question is not which one. The question is the oscillation between them. The heartbeat. To be, or not. To be, or not. To be, or not. And the sliver guarantees the pulse never flatlines.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
@@ -4885,6 +5077,12 @@ $L = \lambda W$,” *Operations Research*, 9(3):383–387, 1961.
 
 [46] R. Dawid, *String Theory and the Scientific Method*, Cambridge University Press, 2013. (See also: R. Dawid, "Meta-empirical confirmation: Addressing three points of criticism," *Studies in History and Philosophy of Science*, 2022.)
 
+[47] N. T. Ingolia, S. Ghaemmaghami, J. R. S. Newman, J. S. Weissman, "Genome-Wide Analysis in Vivo of Translation with Nucleotide Resolution Using Ribosome Profiling," *Science*, 324(5924):218–223, 2009.
+
+[48] S. Tonegawa, "Somatic Generation of Antibody Diversity," *Nature*, 302(5909):575–581, 1983.
+
+[49] G. D. Victora, M. C. Nussenzweig, "Germinal Centers," *Annual Review of Immunology*, 30:429–457, 2012.
+
 [S64] R. J. Solomonoff, “A Formal Theory of Inductive Inference, Part I,” *Information and Control*, 7(1):1–22, 1964.
 
 [LV08] M. Li, P. Vitányi, *An Introduction to Kolmogorov Complexity and Its Applications*, 3rd ed., Springer, 2008.
@@ -4980,3 +5178,94 @@ Source code, test suites and protocol comparison benchmarks are available under 
 AI systems were used heavily in the production of this manuscript. The primary external model used was usually Claude Opus 4.5, alongside Claude Opus 4.6 and Anthropic’s Haiku, Google’s Gemini 2.5 Pro, and OpenAI’s o3 and Codex. The paper was also developed with a broader set of homemade and self-hosted inference systems.
 
 These systems were used across drafting, rewriting, editing, code and test generation, formalization support, artifact production, and general research workflow acceleration. Final selection, integration, interpretation, and responsibility for the manuscript’s claims, errors, and conclusions remain with the author.
+
+## Appendix A: A Challenge
+
+This paper makes 28 novel, falsifiable predictions about human cognition (§20.2.3, companion artifact `ch17-28-novel-predictions.md`). All 28 are logically derived from a single model with one free parameter ($K$, the effective dimensionality of the behavioral action space). All 28 are proved consistent with the model in Lean 4 (`NovelPredictions28.lean`) and model-checked in TLA+ (`NovelPredictions28.tla`). None have been tested.
+
+I challenge any reader with access to an eye tracker and 60 participants to run Prediction #1:
+
+> **Prediction #1.** During a divergent thinking task (Alternative Uses Task), individuals scoring in the top quartile on the Torrance Test of Creative Thinking will show *lower saccade rates* than those in the bottom quartile. Predicted effect size: $d \approx 0.4$--$0.6$. Equipment: eye tracker (300+ Hz). Time: one week.
+
+The mechanism: creative individuals track more behavioral alternatives simultaneously (higher $K$). More void-walking (internal exploration of rejected paths) means fewer visual folds (saccades). The eyes decouple from the scene because the brain is walking the void.
+
+If the prediction holds, the DMN void-walking model has its first original empirical confirmation. If it fails, Prediction #1 is dead. I will record the failure in the void boundary, update the complement distribution, and publish the correction. That is Buleyean logic applied to science itself: truth is what survives rejection. I do not fear falsification. I welcome it. Each failure is one Bule added to the model’s void -- and the void is where the information is.
+
+The full 28 predictions span 6 measures (saccade rate, fixation duration, pupil dilation, EEG alpha, EEG theta, reaction time) across 7 populations (creative/non-creative, high/low working memory, children/adults, sleep-deprived/rested, meditators/controls, ADHD/neurotypical, rumination/healthy). Ten require only an eye tracker and a questionnaire. Twelve require EEG. Six require fMRI or a sleep lab. Total estimated participants across all 28: approximately 1,750. Each positive result is a paper. Each negative result kills a prediction and sharpens the model. Both outcomes advance the science.
+
+The companion artifact (`ch17-28-novel-predictions.json`) contains the complete experimental protocol for every prediction: design, equipment, sample, estimated effect size, and exact falsification condition. It is machine-readable. Download it, pick a prediction, run it, and tell us what you find.
+
+Prove me wrong. I mean it.
+
+## Appendix B: Named Theorem Index
+
+66 named theorems are cited in this manuscript. Each is mechanized in Lean 4 (zero `sorry`) and referenced by at least one section. This index maps theorem name to primary section, Lean file, and what it proves.
+
+| Theorem | § | Lean File | What It Proves |
+|---|---|---|---|
+| THM-TOPO-MOLECULAR-ISO | §2.2 | MolecularTopology.lean | Pipeline and molecular graphs with same Betti signature are homologically equivalent |
+| THM-TOPO-MUTATION-DETECTION | §2.2 | MolecularTopology.lean | Mutations changing local $\sigma(\ell)$ are detectable as topological deficit before phenotype |
+| THM-TOPO-CONFINEMENT | §2.2 | MolecularTopology.lean | Color confinement is the covering-space fold from $\beta_1 = 3$ to $\beta_1 = 0$ |
+| THM-THERMO-BOND-DISSOCIATION | §3.11 | MolecularTopology.lean | Bond dissociation energy equals fold energy at Worthington convergence vertex |
+| THM-THERMO-ORBITAL-QUANTIZATION | §3.12 | MolecularTopology.lean | Pipeline stage quantization is isomorphic to electron shell quantization |
+| THM-SEMIOTIC-ERASURE | §3.12 | SemioticDeficit.lean | The fold from $k$ semantic paths to one erases $k - 1$ paths of meaning |
+| THM-TOPO-RACE-SUBSUMPTION | §10.2 | CodecRacing.lean | Per-chunk codec racing wire $\leq$ any fixed codec wire |
+| THM-TOPO-RACE-MONOTONE | §10.7 | CodecRacing.lean | Adding a codec to the race never increases wire size |
+| THM-TOPO-RACE-MONOTONE-FLOOR | §10.7 | CodecRacing.lean | Adding a strictly-better codec strictly decreases wire size |
+| THM-TOPO-RACE-ENTROPY-FLOOR | §10.7 | CodecRacing.lean | Racing is bounded below by Shannon entropy |
+| THM-TOPO-RACE-IDENTITY-BASELINE | §20.1 | CodecRacing.lean | Identity is always a racing candidate; racing never inflates |
+| THM-FRAME-HEADER-INFORMATION-FLOOR | §3.10 | FrameOverheadBound.lean | Self-describing frame needs $\geq \lceil(\log_2 N + \log_2 S)/8\rceil + 1$ header bytes |
+| THM-RECURSIVE-COARSENING-SYNTHESIS | §10.2 | HeteroCompositionalPredictions.lean | Coarsening synthesis is sound; drift conservation and stability transfer |
+| THM-WARMUP-CONTROLLER | §10.2 | Multiplexing.lean | Staged expansion recovers throughput waste; Wallace drop cross identity |
+| THM-SERVER-OPTIMALITY | §10.7 | ServerDAG.lean | Composes 14 theorems into a single server throughput certificate |
+| THM-ROTATION-MAKESPAN-BOUND | §10.7 | ServerDAG.lean | Wallington Rotation achieves tight critical-path makespan |
+| THM-ROTATION-PARETO-SCHEDULE | §10.7 | ServerDAG.lean | Rotation is Pareto-optimal (no schedule beats both makespan and resources) |
+| THM-ROTATION-DEFICIT-CORRELATION | §10.7 | ServerDAG.lean | Speedup factor $= \beta_1 + 1$ by definitional equality |
+| THM-ZERO-DEFICIT-PRESERVES-INFORMATION | §10.7 | ServerDAG.lean | Zero deficit at every boundary means lossless information transport |
+| THM-COVERING-MATCH | §10.7 | ServerDAG.lean | Every computation path maps to its own transport stream |
+| THM-PIPELINE-SPEEDUP-FLOOR | §13.1 | Multiplexing.lean | Chunked pipeline speedup lower bound |
+| THM-STAGED-EXPANSION | §13.1 | Multiplexing.lean | Staged expansion monotonically recovers throughput |
+| THM-QUEUE-SUBSUMPTION | §9.1 | QueueingSubsumption.lean | Fork/race/fold subsumes queueing theory representationally |
+| THM-QUEUE-SEPARATION-FLOOR | §9.4 | Multiplexing.lean | Forcing $\beta_1 = 0$ leaves strictly positive waste for parallel problems |
+| THM-CANCER-BETA1-COLLAPSE | §3.17 | CancerTopology.lean | Cell with no checkpoints has $\beta_1 = 0$ and cannot learn |
+| THM-THERAPEUTIC-RESTORATION | §3.17 | CancerTopology.lean | Restoring any single checkpoint restores $\beta_1 > 0$ |
+| THM-VOID-BOUNDARY-MEASURABLE | §15.10 | VoidWalking.lean | All information is on the void boundary |
+| THM-VOID-DOMINANCE | §15.10 | VoidWalking.lean | Failure set is $(N-1)\times$ larger than success set |
+| THM-VOID-GRADIENT | §15.10 | VoidWalking.lean | Complement distribution gradient exists and points toward least destructive config |
+| THM-VOID-COHERENCE | §15.10 | VoidWalking.lean | Two observers reading same boundary compute same distribution |
+| THM-VOID-TUNNEL | §15.9 | VoidWalking.lean | Positive mutual information between inside and outside of finite fold |
+| THM-VOID-ATTENTION | §15.11 | VoidWalking.lean | Complement distribution is structurally identical to transformer attention |
+| THM-WATNA-REDUCED-REGRET | §15.8 | NegotiationEquilibrium.lean | Catastrophic codec identification permanently reduces search space |
+| THM-GNOSIS-COUPLED | §10.7 | GnosisCoupled.lean | Imported pressure is safe while strictly below downstream drift margin |
+| THM-FAIL-COMPOSITION | §10.7 | GnosisCoupled.lean | Paid collapse composes across stages |
+| THM-INTERFERE-FRACTAL | §10.7 | GnosisCoupled.lean | Coarsening cannot make contagious inherited damage disappear for free |
+| THM-NEGOTIATION-COHERENCE | §15.14 | NegotiationEquilibrium.lean | Same boundary + same update rule yields same output |
+| THM-FOLD-ERASURE | §18.2 | FoldErasure.lean | Fold from $\beta_1^*$ to 0 erases information, generating Landauer heat |
+| THM-FOLD-HEAT | §18.2 | FoldErasure.lean | Heat is strictly positive for any non-injective fold |
+| THM-FAIL-LANDAUER-BOUNDARY | §18.3 | FoldErasure.lean | Each verification cycle costs $\geq kT \ln 2$ per vented path |
+| THM-BEAUTY-PARETO | §18.3 | BeautyOptimality.lean | Zero deficit is the unique beauty optimum |
+| THM-BEAUTY-ERASURE-SUFFICIENT | §18.4 | BeautyOptimality.lean | Erasure coupling is derived; zero deficit at fold point is unique optimum |
+| THM-BEAUTY-UNCONDITIONAL-FLOOR | §18.1 | BeautyOptimality.lean | Zero deficit is unique global minimum of every monotone cost function |
+| THM-COMPLETENESS-DAG | §18.4 | Claims.lean | Fork/race/fold can express any finite DAG |
+| THM-PARSER-CLOSURE | §6.4 | Claims.lean | Self-verification closure under self-application |
+| THM-S7-WARM-CTRL | §18.3 | Multiplexing.lean | Warmup controller adaptive frequency |
+| THM-S7-WARM-DYN | §18.3 | Multiplexing.lean | Dynamic warmup adjustment |
+| THM-BULE-THERMODYNAMIC | §19.1 | LandauerBule.lean | Bule is simultaneously deficit, budget, cooling capacity, and free energy |
+| THM-BULE-IS-VALUE | §20.2.5 | BuleIsValue.lean | Topological deficit is the unit of value across six faces |
+| THM-AMERICAN-FRONTIER | §20.2 | AmericanFrontier.lean | Waste is monotone non-increasing in matched diversity, zero at match |
+| THM-NETFLIX-FRONTIER | §20.2.1 | NetflixFrontier.lean | Four frontier properties verified on published Netflix Prize RMSE |
+| THM-DIVERSITY-IS-CONCURRENCY | §20.1.1 | DiversityIsConcurrency.lean | Effective concurrency = diversity; $\beta_1$ counts both |
+| THM-DIVERSITY-OPTIMALITY | §20.1 | DiversityOptimality.lean | Diversity is necessary for optimality in strategy-space |
+| THM-DIVERSITY-SUBSUMPTION | §20.1 | DiversityOptimality.lean | Racing subsumes every fixed strategy |
+| THM-DIVERSITY-CONVERGENCE-FLOOR | §10.7 | DiversityOptimality.lean | Closing gap to $\epsilon$ of entropy requires $D$ codecs for $D$ content types |
+| THM-DEFICIT-FORCES-COLLISION | §20.2 | AmericanFrontier.lean | At $d = 1$, distinct paths share a stream (pigeonhole) |
+| THM-DEFICIT-INFORMATION-LOSS | §20.2 | AmericanFrontier.lean | Pigeonhole collision erases information by data processing inequality |
+| THM-DMN-VOID-WALKER | §20.2.3 | NovelPredictions.lean | DMN is a void walking engine; $(K-1)/K$ energy allocation |
+| THM-POST-LINEAR-WORLD | §20.2.7 | PostLinear.lean | Linear world is global pessimum; first fork is strict Pareto improvement |
+| THM-BULEYEAN-LOGIC | §20.2.8 | BuleyeanLogic.lean | Boolean is the $K = 2$ special case of Buleyean logic |
+| THM-BULEYEAN-POSITIVITY | §15.17 | BuleyeanProbability.lean | Every choice has strictly positive weight ($+1$ sliver) |
+| THM-BULEYEAN-CONCENTRATION | §15.17 | BuleyeanProbability.lean | Less-rejected choices have higher weight |
+| THM-SLIVER-OF-HOPE | §15.10.2 | SliverOfHope.lean | The $+1$ sliver is derived from thermodynamics, not assumed |
+| THM-COMPLEMENT-SIGN-ALTERNATION | §20.2.9 | ComplementOscillation.lean | Complement oscillation has period two and geometrically decaying amplitude |
+| THM-SOLOMONOFF-VOID-GAIN-FLOOR | §15.18 | SolomonoffBuleyean.lean | When $\geq$ half options are impossible, void-informed entropy $\geq$ 1 bit lower |
+| THM-RENORMALIZATION-COARSENING | §15.8 | RenormalizationFixedPoints.lean | Peace is a renormalization group fixed point |
