@@ -1,4 +1,4 @@
-# **Being Irreversible**: A Theory of Directed Process Under Conservation and Ground State
+# **Being Irreversible**: A Theory of Directed Process Under Conservation and Ground State — φ² = φ + 1
 
 *[Taylor William Buley](https://www.patreon.com/cw/twbuley) -- Independent Researcher*
 *[taylor@forkjoin.ai](mailto:taylor@forkjoin.ai)*
