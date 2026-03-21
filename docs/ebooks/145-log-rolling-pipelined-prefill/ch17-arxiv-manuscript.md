@@ -4734,6 +4734,54 @@ The post-linear world is not an aspiration. It is the unique rational destinatio
 
 The proof is over. The world begins again -- each time, the road less taken.
 
+#### 20.2.8 Buleyean Logic
+
+Boolean logic describes the world after the fold: $\{\text{true}, \text{false}\}$. Two values. The fold has already fired. The alternatives have already been vented. What remains is a binary: it happened or it didn't.
+
+But the fold is the last step, not the first. Before the fold, there are $K$ alternatives. They are not true or false. They are *open* -- each carrying a Bule count that decreases as rejections accumulate. The child touches the stove (reject: Bule count on "stove" increments). The cat hisses (reject: Bule count on "cat" increments). The toy survives -- not because the child evaluated "toy = true" but because the child accumulated "stove = rejected, cat = rejected, toy = not yet rejected." The survivor is proved by the complement.
+
+This is not Boolean logic. It is a more general logic in which Boolean is a degenerate special case.
+
+**Definition.** A *Buleyean proposition* is a natural number: the Bule count. $0$ = proved (ground state). $n > 0$ = $n$ rejections from proved. The only proof step is *rejection*: decrement the Bule count by 1 and record the reason in the void. The void IS the proof trace.
+
+**Connectives.**
+
+| Connective | Boolean | Buleyean |
+|---|---|---|
+| Truth value | $\{\text{true}, \text{false}\}$ | $\mathbb{N}$ (Bule count) |
+| Proved | $\text{true}$ | $0$ |
+| Open | $\text{false}$ | $n > 0$ |
+| NOT $A$ | $\lnot A$ | $\text{max} - A$ (complement) |
+| $A$ AND $B$ | $A \land B$ | $A + B$ (both must reach 0) |
+| $A$ OR $B$ | $A \lor B$ | $\min(A, B)$ (cheapest path to 0) |
+| $A \to B$ | $\lnot A \lor B$ | $\max(0, B - A)$ (deficit gap) |
+| $\forall x.\, P(x)$ | all true | $\sum P_i$ (every $P_i$ must reach 0) |
+| $\exists x.\, P(x)$ | some true | $\min P_i$ (cheapest $P_i$ reaches 0) |
+
+**THM-BULEYEAN-LOGIC** (`BuleyeanLogic.lean`, 23 theorems) proves:
+
+1. $n$ rejections from $n$ reach ground state (the proof terminates).
+2. AND is commutative, associative, and proved iff both operands are proved.
+3. OR is commutative, associative, and proved iff at least one operand is proved.
+4. NOT is involutive: $\lnot\lnot A = A$.
+5. IMPLIES is reflexive: $A \to A$ is always proved.
+6. OR $\leq$ AND: disjunction is always cheaper than conjunction.
+7. **Boolean is the $K = 2$ special case.** At Bule counts restricted to $\{0, 1\}$, Buleyean AND matches Boolean AND, OR matches OR, NOT matches NOT, IMPLIES matches IMPLIES. The round-trip Bool $\to$ BProp $\to$ Bool is the identity. Proved by exhaustive case split on $\{(\text{true}, \text{true}), (\text{true}, \text{false}), (\text{false}, \text{true}), (\text{false}, \text{false})\}$.
+
+The TLA+ model (`BuleyeanLogic.tla`, 12 invariants) verifies all laws by sweeping all $(a, b, \text{maxB})$ triples to $\text{MaxBules} = 8$.
+
+**The child's proof.** The companion tests (`ch17-buleyean-logic.test.ts`, 35 tests) include a simulation of child decision-making. Given options $\{\text{stove}, \text{cat}, \text{toy}\}$ and rejections $[\text{stove} \mapsto \text{"burned hand"}, \text{cat} \mapsto \text{"hissed"}]$, the survivor is "toy." The proof trace is the void: $\{\text{stove}, \text{cat}\}$. The child never asserted "toy = true." The child accumulated "everything else = rejected." Truth emerged from the complement.
+
+**Self-hosting.** The test suite proves Buleyean logic's own soundness using the Buleyean proof engine: "rejection decreases by 1" is proved by rejecting three counterexamples (increases, unchanged, decreases by $> 1$). "Ground state is terminal" is proved by rejecting two counterexamples (goes negative, increases). "Boolean is a special case" is proved by rejecting four counterexamples (AND differs, OR differs, NOT differs, IMPLIES differs). The meta-proof is their conjunction: $3 + 2 + 4 = 9$ Bules, resolved in 9 rejection steps. QED. The framework verifies itself from inside, the same immanent self-hosting property that governs every other layer of the stack.
+
+**Why this matters.** Boolean logic requires you to assert what IS true. This is expensive: you must construct a positive witness. Buleyean logic requires you to accumulate what IS NOT. This is cheap: you just try things and record what fails. The void does the work. The proof is the rejection history. The truth is whatever the void didn't eat.
+
+Every fold in the framework -- every model-checker run, every codec race, every Netflix ensemble, every void walk, every neural race, every child's decision -- is a Buleyean proof. The fold fires when the Bule count reaches 0. The proof trace is the void boundary. We have been doing Buleyean logic for the entire paper. We just didn't have the name for it until the framework folded in on itself one last time and recognized its own proof method.
+
+Boolean logic is the last page of a Buleyean proof: the page where the Bule count has already reached 0 and all that remains is the binary record of which propositions survived. The rest of the proof -- the rejections, the void, the descent from $K - 1$ to $0$ -- is the part Boolean doesn't show you. Buleyean logic shows you the whole proof. Including the parts that were rejected. *Especially* the parts that were rejected.
+
+Because what you rejected is more informative than what you chose.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
