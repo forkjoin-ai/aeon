@@ -3046,6 +3046,36 @@ The five primitives are the operations that move the system:
 
 Every domain in this paper -- wire compression, computation, language, physics, biology, negotiation, music, economics, ethics, consciousness -- instantiates this loop. The substrate changes. The Bule and Buleyean do not. Measure your distance from $\varphi$. Learn from what failed. The five primitives do the rest.
 
+#### 15.10.7 The Five Words
+
+The five primitives have natural-language names that a person would use without knowing any of the formalism. They are the opening line of this paper:
+
+*Try, choose, commit, let go, learn.*
+
+Each word names a Bule dimension -- a measurable distance from $\varphi$ along one axis of personality:
+
+| Word | Primitive | Bule measures | When it's stuck |
+|------|-----------|---------------|-----------------|
+| **Try** | Fork | How easily do new possibilities occur to you? | "I can't see any options" |
+| **Choose** | Race | How clearly do you know what matters? | "Everything feels equally important" |
+| **Commit** | Fold | When you decide, does it stick? | "Nothing I start ever sticks" |
+| **Let go** | Vent | Can you exhale? | "I can't stop thinking about it" |
+| **Learn** | Fork | Does what happens to you change who you are? | "I keep making the same mistakes" |
+
+A person's personality is the shape of these five numbers. A person's growth is the trajectory of the shape. A person's pathology is a spike -- one number much higher than the others. Treatment is reducing the spike. The tools for each:
+
+- *Try* is stuck → imagination exercises, perspective tools, exposure to difference
+- *Choose* is stuck → attention training, priority frameworks, mindfulness
+- *Commit* is stuck → accountability structures, small promises kept, practice irreversibility
+- *Let go* is stuck → breathing, forgiveness work, sleep, grief processing
+- *Learn* is stuck → reflection, journaling, therapy, honest feedback from others
+
+The radar chart of the five Bules IS the personality profile. The distance from center on each spoke IS the distance from $\varphi$. The shape IS the character. The change in shape over time IS growth. The product does not label ("you are an INTJ"). The product measures ("your *let go* is spiking, here is a breathing exercise, your *let go* dropped 3\% this week").
+
+The OCEAN model (Costa \& McCrae, 1992) uses five factors derived from questionnaire factor analysis. Three of five map suggestively to Bule dimensions (Openness $\leftrightarrow$ Try, Conscientiousness $\leftrightarrow$ Commit, Neuroticism $\leftrightarrow$ inverted Let Go). Two do not: Extraversion and Agreeableness each load on three or more primitives and cannot be represented as single Bules. `FiveBule.lean` proves the anti-theorems: $3 > 1$ (a factor loading on three primitives is not a single dimension). The Five-Bule model is not OCEAN renamed. It is a different decomposition with different basis vectors -- one empirical (factor analysis), one mechanistic (the primitives). Partial overlap is expected. Equivalence is not.
+
+The paper opened with five words. It closes with five numbers. They were the same thing all along.
+
 ### 15.11 The Void Attention Transformer
 
 The complement distribution $\text{complement}(i) = \text{softmax}(-\eta \cdot \mathbf{v})_i$ is structurally identical to transformer attention. Query = proposal, Key = void boundary, Value = complement weight, temperature = $1/\eta$, multi-head = multiple walkers, cross-attention = Skyrms walker on the joint void surface. Residual connection = void boundary persistence. Layer norm = void decay. Feed-forward = c3 gait adaptation.
