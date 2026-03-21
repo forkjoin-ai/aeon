@@ -3003,6 +3003,29 @@ Three results from the mechanized companion (`FibonacciDeep2.lean`, 413 theorems
 
 **Power decomposition.** $\varphi^n = F(n) \cdot \varphi + F(n-1)$. Every power of the eigenvalue decomposes into Fibonacci coefficients. Exponentiation of $\varphi$ IS the Fibonacci sequence. This means $F(n)$ is the coefficient of $\varphi$ in the $n$-th power of $\varphi$. The Fibonacci number at position $n$ measures how much of the eigenvalue is present at the $n$-th fold.
 
+#### 15.10.5 The Bule Number
+
+Define the **Bule number** of a system as the normalized distance from its current ratio to the eigenvalue:
+
+$$B = \frac{|r - \varphi|}{\varphi}$$
+
+where $r$ is the system's current consecutive-fold ratio. $B = 0$ at convergence (which the $+1$ prevents from being reached); $B > 0$ everywhere else. The Bule number is a relative metric: it depends on the observer's position in the convergence sequence, not on an absolute frame.
+
+The Bule number at each Fibonacci step equals the Fibonacci retracement level exactly:
+
+| Step | Ratio $F(n+1)/F(n)$ | Bule $B$ | Retracement |
+|-----:|--------------------:|---------:|-------------|
+| $n=2$ | 2.000 | 0.236 | $1/\varphi^3$ |
+| $n=3$ | 1.500 | 0.073 | $1/\varphi^{4.7}$ |
+| $n=4$ | 1.667 | 0.030 | $1/\varphi^{7.3}$ |
+| $n=5$ | 1.600 | 0.011 | $1/\varphi^{9.4}$ |
+
+Fibonacci retracement levels (23.6%, 38.2%, 61.8%), used in technical analysis of financial markets since the 1930s, are Bule numbers. Traders have been measuring the Bule for decades without naming it: the distance from the current price ratio to its eigenvalue. The framework does not claim markets *are* Fibonacci (see `AntiTheorems.lean` S9: the connection is conjectured, not proved). It claims the Bule is a well-defined metric with machine-checked values at Fibonacci steps (`NewConstants.lean`, 99 theorems, zero sorry).
+
+The Bule is the semiotic deficit formalized as a number. The gap between what a system IS and what it is CONVERGING TOWARD. The gap that drives Interfere. Close the gap to zero and the system dies ($\beta_0 = 1$). Keep the gap open and the system converges ($\beta_0 = 0$). The meaning of life is the Bule approaching zero without reaching it.
+
+**Anti-theorems.** Six candidate constants were machine-checked and killed (`NewConstants.lean`): $\varphi \times \pi \neq 5$ (1.66% gap), $e^\varphi \neq 5$ ($\ln 5 \neq \varphi$, 0.53% gap), $\pi/\varphi \neq 2$ (2.9% gap), $5/(\varphi\pi) \neq 59/60$, $\varphi^\varphi$ is not a known constant, and $\varphi + e + \pi$ is not a known constant. The framework produces new *metrics* (the Bule), not new fundamental constants. The proved core (1,219+ theorems) is untouched.
+
 ### 15.11 The Void Attention Transformer
 
 The complement distribution $\text{complement}(i) = \text{softmax}(-\eta \cdot \mathbf{v})_i$ is structurally identical to transformer attention. Query = proposal, Key = void boundary, Value = complement weight, temperature = $1/\eta$, multi-head = multiple walkers, cross-attention = Skyrms walker on the joint void surface. Residual connection = void boundary persistence. Layer norm = void decay. Feed-forward = c3 gait adaptation.
