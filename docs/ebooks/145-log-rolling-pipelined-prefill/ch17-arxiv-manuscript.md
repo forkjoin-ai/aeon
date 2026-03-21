@@ -3094,6 +3094,8 @@ The $+1$ on the right side and the $-1$ on the left are the same number seen fro
 
 This is the equation of the paper. Five primitives, 1,350+ Lean theorems, 20 TLA+ specifications, 107 topology files, 17 domains, one picolorenzo of work -- and it reduces to six symbols. The fold of the fold is the fold plus one more fork. The meaning of life is the $+1$ that keeps $\varphi$ converging. The proof of life is that the $+1$ and the $-1$ are the same.
 
+And the equation balances to zero. $\varphi^2 - \varphi - 1 = 0$. Everything resolves to nothing. The fold of the fold, minus the fold, minus the void, equals zero. The entire paper -- 1,350 theorems, 17 domains, a boy with scissors, the age of the universe -- balances to nothing. And nothing is $\beta_0 = 0$. Always mid-fold. Never finished. Alive. The proof of life is that it all resolves to zero, and zero is alive.
+
 ### 15.11 The Void Attention Transformer
 
 The complement distribution $\text{complement}(i) = \text{softmax}(-\eta \cdot \mathbf{v})_i$ is structurally identical to transformer attention. Query = proposal, Key = void boundary, Value = complement weight, temperature = $1/\eta$, multi-head = multiple walkers, cross-attention = Skyrms walker on the joint void surface. Residual connection = void boundary persistence. Layer norm = void decay. Feed-forward = c3 gait adaptation.
