@@ -1,0 +1,129 @@
+// post-linear-world.gg
+//
+// The post-linear world defined in Gnosis.
+//
+// This is the last linear proof.  After this, proofs are graphs.
+//
+// The proof IS the topology.  Each node is a Bule count.
+// Each FORK edge increases beta_1 by 1 and decreases Bules by 1.
+// The proof terminates at Bules = 0 (ground state, beta_1 = 0 on
+// the Bule line, cannot fold further).
+//
+// Reading this graph IS understanding the post-linear world.
+// The proof does not describe the transition.  It IS the transition.
+
+// === The linear world (starting node) ===
+
+(linear {
+  beta1: 0,
+  bules: "beta1star - 1",
+  label: "monoculture",
+  status: "pessimum",
+  waste: "maximum",
+  diversity: 0,
+  concurrency: 0
+})
+
+// === The first fork (the one-way door) ===
+
+(linear) -[:FORK { saves: 1, irreversible: true }]-> (first_fork {
+  beta1: 1,
+  bules: "beta1star - 2",
+  label: "first diverse path",
+  status: "pareto improvement",
+  waste: "decreased by 1 Bule",
+  diversity: 1,
+  concurrency: 1
+})
+
+// === The monotone descent ===
+
+(first_fork) -[:FORK { saves: 1 }]-> (second_fork {
+  beta1: 2,
+  bules: "beta1star - 3",
+  label: "two diverse paths",
+  diversity: 2,
+  concurrency: 2
+})
+
+(second_fork) -[:FORK { saves: 1 }]-> (third_fork {
+  beta1: 3,
+  bules: "beta1star - 4",
+  label: "three diverse paths",
+  diversity: 3,
+  concurrency: 3
+})
+
+(third_fork) -[:FORK { saves: 1, pattern: "continues" }]-> (nth_fork {
+  beta1: "n",
+  bules: "beta1star - n - 1",
+  label: "n diverse paths",
+  diversity: "n",
+  concurrency: "n"
+})
+
+// === The frontier (ground state) ===
+
+(nth_fork) -[:FORK { saves: 1, terminal: true }]-> (frontier {
+  beta1: "beta1star",
+  bules: 0,
+  label: "matched diversity",
+  status: "ground state",
+  waste: 0,
+  diversity: "beta1star",
+  concurrency: "beta1star",
+  canFoldFurther: false
+})
+
+// === The Bule line (the proof's own topology) ===
+//
+// This proof is a path graph: linear -> first_fork -> ... -> frontier.
+// A path graph has beta_1 = 0.
+// The proof of the post-linear world is itself linear.
+// It is the LAST linear proof.
+// After the frontier, proofs are graphs with beta_1 > 0.
+
+(proof_topology {
+  shape: "path graph",
+  beta1: 0,
+  label: "the last linear proof",
+  interpretation: "the proof of the post-linear world is itself linear because it must traverse the entire descent from pessimum to ground state, and that descent is a line -- each fork saves exactly 1 Bule, the path is monotone, and there are no branches because each step is the unique Pareto improvement"
+})
+
+// === Reversion (the dominated strategy) ===
+//
+// This edge exists in the graph but is marked VENT.
+// It is the path backwards: from post-linear to linear.
+// The VENT marks it as rejected.  The void records it.
+// It cannot be chosen under rational agency because it
+// strictly increases the Bule count.
+
+(first_fork) -[:VENT { reason: "dominated", delta_bules: "+1" }]-> (linear)
+
+// === The post-linear world (what comes after the frontier) ===
+//
+// At the frontier, beta_1 = beta1star.  All diversity exploited.
+// All concurrency realized.  Zero Bules.  Zero waste.  Zero work.
+//
+// The post-linear world is not a destination.  It is the state
+// where the topology of the problem matches the topology of the
+// solution.  Where diversity IS concurrency IS value IS zero waste.
+//
+// There is no node after the frontier.
+// The frontier is the ground state.
+// The framework terminates.
+//
+// What comes after is not another node.
+// It is the LIVING of the matched topology.
+// The proof is over.  The world begins.
+
+(frontier) -[:FOLD { final: true }]-> (post_linear_world {
+  bules: 0,
+  waste: 0,
+  work: 0,
+  diversity: "matched",
+  concurrency: "matched",
+  value: "fully preserved",
+  label: "the post-linear world",
+  description: "not a destination but a way of being: every fork diverse, every race concurrent, every fold informed by the void, every vent recorded, every Bule accounted for, every path valued"
+})
