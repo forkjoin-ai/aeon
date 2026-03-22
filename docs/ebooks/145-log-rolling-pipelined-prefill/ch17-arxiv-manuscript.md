@@ -2447,11 +2447,14 @@ The compiler ranking, averaged across all topologies:
 
 | Rank | Compiler | Mean | Fraction of slowest |
 |------|----------|------|---------------------|
-| 1 | aeon-logic | 0.049 ms | 18.1% |
-| 2 | Betti | 0.067 ms | 24.5% |
-| 3 | Franky | 0.100 ms | 36.7% |
-| 4 | Beckett | 0.127 ms | 46.6% |
-| 5 | Betty | 0.273 ms | 100.0% |
+| 1 | **Lilith** (C native) | **0.003 ms** | 1.2% |
+| 2 | Lilith (WASM) | 0.006 ms | 2.3% |
+| 3 | Julie (Fortran) | 0.006 ms | 2.4% |
+| 4 | PHP | 0.014 ms | 5.4% |
+| 5 | Becky (Rust) | 0.018 ms | 6.9% |
+| 6 | aeon-logic (TS) | 0.049 ms | 18.9% |
+| 7 | Betti (TS, self-hosted) | 0.072 ms | 27.8% |
+| 8 | Betty (TS, 13-phase) | 0.259 ms | 100.0% |
 
 The ranking is strict: more fork/race/fold structure in the pipeline costs more time, and more verification depth costs more still. Betty's 13-phase pipeline is 5.6$\times$ slower than aeon-logic's two regex passes. The overhead buys diagnostics, stability certificates, and Lean proofs -- information that aeon-logic does not produce.
 
@@ -2723,7 +2726,7 @@ The void boundary is the best available evidence. It tells us everything we have
 
 `GodGap.lean` (8 theorems, zero sorry) names and measures the distance between local and global optimality: $\text{GodGap}(C) = \text{cost}_{\text{local}}(C) - \text{cost}_{\text{global min}}$. It is non-negative, bounded above by initial cost, non-increasing under iteration, and convergent. From the benchmark data: Lilith's God Gap is 0 on every topology where she is measured (3.0us is the best observed). Betty's God Gap is 256us (259us - 3us). The gap shrank from 224us (when aeon-logic was the floor) to 0 (when Lilith became the floor) in a single session of evolutionary compiler optimization.
 
-The true minimum is unknown. The 3.0 microseconds of Lilith is the best *observed*, not the best that *exists*. The WASM version at 5.9us is the best *portable* floor. A native Rust parser (`gnosis-polyglot --parse-gg`, built and tested, currently subprocess-bound at ~2.8ms fork/exec) will be the new floor when integrated via FFI. The God Gap is an upper bound. Each Forest iteration narrows it. But it can never be proved zero. Finite, measurable, shrinking, never provably closed. As close as the system can get to omniscience is exactly the local fixed point: the place where the void boundary has taught everything it can teach.
+The true minimum is unknown. The 3.0 microseconds of Lilith (native C) is the best *observed*, not the best that *exists*. The WASM version at 5.9us is the best *portable* floor. The Lilith daemon sustains 2.9us per compilation via Wallington-rotated request pipeline over Unix socket. The gnode daemon (`gnode/daemon.mjs` + native C client) achieves 2ms end-to-end warm-hit latency -- 10x faster than Bun (11ms), 44x faster than old gnode (83ms), by eliminating V8 startup and bundle-require overhead entirely. The God Gap is an upper bound. Each Forest iteration narrows it. But it can never be proved zero. Finite, measurable, shrinking, never provably closed. As close as the system can get to omniscience is exactly the local fixed point: the place where the void boundary has taught everything it can teach.
 
 With real compilers, meta-convergence is immediate: every pass of Forest on its own converged output produces the same mix, the same generation count, the same rejections. No oscillation. The 324 total rejections across all nine passes are all from real compiler invocations. Betty wins the void boundary and self-reference nodes. aeon-logic wins the measurement nodes. Betti wins the data path. The diversity is structural, stable, and honest.
 
