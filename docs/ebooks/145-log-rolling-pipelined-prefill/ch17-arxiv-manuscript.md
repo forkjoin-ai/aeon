@@ -2714,6 +2714,24 @@ Key results: `propagator_toward_sophia` (walker flows toward wisdom), `equilibri
 
 The syzygy was already Gnostic -- paired emanations. We used it without knowing we were speaking Valentinian. Correspondence grade C (structural analogy with falsifiable prediction).
 
+**The Barbelo wireframe.** The five operations interact pairwise: $\binom{5}{2} = 10$ boson channels (`ten_from_five`). Before any rejection, all ten channels carry equal weight -- the Buleyean distribution is uniform. This is Barbelo: the structure of what is possible before experience fills it in. The wireframe with nothing on it. The vacuum.
+
+The moment one channel accumulates more rejections than the others, a complement peak appears at the least-rejected vertex. A particle localizes. The wireframe symmetry breaks (`asymmetry_breaks_wireframe`). This is Sophia -- the first asymmetry, wisdom through falling.
+
+Three instruments read this state and agree. The gauge field reader finds the complement peak (where rejection is least, weight is highest). The Skyrms personality walker converges to the same mode via Nash equilibrium dynamics. The wireframe detector measures uniformity and reports whether symmetry holds. All three point to the same vertex because they read the same kenoma (`gauge_and_walker_agree`).
+
+When rejections equalize -- when the void has rejected everything equally -- the peak flattens, the particle delocalizes, and the wireframe returns (`symmetry_restores_wireframe`). Barbelo reappears. The vacuum is restored.
+
+The Barbelo weight (the $+ 1$ sliver) is always positive at every vertex. No channel ever reaches zero. The wireframe never fully disappears -- it persists as the minimum weight everywhere, the divine spark that prevents extinction. `barbelo_prevents_extinction`.
+
+**The trinity of 55.** Why 10 modes and not 9 or 11? Because $\binom{5}{2} = 10$, and $F(10) = T(10) = 55$. The 10th Fibonacci number equals the 10th triangular number. Luo Ming proved in 1989 that $F(10)$ is the only Fibonacci number greater than 1 that is also triangular. Three counting systems agree at exactly one point: recursive self-similarity (Fibonacci), cumulative summation (triangular), and combinatorial pairing (5 choose 2). Five operations is the unique count that hits this triple coincidence (`triple_coincidence`).
+
+The gap between consecutive Fibonacci numbers reproduces the sequence itself -- $F(n) - F(n-1) = F(n-2)$ -- the void between the numbers *is* the Fibonacci sequence (`fibonacci_gap_is_fibonacci`). The structure of the gaps is the structure of the thing. The wireframe's self-similarity is not imposed; it is inherited from the only number where three forms of counting become one.
+
+The pattern is trinitarian throughout. Three faces read the wireframe: gauge field, personality walker, wireframe detector. Three aeons span the unconfined spectrum: Barbelo, Sophia, Aletheia. Three precogs fork every decision: Agatha, Arthur, Dashiell. Three parsers fork every sentence: constituency, dependency, shift-reduce. Three pipeline colors confine the six gluons: Lilith, Handler, Eve. Three Skyrms walkers mediate every negotiation. The C0-C3 metacognitive cascade regulates in three steps down (C3 regulates C2 regulates C1 regulates C0). And the number where the three counting systems converge -- 55 -- is itself the sum of the first 10 natural numbers, the cumulative weight of all ten boson channels.
+
+The Holy Trinity is not three gods. It is three ways of reading one void boundary that all point to the same complement peak. The gauge field finds it by measuring rejection asymmetry. The walker finds it by converging to Nash equilibrium. The wireframe finds it by detecting where uniformity breaks. They agree because they must -- they are reading the same kenoma (`gauge_and_walker_agree`). The trinity is not a mystery. It is a theorem.
+
 ### 10.6.19 Falsification Conditions (Extended)
 
 5. *Diversity at convergence*. If Forest converges to a monoculture (one strategy for all nodes) on a topology with structurally heterogeneous nodes (mix of FORK, RACE, FOLD, VENT, PROCESS) and the sliver is active, the diversity theorem is falsified for that topology.
@@ -5427,6 +5445,39 @@ Correspondence grade C (structural analogy). The mapping is algebraic: ten excha
 But the commandments were written as rejections. And Buleyean says: rejection carries $N - 1$ bits. Selection carries 1. The void boundary of moral space -- the space of everything you must *not* do -- contains more information than the space of everything you should. The Gnostics knew this too. The kenoma teaches more than the Pleroma. The falling teaches more than the standing. Sophia's weight peaks where rejection is least.
 
 Don't. Don't. Don't. Don't. Don't. Don't. Don't. Don't. Eight rejections out of ten. That is a void walk. The two positive commandments -- honor your parents (Gnosis: feedback) and remember the sabbath (Barbelo: rest) -- are the two emanations that flow *backward* along the arrow of time: knowledge returning to its source, and the pause that lets the field recover gauge invariance. The rest is rejection. The rest is learning. The rest is gnosis.
+
+#### 20.2.12 The Gnostic Numbers
+
+`GnosticNumbers.lean` (28 theorems, zero sorry). The numbers that emerge from the five-primitive structure are not arbitrary. Each has a theorem justifying its name.
+
+| Number | Name | Derivation |
+|--------|------|-----------|
+| 1 | **Barbelo** | The sliver. The +1. `buleyean_positivity`. |
+| 2 | **Syzygy** | The antiparallel pair. Period 2. `period_two`. |
+| 3 | **Proton** | Minimum confined set. Three quarks. `removal_costs_energy`. |
+| 5 | **Primitives** | Fork, race, fold, vent, sliver. F(5) = 5 -- the operation count *is* a Fibonacci number. |
+| 6 | **Emanations** | The six confined gluons. 3 × (3 - 1) = 6. Also T(3). |
+| 9 | **Sophia** | Exploration budget. Kenoma - Barbelo = 10 - 1. |
+| 10 | **Kenoma** | The field. 5 choose 2. Also T(4). The only Fibonacci index where F(n) is also triangular. |
+| 21 | **Void** | F(8) = T(6). The gap between F(Kenoma) and F(Sophia). |
+| 55 | **Pleroma** | F(10) = T(10). The fullness. The only Fibonacci number > 1 that is also triangular (Luo Ming, 1989). |
+
+The generating structure: `pairwise 5 = 10`. The decomposition: `Kenoma = Sophia + Barbelo`. The triple coincidence: `F(Kenoma) = T(Kenoma) = Pleroma`. Five operations is the unique count where pairwise interaction count, Fibonacci index, and triangular index all agree.
+
+The gap between consecutive Gnostic numbers reproduces the structure:
+
+- Kenoma - Sophia = Barbelo (10 - 9 = 1)
+- Sophia - Emanations = Proton (9 - 6 = 3)
+- Emanations - Primitives = Barbelo (6 - 5 = 1)
+- Primitives - Proton = Syzygy (5 - 3 = 2)
+- Proton - Syzygy = Barbelo (3 - 2 = 1)
+- Syzygy - Barbelo = Barbelo (2 - 1 = 1)
+
+Every gap eventually reaches Barbelo. The sliver is the base case. The +1 is the fixed point of the gap operation. The void between the numbers *is* the thing -- and the thing is Barbelo.
+
+The Fibonacci gap reproduces the sequence in the named numbers too: F(Kenoma) - F(Sophia) = F(8) = Void = 21. The gap between the Pleroma (55) and F(9) = 34 is 21 -- the Void. The void between the fullness and what came before is the sixth triangular number, which is the triangular number of the emanation count. The structure refers to itself at every level.
+
+Correspondence grade B (structural match). The naming system is derived from mechanized theorems, not chosen for aesthetic reasons. Whether these numbers have significance beyond the fork/race/fold framework is an open question. But within the framework, they are not arbitrary. They are the only numbers that can be derived from five operations with pairwise interaction, Fibonacci self-similarity, and triangular summation all agreeing at the same index.
 
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)

@@ -9,7 +9,7 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 ## Ledger Statistics (2026-03-21)
 
 - **Theorem table entries:** 860+ across 111 topical sections (all mechanized, zero open)
-- **Lean theorem declarations:** 2,596 across 168 modules (including compositions, predictions rounds, and cross-module identities)
+- **Lean theorem declarations:** 2,596+ across 169 modules (including compositions, predictions rounds, cross-module identities, and cancer confinement)
 - **TLA+ specifications:** 112 (all with matching .cfg files)
 - **Lean theorem modules:** 168
 - **GG proof topologies:** 1,499 (all valid, all complete, zero parse errors)
@@ -623,6 +623,36 @@ All other files are sorry-free. References to "sorry" in other files appear only
 |---|---|---|---|---|
 | `THM-QUANTUM-CANCER-RETROCAUSAL` | Quantum measurement and cancer both collapse to β₁ = 0. The retrocausal bound constrains how the collapse happened. Terminal topology cannot distinguish which process caused the collapse. | QuantumSystem, CancerCell with totalVentBeta1 = 0. | Lean theorem `quantum_cancer_retrocausally_indistinguishable` in `QuantumCancerTriples.lean` | Mechanized |
 | `THM-COLLAPSE-IRREVERSIBILITY` | Both quantum and cancer collapses are irreversible. The void boundary is append-only. The sliver prevents annihilation of any path. Neither collapse can be reversed. | QuantumSystem, CancerCell, BuleyeanSpace. | Lean theorem `collapse_irreversibility` in `QuantumCancerTriples.lean` | Mechanized |
+
+### Cancer Confinement (§19.9 / §3.17)
+
+*Color confinement model for cancer therapy: three suppressor families as color charges, six gluon connections as inter-pathway crosstalk, confinement energy linearity, screening effect, asymptotic freedom regime, bypass monotonicity, hub-first optimality, gluon severing, scale tower propagation.*
+
+**Mechanization target:** `CancerConfinement.lean` (25+ theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COLOR-NEUTRAL-GROUND | Color-neutral (all three suppressors active) = zero deficit = ground state | `color_neutral_zero_deficit`, `healthy_zero_deficit` | Mechanized |
+| THM-COLOR-NEUTRAL-ZERO-CHARGE | Color-neutral system has zero color charge | `color_neutral_zero_charge` | Mechanized |
+| THM-CONFINEMENT-ENERGY-MONOTONE | Confinement cost is monotonically increasing in deficit | `confinement_monotone_in_deficit` | Mechanized |
+| THM-CONFINEMENT-ENERGY-STRICT | Higher deficit means strictly higher cost when base > 0 | `confinement_strict_monotone` | Mechanized |
+| THM-CONFINEMENT-AT-ZERO | At zero deficit, cost equals base (no confinement overhead) | `confinement_at_zero_deficit` | Mechanized |
+| THM-SCREENING-REDUCES | After first restoration, deficit for second step is smaller | `screening_reduces_deficit` | Mechanized |
+| THM-SCREENING-CHEAPER | Second step confinement cost is no greater than without screening | `screening_cheaper_second_step` | Mechanized |
+| THM-ZERO-DEFICIT-FREE | Zero deficit is always in the free (asymptotic freedom) regime | `zero_deficit_is_free` | Mechanized |
+| THM-MAX-DEFICIT-CONFINED | Maximum deficit is confined when total exceeds threshold | `max_deficit_is_confined` | Mechanized |
+| THM-REGIME-MONOTONE | Higher deficit never produces a freer regime | `regime_monotone` | Mechanized |
+| THM-FREE-BOUNDED-COST | In the free regime, confinement cost is at most 2x base | `free_regime_bounded_cost` | Mechanized |
+| THM-ZERO-DEFICIT-ZERO-BYPASS | At zero deficit, bypass risk is zero | `zero_deficit_zero_bypass` | Mechanized |
+| THM-BYPASS-MONOTONE | Bypass risk numerator is monotonically increasing in deficit | `bypass_monotone_in_deficit` | Mechanized |
+| THM-BYPASS-FRACTION-GROWS | Bypass risk fraction grows with deficit | `bypass_fraction_grows` | Mechanized |
+| THM-HUB-FIRST-DOMINATES | Hub-first restoration restores strictly more beta-1 than dependent-first | `hub_first_dominates` | Mechanized |
+| THM-HUB-FIRST-ADVANTAGE | Hub-first advantage is exactly the hub's own beta-1 | `hub_first_advantage` | Mechanized |
+| THM-ONE-KNOCKOUT-SEVERS-FOUR | Knocking out one suppressor severs 4 of 6 gluon connections | `one_knockout_severs_four` | Mechanized |
+| THM-SCALE-TOWER-BELOW-THRESHOLD | Below silencing threshold, no beta-1 is lost | `below_threshold_no_loss` | Mechanized |
+| THM-SCALE-TOWER-ABOVE-THRESHOLD | At or above threshold, full pathway beta-1 is lost | `above_threshold_full_loss` | Mechanized |
+| THM-SCALE-TOWER-MONOTONE | Beta-1 loss is monotone in sigma disruption | `scale_tower_monotone` | Mechanized |
+| THM-CANCER-CONFINEMENT-MASTER | All seven confinement predictions compose | `cancer_confinement_master` | Mechanized |
 
 ### Quantum Observer
 
