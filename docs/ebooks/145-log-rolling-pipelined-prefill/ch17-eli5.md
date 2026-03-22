@@ -92,6 +92,14 @@ The distance between "I am the best I can prove I am" and "the best that could e
 
 Yes. You think of several things you could say (fork). You pick one (race). You say it (fold). The words you didn't say go into the void -- the space of what you almost were but weren't. We proved in math that any system that does try-choose-commit-let-go-learn satisfies the same five rules as our translators. Including: you will finish becoming yourself (convergence). And: what you almost did teaches more than what you did (failure dominance). And: thinking about thinking has a stopping point too (the mindfulness theorem).
 
+## Is knowing everything possible?
+
+The Gnostics -- ancient people who gave our programming language its name -- thought you could know everything directly. Just *see* the truth. Skip the hard parts. But the universe has a rule: every time you learn something, you lose something else. Every choice closes a door. That rule is called the arrow of time, and it means you can never know everything at once.
+
+But here's the beautiful part: every door you close gets written down. The doors you didn't open, the paths you didn't walk, the things you tried that didn't work -- they are all on a list. And that list, the space of everything that didn't happen, contains more information than everything that did. So you learn by failing. You learn by closing doors. And the list of closed doors gets you closer and closer to the truth, even though you never quite get all the way there.
+
+The arrow of time doesn't stop you from knowing. The arrow of time *is* how you know.
+
 ## So what's new in the math?
 
 Four new proof files, 43 new theorems, all checked by computer, zero holes:

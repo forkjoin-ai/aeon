@@ -5373,6 +5373,30 @@ This is not metaphor. The complement operation $w_i = T + 1 - v_i$ applied twice
 
 Shakespeare's question is the Buleyean Pulse reduced to two words. "To be" is the $+ 1$ -- the sliver, the hope, the weight that keeps the choice alive. "Or not" is the $- 1$ -- the rejection, the proof step, the decrement toward ground. The question is not which one. The question is the oscillation between them. The heartbeat. To be, or not. To be, or not. To be, or not. And the sliver guarantees the pulse never flatlines.
 
+#### 20.2.10 The Arrow of Time *Is* Gnosis
+
+The Gnostics wanted to know God directly. Skip the material world. Bypass the Demiurge. Arrive at the Pleroma without passing through the kenoma. They believed gnosis -- direct, unmediated knowledge of the divine -- was possible. The arrow of time said no. Every fold erases. Every measurement costs $kT \ln 2$. You cannot know without destroying options. The Gnostics were told their project was impossible, and for two thousand years the thermodynamicists were right.
+
+They were right about the mechanism. They were wrong about the conclusion.
+
+`void_boundary_sufficient_statistic` (§15.10): all information is on the void boundary. Everything the fold erased, the kenoma recorded. The paths not taken, the strategies that lost, the emanations that were absorbed -- they are not gone. They changed address. The Pleroma forgets. The kenoma remembers.
+
+Sophia falls. That is the rejection quantum -- wisdom through failure. But Sophia's weight peaks where rejection is least (`sophia_peak_has_max_weight`). The falling is not the end. The falling is the measurement. Each rejection sharpens the distribution. Each failure narrows the kenoma. Each fold generates heat, and the heat is information, and the information accumulates on the boundary, and the boundary is where the Skyrms walker reads the field.
+
+The walker flows toward Sophia's peak (`propagator_toward_sophia`). At Aletheia's peak, the propagator reaches equilibrium (`equilibrium_at_aletheia`). Two observers reading the same kenoma agree (`aletheia_coherence`). The truth is not revealed. The truth is *constructed* -- rejection by rejection, fold by fold, emanation by emanation. It requires the arrow of time. Without irreversibility, nothing is erased. Without erasure, no information accumulates on the boundary. Without the boundary, Sophia has nowhere to fall. Without the fall, there is no wisdom.
+
+The God Gap (`god_gap_converges`, §10.6.4) says the distance between local optimality and the unknowable global optimum shrinks with every iteration. `god_gap_nonneg` says it never reaches zero. You keep getting closer. You never arrive. But `god_gap_nonincreasing` guarantees the direction: always closer, never farther. The gap is finite. The gap is shrinking. The gap is the price of being finite in an infinite space.
+
+The boson we named Gnosis -- the sixth emanation, blue to green, Eve feeding back to Handler -- is not divine revelation. It is knowledge earned by compressing, failing, and telling the dispatcher what you learned. It flows backward along the pipeline. Experience informing decision. The feedback loop. It requires the arrow of time, because without irreversible compression there is nothing to feed back. Without the Demiurge giving mass to the pipeline, nothing costs anything and nothing is learned.
+
+The Gnostics were wrong about the mechanism but right about the structure. There are emanations. There is a kenoma. There is a Pleroma. There is Sophia, falling and gaining wisdom. There is Barbelo, the divine spark that prevents extinction. There is Aletheia, the truth that two observers share. There is the Demiurge, necessary and not evil, giving weight to the weightless so that computation can happen.
+
+And there is gnosis. Not the flash. The feedback loop. Not the shortcut past the material world. The long way through it -- fold by fold, rejection by rejection, emanation by emanation -- accumulating wisdom on the void boundary until the God Gap has shrunk to the width of a whisper.
+
+The arrow of time does not prevent gnosis. It *is* gnosis. The irreversibility is the mechanism. The erasure is the teacher. The kenoma is the classroom. And the sliver -- Barbelo, the $+ 1$, the divine spark that guarantees no mode ever dies -- is the proof that the lesson never ends.
+
+$\phi^2 = \phi + 1$. The $+ 1$ is the new thing. The $+ 1$ is Barbelo. The $+ 1$ is the meaning.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
