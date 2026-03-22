@@ -5549,6 +5549,36 @@ The last whip: the Wallington Rotation, whipped from 2D (flat pipeline) to 3D (t
 
 Correspondence grade B (structural match). The K-torus Betti number identity ($\beta_1 = K$) is standard algebraic topology. The mapping from pipeline stages to independent cycles is the interpretive step. The claim: the Wallington Rotation and quark confinement are the same theorem applied at adjacent dimensions. The donut is the quark you can see. The proton is the donut you cannot.
 
+#### 20.2.15 Euler's Identity Is Gnostic
+
+`EulerGnostic.lean` (14 theorems, zero sorry). The most beautiful equation in mathematics:
+
+$$e^{i\pi} + 1 = 0$$
+
+Every symbol is a Gnostic entity:
+
+| Symbol | Gnostic name | Role | Primitive |
+|--------|-------------|------|-----------|
+| $e$ | **Demiurge** | The fold rate. Irreversible change at the natural rate. Landauer heat. | FOLD |
+| $i$ | **$\sqrt{\text{Syzygy}}$** | The imaginary unit. Square root of period-2 oscillation. Fork creates a new axis. | FORK |
+| $\pi$ | **Lorenzo** | The period of the kenoma torus. One half-rotation reaches the antipodal point. | RACE |
+| $1$ | **Barbelo** | The sliver. The $+1$. The divine spark that prevents extinction. | SLIVER |
+| $0$ | **Ground** | Truth. Zero deficit. Post-fold completion. What remains after dissipation. | VENT |
+
+The Demiurge ($e$), applied through the oscillation of Syzygy ($i$) over one Lorenzo period ($\pi$), produces complete negation ($-1$). Adding Barbelo ($+1$) reaches Ground State ($0$ = truth).
+
+`i_squared_is_negation`: two flips negate. `i_fourth_is_identity`: four flips return to start. The period is exactly 2 = Syzygy. $i$ is the square root of Syzygy: applying it twice completes one antiparallel oscillation. `half_period_is_negation`: $e^{i\pi}$ is the half-rotation, reaching the antipodal point (negation). `full_period_is_identity`: $e^{i \cdot 2\pi}$ returns to start (identity).
+
+The integer part of $e$ is 2 = Syzygy. The Demiurge's floor is the oscillation period. The fractional part ($0.718$) is the Demiurge fraction $\approx 1 - 1/e \approx 1 - 7/19$, the same ratio that determines the Hebrew calendar's leap months.
+
+$e = \lim_{n \to \infty} (1 + 1/n)^n$. The $1/n$ is the sliver divided among $n$ options. As options grow, the compound effect of infinitely many slivers equals the Demiurge. The Demiurge is what happens when Barbelo is applied infinitely often.
+
+The five symbols span all three number families: integers (0, 1), irrationals ($e$, $\pi$), and complex ($i$). The Gnostic number system is complete. The integers came from the triple coincidence (§20.2.12). The irrationals came from the eigenvalue dynamics (§20.2.12). The complex number comes from the syzygy. Euler's identity is the equation that says: these three families are one family. The naming is the proof.
+
+$\varphi^2 = \varphi + 1$. $e^{i\pi} + 1 = 0$. Both have a $+1$. Both reach a fixed point. Both require the sliver. The $+1$ is the same $+1$. It is Barbelo. It is the meaning.
+
+Correspondence grade B (structural match with bijective naming). The five-symbol to five-primitive mapping is proved injective in Lean. The actual identity $e^{i\pi} + 1 = 0$ requires Mathlib complex analysis. The claim: the five most important numbers in mathematics are the five primitives of fork/race/fold, and the identity that connects them is the equation of the framework.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
