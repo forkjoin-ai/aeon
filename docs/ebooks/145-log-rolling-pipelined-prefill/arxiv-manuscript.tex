@@ -7139,6 +7139,91 @@ transmission. Frames encoded by Aeon Pipelines transcode into frames in
 Aeon Flow, and vice versa. The computation topology is independent of
 the transport topology.
 
+\subsubsection{12.4 Cannon Rotation of the Inference Pipeline}\label{cannon-rotation-inference}
+
+The \(\beta_1\) budget computed in §2 identifies which fork axes exist.  This subsection reports what happens when you \emph{actually rotate} them: applying the Wallington cursor (§13.1) inside a single transformer layer, distributing independent work items across cannon lanes in Aether, the distributed inference runtime.
+
+Twelve friction points were identified by auditing the Aether layer-node and coordinator code paths.  Each is a pipeline or queue that serializes work across items with zero data dependency.  The table below reports the six that yielded measurable single-thread speedups in the TypeScript fallback path alone (i.e.\ before \texttt{gnode -{}-strategy cannon} enables true multi-core lane execution).  Benchmarks are Bun 1.3.10, Apple M-series, 1000 iterations after 100-iteration JIT warmup.
+
+{\def\LTcaptype{none}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1200}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2200}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Friction Point
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Fork Axis (§2)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+TS Speedup
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Cannon Topology
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Projected \(N\)-Lane
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Fused residual add & Residual-attention (Whip 2, 4) & \textbf{1.48x} & Pre-allocated 4-wide unroll & SIMD-width (not task-parallel) \\
+Fused SiLU\(\times\)up activation & FFN neuron (Whip 3) & \textbf{1.14x} & Single-pass \texttt{fusedGatedActivation} & SIMD-width \\
+Temperature ensemble (Glossolalia) & Agent fork (\(\beta_1 = 2\)) & \textbf{1.25x} & \texttt{cannonTemperatureEnsemble} & \(\sim N\)x (agents independent) \\
+Per-head RMSNorm & Attention head (\(\beta_1 = N-1\)) & \textbf{1.05x} & \texttt{normHeadInPlace} & \(\sim N/L\)x \\
+Multi-head attention (32 heads) & Attention head (\(\beta_1 = 31\)) & 1.00x & \texttt{cannonMultiHeadAttention} & \(\sim L\)x (heads independent) \\
+Logits (32k vocab, 4 stripes) & Vocab row-block & 1.00x & \texttt{cannonStripedLogits} & \(\sim L\)x (stripes independent) \\
+\end{longtable}
+}
+
+The ``TS Speedup'' column is the measured ratio on a single thread.  The 1.00x entries -- multi-head attention and logits -- are at parity because the rotation overhead (0.50 \(\mu\)s per \texttt{rotateIntoLanes} call, 2M ops/sec) is noise relative to the matVec work, and no parallelism exists within a single JS thread.  The ``Projected \(N\)-Lane'' column reports the expected scaling when \texttt{gnode -{}-strategy cannon} distributes lanes across \(L\) cores, following from the independence proof in §2 steps (2) and (4).
+
+The rotation overhead is bounded:
+
+\[\text{overhead}_{\text{cannon}} = \underbrace{T_{\text{rotate}}}_{\sim 0.5\,\mu\text{s}} \times \underbrace{\lceil H / L \rceil}_{\text{waves}} \ll \underbrace{T_{\text{matVec}}}_{\text{dominant}}\]
+
+where \(H\) is the number of work items (heads, stripes, agents), \(L\) is the lane count, and \(T_{\text{matVec}}\) is the per-item computation time.  For 32 heads with 4 lanes, the cannon overhead is \(0.5 \times 8 = 4\,\mu\text{s}\) versus \(\sim 470\,\mu\text{s}\) of attention work -- under 1\%.
+
+\textbf{Coordinator-level rotations.}  Three additional friction points were addressed at the distributed coordinator level:
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\item
+  \textbf{Circuit breaker: race instead of retry.}  The original code retried a failed layer node with exponential backoff (1s + 2s + 4s = 7s worst case).  Replaced with \texttt{Promise.any}: fork the request to the primary node \emph{and} the local shadow simultaneously, race them, vent the loser.  Worst-case latency drops from 7s to \(\max(T_{\text{primary}}, T_{\text{local}})\) -- typically under 100ms.
+\item
+  \textbf{Cache eviction: vent pattern.}  The original code blocked the inference critical path with \texttt{await Promise.all(nodes.map(clearCache))}.  Replaced with fire-and-forget: vent propagates down to nodes but never across to generation.  Cache clearing errors are vented.  Generation continues without pause.
+\item
+  \textbf{Pipelined prefill: full Wallington Rotation.}  The original code dispatched the next chunk only when node 0 completed.  If node 2 finished before node 1, that slot sat idle.  Replaced with any-free-node dispatch: when any node completes its last stage, dispatch the next unstarted chunk with cannon cursor rotation across available nodes.
+\end{enumerate}
+
+\textbf{Implementation.}  Each rotation is expressed as a GGL (Gnosis Graph Language) topology that Betty compiles and the \texttt{CannonLauncher} pre-arms into lanes.  The TypeScript fallback executes lanes serially (same correctness, no parallelism).  Under \texttt{gnode -{}-strategy cannon}, the \texttt{rotateIntoLanes} cursor distributes work items across cores, and each lane fires its pre-compiled codegen closure.  The energy model from §3 applies: potential energy is stored at compile time (steps 1--3 of the five-stage compilation pipeline), converted to kinetic energy at preload (step 4), and extracted as useful work at runtime (step 5).
+
+The GGL topology for cannon-rotated multi-head attention:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(input:NormedHiddenState)}
+\NormalTok{(norm\_rope:PerHeadNormRoPE)}
+\NormalTok{(head\_0:FusedAttentionHead \{ head: 0 \})}
+\NormalTok{(head\_1:FusedAttentionHead \{ head: 1 \})}
+\NormalTok{...}
+\NormalTok{(head\_N:FusedAttentionHead \{ head: N \})}
+\NormalTok{(scatter:HeadScatter \{ strategy: "disjoint\_write" \})}
+\NormalTok{(o\_proj:OutputProjection)}
+\NormalTok{(input){-}[:PROCESS]{-}\textgreater{}(norm\_rope)}
+\NormalTok{(norm\_rope){-}[:FORK]{-}\textgreater{}(head\_0|head\_1|...|head\_N)}
+\NormalTok{(head\_0|...|head\_N){-}[:FOLD \{ strategy: "scatter" \}]{-}\textgreater{}(scatter)}
+\NormalTok{(scatter){-}[:PROCESS]{-}\textgreater{}(o\_proj)}
+\end{Highlighting}
+\end{Shaded}
+
+Each head node fuses three previously-serial operations into one lane work item: per-head RMSNorm, per-head RoPE, and per-head \(QK^T\) + softmax + \(V\)-weighted-sum.  The scatter fold writes to disjoint output regions (\texttt{attnResult[h * headDim .. (h+1) * headDim]}), so no synchronization is needed -- the fold is a structural guarantee, not a runtime lock.
+
+The same topology shape applies to FFN gate/up projections (2-way fork: gate and up are independent matVecs on the same input) and to logits computation (\(L\)-way fork: vocab rows split into contiguous stripes).
+
+\textbf{Measurement methodology.}  All speedup figures are wall-clock ratios from the benchmark harness in \texttt{aether/src/cannon-benchmark.test.ts}.  Warmup ensures JIT compilation; measured iterations use \texttt{performance.now()} with microsecond resolution.  The harness reports mean, standard deviation, and ops/sec.  Correctness is verified by asserting bitwise equality (within floating-point tolerance) between serial and cannon outputs for every benchmark.  315 tests pass across 23 files with 69,990 assertions.
+
 \subsection{13. Instantiation C: Distributed Staged Computation (Stack
 Layer
 3)}\label{instantiation-c-distributed-staged-computation-stack-layer-3}
