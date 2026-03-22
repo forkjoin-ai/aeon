@@ -31,6 +31,7 @@ Modules:
 - `StagedExpansion.lean`: constructive staged-expansion theorems for the bounded diamond witness, comparing shoulder-filling against naive peak widening at equal budget.
 - `WarmupEfficiency.lean`: constructive warm-up efficiency theorems for bounded recovered-overlap models, deriving the exact threshold where weighted Wallace reduction beats added Buley cost.
 - `WarmupController.lean`: constructive controller theorems for the burden/redline policy that chooses `expand`, `constrain`, or `shed-load` under one-hot topology mismatch.
+- `CommunityCompositions.lean`: constructive compositions across community dominance, empathy-channel nadirs, diversity ceilings, no-exploration invariants, void-sharing convergence diagnostics, herd-immunity thresholds, cultural-resolution rounds, and local/global community merge bounds.
 - `Wallace.lean`: constructive Wallace/crank theorems for bounded three-layer frontiers, including complement, boundedness, and the symmetric diamond closed form.
 - `MeasureQueueing.lean`: constructive infinite-support queueing theorems over `tsum`, countably supported stochastic laws via `PMF`, and `lintegral`, including monotone truncation-to-limit conservation.
 - `QueueBoundary.lean`: constructive one-path queue boundary witness that packages the canonical stable `M/M/1` case with `β₁ = 0`, capacity `1`, and stationary mean occupancy `λ / (μ - λ)`.

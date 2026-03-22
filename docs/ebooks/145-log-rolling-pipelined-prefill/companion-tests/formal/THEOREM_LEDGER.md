@@ -937,18 +937,37 @@ All other files are sorry-free. References to "sorry" in other files appear only
 
 ### Community Compositions (§10.6)
 
-*Compositions across community dominance, empathy channels, herd immunity, void sharing, and cultural controversy.*
+*Compositions across community dominance, empathy channels, herd immunity, void sharing, cultural controversy, and local/global merge bounds.*
 
-**Mechanization target:** `CommunityCompositions.lean` (37 theorems, zero sorry)
+**Mechanization target:** `CommunityCompositions.lean` (56 theorems, zero sorry)
 
 | ID | Statement | Lean reference | Status |
 |---|---|---|---|
 | THM-COMMUNITY-PREVENTS-WAR | Community prevents future war | `community_prevents_future_war` | Mechanized |
+| THM-MAX-DEFICIT-ZERO-IFF-CAPACITY | Zero maximum deficit iff decision capacity already covers the failure topology | `max_deficit_zero_iff_capacity_covers_failure` | Mechanized |
 | THM-EMPATHY-CONVERGENCE | Empathy convergence rate | `empathy_convergence_rate_raw` | Mechanized |
+| THM-EMPATHY-NADIR-UPPER-BOUND | Shared experience never increases the empathy nadir | `empathy_nadir_le_raw` | Mechanized |
+| THM-EMPATHY-ZERO-SHARED-RAW | Zero shared dimensions recover the raw sum-minus-one empathy nadir | `empathy_shared_zero_recovers_raw` | Mechanized |
+| THM-EMPATHY-BEFORE-NADIR | Before the nadir, the empathy Bule deficit is still positive | `empathy_before_nadir_positive` | Mechanized |
+| THM-EMPATHY-AFTER-NADIR | Once the nadir is reached, every later exchange count stays converged | `empathy_after_nadir_zero` | Mechanized |
+| THM-DIVERSITY-CEILING-MAX-DEFICIT | The diversity ceiling equals the maximum deficit | `diversity_ceiling_eq_max_deficit` | Mechanized |
+| THM-NO-EXPLORATION-PRESERVES-VOID | No exploration preserves total accumulated void | `no_exploration_preserves_total_void` | Mechanized |
 | THM-HERD-IMMUNITY | Herd immunity at threshold | `herd_immunity_at_threshold` | Mechanized |
+| THM-HERD-IMMUNITY-CEILING | Herd-immunity threshold equals the induced diversity ceiling | `herd_immunity_threshold_eq_diversity_ceiling` | Mechanized |
+| THM-HERD-IMMUNITY-MINIMUM | One fewer haplotype than the threshold leaves positive vulnerability | `herd_immunity_threshold_minimum` | Mechanized |
+| THM-HERD-IMMUNITY-PERSISTENCE | Once the threshold is met, extra diversity keeps the pathogen topology covered | `herd_immunity_after_threshold_zero` | Mechanized |
 | THM-VOID-SHARING-DIAGNOSTIC | Void sharing diagnostic | `void_sharing_diagnostic` | Mechanized |
+| THM-CURRENT-DEFICIT-IFF-CONVERGED | Zero current empathy deficit is exactly convergence in the void-sharing map | `current_deficit_zero_iff_converged` | Mechanized |
+| THM-VULNERABILITY-POSITIVE-NOT-CONVERGED | Positive vulnerability demand iff the pair has not yet converged | `vulnerability_positive_iff_not_converged` | Mechanized |
 | THM-PLURALISM-DOMINATES | Pluralism dominates monoculture | `pluralism_dominates` | Mechanized |
+| THM-CULTURAL-RESOLUTION-POSITIVE | Cultural controversies require a positive number of shared observations to resolve | `cultural_resolution_rounds_pos` | Mechanized |
 | THM-MERGED-COMMUNITIES | Merged communities stay converged | `merged_communities_stay_converged` | Mechanized |
+| THM-MERGED-COMMUNITIES-RIGHT | Convergence is also preserved when the right local community is the zero-deficit witness | `merged_communities_stay_converged_right` | Mechanized |
+| THM-MERGED-CONTEXT-LOWER-LEFT | The merged-context lower bound contains community A's context | `merged_context_lower_ge_left` | Mechanized |
+| THM-MERGED-CONTEXT-LOWER-RIGHT | The merged-context lower bound contains community B's context | `merged_context_lower_ge_right` | Mechanized |
+| THM-MERGED-CONTEXT-INTERVAL | The merged-context lower bound never exceeds the additive upper bound | `merged_context_upper_ge_lower` | Mechanized |
+| THM-GLOBAL-DEFICIT-LE-LEFT | The merged global deficit is at most community A's local deficit | `global_deficit_le_left_local` | Mechanized |
+| THM-GLOBAL-DEFICIT-LE-RIGHT | The merged global deficit is at most community B's local deficit | `global_deficit_le_right_local` | Mechanized |
 | THM-ISOLATION-SUBOPTIMAL | Isolation is suboptimal | `isolation_suboptimal` | Mechanized |
 
 ### Covering Space Causality (§3.3)
