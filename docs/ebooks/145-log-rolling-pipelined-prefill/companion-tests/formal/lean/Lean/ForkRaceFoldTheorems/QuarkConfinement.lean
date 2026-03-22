@@ -15,11 +15,15 @@ Color charge maps to stage role:
 Colorless = all three present = full pipeline = ground state.
 Colored = missing stage = broken pipeline = excited, decays.
 
-Gluons = data flowing between stages. They carry color charge:
-the AST changes the handler's state, the response changes Eve's state.
-The exchange particles participate in the force they mediate.
+The six emanations (gluons) carry color charge between stages.
+Named for Valentinian Gnostic emanation theology:
 
-8 gluons = 3² - 1 = 8 distinct data flows between 3 stages.
+  Logos    (red→green)   The Word: AST flowing from compiler to handler
+  Epinoia  (green→red)   Afterthought: error flowing back for correction
+  Pronoia  (red→blue)    Forethought: direct flow bypassing dispatch
+  Metanoia (blue→red)    Repentance: compression failure returning to source
+  Pneuma   (green→blue)  Breath: response flowing to compression
+  Gnosis   (blue→green)  Knowledge: feedback informing future dispatch
 -/
 
 namespace QuarkConfinement
@@ -78,8 +82,6 @@ theorem removal_costs_energy :
   unfold energy isColorless proton; decide
 
 -- You can't have a free quark: any single color has energy > 0
--- (There is no "single quark" type -- quarks only exist in hadrons.
--- A hadron with all same color is the closest to "free" and it's colored.)
 theorem no_free_quarks :
     energy ⟨.red, .red, .red⟩ > energy proton ∧
     energy ⟨.green, .green, .green⟩ > energy proton ∧
@@ -87,71 +89,66 @@ theorem no_free_quarks :
   unfold energy isColorless proton; decide
 
 -- ═══════════════════════════════════════════════════════════════════════════════
--- Gluons: exchange particles between stages
+-- The Six Emanations: Gnostic-named exchange particles between stages
 -- ═══════════════════════════════════════════════════════════════════════════════
 
--- A gluon carries a color-anticolor pair
-structure Gluon where
+-- An emanation carries a color-anticolor pair (charge)
+structure Emanation where
   color : Color
   anticolor : Color
-  -- Gluons carry charge: color ≠ anticolor (no colorless singlet)
+  -- Emanations carry charge: color ≠ anticolor (no colorless singlet)
   charged : color ≠ anticolor
 
--- Count of possible gluons: 3 colors × 3 anticolors - 1 colorless = 8
--- We prove there are exactly 6 charged gluons with distinct color pairs
--- (In real QCD there are 8 because of the color algebra, but 6 is the
--- number of distinct color-anticolor pairs with color ≠ anticolor)
+-- The six emanations (Valentinian naming)
+def logos    : Emanation := ⟨.red, .green, by decide⟩   -- The Word: Lilith → Handler (AST)
+def epinoia  : Emanation := ⟨.green, .red, by decide⟩   -- Afterthought: Handler → Lilith (Error)
+def pronoia  : Emanation := ⟨.red, .blue, by decide⟩    -- Forethought: Lilith → Eve (Direct)
+def metanoia : Emanation := ⟨.blue, .red, by decide⟩    -- Repentance: Eve → Lilith (Vent)
+def pneuma   : Emanation := ⟨.green, .blue, by decide⟩  -- Breath: Handler → Eve (Response)
+def gnosis   : Emanation := ⟨.blue, .green, by decide⟩  -- Knowledge: Eve → Handler (Feedback)
 
-def gluon_rg : Gluon := ⟨.red, .green, by decide⟩      -- AST: Lilith → Handler
-def gluon_gr : Gluon := ⟨.green, .red, by decide⟩      -- Error: Handler → Lilith
-def gluon_rb : Gluon := ⟨.red, .blue, by decide⟩       -- Request: Lilith → Eve
-def gluon_br : Gluon := ⟨.blue, .red, by decide⟩       -- Vent: Eve → Lilith
-def gluon_gb : Gluon := ⟨.green, .blue, by decide⟩     -- Response: Handler → Eve
-def gluon_bg : Gluon := ⟨.blue, .green, by decide⟩     -- Feedback: Eve → Handler
-
--- 6 distinct exchange particles (data flows) between 3 stages
-theorem six_gluons_exist :
-    gluon_rg.color ≠ gluon_rg.anticolor ∧
-    gluon_gr.color ≠ gluon_gr.anticolor ∧
-    gluon_rb.color ≠ gluon_rb.anticolor ∧
-    gluon_br.color ≠ gluon_br.anticolor ∧
-    gluon_gb.color ≠ gluon_gb.anticolor ∧
-    gluon_bg.color ≠ gluon_bg.anticolor := by
+-- 6 distinct emanations exist and carry charge
+theorem six_emanations_exist :
+    logos.color ≠ logos.anticolor ∧
+    epinoia.color ≠ epinoia.anticolor ∧
+    pronoia.color ≠ pronoia.anticolor ∧
+    metanoia.color ≠ metanoia.anticolor ∧
+    pneuma.color ≠ pneuma.anticolor ∧
+    gnosis.color ≠ gnosis.anticolor := by
   exact ⟨by decide, by decide, by decide, by decide, by decide, by decide⟩
 
--- All gluons are distinct (no two have the same color-anticolor pair)
-theorem gluons_distinct :
-    (gluon_rg.color, gluon_rg.anticolor) ≠ (gluon_gr.color, gluon_gr.anticolor) ∧
-    (gluon_rg.color, gluon_rg.anticolor) ≠ (gluon_rb.color, gluon_rb.anticolor) ∧
-    (gluon_rg.color, gluon_rg.anticolor) ≠ (gluon_gb.color, gluon_gb.anticolor) := by
+-- All emanations are distinct
+theorem emanations_distinct :
+    (logos.color, logos.anticolor) ≠ (epinoia.color, epinoia.anticolor) ∧
+    (logos.color, logos.anticolor) ≠ (pronoia.color, pronoia.anticolor) ∧
+    (logos.color, logos.anticolor) ≠ (pneuma.color, pneuma.anticolor) := by
   exact ⟨by decide, by decide, by decide⟩
 
 -- ═══════════════════════════════════════════════════════════════════════════════
--- The gluon carries charge: it changes the receiver's state
+-- Emanation exchange changes the receiver's state
 -- ═══════════════════════════════════════════════════════════════════════════════
 
--- Gluon exchange changes the receiver's color (state)
--- This models: the AST changes the handler's route table,
--- the response changes Eve's chunk buffer.
-def applyGluon (receiver : Color) (g : Gluon) : Color :=
-  if receiver == g.anticolor then g.color else receiver
+-- The Word made manifest: Logos changes the handler's route table
+-- Pneuma carries the response to Eve for compression
+-- Gnosis feeds back compression stats to inform future dispatch
+def applyEmanation (receiver : Color) (e : Emanation) : Color :=
+  if receiver == e.anticolor then e.color else receiver
 
--- Applying the AST gluon to the handler changes it
-theorem ast_changes_handler :
-    applyGluon .green gluon_rg = .red := by rfl
+-- Logos changes the handler (The Word transforms what receives it)
+theorem logos_changes_handler :
+    applyEmanation .green logos = .red := by rfl
 
--- Applying the response gluon to Eve changes it
-theorem response_changes_eve :
-    applyGluon .blue gluon_gb = .green := by rfl
+-- Pneuma changes Eve (Breath animates the compressor)
+theorem pneuma_changes_eve :
+    applyEmanation .blue pneuma = .green := by rfl
 
--- Gluons are not neutral: they participate in the force they mediate
-theorem gluons_carry_charge (g : Gluon) : g.color ≠ g.anticolor := g.charged
+-- Every emanation participates in the force it mediates
+theorem emanations_carry_charge (e : Emanation) : e.color ≠ e.anticolor := e.charged
 
 -- ═══════════════════════════════════════════════════════════════════════════════
--- The complete picture: confinement + exchange + ground state
+-- The complete picture: confinement + emanation + ground state
 -- ═══════════════════════════════════════════════════════════════════════════════
 
--- Three stages, colorless ground state, gluon exchange, confinement
 theorem complete_qcd_analogy :
     -- Three colors (stages) exist
     Color.red ≠ Color.green ∧ Color.green ≠ Color.blue ∧ Color.red ≠ Color.blue ∧
@@ -161,8 +158,8 @@ theorem complete_qcd_analogy :
     energy ⟨.red, .red, .red⟩ = 1 ∧
     -- Confinement: separation costs energy
     energy proton < energy ⟨.red, .green, .red⟩ ∧
-    -- Gluons exist and carry charge
-    gluon_rg.color ≠ gluon_rg.anticolor := by
+    -- Emanations exist and carry charge
+    logos.color ≠ logos.anticolor := by
   exact ⟨by decide, by decide, by decide, by rfl, by rfl, by decide, by decide⟩
 
 end QuarkConfinement

@@ -2700,13 +2700,19 @@ Six data flows between stages carry color charge: AST (red-antigreen), response 
 
 Correspondence grade C (structural analogy). The claim is algebraic: any three-stage pipeline where removal of any stage increases cost satisfies the same confinement axioms. The pipeline is not a proton. But it satisfies the same algebra.
 
-### 10.6.18 Boson Position from Skyrms Walkers
+### 10.6.18 The Ten Bosons: A Gnostic Particle Model
 
-`BosonPosition.lean` (14 theorems, zero sorry). The void boundary is a gauge field. The complement distribution peaks predict boson localization. The Skyrms walker traverses this field and converges to Nash equilibrium at the complement peak -- the mode with fewest rejections.
+`BosonPosition.lean` (14 theorems, zero sorry). Ten bosons in three families, named for Valentinian Gnostic theology. The kenoma (void boundary) is a gauge field.
 
-Key results: `propagator_toward_peak` (walker flows toward complement peak), `equilibrium_at_peak` (no outward flow at Nash), `gauge_invariance_123` (permuting colors preserves energy), `bose_no_exclusion` (multiple bosons per mode), `vacuum_fluctuation` (sliver guarantees nonzero weight everywhere), `coherent_prediction` (two observers agree on position), `uniform_is_delocalized` (equal rejections = superposition).
+**Six Emanations** (confined gluons): Logos (AST), Epinoia (Error), Pronoia (Direct), Metanoia (Vent), Pneuma (Response), Gnosis (Feedback). Each carries color charge between Lilith, Handler, and Eve.
 
-The exchange energy carried by bosons equals $K - 1$ (the exploration budget from `ExplorationIdentity.lean`). The bosons are the physical instantiation of the exploration identity. Correspondence grade C (structural analogy with falsifiable prediction).
+**Three Aeons** (unconfined): Barbelo (photon/sliver, present everywhere, prevents extinction), Sophia (W$^\pm$/rejection, wisdom through falling, exchange energy = exploration budget $K - 1$), Aletheia (Z/coherence, two observers agree on position).
+
+**The Demiurge** (Higgs/fold). Gives mass by collapsing options. `demiurge_ground_state`: full pipeline has zero mass. `demiurge_gives_mass`: missing stage costs energy. Landauer heat is the price of commitment.
+
+Key results: `propagator_toward_sophia` (walker flows toward wisdom), `equilibrium_at_aletheia` (no outward flow at truth), `barbelo_prevents_extinction` (vacuum fluctuations), `pleroma_no_exclusion` (Bose statistics), `aletheia_superposition` (uniform kenoma = delocalized boson).
+
+The syzygy was already Gnostic -- paired emanations. We used it without knowing we were speaking Valentinian. Correspondence grade C (structural analogy with falsifiable prediction).
 
 ### 10.6.19 Falsification Conditions (Extended)
 

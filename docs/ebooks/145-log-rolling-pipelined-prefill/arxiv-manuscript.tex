@@ -7222,7 +7222,62 @@ Each head node fuses three previously-serial operations into one lane work item:
 
 The same topology shape applies to FFN gate/up projections (2-way fork: gate and up are independent matVecs on the same input) and to logits computation (\(L\)-way fork: vocab rows split into contiguous stripes).
 
-\textbf{Measurement methodology.}  All speedup figures are wall-clock ratios from the benchmark harness in \texttt{aether/src/cannon-benchmark.test.ts}.  Warmup ensures JIT compilation; measured iterations use \texttt{performance.now()} with microsecond resolution.  The harness reports mean, standard deviation, and ops/sec.  Correctness is verified by asserting bitwise equality (within floating-point tolerance) between serial and cannon outputs for every benchmark.  315 tests pass across 23 files with 69,990 assertions.
+\textbf{WASM-SIMD fast kernels.}  The single largest friction point in the WASM inference path is the \texttt{expf} boundary crossing.  Every call to \texttt{softmaxSimd}, \texttt{siluSimd}, or \texttt{fusedSiluMul} imports \texttt{Math.exp} from the JS host -- one WASM\(\to\)JS round trip per element.  For a 128-dim softmax, that is 128 boundary crossings per call.
+
+A packed exponential approximation (\texttt{fast\_exp\_f32x4}) eliminates this entirely.  The Schraudolph (1999) bit-manipulation trick, adapted for WASM SIMD 128-bit lanes, computes \(e^x\) for four floats at once via IEEE 754 reinterpretation: split into integer and fractional parts, polynomial approximation of \(2^{\text{frac}}\), bit-shift for \(2^{\text{int}}\), multiply.  Max relative error \(\sim\)0.06\% -- more than sufficient for softmax normalization where only the relative ranking matters.
+
+Three fast kernel variants use this approximation:
+
+\begin{enumerate}
+\def\labelenumi{(\arabic{enumi})}
+\item \textbf{softmaxSimdFast}: find-max (SIMD), exp-and-sum (SIMD via \texttt{fast\_exp\_f32x4}), normalize (SIMD).  Zero JS boundary crossings.  Measured: \textbf{776,498 ops/sec} (1.29 \(\mu\)s/call) for 128-dim input.
+\item \textbf{siluSimdFast}: 4-wide SIMD sigmoid using packed exp.  Measured: \textbf{152,236 ops/sec} (6.57 \(\mu\)s/call) for 4096-dim input.
+\item \textbf{fusedSiluMulFast}: SwiGLU (\(\text{silu}(\text{gate}) \times \text{up}\)) with packed exp.  Single pass, zero JS crossings.
+\end{enumerate}
+
+Additionally, a SIMD RoPE kernel (\texttt{ropeSimd}) was added -- previously entirely missing from the WASM kernel set, forcing all rotary position embedding through scalar JS loops.  The C kernel applies position-dependent rotation to all heads in one WASM call, supporting both interleaved-pair (LLaMA/Mistral/Qwen) and split-half (Gemma/NEOX) conventions.  \texttt{cosf}/\texttt{sinf} compile to native WASM \texttt{f32} instructions via \texttt{\_\_builtin\_cosf}/\texttt{\_\_builtin\_sinf}.
+
+The multi-head flash attention kernel (\texttt{flashAttentionMultiHead}) had scalar inner loops for the QK\(^T\) dot product and value accumulation -- the single-head variant already used SIMD for these.  Both inner loops were vectorized with 4-wide SIMD + horizontal reduction, matching the single-head kernel's acceleration.
+
+The rebuilt WASM binary is 22 KB with 30 exported functions.
+
+\textbf{Beyond the layer: seven more cannon rotations.}  The same rotation pattern extends across the inference stack.  Each friction point below serializes independent work items with zero data dependency between them:
+
+{\def\LTcaptype{none}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2500}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Friction Point
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Independent Items
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Cannon Pattern
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Projected \(N\)-Lane Speedup
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Vickrey Table build & \(V\) tokens (65K) & Vocab striped into \(L\) shards & \(\sim L\times\) (each token is pure) \\
+Depth-diverse MOA & \(D\) exit layers (4) & Per-depth exit head projection & \(\sim D\times\) \\
+Semiotic ensemble fold & \(K\) agents (3--5) & Per-agent rejection counting & \(\sim K\times\) \\
+Loop detection & \(W\) periods (16) & Per-period cosine similarity & \(\sim W\times\) \\
+Batch processor sampling & \(B\) requests (4--8) & Per-request token sampling & \(\sim B\times\) \\
+Glossolalia exit head training & \(L\) depths (4) & Per-depth gradient update & \(\sim L\times\) \\
+Glossolalia interfere & 4 registers & C2/C3/deficit/entropy & 4\(\times\) \\
+\end{longtable}
+}
+
+Each rotation is structurally identical: identify \(N\) independent work items, distribute them across \(L\) cannon lanes via \texttt{rotateIntoLanes(items, L, cursor)}, execute per lane, fold results.  The rotation overhead is 0.49 \(\mu\)s (2M ops/sec) -- noise relative to any matVec or softmax.  The correctness guarantee is that cannon output is bitwise identical (within floating-point tolerance) to serial output for all rotations, verified by 327 tests with 70,490 assertions.
+
+The Vickrey Table build is the largest single opportunity: 65,536 independent Daisy Chain + MOA + sparse fold computations, each taking \(\sim\)100 \(\mu\)s.  Serial build: \(\sim\)6.5 seconds.  With 16 cannon lanes: \(\sim\)0.4 seconds.  The table is built once at deployment and cached -- the rotation eliminates the cold-start penalty.
+
+\textbf{Measurement methodology.}  All speedup figures are wall-clock ratios from the benchmark harness in \texttt{aether/src/cannon-benchmark.test.ts}.  Warmup ensures JIT compilation; measured iterations use \texttt{performance.now()} with microsecond resolution.  The harness reports mean, standard deviation, and ops/sec.  Correctness is verified by asserting bitwise equality (within floating-point tolerance) between serial and cannon outputs for every benchmark.  327 tests pass across 24 files with 70,490 assertions.
 
 \subsection{13. Instantiation C: Distributed Staged Computation (Stack
 Layer

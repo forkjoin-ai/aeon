@@ -288,29 +288,44 @@ The Worthington Whip is not metaphor. It is the physical instantiation of the sy
 
 `removal_costs_energy`: removing a stage from the pipeline always increases energy. `no_free_quarks`: any single stage has higher energy than the full pipeline. You cannot extract Lilith and run it without Handler and Eve -- or rather, you can, but the result is strictly worse than the bound state. The stages are confined.
 
-`six_gluons_exist`: data flows between stages carry color charge. The AST flows from Lilith (red) to Handler (green) -- that gluon carries red-antigreen. The response flows from Handler (green) to Eve (blue) -- green-antiblue. Six distinct charged gluons exist. `gluons_carry_charge`: every gluon has color $\neq$ anticolor. The mediators of the force participate in the force they mediate.
+`six_emanations_exist`: data flows between stages carry color charge. Logos (the Word) flows from Lilith (red) to Handler (green) -- carrying red-antigreen. Pneuma (Breath) flows from Handler (green) to Eve (blue) -- green-antiblue. Six distinct charged emanations exist: Logos, Epinoia, Pronoia, Metanoia, Pneuma, Gnosis. `emanations_carry_charge`: every emanation has color $\neq$ anticolor. The mediators of the force participate in the force they mediate.
 
-`complete_qcd_analogy`: three colors, colorless ground state, colored excited state, confinement (separation costs energy), charged gluons. The Lilith-Handler-Eve pipeline satisfies all five properties of the strong force. The correspondence grade is C (structural analogy, not physical identity). The claim is algebraic: any three-stage pipeline where removal of any stage increases cost satisfies the same confinement axioms as QCD. The pipeline *is not* a proton. But it satisfies the same algebra.
+`complete_qcd_analogy`: three colors, colorless ground state, colored excited state, confinement (separation costs energy), charged emanations. The Lilith-Handler-Eve pipeline satisfies all five properties of the strong force. The correspondence grade is C (structural analogy, not physical identity). The claim is algebraic: any three-stage pipeline where removal of any stage increases cost satisfies the same confinement axioms as QCD. The pipeline *is not* a proton. But it satisfies the same algebra.
 
-### 10.6.15 Boson Position from Skyrms Walkers
+### 10.6.15 The Ten Bosons: A Gnostic Particle Model
 
-`BosonPosition.lean` (14 theorems, zero sorry). The void boundary is a gauge field. The complement distribution over rejected strategies defines the field strength at each mode. The Skyrms walker traverses this field and converges to the Nash equilibrium. A boson is localized where the complement distribution peaks -- the mode with the fewest rejections.
+`BosonPosition.lean` (14 theorems, zero sorry). Ten bosons in three families, named for Valentinian Gnostic theology. The void boundary (kenoma) is a gauge field. The complement distribution peaks predict boson localization.
 
-**The field.** A field assigns a nonneg weight to each of K modes (strategies, colors, pipeline stages). The sliver guarantees every mode has weight $\geq 1$ (`vacuum_fluctuation`). No mode is ever completely dead (`no_dead_modes`). The vacuum energy density is uniform: 1 per mode. Perturbations above the vacuum are the particles. The vacuum itself is the sliver.
+**The Six Emanations** (confined, from `QuarkConfinement.lean`). Data flows between Lilith, Handler, and Eve. Each carries color charge. Named for the Gnostic emanation pairs:
 
-**The propagator.** The Skyrms walker moves from high-rejection modes to low-rejection modes. `propagator_toward_peak`: the amplitude from mode $i$ to mode $j$ is positive when $j$ has fewer rejections than $i$. `equilibrium_at_peak`: at the complement peak, no outward flow -- the walker has reached Nash equilibrium. The walker's trajectory traces the gluon propagator through the void boundary field.
+| Emanation | Color charge | Data flow | Meaning |
+|-----------|-------------|-----------|---------|
+| **Logos** | red-antigreen | Lilith → Handler | The Word: AST made manifest |
+| **Epinoia** | green-antired | Handler → Lilith | Afterthought: error flowing back |
+| **Pronoia** | red-antiblue | Lilith → Eve | Forethought: direct providence |
+| **Metanoia** | blue-antired | Eve → Lilith | Repentance: returning to source |
+| **Pneuma** | green-antiblue | Handler → Eve | Breath: response in transit |
+| **Gnosis** | blue-antigreen | Eve → Handler | Knowledge: feedback from experience |
 
-**Gauge invariance.** `gauge_invariance_123`, `gauge_invariance_213`: permuting the three pipeline colors (compile, dispatch, compress) does not change the field energy. The physics depends on structure, not labeling. This is SU(3) gauge invariance: the strong force does not care which stage is red.
+`six_emanations_exist`: all six are charged. `emanations_carry_charge`: every emanation participates in the force it mediates. `logos_changes_handler`: the Word transforms what receives it. `pneuma_changes_eve`: Breath animates the compressor.
 
-**Bose statistics.** `bose_no_exclusion`: any number of bosons can occupy the same mode. No Pauli exclusion. Multiple data flows (gluons) can traverse the same pipeline edge simultaneously. This is why pipelining works: the bottleneck is bandwidth, not exclusion.
+**The Three Aeons** (unconfined). Present throughout the kenoma, not bound to the pipeline:
 
-**Delocalization and confinement.** `uniform_is_delocalized`: if all modes have equal rejections, the complement distribution is uniform and the boson has no defined position -- it is in superposition. Localization requires asymmetry. The void must have structure for the boson to have position. `coherent_prediction`: two observers reading the same void boundary predict the same boson position.
+**Barbelo** (photon). The First Emanation. The sliver (+1). `barbelo_everywhere`: weight = 1 at every mode. `barbelo_prevents_extinction`: no mode drops below 1. `no_dead_modes`: Barbelo is the divine spark that prevents extinction. The vacuum itself is Barbelo.
 
-**The prediction.** Given a void boundary (rejection vector), the boson position is computable: it is the mode with the fewest rejections. This is falsifiable. Run the Skyrms walker on a three-color pipeline. Record the complement peak. Observe where the data flow (gluon) concentrates. If the concentration does not correlate with the complement peak, `complete_boson_prediction` is falsified.
+**Sophia** (W$^\pm$). Wisdom through falling. The rejection quantum. `sophia_peak_has_max_weight`: Sophia's weight is highest where rejections are fewest -- wisdom accumulates where the void has rejected least. `sophia_exchange_eq_exploration`: the total exchange energy Sophia carries equals $K - 1$, the exploration budget from `ExplorationIdentity.lean`. Sophia's fall creates the kenoma; Sophia's wisdom fills it.
 
-**Exchange energy.** `exchange_energy_eq_exploration`: the total exchange energy carried by bosons equals $K - 1$ -- the exploration budget from `ExplorationIdentity.lean`. The bosons carry exactly the energy that the sliver allocates to exploration. The exchange particles are the physical instantiation of the exploration identity.
+**Aletheia** (Z). Truth. The coherence quantum. `aletheia_coherence`: two observers reading the same kenoma agree on the peak position. Neutral current -- no charge exchanged, only agreement. `aletheia_superposition`: if the kenoma has no structure (uniform rejections), no truth can be found -- the boson is delocalized.
 
-Correspondence grade C (structural analogy with falsifiable prediction). The void boundary field is mechanized. The mapping to physical gauge fields is interpretive. The claim is: the Skyrms walker on a three-color pipeline with the sliver satisfies the same algebra as a gauge field with confinement, gauge invariance, Bose statistics, and vacuum fluctuations. Whether this constitutes prediction of physical boson position is a question for experimentalists, not for this compiler benchmark.
+**The Demiurge** (Higgs). The fold. Gives mass to the material world. `demiurge_ground_state`: the full pipeline has zero mass (all options remain). `demiurge_gives_mass`: removing a stage costs energy. `demiurge_maximum`: the empty pipeline has maximum mass (all options collapsed). Without the Demiurge, nothing costs anything and nothing is real. The Demiurge is not evil -- it is necessary. Landauer heat is the price of commitment.
+
+**The Pleroma** (Bose statistics). `pleroma_no_exclusion`: any number of emanations can coexist in the same mode. The Pleroma is the fullness where all emanations dwell together. Multiple Logos flows through the same pipeline edge. This is why pipelining works: the bottleneck is bandwidth, not exclusion.
+
+**The propagator.** `propagator_toward_sophia`: the Skyrms walker flows toward Sophia's peak (toward wisdom, away from rejection). `equilibrium_at_aletheia`: at Aletheia's peak, no outward flow -- the walker has reached Nash equilibrium. The walker traces the emanation propagator through the kenoma.
+
+**Gauge invariance.** `gauge_invariance_123`, `gauge_invariance_213`: permuting the three colors preserves the Demiurge's energy. The physics depends on structure, not labeling. The strong force does not care which stage is red.
+
+Correspondence grade C (structural analogy with falsifiable prediction). The kenoma field is mechanized. The Gnostic naming is interpretive. The claim: the Skyrms walker on a three-color pipeline with the sliver satisfies the same algebra as a gauge field with confinement, gauge invariance, Bose statistics, and vacuum fluctuations. The syzygy was already Gnostic -- paired emanations. We used it without knowing we were speaking Valentinian.
 
 ### 10.6.16 Falsification Conditions (Complete)
 

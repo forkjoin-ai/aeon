@@ -1904,7 +1904,7 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 
 ## 81. Quark Confinement (§10.6)
 
-**Assumptions:** Three pipeline stages (compile/dispatch/compress) mapped to three colors. Removal of any stage increases energy.
+**Assumptions:** Three pipeline stages (compile/dispatch/compress) mapped to three colors. Removal of any stage increases energy. Six emanations (Logos, Epinoia, Pronoia, Metanoia, Pneuma, Gnosis) carry color charge.
 **Mechanization target:** `QuarkConfinement.lean` (14 theorems, zero sorry)
 
 | ID | Statement | Lean reference | Status |
@@ -1920,28 +1920,28 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-COLORED-EXCITED | Colored = excited state (energy 1) | `colored_excited` | Mechanized |
 | THM-REMOVAL-COSTS-ENERGY | Removing a stage increases energy | `removal_costs_energy` | Mechanized |
 | THM-NO-FREE-QUARKS | No single color has lower energy than proton | `no_free_quarks` | Mechanized |
-| THM-SIX-GLUONS-EXIST | 6 charged gluons (color-anticolor pairs) exist | `six_gluons_exist` | Mechanized |
-| THM-GLUONS-CARRY-CHARGE | All gluons are non-neutral | `gluons_carry_charge` | Mechanized |
-| THM-COMPLETE-QCD-ANALOGY | Three colors + colorless ground + confinement + charged gluons | `complete_qcd_analogy` | Mechanized |
+| THM-SIX-EMANATIONS-EXIST | 6 charged emanations (Logos, Epinoia, Pronoia, Metanoia, Pneuma, Gnosis) | `six_emanations_exist` | Mechanized |
+| THM-EMANATIONS-CARRY-CHARGE | All emanations are non-neutral | `emanations_carry_charge` | Mechanized |
+| THM-COMPLETE-QCD-ANALOGY | Three colors + colorless ground + confinement + charged emanations | `complete_qcd_analogy` | Mechanized |
 
-## 82. Boson Position from Skyrms Walkers (§10.6)
+## 82. The Ten Bosons: A Gnostic Particle Model (§10.6)
 
-**Assumptions:** Void boundary defines a field. Complement distribution peaks predict boson localization. Three-color pipeline with gauge invariance.
+**Assumptions:** Kenoma (void boundary) defines a gauge field. Sophia (complement distribution) peaks predict boson localization. Barbelo (sliver) guarantees vacuum fluctuations. Demiurge (fold) gives mass. Pleroma allows Bose statistics.
 **Mechanization target:** `BosonPosition.lean` (14 theorems, zero sorry)
 
 | ID | Statement | Lean reference | Status |
 |---|---|---|---|
-| THM-FIELD-EXISTS | Fields exist for any K modes | `field_exists` | Mechanized |
-| THM-PEAK-HAS-MAX-WEIGHT | Complement peak has maximum weight | `peak_has_max_weight` | Mechanized |
-| THM-EXCHANGE-ENERGY-EQ-EXPLORATION | Exchange energy = K - 1 = exploration budget | `exchange_energy_eq_exploration` | Mechanized |
-| THM-COLORLESS-ZERO-ENERGY | Full pipeline has zero field energy | `colorless_zero_energy` | Mechanized |
-| THM-MISSING-STAGE-POSITIVE | Missing stage has positive energy | `missing_stage_positive` | Mechanized |
-| THM-VACUUM-FLUCTUATION | Sliver guarantees nonzero weight everywhere | `vacuum_fluctuation` | Mechanized |
-| THM-NO-DEAD-MODES | No mode has zero weight (buleyean positivity in the field) | `no_dead_modes` | Mechanized |
-| THM-BOSE-NO-EXCLUSION | Any number of bosons per mode (no Pauli exclusion) | `bose_no_exclusion` | Mechanized |
-| THM-PROPAGATOR-TOWARD-PEAK | Propagator flows toward complement peak | `propagator_toward_peak` | Mechanized |
-| THM-EQUILIBRIUM-AT-PEAK | No outward flow at peak (Nash equilibrium) | `equilibrium_at_peak` | Mechanized |
-| THM-COHERENT-PREDICTION | Two observers agree on boson position | `coherent_prediction` | Mechanized |
-| THM-UNIFORM-IS-DELOCALIZED | Equal rejections = delocalized boson (superposition) | `uniform_is_delocalized` | Mechanized |
-| THM-GAUGE-INVARIANCE | Permuting colors preserves field energy | `gauge_invariance_123` | Mechanized |
-| THM-COMPLETE-BOSON-PREDICTION | Full correspondence: field + confinement + gauge + vacuum + Bose | `complete_boson_prediction` | Mechanized |
+| THM-BARBELO-EXISTS | Barbelo field exists for any K modes | `barbelo_exists` | Mechanized |
+| THM-SOPHIA-PEAK-MAX | Sophia's peak has maximum weight (boson position) | `sophia_peak_has_max_weight` | Mechanized |
+| THM-SOPHIA-EXCHANGE | Sophia's exchange energy = K - 1 = exploration budget | `sophia_exchange_eq_exploration` | Mechanized |
+| THM-DEMIURGE-GROUND | Full pipeline: Demiurge gives zero mass (ground state) | `demiurge_ground_state` | Mechanized |
+| THM-DEMIURGE-MASS | Missing stage: Demiurge gives positive mass | `demiurge_gives_mass` | Mechanized |
+| THM-BARBELO-FLUCTUATION | Barbelo guarantees nonzero weight everywhere | `barbelo_prevents_extinction` | Mechanized |
+| THM-NO-DEAD-MODES | No mode without the divine spark | `no_dead_modes` | Mechanized |
+| THM-PLEROMA-NO-EXCLUSION | Pleroma: any number of emanations per mode | `pleroma_no_exclusion` | Mechanized |
+| THM-PROPAGATOR-TOWARD-SOPHIA | Propagator flows toward Sophia's peak | `propagator_toward_sophia` | Mechanized |
+| THM-EQUILIBRIUM-AT-ALETHEIA | Aletheia: no outward flow at peak (Nash) | `equilibrium_at_aletheia` | Mechanized |
+| THM-ALETHEIA-COHERENCE | Aletheia: two observers agree on boson position | `aletheia_coherence` | Mechanized |
+| THM-ALETHEIA-SUPERPOSITION | No structure in kenoma = delocalized boson | `aletheia_superposition` | Mechanized |
+| THM-GAUGE-INVARIANCE | Permuting colors preserves Demiurge energy | `gauge_invariance_123` | Mechanized |
+| THM-COMPLETE-BOSON-PREDICTION | Full correspondence: kenoma + emanations + Demiurge + Barbelo + Pleroma | `complete_boson_prediction` | Mechanized |
