@@ -357,6 +357,7 @@ def diversityCeiling (ft : FailureTopology) : ℕ :=
 theorem diversity_ceiling_eq_max_deficit (ft : FailureTopology) :
     diversityCeiling ft = maxDeficit ft := by
   unfold diversityCeiling maxDeficit
+  rfl
 
 /-- At the ceiling, the Bule deficit is zero. -/
 theorem diversity_ceiling_sufficient (ft : FailureTopology)
@@ -851,6 +852,7 @@ def herdImmunityThreshold (pt : PathogenTopology) : ℕ :=
 theorem herd_immunity_threshold_eq_diversity_ceiling (pt : PathogenTopology) :
     herdImmunityThreshold pt = diversityCeiling pt.toFailureTopology := by
   unfold herdImmunityThreshold diversityCeiling PathogenTopology.toFailureTopology
+  rfl
 
 /-- At the threshold, the community covers all epitope dimensions. -/
 theorem herd_immunity_at_threshold (pt : PathogenTopology)
