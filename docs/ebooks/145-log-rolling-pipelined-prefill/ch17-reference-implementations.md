@@ -79,3 +79,35 @@ The same file, [companion-tests/src/wallington-worthington-reference.ts](./compa
 ```
 
 The full topology is in [../../../../gnosis/examples/transformer/worthington-whip.gg](../../../../gnosis/examples/transformer/worthington-whip.gg), where the first-class `WorthingtonWhip` primitive lowers into shard-local `WallingtonRotation` subgraphs plus one collapse. The paired verification suite is [../../../../gnosis/examples/transformer/wallington-worthington-reference.test.gg](../../../../gnosis/examples/transformer/wallington-worthington-reference.test.gg).
+
+## Compiler Family Shootout
+
+Five compilers race on every `.gg` input. Best per node wins.
+
+- Benchmark harness: [../../../../gnosis/src/benchmarks/compiler-phase-benchmark.ts](../../../../gnosis/src/benchmarks/compiler-phase-benchmark.ts)
+- Benchmark tests (18 tests): [../../../../gnosis/src/benchmarks/compiler-phase-benchmark.test.ts](../../../../gnosis/src/benchmarks/compiler-phase-benchmark.test.ts)
+
+### Forest Convergence Engine
+
+Per-node polyglot racing with the sliver (+1). Meta-iteration runner for repeatable science.
+
+- Convergence loop: [../../../../gnosis/src/forest/convergence-loop.ts](../../../../gnosis/src/forest/convergence-loop.ts)
+- Winner composition: [../../../../gnosis/src/forest/compose-winners.ts](../../../../gnosis/src/forest/compose-winners.ts)
+- Meta-iteration runner: [../../../../gnosis/src/forest/iterate.ts](../../../../gnosis/src/forest/iterate.ts)
+- Types: [../../../../gnosis/src/forest/types.ts](../../../../gnosis/src/forest/types.ts)
+- Forest tests (11 tests): [../../../../gnosis/src/forest/convergence-loop.test.ts](../../../../gnosis/src/forest/convergence-loop.test.ts)
+
+### Named Compiler Topologies
+
+- Betty: [../../../../gnosis/src/betty/compiler.ts](../../../../gnosis/src/betty/compiler.ts) (13-phase verification pipeline)
+- Betti: [../../../../gnosis/betti.gg](../../../../gnosis/betti.gg) + [../../../../gnosis/src/betti/bootstrap.ts](../../../../gnosis/src/betti/bootstrap.ts) (self-hosted, 3/3 optimal)
+- Franky: [../../../../gnosis/examples/franky.gg](../../../../gnosis/examples/franky.gg) (polyglot ditto compiler)
+- Beckett: [../../../../gnosis/examples/beckett.gg](../../../../gnosis/examples/beckett.gg) (transport/streaming compiler)
+- Converged outputs: `examples/betti-converged.gg`, `franky-converged.gg`, `beckett-converged.gg`
+
+### Formal Surface (Lean 4)
+
+- Self-hosting optimality (11 theorems): [companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SelfHostingOptimality.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/SelfHostingOptimality.lean)
+- Humans are compilers (14 theorems): [companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/HumanCompiler.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/HumanCompiler.lean)
+- Optimality undecidable (10 theorems): [companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/OptimalityUndecidable.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/OptimalityUndecidable.lean)
+- The God Gap (8 theorems): [companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/GodGap.lean](./companion-tests/formal/lean/Lean/ForkRaceFoldTheorems/GodGap.lean)

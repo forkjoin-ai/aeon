@@ -89,3 +89,12 @@ import ForkRaceFoldTheorems.GrandUnification
 import ForkRaceFoldTheorems.PredictionsRound15
 import ForkRaceFoldTheorems.PredictionsRound16
 import ForkRaceFoldTheorems.SemanticCompatibility
+import ForkRaceFoldTheorems.SelfHostingOptimality
+import ForkRaceFoldTheorems.HumanCompiler
+import ForkRaceFoldTheorems.OptimalityUndecidable
+import ForkRaceFoldTheorems.GodGap
+import ForkRaceFoldTheorems.SliverExploration
+import ForkRaceFoldTheorems.ExplorationIdentity
+import ForkRaceFoldTheorems.BuleyeanSpinPairing
+import ForkRaceFoldTheorems.ParticlesExist
+import ForkRaceFoldTheorems.Evolution
