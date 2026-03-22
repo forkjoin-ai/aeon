@@ -102,6 +102,80 @@ theorem vent_repair_tie_not_pay_repair
   rw [choose_vent_on_vent_repair_tie hVentRepair hVentKeep]
   decide
 
+theorem choose_keep_iff_keep_coefficient_minimal
+    (alphaWeight betaWeight ventWeight repairWeight : Nat) :
+    chooseFailureAction alphaWeight betaWeight ventWeight repairWeight =
+        .keepMultiplicity ↔
+      keepCoefficient alphaWeight betaWeight <= ventCoefficient ventWeight ∧
+        keepCoefficient alphaWeight betaWeight <=
+          repairCoefficient betaWeight repairWeight := by
+  constructor
+  · intro hChoose
+    simpa [hChoose] using
+      chosen_failure_action_coefficient_minimal
+        alphaWeight betaWeight ventWeight repairWeight
+  · rintro ⟨hKeepVent, hKeepRepair⟩
+    exact choose_keep_when_keep_coefficient_min hKeepVent hKeepRepair
+
+theorem choose_vent_iff_vent_coefficient_minimal_after_keep
+    (alphaWeight betaWeight ventWeight repairWeight : Nat) :
+    chooseFailureAction alphaWeight betaWeight ventWeight repairWeight =
+        .payVent ↔
+      ventCoefficient ventWeight <= repairCoefficient betaWeight repairWeight ∧
+        ventCoefficient ventWeight < keepCoefficient alphaWeight betaWeight := by
+  constructor
+  · intro hChoose
+    unfold chooseFailureAction at hChoose
+    split_ifs at hChoose with hKeep hVent
+    · cases hChoose
+    · constructor
+      · exact hVent
+      · by_contra hNot
+        have hKeepVent :
+            keepCoefficient alphaWeight betaWeight <= ventCoefficient ventWeight :=
+          Nat.le_of_not_gt hNot
+        have hKeepRepair :
+            keepCoefficient alphaWeight betaWeight <=
+              repairCoefficient betaWeight repairWeight := by
+          exact Nat.le_trans hKeepVent hVent
+        exact hKeep ⟨hKeepVent, hKeepRepair⟩
+    · cases hChoose
+  · rintro ⟨hVentRepair, hVentKeep⟩
+    exact choose_vent_when_vent_coefficient_min hVentRepair hVentKeep
+
+theorem choose_repair_iff_repair_coefficient_strictly_minimal
+    (alphaWeight betaWeight ventWeight repairWeight : Nat) :
+    chooseFailureAction alphaWeight betaWeight ventWeight repairWeight =
+        .payRepair ↔
+      repairCoefficient betaWeight repairWeight <
+          keepCoefficient alphaWeight betaWeight ∧
+        repairCoefficient betaWeight repairWeight <
+          ventCoefficient ventWeight := by
+  constructor
+  · intro hChoose
+    unfold chooseFailureAction at hChoose
+    split_ifs at hChoose with hKeep hVent
+    · cases hChoose
+    · cases hChoose
+    · constructor
+      · have hRepairVent :
+            repairCoefficient betaWeight repairWeight <
+              ventCoefficient ventWeight :=
+          Nat.lt_of_not_ge hVent
+        by_contra hNot
+        have hKeepRepair :
+            keepCoefficient alphaWeight betaWeight <=
+              repairCoefficient betaWeight repairWeight :=
+          Nat.le_of_not_gt hNot
+        have hKeepVent :
+            keepCoefficient alphaWeight betaWeight <=
+              ventCoefficient ventWeight := by
+          exact Nat.le_trans hKeepRepair (Nat.le_of_lt hRepairVent)
+        exact hKeep ⟨hKeepVent, hKeepRepair⟩
+      · exact Nat.lt_of_not_ge hVent
+  · rintro ⟨hRepairKeep, hRepairVent⟩
+    exact choose_repair_when_repair_coefficient_min hRepairKeep hRepairVent
+
 theorem choose_expand_on_under_exact_redline
     {sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty :
       Nat}
@@ -175,5 +249,111 @@ theorem over_exact_redline_not_shed
       .shedLoad := by
   rw [choose_constrain_on_over_exact_redline hUnder hOver hDeficitWeight hExact]
   decide
+
+theorem choose_expand_iff_under_at_or_below_redline
+    {sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty :
+      Nat}
+    (hUnder : 0 < underDeficit)
+    (hOver : overDeficit = 0)
+    (hDeficitWeight : 0 < deficitWeight) :
+    chooseWarmupAction
+        sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty =
+        .expand ↔
+      controllerBurden sequentialCapacity recoveredOverlap buleyRise <=
+        repairRedline deficitWeight shedPenalty := by
+  constructor
+  · intro hChoose
+    by_contra hNotLe
+    have hAbove :
+        repairRedline deficitWeight shedPenalty <
+          controllerBurden sequentialCapacity recoveredOverlap buleyRise :=
+      Nat.lt_of_not_ge hNotLe
+    have hShed :=
+      choose_shed_load_when_under_above_redline
+        hUnder hOver hDeficitWeight hAbove
+    rw [hChoose] at hShed
+    cases hShed
+  · intro hLe
+    rcases Nat.lt_or_eq_of_le hLe with hBelow | hExact
+    · exact choose_expand_below_redline hUnder hOver hDeficitWeight hBelow
+    · exact choose_expand_on_under_exact_redline hUnder hOver hDeficitWeight hExact
+
+theorem choose_shed_load_iff_under_above_redline
+    {sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty :
+      Nat}
+    (hUnder : 0 < underDeficit)
+    (hOver : overDeficit = 0)
+    (hDeficitWeight : 0 < deficitWeight) :
+    chooseWarmupAction
+        sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty =
+        .shedLoad ↔
+      repairRedline deficitWeight shedPenalty <
+        controllerBurden sequentialCapacity recoveredOverlap buleyRise := by
+  constructor
+  · intro hChoose
+    by_contra hNotAbove
+    have hLe :
+        controllerBurden sequentialCapacity recoveredOverlap buleyRise <=
+          repairRedline deficitWeight shedPenalty :=
+      Nat.le_of_not_gt hNotAbove
+    have hExpand :=
+      (choose_expand_iff_under_at_or_below_redline hUnder hOver hDeficitWeight).2 hLe
+    rw [hChoose] at hExpand
+    cases hExpand
+  · intro hAbove
+    exact choose_shed_load_when_under_above_redline hUnder hOver hDeficitWeight hAbove
+
+theorem choose_constrain_iff_over_at_or_below_redline
+    {sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty :
+      Nat}
+    (hUnder : underDeficit = 0)
+    (hOver : 0 < overDeficit)
+    (hDeficitWeight : 0 < deficitWeight) :
+    chooseWarmupAction
+        sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty =
+        .constrain ↔
+      controllerBurden sequentialCapacity recoveredOverlap buleyRise <=
+        repairRedline deficitWeight shedPenalty := by
+  constructor
+  · intro hChoose
+    by_contra hNotLe
+    have hAbove :
+        repairRedline deficitWeight shedPenalty <
+          controllerBurden sequentialCapacity recoveredOverlap buleyRise :=
+      Nat.lt_of_not_ge hNotLe
+    have hShed :=
+      choose_shed_load_when_over_above_redline
+        hUnder hOver hDeficitWeight hAbove
+    rw [hChoose] at hShed
+    cases hShed
+  · intro hLe
+    rcases Nat.lt_or_eq_of_le hLe with hBelow | hExact
+    · exact choose_constrain_below_redline hUnder hOver hDeficitWeight hBelow
+    · exact choose_constrain_on_over_exact_redline hUnder hOver hDeficitWeight hExact
+
+theorem choose_shed_load_iff_over_above_redline
+    {sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty :
+      Nat}
+    (hUnder : underDeficit = 0)
+    (hOver : 0 < overDeficit)
+    (hDeficitWeight : 0 < deficitWeight) :
+    chooseWarmupAction
+        sequentialCapacity recoveredOverlap buleyRise underDeficit overDeficit deficitWeight shedPenalty =
+        .shedLoad ↔
+      repairRedline deficitWeight shedPenalty <
+        controllerBurden sequentialCapacity recoveredOverlap buleyRise := by
+  constructor
+  · intro hChoose
+    by_contra hNotAbove
+    have hLe :
+        controllerBurden sequentialCapacity recoveredOverlap buleyRise <=
+          repairRedline deficitWeight shedPenalty :=
+      Nat.le_of_not_gt hNotAbove
+    have hConstrain :=
+      (choose_constrain_iff_over_at_or_below_redline hUnder hOver hDeficitWeight).2 hLe
+    rw [hChoose] at hConstrain
+    cases hConstrain
+  · intro hAbove
+    exact choose_shed_load_when_over_above_redline hUnder hOver hDeficitWeight hAbove
 
 end ForkRaceFoldTheorems

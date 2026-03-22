@@ -109,6 +109,10 @@ theorem activeLayerCount_eq_four_of_all_positive
     activeLayerCount cpuLanes gpuLanes npuLanes wasmLanes = 4 := by
   simp [activeLayerCount, h_cpu, h_gpu, h_npu, h_wasm]
 
+theorem activeLayerCount_eq_zero_of_all_zero :
+    activeLayerCount 0 0 0 0 = 0 := by
+  simp [activeLayerCount]
+
 theorem readyBackendCount_pos_of_any_ready
     {cpuReady gpuReady npuReady wasmReady : Bool}
     (h_ready : cpuReady = true ∨ gpuReady = true ∨ npuReady = true ∨ wasmReady = true) :
@@ -215,6 +219,25 @@ theorem pairedKernelDecision_ne_acceptAgreement_of_disagree
     pairedKernelDecision false primarySufficient shadowFired ≠ PairDecision.acceptAgreement := by
   cases primarySufficient <;> cases shadowFired <;> decide
 
+theorem pairedKernelDecision_ne_acceptPrimary_of_disagreement
+    {primarySufficient shadowFired : Bool}
+    (h_disagree : primarySufficient = false ∨ shadowFired = true) :
+    pairedKernelDecision false primarySufficient shadowFired ≠ PairDecision.acceptPrimary := by
+  rcases h_disagree with h_primary | h_shadow
+  · simp [pairedKernelDecision, h_primary]
+  · simp [pairedKernelDecision, h_shadow]
+
+theorem pairedKernelDecision_ne_escalate_of_agreement
+    {primarySufficient shadowFired : Bool} :
+    pairedKernelDecision true primarySufficient shadowFired ≠ PairDecision.escalate := by
+  simp [pairedKernelDecision]
+
+theorem pairedKernelDecision_ne_escalate_of_sufficient_primary
+    {shadowFired : Bool}
+    (h_shadow : shadowFired = false) :
+    pairedKernelDecision false true shadowFired ≠ PairDecision.escalate := by
+  simp [pairedKernelDecision, h_shadow]
+
 theorem binaryHeaderBytes_eq_ten :
     binaryHeaderBytes = 10 := by
   rfl
@@ -233,6 +256,14 @@ theorem binaryFrameBytes_strictMono :
 theorem binaryFrameBytes_injective :
     Function.Injective binaryFrameBytes := by
   exact binaryFrameBytes_strictMono.injective
+
+theorem binaryFrameBytes_eq_header_of_zero_payload :
+    binaryFrameBytes 0 = binaryHeaderBytes := by
+  simp [binaryFrameBytes]
+
+theorem binaryFrameBytes_pos (payloadBytes : Nat) :
+    0 < binaryFrameBytes payloadBytes := by
+  simp [binaryFrameBytes, binaryHeaderBytes]
 
 theorem skippedWithinBudget_of_le
     {skippedHedges scheduledShadows : Nat}
@@ -269,6 +300,12 @@ theorem metaLaminarHeight_pos (streamLayers backendLayers : Nat) :
 theorem metaLaminarHeight_ge_streamLayers_succ
     (streamLayers backendLayers : Nat) :
     streamLayers + 1 <= metaLaminarHeight streamLayers backendLayers := by
+  unfold metaLaminarHeight
+  linarith
+
+theorem metaLaminarHeight_ge_backendLayers_succ
+    (streamLayers backendLayers : Nat) :
+    backendLayers + 1 <= metaLaminarHeight streamLayers backendLayers := by
   unfold metaLaminarHeight
   linarith
 

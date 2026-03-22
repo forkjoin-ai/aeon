@@ -1,13 +1,13 @@
 import Init
 
 /-!
-# The Exploration Identity: Optimal - Skyrms = Exploration
+# The Exploration Identity: Skyrms - Optimal = Exploration
 
 The simplest theorem in the paper. The gap between the globally optimal
 assignment (unknown, undecidable) and the Skyrms Nash equilibrium
 (known, computable) is exactly the exploration budget.
 
-    Optimal - Skyrms = Exploration
+    Skyrms - Optimal = Exploration
 
 This is not an inequality. It is an identity. The exploration is not
 overhead. It is the distance between what you know and what you could
@@ -32,7 +32,7 @@ structure CompilerAccounting where
   /-- The identity: the gap IS the exploration -/
   identity : skyrmsCost - optimalCost = explorationBudget
 
-/-- THE IDENTITY: Optimal - Skyrms = Exploration.
+/-- THE IDENTITY: Skyrms - Optimal = Exploration.
     Given any accounting where Skyrms cost = optimal cost + exploration budget,
     the exploration budget equals the gap. -/
 theorem the_identity (optimal skyrms exploration : Nat)

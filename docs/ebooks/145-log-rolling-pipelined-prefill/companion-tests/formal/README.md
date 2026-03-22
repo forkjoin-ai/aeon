@@ -12,7 +12,7 @@ The in-tree Lean surface now also makes the controller equality boundary explici
 
 The current compiler-side boundary has its own canonical note in [GNOSIS_COMPILER_BOUNDARY.md](./GNOSIS_COMPILER_BOUNDARY.md), so the emitted theorem family, rerun commands, and remaining open measurable-Harris gaps are stated in one place instead of scattered across the manuscript and reviewer notes.
 
-The logic-first Hetero MoA fabric surface now lives here too: four bounded TLA models (`HeteroMoAFabricLowering`, `HeteroMoAFabricCannon`, `HeteroMoAFabricPairing`, `HeteroMoAFabricWaste`) capture mirrored backend-layer lowering, `gnode`-style cannon/helix rotation, paired-kernel accept-or-escalate behavior, and Aeon's 10-byte binary stream accounting before the compiler starts emitting the new primitive.
+The logic-first Hetero MoA fabric surface now lives here too: four bounded TLA models (`HeteroMoAFabricLowering`, `HeteroMoAFabricCannon`, `HeteroMoAFabricPairing`, `HeteroMoAFabricWaste`) capture mirrored backend-layer lowering, ready-backend and active-layer cardinality bounds, `gnode`-style cannon/helix rotation including zero-lane and zero-layer boundary cases, paired-kernel accept-or-escalate behavior together with disagreement anti-theorems, and Aeon's 10-byte binary stream accounting with exact byte-conservation equivalences before the compiler starts emitting the new primitive.
 
 ## Files
 
