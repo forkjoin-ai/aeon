@@ -1995,3 +1995,21 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-TEN-IS-NINE-PLUS-ONE | 10 = 9 exploration + 1 sliver (Barbelo) | `ten_is_nine_plus_one` | Mechanized |
 | THM-TEN-MODE-BUDGET | (K-1) + 1 = K for K=10 | `ten_mode_budget` | Mechanized |
 | THM-COMPLETE-UNIFICATION | All three faces unified: 5C2=10, vacuum=wireframe=delocalized | `complete_unification` | Mechanized |
+
+## 85. The Gnostic Numbers (§20.2)
+
+**Assumptions:** Five primitives with pairwise interaction. Fibonacci and triangular sequences. Luo Ming (1989): F(10) is the only Fibonacci > 1 that is also triangular.
+**Mechanization target:** `GnosticNumbers.lean` (28 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-BARBELO-IS-SLIVER | Barbelo = 1 (the +1) | `barbelo_is_sliver` | Mechanized |
+| THM-PRIMITIVES-IS-FIBONACCI | F(5) = 5 (operation count is Fibonacci) | `primitives_is_fibonacci` | Mechanized |
+| THM-KENOMA-FROM-PRIMITIVES | 5 choose 2 = 10 (Kenoma) | `kenoma_from_primitives` | Mechanized |
+| THM-KENOMA-DECOMPOSITION | Kenoma = Sophia + Barbelo (10 = 9 + 1) | `kenoma_decomposition` | Mechanized |
+| THM-VOID-IS-FIBONACCI-GAP | F(10) - F(9) = F(8) = 21 (Void) | `void_is_fibonacci_gap` | Mechanized |
+| THM-PLEROMA-IS-FIB-KENOMA | F(10) = 55 (Pleroma) | `pleroma_is_fib_kenoma` | Mechanized |
+| THM-TRIPLE-COINCIDENCE | F(10) = T(10) = 55 (Luo Ming uniqueness) | `triple_coincidence` | Mechanized |
+| THM-FIBONACCI-GAP | F(n) - F(n-1) = F(n-2) (void between numbers is the sequence) | `fibonacci_gap_is_fibonacci` | Mechanized |
+| THM-GAP-REACHES-BARBELO | Every gap between named numbers reaches 1 | `gap_*` chain | Mechanized |
+| THM-GNOSTIC-NUMBER-SYSTEM | Complete: nine names + structure + coincidence | `gnostic_number_system` | Mechanized |
