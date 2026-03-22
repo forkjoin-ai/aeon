@@ -1060,7 +1060,7 @@ fold over the coarse outputs, but it does not by itself create a
 Wallington Rotation. The Rotation is a scheduling structure over
 repeated stage order; the Whip is a paid reconciliation across parallel
 shards. The companion formal package now supports this at four levels:
-the general shell \texttt{THM-INTERFERE-FRACTAL} says that a
+the general shell \texttt{THM-SLIVER-FRACTAL} says that a
 support-preserving coarse image cannot make contagious fine-scale
 interference collapse for free, \texttt{THM-RENORMALIZATION-COARSENING}
 closes the many-to-one aggregate-node surface for a hand-supplied
@@ -5919,7 +5919,7 @@ syntax is Cypher-like:
 
 The language has exactly four edge types -- \texttt{FORK},
 \texttt{RACE}, \texttt{FOLD}, \texttt{VENT} -- plus \texttt{PROCESS} for
-sequential steps and \texttt{INTERFERE} for constructive/destructive
+sequential steps and \texttt{SLIVER} for constructive/destructive
 signal combination. There are no functions, only subgraphs. There are no
 variables, only nodes with typed properties. There are no loops, only
 topological cycles detected at compile time by \(\beta_1\) analysis.
@@ -6014,14 +6014,14 @@ claimed in §3.13:
 \NormalTok{(input\_sequence){-}[:PROCESS]{-}\textgreater{}(qkv\_projection)}
 \NormalTok{(qkv\_projection){-}[:FORK]{-}\textgreater{}(head\_1 | head\_2 | head\_3 | head\_4)}
 \NormalTok{(head\_1 | head\_2 | head\_3 | head\_4){-}[:FOLD \{ strategy: \textquotesingle{}concat\textquotesingle{} \}]{-}\textgreater{}(multi\_head\_out)}
-\NormalTok{(input\_sequence | multi\_head\_out){-}[:INTERFERE \{ mode: \textquotesingle{}constructive\textquotesingle{} \}]{-}\textgreater{}(residual\_1)}
+\NormalTok{(input\_sequence | multi\_head\_out){-}[:SLIVER \{ mode: \textquotesingle{}constructive\textquotesingle{} \}]{-}\textgreater{}(residual\_1)}
 \NormalTok{(residual\_1){-}[:PROCESS]{-}\textgreater{}(ffn)}
-\NormalTok{(residual\_1 | ffn){-}[:INTERFERE \{ mode: \textquotesingle{}constructive\textquotesingle{} \}]{-}\textgreater{}(transformer\_out)}
+\NormalTok{(residual\_1 | ffn){-}[:SLIVER \{ mode: \textquotesingle{}constructive\textquotesingle{} \}]{-}\textgreater{}(transformer\_out)}
 \end{Highlighting}
 \end{Shaded}
 
 Multi-head attention is \texttt{FORK} → \texttt{FOLD}. Residual
-connections are \texttt{INTERFERE}. The topology is visible in the
+connections are \texttt{SLIVER}. The topology is visible in the
 source code -- not buried in matrix operations, not implicit in
 framework conventions, but \emph{declared} as the program's structure.
 The compiler computes \(\beta_1 = 3\) at the fork point (four heads) and
@@ -6550,7 +6550,7 @@ In theorem-indexed terms, the cascade is the compositional bridge
 between \texttt{THM-GNOSIS-COUPLED} (imported pressure spends downstream
 slack), \texttt{THM-FAIL-COMPOSITION} (paid collapse composes across
 stages), \texttt{THM-VOID-TUNNEL} (downstream voids preserve shared
-ancestry), and \texttt{THM-INTERFERE-FRACTAL} (coarsening cannot make
+ancestry), and \texttt{THM-SLIVER-FRACTAL} (coarsening cannot make
 contagious inherited damage disappear for free). The horizon names the
 threshold; the cascade names the mechanism that drives systems toward or
 away from it.
@@ -6562,7 +6562,7 @@ collapse cost by amnesia. A CRDT merge instead computes a monotone
 descendant state while preserving causal ancestry in the merged record.
 In the current Gnosis implementation, \texttt{QDoc} is append-only, the
 topology itself is the state, and presence is modeled as
-\texttt{INTERFERE} that never collapses. Read through the present
+\texttt{SLIVER} that never collapses. Read through the present
 vocabulary, that is a \textbf{void-preserving fold}: convergence without
 pretending the adverse branch never happened. The inherited adverse
 condition still writes a shared void across the stack, but the
@@ -6968,7 +6968,7 @@ preserving causal ancestry and computing a stable descendant that
 contains all non-conflicting contributions. In the Gnosis \texttt{QDoc}
 surface, edits append topology rather than replacing it, reads are
 explicit collapse events, and presence remains in superposition through
-\texttt{INTERFERE}. That makes CRDT recovery a practical example of the
+\texttt{SLIVER}. That makes CRDT recovery a practical example of the
 same shared-void geometry: adverse branches are not erased, they are
 retained as causal structure and reconciled into a truthful descendant
 state.
