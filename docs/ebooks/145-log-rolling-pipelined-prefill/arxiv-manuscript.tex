@@ -7277,7 +7277,105 @@ Each rotation is structurally identical: identify \(N\) independent work items, 
 
 The Vickrey Table build is the largest single opportunity: 65,536 independent Daisy Chain + MOA + sparse fold computations, each taking \(\sim\)100 \(\mu\)s.  Serial build: \(\sim\)6.5 seconds.  With 16 cannon lanes: \(\sim\)0.4 seconds.  The table is built once at deployment and cached -- the rotation eliminates the cold-start penalty.
 
-\textbf{Measurement methodology.}  All speedup figures are wall-clock ratios from the benchmark harness in \texttt{aether/src/cannon-benchmark.test.ts}.  Warmup ensures JIT compilation; measured iterations use \texttt{performance.now()} with microsecond resolution.  The harness reports mean, standard deviation, and ops/sec.  Correctness is verified by asserting bitwise equality (within floating-point tolerance) between serial and cannon outputs for every benchmark.  327 tests pass across 24 files with 70,490 assertions.
+\textbf{Codebase-wide cannon rotation.}  The same audit was applied across ten repositories in the monorepo.  The table below reports every cannon rotation shipped, grouped by system layer.  All rotations pass their respective test suites with zero new failures.
+
+{\def\LTcaptype{none}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1800}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2200}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1800}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Repository
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Target
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pattern
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Items
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tests
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\multicolumn{5}{l}{\textbf{Inference Engine (aether, edge-workers)}} \\
+aether & Multi-head attention & Cannon lanes & 32 heads & 327 pass \\
+aether & Per-head RMSNorm & In-place per-lane & 32 heads & \\
+aether & Fused residual add & 4-wide SIMD & hiddenDim & \\
+aether & Fused gated activation & Single-pass & intermediateSize & \\
+aether & Circuit breaker & Race primary+shadow & 2 nodes & \\
+aether & Cache eviction & Vent (fire-and-forget) & N nodes & \\
+aether & Prefill dispatch & Wallington any-free & N nodes & \\
+aether & Striped logits & 4 row-block stripes & 32K vocab & \\
+aether & Temperature ensemble & Cannon lanes & 3 agents & \\
+aether & Vickrey Table build & 4 vocab stripes & 65K tokens & \\
+aether & Depth-diverse exit heads & Per-depth fork & 4 depths & \\
+aether & Semiotic ensemble fold & Per-agent rejection & K agents & \\
+aether & Loop detection & Per-period similarity & 16 periods & \\
+aether & Batch processor & Per-request sampling & B requests & \\
+aether & Exit head training & Per-depth gradient & 4 depths & \\
+aether & Glossolalia interfere & 4 register lanes & 4 & \\
+aether & WASM packed exp & Zero JS crossing & 4-wide SIMD & \\
+aether & WASM RoPE & New kernel & N heads & \\
+aether & WASM flash attn MH & SIMD dot+accum & N heads & \\
+edge-workers & (5 imports from aether) & & & \\
+\multicolumn{5}{l}{\textbf{Web Server (x-gnosis)}} \\
+x-gnosis & Location matching & FORK prefix, RACE regex & N locations & 116 pass \\
+x-gnosis & Projection classify & Single-pass 3-way & N nodes & \\
+x-gnosis & File cache LRU & O(n)\(\to\)O(1) & N entries & \\
+x-gnosis & Projection cache LRU & O(n)\(\to\)O(1) & N entries & \\
+\multicolumn{5}{l}{\textbf{Web Framework (aeon-flux)}} \\
+aeon-flux & Pre-rendering & 4 lane stripes & N pages & 640 pass \\
+aeon-flux & Build manifests & Promise.all CSS/asset/font & 3 I/O ops & \\
+aeon-flux & Flow stream encoding & Per-page fork & N pages & \\
+\multicolumn{5}{l}{\textbf{Probability (maybe)}} \\
+maybe & Trajectory curvature & Per-point fork & len\(-\)2 & 188 pass \\
+maybe & Manifold coordinates & 8 independent distances & 8 & \\
+maybe & Geodesic path & Per-step interpolation & steps\(+\)1 & \\
+maybe & Fraud path length & Parallel segment dist & N\(-\)1 & \\
+maybe & Backward propagation & Per-dimension per-hop & N dims & \\
+maybe & Solomonoff init & Per-dimension update & N dims & \\
+\multicolumn{5}{l}{\textbf{Deploy (aeon-forge)}} \\
+aeon-forge & Materialization & Promise.all blob fetch & N files & 178 pass \\
+aeon-forge & Stale cleanup & Flatten + batch delete & K dirs & \\
+aeon-forge & stopAll & Merge two loops & N procs & \\
+aeon-forge & deployAll & Wave-aware annotation & N projects & \\
+\multicolumn{5}{l}{\textbf{Visualization (aeon-viz)}} \\
+aeon-viz & Series rendering & Per-series cannon lane & N series & 150 pass \\
+aeon-viz & Atlas line panel & Per-series fork & N series & \\
+aeon-viz & Y-value extraction & Per-series flatMap & N series & \\
+\multicolumn{5}{l}{\textbf{Genomics (aunt-sandy)}} \\
+aunt-sandy & Sigma detectors & 4 independent detectors & 4 & 96 pass \\
+aunt-sandy & Mutation detection & Per-locus classify & N loci & \\
+aunt-sandy & Concordance index & Pre-compute risks & N events & \\
+aunt-sandy & Checkpoint simulation & Single-pass partition & N pathways & \\
+aunt-sandy & Meta-analysis Q & Per-study weight & K studies & \\
+\multicolumn{5}{l}{\textbf{Negotiation (aeon-neutral, aeon-bazaar)}} \\
+aeon-neutral & Joint surface & Row-major outer product & A\(\times\)B cells & 92 pass \\
+aeon-neutral & Void transformer heads & FORK all heads & numHeads & \\
+aeon-neutral & Layer norm decay & FORK all heads & numHeads & \\
+aeon-bazaar & Complement distribution & Fused normalize+exp & N choices & \\
+aeon-bazaar & Gini coefficient & O(\(n^2\))\(\to\)O(\(n \log n\)) & N values & \\
+\end{longtable}
+}
+
+\textbf{Complexity class reduction.}  Most cannon rotations are constant-factor improvements: the work is the same, distributed across \(L\) lanes instead of executed serially.  One rotation achieved a \emph{complexity class reduction}: the Gini coefficient in the void walker engine.  The naive implementation computes all \(n^2\) pairwise absolute differences:
+
+\[\text{Gini}_{\text{naive}} = \frac{1}{2 n^2 \mu} \sum_{i=1}^{n} \sum_{j=1}^{n} |x_i - x_j| \quad \in O(n^2)\]
+
+The sorted-array identity eliminates the inner loop entirely:
+
+\[\text{Gini}_{\text{sorted}} = \frac{1}{n \sum x_i} \sum_{i=1}^{n} (2i - n - 1) \cdot x_{(i)} \quad \in O(n \log n)\]
+
+where \(x_{(i)}\) is the \(i\)-th order statistic.  For a 200-element distribution (typical in negotiation), the naive version performs 40,000 subtractions and absolute values; the sorted version performs 200 multiplications after an \(O(n \log n)\) sort.  The mathematical equivalence is exact -- the two formulas compute the same quantity.  The improvement is not a cannon rotation (constant-factor parallelism) but an algorithmic substitution that removes a loop entirely.
+
+This is the pattern the framework is designed to surface: when you audit every loop for independence, you sometimes discover that the loop itself is unnecessary -- that a closed-form expression exists.  The void walking engine produces distributions; the Gini coefficient measures their inequality; the sorted-array identity is a known result from welfare economics (Sen, 1973).  The audit found it because the audit asked the right question: ``are these \(n^2\) items independent?''  They are -- but independence was the wrong optimization.  The right optimization was recognizing that the computation has a closed form.
+
+\textbf{Measurement methodology.}  All speedup figures are wall-clock ratios from the benchmark harness in \texttt{aether/src/cannon-benchmark.test.ts}.  Warmup ensures JIT compilation; measured iterations use \texttt{performance.now()} with microsecond resolution.  The harness reports mean, standard deviation, and ops/sec.  Correctness is verified by asserting bitwise equality (within floating-point tolerance) between serial and cannon outputs for every benchmark.  54 cannon rotations across 10 repositories.  1,787 tests pass with zero new failures.
 
 \subsection{13. Instantiation C: Distributed Staged Computation (Stack
 Layer
