@@ -189,6 +189,7 @@ Selected TLA+ specifications in `companion-tests/formal/`:
 ## Documentation
 
 - [docs/README.md](./docs/README.md) -- repo docs index
+- [docs/HERO_JOURNEY.md](./docs/HERO_JOURNEY.md) -- Campbell's Hero's Journey mapped into Aeon's formal vocabulary
 - [FORMAL_LEDGER.md](./FORMAL_LEDGER.md) -- repo-level proof index for the formal surface
 - [src/README.md](./src/README.md) -- source tree index
 - [Manuscript source](./docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md) -- Chapter 17 formal manuscript

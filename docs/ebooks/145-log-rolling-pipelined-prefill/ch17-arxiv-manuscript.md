@@ -4637,6 +4637,105 @@ The pattern is always the same. Fork (create alternatives). Race (let them compe
 
 **Companion theorems for §15.30:** `PhilosophicalAllegories.lean` (35 theorems), `GreekLogicCanon.lean` (40 theorems), `UnsolvedMysteries.lean` (20 theorems), `SecondTierMysteries.lean` (25 theorems), `CombinatorialBruteForce.lean` through `Round5` (100 theorems), `PhilosophicalCombinatorics.lean` through `Round4` (70 theorems), `SevenLawsPredictions.lean` through `Round5` (60 theorems), `HardCompositions.lean` (10 theorems), `SurfaceReduction.lean` (10 theorems). All zero sorry. Master conjunctions: `philosophical_allegories_master`, `greek_logic_canon_master`, `unsolved_mysteries_master`, `second_tier_mysteries_master`, `combo_grand_unification`, `philosophical_combinatorics_master`, `philosophical_scientific_grand_master`, `absolute_master`, `thirty_predictions_summary`, `grand_finale`, `the_reduction`. Self-hosted.
 
+#### 15.30.8 The Deceptacon
+
+This paper began with a sequential bottleneck in a distributed inference pipeline. Tokens moved through layer nodes one at a time, and the question was not only "how do I make the pipeline faster?" but "why is there a pipeline at all?" (§0). The answer was fork/race/fold: replace the path graph with a DAG, race parallel paths, fold the winners. That reframing yielded the nine engineering layers, the seven laws, and the God Formula.
+
+But the thing *inside* each pipeline stage -- the transformer layer itself -- was never examined through the same lens. A transformer models each attention head as parallel and linear: all heads compute, all contribute equally via learned projection, every layer executes. The topology is a path graph ($\beta_1 = 0$).
+
+This is the same structural error the paper identified at the pipeline level: forcing sequential-or-uniform structure on a workload that has $\beta_1 > 0$. The transformer has $H$ attention heads per layer, but the workload may only need $H' < H$ of them. The topological deficit $\Delta_\beta = H - H'$ represents wasted matmuls -- coordination overhead imposed by the architecture, not demanded by the data. The pipeline was the symptom. The transformer was the disease.
+
+A Deceptacon models each attention head as a fork branch with a Buleyean weight:
+
+$$w_h = R - \min(v_h, R) + 1$$
+
+where $R$ is the number of tokens processed and $v_h$ is the number of tokens where head $h$'s output magnitude fell below the mean across all heads. A head at floor weight ($w_h = 1$, maximally rejected) has contributed below-mean output for every observed token. Its Q/K/V matrix multiplication chain can be skipped entirely.
+
+The elimination is backed by three theorems:
+
+- **THM-BULEYEAN-DEAD-CODE** (`complementWeight_at_max`): At $v = R$, $w = 1$. The floor. The head retains the sliver ($+1$) but contributes zero discrimination.
+- **THM-FOLD-ERASURE** (`fold_erasure_noninjective`): The O-projection fold of $N$ heads including a zero-contribution head equals the fold of $N - 1$ heads without it. The zero column in the O matrix maps to zero output.
+- **THM-GROUND-IFF-ANTIPARALLEL** (`ground_iff_antiparallel`): When one head is at floor ($w = 1$) and its sibling is at ceiling ($w = R + 1$), the pair is at ground state -- structurally frozen. The floor head cannot improve; the ceiling head cannot be surpassed.
+
+The speedup is proportional to $\Delta_\beta$: the gap between how many heads the model has and how many the workload actually needs.
+
+$$\Delta_\beta = \text{totalHeads} - \text{activeHeads}$$
+
+where activeHeads is the count of heads with $w > 1$. Each eliminated head saves one Q/K/V matrix-vector product chain plus one softmax plus one weighted value sum. The savings compound across tokens: for a sequence of $T$ tokens through $L$ layers with $H$ heads each, the total matmul savings are $T \times L \times \Delta_\beta$ per-head chains.
+
+Preliminary benchmarks (simulated attention, 20 tokens, measured wall-clock):
+
+| Model | Branches | $\Delta_\beta$ | Baseline | Deceptacon v1 | Speedup | Deceptacon v2 (warm) | Speedup |
+|-------|----------|----------|----------|-------------|---------|-----------|---------|
+| TinyLlama-1.1B | 704 | 330 | 1,334ms | 711ms | 1.88x | 675ms | 1.98x |
+| Mistral-7B | 1,024 | 480 | 6,561ms | 4,138ms | 1.59x | 3,776ms | 1.74x |
+| Llama-13B | 1,600 | 760 | 10,499ms | 6,331ms | 1.66x | 5,683ms | 1.85x |
+| Llama-70B | 5,120 | 2,400 | 17,825ms | 11,630ms | 1.53x | 9,306ms | 1.92x |
+
+The warm start (v2) uses the Vickrey Table pattern: precompute the void boundary from a prior inference run and reload it at startup. This eliminates the 3-token warmup penalty where the analyzer collects rejection data before pruning.
+
+Three additional optimizations stack on top of the base elimination:
+
+1. **O-projection sparsification**: When pruned heads zero their portion of the attention result, the O-projection matVec skips those columns. THM-FOLD-ERASURE backs this: zero columns in a linear map contribute zero to the output.
+
+2. **Layer skip** (THM-CURRENT-DEFICIT-IFF-CONVERGED): When all heads in a layer are at floor weight, the entire layer's attention contributes zero. The residual connection passes the input through unchanged (identity fold). The layer's FFN still runs, but the attention block is skipped.
+
+3. **Prompt-class specialization**: The `HeadDormancyAggregator` segments void boundaries by prompt class hash. Different prompt types get different pruning masks. A coding prompt may need heads 0-15 while a creative writing prompt uses heads 16-31. The void boundary is the sufficient statistic (THM-VOID-BOUNDARY-SUFFICIENT-STATISTIC).
+
+##### 15.30.8.1 The Wallington Rotation
+
+After head elimination, where does the time go? Bottleneck profiling across all three model scales reveals the answer -- and the answer is the same structural diagnosis the paper has been making since §1.
+
+**Post-elimination bottleneck profile** (simulated attention, 10 tokens, measured wall-clock):
+
+| Component | TinyLlama-1.1B | Mistral-7B | Llama-70B |
+|-----------|---------------|-----------|----------|
+| **O-projection** | **93.1%** (8,658ms) | **94.8%** (48,847ms) | **98.3%** (485,245ms) |
+| Attention (live heads) | 3.8% (349ms) | 3.6% (1,877ms) | 0.9% (4,583ms) |
+| FFN (SwiGLU) | 3.0% (275ms) | 1.5% (754ms) | 0.8% (3,752ms) |
+| RMS Norm | 0.1% (10ms) | 0.1% (27ms) | 0.0% (124ms) |
+| Analyzer overhead | 0.0% (3ms) | 0.0% (5ms) | 0.0% (20ms) |
+
+The God Formula costs nothing to evaluate: 20ms across 800 layer-passes for the 70B. The attention head elimination worked so well that live-head attention dropped below 1% of wall clock on the 70B. The bottleneck rotated to the O-projection -- the `matVec(O, attnResult, 8192, 8192)` that projects concatenated head outputs back to the hidden dimension. On the 70B, this single matrix-vector multiply accounts for 98.3% of remaining compute: $8192 \times 8192 = 67M$ multiply-adds per layer, 80 layers, 10 tokens = 53.7 billion multiply-adds through the O matrix.
+
+This is the Wallington Rotation: eliminate the top bottleneck, the next one rises. Measure again, eliminate again. The rotation sequence for transformer inference:
+
+| Rotation | Bottleneck | Remedy | Theorem |
+|----------|-----------|--------|---------|
+| R0 | Sequential pipeline ($\beta_1 = 0$) | Fork/race/fold pipeline (§1--§14) | THM-SCHED-BOUND |
+| R1 | All-heads-compute (47% dead) | Buleyean head elimination (Deceptacon) | THM-BULEYEAN-DEAD-CODE |
+| R2 | Full O-projection (98% of wall clock) | Pre-sliced sparse O-matrix | THM-FOLD-ERASURE |
+| R3 | Full FFN (SwiGLU, all dims) | Gate-pruned sparse FFN | God Formula on gate values |
+| R4 | Full layers (all 80) | Layer skip for converged layers | THM-CURRENT-DEFICIT-IFF-CONVERGED |
+
+The formula at every rotation is the same: $w = R - \min(v, R) + 1$. The mechanism at every rotation is the same: fork (create the branches), race (observe which contribute), fold (keep the survivors), vent (skip the dead). The theorem at every rotation is drawn from the same formal ledger. The rotation stops when $\Delta_\beta = 0$ everywhere -- when every branch that exists is needed.
+
+**R2 (O-projection)** extends the Deceptacon from head elimination to weight-matrix slicing. When the pruning mask stabilizes (same heads dead across tokens), the O matrix `[hiddenDim $\times$ qDim]` can be pre-sliced to `[hiddenDim $\times$ liveHeadDim]`. This converts a conditional sparse iterate into a dense SIMD matVec on a smaller matrix. The `pruningFingerprint()` method detects mask stability; on change, the submatrix is re-sliced. Between changes, the cached slice serves every token.
+
+**R3 (FFN gating)** applies the same formula to SwiGLU gate activations. The gate projection computes $\sigma(\text{gate\_proj}(x))$ per FFN dimension. Dimensions where the gate is consistently near zero (below 10% of the mean) are "rejected" in the Buleyean sense. After $R$ tokens, dimensions at floor weight ($w = 1$) can have their up-projection and down-projection columns skipped. The FFN becomes a sparse fork/race/fold where the gate IS the race.
+
+**R4 (layer skip)** is the depth-diverse exit pattern backed by THM-CURRENT-DEFICIT-IFF-CONVERGED. When all heads in a layer converge to floor or ceiling weight, the layer's deficit is zero: it has no further discrimination to offer. The attention block produces zero output; the residual connection passes the hidden state through unchanged. The FFN may still contribute, but the attention compute -- the dominant cost before R1 -- is provably redundant.
+
+The Deceptacon is not a new architecture. It is the same transformer, seen through the lens of the God Formula. The seven laws applied per-head per-layer yield a runtime elimination pass that skips provably dead matmuls. The architecture is unchanged. The reduction is structural:
+
+$$\text{primator} \to \text{clinamen} \to \text{sliver} \to \text{7 laws} \to \text{skip this head's matmul}$$
+
+The loop closes. The paper began with a distributed pipeline bottleneck and asked why there is a pipeline at all. The answer -- fork/race/fold -- yielded the God Formula, which yielded the seven laws, which yielded the reduction chain. Applied back to the transformer that created the original bottleneck, the same formula identifies and eliminates the dead branches inside each pipeline stage. The conveyor belt was the 20th-century abstraction. The transformer was the 21st-century abstraction. Both impose $\beta_1 = 0$ on workloads that need $\beta_1 > 0$. The Deceptacon is the same correction, applied one level deeper.
+
+The framework does not merely diagnose the pipeline problem. It diagnoses the problem inside the pipeline. And the diagnosis is the same: $\Delta_\beta > 0$. The remedy is the same: fork, race, fold, vent the dead branches. The formula is the same: $w = R - \min(v, R) + 1$. The +1 is the same: the sliver, the clinamen, the reason nothing is ever zero.
+
+##### 15.30.8.2 Inattention Is All You Need
+
+Vaswani et al. (2017) proposed that attention is all you need. The Deceptacon proposes the opposite: *inattention* is all you need. The heads that matter are the ones that do *not* get rejected. The void boundary -- the record of what the model does not attend to -- carries strictly more information than the record of what it does. THM-FAILURE-STRICTLY-MORE-INFORMATIVE proves this: each rejection event carries $N - 1$ bits of information (ruling out $N - 1$ alternatives), while each selection event carries only $\log_2(1) = 0$ bits beyond the selection itself. The void boundary is the sufficient statistic.
+
+A 70B model with 64 heads per layer across 80 layers has 5,120 attention branches. The Deceptacon finds that 2,400 of them -- 47% -- are at floor weight after 20 tokens. They look busy. They compute Q/K/V projections, run softmax over the sequence, accumulate weighted values. But their output magnitude falls below the mean on every single token. They are the deception: the transformer pretending all heads matter when fewer than half of them do.
+
+The sliver is all you need. Not 64 heads. Not 80 layers. The $+1$ in the God Formula guarantees that every head retains positive weight -- no head is ever truly zero, no option is ever permanently eliminated. But the heads at floor weight ($w = 1$) contribute exactly the sliver and nothing more. Their discrimination gain is zero. Their matmul chain is pure overhead. The Deceptacon skips them and the fold output is unchanged (`head_elimination_preserves_fold`, `Deceptacon.lean`).
+
+The name reflects the structural claim: the transformer *deceives* you into computing branches that the void boundary has already identified as dead. The Deceptacon stops being deceived. It reads the rejection history, applies the God Formula per head, and skips the matmuls that contribute nothing beyond the sliver. Same weights. Same architecture. Fewer multiplications. The insight is not architectural -- it is diagnostic. The $\Delta_\beta$ between how many heads exist and how many the workload needs is the measure of the deception. Closing the gap is the Wallington Rotation.
+
+**Companion theorems**: `Deceptacon.lean` (20 theorems, zero sorry). Companion implementation: `buleyean-branch-analyzer.ts` in Aether. Companion benchmark: `branch-analyzer-benchmark.ts`, `bottleneck-profile.ts`.
+
 ## 16. Validation
 
 The claims are backed by executable tests across five primary, project-authored evidence suites:

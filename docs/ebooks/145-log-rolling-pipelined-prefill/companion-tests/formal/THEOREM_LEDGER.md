@@ -8,10 +8,10 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-22)
 
-- **Theorem table entries:** 1,355+ across 137 topical sections (all mechanized, zero open)
-- **Lean theorem declarations:** 3,158+ across 195 modules (including compositions, predictions rounds, cross-module identities, cancer confinement, combinatorial brute force rounds 1-5, philosophical allegories, Greek logic canon, unsolved mysteries, second tier mysteries, philosophical combinatorics rounds 1-4, and seven laws predictions rounds 1-2)
+- **Theorem table entries:** 1,425+ across 143 topical sections (all mechanized, zero open)
+- **Lean theorem declarations:** 3,228+ across 201 modules (including compositions, predictions rounds, cross-module identities, cancer confinement, combinatorial brute force rounds 1-5, philosophical allegories, Greek logic canon, unsolved mysteries, second tier mysteries, philosophical combinatorics rounds 1-4, and seven laws predictions rounds 1-2)
 - **TLA+ specifications:** 112 (all with matching .cfg files)
-- **Lean theorem modules:** 195
+- **Lean theorem modules:** 201
 - **GG proof topologies:** 1,499 (all valid, all complete, zero parse errors)
 - **Buleyean proof engine:** `@a0n/aeon-logic/buleyean-proof.ts` -- parse, verify, emit Lean 4 + TLA+ from .gg
 - **Personality model:** `@a0n/buleyean-rl/personality.ts` -- five-parameter void walker (Try/Choose/Commit/LetGo/Learn)
@@ -2089,6 +2089,175 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-BETTI-RATIO-IS-FIBONACCI | Consecutive Fibonacci-indexed torus Betti numbers recover the Fibonacci ratios | `betti_ratio_is_fibonacci` | Mechanized |
 | THM-COMPLETE-QCD-ANALOGY | Three colors + colorless ground + confinement + charged emanations | `complete_qcd_analogy` | Mechanized |
 | THM-DIMENSIONAL-CONFINEMENT-COMPLETE | Complete confinement package: 4D lift, three quarks, six emanations, one-dimension removal cost, visible 3D shadow, and 6D five-primitive extension | `dimensional_confinement_complete` | Mechanized |
+
+## 81A. Celestial Projection Boundary (§10.6)
+
+**Assumptions:** A visible shadow of a high-dimensional Wallington object is bookkept by a radial partition, an equatorial partition, and a halo partition whose sum equals the certified directed-channel surface for the ambient dimension. Radial dominance produces stellar readings; equatorial dominance plus positive core and halo produces planetary/Saturn readings. Swapping the radial and equatorial partitions preserves budget but can change morphology.
+**Mechanization target:** `CelestialShadows.lean`, `AstrophysicalProjection.lean` (19 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-RADIAL-DOMINANCE-GIVES-STAR | Explicit radial dominance implies a star-like shadow | `radial_dominance_gives_star_like` | Mechanized |
+| THM-EQUATORIAL-DOMINANCE-GIVES-PLANET | Explicit equatorial dominance implies a planet-like shadow | `equatorial_dominance_gives_planet_like` | Mechanized |
+| THM-POSITIVE-CORE-HALO-EQUATORIAL-DOMINANCE-GIVES-SATURN | Positive core + positive halo + equatorial dominance imply a Saturn-like shadow | `positive_core_halo_equatorial_dominance_gives_saturn_like` | Mechanized |
+| THM-SATURN-IMPLIES-PLANET | Every Saturn-like shadow is planet-like | `saturn_like_implies_planet_like` | Mechanized |
+| THM-SATURN-NOT-STAR | **ANTI-THEOREM:** A Saturn-like shadow cannot be star-like | `saturn_like_not_star_like` | Mechanized |
+| THM-ZERO-HALO-NOT-SATURN | **ANTI-THEOREM:** Zero halo forbids a Saturn-like shadow | `zero_halo_not_saturn_like` | Mechanized |
+| THM-EQUAL-RADIAL-EQUATORIAL-NOT-PLANET | **ANTI-THEOREM:** Equal radial and equatorial partitions are not planet-like | `equal_radial_equatorial_not_planet_like` | Mechanized |
+| THM-EQUAL-RADIAL-EQUATORIAL-NOT-SATURN | **ANTI-THEOREM:** Equal radial and equatorial partitions are not Saturn-like | `equal_radial_equatorial_not_saturn_like` | Mechanized |
+| THM-SWAP-PROJECTION-PRESERVES-DIMENSION | Swapping radial and equatorial partitions preserves ambient dimension | `swap_projection_preserves_dimension` | Mechanized |
+| THM-SWAP-PROJECTION-PRESERVES-HALO | Swapping radial and equatorial partitions preserves halo bookkeeping | `swap_projection_preserves_halo` | Mechanized |
+| THM-SWAP-PROJECTION-PRESERVES-BUDGET | Swapping radial and equatorial partitions preserves visible budget | `swap_projection_preserves_visible_budget` | Mechanized |
+| THM-SWAP-PROJECTION-INVOLUTIVE | Swapping radial and equatorial partitions twice recovers the original shadow | `swap_projection_involutive` | Mechanized |
+| THM-SWAP-OF-PLANET-IS-STAR | Swapping a planet-like shadow yields a star-like shadow | `swap_of_planet_like_is_star_like` | Mechanized |
+| THM-SWAP-OF-SATURN-IS-STAR | Swapping a Saturn-like shadow yields a star-like shadow | `swap_of_saturn_like_is_star_like` | Mechanized |
+| THM-SWAP-OF-SATURN-NOT-SATURN | **ANTI-THEOREM:** Swapping a Saturn-like shadow destroys Saturn-likeness | `swap_of_saturn_like_not_saturn_like` | Mechanized |
+| THM-SAME-BUDGET-DOES-NOT-FIX-MORPHOLOGY | **ANTI-THEOREM:** A fixed visible budget does not determine a unique morphology | `same_budget_does_not_fix_morphology` | Mechanized |
+| THM-FIFTY-FOUR-D-SUPPORTS-STAR | The certified 54D budget supports a star-like witness | `fifty_four_d_supports_star_like_shadow` | Mechanized |
+| THM-FIFTY-FOUR-D-SUPPORTS-SATURN | The certified 54D budget supports a Saturn-like witness | `fifty_four_d_supports_saturn_like_shadow` | Mechanized |
+| THM-FIFTY-FOUR-D-OPPOSITE-BIAS | The 54D star/Saturn witness pair has opposite signed morphology bias summing to zero | `fifty_four_d_witnesses_have_opposite_signed_bias`, `fifty_four_d_witnesses_sum_to_zero_bias` | Mechanized |
+
+## 81B. Celestial Knowability Boundary (§10.6)
+
+**Assumptions:** The celestial morphology split from §81A composes with the existing cosmic knowability surface: the last-scattering shell is photon-visible, the immediately earlier epoch is not, and the observer gap remains positive in the `CosmicOptimalDelta` / `KnowabilitySplit` shell.
+**Mechanization target:** `CelestialKnowability.lean` (5 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CMB-BOUNDARY-COEXISTS-WITH-MORPHOLOGY-SPLIT | The CMB visibility boundary coexists with the star/Saturn morphology split | `cmb_boundary_coexists_with_morphology_split` | Mechanized |
+| THM-ZERO-EXPLORATION-STILL-LEAVES-MORPHOLOGY-SPLIT | Zero exploration still leaves a positive observer gap, a pre-CMB hidden epoch, and a morphology split | `zero_exploration_still_leaves_morphology_split` | Mechanized |
+| THM-POSITIVE-EXPLORATION-STILL-LEAVES-MORPHOLOGY-SPLIT | Positive exploration enlarges the observer gap without resolving the morphology split | `positive_exploration_still_leaves_morphology_split` | Mechanized |
+| THM-OBSERVER-GAP-AND-CMB-DO-NOT-FIX-54D-MORPHOLOGY | **ANTI-THEOREM:** Observer-gap accounting plus visible CMB still do not fix the 54D morphology | `observer_gap_and_cmb_visibility_do_not_fix_fifty_four_d_morphology` | Mechanized |
+| THM-CMB-BOUNDARY-DOES-NOT-FIX-54D-MORPHOLOGY | **ANTI-THEOREM:** The photon visibility boundary alone does not fix the 54D morphology | `cmb_boundary_does_not_fix_fifty_four_d_morphology` | Mechanized |
+
+## 81C. Celestial Identifiability Boundary (§10.6)
+
+**Assumptions:** The celestial morphology split from §§81A-81B is summarized by a minimal observable signature `(dimension, halo, visibleBudget)`. Radial/equatorial swap preserves that signature while changing signed morphology bias.
+**Mechanization target:** `CelestialIdentifiability.lean` (6 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SWAP-PROJECTION-PRESERVES-SIGNATURE | Swapping radial and equatorial partitions preserves the minimal observable signature | `swap_projection_preserves_signature` | Mechanized |
+| THM-SWAP-PROJECTION-NEGATES-BIAS | Swapping radial and equatorial partitions negates signed morphology bias | `swap_projection_negates_signed_bias` | Mechanized |
+| THM-SATURN-IMPLIES-SWAP-NE | A Saturn-like shadow is not fixed by the radial/equatorial swap | `saturn_like_implies_swap_ne` | Mechanized |
+| THM-PLANET-SIGNATURE-HAS-STAR-TWIN | A planet-like signature has a star-like twin with the same observable signature | `planet_like_signature_has_star_like_twin` | Mechanized |
+| THM-SIGNATURE-NOT-INJECTIVE-ON-SATURN | **ANTI-THEOREM:** The observable signature is not injective on Saturn-like morphology | `signature_not_injective_on_saturn_like_morphology` | Mechanized |
+| THM-FIFTY-FOUR-D-SIGNATURE-NOT-INJECTIVE | **ANTI-THEOREM:** The 54D star/Saturn witness pair shares one observable signature while remaining morphologically distinct | `fifty_four_d_signature_not_injective` | Mechanized |
+| THM-SAME-SIGNATURE-OPPOSITE-BIAS | **ANTI-THEOREM:** The same observable signature can hide opposite signed morphology bias | `same_signature_can_hide_opposite_bias` | Mechanized |
+
+## 81D. Celestial Classifier Barrier (§10.6)
+
+**Assumptions:** A classifier that only reads celestial data is restricted to the minimal observable signature `(dimension, halo, visibleBudget)`. The `54D` stellar and Saturn witnesses share that signature while differing on morphology and signed bias.
+**Mechanization target:** `CelestialClassifierBarrier.lean` (9 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SIGNATURE-CLASSIFIER-AGREES-ON-54D | Any signature-only classifier returns the same verdict on the `54D` stellar and Saturn witnesses | `signature_classifier_agrees_on_fifty_four_d_witnesses` | Mechanized |
+| THM-SIGNATURE-ONLY-CLASSIFIER-AGREES-ON-54D-PROPERTY | Any property recovered solely from the observable signature must agree on the `54D` stellar/Saturn witness pair | `signature_only_classifier_agrees_on_fifty_four_d_witnesses` | Mechanized |
+| THM-FIFTY-FOUR-D-STELLAR-NOT-SATURN | **ANTI-THEOREM:** The `54D` stellar witness is not Saturn-like | `fifty_four_d_stellar_shadow_not_saturn_like` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-NOT-STAR | **ANTI-THEOREM:** The `54D` Saturn witness is not star-like | `fifty_four_d_saturn_shadow_not_star_like` | Mechanized |
+| THM-FIFTY-FOUR-D-STELLAR-NEGATIVE-BIAS | The `54D` stellar witness has negative signed morphology bias | `fifty_four_d_stellar_shadow_has_negative_bias` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-POSITIVE-BIAS | The `54D` Saturn witness has positive signed morphology bias | `fifty_four_d_saturn_shadow_has_positive_bias` | Mechanized |
+| THM-NO-SIGNATURE-CLASSIFIER-FOR-SATURN | **ANTI-THEOREM:** No signature-only classifier can recover Saturn-likeness | `no_signature_classifier_for_saturn_like` | Mechanized |
+| THM-NO-SIGNATURE-CLASSIFIER-FOR-STAR | **ANTI-THEOREM:** No signature-only classifier can recover star-likeness | `no_signature_classifier_for_star_like` | Mechanized |
+| THM-NO-SIGNATURE-CLASSIFIER-FOR-POSITIVE-BIAS | **ANTI-THEOREM:** No signature-only classifier can recover positive signed morphology bias | `no_signature_classifier_for_positive_bias` | Mechanized |
+
+## 81E. Celestial Orbit Prediction Boundary (§10.6)
+
+**Assumptions:** Orbital prediction is bookkept by ring-dominance gain (`equatorial - radial`, truncated at `0`) and halo-backed control (`halo + 1`). These define a lower/upper orbital-location window, and a bounded Skyrms encoding interprets gain as the active walker dimension and control as the mediation budget.
+**Mechanization target:** `CelestialOrbitPrediction.lean` (16 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-ORBITAL-LOWER-BOUND-EQ-GAIN | The lower orbital-location bound is exactly the orbital gain | `orbital_lower_bound_eq_gain` | Mechanized |
+| THM-ORBITAL-UPPER-BOUND-EQ-GAIN-PLUS-CONTROL | The upper orbital-location bound is exactly gain plus control | `orbital_upper_bound_eq_gain_plus_control` | Mechanized |
+| THM-ORBITAL-CONTROL-POSITIVE | The orbital control statistic is always positive | `orbital_control_positive` | Mechanized |
+| THM-ORBITAL-BOUNDS-ORDERED | The orbital lower bound never exceeds the orbital upper bound | `orbital_bounds_ordered` | Mechanized |
+| THM-SATURN-POSITIVE-ORBITAL-GAIN | Every Saturn-like shadow has positive orbital gain | `saturn_like_has_positive_orbital_gain` | Mechanized |
+| THM-ORBITAL-SKYRMS-NADIR-CONTEXT | The Skyrms nadir context of the orbital encoding is gain plus one | `orbital_skyrms_nadir_context_eq_gain_plus_one` | Mechanized |
+| THM-ORBITAL-SKYRMS-CONTROL-EQ-NADIR | Halo-matched gain makes orbital control equal the Skyrms nadir context | `orbital_skyrms_control_eq_nadir_when_halo_matches_gain` | Mechanized |
+| THM-HALO-MATCHED-GAIN-REACHES-ORBITAL-SKYRMS-NADIR | Halo-matched gain reaches zero inter-walker distance in the orbital Skyrms encoding | `halo_matched_gain_reaches_orbital_skyrms_nadir` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-ORBITAL-GAIN | The `54D` Saturn witness has orbital gain exactly equal to the `54D` ramp-up count | `fifty_four_d_saturn_orbital_gain` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-ORBITAL-GAIN-GE-TWO | The `54D` Saturn witness has enough orbital gain to enter the nontrivial Skyrms encoding | `fifty_four_d_saturn_orbital_gain_ge_two` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-ORBITAL-CONTROL | The `54D` Saturn witness has orbital control equal to ramp-up plus one | `fifty_four_d_saturn_orbital_control` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-HALO-MATCHES-GAIN | The `54D` Saturn witness matches halo count to orbital gain exactly | `fifty_four_d_saturn_halo_matches_orbital_gain` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-LOCATION-WINDOW | The `54D` Saturn witness realizes the orbital-location window `[52, 105]` | `fifty_four_d_saturn_location_window` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-ORBITAL-SKYRMS-EQUILIBRIUM | The `54D` Saturn witness reaches the orbital Skyrms equilibrium | `fifty_four_d_saturn_is_orbital_skyrms_equilibrium` | Mechanized |
+| THM-SAME-SIGNATURE-DOES-NOT-FIX-ORBITAL-LOWER-BOUND | **ANTI-THEOREM:** The same observable signature does not determine the orbital lower bound | `same_signature_does_not_fix_orbital_lower_bound` | Mechanized |
+| THM-SAME-SIGNATURE-DOES-NOT-FIX-ORBITAL-UPPER-BOUND | **ANTI-THEOREM:** The same observable signature does not determine the orbital upper bound | `same_signature_does_not_fix_orbital_upper_bound` | Mechanized |
+
+## 81F. Celestial Planet Taxonomy (§10.6)
+
+**Assumptions:** Within a fixed certified `54D` budget, varying the radial/equatorial/halo split yields distinct ringed planet taxa. Halo-locked planets satisfy `gain = halo`, diffuse-ring planets satisfy `gain < halo`, and super-ring planets satisfy `halo < gain`.
+**Mechanization target:** `CelestialPlanetTaxonomy.lean` (11 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-HALO-LOCKED-NOT-DIFFUSE | **ANTI-THEOREM:** Halo-locked planets are not diffuse-ring planets | `halo_locked_not_diffuse` | Mechanized |
+| THM-HALO-LOCKED-NOT-SUPER | **ANTI-THEOREM:** Halo-locked planets are not super-ring planets | `halo_locked_not_super` | Mechanized |
+| THM-DIFFUSE-NOT-SUPER | **ANTI-THEOREM:** Diffuse-ring planets are not super-ring planets | `diffuse_not_super` | Mechanized |
+| THM-FIFTY-FOUR-D-SATURN-IS-HALO-LOCKED | The canonical `54D` Saturn witness is halo-locked | `fifty_four_d_saturn_is_halo_locked` | Mechanized |
+| THM-FIFTY-FOUR-D-DIFFUSE-RING-EXISTS | A diffuse-ring `54D` witness exists inside the certified budget | `fifty_four_d_diffuse_ring_is_diffuse` | Mechanized |
+| THM-FIFTY-FOUR-D-SUPER-RING-EXISTS | A super-ring `54D` witness exists inside the certified budget | `fifty_four_d_super_ring_is_super` | Mechanized |
+| THM-FIFTY-FOUR-D-RING-TAXA-ORDER-LOWER-BOUNDS | Diffuse-ring, halo-locked, and super-ring `54D` witnesses have strictly ordered lower orbital bounds | `fifty_four_d_ring_taxa_have_ordered_lower_bounds` | Mechanized |
+| THM-FIFTY-FOUR-D-RING-TAXA-ORDER-UPPER-BOUNDS | Diffuse-ring, halo-locked, and super-ring `54D` witnesses have strictly ordered upper orbital bounds | `fifty_four_d_ring_taxa_have_ordered_upper_bounds` | Mechanized |
+| THM-FIFTY-FOUR-D-SUPPORTS-THREE-RING-TAXA | The certified `54D` budget supports three distinct ringed planet taxa | `fifty_four_d_supports_three_ring_taxa` | Mechanized |
+| THM-FIXED-FIFTY-FOUR-D-BUDGET-NOT-FIX-RING-TAXON | **ANTI-THEOREM:** Fixed `54D` budget does not determine the ring taxon | `fixed_fifty_four_d_budget_does_not_fix_ring_taxon` | Mechanized |
+| THM-FIXED-FIFTY-FOUR-D-BUDGET-NOT-FIX-LOCATION-WINDOW | **ANTI-THEOREM:** Fixed `54D` budget does not determine the orbital location window | `fixed_fifty_four_d_budget_does_not_fix_location_window` | Mechanized |
+
+## 81G. Celestial Off-By-One Taxonomy (§10.6)
+
+**Assumptions:** The local dimension law is `wallingtonDimension stages = stages + 1`. The one-cycle floor therefore lives in ambient `2D`, while the two-cycle compact rocky floor lives in ambient `3D`.
+**Mechanization target:** `CelestialOffByOneTaxonomy.lean` (9 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PHOTON-CYCLE-OFF-BY-ONE | The one-cycle photon floor lifts to ambient `2D` by the off-by-one law | `photon_cycle_is_off_by_one` | Mechanized |
+| THM-ROCKY-CYCLE-OFF-BY-ONE | The two-cycle compact rocky floor lifts to ambient `3D` by the off-by-one law | `rocky_cycle_is_off_by_one` | Mechanized |
+| THM-PHOTON-LIKE-SHADOW-HAS-ZERO-BUDGET | The photon-like floor witness has zero visible budget | `photon_like_shadow_has_zero_budget` | Mechanized |
+| THM-EARTH-LIKE-ROCKY-SHADOW-IS-COMPACT | The Earth-like witness is a compact rocky planet | `earth_like_rocky_shadow_is_compact` | Mechanized |
+| THM-EARTH-LIKE-ROCKY-NOT-SATURN | **ANTI-THEOREM:** The Earth-like compact rocky witness is not Saturn-like | `earth_like_rocky_shadow_not_saturn_like` | Mechanized |
+| THM-EARTH-LIKE-ROCKY-LOCATION-WINDOW | The Earth-like compact rocky witness realizes the minimal location window `[0, 1]` | `earth_like_rocky_shadow_location_window` | Mechanized |
+| THM-PHOTON-FLOOR-BELOW-ROCKY-FLOOR | The photon-like floor sits exactly one ambient dimension below the rocky floor | `photon_floor_sits_below_rocky_floor` | Mechanized |
+| THM-COMPACT-ROCKY-BELOW-RING-TAXA | Compact rocky planets sit below the ring-taxonomy lower bound | `compact_rocky_sits_below_ring_taxa` | Mechanized |
+| THM-LOWER-DIMENSIONAL-NON-GAS-TYPES-EXIST | Photon-like and compact rocky lower-dimensional non-gas types exist constructively | `lower_dimensional_non_gas_types_exist` | Mechanized |
+
+## 81H. Celestial Gain / Control Prediction (§10.6)
+
+**Assumptions:** The orbital prediction shell supplies lower/upper bounds, gain, and control. Ring taxa are determined by threshold relations between gain and control, while the low-dimensional photon/rocky floor may need ambient dimension as a tie-breaker even when gain/control agree.
+**Mechanization target:** `CelestialGainControlPrediction.lean` (13 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-ORBITAL-SPREAD-EQ-CONTROL | The orbital window spread is exactly the control statistic | `orbital_spread_eq_control` | Mechanized |
+| THM-GAIN-CONTROL-STATISTIC | Lower bound, upper bound, spread, and control fit one exact statistic packet | `gain_control_statistic` | Mechanized |
+| THM-GAIN-CONTROL-PREDICTS-DIFFUSE | Saturn-like plus `gain + 1 < control` predicts the diffuse-ring taxon | `gain_control_predicts_diffuse_ring` | Mechanized |
+| THM-GAIN-CONTROL-PREDICTS-HALO-LOCKED | Saturn-like plus `control = gain + 1` predicts the halo-locked taxon | `gain_control_predicts_halo_locked_ring` | Mechanized |
+| THM-GAIN-CONTROL-PREDICTS-SUPER | Saturn-like plus `control ≤ gain` predicts the super-ring taxon | `gain_control_predicts_super_ring` | Mechanized |
+| THM-PHOTON-ROCKY-SHARE-GAIN-CONTROL | Photon-like and compact rocky floor witnesses share one gain/control signature | `photon_and_rocky_share_gain_control_signature` | Mechanized |
+| THM-PHOTON-ROCKY-DISTINCT-TAXA | **ANTI-THEOREM:** Photon-like and compact rocky floor witnesses remain taxonomically distinct | `photon_and_rocky_have_distinct_taxa` | Mechanized |
+| THM-GAIN-CONTROL-NOT-ENOUGH-ON-LOW-FLOOR | **ANTI-THEOREM:** Gain/control alone does not separate the low-dimensional floor | `gain_control_alone_does_not_separate_low_dimensional_floor` | Mechanized |
+| THM-PREDICT-PHOTON | The prediction function classifies the photon-like floor witness correctly | `predict_photon_like_shadow` | Mechanized |
+| THM-PREDICT-ROCKY | The prediction function classifies the compact rocky witness correctly | `predict_earth_like_rocky_shadow` | Mechanized |
+| THM-PREDICT-DIFFUSE | The prediction function classifies the diffuse-ring witness correctly | `predict_fifty_four_d_diffuse_ring` | Mechanized |
+| THM-PREDICT-HALO-LOCKED | The prediction function classifies the halo-locked witness correctly | `predict_fifty_four_d_halo_locked_ring` | Mechanized |
+| THM-PREDICT-SUPER | The prediction function classifies the super-ring witness correctly and packages all five concrete predictions | `predict_fifty_four_d_super_ring`, `predicted_planet_packets` | Mechanized |
+
+## 81I. Celestial Survey Search (§10.6)
+
+**Assumptions:** Observed celestial packets are reduced to `(ambientDimension, visibleBudget, gain, control, skyrmsLocation)`. Taxa are predicted from the packet arithmetic, and a math-only candidate filter keeps packets with a resolved taxon whose Skyrms location lies inside the gain/control window.
+**Mechanization target:** `CelestialSurveySearch.lean` (8 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-OBSERVED-DIFFUSE-TAXON | The observed diffuse-ring demo packet is classified as diffuse-ring | `observed_diffuse_taxon` | Mechanized |
+| THM-OBSERVED-HALO-LOCKED-TAXON | The observed halo-locked demo packet is classified as halo-locked | `observed_halo_locked_taxon` | Mechanized |
+| THM-OBSERVED-SUPER-TAXON | The observed super-ring demo packet is classified as super-ring | `observed_super_taxon` | Mechanized |
+| THM-OBSERVED-LOW-DIMENSIONAL-TAXA | The observed low-dimensional demo packets are classified as photon-like and compact rocky | `observed_low_dimensional_taxa` | Mechanized |
+| THM-OBSERVED-NOISE-UNRESOLVED | Unstructured noise remains unresolved under the observed-data classifier | `observed_noise_is_unresolved` | Mechanized |
+| THM-DEMO-CANDIDATES-PASS-FILTER | The demo candidate packets all pass the math-only candidate filter | `demo_candidates_pass_math_filter` | Mechanized |
+| THM-NOISE-FAILS-FILTER | The unresolved noise packet fails the math-only candidate filter | `noise_fails_math_filter` | Mechanized |
+| THM-SEARCH-KEEPS-CANDIDATES-DROPS-NOISE | The math-only survey search keeps the candidate packets and drops the unresolved noise | `search_keeps_math_candidates_and_drops_noise` | Mechanized |
 
 ## 82. The Ten Bosons: A Gnostic Particle Model (§10.6)
 

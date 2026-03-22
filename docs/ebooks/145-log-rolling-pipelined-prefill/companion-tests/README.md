@@ -16,6 +16,15 @@ This package is the reproducibility and validation surface for the manuscript. T
 The Chapter 17 manuscript now also carries two authored `aeon-viz` scene fences (`cosmic-explainer` and `dimension-ladder`); companion scripts regenerate their JSON/Markdown/SVG artifacts directly from the manuscript so the reader, proof, and arXiv paths stay synchronized.
 The directory now also supports a second manuscript track, `ch17-arxiv-manuscript-flagship.md`, with its own narrower hardening and artifact-consistency tests. The flagship uses the same checked-in artifacts but a smaller claim surface.
 
+Editorial routing for those two tracks is strict:
+
+- `ch17-arxiv-manuscript.md` is the catchall manuscript and default sink for
+  new material.
+- `ch17-arxiv-manuscript-flagship.md` is the `TLDR` manuscript and only takes
+  directly scoped, reviewer-facing claims.
+- If a change enriches the broader chapter but does not tighten the bounded
+  flagship argument, keep the flagship tests and manuscript untouched.
+
 If you are here for the proof corpus rather than the runner commands, start with the repo-level [FORMAL_LEDGER.md](../../../../FORMAL_LEDGER.md) or the canonical [formal/THEOREM_LEDGER.md](./formal/THEOREM_LEDGER.md). Those two pages are now the shortest path to the named theorem table and the formal rerun surface.
 
 Adjacent to this companion package, the same repository now carries a bounded cover-space audit surface for the manuscript's theorem-indexed failure vocabulary: `open-source/aeon-logic/src/crypto-cover-space.ts`, the GG corpus in `open-source/gnosis/examples/crypto`, and the red/blue reporting wrapper in `open-source/aeon-crackerjack`. That surface is included here as a documentation-level corollary witness, not as a new mechanized theorem family. It treats `cracking` as metaphorical corollary extraction with preserved witness ancestry, and it calibrates two safe families: offline-risk password-digest negative controls and socio-technical recovery/trust topologies.

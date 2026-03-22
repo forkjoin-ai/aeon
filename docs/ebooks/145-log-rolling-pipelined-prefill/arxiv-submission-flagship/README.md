@@ -10,6 +10,11 @@ Chapter 17 manuscript. It does not replace the default submission helper for
 the full theory chapter; it exists so the narrow paper can be built and packed
 independently.
 
+Routing rule: this is the `TLDR` track. Only add material here when it directly
+serves the bounded flagship thesis and is locally supported by the evidence
+surface the flagship cites. If an addition is broad, exploratory, or mainly for
+the richer online narrative, keep it in the catchall manuscript instead.
+
 Before upload, verify that the metadata title and abstract still match the
 flagship manuscript and rerun the companion manuscript checks for the flagship
 track.

@@ -4,6 +4,10 @@ function pipelineHandoffs(P: number, B: number, N: number): number {
   return Math.ceil(P / B) + N - 1;
 }
 
+function graphBetti1(nodeCount: number, edgeCount: number, beta0 = 1): number {
+  return Math.max(0, edgeCount - nodeCount + beta0);
+}
+
 function classifyReynolds(reynolds: number): 'laminar' | 'transitional' | 'turbulent' {
   if (reynolds < 1 / 3) {
     return 'laminar';
@@ -42,6 +46,17 @@ describe('Flagship manuscript hardening', () => {
     expect(deltaBeta).toBe(3);
     expect(deltaBeta).toBeGreaterThan(0);
     expect(intrinsicBeta1 - intrinsicBeta1).toBe(0);
+  });
+
+  it('keeps Delta_beta operational on bounded graph pairs', () => {
+    const workloadBeta1 = graphBetti1(12, 20);
+    const orderedPipeBeta1 = graphBetti1(12, 11);
+    const streamPreservingBeta1 = graphBetti1(12, 20);
+
+    expect(workloadBeta1).toBe(9);
+    expect(orderedPipeBeta1).toBe(0);
+    expect(workloadBeta1 - orderedPipeBeta1).toBe(9);
+    expect(workloadBeta1 - streamPreservingBeta1).toBe(0);
   });
 
   it('keeps Reynolds regime boundaries exact', () => {
