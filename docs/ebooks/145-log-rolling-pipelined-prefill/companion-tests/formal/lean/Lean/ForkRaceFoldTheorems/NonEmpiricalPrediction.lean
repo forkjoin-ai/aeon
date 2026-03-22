@@ -187,7 +187,9 @@ theorem lattice_partition (sl : StructuralLattice) :
     holes are the minority. -/
 theorem holes_bounded (sl : StructuralLattice) :
     sl.holeCount ≤ sl.totalPositions := by
-  omega
+  calc
+    sl.holeCount ≤ sl.observedCount + sl.holeCount := Nat.le_add_left _ _
+    _ = sl.totalPositions := sl.partition
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 6: Neighbor Information Dominates No Information
@@ -215,8 +217,9 @@ theorem strict_dominance_with_rejection (sh : StructuralHole)
     (hNontrivial : 0 < sh.neighborVoidSum) :
     sh.interpolationWeight < uninformedWeight sh.neighborRoundsSum := by
   unfold StructuralHole.interpolationWeight uninformedWeight
-  simp [Nat.min_def]
-  split_ifs <;> omega
+  have hSub : sh.neighborRoundsSum - sh.neighborVoidSum < sh.neighborRoundsSum := by
+    exact Nat.sub_lt (lt_of_lt_of_le (by decide) sh.roundsPos) hNontrivial
+  simpa [Nat.min_eq_left sh.voidBounded] using Nat.add_lt_add_right hSub 1
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 8: Two Holes Ordered by Structure
@@ -291,10 +294,11 @@ theorem algebraic_hole_is_void_gap (sl : StructuralLattice) :
     -- The observed set does not cover the full lattice
     sl.observedCount < sl.totalPositions := by
   constructor
-  · omega
+  · exact Nat.eq_sub_of_add_eq (by simpa [Nat.add_comm] using sl.partition)
   constructor
   · exact sl.someHoles
-  · omega
+  · rw [← sl.partition]
+    exact Nat.lt_add_of_pos_right sl.someHoles
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 12: Non-Empirical Prediction Composes With Solomonoff
@@ -400,6 +404,6 @@ theorem non_empirical_prediction_master
          hole_has_positive_weight sh,
          interpolation_weight_bounded sh,
          neighbor_dominates_uninformed sh,
-         ⟨by omega, sl.someHoles⟩⟩
+         ⟨Nat.eq_sub_of_add_eq (by simpa [Nat.add_comm] using sl.partition), sl.someHoles⟩⟩
 
 end ForkRaceFoldTheorems

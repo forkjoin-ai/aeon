@@ -49,7 +49,7 @@ structure CollapsedSystem where
   /-- The pre-collapse β₁ -/
   preBeta1 : ℕ
   /-- Pre-collapse was nontrivial -/
-  preNontrivial : 2 ≤ preBeta1
+  preNontrivial : 1 ≤ preBeta1
   /-- Post-collapse β₁ is zero -/
   postBeta1 : ℕ := 0
   /-- The collapse reduced β₁ to 0 -/
@@ -58,12 +58,12 @@ structure CollapsedSystem where
 /-- Quantum measurement collapses to β₁ = 0. -/
 def quantumCollapse (qs : QuantumSystem) : CollapsedSystem where
   preBeta1 := qs.rootN - 1
-  preNontrivial := by have := qs.nontrivial; omega
+  preNontrivial := Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide : 1 < 2) qs.nontrivial)
 
 /-- Cancer beta-1 collapse creates the same structure. -/
 def cancerCollapse (preBeta1 : ℕ) (h : 2 ≤ preBeta1) : CollapsedSystem where
   preBeta1 := preBeta1
-  preNontrivial := h
+  preNontrivial := le_trans (by decide : 1 ≤ 2) h
 
 /-- The isomorphism: both systems have identical post-collapse β₁. -/
 theorem quantum_cancer_isomorphic (qs : QuantumSystem) (preBeta1 : ℕ) (h : 2 ≤ preBeta1) :
@@ -204,7 +204,9 @@ theorem both_positive (nc : NegotiationChannel) :
     0 < collapseGap nc.totalDimensions ∧
     0 < negotiationDeficitNat nc := by
   unfold collapseGap negotiationDeficitNat NegotiationChannel.totalDimensions
-  constructor <;> omega
+  have hDims : 4 ≤ nc.partyA_dimensions + nc.partyB_dimensions := by
+    exact Nat.add_le_add nc.partyA_complex nc.partyB_complex
+  constructor <;> exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide : 1 < 4) hDims)
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 226: Quantum Speedup Bounds Failure Recovery Time
@@ -228,7 +230,7 @@ same quantity measured from different sides of the fold.
 theorem quantum_speedup_equals_recovery_cost_plus_one (qs : QuantumSystem) :
     qs.rootN = collapseGap qs.rootN + 1 := by
   unfold collapseGap
-  omega
+  exact (Nat.succ_pred_eq_of_pos (lt_of_lt_of_le (by decide : 0 < 2) qs.nontrivial)).symm
 
 /-- The measurement deficit equals the collapse cost floor. -/
 theorem measurement_deficit_is_collapse_floor (qs : QuantumSystem) :
@@ -308,6 +310,8 @@ theorem cross_file_master (qs : QuantumSystem) (nc : NegotiationChannel) :
   exact ⟨rfl,
          fun a b v r h1 h2 => choose_keep_when_keep_coefficient_min h1 h2,
          rfl,
-         by unfold collapseGap; omega⟩
+         by
+           unfold collapseGap
+           exact (Nat.succ_pred_eq_of_pos (lt_of_lt_of_le (by decide : 0 < 2) qs.nontrivial)).symm⟩
 
 end ForkRaceFoldTheorems

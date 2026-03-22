@@ -32,16 +32,20 @@ structure PredictionLattice where
   someHoles : 0 < holeCount
   partition : observedCount + holeCount = totalPositions
 
-theorem holes_have_positive_weight (pl : PredictionLattice)
+theorem holes_have_positive_weight
     (neighborRejections rounds : ℕ) (hRounds : 0 < rounds)
     (hBounded : neighborRejections ≤ rounds) :
-    0 < rounds - min neighborRejections rounds + 1 := by omega
+    0 < rounds - min neighborRejections rounds + 1 := by
+  simpa [Nat.succ_eq_add_one] using Nat.succ_pos (rounds - min neighborRejections rounds)
 
 theorem lattice_is_partitioned (pl : PredictionLattice) :
     pl.observedCount + pl.holeCount = pl.totalPositions := pl.partition
 
 theorem holes_bounded_by_total (pl : PredictionLattice) :
-    pl.holeCount ≤ pl.totalPositions := by omega
+    pl.holeCount ≤ pl.totalPositions := by
+  calc
+    pl.holeCount ≤ pl.observedCount + pl.holeCount := Nat.le_add_left _ _
+    _ = pl.totalPositions := pl.partition
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 112: Grandfather Paradox Resolution
@@ -89,7 +93,8 @@ theorem debt_lowers_capacity (ss : SleepScenario) (carriedDebt : ℕ) (hDebt : 0
 -- ═══════════════════════════════════════════════════════════════════════
 
 theorem collapse_requires_failure (frontier : ℕ) (hForked : 1 < frontier) :
-    0 < frontier - 1 := by omega
+    0 < frontier - 1 := by
+  exact Nat.sub_pos_of_lt hForked
 
 theorem single_survivor_zero_entropy (frontier : ℕ) (hForked : 1 < frontier) :
     frontierEntropyProxy (structuredFrontier frontier (frontier - 1)) = 0 :=
@@ -129,10 +134,10 @@ theorem predictions_round7_master (bs : BuleyeanSpace) :
     (∀ wl rq : ℕ, rq < wl → 0 < SleepDebt.residualDebt wl 0 rq) ∧
     (∀ f : ℕ, 1 < f → 0 < f - 1) ∧
     (∀ i j, bs.voidBoundary i ≤ bs.voidBoundary j → bs.weight j ≤ bs.weight i) := by
-  refine ⟨fun _ _ hR _ => by omega,
+  refine ⟨fun _ _ hR hB => holes_have_positive_weight _ _ hR hB,
          buleyean_positivity bs,
          fun wl rq h => by apply SleepDebt.partial_recovery_leaves_positive_debt; simp; exact h,
-         fun _ h => by omega,
+         collapse_requires_failure,
          buleyean_concentration bs⟩
 
 end ForkRaceFoldTheorems

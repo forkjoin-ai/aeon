@@ -55,6 +55,8 @@ structure ProteinFolding where
   nontrivial : 2 ≤ conformations
   /-- Beta1 of the conformational landscape (independent cycles) -/
   landscapeBeta1 : ℕ := conformations - 1
+  /-- The landscape beta1 follows the path-graph baseline. -/
+  landscapeCharacterization : landscapeBeta1 = conformations - 1 := by simp
   /-- Beta1 after folding attempt (0 = native, >0 = misfolded) -/
   foldedBeta1 : ℕ
   /-- Folding reduces or maintains beta1 -/
@@ -82,7 +84,9 @@ theorem misfolding_positive_deficit (pf : ProteinFolding)
 theorem misfolding_deficit_bounded (pf : ProteinFolding) :
     pf.misfoldingDeficit ≤ pf.conformations - 1 := by
   unfold ProteinFolding.misfoldingDeficit
-  exact pf.foldingReduces
+  calc
+    pf.foldedBeta1 ≤ pf.landscapeBeta1 := pf.foldingReduces
+    _ = pf.conformations - 1 := pf.landscapeCharacterization
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 2: Language Acquisition Convergence Round
@@ -113,14 +117,19 @@ def LanguageAcquisition.convergenceRound (la : LanguageAcquisition) : ℕ :=
 theorem language_convergence_minimum (la : LanguageAcquisition) :
     0 < la.convergenceRound := by
   unfold LanguageAcquisition.convergenceRound
-  omega
+  exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide) la.nontrivial)
 
 /-- Prediction 2b: Larger language spaces take longer to acquire. -/
 theorem larger_language_slower (la1 la2 : LanguageAcquisition)
     (hSmaller : la1.spaceSize < la2.spaceSize) :
     la1.convergenceRound < la2.convergenceRound := by
-  unfold LanguageAcquisition.convergenceRound
-  omega
+  have hLa1GeOne : 1 ≤ la1.spaceSize := le_trans (by decide) la1.nontrivial
+  have hLa2GeOne : 1 ≤ la2.spaceSize := le_trans (by decide) la2.nontrivial
+  have hSucc :
+      la1.convergenceRound + 1 < la2.convergenceRound + 1 := by
+    simpa [LanguageAcquisition.convergenceRound, Nat.sub_add_cancel hLa1GeOne,
+      Nat.sub_add_cancel hLa2GeOne] using hSmaller
+  simpa [Nat.succ_eq_add_one] using hSucc
 
 /-- Prediction 2c: Pre-convergence weight is uniform (babbling phase). -/
 theorem babbling_is_uniform
@@ -187,14 +196,13 @@ def NeuralPruning.optimalSpeedup (np : NeuralPruning) : ℕ :=
 /-- Prediction 4a: Pruning deficit = sqrtParams - 1. -/
 theorem pruning_deficit_exact (np : NeuralPruning) :
     np.pruningDeficit = np.sqrtParams - 1 := by
-  unfold NeuralPruning.pruningDeficit classicalDeficit intrinsicBeta1 classicalBeta1
-  omega
+  simp [NeuralPruning.pruningDeficit, classicalDeficit, intrinsicBeta1, classicalBeta1]
 
 /-- Prediction 4b: Optimal speedup = deficit + 1 = sqrtParams. -/
 theorem pruning_speedup_equals_deficit_plus_one (np : NeuralPruning) :
     np.optimalSpeedup = np.pruningDeficit + 1 := by
   unfold NeuralPruning.optimalSpeedup NeuralPruning.pruningDeficit
-  have hPos : 0 < np.sqrtParams := by omega
+  have hPos : 0 < np.sqrtParams := lt_of_lt_of_le (by decide) np.nontrivial
   exact quantum_speedup_equals_classical_deficit_plus_one hPos
 
 /-- Prediction 4c: Zero-deficit pruning preserves all paths (no speedup). -/

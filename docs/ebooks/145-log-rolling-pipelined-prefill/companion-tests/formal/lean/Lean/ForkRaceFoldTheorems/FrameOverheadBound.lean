@@ -2,7 +2,7 @@ import ForkRaceFoldTheorems.FrameNativeBisim
 
 namespace ForkRaceFoldTheorems
 
-/--
+/-!
 Track Alpha: Frame Overhead Bound (detailed)
 
 THM-FRAME-OVERHEAD-BOUND — Extended analysis of allocation overhead separation
@@ -157,9 +157,6 @@ theorem flowframe_satisfies_information_floor :
 theorem frame_information_floor_positive
     (numStreams maxSequence : ℕ) (hs : 2 ≤ numStreams) (hm : 2 ≤ maxSequence) :
     0 < minimumHeaderBytes numStreams maxSequence := by
-  unfold minimumHeaderBytes frameInformationBits
-  have h1 : 0 < Nat.log2 numStreams := Nat.log2_pos (by omega)
-  have h2 : 0 < Nat.log2 maxSequence := Nat.log2_pos (by omega)
-  omega
+  simp [minimumHeaderBytes]
 
 end ForkRaceFoldTheorems

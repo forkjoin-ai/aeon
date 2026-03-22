@@ -7,6 +7,7 @@ cd "${SCRIPT_DIR}"
 SOURCE_MD="ch17-arxiv-manuscript.md"
 OUTPUT_TEX="arxiv-manuscript.tex"
 OUTPUT_PDF="arxiv-manuscript.pdf"
+PREPARED_MD="arxiv-manuscript.prepared.md"
 
 REGENERATE_TEX=true
 EXPORT_PDF=true
@@ -50,12 +51,22 @@ if [[ "${REGENERATE_TEX}" == true ]]; then
     echo "Install pandoc, then rerun this script." >&2
     exit 1
   fi
+  if ! command -v bun >/dev/null 2>&1; then
+    echo "Missing dependency: bun" >&2
+    echo "Install bun, then rerun this script." >&2
+    exit 1
+  fi
 
-  echo "[1/2] Regenerating ${OUTPUT_TEX} from ${SOURCE_MD}"
+  echo "[0/3] Generating embedded aeon-viz scene assets"
+  bun ./companion-tests/scripts/ch17-cosmic-explainer-figure.ts --assert
+  bun ./companion-tests/scripts/ch17-dimension-ladder-figure.ts --assert
+  bun ./prepare-arxiv-markdown.ts --input "${SOURCE_MD}" --output "${PREPARED_MD}"
+
+  echo "[1/3] Regenerating ${OUTPUT_TEX} from ${PREPARED_MD}"
   pandoc --standalone \
     -V geometry:margin=1in \
     -V fontsize=11pt \
-    "${SOURCE_MD}" -o "${OUTPUT_TEX}"
+    "${PREPARED_MD}" -o "${OUTPUT_TEX}"
 
   # Post-process: allow line breaks in monospace text
   python3 -c "
@@ -103,7 +114,7 @@ print('  Post-processed: geometry, tolerance, texttt breaks, full-width figures'
 fi
 
 if [[ "${EXPORT_PDF}" == true ]]; then
-  echo "[2/2] Exporting ${OUTPUT_PDF} from ${OUTPUT_TEX}"
+  echo "[2/3] Exporting ${OUTPUT_PDF} from ${OUTPUT_TEX}"
 
   if ! command -v bun >/dev/null 2>&1; then
     echo "Missing dependency: bun" >&2

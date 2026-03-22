@@ -156,25 +156,13 @@ theorem community_monotone_nondegradation (ft : FailureTopology)
     (communityContext : ℕ)
     (hGoodHand : schedulingDeficit ft ≤ 0) :
     communityReducedDeficit ft communityContext ≤ 0 := by
-  unfold communityReducedDeficit schedulingDeficit at *
-  unfold contextReducedDeficit semioticDeficit
-  unfold contextReducedDeficit semioticDeficit at hGoodHand ⊢
-  have h : (failureToSemiotic ft communityContext).articulationStreams +
-    (failureToSemiotic ft communityContext).contextPaths ≥
-    (failureToSemiotic ft 0).articulationStreams +
-    (failureToSemiotic ft 0).contextPaths := by
-    simp [failureToSemiotic]
-    omega
-  calc topologicalDeficit (failureToSemiotic ft communityContext).semanticPaths
-      ((failureToSemiotic ft communityContext).articulationStreams +
-       (failureToSemiotic ft communityContext).contextPaths)
-    ≤ topologicalDeficit (failureToSemiotic ft 0).semanticPaths
-      ((failureToSemiotic ft 0).articulationStreams +
-       (failureToSemiotic ft 0).contextPaths) := by
-        simp [failureToSemiotic]
-        unfold topologicalDeficit computationBeta1 transportBeta1
-        omega
-    _ ≤ 0 := hGoodHand
+  by_cases hCommunity : 0 < communityContext
+  · exact le_trans (community_attenuates_failure ft communityContext hCommunity) hGoodHand
+  · have hZero : communityContext = 0 := by
+      omega
+    simpa [communityReducedDeficit, schedulingDeficit, contextReducedDeficit,
+      semioticDeficit, failureToSemiotic, hZero]
+      using hGoodHand
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-COMMUNITY-SUFFICIENT-ELIMINATION
@@ -265,9 +253,10 @@ theorem community_bridges_all_tares (ft : FailureTopology)
 theorem community_strict_domination (ft : FailureTopology)
     (communityContext : ℕ)
     (hCommunity : 0 < communityContext)
-    (hBadHand : 0 < schedulingDeficit ft) :
+    (_hBadHand : 0 < schedulingDeficit ft) :
     communityReducedDeficit ft communityContext <
       schedulingDeficit ft := by
+  have hDecision : 1 ≤ ft.decisionStreams := Nat.succ_le_of_lt ft.hDecisionPos
   unfold communityReducedDeficit schedulingDeficit
   unfold contextReducedDeficit semioticDeficit
   simp [failureToSemiotic]
@@ -320,10 +309,36 @@ theorem bule_deficit_monotone_decreasing (ft : FailureTopology)
 theorem bule_deficit_strict_progress (ft : FailureTopology)
     (c : ℕ) (hRemaining : 0 < buleDeficit ft c) :
     buleDeficit ft (c + 1) < buleDeficit ft c := by
-  unfold buleDeficit communityReducedDeficit contextReducedDeficit at *
-  simp [failureToSemiotic] at *
-  unfold topologicalDeficit computationBeta1 transportBeta1 at *
-  omega
+  have hCurrentPos : 0 < communityReducedDeficit ft c := by
+    by_cases hNonpos : communityReducedDeficit ft c ≤ 0
+    · unfold buleDeficit at hRemaining
+      simp [hNonpos] at hRemaining
+    · exact lt_of_not_ge hNonpos
+  have hStrict :
+      communityReducedDeficit ft (c + 1) < communityReducedDeficit ft c := by
+    have hDecision : 1 ≤ ft.decisionStreams := Nat.succ_le_of_lt ft.hDecisionPos
+    unfold communityReducedDeficit contextReducedDeficit
+    simp [failureToSemiotic]
+    unfold topologicalDeficit computationBeta1 transportBeta1
+    omega
+  by_cases hNextNonpos : communityReducedDeficit ft (c + 1) ≤ 0
+  · have hCurrentEq : buleDeficit ft c = communityReducedDeficit ft c := by
+      unfold buleDeficit
+      simp [le_of_lt hCurrentPos]
+    have hNextEq : buleDeficit ft (c + 1) = 0 := by
+      unfold buleDeficit
+      simp [hNextNonpos]
+    rw [hNextEq, hCurrentEq]
+    exact hCurrentPos
+  · have hNextPos : 0 < communityReducedDeficit ft (c + 1) := lt_of_not_ge hNextNonpos
+    have hCurrentEq : buleDeficit ft c = communityReducedDeficit ft c := by
+      unfold buleDeficit
+      simp [le_of_lt hCurrentPos]
+    have hNextEq : buleDeficit ft (c + 1) = communityReducedDeficit ft (c + 1) := by
+      unfold buleDeficit
+      simp [le_of_lt hNextPos]
+    rw [hNextEq, hCurrentEq]
+    exact hStrict
 
 /-- Bule convergence: sufficient community context drives the
     Bule deficit to zero. The bound is tight: exactly
@@ -488,18 +503,14 @@ theorem community_dominance_theory
     -- Part III: Sufficient context eliminates deficit
     (ft.failurePaths ≤ ft.decisionStreams + communityContext →
       buleDeficit ft communityContext = 0) := by
+  have hPositiveDeficit : 0 < schedulingDeficit ft := by
+    simpa [schedulingDeficit, failureToSemiotic] using
+      semiotic_deficit (failureToSemiotic ft 0) hBadHand
   refine ⟨?_, ?_, ?_, ?_⟩
   · -- Part I: positive deficit for bad hand
-    unfold schedulingDeficit semioticDeficit
-    simp [failureToSemiotic]
-    unfold topologicalDeficit computationBeta1 transportBeta1
-    omega
+    exact hPositiveDeficit
   · -- Part II-a: strict domination
-    exact community_strict_domination ft communityContext hCommunity (by
-      unfold schedulingDeficit semioticDeficit
-      simp [failureToSemiotic]
-      unfold topologicalDeficit computationBeta1 transportBeta1
-      omega)
+    exact community_strict_domination ft communityContext hCommunity hPositiveDeficit
   · -- Part II-b: Bule monotone decreasing
     exact bule_deficit_monotone_decreasing ft 0 communityContext (Nat.zero_le _)
   · -- Part III: convergence

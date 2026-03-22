@@ -70,7 +70,7 @@ theorem higher_beta1_more_rejections
     At the same restoration round, p53 (β₁=3) contributes more
     rejections than Rb (β₁=2). -/
 theorem restore_p53_before_rb (totalCycles restorationRound : ℕ)
-    (hValid : restorationRound ≤ totalCycles) :
+    (_hValid : restorationRound ≤ totalCycles) :
     (totalCycles - restorationRound) * 2 ≤
     (totalCycles - restorationRound) * 3 := by
   exact Nat.mul_le_mul_left _ (by omega)
@@ -171,7 +171,6 @@ theorem blocked_equals_destroyed_topologically
     blocked.effectiveBeta1 = destroyed.effectiveBeta1 := by
   unfold BlockedVent.effectiveBeta1
   simp [hBlocked, hDestroyed]
-  split_ifs <;> omega
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Prediction 14: Metastasis as Covering Space Projection
@@ -257,7 +256,7 @@ def healthyForkVent : ForkVentRatio where
 
 /-- Healthy cell is balanced. -/
 theorem healthy_is_balanced : healthyForkVent.isBalanced := by
-  unfold ForkVentRatio.isBalanced healthyForkVent; omega
+  norm_num [ForkVentRatio.isBalanced, healthyForkVent]
 
 /-- GBM Combined: fork width = 3, vent β₁ = 2 (only ATM/ATR).
     Ratio = 3/2 = 1.5. Unbalanced. -/
@@ -268,7 +267,7 @@ def gbmCombinedForkVent : ForkVentRatio where
 
 /-- GBM Combined is unbalanced. -/
 theorem gbm_combined_unbalanced : ¬ gbmCombinedForkVent.isBalanced := by
-  unfold ForkVentRatio.isBalanced gbmCombinedForkVent; omega
+  norm_num [ForkVentRatio.isBalanced, gbmCombinedForkVent]
 
 /-- Cancer cell (no vents): fork width = 3, vent β₁ = 0.
     This is maximally unbalanced. -/
@@ -278,7 +277,7 @@ def cancerForkVent : ForkVentRatio where
   forkPositive := by omega
 
 theorem cancer_maximally_unbalanced : ¬ cancerForkVent.isBalanced := by
-  unfold ForkVentRatio.isBalanced cancerForkVent; omega
+  norm_num [ForkVentRatio.isBalanced, cancerForkVent]
 
 /-- More vent loss = more imbalance (monotone). -/
 theorem vent_loss_increases_imbalance

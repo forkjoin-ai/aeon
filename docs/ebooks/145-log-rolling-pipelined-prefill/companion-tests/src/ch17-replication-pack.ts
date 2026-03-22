@@ -3,6 +3,11 @@ import { readFileSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {
+  getCh17ManuscriptVariantFromEnv,
+  resolveCh17ManuscriptPath,
+} from './manuscript-variant.js';
+
 export type ReplicationPackCategory =
   | 'artifact'
   | 'document'
@@ -32,12 +37,17 @@ const repoRoot = resolve(
   dirname(fileURLToPath(import.meta.url)),
   '../../../../../../..'
 );
+const manuscriptVariant = getCh17ManuscriptVariantFromEnv();
+const manuscriptPath = resolveCh17ManuscriptPath(manuscriptVariant);
+const manuscriptPathFromRepoRoot = manuscriptPath
+  .replace(`${repoRoot}/`, '')
+  .replace(/\\/gu, '/');
 
 const replicationPaths = [
   [
     'Manuscript draft',
     'document',
-    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md',
+    manuscriptPathFromRepoRoot,
   ],
   [
     'Companion README',

@@ -107,6 +107,13 @@ theorem max_deficit_bounded (ft : FailureTopology) :
   unfold maxDeficit
   omega
 
+/-- Zero maximum deficit means the decision streams already cover the
+    whole failure topology. -/
+theorem max_deficit_zero_iff_capacity_covers_failure (ft : FailureTopology) :
+    maxDeficit ft = 0 ↔ ft.failurePaths ≤ ft.decisionStreams := by
+  unfold maxDeficit
+  exact Nat.sub_eq_zero_iff_le
+
 -- ═══════════════════════════════════════════════════════════════════════
 -- §3. The Computable Empathy Deficit
 -- ═══════════════════════════════════════════════════════════════════════
@@ -172,9 +179,10 @@ def EmpathyChannel.effectiveDims (ec : EmpathyChannel) : ℕ :=
 theorem EmpathyChannel.effectiveDims_ge_two (ec : EmpathyChannel) :
     2 ≤ ec.effectiveDims := by
   unfold EmpathyChannel.effectiveDims
-  have h := ec.sharedBounded
-  simp [Nat.min_def] at h
-  split_ifs at h <;> omega
+  have hSharedB : ec.sharedDims ≤ ec.personB_dims := le_trans ec.sharedBounded (Nat.min_le_right _ _)
+  have hKeepsA : ec.personA_dims ≤ ec.personA_dims + ec.personB_dims - ec.sharedDims := by
+    exact Nat.le_sub_of_add_le (by omega)
+  exact le_trans ec.personA_complex hKeepsA
 
 /-- Convert an empathy channel to a failure topology. -/
 def EmpathyChannel.toFailureTopology (ec : EmpathyChannel) :
@@ -228,21 +236,40 @@ theorem shared_experience_reduces_nadir (ec : EmpathyChannel)
   simp [Nat.min_def] at h
   split_ifs at h <;> omega
 
+/-- Shared experience never increases the empathy nadir. -/
+theorem empathy_nadir_le_raw (ec : EmpathyChannel) :
+    ec.nadir ≤ ec.personA_dims + ec.personB_dims - 1 := by
+  unfold EmpathyChannel.nadir EmpathyChannel.effectiveDims
+  have h := ec.sharedBounded
+  simp [Nat.min_def] at h
+  split_ifs at h <;> omega
+
+/-- With no shared dimensions, the empathy nadir is the raw sum-minus-one
+    barrier from the two-person Skyrms system. -/
+theorem empathy_shared_zero_recovers_raw (ec : EmpathyChannel)
+    (hZero : ec.sharedDims = 0) :
+    ec.nadir = ec.personA_dims + ec.personB_dims - 1 := by
+  unfold EmpathyChannel.nadir EmpathyChannel.effectiveDims
+  rw [hZero]
+  omega
+
 /-- The empathy nadir is the exact minimum: one fewer exchange
     and the deficit is still positive. -/
 theorem empathy_nadir_is_minimum (ec : EmpathyChannel)
     (hBadHand : 1 < ec.effectiveDims) :
     0 < buleDeficit ec.toFailureTopology (ec.nadir - 1) := by
-  unfold buleDeficit communityReducedDeficit contextReducedDeficit
-  simp [failureToSemiotic, EmpathyChannel.toFailureTopology,
-        EmpathyChannel.nadir]
-  unfold topologicalDeficit
-  omega
+  have hInner : 0 < communityReducedDeficit ec.toFailureTopology (ec.nadir - 1) := by
+    unfold communityReducedDeficit contextReducedDeficit
+    simp [failureToSemiotic, EmpathyChannel.toFailureTopology, EmpathyChannel.nadir]
+    unfold topologicalDeficit computationBeta1 transportBeta1
+    omega
+  unfold buleDeficit
+  simpa [le_of_lt hInner] using hInner
 
 /-- At the nadir, the empathy deficit is zero: mutual understanding
     has been reached. -/
 theorem empathy_nadir_convergence (ec : EmpathyChannel)
-    (hEnough : ec.effectiveDims ≤ 1 + ec.nadir) :
+    (_hEnough : ec.effectiveDims ≤ 1 + ec.nadir) :
     buleDeficit ec.toFailureTopology ec.nadir = 0 := by
   apply bule_convergence
   unfold EmpathyChannel.toFailureTopology EmpathyChannel.nadir
@@ -256,6 +283,29 @@ theorem empathy_exchange_progress (ec : EmpathyChannel)
     buleDeficit ec.toFailureTopology (ec.exchangesCompleted + 1) <
     buleDeficit ec.toFailureTopology ec.exchangesCompleted :=
   bule_deficit_strict_progress ec.toFailureTopology ec.exchangesCompleted hRemaining
+
+/-- Before the nadir, the empathy deficit is still positive. -/
+theorem empathy_before_nadir_positive (ec : EmpathyChannel)
+    (c : ℕ) (hBefore : c < ec.nadir) :
+    0 < buleDeficit ec.toFailureTopology c := by
+  have hInner : 0 < communityReducedDeficit ec.toFailureTopology c := by
+    unfold communityReducedDeficit contextReducedDeficit
+    simp [failureToSemiotic, EmpathyChannel.toFailureTopology]
+    unfold topologicalDeficit computationBeta1 transportBeta1 EmpathyChannel.nadir
+      EmpathyChannel.effectiveDims at *
+    omega
+  unfold buleDeficit
+  simpa [le_of_lt hInner] using hInner
+
+/-- Once the nadir is reached, every later exchange count stays converged. -/
+theorem empathy_after_nadir_zero (ec : EmpathyChannel)
+    (c : ℕ) (hAfter : ec.nadir ≤ c) :
+    buleDeficit ec.toFailureTopology c = 0 := by
+  apply bule_convergence
+  unfold EmpathyChannel.toFailureTopology EmpathyChannel.nadir
+    EmpathyChannel.effectiveDims at *
+  simp
+  omega
 
 /-- The complete empathy deficit theorem.
 
@@ -279,12 +329,22 @@ theorem computable_empathy_deficit (ec : EmpathyChannel)
   refine ⟨?_, ?_, ?_⟩
   · unfold schedulingDeficit semioticDeficit
     simp [failureToSemiotic, EmpathyChannel.toFailureTopology]
-    unfold topologicalDeficit
+    unfold topologicalDeficit computationBeta1 transportBeta1
     omega
-  · unfold EmpathyChannel.nadir EmpathyChannel.effectiveDims
-    have h := ec.sharedBounded
-    simp [Nat.min_def] at h
-    split_ifs at h <;> omega
+  · let total := ec.personA_dims + ec.personB_dims
+    have hA : 0 < ec.personA_dims := lt_of_lt_of_le (by decide : 0 < 2) ec.personA_complex
+    have hB : 0 < ec.personB_dims := lt_of_lt_of_le (by decide : 0 < 2) ec.personB_complex
+    have hTotal : 0 < total := by
+      dsimp [total]
+      omega
+    have hLe : total - ec.sharedDims - 1 ≤ total - 1 := by
+      dsimp [total]
+      exact Nat.sub_le_sub_right (Nat.sub_le _ _) 1
+    have hLt : total - 1 < total := by
+      dsimp [total]
+      exact Nat.sub_lt hTotal (by decide : 0 < 1)
+    unfold EmpathyChannel.nadir EmpathyChannel.effectiveDims
+    exact lt_of_le_of_lt hLe hLt
   · exact empathy_nadir_is_minimum ec hBadHand
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -309,6 +369,12 @@ diversity adds coordination cost without reducing deficit.
 def diversityCeiling (ft : FailureTopology) : ℕ :=
   ft.failurePaths - ft.decisionStreams
 
+/-- The diversity ceiling is exactly the maximum deficit. -/
+theorem diversity_ceiling_eq_max_deficit (ft : FailureTopology) :
+    diversityCeiling ft = maxDeficit ft := by
+  unfold diversityCeiling maxDeficit
+  rfl
+
 /-- At the ceiling, the Bule deficit is zero. -/
 theorem diversity_ceiling_sufficient (ft : FailureTopology)
     (hCeiling : ft.failurePaths ≤ ft.decisionStreams + diversityCeiling ft) :
@@ -320,10 +386,14 @@ theorem diversity_ceiling_sufficient (ft : FailureTopology)
 theorem below_ceiling_deficit_positive (ft : FailureTopology)
     (c : ℕ) (hBelow : c + ft.decisionStreams < ft.failurePaths) :
     0 < buleDeficit ft c := by
-  unfold buleDeficit communityReducedDeficit contextReducedDeficit
-  simp [failureToSemiotic]
-  unfold topologicalDeficit
-  omega
+  have hInner : 0 < communityReducedDeficit ft c := by
+    have hDecision : 0 < ft.decisionStreams := ft.hDecisionPos
+    unfold communityReducedDeficit contextReducedDeficit
+    simp [failureToSemiotic]
+    unfold topologicalDeficit computationBeta1 transportBeta1
+    omega
+  unfold buleDeficit
+  simpa [le_of_lt hInner] using hInner
 
 /-- Above the ceiling, the deficit is still zero -- additional
     diversity provides no further topological benefit. The cost
@@ -448,6 +518,12 @@ theorem no_exploration_frozen_schedule (ew : ExplorationWitness) :
     (fun i => complementWeight ew.roundsBefore (ew.ventsBefore i)) := by
   ext i
   exact no_exploration_no_learning ew i
+
+/-- Without exploration, total accumulated void is unchanged. -/
+theorem no_exploration_preserves_total_void (ew : ExplorationWitness) :
+    (Finset.univ.sum fun i => ew.ventsAfterNoExplore i) =
+    (Finset.univ.sum fun i => ew.ventsBefore i) := by
+  rw [ew.noExploration]
 
 /-- With exploration, the total void count strictly increases.
     The system has new information. -/
@@ -611,8 +687,17 @@ theorem sharing_reduces_deficit_by_one (vsm : VoidSharingMap)
       { vsm with
         sharedVoidDims := vsm.sharedVoidDims + 1
         hiddenA := vsm.hiddenA - 1
-        exhaustive := by omega
-        nontrivial := by omega } + 1 =
+        exhaustive := by
+          have hOne : 1 ≤ vsm.hiddenA := Nat.succ_le_of_lt hHiddenA
+          calc
+            (vsm.sharedVoidDims + 1) + (vsm.hiddenA - 1) + vsm.hiddenB + vsm.unexplored
+                = vsm.sharedVoidDims + vsm.hiddenA + vsm.hiddenB + vsm.unexplored := by
+                    simp [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.add_sub_of_le hOne]
+            _ = vsm.totalDims := vsm.exhaustive
+        nontrivial := by
+          have hOne : 1 ≤ vsm.hiddenA := Nat.succ_le_of_lt hHiddenA
+          simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.add_sub_of_le hOne] using
+            vsm.nontrivial } + 1 =
     vsm.currentDeficit := by
   unfold VoidSharingMap.currentDeficit
   simp
@@ -645,10 +730,24 @@ def VoidSharingMap.vulnerabilityDemand (vsm : VoidSharingMap) : ℕ :=
 theorem vulnerability_demand_is_total_hidden (vsm : VoidSharingMap) :
     vsm.vulnerabilityDemand = vsm.hiddenA + vsm.hiddenB := by
   unfold VoidSharingMap.vulnerabilityDemand VoidSharingMap.currentDeficit
+  rfl
+
+/-- Zero current deficit is exactly convergence. -/
+theorem current_deficit_zero_iff_converged (vsm : VoidSharingMap) :
+    vsm.currentDeficit = 0 ↔ vsm.converged := by
+  unfold VoidSharingMap.currentDeficit VoidSharingMap.converged
+  omega
 
 /-- The vulnerability demand is zero if and only if converged. -/
 theorem vulnerability_zero_iff_converged (vsm : VoidSharingMap) :
     vsm.vulnerabilityDemand = 0 ↔ vsm.converged := by
+  unfold VoidSharingMap.vulnerabilityDemand VoidSharingMap.currentDeficit
+    VoidSharingMap.converged
+  omega
+
+/-- Positive vulnerability demand means the pair has not yet converged. -/
+theorem vulnerability_positive_iff_not_converged (vsm : VoidSharingMap) :
+    0 < vsm.vulnerabilityDemand ↔ ¬ vsm.converged := by
   unfold VoidSharingMap.vulnerabilityDemand VoidSharingMap.currentDeficit
     VoidSharingMap.converged
   omega
@@ -778,9 +877,16 @@ def PathogenTopology.toFailureTopology (pt : PathogenTopology) :
 def herdImmunityThreshold (pt : PathogenTopology) : ℕ :=
   pt.epitopeDims - 1
 
+/-- The herd-immunity threshold is the same ceiling computed on the
+    induced failure topology. -/
+theorem herd_immunity_threshold_eq_diversity_ceiling (pt : PathogenTopology) :
+    herdImmunityThreshold pt = diversityCeiling pt.toFailureTopology := by
+  unfold herdImmunityThreshold diversityCeiling PathogenTopology.toFailureTopology
+  rfl
+
 /-- At the threshold, the community covers all epitope dimensions. -/
 theorem herd_immunity_at_threshold (pt : PathogenTopology)
-    (hEnough : pt.epitopeDims ≤ 1 + herdImmunityThreshold pt) :
+    (_hEnough : pt.epitopeDims ≤ 1 + herdImmunityThreshold pt) :
     buleDeficit pt.toFailureTopology (herdImmunityThreshold pt) = 0 := by
   apply bule_convergence
   unfold PathogenTopology.toFailureTopology herdImmunityThreshold
@@ -792,10 +898,26 @@ theorem herd_immunity_at_threshold (pt : PathogenTopology)
 theorem below_herd_immunity_vulnerable (pt : PathogenTopology)
     (mhcDiversity : ℕ) (hBelow : mhcDiversity + 1 < pt.epitopeDims) :
     0 < buleDeficit pt.toFailureTopology mhcDiversity := by
-  unfold buleDeficit communityReducedDeficit contextReducedDeficit
-  simp [failureToSemiotic, PathogenTopology.toFailureTopology]
-  unfold topologicalDeficit
-  omega
+  have hInner : 0 < communityReducedDeficit pt.toFailureTopology mhcDiversity := by
+    unfold communityReducedDeficit contextReducedDeficit
+    simp [failureToSemiotic, PathogenTopology.toFailureTopology]
+    unfold topologicalDeficit computationBeta1 transportBeta1
+    omega
+  unfold buleDeficit
+  simpa [le_of_lt hInner] using hInner
+
+/-- One fewer haplotype than the herd-immunity threshold still leaves
+    a positive vulnerability gap. -/
+theorem herd_immunity_threshold_minimum (pt : PathogenTopology) :
+    0 < buleDeficit pt.toFailureTopology (herdImmunityThreshold pt - 1) := by
+  have hInner : 0 < communityReducedDeficit pt.toFailureTopology (herdImmunityThreshold pt - 1) := by
+    have hEpitopes : 1 < pt.epitopeDims := lt_of_lt_of_le (by decide : 1 < 2) pt.nontrivial
+    unfold communityReducedDeficit contextReducedDeficit
+    simp [failureToSemiotic, PathogenTopology.toFailureTopology, herdImmunityThreshold]
+    unfold topologicalDeficit computationBeta1 transportBeta1
+    omega
+  unfold buleDeficit
+  simpa [le_of_lt hInner] using hInner
 
 /-- Each new MHC haplotype in the community covers one more
     epitope dimension. -/
@@ -804,6 +926,16 @@ theorem mhc_diversity_progress (pt : PathogenTopology)
     buleDeficit pt.toFailureTopology (c + 1) <
     buleDeficit pt.toFailureTopology c :=
   bule_deficit_strict_progress pt.toFailureTopology c hRemaining
+
+/-- Once the herd-immunity threshold is met, extra diversity keeps the
+    pathogen topology covered. -/
+theorem herd_immunity_after_threshold_zero (pt : PathogenTopology)
+    (c : ℕ) (hAfter : herdImmunityThreshold pt ≤ c) :
+    buleDeficit pt.toFailureTopology c = 0 := by
+  apply bule_convergence
+  unfold PathogenTopology.toFailureTopology herdImmunityThreshold at *
+  simp
+  omega
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- §10. Chaperones as Mediators, Repair Enzymes as Community Memory
@@ -908,6 +1040,15 @@ theorem cultural_nadir_equals_empathy (cc : CulturalControversy) :
     nadirContext SkyrmsAsCommunity.totalDims
   simp
 
+/-- Cultural controversies always require a positive number of shared
+    observations to resolve. -/
+theorem cultural_resolution_rounds_pos (cc : CulturalControversy) :
+    0 < cc.resolutionRounds := by
+  unfold CulturalControversy.resolutionRounds
+  have hDims : 4 ≤ cc.communityA_dims + cc.communityB_dims := by
+    exact Nat.add_le_add cc.communityA_complex cc.communityB_complex
+  exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide : 1 < 4) hDims)
+
 -- ═══════════════════════════════════════════════════════════════════════
 -- §12. Local vs. Global Community
 -- ═══════════════════════════════════════════════════════════════════════
@@ -949,6 +1090,25 @@ def LocalCommunities.mergedContextLower (lc : LocalCommunities) : ℕ :=
 def LocalCommunities.mergedContextUpper (lc : LocalCommunities) : ℕ :=
   lc.contextA + lc.contextB
 
+/-- The merged context lower bound contains community A's context. -/
+theorem merged_context_lower_ge_left (lc : LocalCommunities) :
+    lc.contextA ≤ lc.mergedContextLower := by
+  unfold LocalCommunities.mergedContextLower
+  exact le_max_left _ _
+
+/-- The merged context lower bound contains community B's context. -/
+theorem merged_context_lower_ge_right (lc : LocalCommunities) :
+    lc.contextB ≤ lc.mergedContextLower := by
+  unfold LocalCommunities.mergedContextLower
+  exact le_max_right _ _
+
+/-- The merged-context interval is nonempty: the lower bound never exceeds
+    the additive upper bound. -/
+theorem merged_context_upper_ge_lower (lc : LocalCommunities) :
+    lc.mergedContextLower ≤ lc.mergedContextUpper := by
+  unfold LocalCommunities.mergedContextLower LocalCommunities.mergedContextUpper
+  omega
+
 /-- The global deficit is at most the minimum local deficit,
     because the merged context is at least the max local context. -/
 theorem global_deficit_le_min_local (lc : LocalCommunities) :
@@ -962,18 +1122,39 @@ theorem global_deficit_le_min_local (lc : LocalCommunities) :
   · exact bule_deficit_monotone_decreasing lc.topology
       lc.contextB (max lc.contextA lc.contextB) (le_max_right _ _)
 
+/-- The merged global deficit is at most community A's local deficit. -/
+theorem global_deficit_le_left_local (lc : LocalCommunities) :
+    buleDeficit lc.topology lc.mergedContextLower ≤
+    buleDeficit lc.topology lc.contextA := by
+  exact le_trans (global_deficit_le_min_local lc) (min_le_left _ _)
+
+/-- The merged global deficit is at most community B's local deficit. -/
+theorem global_deficit_le_right_local (lc : LocalCommunities) :
+    buleDeficit lc.topology lc.mergedContextLower ≤
+    buleDeficit lc.topology lc.contextB := by
+  exact le_trans (global_deficit_le_min_local lc) (min_le_right _ _)
+
 /-- Merging two locally-converged communities stays converged. -/
 theorem merged_communities_stay_converged (lc : LocalCommunities)
     (hA : buleDeficit lc.topology lc.contextA = 0) :
     buleDeficit lc.topology lc.mergedContextLower = 0 := by
-  have h := global_deficit_le_min_local lc
-  simp [hA] at h
-  omega
+  have hLe : buleDeficit lc.topology lc.mergedContextLower ≤ 0 := by
+    simpa [hA] using global_deficit_le_left_local lc
+  exact le_antisymm hLe (bule_deficit_nonneg _ _)
+
+/-- The same convergence preservation holds when community B is the
+    converged local witness. -/
+theorem merged_communities_stay_converged_right (lc : LocalCommunities)
+    (hB : buleDeficit lc.topology lc.contextB = 0) :
+    buleDeficit lc.topology lc.mergedContextLower = 0 := by
+  have hLe : buleDeficit lc.topology lc.mergedContextLower ≤ 0 := by
+    simpa [hB] using global_deficit_le_right_local lc
+  exact le_antisymm hLe (bule_deficit_nonneg _ _)
 
 /-- Isolated communities can have higher deficit than merged ones.
     The merged context is always at least the max local context. -/
 theorem isolation_suboptimal (lc : LocalCommunities)
-    (hASmaller : lc.contextA ≤ lc.contextB) :
+    (_hASmaller : lc.contextA ≤ lc.contextB) :
     buleDeficit lc.topology lc.mergedContextLower ≤
     buleDeficit lc.topology lc.contextA :=
   bule_deficit_monotone_decreasing lc.topology

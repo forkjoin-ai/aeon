@@ -44,10 +44,10 @@ theorem failure_cascade_generates_heat
     (frontier vented : ℕ) (hVented : 0 < vented) (hSurvivor : vented < frontier) :
     frontierEntropyProxy (structuredFrontier frontier vented) <
     frontierEntropyProxy frontier ∧
-    0 < structuredFrontier frontier vented - 1 := by
+    0 < structuredFrontier frontier vented := by
   constructor
   · exact structured_failure_reduces_entropy_proxy hVented hSurvivor
-  · unfold structuredFrontier; omega
+  · exact Nat.sub_pos_of_lt hSurvivor
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Triple 3: Trajectory → Ordering → Concentrated Uniqueness

@@ -179,6 +179,7 @@ theorem branch_preserves_prediction (bp : BranchingPrediction) :
     bp.hole.interpolationWeight =
     bp.hole.neighborRoundsSum - min bp.hole.neighborVoidSum bp.hole.neighborRoundsSum + 1 := by
   unfold StructuralHole.interpolationWeight
+  rfl
 
 /-- The original chain's existence weights are all positive after
     branching. -/
@@ -235,7 +236,8 @@ theorem double_complement_zero (rounds : ℕ) (h : 0 < rounds) :
 /-- The double complement is always positive (the sliver persists). -/
 theorem double_complement_positive (rounds void_ : ℕ) :
     0 < doubleComplement rounds void_ := by
-  unfold doubleComplement; omega
+  unfold doubleComplement
+  exact Nat.succ_pos _
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 5: Trajectory Determines Lattice (Retrocausal + NEI + Coherence)

@@ -210,9 +210,9 @@ describe('Pipeline Topology', () => {
     /**
      * Re = N / C (items / pipeline capacity)
      *
-     * Re < 1/3:  Laminar — merge-all fold safe (async BFT regime)
-     * 1/3–2/3:   Transitional — quorum fold required (sync BFT regime)
-     * Re > 2/3:  Turbulent — fold requires synchrony (ReynoldsBFT.lean)
+     * Re < 3/2:  Laminar — merge-all fold safe
+     * 3/2–2:     Transitional — quorum fold required
+     * Re >= 2:   Turbulent — fold requires synchrony (ReynoldsBFT.lean)
      */
 
     function reynoldsNumber(N: number, C: number): number {
@@ -220,17 +220,17 @@ describe('Pipeline Topology', () => {
     }
 
     function regime(Re: number): 'laminar' | 'transitional' | 'turbulent' {
-      if (Re < 1 / 3) return 'laminar';
-      if (Re <= 2 / 3) return 'transitional';
+      if (Re < 3 / 2) return 'laminar';
+      if (Re < 2) return 'transitional';
       return 'turbulent';
     }
 
-    it('single request is laminar (Re < 1/3)', () => {
-      expect(regime(reynoldsNumber(1, 6))).toBe('laminar');
+    it('equal stages and chunks remain laminar (Re < 3/2)', () => {
+      expect(regime(reynoldsNumber(3, 3))).toBe('laminar');
     });
 
-    it('moderate load is transitional (1/3 ≤ Re ≤ 2/3)', () => {
-      expect(regime(reynoldsNumber(3, 6))).toBe('transitional');
+    it('the exact quorum boundary is transitional (3/2 ≤ Re < 2)', () => {
+      expect(regime(reynoldsNumber(3, 2))).toBe('transitional');
     });
 
     it('microfrontend (95 resources) is deeply turbulent', () => {

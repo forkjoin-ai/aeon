@@ -44,6 +44,7 @@ Vitest suites that provide executable claim coverage for the manuscript.
 - `ch17-american-frontier-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the American Frontier curve family, including the explicit Aeon/UDP vs HTTP/TCP mixed-race witness that shows diversity selecting the response and then carrying it over the wire.
 - `ch17-correspondence-boundary-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the four-panel artifact-generated Chapter 17 correspondence-boundary chart.
 - `ch17-boundary-expansion-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the near-control/regime/adversarial expansion chart.
+- `ch17-embedded-scene-figure.ts` / `.test.ts`: helper and tests for extracting the manuscript-authored `aeon-viz` scene specs, rewriting them to static image includes, and rendering deterministic SVG surfaces for the cosmic and dimensional Chapter 17 explainers.
 - `ch17-moa-transformer-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sweep/ablation chart.
 - `ch17-moa-topology-figure.ts` / `.test.ts`: figure manifest/SVG renderer and tests for the GG-backed `StructuredMoA` sparse-vs-dense topology chart.
 - `ch17-moa-whip-curvature-figure.ts` / `.test.ts`: supplemental figure manifest/SVG renderer and tests for the curved wraparound `StructuredMoA` topology view that makes the inner and outer Worthington whips read as enclosure geometry.
@@ -53,6 +54,10 @@ Vitest suites that provide executable claim coverage for the manuscript.
 - `deficit-evidence.test.ts`: protocol/settlement/healthcare deficit evidence checks.
 - `map-reduce-readiness.test.ts`: §6.14 readiness diagnostic equations and screening-boundary counterexamples.
 - `map-reduce-readiness.ts`: shared §6.14 readiness/simulator math used by tests and Gate 4 artifacts.
+- `manuscript-variant.ts`: shared current-vs-flagship manuscript path resolver for manuscript-coupled checks.
+- `manuscript-flagship-structure.test.ts`: title/metadata/thesis/body-scope checks for the reviewer-facing flagship manuscript.
+- `manuscript-flagship-artifact-consistency.test.ts`: gate1/gate2 numeric claim pinning for the flagship manuscript.
+- `manuscript-flagship-hardening.test.ts`: explicit formula and numeric-claim checks retained in the flagship manuscript.
 - `gate1-wallclock.ts`: wall-clock matrix harness + bootstrap CI/gate logic for §14.1 (loopback and external endpoint modes, with bounded request-timeout retries), including optional CPU-heavy per-request kernels (`md5-grind`, `semiprime-factor`) plus isolated config helpers for dedicated MD5-only and semiprime-only reruns.
 - `gate1-wallclock.test.ts`: deterministic coverage for Gate 1 statistics/gate verdict behavior.
 - `gate2-protocol-corpus.ts`: seeded heterogeneous protocol-corpus harness for Gate 2 (Aeon Flow vs HTTP/3), including environment-cell scoring, bootstrap CIs, and gate verdict logic.

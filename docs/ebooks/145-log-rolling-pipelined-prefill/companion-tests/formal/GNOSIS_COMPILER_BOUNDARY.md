@@ -13,6 +13,7 @@ This note is the canonical documentation surface for the current Betti-to-Lean c
 - `THM-GNOSIS-GEOMETRY`: the same emitted queue family can then be repackaged into the measurable/geometric queue endpoints.
 - `THM-GNOSIS-COUPLED`: bounded inter-app handoff pressure can be re-read as downstream arrival pressure without changing the downstream spectral certificate when drift slack remains positive.
 - `THM-MOA-FABRIC-COUPLED`: the shared compiler workspace now also exposes mirrored primary/shadow pair lemmas and paired downstream coupling lemmas for backend-diverse fabrics, but that theorem family is proof-only until `HeteroMoAFabric` lowering starts emitting it.
+- `THM-AEON-FLUX-SITE-ADEQUACY`: the in-tree Lean package now exposes the positive-stream-budget Aeon Flux site adequacy family, and the `WallingtonRotation` lowering path can synthesize the matching `pathCount` / `streamCount` / `Δβ` site witness directly from lowered GG.
 
 ## What Betti Emits
 
@@ -24,6 +25,7 @@ This note is the canonical documentation surface for the current Betti-to-Lean c
   - `*_measurable_continuous_harris_certified`
 - Those theorems are backed by the shared Lean definitions `MeasurableContinuousHarrisWitness`, `natQueueAffineObservable`, `natQueueAffineExpectedObservable`, `natMeasurableLyapunovDriftWitness_of_queueStep_with_gap`, and `natMeasurableContinuousHarrisWitness_of_queueStep_with_gap`.
 - Betti does not yet emit the new Hetero MoA fabric theorem family. The logic-first surface exists today as local TLA/Lean artifacts plus shared `GnosisProofs.lean` pair/coupling lemmas; lowering that surface from first-class GG syntax is still the next compiler step.
+- Outside the queue/Harris track, the compiler now also emits one narrow site witness family from syntax: `open-source/gnosis/src/aeon-flux-site-witness.ts` re-reads lowered `WallingtonRotation` graphs as Aeon Flux sites and classifies them against the in-tree adequacy theorems.
 
 ## Rerun Surface
 
@@ -49,11 +51,13 @@ Both commands rerun the shared compiler-side theorem workspace rather than the i
 - Betti does not yet synthesize the continuous Lyapunov witness `V(x)` for richer observable families beyond the current affine queue family.
 - Betti does not yet emit non-queue measurable kernels carrying the same Harris package.
 - Betti does not yet lower `HeteroMoAFabric` into paired backend layers, `gnode` cannon/helix schedule metadata, or the paired/coupled theorem family now available in the shared proof workspace.
+- Betti does not yet synthesize Aeon Flux site witnesses for arbitrary GG syntax; the emitted site bridge is currently scoped to lowered `WallingtonRotation` surfaces.
 - This closure does not also close `THM-RECURSIVE-COARSENING-SYNTHESIS`; recursive many-to-one quotient synthesis is a separate open compiler target.
 
 ## Next Honest Boundary
 
 - The next theorem shape is continuous syntactic physics: lower arbitrary continuous `.gg` source into a measurable kernel and synthesize the Harris witness package directly from the program.
+- On the finite transport side, the next honest boundary is broader site synthesis: lower arbitrary fork/race/fold GG subgraphs into Aeon Flux site witnesses instead of only the emitted `WallingtonRotation` family.
 - In concrete terms, the bridge must emit `C`, `V(x)`, minorization data, and the stochastic-limit proof obligations instead of asking the human to hand-build those measure-theoretic witnesses.
 - The current bounded affine queue witness is therefore the first checked compiler surface, not the final one.
 

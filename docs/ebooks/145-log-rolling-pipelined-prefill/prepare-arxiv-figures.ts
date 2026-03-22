@@ -6,8 +6,34 @@ import { fileURLToPath } from 'node:url';
 
 import sharp from 'sharp';
 
-const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const texPath = path.join(scriptDir, 'arxiv-manuscript.tex');
+interface CliOptions {
+  readonly texPath: string;
+}
+
+function parseCli(argv: readonly string[]): CliOptions {
+  const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+  let texPath = path.join(scriptDir, 'arxiv-manuscript.tex');
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === '--tex') {
+      const next = argv[index + 1];
+      if (!next) {
+        throw new Error('Missing value for --tex');
+      }
+      texPath = path.resolve(next);
+      index += 1;
+      continue;
+    }
+    throw new Error(`Unknown flag: ${arg}`);
+  }
+
+  return { texPath };
+}
+
+const options = parseCli(process.argv.slice(2));
+const scriptDir = path.dirname(options.texPath);
+const texPath = options.texPath;
 const svgPattern = /\\includesvg(\[[^\]]*\])?\{([^}]+\.svg)\}/g;
 
 const texSource = await fs.readFile(texPath, 'utf8');

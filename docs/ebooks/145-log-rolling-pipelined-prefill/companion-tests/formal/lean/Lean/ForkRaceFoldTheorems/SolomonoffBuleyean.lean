@@ -527,14 +527,34 @@ structure DecisionWithVoid where
 theorem void_gain_monotone
     (n k1 k2 : ℕ) (hk : k1 ≤ k2) (hBound : k2 < n) :
     Nat.log2 (n - k2) ≤ Nat.log2 (n - k1) := by
-  apply Nat.log2_mono; omega
+  have hLeftPos : 0 < n - k2 := Nat.sub_pos_of_lt hBound
+  have hRightPos : 0 < n - k1 := Nat.sub_pos_of_lt (lt_of_le_of_lt hk hBound)
+  apply (Nat.le_log2 (Nat.ne_zero_of_lt hRightPos)).2
+  exact le_trans (Nat.log2_self_le (Nat.ne_zero_of_lt hLeftPos)) (by omega)
 
-/-- THM-SOLOMONOFF-VOID-GAIN-FLOOR: When ≥ half the options are
+/-- THM-SOLOMONOFF-VOID-GAIN-FLOOR: When more than half the options are
     impossible, the void boundary saves at least 1 bit. -/
 theorem void_gain_at_least_one_bit (d : DecisionWithVoid)
-    (hHalf : d.totalOptions / 2 ≤ d.impossibleOptions) :
+    (hHalf : d.totalOptions / 2 < d.impossibleOptions) :
     Nat.log2 (d.totalOptions - d.impossibleOptions) <
     Nat.log2 d.totalOptions := by
-  apply Nat.log2_lt_log2 <;> omega
+  have hRemainingPos : 0 < d.totalOptions - d.impossibleOptions :=
+    Nat.sub_pos_of_lt d.hNotAll
+  have hTotalPos : 0 < d.totalOptions :=
+    lt_of_lt_of_le (by decide) d.hTotal
+  have hDoubleBound : 2 * (d.totalOptions - d.impossibleOptions) ≤ d.totalOptions := by
+    omega
+  have hPowBound : 2 ^ (Nat.log2 (d.totalOptions - d.impossibleOptions) + 1) ≤ d.totalOptions := by
+    calc
+      2 ^ (Nat.log2 (d.totalOptions - d.impossibleOptions) + 1)
+        = 2 * 2 ^ Nat.log2 (d.totalOptions - d.impossibleOptions) := by
+            rw [Nat.pow_succ, Nat.mul_comm]
+      _ ≤ 2 * (d.totalOptions - d.impossibleOptions) := by
+          exact Nat.mul_le_mul_left 2 (Nat.log2_self_le (Nat.ne_zero_of_lt hRemainingPos))
+      _ ≤ d.totalOptions := hDoubleBound
+  have hLogBound :
+      Nat.log2 (d.totalOptions - d.impossibleOptions) + 1 ≤ Nat.log2 d.totalOptions :=
+    (Nat.le_log2 (Nat.ne_zero_of_lt hTotalPos)).2 hPowBound
+  exact Nat.lt_of_lt_of_le (Nat.lt_succ_self _) hLogBound
 
 end ForkRaceFoldTheorems

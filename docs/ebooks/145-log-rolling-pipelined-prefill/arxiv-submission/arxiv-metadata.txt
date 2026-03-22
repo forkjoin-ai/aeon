@@ -1,0 +1,40 @@
+Title: Being Irreversible: A Theory of Directed Process Under Conservation and Ground State
+
+Author: Taylor William Buley
+
+Abstract:
+This paper studies a family of irreversible computations organized around the
+weighting rule w_i = R - min(v_i, R) + 1. Within the modeled choice systems in
+the paper, the +1 term is structural rather than parametric: it prevents any
+weight from reaching zero and preserves a nonzero residual mass over the
+remaining options. Removing the term yields a deterministic eliminator;
+retaining it yields a bounded learning rule with an explicit floor, an
+observation-dependent gain, and falsifiable downstream consequences.
+The formal surface currently includes 3,158+ machine-checked theorems across
+195 Lean 4 modules (zero sorry). The companion corpus organizes a reduction
+chain from theorem-level statements to seven laws, three axioms, one formula,
+and the successor-floor interpretation of the +1 term, and it records
+thirty-five falsifiable predictions across the modeled domains.
+The framework is instantiated in nine executable engineering layers -- formal
+verification, programming language, scheduling, transport protocol,
+compression, mixture-of-agents routing, language-model inference,
+protocol-as-execution, and void walking -- built from four primitives (fork,
+race, fold, vent) under conservation, irreversibility, and termination
+constraints. Each layer is implemented, tested, and benchmarked: chunked
+pipelining yields 3.1x-267x modeled speedup under explicit idealizations,
+codec racing selects the best codec among the evaluated set on a per-chunk
+basis, and Vickrey Table inference yields 4.8x measured throughput.
+
+Categories: cs.AI cs.LO math.PR cs.DC
+
+Comments: 3,158+ Lean 4 theorems across 195 modules (zero sorry), executable companion corpus at github.com/forkjoin-ai
+
+MSC-class: 68T05, 03B70, 60A99, 68Q85
+
+Journal-ref:
+
+DOI:
+
+Report-no:
+
+License: http://creativecommons.org/licenses/by/4.0/

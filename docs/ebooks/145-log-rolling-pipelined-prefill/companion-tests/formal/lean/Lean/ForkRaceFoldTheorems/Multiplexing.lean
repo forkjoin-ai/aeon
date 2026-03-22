@@ -184,22 +184,100 @@ def pipTime (p : PipelineParams) : ℕ :=
 theorem pipeline_speedup_floor (p : PipelineParams) :
     pipTime p ≤ seqTime p := by
   unfold pipTime seqTime
+  have hChunkGeOne : 1 ≤ p.chunkSize := Nat.succ_le_of_lt p.hChunk
+  have hItemsGeOne : 1 ≤ p.items := Nat.succ_le_of_lt p.hItems
   have hCeil : (p.items + p.chunkSize - 1) / p.chunkSize ≤ p.items := by
+    have hNumeratorBound : p.items + p.chunkSize - 1 ≤ p.chunkSize * p.items := by
+      have hSlackBound : p.items - 1 ≤ p.chunkSize * (p.items - 1) := by
+        simpa [Nat.mul_comm] using Nat.mul_le_mul_right (p.items - 1) hChunkGeOne
+      calc
+        p.items + p.chunkSize - 1 = p.chunkSize + (p.items - 1) := by
+          rw [Nat.add_comm p.items p.chunkSize, Nat.add_sub_assoc hItemsGeOne]
+        _ ≤ p.chunkSize + p.chunkSize * (p.items - 1) := by
+          exact Nat.add_le_add_left hSlackBound p.chunkSize
+        _ = p.chunkSize * p.items := by
+          calc
+            p.chunkSize + p.chunkSize * (p.items - 1)
+              = p.chunkSize * (p.items - 1) + p.chunkSize := by rw [Nat.add_comm]
+            _ = p.chunkSize * (p.items - 1) + p.chunkSize * 1 := by rw [Nat.mul_one]
+            _ = p.chunkSize * ((p.items - 1) + 1) := by rw [← Nat.mul_add]
+            _ = p.chunkSize * p.items := by rw [Nat.sub_add_cancel hItemsGeOne]
     apply Nat.div_le_of_le_mul
-    · exact p.hChunk
-    · nlinarith [p.hChunk]
-  nlinarith [p.hItems, p.hStages]
+    exact hNumeratorBound
+  have hStagesGeOne : 1 ≤ p.stages := Nat.succ_le_of_lt p.hStages
+  rw [Nat.add_sub_assoc hStagesGeOne]
+  have hFill :
+      (p.items + p.chunkSize - 1) / p.chunkSize + (p.stages - 1) ≤
+        p.items + (p.stages - 1) :=
+    Nat.add_le_add_right hCeil (p.stages - 1)
+  have hBaseline :
+      p.items + (p.stages - 1) ≤ p.items * p.stages := by
+    have hStageSlack :
+        p.stages - 1 ≤ p.items * (p.stages - 1) := by
+      simpa [Nat.mul_comm] using Nat.mul_le_mul_left (p.stages - 1) hItemsGeOne
+    calc
+      p.items + (p.stages - 1)
+        ≤ p.items + p.items * (p.stages - 1) := by
+          exact Nat.add_le_add_left hStageSlack p.items
+      _ = p.items * (p.stages - 1) + p.items := by rw [Nat.add_comm]
+      _ = p.items * p.stages := by
+          calc
+            p.items * (p.stages - 1) + p.items
+              = p.items * (p.stages - 1) + p.items * 1 := by rw [Nat.mul_one]
+            _ = p.items * ((p.stages - 1) + 1) := by rw [← Nat.mul_add]
+            _ = p.items * p.stages := by rw [Nat.sub_add_cancel hStagesGeOne]
+  exact le_trans hFill hBaseline
 
 /-- Strict improvement for nontrivial pipelines. -/
 theorem pipeline_strict_speedup (p : PipelineParams)
     (hMultiStage : 2 ≤ p.stages) (hMultiItem : 2 ≤ p.items) :
     pipTime p < seqTime p := by
   unfold pipTime seqTime
+  have hChunkGeOne : 1 ≤ p.chunkSize := Nat.succ_le_of_lt p.hChunk
+  have hItemsGeOne : 1 ≤ p.items := Nat.succ_le_of_lt p.hItems
   have hCeil : (p.items + p.chunkSize - 1) / p.chunkSize ≤ p.items := by
+    have hNumeratorBound : p.items + p.chunkSize - 1 ≤ p.chunkSize * p.items := by
+      have hSlackBound : p.items - 1 ≤ p.chunkSize * (p.items - 1) := by
+        simpa [Nat.mul_comm] using Nat.mul_le_mul_right (p.items - 1) hChunkGeOne
+      calc
+        p.items + p.chunkSize - 1 = p.chunkSize + (p.items - 1) := by
+          rw [Nat.add_comm p.items p.chunkSize, Nat.add_sub_assoc hItemsGeOne]
+        _ ≤ p.chunkSize + p.chunkSize * (p.items - 1) := by
+          exact Nat.add_le_add_left hSlackBound p.chunkSize
+        _ = p.chunkSize * p.items := by
+          calc
+            p.chunkSize + p.chunkSize * (p.items - 1)
+              = p.chunkSize * (p.items - 1) + p.chunkSize := by rw [Nat.add_comm]
+            _ = p.chunkSize * (p.items - 1) + p.chunkSize * 1 := by rw [Nat.mul_one]
+            _ = p.chunkSize * ((p.items - 1) + 1) := by rw [← Nat.mul_add]
+            _ = p.chunkSize * p.items := by rw [Nat.sub_add_cancel hItemsGeOne]
     apply Nat.div_le_of_le_mul
-    · exact p.hChunk
-    · nlinarith [p.hChunk]
-  nlinarith [p.hItems, p.hStages]
+    exact hNumeratorBound
+  have hStagesGeOne : 1 ≤ p.stages := le_trans (by decide) hMultiStage
+  rw [Nat.add_sub_assoc hStagesGeOne]
+  have hFill :
+      (p.items + p.chunkSize - 1) / p.chunkSize + (p.stages - 1) ≤
+        p.items + (p.stages - 1) :=
+    Nat.add_le_add_right hCeil (p.stages - 1)
+  have hStageSlackPos : 0 < p.stages - 1 := Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide) hMultiStage)
+  have hItemGtOne : 1 < p.items := lt_of_lt_of_le (by decide) hMultiItem
+  have hStageSlackStrict :
+      p.stages - 1 < p.items * (p.stages - 1) := by
+    exact (Nat.lt_mul_iff_one_lt_left hStageSlackPos).2 hItemGtOne
+  have hBaseline :
+      p.items + (p.stages - 1) < p.items * p.stages := by
+    calc
+      p.items + (p.stages - 1)
+        < p.items + p.items * (p.stages - 1) := by
+          exact Nat.add_lt_add_left hStageSlackStrict p.items
+      _ = p.items * (p.stages - 1) + p.items := by rw [Nat.add_comm]
+      _ = p.items * p.stages := by
+          calc
+            p.items * (p.stages - 1) + p.items
+              = p.items * (p.stages - 1) + p.items * 1 := by rw [Nat.mul_one]
+            _ = p.items * ((p.stages - 1) + 1) := by rw [← Nat.mul_add]
+            _ = p.items * p.stages := by rw [Nat.sub_add_cancel hStagesGeOne]
+  exact lt_of_le_of_lt hFill hBaseline
 
 -- ─── THM-QUEUE-SEPARATION-FLOOR ─────────────────────────────────────
 --
@@ -222,9 +300,22 @@ theorem queue_separation_floor
   unfold forkRaceFoldTime
   have hDiv : (items + beta1) / (beta1 + 1) < items := by
     apply Nat.div_lt_of_lt_mul
-    · omega
-    · nlinarith
-  omega
+    have hMul : beta1 < items * beta1 := by
+      simpa [Nat.mul_comm] using (Nat.lt_mul_iff_one_lt_right hBeta).2 hMulti
+    calc
+      items + beta1 < items + items * beta1 := by
+        exact Nat.add_lt_add_left hMul items
+      _ = items * beta1 + items := by
+        rw [Nat.add_comm]
+      _ = items * (beta1 + 1) := by
+        calc
+          items * beta1 + items = items * beta1 + items * 1 := by rw [Nat.mul_one]
+          _ = items * (beta1 + 1) := by rw [← Nat.mul_add]
+      _ = (beta1 + 1) * items := by
+        rw [Nat.mul_comm]
+  have hStagesGeOne : 1 ≤ stages := Nat.succ_le_of_lt hStages
+  rw [Nat.add_sub_assoc hStagesGeOne, Nat.add_sub_assoc hStagesGeOne]
+  exact Nat.add_lt_add_right hDiv (stages - 1)
 
 -- ─── THM-PIPELINE-FIRST-RESULT-CEILING ──────────────────────────────
 -- The speedup sandwich bounds throughput. This bounds latency:
@@ -236,11 +327,18 @@ theorem queue_separation_floor
 theorem first_result_latency (p : PipelineParams) :
     p.stages ≤ pipTime p := by
   unfold pipTime
-  have : 0 < (p.items + p.chunkSize - 1) / p.chunkSize := by
+  have hItemsGeOne : 1 ≤ p.items := Nat.succ_le_of_lt p.hItems
+  have hStagesGeOne : 1 ≤ p.stages := Nat.succ_le_of_lt p.hStages
+  have hDivPos : 0 < (p.items + p.chunkSize - 1) / p.chunkSize := by
     apply Nat.div_pos
     · omega
     · exact p.hChunk
-  omega
+  rw [Nat.add_sub_assoc hStagesGeOne]
+  calc
+    p.stages = 1 + (p.stages - 1) := by
+      simpa [Nat.add_comm] using (Nat.sub_add_cancel hStagesGeOne).symm
+    _ ≤ (p.items + p.chunkSize - 1) / p.chunkSize + (p.stages - 1) := by
+      exact Nat.add_le_add_right (Nat.succ_le_of_lt hDivPos) (p.stages - 1)
 
 /-- First result latency is independent of item count. -/
 theorem first_result_independent_of_items

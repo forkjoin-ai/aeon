@@ -26,25 +26,37 @@ structure CreativeProcess where
   tunnelThreshold : ℕ
   /-- Threshold is positive -/
   thresholdPos : 0 < tunnelThreshold
-  /-- Mutual information between regions (positive when tunnel opens) -/
-  mutualInfo : ℕ := if voidDensity ≥ tunnelThreshold then voidDensity - tunnelThreshold + 1 else 0
+
+/-- Mutual information between regions (positive when tunnel opens). -/
+def CreativeProcess.mutualInfo (cp : CreativeProcess) : ℕ :=
+  if cp.tunnelThreshold ≤ cp.voidDensity then cp.voidDensity - cp.tunnelThreshold + 1 else 0
 
 theorem insight_requires_density (cp : CreativeProcess)
     (hBelow : cp.voidDensity < cp.tunnelThreshold) :
     cp.mutualInfo = 0 := by
-  unfold CreativeProcess.mutualInfo; simp; omega
+  simp [CreativeProcess.mutualInfo, Nat.not_le_of_lt hBelow]
 
 theorem insight_emerges_at_threshold (cp : CreativeProcess)
     (hAbove : cp.tunnelThreshold ≤ cp.voidDensity) :
     0 < cp.mutualInfo := by
-  unfold CreativeProcess.mutualInfo; simp; omega
+  simp [CreativeProcess.mutualInfo, hAbove]
 
 theorem more_density_stronger_insight (cp1 cp2 : CreativeProcess)
     (hSameThresh : cp1.tunnelThreshold = cp2.tunnelThreshold)
     (hMoreDense : cp1.voidDensity ≤ cp2.voidDensity)
     (hAbove1 : cp1.tunnelThreshold ≤ cp1.voidDensity) :
     cp1.mutualInfo ≤ cp2.mutualInfo := by
-  unfold CreativeProcess.mutualInfo; simp; omega
+  have hAbove2 : cp2.tunnelThreshold ≤ cp2.voidDensity := by
+    rw [← hSameThresh]
+    exact le_trans hAbove1 hMoreDense
+  unfold CreativeProcess.mutualInfo
+  simp [hAbove1, hAbove2]
+  rw [← hSameThresh]
+  calc
+    cp1.voidDensity ≤ cp2.voidDensity := hMoreDense
+    _ = cp2.voidDensity - cp1.tunnelThreshold + cp1.tunnelThreshold := by
+      symm
+      exact Nat.sub_add_cancel (le_trans hAbove1 hMoreDense)
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 37: Void Coherence Predicts Consensus Latency
@@ -186,7 +198,7 @@ theorem cascade_monotone_in_contagion
     cs1.maxCascade ≤ cs2.maxCascade := by
   unfold CascadeSystem.maxCascade
   rw [hSameTotal, hSameInitial]
-  apply Nat.min_le_min_right
+  apply min_le_min_right
   exact Nat.mul_le_mul_left cs2.initialFailed (Nat.add_le_add_right hMoreContagion 1)
 
 -- ═══════════════════════════════════════════════════════════════════════

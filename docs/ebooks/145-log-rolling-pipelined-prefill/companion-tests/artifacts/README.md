@@ -88,6 +88,12 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `ch17-boundary-expansion-figure.json`: machine-readable manifest for the expanded Chapter 17 boundary figure.
 - `ch17-boundary-expansion-figure.md`: human-readable summary of the near-control, regime-sweep, adversarial-control, and formal-witness figure sources.
 - `ch17-boundary-expansion-figure.svg`: manuscript-ready figure assembled from the near-control zoom, regime sweep, adversarial controls, and Lean-originated witness catalog.
+- `ch17-cosmic-explainer-figure.json`: machine-readable manifest for the Chapter 17 cosmic `aeon-viz` scene extracted from the manuscript.
+- `ch17-cosmic-explainer-figure.md`: human-readable summary of the cosmic scene contract and authored milestone surface.
+- `ch17-cosmic-explainer-figure.svg`: manuscript-ready SVG for the golden-spiral time/scale explainer from Bythos to Pleroma.
+- `ch17-dimension-ladder-figure.json`: machine-readable manifest for the Chapter 17 dimensional `aeon-viz` scene extracted from the manuscript.
+- `ch17-dimension-ladder-figure.md`: human-readable summary of the dimensional ladder scene contract and authored rung surface.
+- `ch17-dimension-ladder-figure.svg`: manuscript-ready SVG for the `2D..55D` ladder plus projected `54D` particle explainer.
 - `ch17-moa-transformer-figure.json`: machine-readable manifest for the GG-backed sparse-vs-dense MoA transformer figure.
 - `ch17-moa-transformer-figure.md`: human-readable summary of the scale-sweep, ablation-frontier, and GG-surface figure sources.
 - `ch17-moa-transformer-figure.svg`: manuscript-ready figure assembled from the GG-backed `StructuredMoA` evidence report.

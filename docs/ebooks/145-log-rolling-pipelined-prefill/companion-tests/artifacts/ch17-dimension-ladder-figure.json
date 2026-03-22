@@ -1,0 +1,11 @@
+{
+  "label": "ch17-dimension-ladder-figure",
+  "scene": "dimension-ladder",
+  "mode": "sweep-center",
+  "title": "Dimension Ladder and 54D Projection",
+  "subtitle": "The same Wallington lift read as stage count, ambient dimension, and projected slice",
+  "story": "The left panel climbs continuously from 2D to the current 55D runtime ceiling; the right panel shows 54D as nested projected slices rather than a literal view from inside 54 dimensions.",
+  "caption": "Figure 3b. Dimension ladder from 2D through the current 55D runtime ceiling, with named manuscript rungs and a projected-slice metaphor for the 54D particle. The left panel treats D = K + 1 as the governing lift rule; the right panel makes explicit that a 54D object can only be shown as lower-dimensional projections or cross-sections, not as a literal full view.",
+  "staticAsset": "companion-tests/artifacts/ch17-dimension-ladder-figure.svg",
+  "markCount": 7
+}

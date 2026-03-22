@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.Data.Nat.Basic
+import Mathlib.Tactic.Linarith
 
 namespace ForkRaceFoldTheorems
 
@@ -72,7 +73,70 @@ theorem activeLayerCount_le_totalLanes
     activeLayerCount cpuLanes gpuLanes npuLanes wasmLanes <=
       totalLanes cpuLanes gpuLanes npuLanes wasmLanes := by
   unfold activeLayerCount totalLanes
-  split_ifs <;> omega
+  split_ifs <;> linarith
+
+theorem activeLayerCount_pos_of_totalLanes_pos
+    {cpuLanes gpuLanes npuLanes wasmLanes : Nat}
+    (h_total : 0 < totalLanes cpuLanes gpuLanes npuLanes wasmLanes) :
+    0 < activeLayerCount cpuLanes gpuLanes npuLanes wasmLanes := by
+  unfold totalLanes at h_total
+  have h_some :
+      0 < cpuLanes ∨ 0 < gpuLanes ∨ 0 < npuLanes ∨ 0 < wasmLanes := by
+    by_contra h_none
+    push_neg at h_none
+    rcases h_none with ⟨h_cpu, h_gpu, h_npu, h_wasm⟩
+    linarith
+  rcases h_some with h_cpu | h_rest
+  · simp [activeLayerCount, h_cpu]
+  · rcases h_rest with h_gpu | h_rest
+    · simp [activeLayerCount, h_gpu]
+    · rcases h_rest with h_npu | h_wasm
+      · simp [activeLayerCount, h_npu]
+      · simp [activeLayerCount, h_wasm]
+
+theorem activeLayerCount_le_four
+    (cpuLanes gpuLanes npuLanes wasmLanes : Nat) :
+    activeLayerCount cpuLanes gpuLanes npuLanes wasmLanes <= 4 := by
+  unfold activeLayerCount
+  split_ifs <;> linarith
+
+theorem activeLayerCount_eq_four_of_all_positive
+    {cpuLanes gpuLanes npuLanes wasmLanes : Nat}
+    (h_cpu : 0 < cpuLanes)
+    (h_gpu : 0 < gpuLanes)
+    (h_npu : 0 < npuLanes)
+    (h_wasm : 0 < wasmLanes) :
+    activeLayerCount cpuLanes gpuLanes npuLanes wasmLanes = 4 := by
+  simp [activeLayerCount, h_cpu, h_gpu, h_npu, h_wasm]
+
+theorem activeLayerCount_eq_zero_of_all_zero :
+    activeLayerCount 0 0 0 0 = 0 := by
+  simp [activeLayerCount]
+
+theorem activeLayerCount_pos_iff_totalLanes_pos
+    (cpuLanes gpuLanes npuLanes wasmLanes : Nat) :
+    0 < activeLayerCount cpuLanes gpuLanes npuLanes wasmLanes ↔
+      0 < totalLanes cpuLanes gpuLanes npuLanes wasmLanes := by
+  constructor
+  · intro h_active
+    have h_nonzero :
+        activeLayerCount cpuLanes gpuLanes npuLanes wasmLanes ≠ 0 := by
+      exact Nat.ne_of_gt h_active
+    by_contra h_total
+    have h_zero_total : totalLanes cpuLanes gpuLanes npuLanes wasmLanes = 0 := by
+      exact Nat.eq_zero_of_not_pos h_total
+    have h_total' : cpuLanes + (gpuLanes + npuLanes + wasmLanes) = 0 := by
+      simpa [totalLanes, Nat.add_assoc] using h_zero_total
+    have h_cpu : cpuLanes = 0 := Nat.eq_zero_of_add_eq_zero_right h_total'
+    have h_rest : gpuLanes + npuLanes + wasmLanes = 0 := Nat.eq_zero_of_add_eq_zero_left h_total'
+    have h_rest' : gpuLanes + (npuLanes + wasmLanes) = 0 := by
+      simpa [Nat.add_assoc] using h_rest
+    have h_gpu : gpuLanes = 0 := Nat.eq_zero_of_add_eq_zero_right h_rest'
+    have h_rest'' : npuLanes + wasmLanes = 0 := Nat.eq_zero_of_add_eq_zero_left h_rest'
+    have h_npu : npuLanes = 0 := Nat.eq_zero_of_add_eq_zero_right h_rest''
+    have h_wasm : wasmLanes = 0 := Nat.eq_zero_of_add_eq_zero_left h_rest''
+    simp [activeLayerCount, h_cpu, h_gpu, h_npu, h_wasm] at h_nonzero
+  · exact activeLayerCount_pos_of_totalLanes_pos
 
 theorem readyBackendCount_pos_of_any_ready
     {cpuReady gpuReady npuReady wasmReady : Bool}
@@ -86,6 +150,38 @@ theorem readyBackendCount_pos_of_any_ready
     · rcases h_rest with h_npu | h_wasm
       · simp [h_npu]
       · simp [h_wasm]
+
+theorem readyBackendCount_le_four
+    (cpuReady gpuReady npuReady wasmReady : Bool) :
+    readyBackendCount cpuReady gpuReady npuReady wasmReady <= 4 := by
+  unfold readyBackendCount
+  split_ifs <;> linarith
+
+theorem readyBackendCount_eq_zero_of_all_not_ready
+    (h_cpu : cpuReady = false)
+    (h_gpu : gpuReady = false)
+    (h_npu : npuReady = false)
+    (h_wasm : wasmReady = false) :
+    readyBackendCount cpuReady gpuReady npuReady wasmReady = 0 := by
+  simp [readyBackendCount, h_cpu, h_gpu, h_npu, h_wasm]
+
+theorem readyBackendCount_eq_four_of_all_ready
+    (h_cpu : cpuReady = true)
+    (h_gpu : gpuReady = true)
+    (h_npu : npuReady = true)
+    (h_wasm : wasmReady = true) :
+    readyBackendCount cpuReady gpuReady npuReady wasmReady = 4 := by
+  simp [readyBackendCount, h_cpu, h_gpu, h_npu, h_wasm]
+
+theorem readyBackendCount_pos_iff_any_ready
+    (cpuReady gpuReady npuReady wasmReady : Bool) :
+    0 < readyBackendCount cpuReady gpuReady npuReady wasmReady ↔
+      cpuReady = true ∨ gpuReady = true ∨ npuReady = true ∨ wasmReady = true := by
+  constructor
+  · intro h_ready
+    cases cpuReady <;> cases gpuReady <;> cases npuReady <;> cases wasmReady <;>
+      simp [readyBackendCount] at h_ready ⊢
+  · exact readyBackendCount_pos_of_any_ready
 
 theorem diverse_ready_backends_of_cpu_and_accelerator
     {cpuReady gpuReady npuReady wasmReady : Bool}
@@ -105,6 +201,11 @@ theorem cannonCursor_step_mod
     cannonCursor laneCount cursor waveWidth = (cursor + waveWidth) % laneCount := by
   simp [cannonCursor, Nat.ne_of_gt h_laneCount]
 
+theorem cannonCursor_zero_of_zero_laneCount
+    (cursor waveWidth : Nat) :
+    cannonCursor 0 cursor waveWidth = 0 := by
+  simp [cannonCursor]
+
 theorem cannonCursor_lt_laneCount
     {laneCount cursor waveWidth : Nat}
     (h_laneCount : 0 < laneCount) :
@@ -112,11 +213,22 @@ theorem cannonCursor_lt_laneCount
   rw [cannonCursor_step_mod h_laneCount]
   exact Nat.mod_lt _ h_laneCount
 
+theorem cannonCursor_waveWidth_zero_eq_cursor_mod
+    {laneCount cursor : Nat}
+    (h_laneCount : 0 < laneCount) :
+    cannonCursor laneCount cursor 0 = cursor % laneCount := by
+  simp [cannonCursor, Nat.ne_of_gt h_laneCount]
+
 theorem helixPhase_lt_layerCount
     {layerCount round : Nat}
     (h_layerCount : 0 < layerCount) :
     helixPhase layerCount round < layerCount := by
   simp [helixPhase, Nat.ne_of_gt h_layerCount, Nat.mod_lt, h_layerCount]
+
+theorem helixPhase_zero_of_zero_layerCount
+    (round : Nat) :
+    helixPhase 0 round = 0 := by
+  simp [helixPhase]
 
 theorem pairedKernelDecision_of_agreement
     {primarySufficient shadowFired : Bool} :
@@ -137,6 +249,48 @@ theorem pairedKernelDecision_of_disagreement
   · simp [pairedKernelDecision, h_primary]
   · simp [pairedKernelDecision, h_shadow]
 
+theorem pairedKernelDecision_ne_acceptAgreement_of_disagree
+    {primarySufficient shadowFired : Bool} :
+    pairedKernelDecision false primarySufficient shadowFired ≠ PairDecision.acceptAgreement := by
+  cases primarySufficient <;> cases shadowFired <;> decide
+
+theorem pairedKernelDecision_ne_acceptPrimary_of_disagreement
+    {primarySufficient shadowFired : Bool}
+    (h_disagree : primarySufficient = false ∨ shadowFired = true) :
+    pairedKernelDecision false primarySufficient shadowFired ≠ PairDecision.acceptPrimary := by
+  rcases h_disagree with h_primary | h_shadow
+  · simp [pairedKernelDecision, h_primary]
+  · simp [pairedKernelDecision, h_shadow]
+
+theorem pairedKernelDecision_ne_escalate_of_agreement
+    {primarySufficient shadowFired : Bool} :
+    pairedKernelDecision true primarySufficient shadowFired ≠ PairDecision.escalate := by
+  simp [pairedKernelDecision]
+
+theorem pairedKernelDecision_ne_escalate_of_sufficient_primary
+    {shadowFired : Bool}
+    (h_shadow : shadowFired = false) :
+    pairedKernelDecision false true shadowFired ≠ PairDecision.escalate := by
+  simp [pairedKernelDecision, h_shadow]
+
+theorem pairedKernelDecision_eq_acceptAgreement_iff
+    (agree primarySufficient shadowFired : Bool) :
+    pairedKernelDecision agree primarySufficient shadowFired = PairDecision.acceptAgreement ↔
+      agree = true := by
+  cases agree <;> cases primarySufficient <;> cases shadowFired <;> decide
+
+theorem pairedKernelDecision_eq_acceptPrimary_iff
+    (agree primarySufficient shadowFired : Bool) :
+    pairedKernelDecision agree primarySufficient shadowFired = PairDecision.acceptPrimary ↔
+      agree = false ∧ primarySufficient = true ∧ shadowFired = false := by
+  cases agree <;> cases primarySufficient <;> cases shadowFired <;> decide
+
+theorem pairedKernelDecision_eq_escalate_iff
+    (agree primarySufficient shadowFired : Bool) :
+    pairedKernelDecision agree primarySufficient shadowFired = PairDecision.escalate ↔
+      agree = false ∧ (primarySufficient = false ∨ shadowFired = true) := by
+  cases agree <;> cases primarySufficient <;> cases shadowFired <;> decide
+
 theorem binaryHeaderBytes_eq_ten :
     binaryHeaderBytes = 10 := by
   rfl
@@ -144,7 +298,40 @@ theorem binaryHeaderBytes_eq_ten :
 theorem binaryFrameBytes_ge_header (payloadBytes : Nat) :
     binaryHeaderBytes <= binaryFrameBytes payloadBytes := by
   unfold binaryFrameBytes binaryHeaderBytes
-  omega
+  exact Nat.le_add_right 10 payloadBytes
+
+theorem binaryFrameBytes_strictMono :
+    StrictMono binaryFrameBytes := by
+  intro payload₁ payload₂ h_payload
+  unfold binaryFrameBytes
+  exact Nat.add_lt_add_left h_payload binaryHeaderBytes
+
+theorem binaryFrameBytes_injective :
+    Function.Injective binaryFrameBytes := by
+  exact binaryFrameBytes_strictMono.injective
+
+theorem binaryFrameBytes_eq_header_of_zero_payload :
+    binaryFrameBytes 0 = binaryHeaderBytes := by
+  simp [binaryFrameBytes]
+
+theorem binaryFrameBytes_eq_header_iff
+    (payloadBytes : Nat) :
+    binaryFrameBytes payloadBytes = binaryHeaderBytes ↔ payloadBytes = 0 := by
+  constructor
+  · intro h_frame
+    exact binaryFrameBytes_injective (by simpa [binaryFrameBytes_eq_header_of_zero_payload] using h_frame)
+  · intro h_payload
+    simp [h_payload, binaryFrameBytes_eq_header_of_zero_payload]
+
+theorem binaryFrameBytes_pos (payloadBytes : Nat) :
+    0 < binaryFrameBytes payloadBytes := by
+  simp [binaryFrameBytes, binaryHeaderBytes]
+
+theorem payloadBytes_le_binaryFrameBytes
+    (payloadBytes : Nat) :
+    payloadBytes <= binaryFrameBytes payloadBytes := by
+  unfold binaryFrameBytes binaryHeaderBytes
+  linarith
 
 theorem skippedWithinBudget_of_le
     {skippedHedges scheduledShadows : Nat}
@@ -156,12 +343,53 @@ theorem conservedBytes_of_total
     {winnerBytes loserBytes ventBytes totalBytes : Nat}
     (h_total : totalBytes = winnerBytes + loserBytes + ventBytes) :
     conservedBytes winnerBytes loserBytes ventBytes totalBytes := by
-  unfold conservedBytes
-  omega
+  simpa [conservedBytes] using h_total.symm
+
+theorem conservedBytes_iff_total
+    {winnerBytes loserBytes ventBytes totalBytes : Nat} :
+    conservedBytes winnerBytes loserBytes ventBytes totalBytes ↔
+      totalBytes = winnerBytes + loserBytes + ventBytes := by
+  constructor
+  · intro h_conserved
+    simpa [conservedBytes] using h_conserved.symm
+  · intro h_total
+    simpa [conservedBytes] using h_total.symm
+
+theorem skippedWithinBudget_zero
+    (scheduledShadows : Nat) :
+    skippedWithinBudget 0 scheduledShadows := by
+  exact Nat.zero_le scheduledShadows
 
 theorem metaLaminarHeight_pos (streamLayers backendLayers : Nat) :
     0 < metaLaminarHeight streamLayers backendLayers := by
   unfold metaLaminarHeight
-  omega
+  exact Nat.succ_pos _
+
+theorem metaLaminarHeight_ge_streamLayers_succ
+    (streamLayers backendLayers : Nat) :
+    streamLayers + 1 <= metaLaminarHeight streamLayers backendLayers := by
+  unfold metaLaminarHeight
+  linarith
+
+theorem metaLaminarHeight_ge_backendLayers_succ
+    (streamLayers backendLayers : Nat) :
+    backendLayers + 1 <= metaLaminarHeight streamLayers backendLayers := by
+  unfold metaLaminarHeight
+  linarith
+
+theorem metaLaminarHeight_eq_one_iff
+    (streamLayers backendLayers : Nat) :
+    metaLaminarHeight streamLayers backendLayers = 1 ↔
+      streamLayers = 0 ∧ backendLayers = 0 := by
+  unfold metaLaminarHeight
+  constructor
+  · intro h_height
+    have h_sum : streamLayers + backendLayers = 0 := by
+      linarith
+    have h_stream : streamLayers = 0 := Nat.eq_zero_of_add_eq_zero_right h_sum
+    have h_backend : backendLayers = 0 := Nat.eq_zero_of_add_eq_zero_left h_sum
+    exact ⟨h_stream, h_backend⟩
+  · rintro ⟨rfl, rfl⟩
+    simp
 
 end ForkRaceFoldTheorems

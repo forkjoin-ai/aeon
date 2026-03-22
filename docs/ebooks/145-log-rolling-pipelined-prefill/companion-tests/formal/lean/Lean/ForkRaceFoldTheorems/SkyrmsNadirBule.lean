@@ -92,7 +92,11 @@ def SkyrmsAsCommunity.toFailureTopology (s : SkyrmsAsCommunity) :
     FailureTopology where
   failurePaths := s.totalDims
   decisionStreams := 1  -- single proposal stream (like single offer in negotiation)
-  hFailurePos := by unfold SkyrmsAsCommunity.totalDims; omega
+  hFailurePos := by
+    unfold SkyrmsAsCommunity.totalDims
+    have hA : 0 < s.walkerA_dims := lt_of_lt_of_le (by decide : 0 < 2) s.walkerA_complex
+    have hB : 0 < s.walkerB_dims := lt_of_lt_of_le (by decide : 0 < 2) s.walkerB_complex
+    omega
   hDecisionPos := by omega
 
 /-- Convert to a negotiation channel for composition with negotiation theory. -/
@@ -176,7 +180,9 @@ def nadirContext (s : SkyrmsAsCommunity) : ℕ :=
 theorem nadirContext_pos (s : SkyrmsAsCommunity) :
     0 < nadirContext s := by
   unfold nadirContext SkyrmsAsCommunity.totalDims
-  omega
+  have hDims : 4 ≤ s.walkerA_dims + s.walkerB_dims := by
+    exact Nat.add_le_add s.walkerA_complex s.walkerB_complex
+  exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide : 1 < 4) hDims)
 
 /-- At the nadir context, the Bule deficit is zero. -/
 theorem bule_zero_at_nadir (s : SkyrmsAsCommunity) :
@@ -233,16 +239,22 @@ theorem bule_zero_iff_nadir (s : SkyrmsAsCommunity) :
 theorem nadir_context_value (s : SkyrmsAsCommunity) :
     nadirContext s = s.walkerA_dims + s.walkerB_dims - 1 := by
   unfold nadirContext SkyrmsAsCommunity.totalDims
+  rfl
 
 /-- The nadir context is the MINIMUM context for Bule=0.
     Any less, and the deficit is still positive. -/
 theorem nadir_context_is_minimum (s : SkyrmsAsCommunity) :
     0 < buleDeficit s.toFailureTopology (nadirContext s - 1) := by
-  unfold buleDeficit communityReducedDeficit contextReducedDeficit
-  simp [failureToSemiotic, SkyrmsAsCommunity.toFailureTopology,
-        nadirContext, SkyrmsAsCommunity.totalDims]
-  unfold topologicalDeficit
-  omega
+  have hInner : 0 < communityReducedDeficit s.toFailureTopology (nadirContext s - 1) := by
+    unfold communityReducedDeficit contextReducedDeficit
+    simp [failureToSemiotic, SkyrmsAsCommunity.toFailureTopology,
+          nadirContext, SkyrmsAsCommunity.totalDims]
+    unfold topologicalDeficit computationBeta1 transportBeta1
+    have hDims : 4 ≤ s.walkerA_dims + s.walkerB_dims := by
+      exact Nat.add_le_add s.walkerA_complex s.walkerB_complex
+    omega
+  unfold buleDeficit
+  simpa [le_of_lt hInner] using hInner
 
 /-- Algebraic nadir identification: given the topology dimensions,
     compute the exact community context needed. No iteration, no

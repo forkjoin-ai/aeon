@@ -502,9 +502,12 @@ theorem pipeline_collapse_cost_ceiling
   | nil => simp
   | cons hd tl ih =>
     simp only [List.sum_cons, List.length_cons]
-    have hhd := hBound hd (List.mem_cons_self _ _)
+    have hhd := hBound hd (by simp)
     have htl := ih (fun c hc => hBound c (List.mem_cons_of_mem _ hc))
-    omega
+    calc
+      hd + tl.sum ≤ maxPerStage + tl.length * maxPerStage := Nat.add_le_add hhd htl
+      _ = (tl.length + 1) * maxPerStage := by
+        rw [Nat.succ_mul, Nat.add_comm]
 
 /-- The ceiling is tight: equality when every stage pays maximum. -/
 theorem pipeline_collapse_cost_ceiling_tight
@@ -516,11 +519,17 @@ theorem pipeline_collapse_cost_ceiling_tight
   induction stageCosts generalizing n with
   | nil => simp at hLen; subst hLen; simp
   | cons hd tl ih =>
-    simp only [List.length_cons] at hLen
-    simp only [List.sum_cons]
-    have hhd := hAll hd (List.mem_cons_self _ _)
-    have htl := ih (n - 1) (by omega)
-      (fun c hc => hAll c (List.mem_cons_of_mem _ hc))
-    subst hhd; subst hLen; omega
+    cases n with
+    | zero =>
+        simp at hLen
+    | succ n' =>
+        simp at hLen
+        simp only [List.sum_cons]
+        have hhd : hd = maxPerStage := hAll hd (by simp)
+        have htl : tl.sum = n' * maxPerStage :=
+          ih n' hLen (fun c hc => hAll c (List.mem_cons_of_mem _ hc))
+        subst hhd
+        rw [htl, Nat.succ_mul]
+        simp [Nat.add_comm]
 
 end ForkRaceFoldTheorems

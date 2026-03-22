@@ -138,10 +138,10 @@ theorem race_monotone_floor (results : List CodecResult) (hne : results ≠ [])
     (newCodec : CodecResult)
     (hBetter : newCodec.compressedSize < raceMin results) :
     raceMin (newCodec :: results) < raceMin results := by
-  match results, hne with
-  | r :: rs, _ =>
-    simp [raceMin]
-    exact ⟨hBetter, le_refl _⟩
+  cases results with
+  | nil => exact (hne rfl).elim
+  | cons hd tl =>
+      simpa [raceMin, Nat.min_eq_left (Nat.le_of_lt hBetter)] using hBetter
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- THM-TOPO-RACE-DEFICIT
@@ -334,7 +334,9 @@ theorem diversity_marginal_gain_ceiling
     (contentTypes - k) * (rawPerType - entropyPerType) -
     (contentTypes - (k + 1)) * (rawPerType - entropyPerType) ≤
     rawPerType - entropyPerType := by
-  omega
+  have hStep : contentTypes - k = contentTypes - (k + 1) + 1 := by
+    omega
+  rw [hStep, Nat.add_mul, one_mul, Nat.add_sub_cancel_left]
 
 /-- Past full coverage, marginal gain is exactly zero. -/
 theorem diversity_marginal_gain_zero_past_coverage

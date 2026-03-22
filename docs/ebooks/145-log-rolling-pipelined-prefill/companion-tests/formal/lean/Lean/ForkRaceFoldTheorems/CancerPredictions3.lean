@@ -94,7 +94,7 @@ structure DormancyState where
 
 /-- The complement weight of "divide" in a dormant cell is minimal. -/
 def DormancyState.divideWeight (ds : DormancyState) : ℕ :=
-  ds.rounds - Math.min ds.divideRejections ds.rounds + 1
+  ds.rounds - min ds.divideRejections ds.rounds + 1
 
 /-- Dormant cell: divide weight is small relative to other choices.
     Because divideRejections ≥ rounds/2, the divide weight ≤ rounds/2 + 1,
@@ -212,7 +212,7 @@ theorem uninformed_fold_wasteful (e : ℕ) (h : 2 ≤ e) :
 /-- To achieve the same useful work as an informed fold, the uninformed
     fold must increase energy input proportionally to the information
     deficit. This IS the Warburg effect. -/
-theorem warburg_compensation (informedWork : ℕ) (hWork : 0 < informedWork) :
+theorem warburg_compensation (informedWork : ℕ) (_hWork : 0 < informedWork) :
     -- An uninformed fold producing the same work needs more input
     informedWork ≤ informedWork + (informedWork - 1) := by omega
 
@@ -242,10 +242,10 @@ def AbscopalPropagation.siteBRejections (ap : AbscopalPropagation) : ℕ :=
 
 /-- Some rejection information transfers (abscopal effect exists). -/
 theorem abscopal_positive_transfer (ap : AbscopalPropagation)
-    (hSomeRejections : 0 < ap.siteARejections)
+    (_hSomeRejections : 0 < ap.siteARejections)
     (hSomeTransfer : 100 ≤ ap.transferEfficiency * ap.siteARejections) :
     0 < ap.siteARejections * ap.transferEfficiency := by
-  exact Nat.mul_pos hSomeRejections (by omega)
+  simpa [Nat.mul_comm] using (lt_of_lt_of_le (by decide : 0 < 100) hSomeTransfer)
 
 /-- Zero transfer efficiency = no abscopal effect. -/
 theorem no_transfer_no_abscopal (ap : AbscopalPropagation)

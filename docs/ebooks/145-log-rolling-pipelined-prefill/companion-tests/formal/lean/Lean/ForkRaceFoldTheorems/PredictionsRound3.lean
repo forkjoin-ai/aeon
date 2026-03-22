@@ -93,7 +93,13 @@ theorem zero_failure_instant_recovery :
     ∀ n : ℕ, n - n = 0 := by intro n; omega
 
 theorem failure_bounded_by_total (fe : FailureEvent) :
-    fe.failedPaths < fe.totalPaths := by omega
+    fe.failedPaths < fe.totalPaths := by
+  rw [fe.conservation]
+  calc
+    fe.failedPaths < fe.failedPaths + 1 := Nat.lt_succ_self fe.failedPaths
+    _ ≤ fe.failedPaths + fe.survivingPaths := by
+      simpa [Nat.add_assoc] using
+        Nat.add_le_add_left (Nat.succ_le_of_lt fe.someSurvive) fe.failedPaths
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 33: Void Field Equation Predicts Info Propagation
@@ -105,22 +111,32 @@ structure InfoPropagation where
   sourceDensity : ℕ
   /-- Total void density at destination -/
   destDensity : ℕ
-  /-- Gradient: source - dest (information flows down gradient) -/
-  gradient : ℕ := if sourceDensity > destDensity then sourceDensity - destDensity else 0
+
+/-- Gradient: source - dest (information flows down gradient). -/
+def InfoPropagation.gradient (ip : InfoPropagation) : ℕ :=
+  if ip.sourceDensity > ip.destDensity then ip.sourceDensity - ip.destDensity else 0
 
 theorem gradient_determines_flow (ip : InfoPropagation)
     (hHigherSource : ip.destDensity < ip.sourceDensity) :
     0 < ip.gradient := by
-  unfold InfoPropagation.gradient; simp; omega
+  unfold InfoPropagation.gradient
+  split_ifs with h
+  · exact Nat.sub_pos_of_lt hHigherSource
+  · exact False.elim (h hHigherSource)
 
 theorem equal_density_no_flow (ip : InfoPropagation)
     (hEqual : ip.sourceDensity = ip.destDensity) :
     ip.gradient = 0 := by
-  unfold InfoPropagation.gradient; simp; omega
+  unfold InfoPropagation.gradient
+  split_ifs with h
+  · omega
+  · rfl
 
 theorem gradient_bounded (ip : InfoPropagation) :
     ip.gradient ≤ ip.sourceDensity := by
-  unfold InfoPropagation.gradient; split_ifs <;> omega
+  by_cases h : ip.sourceDensity > ip.destDensity
+  · simpa [InfoPropagation.gradient, h] using Nat.sub_le ip.sourceDensity ip.destDensity
+  · simp [InfoPropagation.gradient, h]
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 34: Negotiation Heat Predicts Duration
@@ -130,10 +146,11 @@ theorem gradient_bounded (ip : InfoPropagation) :
 structure NegotiationProcess where
   /-- Number of fold steps (concessions/eliminations) -/
   foldSteps : ℕ
-  /-- Heat per fold step (minimum kT ln 2, modeled as 1) -/
-  heatPerStep : ℕ := 1
   /-- Positive steps -/
   stepsPos : 0 < foldSteps
+
+/-- Heat per fold step (minimum kT ln 2, modeled as 1). -/
+def NegotiationProcess.heatPerStep (_np : NegotiationProcess) : ℕ := 1
 
 /-- Total negotiation heat: steps x heat per step. -/
 def NegotiationProcess.totalHeat (np : NegotiationProcess) : ℕ :=
@@ -145,17 +162,18 @@ def NegotiationProcess.durationProxy (np : NegotiationProcess) : ℕ :=
 
 theorem more_steps_more_heat (np : NegotiationProcess) :
     0 < np.totalHeat := by
-  unfold NegotiationProcess.totalHeat; omega
+  simp [NegotiationProcess.totalHeat, NegotiationProcess.heatPerStep, np.stepsPos]
 
 theorem heat_monotone (np1 np2 : NegotiationProcess)
     (hMoreSteps : np1.foldSteps ≤ np2.foldSteps) :
     np1.totalHeat ≤ np2.totalHeat := by
-  unfold NegotiationProcess.totalHeat
-  exact Nat.mul_le_mul_right np1.heatPerStep hMoreSteps
+  simp [NegotiationProcess.totalHeat, NegotiationProcess.heatPerStep]
+  exact hMoreSteps
 
 theorem single_step_minimum_heat (np : NegotiationProcess) :
     1 ≤ np.totalHeat := by
-  unfold NegotiationProcess.totalHeat; omega
+  simp [NegotiationProcess.totalHeat, NegotiationProcess.heatPerStep]
+  exact Nat.succ_le_of_lt np.stepsPos
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 35: Whip Wave Duality Predicts Optimal Batch Size
@@ -177,9 +195,17 @@ def BatchProcessing.totalTime (bp : BatchProcessing) (stages : ℕ) : ℕ :=
   ((bp.totalItems + bp.batchSize - 1) / bp.batchSize) + stages + bp.correctionCost * bp.batchSize
 
 theorem batch_tradeoff_exists (bp : BatchProcessing) (stages : ℕ)
-    (hItems : 0 < bp.totalItems) (hStages : 0 < stages) :
+    (hItems : 0 < bp.totalItems) (_hStages : 0 < stages) :
     0 < bp.totalTime stages := by
-  unfold BatchProcessing.totalTime; omega
+  unfold BatchProcessing.totalTime
+  have hQuotPos : 0 < (bp.totalItems + bp.batchSize - 1) / bp.batchSize := by
+    apply Nat.div_pos
+    · omega
+    · exact bp.batchPos
+  have hBasePos :
+      0 < ((bp.totalItems + bp.batchSize - 1) / bp.batchSize) + stages := by
+    exact Nat.add_pos_left hQuotPos stages
+  exact lt_of_lt_of_le hBasePos (Nat.le_add_right _ _)
 
 theorem single_item_batch_no_correction (bp : BatchProcessing) (stages : ℕ)
     (hSingle : bp.batchSize = 1)

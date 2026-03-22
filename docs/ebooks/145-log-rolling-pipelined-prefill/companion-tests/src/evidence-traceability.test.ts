@@ -6,15 +6,13 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
 import { EVIDENCE_DATA } from './evidence-sources.js';
+import { resolveCh17ManuscriptPath } from './manuscript-variant.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const MANUSCRIPT_PATH = join(__dirname, '..', '..', 'ch17-arxiv-manuscript.md');
+const MANUSCRIPT_PATH = resolveCh17ManuscriptPath();
 
 function parseReferenceIds(markdown: string): Set<number> {
   const ids = new Set<number>();

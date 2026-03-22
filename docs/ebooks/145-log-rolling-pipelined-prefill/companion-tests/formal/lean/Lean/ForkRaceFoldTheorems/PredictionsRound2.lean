@@ -4,7 +4,7 @@ import ForkRaceFoldTheorems.Claims
 
 open scoped BigOperators ENNReal
 
-namespace ForkRaceFoldTheorems
+namespace ForkRaceFoldTheorems.PredictionsRound2
 
 /-!
 # Predictions Round 2: Sleep, Dark Energy, Semiotics, Metacognition, Reynolds
@@ -39,8 +39,9 @@ structure SleepDebtSystem where
 structure SleepRecovery where
   /-- Pre-sleep state -/
   before : SleepDebtSystem
-  /-- Post-sleep debt is zero -/
-  postDebt : ℕ := 0
+
+/-- Post-sleep debt is definitionally zero. -/
+def SleepRecovery.postDebt (_sr : SleepRecovery) : ℕ := 0
 
 theorem sleep_clears_debt (sr : SleepRecovery) :
     sr.postDebt = 0 := rfl
@@ -49,22 +50,21 @@ theorem below_threshold_no_debt (sds : SleepDebtSystem)
     (hBelow : sds.wakeHours ≤ sds.threshold) :
     sds.debt = 0 := by
   rw [sds.debtFormula]
-  simp
-  omega
+  simp [Nat.not_lt_of_ge hBelow]
 
 theorem above_threshold_positive_debt (sds : SleepDebtSystem)
     (hAbove : sds.threshold < sds.wakeHours) :
     0 < sds.debt := by
   rw [sds.debtFormula]
-  simp
-  omega
+  split_ifs with hTrigger
+  · exact Nat.sub_pos_of_lt hAbove
+  · exact False.elim (hTrigger hAbove)
 
 theorem debt_monotone_in_wake (sds : SleepDebtSystem)
     (hAbove : sds.threshold < sds.wakeHours) :
     sds.debt = sds.wakeHours - sds.threshold := by
   rw [sds.debtFormula]
-  simp
-  omega
+  simp [Nat.not_le_of_gt hAbove]
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 22: Dark Matter/Energy as BATNA/WATNA Void
@@ -117,8 +117,8 @@ theorem dominance_trichotomy (vp : VoidPartition) :
 -- Prediction 23: Semiotic Deficit Predicts Translation Loss
 -- ═══════════════════════════════════════════════════════════════════════
 
-/-- A semiotic channel: semantic paths vs articulation streams. -/
-structure SemioticChannel where
+/-- A local semiotic channel model used by these round-2 predictions. -/
+structure Round2SemioticChannel where
   /-- Number of semantic paths (meanings) -/
   semanticPaths : ℕ
   /-- Number of articulation streams (expressions) -/
@@ -129,28 +129,28 @@ structure SemioticChannel where
   streamsPos : 0 < articulationStreams
 
 /-- The semiotic deficit: meanings lost in translation. -/
-def SemioticChannel.deficit (sc : SemioticChannel) : ℕ :=
+def Round2SemioticChannel.deficit (sc : Round2SemioticChannel) : ℕ :=
   sc.semanticPaths - sc.articulationStreams
 
 /-- Lost nuance = vented semantic paths. -/
-def SemioticChannel.lostNuance (sc : SemioticChannel) : ℕ :=
+def Round2SemioticChannel.lostNuance (sc : Round2SemioticChannel) : ℕ :=
   sc.deficit
 
-theorem translation_always_loses (sc : SemioticChannel)
+theorem translation_always_loses (sc : Round2SemioticChannel)
     (hLossy : sc.articulationStreams < sc.semanticPaths) :
     0 < sc.deficit := by
-  unfold SemioticChannel.deficit
+  unfold Round2SemioticChannel.deficit
   omega
 
-theorem perfect_translation_zero_deficit (sc : SemioticChannel)
+theorem perfect_translation_zero_deficit (sc : Round2SemioticChannel)
     (hPerfect : sc.articulationStreams = sc.semanticPaths) :
     sc.deficit = 0 := by
-  unfold SemioticChannel.deficit
+  unfold Round2SemioticChannel.deficit
   omega
 
-theorem deficit_bounded_by_semantics (sc : SemioticChannel) :
+theorem deficit_bounded_by_semantics (sc : Round2SemioticChannel) :
     sc.deficit ≤ sc.semanticPaths := by
-  unfold SemioticChannel.deficit
+  unfold Round2SemioticChannel.deficit
   omega
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -189,8 +189,7 @@ theorem skill_stages_ordered :
     CognitiveLevel.toNat .execute < CognitiveLevel.toNat .monitor ∧
     CognitiveLevel.toNat .monitor < CognitiveLevel.toNat .evaluate ∧
     CognitiveLevel.toNat .evaluate < CognitiveLevel.toNat .adapt := by
-  unfold CognitiveLevel.toNat
-  omega
+  decide
 
 theorem four_stages_exist :
     CognitiveLevel.toNat .adapt = 3 := rfl
@@ -198,7 +197,7 @@ theorem four_stages_exist :
 theorem mastery_is_terminal :
     ∀ l : CognitiveLevel, CognitiveLevel.toNat l ≤ 3 := by
   intro l
-  cases l <;> unfold CognitiveLevel.toNat <;> omega
+  cases l <;> decide
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 25: Reynolds-BFT Threshold Predicts Consensus Failure
@@ -258,7 +257,7 @@ theorem idle_zero_when_balanced (ds : DistributedSystem)
 theorem predictions_round2_master
     (sds : SleepDebtSystem) (hBelow : sds.wakeHours ≤ sds.threshold)
     (vp : VoidPartition)
-    (sc : SemioticChannel) :
+    (sc : Round2SemioticChannel) :
     -- Sleep below threshold = no debt
     sds.debt = 0 ∧
     -- Dark matter/energy conservation
@@ -272,7 +271,7 @@ theorem predictions_round2_master
   exact ⟨below_threshold_no_debt sds hBelow,
          dark_matter_energy_conservation vp,
          deficit_bounded_by_semantics sc,
-         by unfold CognitiveLevel.toNat; omega,
+         by decide,
          trivial⟩
 
-end ForkRaceFoldTheorems
+end PredictionsRound2
