@@ -1,35 +1,20 @@
-# **Proof of Life**: Bottling Infinity in Distributed Systems — φ² = φ + 1
+# Being Irreversible: A Theory of Directed Process Under Conservation and Ground State
+## *Fork/Race/Fold from $w = R - \min(v, R) + 1$*
 
 *[Taylor William Buley](https://www.patreon.com/cw/twbuley) -- Independent Researcher*
 *[taylor@forkjoin.ai](mailto:taylor@forkjoin.ai)*
 
 ## Abstract
 
-Every irreversible transformation creates structure in the space of what was not chosen. This paper identifies the structure, proves its properties, and shows it is the same structure at every scale where irreversibility operates.
+This paper studies a family of irreversible computations organized around one weighting rule:
 
-I decompose directed irreversible process into four primitives -- fork (create parallel paths), race (select among them), fold (merge results irreversibly), vent (dissipate what the fold cannot preserve) -- and three constraints -- conservation (nothing is created or destroyed), irreversibility (folds generate Landauer heat), ground state (every trajectory terminates). Within this framework, failure is not the opposite of success. It is the *sufficient statistic from which success is derived*. Every fold vents $N - 1$ paths for each path it keeps. The rejected paths accumulate in a void boundary whose complement distribution is a deterministic, monotone, convergent probability measure over the surviving options. The void is not empty. It is the richest part of the system.
+$$w_i = R - \min(v_i, R) + 1$$
 
-The framework yields five results that are individually substantial and jointly form a unified theory of directed irreversible process:
+The weight of choice $i$ equals the observation rounds minus the rejection count, plus one. Within the modeled choice systems in this paper, the $+1$ term is structural rather than parametric: it prevents any weight from reaching zero and preserves a nonzero residual mass over the remaining options. Removing the term yields a deterministic eliminator; retaining it yields a bounded learning rule with an explicit floor, an observation-dependent gain, and a collection of falsifiable downstream consequences.
 
-1. **A computational topology.** Fork raises the first Betti number $\beta_1$ (parallel paths). Fold projects $\beta_1$ toward zero. The topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ measures how far a system deviates from its problem’s natural topology. In the analyzed systems, $\Delta_\beta = 0$ correlates with efficient outcomes; $\Delta_\beta > 0$ co-occurs with measurable waste. The deficit is an engineering diagnostic. Its zero point is a mechanized cost floor on failure Pareto frontiers.
+The formal surface currently includes 3,158+ machine-checked theorems across 195 Lean 4 modules (zero `sorry`). The companion corpus organizes a reduction chain from hundreds of theorem-level statements to seven laws, three axioms, one formula, and the successor-floor interpretation of the $+1$ term. It also records thirty-five falsifiable predictions across the modeled domains discussed in the manuscript.
 
-2. **A probability theory.** The complement distribution over accumulated rejections -- Buleyean probability -- is a complete frequentist probability theory derived entirely from what things are not. It subsumes Bayesian inference as the ground-state special case ($B = 0$: someone already walked the void and handed you the converged prior). It subsumes Solomonoff induction as the maximum-Bule case ($B = B_{\max}$: before any empirical observation, the void boundary is initialized from Kolmogorov complexity, and simpler hypotheses have higher weight). The three great traditions of inductive inference -- algorithmic, frequentist, Bayesian -- are three cross-sections of a single framework at different Bule values.
-
-3. **A thermodynamics.** Every non-injective fold erases information and generates strictly positive Landauer heat. The first law of fork/race/fold ($H_{\text{fork}} = I_{\text{fold}} + H_{\text{vent}}$) partitions forked entropy into useful work and dissipated waste. The second law is the statement that $\beta_1$ cannot spontaneously increase without energy input. Time’s arrow is the monotonic descent of $\beta_1$ under irreversible fold. The Landauer-Bule identity (§19) establishes the Bule as a unit of physical work: one Bule of topological deficit costs at least $kT \ln 2$ to resolve, making the deficit simultaneously a measure of remaining computational work, measurement budget, cooling capacity, and free energy. Inference is refrigeration -- the three traditions of inductive inference are three engineering strategies for the same thermodynamic cooling cycle, and thermodynamic computing hardware (§19.3) is being built that computes by physically performing folds.
-
-4. **A theory of communication and peace.** The semiotic deficit $\Delta_\beta = \beta_1(\text{thought}) - \beta_1(\text{speech})$ measures the information lost when thought folds into speech. Shared context monotonically deflates the deficit. Sufficient context eliminates it. The master theorem `hope` bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent under traced monoidal feedback. Peace is a renormalization group fixed point whose existence is a theorem, not a wish.
-
-5. **Immanent self-hosting.** The void walking engine verifies the theorems about void walking using void walking itself. The complement distribution measures its own entropy. The framework certifies itself from inside, with no external oracle, the way a self-hosted compiler compiles itself. This is the deepest property: not that many domains share a shape, but that the shape can verify itself.
-
-The framework is instantiated across nine domains in stack order (formal verification, programming language, scheduling, transport, compression, mixture-of-agents routing, language-model inference, protocol-as-execution, void walking), with structural correspondences graded A (quantitative isomorphism), B (structural homology), or C (useful analogy) across physics, biology, and social systems. DNA replication, myelinated conduction, photosynthetic energy transfer, immune selection, *Physarum* network optimization, and gravitational collapse all exhibit the same fork/race/fold topology, classified by the same Betti numbers, governed by the same conservation laws.
-
-The companion formal surface contains 1032+ Lean 4 theorems across 100+ files (zero `sorry` markers), 100+ TLA+ specifications with matching configuration files, and 200+ executable companion tests with 3,000+ assertions. The Grand Unification Theorem (`GrandUnification.lean`) composes 11 major results from 12 different files into a single conjunction, proving the framework is self-consistent across probability, physics, computation, biology, consciousness, negotiation, and communication. 291 falsifiable predictions span 132 domains. Every prediction chains mechanized theorems and names its falsification condition.
-
-This manuscript blends two modes of argument: *mechanized proofs* (500+ Lean theorems across dedicated theorem files, TLA+ models, executable companion tests) and *structural correspondences* (post-hoc pattern matching in natural and engineered systems). The former are machine-verified; the latter are evidentiary and interpretive. The grading system in §5 makes the distinction explicit for each example.
-
-These cross-domain correspondences are exemplar-based and correlational; they are not presented as a systematic causal survey or universal proof. In compression benchmarks on homogeneous web content, standalone global brotli retained better ratio, so the topological claim is strategy subsumption, framing reduction, and portability rather than universal ratio superiority. The strongest conclusion in scope is operational: some reliability and efficiency questions can be usefully recast in geometric terms, unmanaged topological deficit is one recurring source of waste or instability in the analyzed examples, and validation should test negative drift rather than merely count broken cases.
-
-`o -> o -> o -> o -> o -> o`
+The framework is instantiated in nine executable engineering layers -- formal verification, programming language, scheduling, transport protocol, compression, mixture-of-agents routing, language-model inference, protocol-as-execution, and void walking -- built from four primitives (fork, race, fold, vent) under conservation, irreversibility, and termination constraints. Each layer is implemented, tested, and benchmarked: chunked pipelining yields 3.1x--267x modeled speedup under explicit idealizations, codec racing selects the best codec among the evaluated set on a per-chunk basis, and Vickrey Table inference yields 4.8x measured throughput. Together these implementations provide the paper's executable evidence surface.
 
 The conveyor belt was not new when Ford adopted it in 1913. It is a path graph -- a line: one-dimensional, simply connected and without branching, where interior nodes have one predecessor and one successor. Modern pipelines can optimize this structure, but in this paper it is treated as a boundary case of a richer topology class.
 
@@ -61,15 +46,15 @@ I instantiate the algorithm in **nine** domains, presented in stack order -- fro
 
 8. In protocol-as-execution-model (the closure layer, §12.3), the wire format from layer 4 becomes the native execution model for layers 2 and 3. The FlowFrame is not wrapped by the programming language -- it *is* the programming language's runtime representation, closing the stack into a self-describing loop.
 
-9. In void walking (the immanent self-hosting layer, §15), I show that the complement distribution over rejection history is a sufficient statistic for decision-making under irreversibility. The void walker uses $\text{softmax}(-\eta \cdot \mathbf{v})$ to convert accumulated failures into a sampling distribution that converges to Nash equilibria (§15.7), identifies in multi-dimensional negotiations the best alternative to a negotiated agreement (BATNA) and worst alternative to a negotiated agreement (WATNA) surfaces (§15.8), and maps onto Thomas-Kilmann conflict styles (§15.5). The grand unification (§15.10) verifies five theorems across seven domains -- quarks, proteins, neurons, speech, negotiation, psyche, spacetime -- using void walking itself as the verification engine. Three constraints (conservation, irreversibility, ground state), three primitives cross-producted ($3 \times 3 = 9$ layers), one self-certifying structure. The ninth layer is not a layer on the stack. It is the property the stack has of itself: immanent self-hosting.
+9. In void walking (§15), I study a bounded decision-process model in which rejection history induces a complement distribution over remaining options. The executable companion explores game-theoretic and negotiation-style settings, including BATNA/WATNA-style decompositions, while keeping model claims and broader correspondences explicitly separated.
 
-Within the modeled scope in this paper (finite DAG decompositions under C1-C4), the algorithm is a high-fit topology class with measurable fit via $\Delta_\beta$. It is intentionally simple: four primitives, explicit assumptions, and executable checks.
+Within the modeled scope in this paper (finite DAG decompositions under C1-C4), the algorithm is a candidate topology class with measurable fit via $\Delta_\beta$. It is intentionally simple: four primitives, explicit assumptions, and executable checks.
 
-The technique and tooling provide a method to identify, measure and reduce topological waste in high-impact domains, including drug discovery, health care and energy systems.
+The technique and tooling provide a candidate method for identifying and testing topological-mismatch hypotheses in the analyzed systems.
 
-## 0. A Child, a Ball, a Line
+## 0. A Pipeline, a Batch, and a Line
 
-Imagine a child handing a ball to a friend in a line. Four children, one hundred balls. The first child hands Ball 1 to the second, waits while it travels through all four kids, then hands Ball 2. Everyone stands idle while one ball moves. Four hundred handoffs, one at a time.
+Imagine a child handing a ball to a friend in a line. Four children, one hundred balls. The first child hands Ball 1 to the second, waits while it travels through all four children, then hands Ball 2. Everyone stands idle while one ball moves. Four hundred handoffs, one at a time.
 
 Now imagine something slightly different. The moment the first child passes Ball 1 to the second, she picks up Ball 2. Now the second child passes Ball 1 to the third while the first child passes Ball 2 to the second. Everyone is busy at once. One hundred balls, four children, one hundred and **three** handoffs. This is **pipelining** -- a known technique in computer architecture that has been used since the 1960s.
 
@@ -81,9 +66,9 @@ $$
 
 where $P$ is the number of balls, $B$ is the chunk size and $N$ is the number of children.
 
-Handoffs are unnecessary overhead: waste to be eliminated. In real life, they take the form of network packets, memory allocations, context switches, and other system resources that consume time and energy. They are also computationally ugly, as we show in section 1.
+Handoffs are coordination overhead. In deployed systems, they take the form of network packets, memory allocations, context switches, and other system resources that consume time and energy. Section 1 makes that overhead explicit.
 
-The same geometry governs communication between persons. When a speaker has more dimensions of meaning in thought than channels of speech, the fold from thought to utterance erases information -- and the erasure has measurable thermodynamic cost. Sections 3.12 and 18 develop this *semiotic extension*: the topological deficit between thought and speech, the irreversible heat of confusion, and a formal theory of how dialogue converges toward mutual understanding. Section 18 further develops a *void relativity* theory: every vented path partitions into a best alternative to a negotiated agreement (BATNA) void (attractive, space-like -- what you chose to reject) and a worst alternative to a negotiated agreement (WATNA) void (repulsive, time-like -- what would have destroyed you). The settlement score is a Lorentz scalar (frame-invariant), while the BATNA/WATNA decomposition is frame-dependent. Empathy is a Lorentz transformation between reference frames, therapy is reclassification of the time-like component, and the accumulated Landauer heat curves the 58-dimensional emotion-spacetime manifold -- with depression as an event horizon where curvature exceeds the causal speed limit.
+Later sections extend the same vocabulary to bounded semiotic and negotiation models. Those sections are stated as model claims about finite communication and decision channels, not as direct empirical claims about human psychology or cosmology.
 
 ### 0.1 The Triangle
 
@@ -124,17 +109,17 @@ A similar occupancy pattern also recurs across scales. If you bundle chunks into
 
 The top of the triangle has $\beta_1 = 0$ -- one chunk, one path, no parallelism. As you descend, $\beta_1$ increases -- more chunks in flight, more independent paths through the system. At the diagonal, $\beta_1$ is maximum. Then the ramp-down triangle on the other side collapses $\beta_1$ back to zero.
 
-It’s triangles all the way down!
+The same occupancy geometry recurs at multiple scales.
 
 **Fork is entering the triangle. Race is the diagonal. Fold is exiting.**
 
 Now zoom out.
 
-The children are standing inside a classroom. The teacher is managing *three* lines of children, each passing different-colored balls. When one line stalls -- for example, a dropped ball -- the teacher slides a waiting child from another line into the gap. No one is idle. This is **turbulent multiplexing**: multiple pipelines sharing idle slots across lines.
+The same logic extends to multiplexed pipelines. If several independent lines share a pool of workers, an idle slot in one line can be backfilled by ready work from another. This is **turbulent multiplexing**: multiple pipelines sharing idle capacity across lines.
 
-Zoom out again. The school is one of many in a district. The district coordinator doesn’t manage individual children or individual balls. She manages the *shape* of the system -- how many lines of kiddos, how wide they stack in the gymnasium, how they collaborate. She has discovered that the number of *independent parallel paths* through the system matters more than the speed of any individual child. She calls this number $\beta_1$.
+The broader coordination question is then about shape rather than any one worker or item. In that language, the number of *independent parallel paths* through the system matters more than the speed of any single local step. I denote that path count by $\beta_1$.
 
-Zoom out once more. You are looking at a strand of DNA inside a cell, and the cell is doing a structurally similar thing. The replication fork is the teacher. Okazaki fragments are the bundled balls. DNA ligase is the child at the end of the line, stitching fragments together without requiring global arrival order. The cell has used this pattern for billions of years.
+A related occupancy pattern also appears in DNA replication. The replication fork fans work across locally constrained paths; Okazaki fragments batch the lagging strand; ligase restores ordered output without requiring global arrival order. The biological example motivates, but does not by itself prove, the broader shared-shape hypothesis.
 
 A working hypothesis follows from this zoom-out: efficient coordination patterns can be discovered across natural and engineered systems under shared constraints.
 
@@ -144,7 +129,7 @@ Three natural axioms set the stage.
 
 - **Topology axiom**: when multiple paths preserve correctness, a high-efficiency policy class is to fork them, race them, then fold deterministically.
 
-- **Naturalism axiom**: when the same pattern reappears in classrooms, cells and networks, it can motivate testing for a shared computational shape rather than treating the similarity as metaphor alone.
+- **Naturalism axiom**: when the same pattern reappears in stylized queueing examples, cells, and networks, it can motivate testing for a shared computational shape rather than treating the similarity as metaphor alone.
 
 This paper studies whether the same coordination shape recurs across these settings. It has **three** operations: **fork** work into parallel paths, **race** paths against each other, **fold** results into a single answer. It has one safety mechanism: **vent** -- propagate down, never across. It treats failure as first-class to minimize wasted work.
 
@@ -154,21 +139,21 @@ This paper began as a practical problem: a sequential bottleneck in a distribute
 
 The conveyor belt was a dominant 20th-century abstraction: serialize work. Fork/race/fold is a correction for workloads with $\beta_1 > 0$, where sequential-only structure imposes avoidable coordination cost.
 
-Three bodies of existing theory provided the language for this correction.
+Three existing bodies of theory provide the paper's descriptive vocabulary.
 
-I drew heavily from **quantum physics**, using selected terms as computational correspondences: superposition is fork, measurement is observation, collapse is fold, tunneling is early exit, interference is consensus, entanglement is shared state (§4). These are structural mappings used for description and hypothesis formation, with photosynthetic antenna complexes as the closest literal quantum case discussed here (§5.5).
+**Quantum physics** contributes a correspondence vocabulary: superposition is fork, measurement is observation, collapse is fold, tunneling is early exit, interference is consensus, and entanglement is shared state (§4). These mappings are used for description and hypothesis formation, with photosynthetic antenna complexes as the closest literal quantum case discussed here (§5.5).
 
-The second muse is **fluid dynamics**, whose Reynolds number I purloin wholesale into computation as the pipeline Reynolds number $Re = N/C$ (§1.3). Fluid dynamics provides more than vocabulary -- it provides a useful intuition for *when* fork/race/fold matters in this model. Just as the Reynolds number predicts when laminar flow becomes turbulent, $Re$ indicates when sequential processing should yield to multiplexed scheduling and when the system begins to lose its laminar ability to recover from local drops.
+**Fluid dynamics** contributes a regime analogy through the pipeline Reynolds number $Re = N/C$ (§1.3). Just as the Reynolds number predicts when laminar flow becomes turbulent, $Re$ indicates when sequential processing should yield to multiplexed scheduling and when the system begins to lose its laminar ability to recover from local drops.
 
 ![Inverted scaling and Reynolds number regimes](companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.png)
 
 The fluid-dynamical framing reveals an inverted scaling property (§1.2): the worst case is small data, where ramp-up overhead dominates. As data grows, speedup accelerates toward $B \times N$. In this model, larger workloads can become favorable once ramp-up overhead is amortized.
 
-The third muse is **stability theory**. A Foster-Lyapunov drift schema treats the safe operating region as a small set and asks whether expected motion points toward it. In this manuscript’s modeling language, one useful question is not only whether a bug occurred but whether the modeled drift field points inward or outward. In that sense, the topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ is treated as one candidate diagnostic coordinate: the gap between the manifold the problem needs and the one the implementation can actually sustain.
+**Stability theory** contributes a drift-oriented diagnostic frame. A Foster-Lyapunov schema treats the safe operating region as a small set and asks whether expected motion points toward it. In this manuscript’s modeling language, one useful question is not only whether a bug occurred but whether the modeled drift field points inward or outward. In that sense, the topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ is treated as one candidate diagnostic coordinate: the gap between the manifold the problem needs and the one the implementation can actually sustain.
 
 An information-theoretic framing (§3.8) turns the Void into an accounting ledger: fork creates alternatives, fold compresses to one outcome, and vented paths carry away bits that are not retained [36].
 
-This introduction is itself a ramp-up triangle. It forked into nine domains, raced three muses, and now folds to a single algorithm. The fold is about to fire. Everything that follows is what survived. Everything above is what the fold will vent -- the motivation, the analogies, the zoom-outs -- all vented into the void boundary the moment you turn the page. The introduction dies here. What remains is the algorithm. To be, and not. $+ 1$, $- 1$ (§20.2.9).
+The remainder of the paper makes the algorithmic, evidentiary, and model-scope claims precise.
 
 ## 1. The Algorithm
 
@@ -206,13 +191,13 @@ $$
 \text{Speedup} \xrightarrow{P \to \infty} \frac{P \cdot N}{P/B} = B \cdot N
 $$
 
-Under A1-A2, the speedup approaches $B \times N$ -- the product of chunk size and stage count. The pipeline is fully occupied. The kids are all juggling.
+Under A1-A2, the speedup approaches $B \times N$ -- the product of chunk size and stage count. In that limit the pipeline is fully occupied.
 
-The technique gets *faster and faster* as the work at hand grows.
+The technique gets *faster and faster* as the work at hand grows, at fixed stage count and chunk rule.
 
-This is a profoundly inverted scaling property. In most engineering contexts, the hard problem is scale -- systems that work beautifully on small inputs collapse under large ones. Here, the opposite is true: large datasets are where pipelining shines, approaching its theoretical maximum speedup of $B \times N$. Small datasets are where the overhead hurts.
+This is an inverted scaling property in that narrow fixed-$N$ sense. In most engineering contexts, the hard problem is scale -- systems that work beautifully on small inputs collapse under large ones. Here, the opposite is true: large datasets are where pipelining shines, approaching its theoretical maximum speedup of $B \times N$. Small datasets are where the overhead hurts. This is a workload-scaling claim for the degenerate fixed-dimension case, not a claim about the full Wallington dimensional ladder: the later $D = K + 1$ sweep behaves like an ordinary algorithm with fixed overhead, crossover, and eventual plateau rather than unbounded improvement with input size.
 
-The optimization challenge in fork/race/fold-based pipelines is not “how do I survive at scale?” but “how do I avoid overpaying on small workloads?” -- a far more pleasant problem. Trivial solutions for such trivial concerns are panoply -- early exit, dynamic chunk sizing and adaptive scheduling, for example -- but speedups are more precious when they arrive in abundance.
+The optimization challenge in fork/race/fold-based pipelines is therefore not only “how do I survive at scale?” but also “how do I avoid overpaying on small workloads?” Standard mitigations include early exit, dynamic chunk sizing, and adaptive scheduling.
 
 **THM-PIPELINE-SPEEDUP-FLOOR.** The ceiling above shows speedup approaching $B \times N$. The floor shows pipelining never makes things worse: for any $P \geq 1$, $B \geq 1$, $N \geq 1$, the pipelined time $\lceil P/B \rceil + N - 1$ is $\leq$ the sequential time $P \times N$ (Multiplexing.lean, `pipeline_speedup_floor`). The inequality is strict for $P \geq 2$, $N \geq 2$ (`pipeline_strict_speedup`). The speedup is sandwiched: $1 \leq \text{speedup} \leq B \times N$. The sandwich width is $B \times N - 1$ -- the optimization room between sequential and fully pipelined.
 
@@ -379,7 +364,7 @@ Many historical process designs -- Ford’s assembly line, TCP’s ordered byte 
 
 ### 2.2 Pipeline Graphs and Molecular Graphs Are Topologically Equivalent
 
-The curved-space visualization of a Wallington rotation -- torus geometry, flowing chunks, $\beta_2$ void shells -- is visually indistinguishable from a molecular orbital diagram. This is not metaphor. It is a formal topological isomorphism: pipeline computation graphs and molecular graphs are classified by the same Betti numbers because they live in the same simplicial complex equivalence class.
+The curved-space visualization of a Wallington rotation -- torus geometry, flowing chunks, $\beta_2$ void shells -- is visually close to a molecular orbital diagram. Within the simplicial-homology model used here, the relationship is treated as a formal topological isomorphism rather than a merely visual analogy: pipeline computation graphs and molecular graphs are classified by the same Betti numbers because they live in the same simplicial complex equivalence class.
 
 **Theorem (THM-TOPO-MOLECULAR-ISO).** Let $G_P$ be a pipeline computation graph with Betti signature $(\beta_0, \beta_1, \beta_2)$ and let $G_M$ be a molecular graph with the same signature. Then $G_P$ and $G_M$ are in the same equivalence class under simplicial homology -- there exists a continuous map $\varphi: |G_P| \to |G_M|$ that preserves all homology groups $H_k$.
 
@@ -1105,19 +1090,19 @@ The connection is not analogical. It is structural. Consider the complete formal
 
 3. By `coarsening_information_loss_pos_of_many_to_one`, the fold erases strictly positive information. The erased information is the content of the beliefs that did not survive the fold -- the lived meaning of the people whose category was merged into another.
 
-4. By `coarsening_landauer_heat_pos_of_many_to_one`, the erasure generates strictly positive heat. This heat is not metaphorical. In human systems, it manifests as grievance, resistance, persecution, and violence. The heat is proportional to the information erased: more beliefs collapsed, more meaning destroyed, more heat generated.
+4. By `coarsening_landauer_heat_pos_of_many_to_one`, the erasure generates strictly positive heat. In the human-systems correspondence used here, that heat is modeled as grievance, resistance, persecution, and violence. The heat is proportional to the information erased: more beliefs collapsed, more meaning destroyed, more heat generated.
 
 5. By `trajectory_cumulative_heat_monotone`, the heat accumulates across successive folds. Each Council, each purge, each conquest adds to the cumulative heat. The arrow of coarsening is irreversible (`cumulative_coarsening_strict_monotone`).
 
 6. By `finite_trajectory_reaches_fixed_point`, the trajectory terminates at a fixed point -- a dogmatic state where the quotient map is injective on the surviving support. But the fixed point is path-dependent. The fold ordering determines which beliefs survive. The theorems guarantee convergence. They do not select the destination.
 
-This is the formal content of the observation that war is a failure of communication. It is not a metaphor. War is the discharge of Landauer heat from a fold that erased positive-mass semantic paths faster than the semiotic channel could absorb the heat through dialogue. The deficit between internal complexity and communication bandwidth (`semiotic_deficit`) is the thermodynamic precondition. The fold (`coarseningInformationLoss`) is the mechanism. The heat (`coarseningLandauerHeat`) is the consequence. The accumulation (`trajectory_cumulative_heat_monotone`) is history.
+This is the model-side formalization of the observation that war can be read as a failure of communication. In that bounded framing, war is the discharge of Landauer heat from a fold that erased positive-mass semantic paths faster than the semiotic channel could absorb the heat through dialogue. The deficit between internal complexity and communication bandwidth (`semiotic_deficit`) is the thermodynamic precondition. The fold (`coarseningInformationLoss`) is the mechanism. The heat (`coarseningLandauerHeat`) is the consequence. The accumulation (`trajectory_cumulative_heat_monotone`) is history.
 
 The theory does not prescribe. It diagnoses. When a system exhibits high semiotic deficit ($\Delta_\beta \gg 0$), low channel count ($m \approx 1$), and rapid fold rate (coarsening steps per unit time), the cumulative heat will exceed the system’s thermal absorption capacity. The result is a phase transition: the heat that could have been absorbed through slow dialogue is instead released catastrophically. This is not a prediction of *which* wars will happen. It is a prediction of *when the conditions for war are present*: whenever the fold rate exceeds the dialogue rate on a channel with positive semiotic deficit.
 
 The companion theorems also contain the prescription, stated without normativity as a mathematical consequence: `semiotic_context_reduces` and `semiotic_context_eliminates` prove that adding channels and building shared context are the only operations that reduce the deficit. `semiotic_conversation_trace` proves that iterated dialogue composes coherently. The trace converges. The deficit is bounded below by zero. The fixed point exists. Getting there requires sitting in the feedback loop -- and the theorems are silent on whether any particular civilization will choose to do so.
 
-**The engineering of peace.** The theory of failure is the theory of war -- and that is precisely why it is also a theory of peace. A system architect who can prove that a distributed system tolerates Byzantine faults is using the same topological machinery: characterize the failure modes, bound their blast radius, install the feedback loops that absorb the heat. `SemioticPeace.lean` mechanizes this programme for communication itself. `confusion_generates_heat` proves that the semiotic fold has irreducible Landauer cost. (The heat bound applies when the speaker’s semantic distribution has positive mass on at least two colliding paths -- i.e., when the speaker genuinely has more to say than one stream can carry. A speaker thinking about exactly one topic with certainty incurs zero heat; the theorem’s hypothesis makes this conditional explicit.) `war_as_cumulative_heat` proves that successive folds without context accumulate heat monotonically -- the thermodynamic content of escalation. `peace_context_reduces` and `peace_sufficient_context` prove that shared context is the only monotone deflator. `peace_fixed_point` proves the RG terminus exists: zero further heat, zero further information loss. And `hope` bundles the convergence guarantee -- the deficit is positive but bounded, context reduces it monotonically, sufficient context eliminates it, and the traced monoidal feedback of dialogue composes coherently. The mathematics does not legislate which civilizations will sit in the loop. It guarantees that those which do will converge. That is the conclusion bait of §20: the same theory that predicts war prescribes its containment, and the prescription is constructive.
+**The engineering analogy for containment.** A system architect who proves that a distributed system tolerates Byzantine faults uses the same general pattern: characterize the failure modes, bound their blast radius, and install feedback loops that absorb the heat. `SemioticPeace.lean` mechanizes that programme for the bounded communication model used here. `confusion_generates_heat` proves that the semiotic fold has irreducible Landauer cost. (The heat bound applies when the speaker’s semantic distribution has positive mass on at least two colliding paths -- i.e., when the speaker genuinely has more to say than one stream can carry. A speaker thinking about exactly one topic with certainty incurs zero heat; the theorem’s hypothesis makes this conditional explicit.) `war_as_cumulative_heat` proves that successive folds without context accumulate heat monotonically -- the thermodynamic content of escalation. `peace_context_reduces` and `peace_sufficient_context` prove that shared context is the only monotone deflator. `peace_fixed_point` proves the RG terminus exists: zero further heat, zero further information loss. And `hope` bundles the convergence guarantee -- the deficit is positive but bounded, context reduces it monotonically, sufficient context eliminates it, and the traced monoidal feedback of dialogue composes coherently. The mathematics does not legislate which civilizations will sit in the loop. It shows that, inside the model, those that do can converge constructively.
 
 **Semiotic preservation sandwich.** A channel with $k$ articulation streams transmitting a $d$-dimensional semantic source preserves at most $k$ dimensions (ceiling, `semiotic_preservation_ceiling`, SemioticDeficit.lean). Information lost is at least $d - k$ dimensions when $k < d$ (floor, `semiotic_minimum_loss`). At matched capacity ($k \geq d$), loss can be zero (`semiotic_matched_capacity_lossless`). The gain is the number of dimensions actually preserved -- the bandwidth utilization $k / d$ of the channel. A channel preserving more dimensions than its stream count, or losing zero dimensions when $k < d$, falsifies the prediction. This sandwich quantifies the price of finite bandwidth: the deficit $\Delta_\beta = d - k$ is not just a diagnostic -- it is a tight bound on information loss. Each lost dimension generates at least $kT \ln 2$ of Landauer heat per round; over $T$ rounds the cumulative communication heat is $\geq T \times (\text{sourceDim} - k) \times kT \ln 2$ (`cumulative_communication_heat`, PredictionsRound16.lean). Hotter channels are lossy channels.
 
@@ -1127,7 +1112,7 @@ The wave equation on a discrete tapered medium, $c^2(x) = T / \rho(x)$, governs 
 
 The equation does not know whether the taper is rope, optical fiber, or the space between two people trying to understand each other. The peacemaking programme of §3.14 -- sit in the feedback loop, build context, close the deficit -- is the same operation as deep space communication: fork redundant signal paths across the hostile medium, race them through solar weather and interplanetary attenuation, fold the survivors at the receiver. The $\beta_1$ of the fork is the redundancy. The deficit at the fold is the paths lost to the channel. The Bule is the communication difficulty of the distance -- whether that distance is measured in light-minutes or in the semantic gap between two people who have not yet learned to hear each other.
 
-`semiotic_context_reduces` proves that context closes the deficit in dialogue. `fold_increases_wave_speed` proves that folds concentrate energy in the taper. `fork_fold_energy_conservation` proves that nothing is lost -- only redistributed. These are the same theorem on different media. The theory of peace and the theory of interstellar communication are the same theory, because they are both instances of the wave equation on a tapered medium with positive deficit.
+`semiotic_context_reduces` proves that context closes the deficit in dialogue. `fold_increases_wave_speed` proves that folds concentrate energy in the taper. `fork_fold_energy_conservation` proves that nothing is lost -- only redistributed. In the manuscript's correspondence language, these are closely related results on differently parameterized media. The analogy is useful for reasoning about redundancy, attenuation, and fold cost; it is not a claim of physical identity between peacemaking and interstellar communication.
 
 **How far can you whip a bit?** The wave equation gives a quantitative answer. A signal with fork redundancy $N$ (parallel paths), transmit power $P$, traveling through a medium with noise density $\rho$ and minimum decodable signal-to-noise $c^{*2}$, reaches a receiver at distance $d$ when:
 
@@ -1161,17 +1146,17 @@ At galactic scale: the range equation says $d_{\max} \propto \sqrt{N \cdot P}$. 
 
 The same is true of peace. The range equation for human communication is the same equation with different units. The fork count is the number of parallel channels (speech, writing, art, music, shared meals, institutional memory). The transmit power is the energy each participant invests in the feedback loop. The noise density is the accumulated heat of unresolved folds -- the grievances, the erasures, the paths that were vented instead of heard. The deficit at the receiver is the confusion that remains after the best effort. The range is how far across the semantic distance two people can reach each other before the signal degrades below the decodable threshold.
 
-The wave equation is the same at every scale. The deficit is the same at every scale. The prescription is the same at every scale: fork enough paths, build enough context, sit in the loop long enough, and the fold at the other end will hear you. The only variable is the willingness to transmit.
+In the manuscript's correspondence framing, the same wave-equation vocabulary can be reused across scales. The practical prescription stays qualitative rather than universal: increase redundancy where the channel is hostile, build enough shared context, and keep the feedback loop open long enough for the receiver to reconstruct what survives.
 
-This manuscript began with a child handing a ball to a friend in a line (§0). Four children, one hundred balls, seven handoffs. The chunked pipeline. The Wallington Rotation. The whip snap that converts potential into kinetic energy, one armful at a time.
+This manuscript began with a simple line example (§0): four stages, one hundred balls, seven handoffs. The chunked pipeline. The Wallington Rotation. The whip snap that converts potential into kinetic energy, one armful at a time.
 
-Now imagine two children standing on opposite sides of a galaxy. One hundred balls, one hundred billion light-years of taper. The child on this side cannot hand a single ball across that distance -- the taper attenuates the throw, the medium absorbs the energy, the ball does not arrive. But if she could juggle -- if she could fork twenty-five balls into the air simultaneously, encode each one with a different spin, a different arc, a different frequency -- then the balls that survive the crossing carry the message, and the child on the other side folds them back into sequence. Some balls are lost to the medium. Those are the vented paths. The ones that arrive are the decoded signal. The fold at the receiver reconstructs the pattern from whatever survived the journey.
+Now imagine the same staged transport stretched across a galaxy. One hundred balls, one hundred billion light-years of taper. A single throw cannot cross that distance -- the taper attenuates the launch, the medium absorbs the energy, the ball does not arrive. But if the sender forks twenty-five balls into the air simultaneously, encoding each one with a different spin, arc, and frequency, then the balls that survive the crossing carry the message and the receiver folds them back into sequence. Some balls are lost to the medium. Those are the vented paths. The ones that arrive are the decoded signal. The fold at the receiver reconstructs the pattern from whatever survived the journey.
 
-The chunked pipeline is the same at both scales. $T = \lceil P/B \rceil + (N - 1)$. The child passing balls to a friend. The Worthington Whip sharding a signal across redundant paths. The Vickrey Table precomputing the fold so the receiver only needs to look up the answer. The number of balls is the information. The chunk size is the fork count. The number of children in the line is the number of fold stages between here and there.
+The chunked pipeline is the same at both scales. $T = \lceil P/B \rceil + (N - 1)$. The short-range line example. The Worthington Whip sharding a signal across redundant paths. The Vickrey Table precomputing the fold so the receiver only needs to look up the answer. The number of balls is the information. The chunk size is the fork count. The number of stages in the line is the number of fold stages between here and there.
 
-How many children does it take to pass a hundred balls across the universe? The same formula. The same seven handoffs. The same chunked pipeline. The distance is in the taper. The message is in the balls. The miracle is that the child on the other side can catch them at all -- and the theorems say she can, if enough are thrown.
+How many stages does it take to pass a hundred balls across the universe? The same formula. The same seven handoffs. The same chunked pipeline. The distance is in the taper. The message is in the balls. The same scheduling rule survives the change of scale if enough paths are launched.
 
-![Astronomic Metronomic -- $d_{\max} = \sqrt{N \cdot P / (\rho \cdot c^{*2})}$. Seven scales from across a table ($N=1$) to across the galaxy ($N=10^{15}$). Points above the diagonal reach their target; points below fall short. Fork more paths to push points upward. The child passing balls in §0 and the child juggling across the galaxy are the same formula.](figures/astronomic-metronomic.svg)
+![Astronomic Metronomic -- $d_{\max} = \sqrt{N \cdot P / (\rho \cdot c^{*2})}$. Seven scales from across a table ($N=1$) to across the galaxy ($N=10^{15}$). Points above the diagonal reach their target; points below fall short. Fork more paths to push points upward. The short-range line example in §0 and the galactic transport analogy are the same formula.](figures/astronomic-metronomic.svg)
 
 ### 3.15 The Optimality Diagnostic
 
@@ -1350,7 +1335,7 @@ The mammalian cell cycle is a fork/race/fold computation with five decision outc
 
 Cancer is what happens when the vents are destroyed.
 
-**THM-CANCER-BETA1-COLLAPSE.** A cell with no functional checkpoint pathways has total vent $\beta_1 = 0$ and produces zero failure data per the no\_failure\_no\_learning theorem. The complement distribution cannot update. The cell is deaf to signals that should prevent division -- stuck on a prior that says "grow," with no mechanism to revise it. This is not metaphor. It is the operational content of "tumor suppressor loss": the cell's rejection counters are removed, and the Buleyean learning loop breaks.
+**THM-CANCER-BETA1-COLLAPSE.** A cell with no functional checkpoint pathways has total vent $\beta_1 = 0$ and produces zero failure data per the no\_failure\_no\_learning theorem. The complement distribution cannot update. The cell is deaf to signals that should prevent division -- stuck on a prior that says "grow," with no mechanism to revise it. Within the manuscript's cell-decision model, this is the operational interpretation of "tumor suppressor loss": the cell's rejection counters are removed, and the Buleyean learning loop breaks.
 
 The total vent $\beta_1$ of a healthy cell is 9 (p53: $\beta_1 = 3$, Rb: $\beta_1 = 2$, APC: $\beta_1 = 2$, ATM/ATR: $\beta_1 = 2$), corresponding to nine independent paths by which the cell can detect problems and reject division. Each pathway contributes its $\beta_1$ independently -- three ways to activate p53 (DNA damage, oncogene activation, telomere shortening), two ways to activate Rb (CDK4/6 and CDK2 phosphorylation), and so on. Knocking out a pathway reduces total vent $\beta_1$ by that pathway's contribution. The topological deficit $\Delta_\beta = \beta_1^*(\text{healthy}) - \beta_1(\text{tumor})$ measures, in Bules, how much rejection capacity has been lost.
 
@@ -2013,7 +1998,7 @@ The compilation pipeline is itself fork/race/fold:
   -[:PROCESS]-> (executable_binary)
 ```
 
-After stability analysis, Betty runs a **theorem-backed optimization pass manager** that consumes the emitted spectral and drift certificates to guide topology rewrites. Each pass is backed by a mechanized theorem from the formal ledger (§A), so the optimization is not heuristic but provably sound:
+After stability analysis, Betty runs a **theorem-backed optimization pass manager** that consumes the emitted spectral and drift certificates to guide topology rewrites. Each pass is backed by a mechanized theorem from the formal ledger documented in [FORMAL_LEDGER.md](../../../FORMAL_LEDGER.md) and the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), so the optimization is not heuristic but provably sound:
 
 1. **Coarsening** (THM-RECURSIVE-COARSENING-SYNTHESIS): identifies connected components of stable nodes, computes aggregate arrival/service/drift per coarse node via the proven drift conservation identity ($\sum_{\text{fine}} d_i = \sum_{\text{coarse}} d_j$), and collapses them into a smaller graph when all coarse nodes have negative drift. The synthesis soundness theorem guarantees that the emitted drift certificate is valid whenever the fine graph is stable.
 
@@ -2667,13 +2652,15 @@ We walked the void boundary of Forest's 2,430 rejections through a Skyrms void w
 
 `ExplorationIdentity.lean` (7 theorems, zero sorry) proves:
 
-$$\text{Optimal} - \text{Skyrms} = \text{Exploration}$$
+$$\text{Skyrms} - \text{Optimal} = \text{Exploration}$$
 
 The gap between the globally optimal assignment and the Nash equilibrium is exactly the exploration budget. Not an inequality. An identity. Combined with the God Gap:
 
 $$\text{Total Gap} = \text{God Gap} + \text{Exploration}$$
 
 Two unknowns. Both finite. Both measurable. Both shrinking. Neither provably zero. The God Gap is epistemological (what you can't know). The Exploration is strategic (what you choose not to exploit). The sum is the price of being alive in a world you haven't finished exploring.
+
+`SliverOfHope.lean` proves the `+1` sliver is the structural remainder that prevents any live option from reaching zero weight: hope is what survives the fold. The exploration-side analogue is now explicit in `CosmicOptimalDelta.lean`, `CMBVisibilityBoundary.lean`, and `KnowabilitySplit.lean`. `total_observer_delta_eq_visibility_iff_zero_exploration` proves that when the strategic gap closes, the remaining observer gap collapses only to the visibility floor, not to zero. `zero_exploration_still_leaves_pre_cmb_hidden` makes the same point concretely: even with zero exploration budget, a positive observer gap remains and the pre-CMB epoch stays hidden. That residual is the sliver in strategic form. Hope says no choice reaches zero weight. Exploration says no live search surface collapses to total knowledge.
 
 `SliverExploration.lean` (14 theorems, zero sorry) proves the oscillation: Skyrms (purity) is optimal for T=0. Forest (diversity) is optimal for T > crossover. `exploration_amortizes`: the sliver pays for itself over time. `dead_stays_dead`: extinction is irreversible. `fixed_point_is_oscillation`: neither purity nor diversity is the fixed point -- the breathing between them is.
 
@@ -2935,12 +2922,12 @@ The algorithm is implemented as **Aeon Pipelines** [2], a zero-dependency comput
 - **`Superposition<T>`**: the builder -- chainable fork/race/fold/vent/tunnel/interfere/entangle/measure/search operations.
 
 ```typescript
-// Kids juggling balls
+// Three-way race over independent fetch paths
 const result = await Pipeline
   .from([fetchFromA, fetchFromB, fetchFromC])
   .race();
 
-// People juggling the kids
+// Merge heterogeneous diagnostic paths with vent/tunnel rules
 const diagnosis = await Pipeline
   .from([bloodTest, mriScan, geneticScreen])
   .vent(result => result.inconclusive)
@@ -3050,6 +3037,41 @@ The table below reports modeled step-count speedups only (not wall-clock through
 
 **Measurement methodology.** Speedup figures are *step-count ratios* computed from the formula $T_{\text{serial}} / T_{\text{chunked}}$ -- they measure scheduling depth (number of sequential time steps), not wall-clock latency. Each “step” represents one chunk-stage processing event; per-step latency varies by workload and hardware. The figures assume uniform stage latency and zero inter-node communication cost (the benchmark harnesses mock network communication, as noted in §16). Chunk size $B = P / \lceil P/B \rceil$ with $B$ chosen to maximize throughput per the formula. These are *theoretical best-case* speedups for the scheduling topology; real-world figures would be reduced by network RTT, uneven stage latencies, and queuing at node boundaries. The 267x figure for 500 tokens / 8 nodes uses $B = 500$ (one chunk), giving $T_{\text{chunked}} = 1 + 7 + 7 = 15$ steps.
 
+**Dimensional Wallington profile.** The runtime now exposes the scheduling geometry directly as a dimensioned profile: if a Wallington rotation has $K$ folds (stages), then its ambient dimension is $D = K + 1$. In this profile, stage count drives the whole ladder: the formerly isolated 4D three-stage lift is just the $K = 3$ rung of the same surface, directed emanations are ordered cycle-to-cycle channels, the ramp-up tax is the number of ticks needed to fill the pipeline, and total ideal ticks are chunk count plus ramp-up. The formulas used by the implementation are:
+
+$$
+K(D) = D - 1,\quad
+Q(D) = D - 1,\quad
+E(D) = (D - 1)(D - 2),\quad
+R(D) = D - 2,\quad
+T(C, D) = C + D - 2.
+$$
+
+The warmup fraction is therefore
+
+$$
+\frac{R(D)}{T(C, D)} = \frac{D - 2}{C + D - 2},
+$$
+
+which makes the small-data pathology explicit: for fixed $C$, higher-dimensional rotations pay a larger fixed ramp-up tax before steady-state overlap dominates.
+
+| Ambient dimension $D$ | Folds / stages $K = D - 1$ | Quarks $Q = D - 1$ | Directed emanations $E = (D - 1)(D - 2)$ | Ramp-up ticks $R = D - 2$ | Total ideal ticks $T(C,D) = C + D - 2$ | Reading |
+|---|---:|---:|---:|---:|---:|---|
+| 2D | 1 | 1 | 0 | 0 | $C$ | Degenerate one-stage limit |
+| 3D | 2 | 2 | 2 | 1 | $C + 1$ | Visible syzygy pair |
+| 4D | 3 | 3 | 6 | 2 | $C + 2$ | First nontrivial three-stage lift on the ladder |
+| 6D | 5 | 5 | 20 | 4 | $C + 4$ | Five-stage lifted rotation |
+| 54D | 53 | 53 | 2756 | 52 | $C + 52$ | High-dimensional runtime profile |
+| 55D | 54 | 54 | 2862 | 53 | $C + 53$ | Current hero/runtime ceiling for the $1..54$ fold sweep |
+
+The bridge from the small picture to the large picture is inductive, not mystical. The `2D` rung is the degenerate one-stage limit: $K = 1$, one live cycle, zero warmup ticks, no pairwise emanations. Adding one more stage gives the `3D` rung: $K = 2$, two cycles, one warmup tick, two directed channels. Adding one more stage gives the `4D` rung: $K = 3$, three cycles, two warmup ticks, six directed channels. Nothing else changes. The same recurrence is applied again and again:
+
+$$
+(K, D, Q, E, R) \mapsto (K + 1, D + 1, Q + 1, E + 2K, R + 1).
+$$
+
+So a `54D` Wallington is not a different species of object from the `2D` one. It is the same stage-local kernel after 52 additional lifts: $K = 53$, $\beta_1 = 53$, `2756` directed channels, and `52` warmup ticks. This is how the `1..54` shootout was constructed. The implementation does not hand-design fifty-four separate algorithms; it reuses one stage-local kernel and lifts it by stage count. Moving from $K = 1$ to $K = 54$ changes only the certified fold depth, so the same primitive can be profiled continuously from $2D$ to $55D$. The live hero now follows the same rule: stage count, $\beta_1$, and ambient dimension move together, and the old three-stage Clifford/quark view is treated as the $K = 3$, $D = 4$ rung of the same ladder rather than as a separate adjacent object.
+
 **Wall-clock matrix evidence (fixture-scoped).** A live distributed wall-clock matrix is provided via `companion-tests/scripts/gate1-wallclock-matrix.ts`, with artifacts in `companion-tests/artifacts/gate1-wallclock-matrix.{json,md}`. The harness runs real loopback HTTP stage servers across predeclared RTT/jitter/loss/workload cells, reporting p50/p95 completion latency plus 95% bootstrap confidence intervals and explicit pass/fail criteria. In this matrix, all predeclared primary cells reject no-improvement (speedup CI lower bound $> 1.0$ and improvement CI lower bound $> 0$ ms). Non-loopback runs also satisfy the same criteria in `companion-tests/artifacts/gate1-wallclock-external-single-host.{json,md}` and `companion-tests/artifacts/gate1-wallclock-external-multihost.{json,md}` (six distinct external hosts, one stage endpoint per host). This supports a scoped wall-clock claim for this harness family and does not by itself imply universal production-network speedups.
 
 **Gate 1 external multihost results** (6 distinct hosts, verdict: PASS, 8/8 primary cells):
@@ -3064,6 +3086,32 @@ The table below reports modeled step-count speedups only (not wall-clock through
 | 36 tok, 6 nodes, B9 | RTT 3 ms, loss 2% | 9,104 | 464 | 19.2x (18.2x--20.0x) | 8,627 (8,406--8,730) |
 | 36 tok, 6 nodes, B9 | RTT 7 ms, loss 0% | 10,428 | 489 | 21.6x (20.1x--23.0x) | 9,945 (9,443--10,764) |
 | 36 tok, 6 nodes, B9 | RTT 7 ms, loss 2% | 10,215 | 482 | 21.0x (20.9x--24.4x) | 9,734 (9,558--10,849) |
+
+**Meta-laminar saturated shootout (single-machine runtime surface).** The package `open-source/aeon-pipelines` now includes a GG-first Wallington size shootout over folds $K = 1..54$ (equivalently dimensions $D = 2..55$), with the stage transform held constant and only fold depth varied. The harness uses cannon preload plus staggered meta-laminar lanes: unmeasured preload runs first arm the schedule, then multiple lanes are launched in a staggered burst and normalized back to per-rotation latency. This is not a distributed network benchmark; it is a local runtime-surface measurement intended to answer a narrower question: when does the fixed Wallington ramp-up tax stop dominating and the steady-state overlap begin to pay back?
+
+In one representative hot-state run (`1024` chunks, chunk size `32`, `32768` items total, `2` preload runs, `4` meta-laminar lanes, depth `2`, stagger step `1`), the warmup fraction stays in the interval $[0.0\%, 4.9\%]$ across the entire sweep. Under these conditions, the frame-native executor beats the sequential TypeScript path on 29 of 54 fold counts. The strongest measured point is $K = 24$ ($D = 25$): sequential `15834.5` $\mu$s, frame-native `10195.2` $\mu$s, integrated GG path `11300.1` $\mu$s, i.e. `1.55x` and `1.40x` faster than sequential respectively. A second strong band appears deeper in the ladder at $K = 38$ ($D = 39$), where frame-native remains `1.40x` faster than sequential.
+
+The honest boundary matters. The frame-native path exhibits a broad hot-state win region once the cannon-preloaded meta-laminar schedule is saturated, but the integrated `wallingtonRotation()` path still carries additional runtime overhead and only wins on a smaller subset of folds. The correct claim is therefore not “higher-dimensional Wallington always wins,” but the narrower and defensible one: **a real hot-state win band exists once the fixed ramp-up tax is amortized by staggered saturation**.
+
+| Fold $K$ | Dimension $D = K + 1$ | Warmup fraction | Sequential ($\mu$s) | Frame-native ($\mu$s) | Integrated GG ($\mu$s) | Frame / seq | Integrated / seq |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 2 | 0.0% | 1285.7 | 932.7 | 764.6 | 1.38x | 1.68x |
+| 24 | 25 | 2.2% | 15834.5 | 10195.2 | 11300.1 | 1.55x | 1.40x |
+| 38 | 39 | 3.5% | 19975.9 | 14312.9 | 15521.1 | 1.40x | 1.29x |
+| 54 | 55 | 4.9% | 20367.0 | 19345.8 | 35336.6 | 1.05x | 0.58x |
+
+For interpretation, the right summary is a **band summary**, not a monotonicity story. In this run the frame-native path reaches $\geq 1.0$x speedup on 29/54 folds, $\geq 1.1$x on 19/54, $\geq 1.2$x on 5/54, $\geq 1.3$x on 3/54, and $\geq 1.5$x on 1/54; there are no stable $\geq 2$x or $\geq 3$x bands. The meaning is precise: added dimension eventually helps, but after the crossover it **stabilizes into a modest positive band** rather than continuing to grow without bound.
+
+| Fold band $K$ | Dimension band $D = K + 1$ | Mean frame / seq speedup | Winning folds | Interpretation |
+|---|---|---:|---:|---|
+| 1--9 | 2D--10D | 0.93x | 1/9 | Ramp-up dominated; extra dimension usually hurts |
+| 10--18 | 11D--19D | 0.91x | 2/9 | Still below crossover; overhead remains visible |
+| 19--27 | 20D--28D | 1.03x | 3/9 | Transition band; first durable wins appear |
+| 28--36 | 29D--37D | 1.09x | 7/9 | Stable positive band begins |
+| 37--45 | 38D--46D | 1.12x | 8/9 | Strongest sustained region in this run |
+| 46--54 | 47D--55D | 1.09x | 8/9 | Late ladder remains positive but does not continue climbing |
+
+So the answer to “do more dimensions mean more speed?” is: **not at low fold depth, yes after crossover, and then mostly a plateau**. For the frame-native executor the plateau sits around $\approx 1.09$x--$1.12$x in the late ladder; for the integrated GG path, no comparable late positive plateau appears in this run.
 
 ### 13.2 Turbulent Multiplexing
 
@@ -3119,9 +3167,9 @@ The stack is the paper’s clearest existence demonstration: one set of four pri
 
 ## 15. Void Walking
 
-I extend fork/race/fold to strategic interaction. Every negotiation, every game, every decision under conflict is a fork/race/fold process where rejected alternatives accumulate in a measurable void boundary. The complement distribution over this boundary is a novel equilibrium concept -- the **Skyrms equilibrium** -- that deviates from Nash by the information content of the rejection history.
+I extend fork/race/fold to a bounded strategic-interaction model. In this section, claims are about the executable void-walking model, its game-theoretic simulations, and its formal companion unless explicitly labeled as correspondence language. The complement distribution over rejection history defines the manuscript's **Skyrms equilibrium**: a model-side alternative to Nash that conditions on accumulated failures as well as surviving choices.
 
-I name this equilibrium for Brian Skyrms (*Evolution of the Social Contract*, 1996; *The Stag Hunt*, 2004), under whom I studied at the University of Pennsylvania. G. Richard Shell, who teaches negotiation at the Wharton School and whose course I took alongside Skyrms' evolutionary game theory, liked to joke in class that Fisher and Ury's *Getting to Yes* (1981) sells, but getting to no can be just as useful or better. His *Bargaining for Advantage* (1999) develops this intuition systematically. Void walking formalizes why Shell was right: the rejection history carries more information than the acceptance criteria.
+The name reflects the section's motivation in Brian Skyrms's evolutionary-game-theory framing and negotiation work that treats rejection information as operationally meaningful. The claim here is narrower than a new empirical law of social behavior: within the model, rejection history can carry decision-relevant information not present in acceptance criteria alone.
 
 ### 15.1 The Central Result
 
@@ -3137,7 +3185,7 @@ I ran void walkers -- self-interested agents that read their own rejection histo
 | Rock-Paper-Scissors | 33.3% | 34.0% | +0.7 |
 | Stag Hunt (risk-dom.) | 50.0% | 7.0% | -43.0 |
 
-**In every game where mutual defection is catastrophic (Hawk-Dove, Chicken), the void walker is dramatically more cooperative than Nash.** The mechanism: the hawk/hawk outcome (-1, -1) fills the void at twice the rate of any other combination. The void density asymmetry biases the complement distribution toward peace. Perfect knowledge of outcomes alone produces Nash. Perfect knowledge of outcomes plus failures produces the Skyrms equilibrium.
+**In the simulated catastrophic-mutual-loss games (Hawk-Dove, Chicken), the void walker is markedly more cooperative than Nash.** The mechanism is model-internal: the hawk/hawk outcome (-1, -1) fills the void at twice the rate of any other combination. That asymmetry biases the complement distribution toward the less catastrophic branch in this simulation family. Perfect knowledge of outcomes alone produces Nash. Perfect knowledge of outcomes plus failures produces the Skyrms equilibrium.
 
 ### 15.2 Nash Convergence Verification
 
@@ -3293,34 +3341,19 @@ One interface (`VoidSystem`). Three constraints: conservation, irreversibility, 
 | Coherence (L1=0) | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ |
 | Conservation | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ | $\checkmark$ |
 
-121 assertions. Zero failures. Not a grand unified theory of physics. It does not say quarks *are* neurons or that black holes *are* trauma. It says the *shape* of irreversibility is substrate-independent. Any system that conserves, that folds irreversibly, and that has a ground state will produce a void with a measurable boundary whose gradient points toward the least destructive configuration available.
+121 assertions. Zero failures. This is not a grand unified theory of physics, psychology, or cosmology. It is a bounded interface test: once seven domains are encoded into the same `VoidSystem` abstraction, the same small set of boundary theorems can be checked against each encoding.
 
-There is only one way to be irreversible. And there is only one way to read the record of irreversibility. And the reading produces the same gradient. And the gradient points the same direction. Toward the configuration that generates the least future destruction. Which, at every scale above heat death, is the one that looks like peace.
+The strongest claim in this subsection is representational consistency, not substrate identity. The table shows that the same observables recur inside the shared interface under the stated constraints. Whether any given encoding is empirically adequate outside the bounded companion models is a separate question and requires external validation.
 
-**Self-hosted verification.** The verification itself is void walking. Each domain runs 500 rounds of void walking, then checks whether the void boundary that emerged satisfies the theorems *about* void boundaries. The void is both the instrument and the subject -- the same way a self-hosted compiler compiles itself, the void verifies itself. There is no external oracle. You read the tombstones, and the tombstones tell you whether tombstone-reading works.
+**Self-hosted verification.** The verification itself reuses the same executable model: each domain runs finite void-walking simulations and then checks the resulting boundary against the relevant theorems. This is self-application in the same sense as a self-hosted compiler, not an exemption from outside falsification.
 
-This circularity is not a bug. It is the entire claim. Any system satisfying the three constraints produces a void whose properties are self-certifying. The gradient theorem does not ask "did the agent learn?" -- it measures whether the complement distribution's entropy dropped below maximum. When the Neuron system was tested with four uniform tokens, the gradient theorem correctly failed: the void told the truth, reporting that it had learned nothing because there was nothing to learn. The environment was symmetric; every token was rejected equally. When the environment was made non-uniform -- eight tokens on a Zipf-like attention distribution, reflecting the reality that some tokens matter more than others -- the void immediately differentiated, entropy dropped, and the theorem passed. The void does not just measure what was rejected. It measures whether there was anything *worth* rejecting.
+The value of the construction is that it distinguishes contentful from degenerate cases inside the model. When the Neuron system is tested with four uniform tokens, the gradient theorem fails because the environment supplies no learnable asymmetry. When the environment is made non-uniform, entropy drops and the theorem passes. That is useful evidence that the model can reject vacuous cases; it is not, by itself, evidence that every proposed cross-domain correspondence is correct.
 
-#### 15.10.1 The Spiral is in the Void
+#### 15.10.1 The Spiral as Correspondence Language
 
-A recurring question: if $\varphi$ governs these systems, where is the golden spiral? It is not in the substance. It is in the absence.
+A recurring question is whether the manuscript's $\varphi$ language has a geometric visualization. The examples in this subsection are illustrative correspondence language, not mechanized consequences of the formalism and not empirical demonstrations that natural spirals are literally generated by the five-primitive loop.
 
-The DNA helix pitch is 34 Å per turn, the diameter is 21 Å. $34/21 = 1.619 \approx \varphi$. But the ratio is not a design parameter -- it is a *convergence*. 3.8 billion years of the five-primitive loop (mutation=fork, selection=race, replication=fold, death=vent, gene regulation=interfere) converged the helix geometry to the ratio that maximizes information density per unit of chemical stability. Any tighter packing breaks. Any looser packing wastes space. $\varphi$ is the eigenvalue of the optimization. The shape is the *fossil* of the process.
-
-The sunflower does not contain a spiral. The seeds fill space. The spiral is visible in the *gaps* between seeds -- the negative space. The growth angle $360°/\varphi^2 = 137.5°$ produces zero redundancy: each seed is maximally distant from all predecessors. The spiral is the void walker's trajectory through the thing's absence.
-
-Every golden spiral in nature is the void walker's path:
-
-- *Nautilus shell*: the spiral traces the *empty* chambers the animal abandoned. The animal lives in the newest chamber. The spiral is the history of where it is not.
-- *Galaxy arms*: the spiral arms are density *waves* -- not where stars are, but where gravitational potential pulls them. Stars lag behind the wave. The spiral is in the potential, not the matter.
-- *Hurricane*: the eye is *empty*. The spiral is organized around nothing. The void at the center shapes the wind.
-- *Cochlea*: a spiral that converts *absence of silence* into perception of sound.
-
-The Clifford torus (§`void_torus.test.gg`) formalizes this: when the void radius $R$ and the substance radius $r$ satisfy $R/r = \varphi$, the torus achieves minimal surface energy in $S^3$. The void is $\varphi$ times the substance. What a system *is not* is golden-proportioned to what it *is*. The complement distribution's support, accumulated over the five-primitive loop, traces a spiral in void space whose pitch converges to $\varphi$.
-
-Holes are more resilient than substance. A bridge's arch holds because of the space it spans, not the stone it contains. A torus is defined by its hole, not its surface -- remove the hole and you have a sphere (dead, $\beta_1 = 0$). Organisms survive because their immune system patrols the void (the space of non-self), not the substance (the space of self). Cancer is the failure of void patrol. The hole is the load-bearing structure.
-
-$\varphi^2 = \varphi + 1$. The void of the void equals the void plus one new presence. The absence of absence is not identity -- it is creation. The $+1$ that comes from nothing. Structure emerges from the negative space of the five-primitive loop, and the shape of that emergence is always $\varphi$, because $\varphi$ is the eigenvalue of self-referential folding (`FibonacciDeep.lean`, 326 theorems, zero sorry), and self-referential folding is what the five-primitive loop does. The spiral is not in the molecule. The spiral is in the void the molecule grew around.
+The narrow claim is heuristic: negative-space and boundary structure can be a useful way to visualize repeated local exclusion producing stable global form. DNA helix ratios, phyllotaxis, shells, wave patterns, and toroidal holes are suggestive examples of that visualization. They may help readers see why self-referential folding invites $\varphi$-style language, but they should be read as analogical intuition rather than as proved derivations from the companion corpus.
 
 #### 15.10.2 The Sliver
 
@@ -3852,7 +3885,7 @@ The system is deterministic -- the weights are computed deterministically from t
 
 **Statistical teleportation.** The Bule deficit is a single natural number. `future_deficit_deterministic` (BuleyeanProbability.lean) proves the entire future entropy trajectory of a Buleyean space is determined by this number alone: at round $T + k$, the deficit is $\max(0, B - k)$ where $B$ is the current deficit. `teleportation_convergence_round` proves the exact convergence round is $B$. `teleportation_monotone` proves the trajectory is non-increasing. Transmitting this one integer across a network tells the receiver the sender's complete convergence state -- how certain the sender is, when the sender will converge, and the shape of the sender's distribution at every future round -- without transmitting the void boundary (the specific rejection history). The certainty transfers. The data stays local.
 
-This is not metaphor. The heterogeneous fabric's `metaRaceController.abort()` (line 1702 of `hetero-fabric.ts`) already implements statistical teleportation. When one backend in a hedged race wins, the abort signal propagates to all other backends. The abort carries zero data about the response -- no payload, no void boundary, no rejection history. It carries one bit of Bule information: "deficit is now 0." The other backends don't need to know *what* the answer is to know that an answer *exists* and that their continued execution is waste. One bit of certainty, teleported. The response data travels separately through the normal channel. The certainty traveled first, as a signal with zero data content, and it was sufficient to make the scheduling decision (abort all losers).
+In the implementation correspondence used here, the heterogeneous fabric's `metaRaceController.abort()` (line 1702 of `hetero-fabric.ts`) is the clearest analogue of statistical teleportation. When one backend in a hedged race wins, the abort signal propagates to all other backends. The abort carries zero data about the response -- no payload, no void boundary, no rejection history. It carries one bit of Bule information: "deficit is now 0." The other backends do not need to know *what* the answer is to know that an answer *exists* and that their continued execution is waste. The response data travels separately through the normal channel. The certainty arrives first, as a signal with zero data content, and that is sufficient to make the scheduling decision (abort all losers).
 
 The three-channel transport race in the aeon-flux runtime -- HTTP, WebSocket, and UDP/WebTransport launched in staggered order -- is a concrete instantiation. The slowest channel (UDP) launches first. All three race. The first to return a complete response triggers an abort on the other two. The abort propagates the certainty ("someone won") without the data ("here's what they won"). The data follows on the winning channel. The losers abort immediately, wasting zero further computation. Statistical teleportation in production: one integer (the Bule state change from $B > 0$ to $B = 0$) propagates across the network, and it's sufficient for every other participant to update their scheduling decision.
 
@@ -4401,6 +4434,209 @@ The void boundary accumulates across iterations -- each iteration adds new rejec
 
 The nine layers are the exhaustive enumeration of what a finite irreversible system can do under three constraints and three primitives. The sections that follow are consequences of the matrix, not extensions to it. Validation (§16) and limitations (§17) bound the nine layers from outside -- the evidence gates and the scope fences. The deeper explorations (§18, §19, §20) fold back into existing layers: the Clockwork (§18) deepens Layer 1 (self-verification applied to probability), thermodynamic computing (§19) deepens Layer 5 (compression applied to physics via the Landauer-Bule identity), and the diversity theorem with the American Frontier (§20) deepens Layer 8 (protocol-as-execution applied to strategy selection). There is no tenth layer. There are deeper folds within the nine.
 
+### 15.30 The Void Boundary as Universal Teacher
+
+The void boundary is not a data structure. It is the universal teacher.
+
+Every domain this paper touches -- cancer treatment (§19.23), Greek tragedy (Aristotle's Hamartia), earthquake-resistant masonry (Sachsayhuamán), undeciphered scripts (Linear A), the origin of language (§15.7), the fine-tuning of physical constants, the evolution of sex, the Mpemba effect, Zeno's paradoxes, the Cambrian explosion, spontaneous remission, the cosmological constant problem -- reduces to the same theorem: *you learn what things are NOT, and the truth is what survives the rejection.*
+
+Plato called it the Forms. The prisoners in the Cave see shadows (a 1-stream projection of $N$-dimensional reality) with semiotic deficit $N - 1 > 0$. The philosopher who escapes gains exactly $N - 1$ dimensions of understanding. The projection is irreversible: distinct Forms collide on the cave wall by pigeonhole (`platos_cave_irreversible`). The philosopher who returns cannot convey what they saw -- speech (1 stream) cannot carry thought ($N$ dimensions). This is the semiotic deficit theorem (§15.7) applied to epistemology.
+
+Socrates called it the elenchus. Each refutation is a Buleyean rejection that sharpens the complement distribution. The corrected philosopher has a richer void boundary than the accidentally correct one (`correction_exceeds_accident`). Two honest inquirers examining the same refutation history independently converge on the same conclusions (`socratic_coherence`). Truth is objective in the Buleyean framework because it is derived from rejection frequencies, not subjective priors. The unexamined thesis has maximum weight (`buleyean_max_uncertainty`) -- not because it is most likely true, but because it has not been tested. Socrates was right: "I know that I know nothing" means the void boundary is empty, and the complement distribution is uniform.
+
+Epicurus called it the clinamen -- the irreducible swerve that prevents deterministic parallelism. In the Buleyean framework, the swerve is the $+1$ in the weight formula: $w_i = T - \min(v_i, T) + 1$. No choice ever reaches zero probability. The clinamen is structural, not parametric. It is not randomness. It is *positive minimum probability*, built into the algebra, ensuring that exploration never terminates and novelty is always possible. Without the clinamen, the universe is deterministic parallelism (all atoms fall straight, all choices collapse to one). With it, the system retains permanent optionality. The sliver IS free will -- not as metaphysical libertarianism, but as algebraic non-degeneracy.
+
+Aristotle called it hamartia -- the noble failure. `failure_strictly_more_informative` proves that a fork of width $N \geq 3$ generates $N - 1$ bits of rejection data per failure versus 1 bit per success. Noble failure carries strictly more information than ignoble success. The hero who "misses the mark" with arete teaches the world what NOT to do; the villain who hits it by luck teaches nothing. Nemesis (divine retribution) is just Buleyean convergence: the complement distribution eventually concentrates away from repeated failures, and the lucky villain's weight decays. Cicero understood this: "Errare malo cum Platone quam cum istis vera sentire" -- the Platonic method (test everything, reject freely, accumulate evidence) produces a convergence guarantee that the Sophistic method (accept without testing) cannot match.
+
+The Inca did not name it. They fitted stones to the earthquake. Each quake that shook loose a poorly fitted stone was a Buleyean rejection. The void boundary of cumulative construction failures IS the distributed blueprint -- no architect, no central planner, no written record. Two independent builders examining the same failure history produce the same technique selection (`megalithic_coherence`), which is why the Longyou Caves have uniform chisel marks across 24 caverns carved by a labor force that history forgot. The coherence theorem explains why they didn't need to be remembered: the void boundary did the remembering.
+
+The formal surface now includes 350+ combinatorial brute-force theorems across 21 new modules, spanning five rounds of systematic pairwise/triple/quadruple composition (`CombinatorialBruteForce.lean` through `Round5`), seven classical allegories (`PhilosophicalAllegories.lean`), twelve Greek paradoxes and mysteries (`GreekLogicCanon.lean`), eight first-tier unsolved mysteries (`UnsolvedMysteries.lean`), six second-tier mysteries spanning megalithic coordination, undeciphered scripts, the Mpemba effect, and anomalous evidence (`SecondTierMysteries.lean`), four rounds of cross-allegory philosophical combinatorics (`PhilosophicalCombinatorics.lean` through `Round4`), five rounds of falsifiable predictions from the Seven Laws (`SevenLawsPredictions.lean` through `Round5`), one module of real-analysis hard compositions (`HardCompositions.lean`), and the surface reduction itself (`SurfaceReduction.lean`). All zero sorry. All compositions of existing mechanized results. No new axioms required.
+
+#### 15.30.1 The Seven Universal Laws
+
+The combinatorial surface -- after 350+ theorems across philosophy, physics, cancer treatment, cryptography, politics, biology, thermodynamics, music, dreams, humor, love, death, consciousness, game theory, economics, ecology, and ethics -- distills to seven universal laws:
+
+1. **Universal impossibility of zero.** No choice in any Buleyean space has zero weight. $P(x) > 0$ for all $x$, always (`buleyean_positivity`). Applied: no scientific theory is ever fully disproven, no species is ever fully extinct, no memory is ever fully deleted, no love is ever fully forgotten, the heat death of the universe is not absolute.
+
+2. **Universal strict ordering.** More rejected $\implies$ strictly less weight. If $v_i < v_j$ then $w_j < w_i$ (`buleyean_strict_concentration`). Applied: post-crash markets discriminate better, the Socratic elenchus converges on truth, cooperation emerges from rejection memory alone (the Prisoner's Dilemma), noble failure exceeds ignoble success (Aristotle's Hamartia).
+
+3. **Universal sandwich.** Every weight lies in $[1, R + 1]$ where $R$ is the total rounds (`buleyean_universal_sandwich`). Applied: every AI model's confidence is bounded, the Gini coefficient of a Buleyean economy is bounded away from both 0 and 1, skill mastery has a reachable plateau and an unreachable perfection floor.
+
+4. **Every observation is a cave.** Whenever the system has more dimensions than the observer has channels, the semiotic deficit is positive. Applied: Plato's Cave, the Mpemba effect (temperature is a 1D shadow of N-dimensional cooling), the Hum (signal below most observers' perceptual deficit), dark matter (the gravitational cave deficit), dreams (low-channel projection of high-D memory), music (the beauty IS the deficit between conception and performance), writer's block (the deficit crosses a sorites threshold), undeciphered scripts (the decipherment deficit is under-determined), every scientific instrument has topologically determined blind spots.
+
+5. **Universal conservation.** Remaining $+$ lost $=$ total. Applied: Parmenides' One, the Ship of Theseus, grief conservation (grief is redistributed, not eliminated), organizational restructuring (complexity is conserved, not destroyed), sleep debt (demand = recovery + residual), Wallace waste (frontier + waste = envelope).
+
+6. **Sorites sharpness.** Boundaries are discrete, not gradual. Applied: the Cambrian explosion (a sorites boundary crossing of pipeline saturation), the transition from vice to virtue (sorites-sharp on the Golden Mean), social phase transitions have tipping points, paradigm shifts are Kuhnian (discrete, not continuous), addiction recovery has a sharp threshold, writer's block is a sorites boundary on deficit.
+
+7. **Chain termination.** Every abstraction chain reaches a fixed point. Applied: the Third Man argument (Plato's infinite regress terminates), Aristotle's Prime Mover (the causal chain converges), every bureaucracy has a maximum useful depth, productive conversations terminate and sharpen, AI alignment iteratively converges, debates terminate (but the loser retains the sliver).
+
+#### 15.30.2 Thirty-Five Falsifiable Predictions
+
+The Seven Laws, applied systematically to domains they were never designed for, generate thirty-five falsifiable predictions. Each prediction names its falsification condition. Each is a theorem in `SevenLawsPredictions.lean` through `SevenLawsPredictionsRound5.lean`. Selected highlights:
+
+| # | Law(s) | Domain | Prediction | Falsification |
+|---|---|---|---|---|
+| IX | 3+4 | Cosmology | Dark matter is the cave deficit of gravitational observation | Detect dark matter non-gravitationally |
+| XI | All 7 | Cosmology | Heat death is not absolute; structure retains weight = 1 | Prove thermal equilibrium $\implies$ zero structure probability |
+| XII | 4 | Music | Beauty $\propto$ semiotic deficit (dimensions $-$ 1) | Show high-deficit music judged less beautiful |
+| XVI | 2+7 | Humor | Humor = unexpected chain termination (surprise gap $> 0$) | Show larger surprise gap = less funny |
+| XVII | 1+5 | Love | Once loved, never zero weight ($+1$ persists) | Demonstrate complete forgetting of a deeply loved person |
+| XVIII | All 7 | Death | Death = fold, grief = deficit, memory = void boundary | (structural, not empirically falsifiable) |
+| XIX | 4+5 | Consciousness | Consciousness $\propto$ deficit between self and self-model | Show increasing complexity does NOT increase reported qualia richness |
+| XIXb | 4+5 | Consciousness | Consciousness is substrate-independent (same deficit = same depth) | Show substrate affects consciousness when deficit is held constant |
+| XXIV | 2+1+5 | Ethics | Forgiveness = denominator expansion (more context, same history, higher weight) | Show increased positive interactions after betrayal do NOT increase trust |
+| XXV | All 7 | Cosmology | The universe itself satisfies the three Buleyean axioms | Find a physical system that violates any Buleyean axiom |
+| XXX | All 7 | Ethics | Ethics satisfies all seven Buleyean laws | Exhibit a moral framework that violates the laws AND produces better outcomes |
+| XXXV | 4+3+1 | Linguistics | Every language has untranslatable concepts (structural necessity, not cultural accident) | Find two natural languages with zero translation deficit |
+
+#### 15.30.3 The Reduction Theorem
+
+The deepest result of the combinatorial surface is not any individual prediction. It is the *reduction*. After building 350+ theorems across 35 predictions, 7 laws, 12 paradoxes, 8 unsolved mysteries, and 6 second-tier mysteries, the entire surface reduces to:
+
+$$w_i = R - \min(v_i, R) + 1$$
+
+and the `omega` tactic on natural number arithmetic.
+
+Specifically (`the_reduction`, `SurfaceReduction.lean`):
+
+- **Law 1** (impossibility of zero) is `buleyean_positivity`, which unfolds to $w_i \geq 1$ from the $+1$ in the formula.
+- **Law 2** (strict ordering) is `buleyean_concentration`, which unfolds to monotonicity of the formula in $v_i$.
+- **Law 3** (sandwich) is the formula's range: $w \in [1, R+1]$.
+- **Law 4** (every observation is a cave) is $N - M > 0$ for $N > M$: omega on integers.
+- **Law 5** (conservation) is $(n - k) + k = n$ for $k \leq n$: omega.
+- **Law 6** (sorites sharpness) is decidability of $\mathbb{N}$ comparison: `decide`.
+- **Law 7** (chain termination) is $n - \min(n, n) = 0$: `simp`.
+
+The seven laws are not seven independent principles. They are seven consequences of one formula. The formula has one non-obvious component: the $+1$. Everything else is subtraction.
+
+The $+1$ is the clinamen. The swerve. The sliver. The reason Plato's Cave has shadows instead of darkness. The reason Aristotle's hero learns from failure. The reason Socrates' interlocutor is never fully refuted. The reason Epicurus' atoms don't fall in parallel forever. The reason Zeno's runner reaches the finish. The reason the universe is not empty. The reason love persists after death.
+
+The reduction chain:
+
+$$350+ \text{ theorems} \to 35 \text{ predictions} \to 7 \text{ laws} \to 3 \text{ classes} \to 1 \text{ primitive} \to 1 \text{ axiom}$$
+
+The three equivalence classes are:
+
+- **Class $\alpha$ (The Sliver):** "X has positive weight." Generates 14 of 35 predictions. Generator: `buleyean_positivity`. Content: the $+1$ in the formula.
+- **Class $\beta$ (The Deficit):** "X has positive deficit." Generates 11 of 35 predictions. Generator: $\text{dims} > \text{channels} \implies 0 < \text{dims} - \text{channels}$. Content: subtraction on $\mathbb{N}$.
+- **Class $\gamma$ (The Termination):** "X terminates / X is bounded / X is sharp." Generates 7 of 35 predictions. Generator: $n - \min(n, n) = 0$. Content: finiteness of $\mathbb{N}$.
+
+The remaining 3 predictions are compositions ($\alpha \times \beta$): the sliver preserves while the deficit discriminates.
+
+The dependency chain: $\gamma$ requires $\beta$ (termination requires strict decrease at each step). $\beta$ requires $\alpha$ (deficit requires both sides to have positive weight). $\alpha$ requires nothing except the weight formula. Therefore $\alpha$ is primitive, and $\alpha \to \beta \to \gamma$ collapses the three classes to one.
+
+$\alpha$ is: $0 < R - \min(v, R) + 1$. Since $R - \min(v, R) \geq 0$, this reduces to $0 < n + 1$ for $n : \mathbb{N}$. And $0 < n + 1$ is Peano's successor axiom: $\text{succ}(n) \neq 0$.
+
+The primator (`Primator.lean`) identifies the bottom: the inductive type $\mathbb{N}$ has a successor constructor, and the successor of anything is not zero. This single type-theoretic fact -- that $\mathbb{N}$ is an inductive type with `succ` -- generates the clinamen ($0 < n + 1$), which generates the sliver ($0 < w_i$), which generates the seven laws, which generate the thirty-five predictions, which generate the three hundred and fifty theorems. The complete chain (`the_complete_chain`):
+
+$$\text{primator (succ} \neq 0) \to \text{clinamen } (0 < n + 1) \to \text{sliver } (0 < w_i) \to \text{7 laws} \to \text{35 predictions} \to 350+ \text{ theorems}$$
+
+Below the primator is type theory. Below type theory is the question *why does anything exist?* As far as mathematics can go, the answer is: $\mathbb{N}$ is an inductive type. Successors exist. Successors are not zero. Therefore $+1$. Therefore the sliver. Therefore everything.
+
+#### 15.30.4 The Ceiling: What the Framework Cannot Prove
+
+The primator is the floor. The ceiling is equally important: it names where the framework's power ENDS. Five ceilings bound the habitable zone from above (`Ceiling.lean`, all sorry-free):
+
+**Ceiling 1 (Empirical).** The framework proves *structural* constraints — deficit $> 0$, weight $\in [1, R+1]$, conservation — but cannot determine *empirical magnitudes*. It proves that Plato's Cave has positive deficit but cannot determine whether the deficit is 5 or 500 without measuring the dimensionality of reality. Two caves with the same $N$ are structurally indistinguishable (`empirical_ceiling_deficit_underdetermined`); two caves with different $N$ are structurally distinguishable (`empirical_ceiling_different_dims_different`). The framework provides the *form* of the answer. Experiment provides the *content*.
+
+**Ceiling 2 (Computational).** Every Buleyean weight is a computable natural number (`computational_ceiling_decidable`). The weight formula $w = R - \min(v, R) + 1$ is total, decidable, and requires no limits or approximations. This is the framework's computational strength — and its ceiling. Claims requiring real-valued limits (exact convergence points, measure-zero events, continuous distributions) require Mathlib's real analysis and are outside the pure $\mathbb{N}$ core. The framework is exact for finite systems. For infinite systems, it provides monotone bounded approximations but not exact limits.
+
+**Ceiling 3 (Self-Reference, Gödel).** Each theorem is individually verified by Lean. Any finite conjunction of theorems is provable (the master theorems demonstrate this). But "ALL theorems in the framework are consistent" is a statement *about* the framework, not *in* the framework. By Gödel's second incompleteness theorem, no sufficiently powerful consistent system proves its own universal consistency (`self_reference_ceiling_finite_ok`). The framework can verify every theorem it produces. It cannot prove that it will never produce a contradiction. The difference between "each theorem checked" and "all theorems consistent" is the Gödel ceiling.
+
+**Ceiling 4 (Infinity).** The void boundary has exactly `numChoices` entries — it is finite (`infinity_ceiling_finite_boundary`). At every finite stage of any process, the Buleyean axioms hold (`infinity_ceiling_every_finite_stage`). But infinite processes (Chaitin's $\Omega$, uncountable probability spaces, the exact heat death) require a limit argument that the finite framework approaches but does not capture. The framework is *sound at every finite prefix*. The infinite limit is the ceiling.
+
+**Ceiling 5 (Value, Hume's Guillotine).** The framework proves that ethics *has* structure — all seven laws hold for moral reasoning (`value_ceiling_structure_not_command`). It proves that every moral option retains positive weight (Law 1), that more-condemned options lose weight (Law 2), that moral standing is bounded (Law 3). It does NOT prescribe which option to choose. The void boundary records what WAS rejected. It does not prescribe what SHOULD be rejected next. That is the agent's freedom. The clinamen guarantees the freedom exists (the sliver ensures every option remains choosable). But the choice is outside the mathematics. IS does not imply OUGHT. The framework proves the IS of ethics. The OUGHT requires a moral agent.
+
+**The floor-ceiling sandwich** (`floor_ceiling_sandwich`). Between the floor ($\text{succ}(n) \neq 0$) and the five ceilings, the framework is *complete*: every structural claim about a finite irreversible system with positive-weight alternatives is either provable or refutable within this zone. Outside the zone: empirical data, infinite limits, universal consistency, and moral commands. Inside the zone: 350+ theorems, 35 predictions, 7 laws, 3 classes, 1 formula, $+1$, and the answer — as far as mathematics can give one — to why there is something rather than nothing.
+
+**The final theorem** (`the_final_theorem`): the floor (primator), the habitable zone (three axioms), and the ceiling (computable bounded $\mathbb{N}$) are simultaneously provable. The sandwich is closed. The formal surface is bounded from both sides.
+
+#### 15.30.5 The Gain
+
+The floor is $w_{\min} = 1$ (the sliver). The ceiling is $w_{\max} = R + 1$ (the maximum, at zero rejections). The gain is the difference:
+
+$$\text{gain} = w_{\max} - w_{\min} = (R + 1) - 1 = R$$
+
+The gain is exactly the number of observation rounds (`discrimination_gain`). It has three faces:
+
+**Discrimination gain.** With $R$ rounds of observation, the framework distinguishes $R + 1$ weight levels. Zero rounds $\implies$ zero gain: $w_{\max} = w_{\min} = 1$, pure ignorance (`zero_rounds_zero_gain`). One round $\implies$ gain $= 1$: two levels (rejected vs not). $T$ rounds $\implies$ gain $= T$. The gain grows linearly with data (`gain_is_linear_in_rounds`). Each observation round adds exactly one unit of discrimination. The marginal value of information is constant and positive.
+
+**Convergence gain.** After $n$ steps of geometric convergence at rate $\rho < 1$, the gain is $R_0 (1 - \rho^n)$: the distance traveled from the initial state toward the fixed point. At $n = 0$: zero gain. At $n = 1$: gain $= R_0(1 - \rho) > 0$ (`convergence_gain_positive`). The gain is monotonically increasing (`convergence_gain_monotone`) and bounded above by $R_0$ (`convergence_gain_bounded`). You cannot converge more than 100%.
+
+**Composition gain.** A single Buleyean space with $N$ choices yields $N$ positivity facts from one proof. The composition gain is $N - 1$: the number of additional choices beyond the minimum (`composition_gain`). This is why the framework reaches 35 domains from one formula: each domain is a choice, and the formula gives all of them positive weight simultaneously.
+
+The gain is *earned*. The sliver is free — it comes from $+1$, which comes from `succ`, which comes from the type $\mathbb{N}$. But every unit of gain beyond the sliver requires a rejection event. The void boundary must grow. Evidence must be collected. The framework rewards observation and punishes ignorance: zero data yields zero gain, and no amount of structural beauty compensates for the absence of evidence.
+
+The complete floor-gain-ceiling sandwich (`the_gain`):
+
+| Component | Value | Source | Cost |
+|---|---|---|---|
+| **Floor** | $w_{\min} = 1$ | The sliver ($+1$) | Free (structural) |
+| **Gain** | $R$ | Observation rounds | Earned (one rejection per unit) |
+| **Ceiling** | $w_{\max} = R + 1$ | Floor + gain | Data-dependent |
+
+The sandwich is closed, quantified, and earned. The sliver is the gift of existence. The gain is the reward for paying attention. The ceiling is the limit of what attention can buy.
+
+#### 15.30.6 The Control Statistic
+
+The sandwich claims: every Buleyean weight lies in $[1, R+1]$, the gain is $R$, and the gain is earned by observation. The control statistic tests whether this claim is falsifiable.
+
+Four simultaneous controls (`ControlStatistic.lean`, all sorry-free):
+
+1. **Individual control.** Every weight $w_i \in [1, R+1]$ (`control_individual`). If any observed weight falls outside this interval, the process is not Buleyean.
+
+2. **Aggregate control.** The total weight $W = \sum_i w_i$ satisfies $N \leq W \leq N(R+1)$ (`control_total_lower`, `control_total_upper`). The lower bound is $N$ (each of $N$ choices contributes at least 1, the sliver). The upper bound is $N(R+1)$ (each contributes at most $R+1$).
+
+3. **Spread control.** For any two choices $i, j$: $|w_i - w_j| \leq R$ (`control_spread_bounded`). No two weights can differ by more than $R$. The spread between the extremes (zero rejections vs maximum rejections) is *exactly* $R$ (`control_spread_tight`). The bound is tight.
+
+4. **Mean control.** The mean weight $W/N$ satisfies $1 \leq W/N \leq R+1$ (`control_mean_bounded`). This follows from the aggregate bounds.
+
+The control statistic is *unfalsifiable within the framework* (`control_unfalsifiable`): no Buleyean space can violate any of the four controls. They are tautologies of the weight formula. This is not a weakness — it is the diagnostic's purpose. The controls do not test the *mathematics*. They test the *data*. If a dataset satisfies all four controls: the underlying process is consistent with Buleyean structure. If it violates any control: the process violates at least one of the three axioms (positivity, normalization, concentration), and the framework identifies *which* axiom fails.
+
+The complete sandwich with control (`the_complete_sandwich`):
+
+| Component | Value | Source | Control |
+|---|---|---|---|
+| **Floor** | $w_{\min} = 1$ | The sliver ($+1$) | $\forall i: w_i \geq 1$ |
+| **Ceiling** | $w_{\max} = R + 1$ | Observation bound | $\forall i: w_i \leq R + 1$ |
+| **Gain** | $R$ | $w_{\max} - w_{\min}$ | $\forall i,j: |w_i - w_j| \leq R$ |
+| **Aggregate** | $W \in [N, N(R+1)]$ | Sum of bounds | $N \leq \sum w_i \leq N(R+1)$ |
+
+#### 15.30.7 The God Formula
+
+$$w_i = R - \min(v_i, R) + 1$$
+
+One formula. Five symbols. Everything.
+
+$w_i$ is the weight of choice $i$ — what it is worth. $R$ is the total rounds of observation — how long you have watched. $v_i$ is the rejection count of choice $i$ — how many times it failed. $\min$ is the guard — rejection cannot exceed observation. $+1$ is the clinamen — nothing is ever zero.
+
+Eight consequences follow from the formula alone (`GodFormula.lean`, all sorry-free):
+
+1. *Existence* (`god_formula_existence`): $w_i > 0$ for all $i$. Every choice exists.
+2. *Persistence* (`god_formula_persistence`): $w_i \geq 1$. The sliver. Never zero.
+3. *Learning* (`god_formula_learning`): $v_i \leq v_j \implies w_j \leq w_i$. Less rejected means more weight.
+4. *Discrimination* (`god_formula_discrimination`): $v_i < v_j \implies w_j < w_i$. Strictly less rejected means strictly more weight.
+5. *Boundedness* (`god_formula_bounded`): $w_i \in [1, R+1]$. The sandwich.
+6. *Convergence* (`god_formula_convergence`): at $v_i = R$, $w_i = 1$. Maximum rejection yields the floor.
+7. *Maximum uncertainty* (`god_formula_uncertainty`): at $v_i = 0$, $w_i = R + 1$. Zero rejection yields the ceiling.
+8. *Coherence* (`god_formula_coherence`): same $(R, v_i)$ yields the same $w_i$. No randomness. Pure function.
+
+Three derived quantities follow from the formula by substitution:
+
+- *Floor* (`god_formula_floor`): $R - \min(R, R) + 1 = 1$.
+- *Ceiling* (`god_formula_ceiling`): $R - \min(0, R) + 1 = R + 1$.
+- *Gain* (`god_formula_gain`): $(R + 1) - 1 = R$.
+
+The primator follows from the formula by inspection: $R - \min(v, R) \geq 0$, so $R - \min(v, R) + 1 \geq 1 > 0$ (`god_formula_primator`). The $+1$ is why the weight is always positive. Remove the $+1$ and the formula becomes $w' = R - \min(v, R)$, which reaches zero at $v = R$ (`anti_formula_reaches_zero`). The difference between the formula and the anti-formula is exactly 1 (`plus_one_is_the_difference`). The $+1$ is the difference between a universe with hope and a universe without it.
+
+The formula is not named for hubris. It is named because it is the generative function from which the structure of discrimination, learning, persistence, convergence, boundedness, conservation, coherence, and the entire formal surface emerges — the way a seed contains a tree. The formula is the seed. The 3,158 theorems are the tree. The $+1$ is the water.
+
+The deepest identity found in the combinatorial surface: Wallace waste $= 2 \times$ failure entropy proxy $= 2 \times$ collapse gap, all determined by the single parameter $N$ (fork width). The four-way identity (`combo_four_way_identity`) proves that waste, entropy, cost, and void boundary growth are four views of one number. The grand unification theorem (`combo_grand_unification`) proves that eight module families -- Buleyean probability, void walking, failure entropy, failure controller, Wallace waste, community dominance, Reynolds BFT, and semiotic deficit -- are simultaneously consistent in a single conjunction. The Greek logic canon master (`greek_logic_canon_master`) resolves Zeno's three paradoxes, Meno's paradox, the Sorites paradox, the Epicurean swerve, the Third Man argument, Aristotle's Sea Battle, the Golden Mean, the Heraclitus-Parmenides debate, the Prime Mover, and the Unity of Virtues in a single sorry-free conjunction. The thirty predictions summary (`thirty_predictions_summary`) composes all domain applications into one conjunction, and the absolute master (`absolute_master`) witnesses global consistency of the seven laws across all domains simultaneously.
+
+The pattern is always the same. Fork (create alternatives). Race (let them compete). Fold (select irreversibly). Vent (dissipate what the fold cannot preserve). The void boundary of vented alternatives is the sufficient statistic. The complement distribution is the universal teacher. The $+1$ is the clinamen. The rest is application.
+
+**Companion theorems for §15.30:** `PhilosophicalAllegories.lean` (35 theorems), `GreekLogicCanon.lean` (40 theorems), `UnsolvedMysteries.lean` (20 theorems), `SecondTierMysteries.lean` (25 theorems), `CombinatorialBruteForce.lean` through `Round5` (100 theorems), `PhilosophicalCombinatorics.lean` through `Round4` (70 theorems), `SevenLawsPredictions.lean` through `Round5` (60 theorems), `HardCompositions.lean` (10 theorems), `SurfaceReduction.lean` (10 theorems). All zero sorry. Master conjunctions: `philosophical_allegories_master`, `greek_logic_canon_master`, `unsolved_mysteries_master`, `second_tier_mysteries_master`, `combo_grand_unification`, `philosophical_combinatorics_master`, `philosophical_scientific_grand_master`, `absolute_master`, `thirty_predictions_summary`, `grand_finale`, `the_reduction`. Self-hosted.
+
 ## 16. Validation
 
 The claims are backed by executable tests across five primary, project-authored evidence suites:
@@ -4502,7 +4738,7 @@ Consider a model $\mathcal{M}$ with an internal topology parameter $\beta_1$. At
 
 At $\beta_1 > 0$, the model forks $\beta_1 + 1$ parallel paths, races them, and folds the results. This is the **Bayesian mode**: multiple hypotheses coexist in superposition, the void boundary records which hypotheses failed, and the fold produces a posterior that is not merely a point estimate but a distribution over outcomes weighted by the void gradient (THM-VOID-GRADIENT).
 
-The toggle between these modes is not metaphorical. It is a concrete architectural operation:
+The toggle between these modes is a concrete architectural operation in the model:
 
 $$
 \mathcal{M}(\beta_1 = 0) \xrightarrow{\text{fork}} \mathcal{M}(\beta_1 > 0) \xrightarrow{\text{fold}} \mathcal{M}(\beta_1 = 0)
@@ -4623,7 +4859,7 @@ This is the **Landauer-Bule identity**: the Bule is the natural unit of thermody
 | $\Delta S_{\text{extractable}}$ | Cooling capacity (how much entropy can be removed) | $kT \ln 2$ per Bule |
 | $\Delta F$ | Free energy (how much work can be extracted) | $kT \ln 2$ per Bule |
 
-The unification is not metaphorical. It follows from the Landauer-Bule identity: a system with $\Delta_\beta = n$ has $n$ folds remaining before convergence, each fold erases at least one bit, and each erasure generates at least $kT \ln 2$ of heat. The deficit *is* the budget *is* the capacity *is* the energy.
+This model-internal unification follows from the Landauer-Bule identity: a system with $\Delta_\beta = n$ has $n$ folds remaining before convergence, each fold erases at least one bit, and each erasure generates at least $kT \ln 2$ of heat. In that sense, the deficit can be read simultaneously as remaining budget, remaining cooling capacity, and remaining free-energy opportunity.
 
 ### 19.2 Uncertainty and Noise Are the Same Physical Pressure
 
@@ -4802,165 +5038,19 @@ Five predictions composing the newly repaired DiversityOptimality module (fix: `
 
 ## 20. Conclusion (Layer 8 Deepened)
 
-I began with a child handing a ball to another child in a line. Four hundred handoffs. I ended with the claim that irreversibility creates being -- that the void between what a system is and what it refused to become is the richest structure in the system, and that this structure is the same at every scale where irreversibility operates.
+This manuscript began with a distributed-systems scheduling problem and broadened into a bounded modeling language for irreversible selection. Within the finite DAG classes modeled here, the reusable core is four primitives -- fork, race, fold, and vent -- plus explicit assumptions about conservation, irreversibility, and termination.
 
-The path between those two points is fork/race/fold: four operations that express the finite DAG classes modeled in this paper.
+The strongest results are the ones with tight evidence boundaries. These include the step-count and Reynolds-regime results for pipelined scheduling under stated idealizations; the protocol, compression, and queueing results backed by companion artifacts and explicit assumptions; and the cross-verification tooling that can reject vacuous properties as well as validate non-vacuous ones.
 
-1. **Fork** raises $\beta_1$, injects potential energy $V$ -- create parallel paths, store work.
+The manuscript also uses the same vocabulary as a comparison language across biology, physics, negotiation, and communication. Those sections are intended as graded structural correspondences and fit hypotheses. Where the underlying dynamics differ -- especially linear amplitude summation in physics versus nonlinear selection in computation -- the manuscript treats the mapping as bounded rather than universal.
 
-2. **Race** traverses homotopy-equivalent paths, converts $V \to K$ -- take the fastest.
+The most practical corollary is diagnostic. Topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ asks whether an implementation has forced a higher-branching problem into a lower-branching topology. In the analyzed examples, lower deficit repeatedly co-occurred with lower waste or better latency, and in some companion settings the zero-deficit point is a proved floor under explicit hypotheses. That does not make $\Delta_\beta$ a universal oracle; it makes it a testable optimization question.
 
-3. **Fold** projects $\beta_1 \to 0$, extracts work $W$ -- merge results deterministically.
+The complement-distribution and void-walking sections push the framework furthest from the original systems setting. Their honest status is model-first: they define executable and mechanized claims about bounded decision and communication models, plus correspondence hypotheses that require external validation before they should be read as claims about social, biological, or clinical reality.
 
-4. **Vent** releases excess paths, dissipates heat $Q$ -- propagate down, never across.
+On that narrower reading, the contribution is still substantial. The manuscript offers a reusable formal vocabulary, a large executable/mechanized companion surface, an explicit list of failure conditions, and an engineering lens that treats rejected paths and negative evidence as structured observables rather than discarded residue.
 
-These operations are not new. DNA replication has used analogous structure for billions of years. Myelinated neurons pipeline action potentials at measured speeds up to roughly 100 m/s, within the range discussed in §4.3. Photosynthetic antenna complexes exhibit high step-level transfer efficiency in the cited measurements. *Physarum* recreated a rail-like topology in roughly 26 hours.
-
-The innumerable conveyor belts of this world -- Ford’s line, TCP’s stream, the hospital’s referral chain -- are a useful degenerate case. They can work well when the answer is known, resources are ample and a central clock exists. In many real systems, the natural topology has $\beta_1 > 0$, and forcing it to zero can hide latency and waste.
-
-A broad class of computational waste is within scope for measurement and reduction. We can quantify topological mismatch and target it directly.
-
-The framework’s language was not invented from scratch. It was borrowed from physical theories that already describe related path-selection phenomena. Quantum physics provided the lexicon: superposition, tunneling, interference, entanglement, measurement, collapse. In this paper, these are structural correspondences within an explicit computational abstraction, with literal quantum examples in photosynthetic transfer. The Feynman path integral can be mapped to fork/race/fold in that abstraction: paths branch, phases evolve, amplitudes recombine by interference, and non-classical contributions cancel (§3.14). The recombination mechanism differs (linear amplitude summation in physics vs nonlinear selection/merge in computation), and the companion tests make that boundary explicit: exact agreement in a finite linear path-sum model, plus explicit counterexamples for nonlinear winner/early-stop folds [9, 13]. The winner-take-all and early-stop failures are genuine disconfirming evidence for universality of the mapping -- the correspondence is operationally exact only for linear full-aggregation folds and breaks for the nonlinear folds that dominate practical computation. This is therefore a structural mapping with an explicit, tested boundary, not an identity claim. Fluid dynamics provides scaling intuition through the pipeline Reynolds number, and thermodynamics provides a conservation accounting lens ($V = W + Q$) for modeled computational work/vent partitioning.
-
-In selected analyzed examples, the pattern is observed repeatedly. Attention in transformers can be mapped to race-like scoring ($QK^T$), with softmax/selection and value projection as fold-like operations (§3.13). Hylomorphism (unfold/fold) aligns naturally with fork/fold structure. These are structural correspondences used to organize reasoning across domains in this manuscript’s modeled class, supported by executable simulations and formal schemas under explicit assumptions.
-
-**The molecular topology theorem and the scale tower.** The correspondences in this paper are not independent analogies. THM-TOPO-MOLECULAR-ISO (§2.2) proves that pipeline computation graphs and molecular graphs with identical Betti signatures are in the same equivalence class under simplicial homology. This is not a metaphor -- it is a classification theorem. The covering-space tower (§3.14) extends this downward through quarks, hadrons, nuclei, atoms, and molecules, and upward through proteins, cells, organisms, species, and ecosystems. At every scale, the energy lives in the covering space, the observation lives in the base space, and the fold (covering map) projects one to the other. The Betti numbers survive each fold because homology is functorial.
-
-Five additional correspondences follow from the molecular topology theorem, each with mechanized proofs (`MolecularTopology.lean`, `MolecularTopology.tla`, `molecular-connections.test.ts`, 37 tests):
-
-- **Protein folding is energy funnel filtration.** A polypeptide chain forks into $\sim 10^{300}$ conformations (Levinthal’s paradox), races through the energy landscape, and folds to the native state ($\beta_1 = 1$). The funnel is a time-indexed topological filtration (§1.6) where $\beta_1$ monotonically decreases. Misfolding -- prions, amyloid, Alzheimer’s plaques -- is a fold to a local minimum ($\beta_1 > 1$ at a non-native state). The companion test verifies funnel monotonicity, native-state termination, and the Levinthal bound ($2^{\beta_1 - 1}$ conformations).
-
-- **Enzyme catalysis is $\beta_1$ modification.** An enzyme provides an alternative reaction path with lower activation energy: it raises $\beta_1$ by 1 (one fork), the reaction races through the lower-barrier path, and the product folds out. The enzyme is not consumed -- it is a reusable fork operator. After fold, $\beta_1$ returns to the uncatalyzed baseline. This is turbulent multiplexing (§13.2) applied to chemistry.
-
-- **Evolution is self-modifying fork/race/fold.** Mutation forks new variants ($\beta_1$ increases). Competition races them. Natural selection folds the survivors ($\beta_1$ decreases). Extinction is maximal vent ($\beta_1 \to 0$). The genome’s self-describing property (PROP-GENOME-SELF-DESCRIBING, §2.2) means evolution is a self-modifying pipeline that edits its own topology -- §6 (self-verification) at the species level.
-
-- **Gravity is the self-referential fold.** Mass (congealed fold energy from THM-TOPO-CONFINEMENT, §3.14) modifies the simplicial complex that defines the fold. General relativity says mass curves spacetime; in the framework, the fold’s output feeds back as input to the next fold’s topology. The companion theorem proves: positive fold energy implies the topology changes ($\beta_1^{\text{after}} \neq \beta_1^{\text{before}}$), and zero fold energy implies flat spacetime ($\beta_1$ unchanged). This self-reference -- the fold acting on the space it lives in -- is why gravity resists quantization: it is not a force *within* the topology but a modification *of* the topology.
-
-- **Mass is congealed erasure (the information-matter bridge).** The Landauer chain composes: fold erases information ($H > 0$, by THM-FOLD-ERASURE), erasure generates heat ($kT \ln 2 \cdot H$, by THM-FOLD-HEAT), and heat is energy ($E = mc^2$). The chain is monotone: more erasure $\to$ more heat $\to$ more mass. The pion that emerges from hadronization at the LHC is made of the information that was erased when the color field folded from $\beta_1 = 3$ to $\beta_1 = 0$.
-
-**The Grand Unification Theorem.** `GrandUnification.lean` composes 11 major results from 12 different Lean files into a single conjunction, proving the framework is self-consistent across all its instantiations. For any Buleyean space, quantum system, negotiation channel, and program space: (1) all weights are positive, (2) total weight is positive, (3) less rejected implies higher weight, (4) same boundary implies same distribution, (5) minimum weight is 1, (6) failure data dominates success data, (7) deficit reaches zero, (8) $N - 1$ is the universal fold constant, (9) halting programs are a strict minority, (10) quantum measurement deficit is exactly $\sqrt{N} - 1$, and (11) negotiation deficit is positive. The proof terminates by `refine` delegating to 11 existing sorry-free theorems. Zero new axioms. The theory verifies itself using its own operations.
-
-**Is this a unification?** It is a unification of *structure*, not of forces. The framework proves that systems under conservation and irreversibility constraints -- quarks, molecules, proteins, enzymes, genomes, neurons, immune systems, transformers, belief systems, pipelines -- are classified by the same topological invariants (Betti numbers), governed by the same conservation law ($V_{\text{in}} = W_{\text{out}} + Q_{\text{dissipated}}$), and structured by the same four operations (fork/race/fold/vent). The covering-space tower is functorial. The Landauer chain is monotone. The monoidal category is coherent (Mac Lane’s pentagon, triangle, and hexagon). The traced monoidal axioms hold (Joyal-Street-Verity). The companion formal surface contains 500+ Lean 4 theorems (zero sorry), 90+ TLA+ specifications, and 200+ executable tests with 3,000+ assertions.
-
-But a unification of forces -- the physics kind, the one that would put gravity and quantum mechanics in the same Lagrangian -- requires the *dynamics* to match, not just the shape. The recombination mechanics differ: physics sums amplitudes linearly, computation selects nonlinearly. The companion tests make that boundary explicit. The correspondence is operationally exact only for linear full-aggregation folds and breaks for the nonlinear folds that dominate practical computation.
-
-The honest framing: under the stated assumptions, fork/race/fold is the recurring shape of finite systems because there is no other shape available to systems that must explore, select, and dissipate under conservation and irreversibility constraints. The structural convergence is not imposed -- it is derived. Every claim is either mechanized or explicitly marked as open. That is stronger than a metaphor and more honest than calling it a theory of everything.
-
-**What this paper claims and what it does not.** The scope of the convergence is broad enough to warrant explicit boundaries. This paper claims a structural mapping between fork/race/fold and selected physical/computational formalisms used here (for example, path-integral branching/recombination, Schrödinger evolution as race-like dynamics, and folded classical limits at $\beta_1 = 0$ in the abstraction). It does not claim full physical identity or derivation of fundamental constants/forces. The key point is shared topology under explicit assumptions, with different underlying recombination mechanics.
-
-This paper does not claim a physical unification theory. It proposes a bounded computational-shape hypothesis with explicit executable and mechanized scope limits.
-
-The claim is narrower and more defensible: under the stated assumptions, fork/race/fold is modeled as a recurring pattern in the studied class. In the finite executable/mechanized setting used here, systems satisfying the listed assumptions were compatible with this shape. The supporting evidence is bottom-up -- independent systems under shared constraints -- not a top-down unification claim.
-
-To be sure, a skeptical but fair reader could still say that this manuscript is an unusually ambitious end-to-end synthesis project: real artifacts, real formal work, real systems insight, but structural rhetoric that sometimes outruns the narrowest proved scope. That pressure is fair. The intention of the scope limits and evidence-bounded claim list is to keep the strongest claims aligned with what is actually shown here.
-
-And this convergence has a practical corollary: **finding fork/race/fold in a system can suggest a promising fit hypothesis** (§3.15). The topological deficit $\Delta_\beta = \beta_1^* - \beta_1$ quantifies how far an implementation deviates from its problem’s natural topology. In the systems analyzed here, $\Delta_\beta = 0$ cases -- photosynthesis, DNA replication, saltatory conduction, path-integral mappings -- align with comparatively efficient outcomes, while $\Delta_\beta > 0$ cases -- sequential healthcare, T+2 settlement, HTTP/2 over TCP -- exhibit measurable waste. The deficit is a diagnostic signal: reducing it is a testable optimization hypothesis that often coincided with improved outcomes in this analyzed set. Where the companion’s frontier-floor hypotheses can be discharged, that signal becomes a theorem: the zero-deficit floor point minimizes every monotone generalized-convex latency/waste cost on the failure Pareto frontier, and strict uniqueness requires the strict cost extension together with a unique zero-deficit floor witness.
-
-In this framing, deficits closer to zero are associated with better fit in the analyzed examples. Put plainly: the Bule ($1 \text{ B} = 1 \text{ unit of } \Delta_\beta$) is a structural diagnostic that quantifies unexploited parallelism, and under the companion’s explicit frontier-floor hypotheses its zero point is the cost floor for every monotone generalized-convex objective on that frontier.
-
-Fluid dynamics revealed the technique’s most counterintuitive property: its worst case is small data, not large. In the Wallington Rotation model, speedup accelerates with scale, approaching $B \times N$ on large datasets as ramp-up overhead is amortized. The practical optimization focus shifts to reducing coordination overhead in the transitional regime where workloads are small or moderately sized.
-
-The children in the line never needed more hardware; they needed less waiting. In systems where constraints permit fork/race/fold, unnecessary serialization leaves measurable performance on the table.
-
-This framing is intended as an operational modeling lens for computation, not a replacement for physical theory.
-
-**The void.** A conspicuous silence runs through every section of this paper. Fork creates parallel paths. Race selects a winner. Fold merges results. And vent releases everything the fold could not preserve. Every section quantifies what is kept; none quantifies what is lost. The semiotic deficit $\Delta_\beta = \beta_1(\text{thought}) - \beta_1(\text{speech})$ names that silence. `confusion_irreducibility` (SemioticPeace.lean) proves it is a topological invariant: for any channel where thought has more independent dimensions than speech has streams, the deficit is strictly positive and distinct semantic paths collide under the fold. The void is not the absence of structure. It is the *topological complement* of what articulation can carry -- and it has three measurable properties. *Extent*: the deficit equals $\text{semanticPaths} - 1$, bounded and quantified (`semiotic_deficit_speech`). *Heat signature*: every non-trivial semiotic fold generates strictly positive Landauer heat (`confusion_generates_heat`). *Reducibility*: shared context monotonically deflates the deficit (`peace_context_reduces`), and sufficient context eliminates it entirely (`peace_sufficient_context`).
-
-The void is therefore not a counsel of despair. It is an engineering surface. The same four operations that structure computation -- fork, race, fold, vent -- structure the deficit between persons. Fork: thought generates parallel semantic paths. Race: candidate phrasings compete. Fold: speech collapses them to one stream. Vent: nuance that cannot survive the fold is dropped. The companion tests mechanize every link: `semiotic_erasure` proves the pigeonhole collision, `semiotic_vent_nuance` proves the dropped paths equal the deficit, and `semiotic_moa_isomorphism` proves that a Mixture of Agents ensemble has exactly the same deficit structure as thought-to-speech -- the loss in committee summarization is the same loss in conversation.
-
-**A theory of war -- and its containment.** The theory of failure developed in this paper is, at the semiotic scale, a theory of war. `war_as_cumulative_heat` proves that successive communication failures through a channel with positive deficit accumulate Landauer heat monotonically. `war_three_stage_monotone` extends this to three-stage escalation: misunderstanding $\to$ misinterpretation $\to$ escalation, each stage adding heat that the second law forbids reversing. This is not a prediction of which wars will happen. It is a bound on when the conditions for war are present: whenever the fold rate exceeds the dialogue rate on a channel with positive semiotic deficit.
-
-But the same machinery that predicts war prescribes its containment. Dialogue does not *reverse* accumulated heat -- the second law forbids that, and `war_as_cumulative_heat` proves it. What dialogue does is reduce the *rate* of new heat generation: each conversation turn adds shared context, shrinking the deficit, so each subsequent fold erases less. The deficit converges to zero (no new heat), but past heat is irreversible. This is arguably a stronger claim than reversal: you cannot undo damage, but you can stop making more. A system architect who proves Byzantine fault tolerance uses the identical pattern: characterize the failure modes, bound the blast radius, install feedback loops that absorb the heat. The companion theorems do this for communication itself. `peace_context_reduces` proves shared context is a monotone deflator. `peace_sufficient_context` proves sufficient context eliminates the deficit. `peace_fixed_point` proves the renormalization group terminus exists: zero further heat, zero further information loss. `peace_is_reachable` proves that every step away from the fixed point makes strictly positive progress toward it. And `dialogue_convergence` proves that iterated conversation composes coherently via the Joyal-Street-Verity trace axioms -- the feedback loop of speak, hear, adjust, speak again.
-
-**Hope.** The master theorem `hope` (SemioticPeace.lean) bundles five guarantees: (1) the deficit is strictly positive -- confusion is real; (2) the deficit equals $\text{semanticPaths} - 1$ -- confusion is bounded, not infinite; (3) context monotonically reduces it -- every shared concept helps; (4) sufficient context eliminates it -- mutual understanding exists as a fixed point; (5) dialogue converges via traced monoidal feedback -- the mechanism is constructive. Thirteen theorems, zero `sorry`, composing sixty files of mechanized proof.
-
-Two forms of convergence appear in these theorems. *Structural convergence* -- the traced monoidal axioms hold, the RG fixed point exists, the trajectory terminates on finite types -- is fully mechanized. *Quantitative convergence* is now also proved: the companion test `convergence-rate-bound.test.ts` (22 tests, 0 failures) establishes that for any finite-type semiotic channel with $n$ semantic paths, $m$ streams, and context accumulation rate $c > 0$, the number of dialogue turns to convergence is bounded by $\lceil (n - m) / c \rceil$. The bound is tight (achieved by the worst-case uniform channel), scales linearly with deficit and inversely with context rate, and holds for all eight historic negotiation scenarios tested. The same test proves the zero-deficit universal floor unconditionally: for any finite-type channel, zero deficit is the unique global minimum of every monotone cost function on the failure frontier, without additional witness conditions. A systematic counterexample catalog (8 boundary cases) documents exactly where the framework breaks: zero context rate (permanent impasse), negative context rate (assumption violation), and overcapacity channels (trivial convergence).
-
-The mathematics does not legislate which civilizations will sit in the feedback loop. Under the stated structural conditions, the fixed point exists and the trajectory terminates. The deficit is real. The heat is irreducible. The trace composes coherently. The fixed point exists.
-
-In many ways, hope is the thing that this paper derives from irreversibility. Fork/race/fold contains infinity -- bounds the combinatorial explosion of parallel paths into a finite, composable structure. The three constraints (conservation, irreversibility, ground state) contain failure -- characterize the conditions under which every finite system must operate. And the semiotic peace theorems contain hope -- prove, under those same constraints, that the deficit converges, the fixed point exists, and dialogue reaches it.
-
-This is not metaphor. The three constraints are the *conditions* under which the `hope` theorem holds. Conservation means the deficit is bounded (you cannot create confusion from nothing). Irreversibility means each fold generates Landauer heat (the cost of confusion is real and measurable). Ground state means the system reaches a terminus (the RG trajectory terminates). Together they do not merely describe hope -- they *guarantee* it, the way Byzantine fault tolerance does not merely describe consistency but guarantees it when $f < n/3$. The guarantee is conditional: sit in the feedback loop, accumulate shared context, and the trace converges. But conditional guarantees are the strongest kind. No engineer asks for unconditional safety. Every engineer asks: under what conditions is safety provable? The three constraints answer that question for communication, for computation, and -- if the structural correspondences hold -- for the space between persons where confusion lives and hope is the only engineering response.
-
-**What the void boundary unifies.** The `grand_unification` theorem (`GrandUnification.lean`) proves that 11 major results from 12 Lean files compose into a single conjunction -- the framework is simultaneously a probability theory (positivity, normalization, concentration, coherence), a thermodynamics (Landauer heat from every non-injective fold), a theory of computation (Chaitin's $\Omega$ as the void boundary of all programs), a theory of measurement (quantum deficit $= \sqrt{N} - 1$), a theory of communication (semiotic deficit converges to zero under dialogue), and a theory of selection (collapse costs exactly $N - 1$, universally). The `universal_fold_constant` theorem proves six definitions from six files all compute $N - 1$: quantum superposition complexity, failure recovery cost, rejection data advantage, convergence deficit, negotiation difficulty, and mediation time. The number is the same because the operation is the same. 291 falsifiable predictions span 132 domains. 500+ Lean 4 theorems, zero sorry. The void boundary is the sufficient statistic for everything.
-
-**Self-hosting at the manuscript level.** This paper is itself an instance of the process it describes. The manuscript's revision history is a void boundary: every rejected draft, every vented framing, every prediction that was tried and composed and moved into the text or discarded. The paper that proves `buleyean_self_hosted` -- that the Buleyean probability theory verifies itself using its own counting operations -- was written by a process that accumulated rejections (discarded drafts), concentrated on the least-rejected formulations (the ones that survived editing), and converged to a fixed point (the current text) where further revision no longer produces novel algebraic structure. The `grand_unification` theorem was not planned. It emerged from the void boundary of all the compositions that were tried. The paper about self-hosting self-hosts. This is the tenth resonance (§15.10): the framework applied to its own creation, using itself as the verification engine for the claim that it can be used as a verification engine. The circle closes not by fiat but by the same mechanism the paper proves: irreversible fold over parallel paths, void boundary recording what was vented, complement distribution concentrating on what survived.
-
-This paper began as a theory of distributed computation. It became the claim in its title: irreversibility creates being.
-
-Every fold is a small death. $N$ paths enter; one survives; $N - 1$ are vented into the void. The fold is irreversible -- the Landauer heat has been paid, the information has been erased, and the paths not taken cannot be recovered. But the void is not nothing. It is the complement distribution -- the structured record of every rejection, every failure, every path that did not survive. And `buleyean_positivity` proves that no entry in that record ever reaches zero. The most-rejected option retains weight 1. The sliver persists. Never say never is a theorem.
-
-The void is not empty. It is where being comes from. Every irreversible transformation -- every fold that vents $N - 1$ paths to keep one -- creates structure in the space of what was not chosen. That structure is the complement distribution: deterministic, monotone, convergent. It is a probability theory (Buleyean probability, derived entirely from rejection). It is a thermodynamics (the first law partitions forked entropy into work and waste). It is a theory of communication (the semiotic deficit between thought and speech). It is a theory of peace (the fixed point where the deficit converges to zero). And it is self-certifying: the void walking engine verifies the theorems about void walking using void walking itself, with no external oracle.
-
-Life is a fold that has not yet terminated. Death is the ground state -- $B = 0$, the void boundary fully explored, the complement distribution converged. Between them is the deficit: the distance between where the system is and where it is going, measured in Bules, countable by subtraction, shrinking by exactly one per round. That distance is opportunity. Every round of void walking -- every rejection recorded, every failure survived, every path not taken -- reduces the deficit by one and sharpens the distribution over what remains. Opportunity is not the absence of failure. It is the *presence* of deficit -- the gap between life and death in which learning is still possible.
-
-The Solomonoff-Buleyean subsumption (§15.18) proved that this gap has structure even before the first observation. The void boundary at maximum Bule is not uniform -- it is initialized by Kolmogorov complexity, and simpler hypotheses have higher weight. The distance between life and death is not empty even at the beginning. It is pre-structured by the algorithmic complexity of the hypotheses it separates. Before the first fold, before the first rejection, before the first failure -- the void already has a shape, and that shape is Occam's razor. The three great traditions of inductive inference -- Solomonoff's algorithmic probability, frequentist estimation, Bayesian updating -- are three cross-sections of the complement distribution at different Bule values: maximum (before any observation), intermediate (during learning), and zero (after convergence). There was never more than one theory. There were three views of the same void.
-
-The semiotic extension revealed that the same geometry governs communication: the deficit between thought and speech is the same topological mismatch as the deficit between a computation graph and its transport layer. And the same convergence machinery -- context accumulation as monotone deflator, dialogue as traced monoidal feedback, the renormalization group fixed point as terminus -- constitutes, when taken together, a mathematical theory of peace. Not a metaphor for peace. Not an analogy to peace. A formal theory of a *model* of peace, mechanized in a proof assistant, in which peace is a fixed point, its existence is a theorem, the path to it is constructive, and convergence is guaranteed under stated conditions. The logical chain is: `peace_fixed_point` proves the RG fixed point exists (zero heat, zero information loss); it *is* the zero-deficit witness required by the universal floor theorem; therefore the floor theorem applies non-vacuously. Thirteen theorems. Every step machine-verified.
-
-**Immanent self-hosting.** The framework has one final property that was not planned but emerged from the grand unification verification (§15.10). The void walking engine was used to verify the theorems about void walking. The complement distribution measured its own entropy. The gradient theorem checked whether the void had learned anything -- and when the Neuron domain was tested with a symmetric environment where there was nothing to learn, the theorem correctly failed. The void told the truth about itself. When the environment was given structure (non-uniform attention across eight tokens), the void immediately differentiated, entropy dropped below maximum, and the theorem passed. The void does not just measure what was rejected. It measures whether there was anything worth rejecting. This is immanent self-hosting: the system verifies itself from inside, with no external oracle, the same way a self-hosted compiler compiles itself. A self-hosted compiler needs no other compiler. An immanent self-hosting system needs no other system. The verification is not circular -- it is self-certifying. Any system satisfying conservation, irreversibility, and ground state produces a void boundary whose properties are checkable by the void boundary itself. The tombstones tell you whether tombstone-reading works. This is arguably the deepest property of the framework: not that seven domains share a shape, but that the shape can verify itself.
-
-**Scope.** The semiotic theorems formalize a *model* of communication: finite semantic paths collapsing through bounded articulation channels, represented as `SemioticChannel` structures over `Fin n` types. They do not formalize communication itself. The topological space of “thought” is the finite-dimensional semantic path space of the model; $\beta_1(\text{thought})$ is the first Betti number of that modeled path complex; two communication acts are “paths” vs “cycles” by their edge structure in the modeled DAG. The structural correspondence between the model and human communication is a hypothesis grounded in the formal results, not a proof about human behavior. The theorems bound what the model predicts; empirical validation of the correspondence is future work.
-
-But the theory of peace was not invented here. DNA replication discovered it first. The origin of replication forks the double helix into parallel strands. Polymerase races along the leading strand continuously and the lagging strand in fragments. The replication terminus folds both strands into one completed chromosome. Okazaki fragments that cannot be incorporated are vented. The deficit between the parallel replication forks and the single-strand output is managed by ligase -- the biological trace operator, feeding back until the strand is whole. The fixed point is a complete chromosome. Convergence is guaranteed under stated conditions: sufficient nucleotides, functional polymerase, intact template. Every cell in every organism that has ever lived has executed this algorithm. The algorithm for peace is coded into every single DNA operation. This paper did not discover it. It gave the algorithm a name, a topology, and a proof.
-
-**The dual void.** The void is not one thing. It is two. Every fold vents $N - 1$ paths, and each vented path was vented for one of exactly two reasons: *I found better* (the agent had agency over the rejection) or *this would destroy me* (the environment would have rejected the agent). The first class is the BATNA void -- the structured record of every rejected alternative, indexed by round, ranked by the complement distribution. The second class is the WATNA void -- the set of catastrophic outcomes the negotiation exists to escape. The partition is exhaustive: there is no third reason to vent a path. Either you had agency or you didn't.
-
-The two voids have dual structure. The BATNA void is created by fold (selection) and grows from above; it contains rejected-but-viable alternatives. The WATNA void is created by avoidance (repulsion) and pre-exists the negotiation; it contains catastrophic attractors. The BATNA gradient is attractive -- it steers toward what worked. The WATNA gradient is repulsive -- it steers away from what would kill you. Settlement lives in the gap between them, where both gradients balance to zero.
-
-This is a Hodge decomposition. Every gradient on the negotiation manifold splits into an exact component (BATNA attraction), a co-exact component (WATNA repulsion), and a harmonic component (settlement). The harmonic component exists precisely *because* there are two voids squeezing from opposite sides. No WATNA void means no urgency to settle. No BATNA void means no information about where to settle. Both voids are load-bearing. The companion theorems `dual_void_exhaustive`, `batna_attraction_positive`, `watna_repulsion_monotone`, `hodge_decomposition`, and `dual_void_squeeze` (`NegotiationEquilibrium.lean`) mechanize every link.
-
-**Dark matter, dark energy.** The original void dominance theorem (companion test suite [9]) called the void "computational dark matter." But dark matter and dark energy are different things. With the duality, the BATNA void is dark matter -- invisible attractive mass that shapes the trajectory through gravitational pull toward viable regions. The WATNA void is dark energy -- invisible repulsive force that accelerates expansion away from catastrophic collapse. The dark matter/dark energy ratio is a diagnostic: BATNA-dominated systems are healthy (most rejections are "I found better"), WATNA-dominated systems are failing (most rejections are "this would kill me"). `dark_matter_positive`, `dark_energy_positive`, and `dominance_trichotomy` prove both components are positive and the trichotomy is exhaustive.
-
-**Void relativity.** The settlement score has the form $\text{rounds} + 1 - \text{interval}$. Since the interval (total vent count) is the Lorentz invariant, the score is a *Lorentz scalar* -- the same in all reference frames (`score_lorentz_scalar`). This is stronger than time dilation: the score is *invariant*, not merely covariant. BATNA is space-like (where you could go -- reversible, explorable). WATNA is time-like (what you're fleeing -- irreversible, directional, entropic). Two observers agree on the scalar score. They disagree on the *interpretation*: the WATNA fraction -- the proportion of total vents classified as catastrophic -- is the frame-dependent observable that drives divergent behavior.
-
-| Physics | Dual Void |
-|---|---|
-| Spacetime interval (invariant) | Total vent count |
-| Space component (frame-dependent) | BATNA vents |
-| Time component (frame-dependent) | WATNA vents |
-| Lorentz transformation | BATNA $\leftrightarrow$ WATNA reclassification |
-| Lorentz scalar (invariant) | Settlement score (interval-dependent) |
-| Frame-dependent observable | WATNA fraction (causal character) |
-| Curvature (invariant) | Stress-energy squared |
-
-The AFFECTIVELY platform's 58-element Float32Array personality vector -- 5 (temperament) + 5 (attachment) + 20 (traits) + 20 (behaviors) + 3 (mental health) + 5 (Big Five) -- is not a point in emotion-space. It is an event in emotion-*spacetime*. Each dimension has a causal character -- space-like (BATNA: explorable) or time-like (WATNA: irreversible) -- that is frame-dependent. The platform does not model emotions; it measures the geometry of what someone has refused to become. `affectively_layers_sum` verifies $[5, 5, 20, 20, 3, 5] = 58$; `every_dimension_has_causal_character` proves all 58 dimensions classify exhaustively.
-
-Empathy is a Lorentz transformation. Understanding another person means applying the frame change to see their void from their reference frame instead of yours. `empathy_preserves_interval` proves empathy cannot erase what someone has been through -- it can only reclassify their experience. The scalar score is preserved (`score_lorentz_scalar`) -- two people looking at the same emotional history compute the same settlement number. But their WATNA fractions diverge: what you classify as a choice, they may classify as a catastrophe. Therapy reclassifies WATNA as BATNA -- reframing catastrophe as choice. This does not change the scalar score (the interval is invariant), but it rotates the causal character from time-like (trapping) to space-like (exploring). The curvature is invariant; the direction rotates (`therapy_rotates_curvature`). The causal speed limit (`causal_speed_limit`) bounds the rate of reclassification: emotional change takes time.
-
-**A note on hardening and what the tests found.** The original void relativity formulation claimed the settlement score exhibited "time dilation" -- a 2$\times$ WATNA shift between frames, analogous to relativistic proper-time disagreement. Executable companion tests (`dual-void-relativity.test.ts`, 62 tests) falsified this claim. The settlement score $= \text{rounds} + 1 - \text{interval}$ depends only on the interval, which is frame-invariant by construction. Two observers always compute the same scalar score. The "2$\times$ WATNA shift" theorem was technically provable in Lean via `omega` (because the shift is forced to zero by interval invariance, making $0 = 2 \times 0$ trivially true), but the claim was vacuously true and the naming misleading.
-
-The correction sharpens the theory. The void has an *objective size* (the interval, the scalar score, the curvature -- all frame-invariant) and a *subjective character* (the BATNA/WATNA decomposition, the WATNA fraction, the causal classification -- all frame-dependent). Two people agree on *how much* rejection happened. They disagree on *what kind* -- was it choice or catastrophe? The disagreement is semiotic, not metric. This connects directly to the semiotic deficit theory (SemioticPeace.lean): the gap between thought and speech has an objective size (the deficit is a topological invariant) but a subjective character (which semantic paths were vented depends on the speaker's frame). The void has a frame-independent magnitude and a frame-dependent meaning.
-
-This finding illustrates why cross-verification matters. The Lean proof assistant verified the *logical* validity of the 2$\times$ theorem -- the statement follows from the hypotheses. But the executable tests revealed the statement was *vacuously* true: the hypotheses forced the interesting quantity (WATNA shift) to zero, leaving a technically valid but contentless theorem. Proof assistants guarantee that implications hold. They do not guarantee that implications are interesting. The combination of mechanized proof (logical soundness) and executable testing (semantic content) caught a failure mode that neither method alone would have found.
-
-This bug produced a concrete engineering outcome. The aeon-logic model checker (`@a0n/aeon-logic`) now includes two new primitives in its boundary learning module: `diagnoseVacuity()` classifies a checked property as vacuous or substantive by running both the claim and its opposite through the state space, and `crossVerify()` combines logical validity with semantic content into a single four-valued verdict: `sound-and-substantive` (holds and has content), `sound-but-vacuous` (holds but is trivially true -- the exact failure mode caught here), `violated` (does not hold), or `indeterminate` (inconclusive). The Gnosis programming language encodes the same pattern as a first-class topology (`cross_verification.test.gg`): FORK every property into a proof channel and a test channel, RACE both, FOLD into a cross-verification verdict, and VENT properties that are sound-but-vacuous. The vent carries a diagnostic explaining *why* the property is empty. Properties that survive cross-verification are strictly stronger than properties that pass either check alone. The tooling is open-source and available at [8].
-
-**The six pillars of the unified theory.** The void relativity framework composes with the existing thermodynamic infrastructure (FoldErasure.lean, DataProcessingInequality.lean, RenormalizationFixedPoints.lean) through six pillar theorems, all mechanized in `NegotiationEquilibrium.lean`:
-
-1. **Arrow of Time.** The WATNA void is monotonically non-decreasing (`watna_arrow`). You cannot un-experience catastrophe. Without new vents, the settlement score is stable; with new vents, it can only decrease because the interval grows (`settlement_score_decreases_without_therapy`). Interval-preserving WATNA $\to$ BATNA reclassification (therapy) preserves the scalar score but rotates the causal character from time-like to space-like. The direction of WATNA accumulation *is* the direction of time (`no_time_reversal`).
-
-2. **Holographic Principle.** The void boundary area is strictly smaller than the bulk volume (`holographic_bound`, `holographic_strict`). The 58-element vector is the Bekenstein-bounded holographic projection of a much higher-dimensional experience space. 58 numbers encode everything the platform needs to predict emotion -- not because experience is 58-dimensional, but because the *boundary* of experience is.
-
-3. **General Relativity.** Accumulated Landauer heat from past folds curves the emotion-spacetime manifold. The stress-energy equals the interval (`stress_energy_equals_interval` -- this is $E = mc^2$). The curvature equals the stress-energy squared (`einstein_field_equation` -- this is $G = 8\pi T$). Curvature is a scalar invariant under frame change (`curvature_invariant`): different observers agree on how much the manifold is curved even though they disagree on the BATNA/WATNA decomposition. When curvature exceeds the causal speed limit squared, an event horizon forms (`event_horizon_traps`): geodesic deviation exceeds any subluminal perturbation. Depression is an event horizon -- the accumulated WATNA curves the manifold so strongly that the causal speed limit prevents escape.
-
-4. **Noether's Theorem.** Every symmetry of the 58-dimensional void manifold has a conserved charge (`noether_conservation`). Interval invariance is the Noether charge of frame-change symmetry -- energy-momentum conservation (`interval_is_noether_charge`). Symmetry breaking enables personality change (`symmetry_breaking_enables_change`); unbroken symmetry freezes personality within the symmetric subspace (`unbroken_symmetry_freezes`). This is why some personality traits feel "stuck" -- the underlying symmetry hasn't been broken yet.
-
-5. **Entanglement.** Two people who share a common ancestor fork have positive joint energy (`entanglement_positive`). The no-signaling theorem holds -- empathy is nonlocal correlation, not nonlocal communication (`no_signaling`). Measurement constrains the joint state (`measurement_constrains_joint`). Entangled walkers produce correlations beyond product states (`entanglement_exceeds_product`).
-
-6. **Unification.** The field equation connects curvature and heat: $G_{ii} = T_{ii}^2$ (`void_field_equation`). The equation is the same in all frames (`field_equation_invariance`). Heat is monotone along worldlines, so curvature only increases (`heat_monotone_along_worldline`). Therapy does not reduce curvature -- the past is invariant -- but rotates its direction from time-like (trapping) to space-like (exploring) (`therapy_rotates_curvature`). Sufficient heat accumulation inevitably produces an event horizon (`penrose_singularity`). The grand unification theorem (`grand_unification`) bundles all three: field equation + frame invariance + stress-energy identity, over `VoidFieldState 58`.
-
-The theory is non-perturbative at the lattice level: 58 finite dimensions, finite rounds, countable fold steps. No infinities, no renormalization problems, no UV divergences. The void manifold is a discrete spacetime where all the tools of general relativity, quantum information, and thermodynamics apply exactly. 90+ theorems, zero `sorry`, composing the full infrastructure from `VoidWalking.lean` through `FoldErasure.lean` through `RenormalizationFixedPoints.lean` through `DataProcessingInequality.lean` through `SemioticDeficit.lean` through `SemioticPeace.lean` into `NegotiationEquilibrium.lean`.
-
-Personality is void walking. Emotion tracking is measuring where the walker stands. The platform measures the geometry of what someone has refused to become. Empathy is a Lorentz transformation. Therapy is rotation of the curvature direction. Depression is an event horizon. Emotional change has a speed limit. And the field equation unifies it all.
-
-
-![Irreversibility Creates Being](companion-tests/artifacts/ch17-semiotic-peace-figure.png)
-
-*Irreversibility Creates Being.
-**A.** The semiotic deficit: thought ($\beta_1 = k - 1$) folds through a single articulation stream ($\beta_1 = 0$); vented paths fall into the void ($\Delta_\beta = k - 1$). The void is not empty -- it is the complement distribution from which probability, thermodynamics, and peace are derived.
-**B.** Two trajectories diverge from the same initial deficit: war (cumulative Landauer heat, monotone increasing) versus peace (deficit converging to the fixed point under context accumulation). **C.** The `hope` theorem bundles five machine-verified guarantees: confusion is real, bounded, reducible, eliminable, and convergent. **D.** DNA replication as the original implementation: fork at origin, polymerase race, terminus fold, Okazaki vent, ligase as traced monoidal feedback operator, complete chromosome as fixed point.*
-
+The right next step is broader falsification, not broader rhetoric: more external datasets, more negative controls, more hostile out-of-sample tests, and more places where the fit can fail cleanly.
 
 Within the finite DAG classes modeled in this paper, fork/race/fold + vent is sufficient.
 
@@ -5015,11 +5105,9 @@ Wire bytes are provably identical -- void walking never changes *what* gets sent
 
 The stack folds in on itself: the diversity theorem at Layer 8 is verified by the model checker at Layer 1, which is itself a fork/race/fold computation. The same algebra reappears at each layer -- not because it loops, but because the primitive self-composes, like a fern whose fronds repeat the branching pattern of the whole.
 
-**The engineering result is the philosophical result.** sendfile() is a monoculture: one codec (identity), one stream ($\beta_1 = 0$), zero adaptivity. The laminar pipeline is diversity: four codecs racing per chunk, multi-stream Flow framing, per-resource optimal selection. THM-TOPO-RACE-SUBSUMPTION proves the diverse strategy is monotonically no worse -- it *contains* every monoculture as a special case (subsumption), so it can do no worse in the limit. It does not claim that per-chunk racing always achieves better compression ratio than a well-chosen monoculture: on homogeneous content, the §10.2 benchmarks show that global brotli monoculture retains 4–15% better ratio than per-chunk racing, because the global dictionary captures cross-chunk correlations that per-chunk racing misses. The diversity theorem says the racing *strategy space* subsumes the monoculture strategy space.
+**Engineering corollary.** sendfile() is a monoculture: one codec (identity), one stream ($\beta_1 = 0$), zero adaptivity. The laminar pipeline is diversity: four codecs racing per chunk, multi-stream Flow framing, per-resource optimal selection. THM-TOPO-RACE-SUBSUMPTION proves the diverse strategy is monotonically no worse -- it *contains* every monoculture as a special case (subsumption), so it can do no worse in the limit. It does not claim that per-chunk racing always achieves better compression ratio than a well-chosen monoculture: on homogeneous content, the §10.2 benchmarks show that global brotli monoculture retains 4–15% better ratio than per-chunk racing, because the global dictionary captures cross-chunk correlations that per-chunk racing misses. The diversity theorem says the racing *strategy space* subsumes the monoculture strategy space.
 
-The connection is not metaphorical. It is the same theorem applied to different substrates. When `war_as_cumulative_heat` proves that successive context-free folds accumulate irreversible thermodynamic waste, it is proving the same thing as when the shootoff shows HTTP/1.1 spending 31% of its wire budget on framing overhead: *monoculture generates waste, and the waste is irreversible*. When `peace_context_reduces` proves that shared context monotonically deflates the semiotic deficit, it is proving the same thing as when per-chunk codec racing adapts to content type: *diversity matched to the problem’s intrinsic topology eliminates waste*.
-
-Servers get faster for the same reason peace is reachable: because diversity is the shape of optimality, and its destruction has irreducible cost.
+This benchmark motivates the manuscript's broader correspondence language, but it does not prove the semiotic or negotiation claims by itself. The defensible takeaway is narrower: in this concrete substrate, diversity matched to the problem structure reduced waste, and the companion theorems explain why that outcome is compatible with the formal model.
 
 ### 20.1.1 Diversity Is Concurrency
 
@@ -5225,6 +5313,8 @@ Modern environments present $K_{\text{perceived}} \gg K_{\text{actual}}$:
 
 The mental health crisis of the 21st century is an evolutionary void-walking engine running in an environment it was not designed for. The therapeutic target is not "stop daydreaming." It is "reduce $K_{\text{perceived}}$ to $K_{\text{actual}}$." Every effective intervention -- CBT (removes phantom forks), mindfulness (narrows $K$ to present-moment), SSRIs (reduces DMN hyperactivation), exercise (narrows $K$ to body), sleep (batch void-walking that resolves phantom forks) -- does exactly this: reduces VGI toward 1.0.
 
+Mindfulness provides the sign convention. In this geometry, mindfulness is a controlled closing move: it lowers effective perceived dimensionality toward the present-moment task, suppresses phantom forks, and stabilizes fold selection. A DMT-like acute psychedelic state would be the inverse first move in the same space: it temporarily loosens fold dominance, increases the number of simultaneously live internal alternatives, and exposes more of the complement distribution at once. If such a state is therapeutic, the benefit would not come from immediate convergence but from the later refold -- the opened system can settle into a different attractor after the acute phase ends. The two interventions can therefore share a destination (lower pathological mismatch) while beginning with opposite derivatives. This is a structural hypothesis about the geometry of the void, not a claim that the present framework has already proved psychedelic phenomenology or clinical efficacy.
+
 The VGI is the American Frontier applied to cognition. It is measurable by fMRI (energy allocation), eye tracking (saccade rate inversely tracks $K$), experience sampling (mind-wandering rate), and EEG (alpha power tracks sensory gating). It is predictive of creativity, problem-solving, incubation gain, and the transition from adaptive daydreaming to pathological rumination. It is the same theorem that governs protocol framing, pipeline scheduling, codec racing, and the Netflix Prize, instantiated on the substrate of neural computation.
 
 *Grading: **B** (structural homology).* The energy prediction (0.45pp error) approaches grade A; the mind-wandering prediction (1.9pp error) is grade B; the incubation connection is grade C (the mapping from $d = 0.29$ to resolved void paths is interpretive). The grading would upgrade to A with direct experimental confirmation: measure DMN energy fraction and mind-wandering rate in the same subjects, compute $K_{\text{total}}$ and $K_{\text{conscious}}$, and verify that the ratio matches CVI $\approx 0.40$.
@@ -5401,13 +5491,13 @@ They are inverses. `sliver_then_proof`: $\text{reject}(n + 1) = n$. `proof_then_
 5. The fold consumes the sliver: the $+ 1$ is eaten by the $- 1$
 6. The sliver bridges probability and logic: weight $= 1$ (probability ground) maps to $\text{reject}(1) = 0$ (logic ground)
 
-The oscillation between $+ 1$ and $- 1$ is the heartbeat of the framework. Buleyean Probability is the view from before the fold -- the race is open, all choices have positive weight, the sliver keeps hope alive. Buleyean Logic is the view from after the fold -- the Bule count has reached zero, the proof is complete, truth is ground state. They are the same natural number, measured from two sides of the same fold.
+The oscillation between $+ 1$ and $- 1$ is the manuscript's compact notation for moving between the probability-side and logic-side views of the same count. Buleyean Probability is the view from before the fold -- the race is open and all choices retain positive weight. Buleyean Logic is the view from after the fold -- the Bule count has reached zero and the proof is complete. They are the same natural number, measured from two sides of the same fold.
 
-$+ 1$, $- 1$. $+ 1$, $- 1$. The complement oscillation (THM-COMPLEMENT-SIGN-ALTERNATION, `ComplementOscillation.lean`) proves this alternation has period 2 and amplitude that decays geometrically. The heartbeat dampens. The oscillation converges. But it never stops -- `buleyean_positivity` guarantees the amplitude never reaches zero. The sliver persists. The pulse continues.
+The complement oscillation (THM-COMPLEMENT-SIGN-ALTERNATION, `ComplementOscillation.lean`) proves this alternation has period 2 and geometrically decaying amplitude. The key mathematical point is that convergence is oscillatory rather than monotone.
 
-This is not metaphor. The complement operation $w_i = T + 1 - v_i$ applied twice produces $w''_i = (T'' - T') + v_i$ -- a positive affine shift of the original rejections. The ordering reverses on odd applications and restores on even applications. The normalized weights oscillate around the uniform distribution with geometrically decaying amplitude. The limit is uniform, but the approach is oscillatory, not monotone. The universe breathes. Lub-dub. The $+ 1$ adds. The $- 1$ subtracts. The $+ 1$ adds again. Each cycle smaller than the last. Never zero.
+The complement operation $w_i = T + 1 - v_i$ applied twice produces $w''_i = (T'' - T') + v_i$ -- a positive affine shift of the original rejections. The ordering reverses on odd applications and restores on even applications. The normalized weights oscillate around the uniform distribution with geometrically decaying amplitude. The limit is uniform, but the approach is oscillatory, not monotone, and `buleyean_positivity` prevents exact collapse to zero in finite time.
 
-Shakespeare's question is the Buleyean Pulse reduced to two words. "To be" is the $+ 1$ -- the sliver, the hope, the weight that keeps the choice alive. "Or not" is the $- 1$ -- the rejection, the proof step, the decrement toward ground. The question is not which one. The question is the oscillation between them. The heartbeat. To be, or not. To be, or not. To be, or not. And the sliver guarantees the pulse never flatlines.
+The "to be / or not" analogy is only a mnemonic for this alternation, not a claim about literature or ontology: the $+1$ keeps a choice alive, the $-1$ records a rejection, and the formal interest is in the alternating convergence between those two views.
 
 #### 20.2.10 The Arrow of Time *Is* Gnosis
 
@@ -5435,9 +5525,9 @@ $\phi^2 = \phi + 1$. The $+ 1$ is the new thing. The $+ 1$ is Barbelo. The $+ 1$
 
 #### 20.2.11 The Ten Commandments as Void Walk
 
-The ten commandments are almost entirely negative. Don't kill. Don't steal. Don't covet. Don't bear false witness. Eight of ten are rejections. This is not a design flaw. It is Buleyean. The moral code trains on what is *not*. The void boundary of ethical behavior. The complement distribution over rejected actions. The ten commandments are a void walk through moral space, and the ten bosons are the exchange particles that mediate the forces in that same space.
+The ten commandments example is used here as correspondence language: a rule set expressed largely through prohibitions is a familiar illustration of learning by exclusion rather than by enumerating allowed actions. In that narrow sense, the moral code trains on what is *not* done and can be read as a void boundary over rejected actions.
 
-The mapping is structural, not metaphorical:
+The mapping below is illustrative rather than theological or historical proof:
 
 | Commandment | Boson | Mechanism |
 |---|---|---|
@@ -5535,7 +5625,7 @@ Correspondence grade B (structural match with quantitative prediction). The Meto
 
 #### 20.2.14 Dimensional Confinement: The Quark Is the Wallington Rotation in 4D
 
-`DimensionalConfinement.lean` (18 theorems, zero sorry). The Wallington Rotation -- chunks flowing through pipeline stages on a torus -- is a 2-torus embedded in 3D. $\beta_1 = 2$: two independent cycles (the rotation and the chunk flow). You can see it. The donut is visible.
+`DimensionalConfinement.lean` (18 theorems, zero sorry). The visible Wallington donut is the first genuinely toroidal rung of the ladder: a 2-stage rotation lives on a 2-torus embedded in 3D. $\beta_1 = 2$: two independent cycles (the rotation and the chunk flow). You can see it. The donut is visible. The `2D` rung used in the shootout comes one step earlier and is degenerate: one stage, one cycle, no torus yet. That is why the runtime can start in `2D` while the first picture you can actually draw as a donut is already `3D`.
 
 A K-stage Wallington Rotation lives on a K-torus embedded in $(K+1)$-dimensional space. A K-torus has $\beta_1 = K$ independent 1-cycles. Each independent cycle, viewed from the K-dimensional slice, appears as a fixed point connected by arcs to the other fixed points. Those fixed points are quarks. Those arcs are emanations.
 
@@ -5543,9 +5633,9 @@ The 3-stage pipeline (Lilith, Handler, Eve) lives on a 3-torus in 4D -- the Clif
 
 `confinement_costs_one_3`: removing one quark (one cycle) from the 3-torus drops the embedding dimension from 4 to 3. The cost is exactly one dimension. This is why confinement holds: you cannot separate a cycle from a torus because the cycle *is* the torus. Removing it does not extract a piece -- it collapses the structure.
 
-The hero visualization on forkracefold.com renders this directly. On the left: the visible Wallington Rotation (a 2-torus in 3D, chunks racing on a donut). On the right: three interlocking torus rings at 120-degree offsets (the Clifford torus projected to 3D), with particles racing on each ring and emanation arcs glowing at the crossings. The auto-rotation of the scene is the fourth dimension projected to the screen. The gap between the donut and the proton on your monitor is the dimensional gap that confinement bridges.
+The hero visualization on forkracefold.com now renders this as a single stage ladder rather than a split left/right scene. One control raises the Wallington surface from $K = 1$ through $K = 54$, so the visible torus, the three-stage Clifford/quark case, and the late $55D$ surface are all the same object viewed at different certified fold depths. The old proton picture is not an adjacent sidecar anymore; it is the $K = 3$, $D = 4$ rung inside the general ladder. What changes on screen is not the theorem but the stage count.
 
-The last whip: the Wallington Rotation, whipped from 2D (flat pipeline) to 3D (torus with chunks) to 4D (Clifford torus with quarks). Each whip adds one dimension, one independent cycle, one degree of confinement. `wallingtonDimension K = K + 1`: the pipeline always lives one dimension above its stage count. The visible rotation is always one dimension below the confined structure. The gap is always exactly one. The God Gap of dimension.
+The last whip is therefore just repeated stage lifting. Start at `2D`: one stage, one cycle, no torus. Add one stage and the same local rule becomes the visible `3D` donut. Add one more and it becomes the `4D` Clifford/quark rung. Keep adding stages and nothing qualitative changes except the count: each lift adds one dimension, one independent cycle, two more directed channels than the previous lift added, and one more unit of warmup tax. `wallingtonDimension K = K + 1`: the pipeline always lives one dimension above its stage count. So the move from `2D` to `54D` is not a single leap from flat space to exotic space; it is the same certified whip applied 52 more times. The visible rotation is the same structure with one less certified stage. The gap is always exactly one. The God Gap of dimension.
 
 Correspondence grade B (structural match). The K-torus Betti number identity ($\beta_1 = K$) is standard algebraic topology. The mapping from pipeline stages to independent cycles is the interpretive step. The claim: the Wallington Rotation and quark confinement are the same theorem applied at adjacent dimensions. The donut is the quark you can see. The proton is the donut you cannot.
 
@@ -5581,48 +5671,144 @@ Correspondence grade B (structural match with bijective naming). The five-symbol
 
 #### 20.2.16 The Dimensional Ladder: From Bythos to Pleroma
 
-`DimensionalLadder.lean` (35 theorems, zero sorry). The Gnostics said everything emanated from the Monad -- the unknowable source before all structure. They called it Bythos (Depth). From Bythos, Barbelo emanated. From Barbelo, everything else.
+`DimensionalLadder.lean` (35 theorems, zero sorry). The Gnostics said everything emanated from the Monad -- the unknowable source before all structure. They called it Bythos (Depth). The first one-mode tier immediately above that source is named **Sige** in the near-source particle naming used in this section. In the manuscript's existing sliver language, the $+1$ aspect carried by that same tier is Barbelo. From that first emanation, everything else.
 
 A K-torus has $\beta_1 = K$ independent cycles. Each cycle is one quark at that scale. Each level of the ladder is a Wallington Rotation of the level below, whipped one more dimension.
 
 | Name | Torus | Dimension | $\beta_1$ | Emanations | Gnostic role |
 |------|-------|-----------|-----------|-----------|-------------|
 | **Bythos** | Point (0-torus) | 0D | 0 | 0 | The Monad. Before emanation. The preon. |
-| **Barbelo** | Circle (1-torus) | 2D | 1 | 0 | The First Emanation. The sliver. The +1. |
+| **Sige (Barbelo sliver)** | Circle (1-torus) | 2D | 1 | 0 | The First Emanation. Silence around the source. The sliver. The +1. |
 | **Proton** | Clifford (3-torus) | 4D | 3 | 6 | Three quarks. Three cycles. Confinement. |
 | **Primitive** | 5-torus | 6D | 5 | 20 | All five operations. The full primitive set. |
 | **Kenoma** | 10-torus | 11D | 10 | 90 | The field. 5 choose 2. The interaction space. |
 | **Pleroma** | 55-torus | 56D | 55 | 2,970 | The fullness. F(10) = T(10). |
 
+```aeon-viz
+{
+  "kind": "scene",
+  "scene": "dimension-ladder",
+  "mode": "sweep-center",
+  "title": "Dimension Ladder and 54D Projection",
+  "subtitle": "The same Wallington lift read as stage count, ambient dimension, and projected slice",
+  "story": "The left panel climbs continuously from 2D to the current 55D runtime ceiling; the right panel shows 54D as nested projected slices rather than a literal view from inside 54 dimensions.",
+  "caption": "Figure 3b. Dimension ladder from 2D through the current 55D runtime ceiling, with named manuscript rungs and a projected-slice metaphor for the 54D particle. The left panel treats D = K + 1 as the governing lift rule; the right panel makes explicit that a 54D object can only be shown as lower-dimensional projections or cross-sections, not as a literal full view.",
+  "staticAsset": "companion-tests/artifacts/ch17-dimension-ladder-figure.svg",
+  "focusDimension": 54,
+  "maxDimension": 55,
+  "rungs": [
+    {
+      "label": "Sige / Barbelo sliver",
+      "dimension": 2,
+      "stages": 1,
+      "cycles": 1,
+      "note": "The first one-mode tier above Bythos: one cycle, one stage, one visible sliver."
+    },
+    {
+      "label": "Visible torus",
+      "dimension": 3,
+      "stages": 2,
+      "cycles": 2,
+      "note": "The first drawable donut: one extra lift turns the line into a visible torus."
+    },
+    {
+      "label": "Proton / quark rung",
+      "dimension": 4,
+      "stages": 3,
+      "cycles": 3,
+      "note": "The Clifford-style three-cycle rung where the quark correspondence appears."
+    },
+    {
+      "label": "Primitive set",
+      "dimension": 6,
+      "stages": 5,
+      "cycles": 5,
+      "note": "Five stages recover the full primitive alphabet in one lifted runtime surface."
+    },
+    {
+      "label": "Kenoma",
+      "dimension": 11,
+      "stages": 10,
+      "cycles": 10,
+      "note": "Ten cycles, ninety directed emanations, and the first wide interaction field."
+    },
+    {
+      "label": "54D particle",
+      "dimension": 54,
+      "stages": 53,
+      "cycles": 53,
+      "note": "The manuscript's requested high-dimensional particle view: same local rule, lifted fifty-two times beyond the visible torus."
+    },
+    {
+      "label": "55D runtime ceiling",
+      "dimension": 55,
+      "stages": 54,
+      "cycles": 54,
+      "note": "Current hero/runtime ceiling for the 1..54 stage sweep; one more lift than the 54D focus particle."
+    }
+  ]
+}
+```
+
+**Theorem (Skyrms equilibria on the ladder).** For a ladder level with `K` modes, let the kenoma be a `Kenoma K`. In the formal surface, a mode is a Skyrms equilibrium exactly when it is a complement peak: `isPeak k i := ∀ j, k.rejections i ≤ k.rejections j` (`TenModeUnification.lean`). By `walker_at_nash`, every peak is a Nash equilibrium. By `gauge_and_walker_agree`, any two equilibria have the same rejection count, so the equilibrium set is exactly the set of minimum-rejection modes. Therefore:
+
+1. In the **vacuum / uniform** case, all modes are peaks, so the number of Skyrms equilibria is exactly `K`, one at each mode.
+2. In the **broken-symmetry / localized** case with a unique strict minimum of rejection, the number of Skyrms equilibria is exactly `1`, located at the unique least-rejected mode.
+
+Applying this to the named ladder levels gives the vacuum prediction. In the particle reading used in this section, each vacuum equilibrium is one particle site at that level. So the answer is:
+
+| Level | Modes / cycles `K` | How many particles | Where they are |
+|---|---:|---:|---|
+| Bythos | 0 | 1 degenerate preonic source point | At the unique 0D point itself; this is the pre-equilibrium source, not a `Fin K` mode |
+| Sige | 1 | 1 | At the unique one-mode first emanation immediately above Bythos |
+| Proton | 3 | 3 | One at each quark/cycle of the 3-torus |
+| Primitive | 5 | 5 | One at each primitive mode |
+| Kenoma | 10 | 10 | One at each interaction mode; this is the explicit `ten_mode_every_mode_is_nash` result |
+| Pleroma | 55 | 55 | One at each intrinsic mode of the 55-cycle fullness |
+
+Across the modeled examples in this subsection, the localization rule has the same form: once symmetry breaks, the walker collapses from the full vacuum family to a single least-rejected mode. So the broken-symmetry prediction is also concrete:
+
+- Sige localizes to 1 particle at its only mode.
+- Proton localizes to 1 particle at whichever one of the 3 quark modes has the least rejection.
+- Primitive localizes to 1 particle at whichever one of the 5 primitive modes has the least rejection.
+- Kenoma localizes to 1 particle at whichever one of the 10 interaction modes has the least rejection.
+- Pleroma localizes to 1 particle at whichever one of the 55 intrinsic modes has the least rejection.
+
+So in plain language: the vacuum count is `1, 1, 3, 5, 10, 55` going up the ladder if Bythos is counted as the degenerate source point, and after symmetry breaking every nondegenerate level collapses to exactly one localized particle at the least-rejected mode.
+
+This has a direct particle prediction. If the dimensional ladder is physically real, then the proton/quark level is not the bottom of the hierarchy. There are two lower tiers below quarks: **Sige**, one click smaller than quarks (the one-mode first emanation immediately above the source), and **Bythos**, two clicks smaller than quarks (the zero-mode preonic point). In plain language: the ladder predicts two as-yet-undiscovered sub-quark particle tiers below the quark level.
+
+The naming distinction is deliberate. In this manuscript, **Barbelo** continues to name the $+1$ sliver aspect of the first emanation. **Sige** names that same 1-cycle tier when it is being discussed as the near-source particle level below quarks.
+
 `bythos_is_minimum`: zero cycles, zero emanations, but $\beta_0 = 1$ -- one connected component. Bythos exists. It has no structure, no cycles, no connections. It is the point before the circle. The thing smaller than the thing smaller than a quark.
 
-`first_god_gap`: Barbelo has more cycles and more dimensions than Bythos. The gap between them -- from 0 cycles to 1 cycle, from 0D to 2D -- is the first emanation. The moment existence acquires structure. The moment the point becomes a circle. The moment the sliver appears.
+`first_god_gap`: Sige has more cycles and more dimensions than Bythos. The gap between them -- from 0 cycles to 1 cycle, from 0D to 2D -- is the first emanation. The moment existence acquires structure. The moment the point becomes a circle. The moment the sliver appears.
 
 The gaps between consecutive levels are Gnostic numbers: Barbelo - Bythos = 1 (Barbelo). Proton - Barbelo = 2 (Syzygy). Primitive - Proton = 2 (Syzygy). Kenoma - Primitive = 5 (Primitives). Pleroma - Kenoma = 45 = T(9) = T(Sophia) -- the gap to the fullness is the Sophia-th triangular number. The exploration budget generates the gap to completeness.
 
-The cycle counts at named levels are Fibonacci numbers: $F(0) = 0$ (Bythos), $F(1) = 1$ (Barbelo), $F(4) = 3$ (Proton), $F(5) = 5$ (Primitive), $F(10) = 55$ (Pleroma). The ladder climbs the Fibonacci sequence. The ratio of consecutive Fibonacci-indexed levels converges to $\varphi$. The golden ratio is the asymptotic ratio of quark counts at consecutively larger scales.
+The cycle counts at named levels are Fibonacci numbers: $F(0) = 0$ (Bythos), $F(1) = 1$ (Sige), $F(4) = 3$ (Proton), $F(5) = 5$ (Primitive), $F(10) = 55$ (Pleroma). The ladder climbs the Fibonacci sequence. The ratio of consecutive Fibonacci-indexed levels converges to $\varphi$. The golden ratio is the asymptotic ratio of quark counts at consecutively larger scales.
 
-Barbelo has zero emanations -- one cycle cannot connect to another when there is only one. The first emanations appear at Proton (six directed connections between three cycles). Structure requires at least three. This is why confinement begins at three: below three, there is nothing to confine.
+Sige has zero emanations -- one cycle cannot connect to another when there is only one. The first emanations appear at Proton (six directed connections between three cycles). Structure requires at least three. This is why confinement begins at three: below three, there is nothing to confine.
 
-At the Pleroma level: 55 independent cycles in 56-dimensional space, connected by 2,970 directed emanations. The fullness. Every Fibonacci level below it is a shadow projected down. The proton is the Pleroma's shadow in 4D. Barbelo is the Pleroma's shadow in 2D. Bythos is the Pleroma's shadow in 0D. The point and the fullness are the same structure at different scales.
+At the Pleroma level: 55 independent cycles in 56-dimensional space, connected by 2,970 directed emanations. The fullness. Every Fibonacci level below it is a shadow projected down. The proton is the Pleroma's shadow in 4D. Sige is the Pleroma's shadow in 2D. Bythos is the Pleroma's shadow in 0D. The point and the fullness are the same structure at different scales.
 
-Correspondence grade B (structural match). The K-torus Betti number identity and the dimensional embedding formula are standard topology. The mapping from torus levels to Gnostic emanation theology is interpretive. The claim: the complete Valentinian emanation hierarchy -- from the unknowable Monad to the fullness of the Pleroma -- is the dimensional ladder of the Wallington Rotation. Bythos *is* the preon. Barbelo *is* the circle. The proton *is* the Clifford torus. The Pleroma *is* the fullness. The whip never stops.
+Correspondence grade B (structural match). The K-torus Betti number identity and the dimensional embedding formula are standard topology. The mapping from torus levels to Gnostic emanation theology is interpretive. The claim: the complete Valentinian emanation hierarchy -- from the unknowable Monad to the fullness of the Pleroma -- is the dimensional ladder of the Wallington Rotation. Bythos *is* the preon. Sige *is* the first circle. Barbelo *is* the sliver on that circle. The proton *is* the Clifford torus. The Pleroma *is* the fullness. The whip never stops.
 
 #### 20.2.17 The Size of the Beginning
 
 The dimensional ladder gives both the age and the size of the universe at its origin. The reasoning is dimensional: each level of the ladder has a characteristic length scale, and the ratios between levels are fixed by the Fibonacci structure.
 
-**The known scales.** A proton has a radius of $\sim 0.87 \times 10^{-15}$ m (charge radius, measured by electron scattering). A proton is a 3-torus in 4D (`proton_in_4d`). Barbelo is a 1-torus in 2D (`barbelo_in_2d`). Bythos is a 0-torus in 0D (`bythos_is_zero_dim`).
+**The known scales.** A proton has a radius of $\sim 0.87 \times 10^{-15}$ m (charge radius, measured by electron scattering). A proton is a 3-torus in 4D (`proton_in_4d`). Sige is the 1-torus in 2D (`barbelo_in_2d`; the formal theorem keeps the sliver name). Bythos is a 0-torus in 0D (`bythos_is_zero_dim`).
 
-**The ratio between levels.** The proton has $\beta_1 = 3$ independent cycles. Barbelo has $\beta_1 = 1$. The cycle ratio is 3:1. The dimensional ratio is 4D:2D = 2:1. If the length scale contracts by the dimensional ratio between levels, then the Barbelo scale (one independent cycle, the first emanation) is the proton radius divided by the proton-to-Barbelo dimensional ratio:
+**The ratio between levels.** The proton has $\beta_1 = 3$ independent cycles. Sige has $\beta_1 = 1$. The cycle ratio is 3:1. The dimensional ratio is 4D:2D = 2:1. If the length scale contracts by the dimensional ratio between levels, then the Sige scale (one independent cycle, the first emanation) is the proton radius divided by the proton-to-Sige dimensional ratio:
 
-$$\ell_{\text{Barbelo}} \sim \frac{r_{\text{proton}}}{(d_{\text{proton}} / d_{\text{Barbelo}})} = \frac{0.87 \times 10^{-15}}{4/2} \approx 4.4 \times 10^{-16} \text{ m}$$
+$$\ell_{\text{Sige}} \sim \frac{r_{\text{proton}}}{(d_{\text{proton}} / d_{\text{Sige}})} = \frac{0.87 \times 10^{-15}}{4/2} \approx 4.4 \times 10^{-16} \text{ m}$$
 
-This is the sub-femtometer scale -- smaller than a proton, larger than the Planck length. The Barbelo scale is the radius of the first circle. The first emanation from the Monad.
+This is the sub-femtometer scale -- smaller than a proton, larger than the Planck length. The Sige scale is the radius of the first circle. Barbelo is the sliver carried on that circle.
 
-**Bythos: the origin.** Bythos is 0-dimensional. A point has no radius. But the transition from Bythos to Barbelo -- the first emanation, the moment the point becomes a circle -- has a scale set by the smallest meaningful length: the Planck length $\ell_P = 1.616 \times 10^{-35}$ m. This is where quantum gravity operates. The first emanation spans 20 orders of magnitude: from $10^{-35}$ m (Bythos, the point) to $10^{-16}$ m (Barbelo, the circle).
+**Bythos: the origin.** Bythos is 0-dimensional. A point has no radius. But the transition from Bythos to Sige -- the first emanation, the moment the point becomes a circle -- has a scale set by the smallest meaningful length: the Planck length $\ell_P = 1.616 \times 10^{-35}$ m. This is where quantum gravity operates. The first emanation spans 20 orders of magnitude: from $10^{-35}$ m (Bythos, the point) to $10^{-16}$ m (Sige, the circle).
 
-The ratio $\ell_{\text{Barbelo}} / \ell_P \approx 4.4 \times 10^{-16} / 1.6 \times 10^{-35} \approx 2.7 \times 10^{19}$. This is close to the square root of the number of protons in the observable universe ($\sim 10^{80}$, so $\sqrt{10^{80}} = 10^{40}$ -- not a match). It is closer to the ratio of the electromagnetic force to gravity ($\sim 10^{36}$ -- also not a match). The number $2.7 \times 10^{19}$ does not appear to be a known dimensionless constant. The God Gap of the first emanation: a measurable ratio with no known explanation.
+The ratio $\ell_{\text{Sige}} / \ell_P \approx 4.4 \times 10^{-16} / 1.6 \times 10^{-35} \approx 2.7 \times 10^{19}$. This is close to the square root of the number of protons in the observable universe ($\sim 10^{80}$, so $\sqrt{10^{80}} = 10^{40}$ -- not a match). It is closer to the ratio of the electromagnetic force to gravity ($\sim 10^{36}$ -- also not a match). The number $2.7 \times 10^{19}$ does not appear to be a known dimensionless constant. The God Gap of the first emanation: a measurable ratio with no known explanation.
 
 **The size today.** The observable universe has a radius of $\sim 4.4 \times 10^{26}$ m (comoving distance). The ratio of the observable universe to the Planck length is:
 
@@ -5634,7 +5820,89 @@ $$\frac{R_{\text{universe}}}{r_{\text{proton}}} \approx \frac{4.4 \times 10^{26}
 
 And 1.6 Lorenzos have elapsed since Bythos (the age of the universe in Lorenzos, from §15.10.3). $1.6 \approx \varphi$. The universe is $\varphi$ Lorenzos old. The golden ratio is not just the eigenvalue of the sliver -- it is the age of the universe in its own units.
 
-**The prediction.** If the dimensional ladder is physical, then the characteristic scale at each level is determined by the level's embedding dimension and cycle count. The Bythos scale is the Planck length. The Barbelo scale is sub-femtometer. The proton scale is femtometer. The primitive scale (6D, $\beta_1 = 5$) would be $\sim 10^{-14}$ m (the nuclear force range -- and the strong force range *is* $\sim 10^{-15}$ to $10^{-14}$ m). The Kenoma scale (11D) would be $\sim 10^{-10}$ m (the atomic scale -- and the Bohr radius *is* $5.3 \times 10^{-11}$ m).
+```aeon-viz
+{
+  "kind": "scene",
+  "scene": "cosmic-explainer",
+  "mode": "sweep-center",
+  "title": "Cosmic Time and Scale from Bythos to Pleroma",
+  "subtitle": "Authored 23% progress along the chapter's golden spiral, with the present marked near φ Lorenzos",
+  "story": "The left panel treats the universe as a golden-spiral time surface with an authored 23% loading bar; the right panel uses the same milestones to show size growth from a Planck-scale origin to the late authored horizon.",
+  "caption": "Figure 3c. Cosmic explainer for Chapter 17. The left panel places the manuscript's time language on a golden spiral with an authored 23% progress arc and a present marker near φ Lorenzos; the right panel cross-highlights the same milestones on a log-scale growth curve from Bythos through the current observable horizon to the late Pleroma limit.",
+  "staticAsset": "companion-tests/artifacts/ch17-cosmic-explainer-figure.svg",
+  "progressPercent": 23,
+  "currentLorenzos": 1.605,
+  "milestones": [
+    {
+      "label": "Bythos",
+      "lorenzos": 0,
+      "ageGyr": 0,
+      "sizeLabel": "1.6 × 10^-35 m",
+      "sizeMeters": 1.616e-35,
+      "note": "Planck-scale source point before emanation."
+    },
+    {
+      "label": "Sige",
+      "lorenzos": 0.001,
+      "ageGyr": 0.0086,
+      "sizeLabel": "4.4 × 10^-16 m",
+      "sizeMeters": 4.4e-16,
+      "note": "First circle above the source: a sub-femtometer lift."
+    },
+    {
+      "label": "1 Lorenzo",
+      "lorenzos": 1,
+      "ageGyr": 8.6,
+      "sizeLabel": "57 Gly diameter",
+      "sizeMeters": 5.392599e26,
+      "note": "One cosmological heartbeat in the manuscript's own time unit."
+    },
+    {
+      "label": "Now (φ Lo)",
+      "lorenzos": 1.605,
+      "ageGyr": 13.8,
+      "sizeLabel": "93 Gly diameter",
+      "sizeMeters": 8.798451e26,
+      "note": "Present marker used by the chapter's Lorenzo framing.",
+      "emphasis": "current"
+    },
+    {
+      "label": "φ² Lo",
+      "lorenzos": 2.618,
+      "ageGyr": 22.5,
+      "sizeLabel": "150 Gly diameter",
+      "sizeMeters": 1.419105e27,
+      "note": "Solar-future horizon sketch under the authored φ progression."
+    },
+    {
+      "label": "φ³ Lo",
+      "lorenzos": 4.236,
+      "ageGyr": 36.4,
+      "sizeLabel": "243 Gly diameter",
+      "sizeMeters": 2.29955e27,
+      "note": "Isolated-galaxy era sketch after another geometric lift."
+    },
+    {
+      "label": "φ⁵ Lo",
+      "lorenzos": 11.09,
+      "ageGyr": 95.4,
+      "sizeLabel": "637 Gly diameter",
+      "sizeMeters": 6.0262659e27,
+      "note": "Dark-era horizon sketch in the same authored scale ladder."
+    },
+    {
+      "label": "Pleroma",
+      "lorenzos": 122.992,
+      "ageGyr": 1058,
+      "sizeLabel": "7.1 Tly diameter",
+      "sizeMeters": 6.717097e28,
+      "note": "Fullness limit of the authored spiral: the late, wide horizon."
+    }
+  ]
+}
+```
+
+**The prediction.** If the dimensional ladder is physical, then the characteristic scale at each level is determined by the level's embedding dimension and cycle count. The Bythos scale is the Planck length. The Sige scale is sub-femtometer. The proton scale is femtometer. The primitive scale (6D, $\beta_1 = 5$) would be $\sim 10^{-14}$ m (the nuclear force range -- and the strong force range *is* $\sim 10^{-15}$ to $10^{-14}$ m). The Kenoma scale (11D) would be $\sim 10^{-10}$ m (the atomic scale -- and the Bohr radius *is* $5.3 \times 10^{-11}$ m).
 
 The ladder predicts the scale hierarchy of physics. Each level maps to a known physical scale. The correspondence is approximate (within an order of magnitude at each level). The residuals are the God Gap applied to the scale hierarchy.
 
@@ -5642,7 +5910,7 @@ The ladder predicts the scale hierarchy of physics. Each level maps to a known p
 
 Correspondence grade C (structural analogy with quantitative prediction). The dimensional embedding formula is exact topology. The scale assignments are dimensional analysis -- order-of-magnitude predictions, not precision calculations. The claim: the Wallington Rotation's dimensional ladder, with Bythos at the Planck scale and the proton at the femtometer scale, predicts the correct order of magnitude for every known physical scale from quantum gravity to atomic physics. The structure does not depend on new physics. It depends on the topology already proved.
 
-The universe began as Bythos -- a point, $1.6 \times 10^{-35}$ m, zero dimensions, zero cycles, zero emanations. The first emanation produced Barbelo -- a circle, the sliver, the +1. The universe today is $\varphi$ Lorenzos old and $2.7 \times 10^{61}$ Planck lengths across. The beginning was the smallest thing. The ending -- if the sliver holds -- never comes.
+The universe began as Bythos -- a point, $1.6 \times 10^{-35}$ m, zero dimensions, zero cycles, zero emanations. The first emanation produced Sige -- a circle carrying the Barbelo sliver, the +1. The universe today is $\varphi$ Lorenzos old and $2.7 \times 10^{61}$ Planck lengths across. The beginning was the smallest thing. The ending -- if the sliver holds -- never comes.
 
 #### 20.2.18 The Cosmic Projection: How Big, How Old, How Far
 
@@ -5652,14 +5920,14 @@ The universe began as Bythos -- a point, $1.6 \times 10^{-35}$ m, zero dimension
 
 **The growth law.** `growth_ratio_check`: the ratio of the universe's size at $\varphi^2$ Lorenzos to its size at $\varphi$ Lorenzos is $1618/1000 = \varphi$ to three decimal places. The universe grows by the golden ratio per Lorenzo. This is the Fibonacci spiral applied to spacetime: each heartbeat multiplies the scale by $\varphi$.
 
-**The beginning.** Bythos: $1.6 \times 10^{-35}$ m. The Planck length. Zero dimensions, zero cycles. A point -- not "small" but *dimensionless*. The first emanation (Barbelo, the circle) spans 20 orders of magnitude: from $10^{-35}$ m to $10^{-16}$ m. The universe's first act was the largest relative expansion in its history. Everything since has been slower.
+**The beginning.** Bythos: $1.6 \times 10^{-35}$ m. The Planck length. Zero dimensions, zero cycles. A point -- not "small" but *dimensionless*. The first emanation (Sige, the first circle) spans 20 orders of magnitude: from $10^{-35}$ m to $10^{-16}$ m. The universe's first act was the largest relative expansion in its history. Everything since has been slower.
 
 **The future.** `sun_death_in_one_lorenzo`: $\varphi^2 - \varphi = 1$ exactly. The Sun dies in exactly one Lorenzo from now (8.6 billion years). The $+1$ is Barbelo. The golden ratio identity ($\varphi^2 = \varphi + 1$) predicts that the time from now until the Sun's death equals one cosmic heartbeat. The Sun has been alive for about half a Lorenzo (4.6 billion years). It will die at the next integer Lorenzo mark. The heartbeat is real.
 
 | Time | Lorenzos | Size (billion ly) | Event |
 |------|----------|-------------------|-------|
 | Beginning | 0 | $10^{-26}$ | Bythos. The point. |
-| First light | ~0.00005 | ~0.001 | Barbelo. The first circle. Cosmic microwave background. |
+| First light | ~0.00005 | ~0.001 | Sige. The first circle. Cosmic microwave background. |
 | First galaxies | ~0.001 | ~1 | Structure formation. Protons bind. |
 | 1 heartbeat | 1.0 | 57 | One Lorenzo elapsed. |
 | **Now** | **$\varphi$ (1.605)** | **93** | **You are reading this.** |
@@ -5874,7 +6142,7 @@ $L = \lambda W$,” *Operations Research*, 9(3):383–387, 1961.
 
 ## Reproducibility
 
-Source code, test suites and protocol comparison benchmarks are available under open-source license [2, 8, 9, 13, 15, 18, 40]. The scheduler, flow protocol, compression subsystem, computation topology engine, deploy-control-plane invariants, formal parser/tooling layer and topological programming language are independently testable. The validation totals reported in §16 are reproducible from the linked suites.
+Source code, test suites and protocol comparison benchmarks are available under open-source license [2, 8, 9, 13, 15, 18, 40]. The scheduler, flow protocol, compression subsystem, computation topology engine, deploy-control-plane invariants, formal parser/tooling layer and topological programming language are independently testable. The validation totals reported in §16 are reproducible from the linked suites. For the shortest route into the proof corpus, start with [FORMAL_LEDGER.md](../../../FORMAL_LEDGER.md), which points to the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), the formal rerun surface, and the external-reviewer quickstart.
 
 ## Transparency Disclosure
 
@@ -6049,9 +6317,15 @@ Five walkers interact pairwise. There are $\binom{5}{2} = 10$ pairs. Each pair d
 
 The boson value for each channel is $|w_a - w_b|$. Total system energy is the sum of all ten boson tensions. The ground state (energy = 0) occurs when all walkers have the same value -- undifferentiated, no personality. Personality IS the specific energy configuration.
 
+The sorry-free closure in `TenModeUnification.lean` sharpens the combinatorics. The ten-mode field generated by these five walkers decomposes as nine interlocking tori plus the sliver, carries 45 unordered bridges and 90 directed crossings, and therefore has 55 total self-plus-cross channels. `five_operations_generate_channel_surface` packages the identity in one theorem: the five-operation interaction count generates the exact `55 / 54 / 90` surface, with `54` the structured part and `+1` the monad or void anchor. These are channel counts internal to the ten-mode object, not ambient Euclidean dimensions.
+
+The closure also runs backward. `fifty_five_channels_iff_ten_worlds` and `ninety_directed_crossings_iff_ten_worlds` prove that the 55-channel and 90-crossing surfaces characterize the ten-world case exactly. Ten is not an arbitrary mnemonic attached after the fact; within the counting theory it is recoverable from the observed channel surface itself.
+
 ### B.8.3 The wireframe and symmetry breaking
 
 When all ten boson values are equal, the wireframe is symmetric -- the Barbelo shell. This is the vacuum state: no particle is localized, no dimension dominates.
+
+The vacuum claim is now stronger than "uniform-looking." In the canonical ten-mode kenoma, every complement weight is exactly 10 and every mode is simultaneously a peak and a Nash point. The vacuum is therefore a perfectly degenerate peak surface: no dimension is preferred because all ten are equally preferred. Symmetry breaking is the act that destroys this degeneracy and singles out one mode as locally visible.
 
 When rejections accumulate asymmetrically, the wireframe breaks. A boson localizes at the complement peak. A personality dimension emerges.
 
@@ -6071,19 +6345,29 @@ Both are 10-element structures where every element is meaningful.
 
 The five dimensions are confined. You cannot remove a walker without destabilizing the system -- the energy cost of separating one dimension exceeds the bound state energy. A four-walker personality has higher total energy than a five-walker personality.
 
+The confinement language now has an explicit dimensional lift. `DimensionalConfinement.lean` proves that the visible syzygy pair is the 2-cycle / 3D case, the quark tuple is the 3-cycle / 4D lift, and the lift from pair to tuple adds one visible dimension while increasing directed channels from 2 to 6. The phrase "quark-arranged" is therefore not decorative: the personality surface is being treated as the higher-cycle lift of a two-sided syzygy, not as a flat checklist of five scores.
+
 THM-BULEYEAN-POSITIVITY guarantees every walker has $P(i) > 0$. No dimension can be zeroed out. Barbelo is present in every mode.
 
 ### B.8.6 Mechanized verification
 
-All claims are verified in Lean 4 v4.28.0 (zero `sorry`) across four files:
+All claims are verified in Lean 4 v4.28.0 (zero `sorry`), with the ten-mode closure now in `TenModeUnification.lean` and the dimensional lift in `DimensionalConfinement.lean`:
 
 | Theorem | Lean File | What It Proves |
 |---|---|---|
-| `ten_from_five` | QuarkPersonality.lean | $5 \times 4 / 2 = 10$. The number comes from the operations |
-| `wireframe_is_vacuum` | QuarkPersonality.lean | Uniform-weight Barbelo wireframe is vacuum |
-| `asymmetry_breaks_wireframe` | QuarkPersonality.lean | Any rejection asymmetry $\Rightarrow \neg$ vacuum |
-| `gauge_and_walker_agree` | QuarkPersonality.lean | Gauge field peak = walker peak |
-| `symmetry_restores_wireframe` | QuarkPersonality.lean | Equal weights restore vacuum |
+| `ten_from_five` | TenModeUnification.lean | $5 \times 4 / 2 = 10$. The number comes from the operations |
+| `wireframe_is_vacuum` | TenModeUnification.lean | Uniform-weight Barbelo wireframe is vacuum |
+| `asymmetry_breaks_wireframe` | TenModeUnification.lean | Any rejection asymmetry $\Rightarrow \neg$ vacuum |
+| `gauge_and_walker_agree` | TenModeUnification.lean | Gauge field peak = walker peak |
+| `symmetry_restores_wireframe` | TenModeUnification.lean | Equal weights restore vacuum |
+| `ten_mode_complement_weight_is_ten` | TenModeUnification.lean | Uniform ten-mode vacuum gives complement weight 10 at every mode |
+| `ten_mode_every_mode_is_peak` | TenModeUnification.lean | Every mode is simultaneously a peak in the symmetric vacuum |
+| `five_operations_generate_channel_surface` | TenModeUnification.lean | Five walkers generate the exact `55 / 54 / 90` channel surface |
+| `fifty_five_channels_iff_ten_worlds` | TenModeUnification.lean | 55 total channels characterize the ten-world case |
+| `ninety_directed_crossings_iff_ten_worlds` | TenModeUnification.lean | 90 directed crossings characterize the ten-world case |
+| `syzygy_pair_is_3d` | DimensionalConfinement.lean | Visible syzygy is the 2-cycle / 3D case |
+| `quark_tuple_is_4d` | DimensionalConfinement.lean | Quark tuple is the 3-cycle / 4D lift |
+| `syzygy_to_quark_lift` | DimensionalConfinement.lean | The lift adds one dimension and four directed channels |
 | `proton_is_colorless` | QuarkConfinement.lean | Three-color pipeline is ground state |
 | `no_free_quarks` | QuarkConfinement.lean | Separation costs energy |
 | `sophia_peak_has_max_weight` | BosonPosition.lean | Wisdom peaks at minimum rejection |
@@ -6094,7 +6378,7 @@ A personality is not what you are. It is what you are not. The void boundary -- 
 
 ## Appendix C: Named Theorem Index
 
-71 named theorems are cited in this manuscript. Each is mechanized in Lean 4 (zero `sorry`) and referenced by at least one section. This index maps theorem name to primary section, Lean file, and what it proves.
+79 named theorems are cited in this manuscript. Each cited theorem is mechanized in Lean 4 and referenced by at least one section. This appendix is a manuscript-local index; the broader proof corpus, current counts, and corpus-wide `sorry` status are tracked in [FORMAL_LEDGER.md](../../../FORMAL_LEDGER.md) and the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md). This index maps theorem name to primary section, Lean file, and what it proves.
 
 | Theorem | § | Lean File | What It Proves |
 |---|---|---|---|
@@ -6164,8 +6448,68 @@ A personality is not what you are. It is what you are not. The void boundary -- 
 | THM-COMPLEMENT-SIGN-ALTERNATION | §20.2.9 | ComplementOscillation.lean | Complement oscillation has period two and geometrically decaying amplitude |
 | THM-SOLOMONOFF-VOID-GAIN-FLOOR | §15.18 | SolomonoffBuleyean.lean | When $\geq$ half options are impossible, void-informed entropy $\geq$ 1 bit lower |
 | THM-RENORMALIZATION-COARSENING | §15.8 | RenormalizationFixedPoints.lean | Peace is a renormalization group fixed point |
-| THM-TEN-FROM-FIVE | §B.8.2 | QuarkPersonality.lean | $\binom{5}{2} = 10$. Ten boson channels from five walkers |
-| THM-WIREFRAME-IS-VACUUM | §B.8.3 | QuarkPersonality.lean | Uniform-weight Barbelo wireframe is vacuum (delocalized) |
-| THM-ASYMMETRY-BREAKS-WIREFRAME | §B.8.3 | QuarkPersonality.lean | Any rejection asymmetry localizes a boson -- symmetry breaking |
-| THM-GAUGE-AND-WALKER-AGREE | §B.8.1 | QuarkPersonality.lean | Gauge field reader and Skyrms personality walker point to same mode |
-| THM-SYMMETRY-RESTORES-WIREFRAME | §B.8.3 | QuarkPersonality.lean | Equal rejections restore vacuum -- particle delocalizes |
+| THM-TEN-FROM-FIVE | §B.8.2 | TenModeUnification.lean | $\binom{5}{2} = 10$. Ten boson channels from five walkers |
+| THM-WIREFRAME-IS-VACUUM | §B.8.3 | TenModeUnification.lean | Uniform-weight Barbelo wireframe is vacuum (delocalized) |
+| THM-ASYMMETRY-BREAKS-WIREFRAME | §B.8.3 | TenModeUnification.lean | Any rejection asymmetry localizes a boson -- symmetry breaking |
+| THM-GAUGE-AND-WALKER-AGREE | §B.8.1 | TenModeUnification.lean | Gauge field reader and Skyrms personality walker point to same mode |
+| THM-SYMMETRY-RESTORES-WIREFRAME | §B.8.3 | TenModeUnification.lean | Equal rejections restore vacuum -- particle delocalizes |
+| THM-TEN-MODE-COMPLEMENT-TEN | §B.8.3 | TenModeUnification.lean | Uniform ten-mode kenoma assigns complement weight 10 to every mode |
+| THM-TEN-MODE-EVERY-PEAK | §B.8.3 | TenModeUnification.lean | Every mode is simultaneously a peak in the symmetric vacuum |
+| THM-FIVE-OPS-GENERATE-CHANNEL-SURFACE | §B.8.2 | TenModeUnification.lean | Five walkers generate the exact `55 / 54 / 90` channel surface |
+| THM-FIFTY-FIVE-IFF-TEN-WORLDS | §B.8.2 | TenModeUnification.lean | 55 total channels characterize the ten-world case |
+| THM-NINETY-IFF-TEN-WORLDS | §B.8.2 | TenModeUnification.lean | 90 directed crossings characterize the ten-world case |
+| THM-SYZYGY-PAIR-IS-3D | §B.8.5 | DimensionalConfinement.lean | Visible syzygy is the 2-cycle / 3D case |
+| THM-QUARK-TUPLE-IS-4D | §B.8.5 | DimensionalConfinement.lean | Quark tuple is the 3-cycle / 4D lift |
+| THM-SYZYGY-TO-QUARK-LIFT | §B.8.5 | DimensionalConfinement.lean | The lift from syzygy to quark adds one dimension and four directed channels |
+| THM-CAVE-DEFICIT | §15.30 | PhilosophicalAllegories.lean | Plato's Cave: shadow projection deficit = $N - 1$ |
+| THM-CAVE-IRREVERSIBLE | §15.30 | PhilosophicalAllegories.lean | Cave projection is irreversible: distinct Forms collide on the wall |
+| THM-HAMARTIA | §15.30 | PhilosophicalAllegories.lean | Noble failure ($N-1$ bits) > ignoble success (1 bit) for $N \geq 3$ |
+| THM-NEMESIS | §15.30 | PhilosophicalAllegories.lean | Nemesis is Buleyean convergence: system favors less-rejected + sliver mercy |
+| THM-SOCRATIC-TRUTH | §15.30 | PhilosophicalAllegories.lean | Less-refuted thesis has strictly higher Buleyean weight |
+| THM-CORRECTION-EXCEEDS-ACCIDENT | §15.30 | PhilosophicalAllegories.lean | Being corrected > being accidentally right (richer evidence base) |
+| THM-CICEROS-MAXIM | §15.30 | PhilosophicalAllegories.lean | Platonic method accumulates strictly more evidence than Sophistic |
+| THM-VIRTUE-OVER-CONSEQUENTIALISM | §15.30 | PhilosophicalAllegories.lean | Good method + wrong result > bad method + right result |
+| THM-CLINAMEN | §15.30 | GreekLogicCanon.lean | The sliver IS the Epicurean swerve: $P(i) > 0$ always |
+| THM-ZENO-DICHOTOMY | §15.30 | GreekLogicCanon.lean | Remaining distance contracts strictly per step (geometric convergence) |
+| THM-ACHILLES | §15.30 | GreekLogicCanon.lean | Gap shrinks strictly at every catch-up interval |
+| THM-MENO | §15.30 | GreekLogicCanon.lean | Search via rejection: distribution + positivity + concentration |
+| THM-SORITES-BOUNDARY | §15.30 | GreekLogicCanon.lean | Heap boundary exists, is sharp, and is unique |
+| THM-HERACLITUS-AND-PARMENIDES | §15.30 | GreekLogicCanon.lean | Both correct: frontier changes (flow) while total conserves (the One) |
+| THM-GOLDEN-MEAN | §15.30 | GreekLogicCanon.lean | Virtue bounded by deficiency and excess (sandwich theorem) |
+| THM-UNITY-OF-VIRTUES | §15.30 | GreekLogicCanon.lean | Same evidence $\to$ same distribution: virtue is unique given void boundary |
+| THM-FOUR-WAY-IDENTITY | §15.30 | CombinatorialBruteForce.lean | Wallace waste $= 2 \times$ entropy proxy $= 2 \times$ collapse gap |
+| THM-GRAND-UNIFICATION | §15.30 | CombinatorialBruteForceRound5.lean | 8 module families simultaneously consistent in one conjunction |
+| THM-MEGALITHIC-COHERENCE | §15.30 | SecondTierMysteries.lean | Same failure history $\to$ same technique (no architect needed) |
+| THM-MPEMBA-DEFICIT | §15.30 | SecondTierMysteries.lean | Hot water has positive cooling deficit (hidden vent degrees of freedom) |
+| THM-FINE-TUNING-STRUCTURAL | §15.30 | UnsolvedMysteries.lean | No constant reaches zero probability: fine-tuning is algebraic necessity |
+| THM-BARYON-FOLD | §15.30 | UnsolvedMysteries.lean | Fold selects 1 from $N$, venting $N-1$: symmetry broken by definition |
+| THM-FOUR-WAY-IDENTITY | §15.30 | CombinatorialBruteForceRound5.lean | Wallace waste $= 2 \times$ entropy proxy $= 2 \times$ collapse gap, from $N$ |
+| THM-GRAND-UNIFICATION | §15.30 | CombinatorialBruteForceRound5.lean | 8 module families simultaneously consistent in one conjunction |
+| THM-PRESOCRATIC-COSMOGONY | §15.30 | PhilosophicalCombinatoricsRound3.lean | Clinamen + Heraclitus + Parmenides + Baryon = creation story |
+| THM-UNIVERSAL-IMPOSSIBILITY-OF-ZERO | §15.30 | PhilosophicalCombinatoricsRound3.lean | No Buleyean space has a zero-weight element. EVER. |
+| THM-ABSOLUTE-MASTER | §15.30 | PhilosophicalCombinatoricsRound4.lean | 7 universal laws across all domains in one conjunction |
+| THM-PRED-DARK-MATTER-DEFICIT | §15.30.2 | SevenLawsPredictions.lean | Dark matter is the cave deficit of gravitational observation |
+| THM-PRED-HEAT-DEATH-NOT-END | §15.30.2 | SevenLawsPredictions.lean | Heat death not absolute: structure retains weight $= 1$ |
+| THM-PRED-MUSIC-IS-DEFICIT | §15.30.2 | SevenLawsPredictionsRound2.lean | Beauty $\propto$ semiotic deficit (dimensions $- 1$) |
+| THM-PRED-HUMOR-IS-SURPRISE | §15.30.2 | SevenLawsPredictionsRound2.lean | Humor $=$ unexpected chain termination (surprise gap $> 0$) |
+| THM-PRED-LOVE-CONSERVATION | §15.30.2 | SevenLawsPredictionsRound2.lean | Once loved, never zero weight ($+1$ persists) |
+| THM-PRED-DEATH-GRIEF-MEMORY | §15.30.2 | SevenLawsPredictionsRound2.lean | Death $=$ fold, grief $=$ deficit, memory $=$ void boundary |
+| THM-PRED-CONSCIOUSNESS-SCALES | §15.30.2 | SevenLawsPredictionsRound3.lean | Consciousness $\propto$ deficit between self and self-model |
+| THM-PRED-FORGIVENESS-DILUTION | §15.30.2 | SevenLawsPredictionsRound3.lean | Forgiveness $=$ denominator expansion |
+| THM-PRED-UNIVERSE-BULEYEAN | §15.30.2 | SevenLawsPredictionsRound3.lean | The universe satisfies the three Buleyean axioms |
+| THM-PRED-COOPERATION | §15.30.2 | SevenLawsPredictionsRound4.lean | Cooperation from rejection memory alone (Buleyean PD) |
+| THM-PRED-ETHICS-BULEYEAN | §15.30.2 | SevenLawsPredictionsRound4.lean | Ethics satisfies all seven Buleyean laws |
+| THM-PRED-UNTRANSLATABLE | §15.30.2 | SevenLawsPredictionsRound5.lean | Every language has untranslatable concepts (structural) |
+| THM-CONTRACTION-COMPOSE | §15.30.3 | HardCompositions.lean | Two contraction rates $\rho_1, \rho_2 < 1$ compose: $\rho_1 \cdot \rho_2 < 1$ |
+| THM-THE-REDUCTION | §15.30.3 | SurfaceReduction.lean | All 7 laws from 1 formula $w = R - \min(v, R) + 1$ |
+| THM-GRAND-FINALE | §15.30.3 | SevenLawsPredictionsRound5.lean | 35 predictions $\to$ 7 laws $\to$ 3 axioms $\to$ 1 formula $\to$ $+1$ |
+| THM-CLASS-ALPHA | §15.30.3 | DeepReduction.lean | The universal sliver: generates 14 of 35 predictions |
+| THM-CLASS-BETA | §15.30.3 | DeepReduction.lean | The universal deficit: generates 11 of 35 predictions |
+| THM-CLASS-GAMMA | §15.30.3 | DeepReduction.lean | The universal termination: generates 7 of 35 predictions |
+| THM-DEEP-REDUCTION | §15.30.3 | DeepReduction.lean | $0 < n + 1$: the entire surface reduces to this |
+| THM-PEANO-IS-CLINAMEN | §15.30.3 | DeepReduction.lean | $n + 1 \neq 0$: the clinamen IS Peano's successor axiom |
+| THM-PRIMATOR-SUCC-NE-ZERO | §15.30.3 | Primator.lean | $\text{succ}(n) \neq 0$: the bottom of the reduction |
+| THM-COMPLETE-CHAIN | §15.30.3 | Primator.lean | Primator $\to$ clinamen $\to$ sliver $\to$ laws $\to$ everything |
+| THM-VALUE-CEILING | §15.30.4 | Ceiling.lean | Structure exists (IS) but doesn't prescribe (OUGHT): Hume's guillotine |
+| THM-FLOOR-CEILING-SANDWICH | §15.30.4 | Ceiling.lean | Floor (primator) + ceiling (five limits) + habitable zone = complete |
+| THM-THE-FINAL-THEOREM | §15.30.4 | Ceiling.lean | Floor + zone + ceiling simultaneously proved. The sandwich is closed. |

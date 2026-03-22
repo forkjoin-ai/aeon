@@ -8,10 +8,10 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 ## Ledger Statistics (2026-03-22)
 
-- **Theorem table entries:** 860+ across 111 topical sections (all mechanized, zero open)
-- **Lean theorem declarations:** 2,596+ across 169 modules (including compositions, predictions rounds, cross-module identities, and cancer confinement)
+- **Theorem table entries:** 1,355+ across 137 topical sections (all mechanized, zero open)
+- **Lean theorem declarations:** 3,158+ across 195 modules (including compositions, predictions rounds, cross-module identities, cancer confinement, combinatorial brute force rounds 1-5, philosophical allegories, Greek logic canon, unsolved mysteries, second tier mysteries, philosophical combinatorics rounds 1-4, and seven laws predictions rounds 1-2)
 - **TLA+ specifications:** 112 (all with matching .cfg files)
-- **Lean theorem modules:** 168
+- **Lean theorem modules:** 195
 - **GG proof topologies:** 1,499 (all valid, all complete, zero parse errors)
 - **Buleyean proof engine:** `@a0n/aeon-logic/buleyean-proof.ts` -- parse, verify, emit Lean 4 + TLA+ from .gg
 - **Personality model:** `@a0n/buleyean-rl/personality.ts` -- five-parameter void walker (Try/Choose/Commit/LetGo/Learn)
@@ -28,7 +28,7 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 All other files are sorry-free. References to "sorry" in other files appear only in doc comments confirming zero-sorry status.
 
-**Sorry-free files (complete mechanization):** IrreversibilityPredictions.lean (20 theorems -- entangle, deficit, erasure, aleph, verify), SemioticPeace.lean (13 theorems), SemioticDeficit.lean, CoarseningThermodynamics.lean, ThermodynamicTracedMonoidal.lean, RenormalizationFixedPoints.lean, DataProcessingInequality.lean, MonoidalCoherence.lean, TracedMonoidal.lean, RateDistortionFrontier.lean, InfiniteErasure.lean, GeometricErgodicity.lean, ContinuousHarris.lean, AmericanFrontier.lean (4 theorems), NetflixFrontier.lean (9 theorems -- monotone algo/team, positive below, pigeonhole, recursive, residual gap, independent convergence, master conjunction; all `omega` on concrete ℕ from published RMSE × 10⁴), VoidWalking.lean (7 theorems, 17 definitions/lemmas), NegotiationEquilibrium.lean (90+ theorems, 40+ structures/definitions spanning negotiation theory, dual void, void relativity, and the Six Pillars: Arrow of Time, Holographic Principle, General Relativity, Noether's Theorem, Entanglement, and Unification), RecursiveCoarseningSynthesis.lean (5 theorems -- synthesis_sound, drift_conservation, fine_stability_implies_coarse_stability, identity_quotient_preserves_stability, certificate_provides_drift_witness), CodecRacing.lean, DualProtocol.lean, MolecularTopology.lean, ProtocolDeficitLatency.lean, FrameNativeBisim.lean, FrameOverheadBound.lean, FailureEntropy.lean, FailureDurability.lean, FailureFamilies.lean, HeteroMoAFabric.lean, CommunityDominance.lean (7 theorem families -- community attenuation, nondegradation, strict domination, tare bridging, Bule convergence, diversity amplification, master dominance theory), SkyrmsNadirBule.lean (12 theorems -- Skyrms-as-community mapping, Bule-zero-iff-nadir biconditional, algebraic nadir identification, mediation-is-attenuation, master theorem composing CommunityDominance + NegotiationEquilibrium + VoidWalking), ReynoldsBFT.lean, SleepDebt.lean, SleepDebtSchedule.lean, SleepDebtWeightedSchedule.lean, StagedExpansion.lean, WarmupController.lean, ControllerTieBreaking.lean (18 theorems -- failure-controller and warm-up-controller equality/tie boundaries plus iff characterizations), WarmupEfficiency.lean, Multiplexing.lean, Wallace.lean, MetacognitiveDaisyChain.lean, QuorumAsyncNetwork.lean, QuorumConsistency.lean, QuorumLinearizability.lean, QuorumOrdering.lean, QuorumVisibility.lean, QueueBoundary.lean, QueueStability.lean, MeasureQueueing.lean, StateDependentQueueFamilies.lean, JacksonQueueing.lean, JacksonExactClosure.lean, JacksonFeedForwardClosure.lean, JacksonEnvelopeClosure.lean, JacksonRawClosure.lean, RetrocausalBound.lean (13 theorems -- backward count recovery, ordering preservation, concentrated boundary uniqueness, multinomial positivity, RG fixed-point composition, Landauer heat composition, master theorem), CancerTreatments.lean (12 theorems -- metabolic gate sequencing, checkpoint cascade amplification, senescence-then-senolytic two-step, viral oncoprotein displacement, counter-vent depletion before immunotherapy, master treatment predictions theorem), CryptographicPredictions.lean (15 theorems -- hash collision heat floor, one-way inversion side-information, ZK deficit-zero simulability, commitment semiotic folds, password hashing side-channel floor, master cryptographic predictions theorem), RaceWinnerPredictions.lean (15 theorems -- election winner validity, election winner minimality, election winner isolation, training drift convergence, training stall, learning rate monotonicity, geometric convergence, contraction ordering, bound ordering, org level positive loss, adding level increases loss, hierarchy fixed point, monolingual positive deficit, code-switching reduces deficit, shared context reduces deficit, master theorem), FinalCompositions.lean (15 theorems -- negotiation settlement fixed point, concession reduces terms, settlement Lyapunov stability, quotient preserves cardinality, quotient preserves nontriviality, interference survives coarsening, rate-distortion monotonicity, zero rate max distortion, full rate zero distortion, vacation queue bounded, queue drains when active, vacation increases occupancy, unified information-processing chain), and others in the passing umbrella build.
+**Sorry-free files (complete mechanization):** IrreversibilityPredictions.lean (20 theorems -- entangle, deficit, erasure, aleph, verify), SemioticPeace.lean (13 theorems), SemioticDeficit.lean, CoarseningThermodynamics.lean, ThermodynamicTracedMonoidal.lean, RenormalizationFixedPoints.lean, DataProcessingInequality.lean, MonoidalCoherence.lean, TracedMonoidal.lean, RateDistortionFrontier.lean, InfiniteErasure.lean, GeometricErgodicity.lean, ContinuousHarris.lean, AmericanFrontier.lean (4 theorems), NetflixFrontier.lean (9 theorems -- monotone algo/team, positive below, pigeonhole, recursive, residual gap, independent convergence, master conjunction; all `omega` on concrete ℕ from published RMSE × 10⁴), VoidWalking.lean (7 theorems, 17 definitions/lemmas), NegotiationEquilibrium.lean (90+ theorems, 40+ structures/definitions spanning negotiation theory, dual void, void relativity, and the Six Pillars: Arrow of Time, Holographic Principle, General Relativity, Noether's Theorem, Entanglement, and Unification), RecursiveCoarseningSynthesis.lean (5 theorems -- synthesis_sound, drift_conservation, fine_stability_implies_coarse_stability, identity_quotient_preserves_stability, certificate_provides_drift_witness), CodecRacing.lean, DualProtocol.lean, MolecularTopology.lean, ProtocolDeficitLatency.lean, FrameNativeBisim.lean, FrameOverheadBound.lean, FailureEntropy.lean, FailureDurability.lean, FailureFamilies.lean, HeteroMoAFabric.lean, CommunityDominance.lean (7 theorem families -- community attenuation, nondegradation, strict domination, tare bridging, Bule convergence, diversity amplification, master dominance theory), SkyrmsNadirBule.lean (12 theorems -- Skyrms-as-community mapping, Bule-zero-iff-nadir biconditional, algebraic nadir identification, mediation-is-attenuation, master theorem composing CommunityDominance + NegotiationEquilibrium + VoidWalking), ReynoldsBFT.lean (24 theorems -- exact `Re < 3/2` quorum-safe and `Re < 2` majority-safe iff boundaries, plus exact `mergeAll`/`quorumFold`/`syncRequired` regime classification), PluralistRepublic.lean (17 theorems -- one-stream positive deficit, exact strict-dominance gap, global Bule optimality under civic cover, republican evidence gate, and exact deliberative regime wrappers), SleepDebt.lean, SleepDebtSchedule.lean, SleepDebtWeightedSchedule.lean, StagedExpansion.lean, WarmupController.lean, ControllerTieBreaking.lean (22 theorems -- failure-controller and warm-up-controller equality/tie boundaries, iff characterizations, and anti-selection laws), WarmupEfficiency.lean, Multiplexing.lean, Wallace.lean, MetacognitiveDaisyChain.lean, QuorumAsyncNetwork.lean, QuorumConsistency.lean, QuorumLinearizability.lean, QuorumOrdering.lean, QuorumVisibility.lean, QueueBoundary.lean, QueueStability.lean, MeasureQueueing.lean, StateDependentQueueFamilies.lean, JacksonQueueing.lean, JacksonExactClosure.lean, JacksonFeedForwardClosure.lean, JacksonEnvelopeClosure.lean, JacksonRawClosure.lean, RetrocausalBound.lean (13 theorems -- backward count recovery, ordering preservation, concentrated boundary uniqueness, multinomial positivity, RG fixed-point composition, Landauer heat composition, master theorem), CancerTreatments.lean (12 theorems -- metabolic gate sequencing, checkpoint cascade amplification, senescence-then-senolytic two-step, viral oncoprotein displacement, counter-vent depletion before immunotherapy, master treatment predictions theorem), CryptographicPredictions.lean (15 theorems -- hash collision heat floor, one-way inversion side-information, ZK deficit-zero simulability, commitment semiotic folds, password hashing side-channel floor, master cryptographic predictions theorem), RaceWinnerPredictions.lean (15 theorems -- election winner validity, election winner minimality, election winner isolation, training drift convergence, training stall, learning rate monotonicity, geometric convergence, contraction ordering, bound ordering, org level positive loss, adding level increases loss, hierarchy fixed point, monolingual positive deficit, code-switching reduces deficit, shared context reduces deficit, master theorem), FinalCompositions.lean (15 theorems -- negotiation settlement fixed point, concession reduces terms, settlement Lyapunov stability, quotient preserves cardinality, quotient preserves nontriviality, interference survives coarsening, rate-distortion monotonicity, zero rate max distortion, full rate zero distortion, vacation queue bounded, queue drains when active, vacation increases occupancy, unified information-processing chain), and others in the passing umbrella build.
 
 **Proof techniques by file:**
 | File | Theorem | Technique |
@@ -91,7 +91,7 @@ All other files are sorry-free. References to "sorry" in other files appear only
 | `THM-FAIL-LANDAUER-BOUNDARY` | The thermodynamic bridge now spans finite, countable-support, measurable finite-type, observable-pushforward, and effective-support layers. For an equiprobable live frontier, a vented branch carries self-information exactly equal to the frontier Shannon entropy in bits; more generally, every finite branch law on a nonempty finite support carries Shannon entropy at most the equiprobable frontier entropy and therefore at most the deterministic-collapse failure-tax floor from `THM-FAIL-MINCOST`; equality with that finite entropy ceiling occurs exactly for the uniform law on the given support; equality with the failure-tax floor occurs exactly for the uniform law on one- or two-branch supports; and every achievable deterministic collapse of the same finite frontier cardinality therefore pays at least the corresponding Landauer heat budget. On the nontrivial binary surface this sharp finite equality reduces to the fair binary fork witness, where the exact `kT ln 2` equality appears. Beyond the finite bridge, the package carries a countable-support entropy shell for arbitrary PMFs (nonnegative Shannon entropy as `ENNReal` `tsum`, supremum of finite truncations, counting-measure `lintegral` on countable measurable types, and finite-type collapse), a matching countable-support heat shell (direct `ENNReal` Landauer heat in nats, again with finite-truncation `iSup`, counting-measure `lintegral`, and finite-type collapse), a direct measurable finite-type shell, an observable pushforward shell, and an effective-support layer: for any PMF on any type whose support is contained in a finite `Finset s`, the `ENNReal` entropy is bounded by the frontier entropy `log₂(s.card)` and by the failure tax `s.card - 1`, the Landauer heat is bounded by the failure-tax heat budget, and the Landauer heat is bounded by the Landauer heat of any achievable collapse cost. That effective-support layer now also composes with deterministic observables: if the source PMF is supported on `s`, then any observable pushforward has entropy and Landauer heat bounded above by the source law itself and therefore inherits the same source-support frontier, failure-tax, and achievable-collapse heat bounds without requiring measurable structure on the codomain. This closes the measurable erasure gap for arbitrary branch laws with finite effective support without requiring the ambient type to be a `Fintype` | positive finite live frontier; equiprobable branch mass `1 / liveBranches`; finite non-uniform branch laws represented as `PMF α` over a nonempty finite type; Shannon entropy measured in bits; binary branch law given by `branchProbability`; Bernoulli entropy bound uses `0 ≤ branchProbability ≤ 1`; deterministic-collapse comparison for an arbitrary finite branch law identifies `Fintype.card α` with the live frontier width; deterministic-collapse cost is measured in the existing failure-tax units; the finite entropy-equality characterization compares branch laws against `PMF.uniformOfFintype α`, and the failure-tax equality characterization additionally isolates the cardinalities `1` and `2`; the countable-support counting-measure formulation additionally assumes a measurable space with countable carrier and measurable singletons; the observable pushforward shell additionally assumes a measurable source/codomain when identifying observable branch mass with measurable fiber probability, a countable measurable codomain with measurable singletons for the counting-measure formulas, and a nonempty finite observable codomain for the sharp failure-tax/heat equalities; the effective-support theorems assume a `Finset s` with `∀ a, a ∉ s → branchLaw a = 0` and `s.Nonempty`, and bound entropy/heat by `s.card`-indexed frontier/tax quantities; the effective-support observable monotonicity theorems additionally assume `DecidableEq β` and an arbitrary observable `observable : α → β`; Landauer calibration uses nonnegative Boltzmann constant and temperature, and the finite/binary heat equality characterizations use positive Boltzmann constant and temperature | Lean theorems `LandauerBuley.uniform_branch_self_information_bits_eq_frontier_entropy_bits`, `LandauerBuley.finite_branch_entropy_nats_le_log_card`, `LandauerBuley.finite_branch_entropy_nats_eq_log_card_iff`, `LandauerBuley.finite_branch_entropy_bits_le_frontier_entropy_bits`, `LandauerBuley.finite_branch_entropy_bits_eq_frontier_entropy_bits_iff`, `LandauerBuley.frontier_entropy_bits_eq_failure_tax_iff`, `LandauerBuley.finite_branch_entropy_bits_le_failure_tax`, `LandauerBuley.finite_branch_entropy_bits_eq_failure_tax_iff`, `LandauerBuley.countable_branch_entropy_natsENN_eq_iSup_truncated`, `LandauerBuley.countable_branch_entropy_natsENN_eq_count_lintegral`, `LandauerBuley.countable_branch_entropy_natsENN_eq_finite`, `LandauerBuley.countable_branch_entropy_bitsENN_eq_finite`, `LandauerBuley.countable_branch_entropy_bitsENN_eq_frontier_entropy_bits_iff`, `LandauerBuley.countable_branch_entropy_bitsENN_le_frontier_entropy_bits`, `LandauerBuley.countable_branch_entropy_bitsENN_eq_failure_tax_iff`, `LandauerBuley.countable_branch_entropy_bitsENN_le_failure_tax`, `LandauerBuley.truncated_landauer_heat_lower_boundENN_le_countable`, `LandauerBuley.countable_landauer_heat_lower_boundENN_eq_iSup_truncated`, `LandauerBuley.countable_landauer_heat_lower_boundENN_eq_count_lintegral`, `LandauerBuley.countable_landauer_heat_lower_boundENN_eq_count_lintegral_of_nonneg`, `LandauerBuley.observed_branch_mass_eq_fiber_measure`, `LandauerBuley.observed_branch_entropy_natsENN_eq_iSup_truncated`, `LandauerBuley.observed_branch_entropy_natsENN_eq_count_lintegral`, `LandauerBuley.observed_landauer_heat_lower_boundENN_eq_iSup_truncated`, `LandauerBuley.observed_landauer_heat_lower_boundENN_eq_count_lintegral`, `LandauerBuley.observed_branch_entropy_bitsENN_eq_finite`, `LandauerBuley.observed_branch_entropy_bitsENN_le_frontier_entropy_bits`, `LandauerBuley.observed_branch_entropy_bitsENN_le_failure_tax`, `LandauerBuley.observed_branch_entropy_bitsENN_eq_failure_tax_iff`, `LandauerBuley.observed_landauer_heat_lower_boundENN_eq_finite`, `LandauerBuley.observed_landauer_heat_le_failure_tax_budget`, `LandauerBuley.observed_landauer_heat_eq_failure_tax_budget_iff`, `LandauerBuley.observed_collapse_landauer_heat_le_total_cost`, `LandauerBuley.effective_support_entropy_natsENN_le_log_card`, `LandauerBuley.effective_support_entropy_bitsENN_le_frontier_entropy_bits`, `LandauerBuley.effective_support_entropy_bitsENN_le_failure_tax`, `LandauerBuley.effective_support_landauer_heat_le_failure_tax_budget`, `LandauerBuley.effective_support_collapse_landauer_heat_le_total_cost`, `LandauerBuley.effective_support_observed_entropy_natsENN_le_source`, `LandauerBuley.effective_support_observed_entropy_bitsENN_le_source`, `LandauerBuley.effective_support_observed_entropy_bitsENN_le_frontier_entropy_bits`, `LandauerBuley.effective_support_observed_entropy_bitsENN_le_failure_tax`, `LandauerBuley.effective_support_observed_landauer_heat_le_source`, `LandauerBuley.effective_support_observed_landauer_heat_le_failure_tax_budget`, `LandauerBuley.effective_support_observed_collapse_landauer_heat_le_total_cost`, `LandauerBuley.binary_branch_entropy_bits_le_failure_tax`, `LandauerBuley.binary_branch_entropy_bits_eq_failure_tax_iff`, `LandauerBuley.binary_failure_tax_matches_entropy_bits`, `LandauerBuley.achievable_collapse_entropy_bits_le_total_cost`, `LandauerBuley.achievable_collapse_finite_entropy_bits_le_total_cost`, `LandauerBuley.landauer_heat_le_failure_tax_heat_budget`, `LandauerBuley.finite_landauer_heat_le_failure_tax_budget`, `LandauerBuley.finite_landauer_heat_eq_failure_tax_budget_iff`, `LandauerBuley.binary_landauer_heat_le_failure_tax_budget`, `LandauerBuley.binary_landauer_heat_eq_failure_tax_budget_iff`, `LandauerBuley.binary_landauer_heat_matches_failure_tax_budget`, `LandauerBuley.achievable_collapse_landauer_heat_le_total_cost`, `LandauerBuley.achievable_collapse_finite_entropy_landauer_heat_le_total_cost`, `LandauerBuley.countable_landauer_heat_lower_boundENN_eq_finite`, `LandauerBuley.countable_landauer_heat_le_failure_tax_budget`, `LandauerBuley.countable_landauer_heat_eq_failure_tax_budget_iff`, and `LandauerBuley.countable_collapse_landauer_heat_le_total_cost` | Mechanized |
 | `THM-FAIL-TIGHTNESS` | The deterministic-collapse cost floor is tight: for any positive-live normalized start state there exists a branch-isolating single-survivor collapse witness with zero repair debt and exact cost `initialLive - 1`, so the exact minimum deterministic-collapse cost is `initialLive - 1` | positive initial live branch count; collapse witness preserves exactly one surviving output, vents every other live branch, and is measured over aligned finite recovery pipelines on the normalized state space | TLA+ `FailureUniversality.tla` invariants (`InvCanonicalWitnessWellFormed`, `InvCanonicalWitnessDeterministicCollapse`, `InvCanonicalWitnessZeroRepairDebt`, `InvCanonicalWitnessAttainsVentFloor`, `InvCanonicalWitnessAttainsCostFloor`) + Lean theorems `FailureUniversality.collapseWitness_deterministic_collapse`, `FailureUniversality.collapseWitness_vented_cost_exact`, `FailureUniversality.collapseWitness_total_cost_exact`, `FailureUniversality.collapse_cost_floor_attainable`, `FailureUniversality.collapse_cost_floor_exact`, `FailureUniversality.ChoiceSystem.exact_collapse_cost_floor`, and `FailureUniversality.ChoiceTrajectory.prefix_exact_collapse_cost_floor` | Mechanized |
 | `THM-FAIL-CTRL` | Over the three canonical failure actions `keep-multiplicity`, `pay-vent`, and `pay-repair`, the score-minimizing controller chooses the action with the smallest weighted coefficient against the exact collapse floor `liveBranches - 1`, so the same lower bound from `THM-FAIL-MINCOST` becomes the stagewise controller cost base | canonical action family only; objective is `alpha * wallace + beta * buley + gamma * vent + delta * repair`; canonical keep score is `(alpha + beta) * (liveBranches - 1)`; canonical vent score is `gamma * (liveBranches - 1)`; canonical repair score is `(beta + delta) * (liveBranches - 1)`; branch-isolating tightness supplies an achievable exact vent floor | TLA+ `FailureController.tla` invariants (`InvChosenScoreMinimal`, `InvKeepOptimalWhenCoefficientMinimal`, `InvVentOptimalWhenCoefficientMinimal`, `InvRepairOptimalWhenCoefficientMinimal`) + Lean theorems `FailureController.branch_isolating_floor_achievable_from_live_count`, `FailureController.choose_keep_when_keep_coefficient_min`, `FailureController.choose_vent_when_vent_coefficient_min`, `FailureController.choose_repair_when_repair_coefficient_min`, and `FailureController.chosen_failure_action_score_minimal` | Mechanized |
-| `THM-FAIL-CTRL-TIES` | Failure-controller ties are deterministic: any tie involving `keep-multiplicity` resolves to `keep-multiplicity`, and a `pay-vent`/`pay-repair` tie resolves to `pay-vent`, so `pay-repair` appears only when it is strictly smaller than both earlier coefficients | canonical action family only; branch order in `chooseFailureAction` is `keep-multiplicity`, then `pay-vent`, then `pay-repair`; equal scores come from equal weighted coefficients against the same collapse floor | Lean theorems `ControllerTieBreaking.choose_keep_on_keep_vent_tie`, `ControllerTieBreaking.choose_keep_on_keep_repair_tie`, `ControllerTieBreaking.choose_keep_on_total_tie`, `ControllerTieBreaking.total_tie_not_pay_vent`, `ControllerTieBreaking.total_tie_not_pay_repair`, `ControllerTieBreaking.choose_vent_on_vent_repair_tie`, and `ControllerTieBreaking.vent_repair_tie_not_pay_repair` in `ControllerTieBreaking.lean` | Mechanized |
+| `THM-FAIL-CTRL-TIES` | Failure-controller ties are deterministic: any tie involving `keep-multiplicity` resolves to `keep-multiplicity`, and a `pay-vent`/`pay-repair` tie resolves to `pay-vent`, so `pay-repair` appears only when it is strictly smaller than both earlier coefficients | canonical action family only; branch order in `chooseFailureAction` is `keep-multiplicity`, then `pay-vent`, then `pay-repair`; equal scores come from equal weighted coefficients against the same collapse floor | Lean theorems `ControllerTieBreaking.choose_keep_on_keep_vent_tie`, `ControllerTieBreaking.choose_keep_on_keep_repair_tie`, `ControllerTieBreaking.choose_keep_on_total_tie`, `ControllerTieBreaking.total_tie_not_pay_vent`, `ControllerTieBreaking.total_tie_not_pay_repair`, `ControllerTieBreaking.choose_vent_on_vent_repair_tie`, `ControllerTieBreaking.vent_repair_tie_not_pay_repair`, `ControllerTieBreaking.choose_not_keep_iff_keep_coefficient_not_minimal`, and `ControllerTieBreaking.choose_not_pay_repair_iff_repair_not_strictly_minimal` in `ControllerTieBreaking.lean` | Mechanized |
 | `THM-FAIL-PARETO` | Over the canonical failure-action family, the three legal outcomes form a Pareto frontier: `keep-multiplicity`, `pay-vent`, and `pay-repair` are pairwise non-dominating whenever `liveBranches > 1`, so there is no single canonical action that improves Wallace, Buley, vent cost, and repair debt simultaneously | canonical action family only; objectives are minimized componentwise on `(wallace, buley, ventCost, repairDebt)`; canonical keep point is `(gap, gap, 0, 0)`; canonical vent point is `(0, 0, gap, 0)`; canonical repair point is `(0, gap, 0, gap)` with `gap = liveBranches - 1 > 0` | TLA+ `FailurePareto.tla` invariants (`InvKeepNondominated`, `InvVentNondominated`, `InvRepairNondominated`) + Lean theorems `FailurePareto.keep_is_pareto_optimal`, `FailurePareto.pay_vent_is_pareto_optimal`, `FailurePareto.pay_repair_is_pareto_optimal`, and `FailurePareto.canonical_failure_actions_are_pareto` | Mechanized |
 | `THM-FAILURE-ENTROPY` | Structured failure conserves frontier mass, reduces frontier width with venting, reduces entropy proxy, and forked frontier collapses to single survivor under binary race convergence | aligned branch snapshots; positive frontier mass | Lean theorems `FailureEntropy.structured_failure_conserves_frontier_mass`, `FailureEntropy.structured_failure_reduces_frontier_width`, `FailureEntropy.structured_failure_reduces_entropy_proxy`, and `FailureEntropy.forked_frontier_collapses_to_single_survivor` in `FailureEntropy.lean` | Mechanized |
 | `THM-FAILURE-DURABILITY` | Durable replica state: well-formed replicas maintain live count at or above quorum size and positive live count. Stable replica state tracks all-healthy invariant | DurableWellFormed predicate; quorum size bounds | TLA+ `FailureDurability.tla` invariants + Lean theorems `FailureDurability.durable_live_count_ge_quorum` and `FailureDurability.durable_live_count_positive` in `FailureDurability.lean` | Mechanized |
@@ -187,7 +187,7 @@ All other files are sorry-free. References to "sorry" in other files appear only
 | `THM-S7-WARM-EFF` | Warm-up efficiency: for homologous workloads with fixed useful work, recovered overlap is worth the added Buley cost exactly when the weighted Wallace reduction exceeds the Burden Scalar; equivalently `lambda * busy * overlap > BurdenScalar`, with `BurdenScalar = deltaB * seqCap * (seqCap - overlap)` | positive busy work; sequential capacity at least busy work; recovered overlap bounded by slack (`overlap <= seqCap - busy`); non-negative Buley rise `deltaB`; positive Wallace-value weight `lambda > 0` | TLA+ `WarmupEfficiency.tla` invariants (`InvWallaceDropCrossClosedForm`, `InvBurdenScalarClosedForm`, `InvWorthWarmupIffExplicit`, `InvWorthWarmupIffShiftedUtility`, `InvFreeWarmupWorthWhenOverlapRecovered`, `InvNoRecoveryNotWorthWhenBuleyPositive`) + Lean theorems `WarmupEfficiency.warmup_wallace_drop_cross_closed_form`, `WarmupEfficiency.warmup_efficiency_iff`, `WarmupEfficiency.warmup_efficiency_iff_shifted_utility`, `WarmupEfficiency.free_warmup_positive_overlap_is_worth`, and `WarmupEfficiency.no_recovery_not_worth_when_buley_positive` | Mechanized |
 | `THM-S7-WARM-DYN` | Dynamic warm-up cooling: under bounded entropy creep, reachable burden threshold, and cooling strength that can clear any reachable overlap, the dynamic warm-up controller keeps overlap bounded and eventually returns to a laminar state (`overlap = 0`) | static warm-up-efficiency assumptions; positive `decayRate` and `turbulenceBuild`; full-cooling assumption `decayRate > seqCap - busy`; reachability assumption `wallaceWeight * (seqCap - busy) > buleyRise * seqCap`; weak fairness on both `ActiveCooling` and `EntropyCreep` | TLA+ `DynamicWarmupEfficiency.tla` invariants (`InvOverlapBounded`, `InvDynamicAssumptions`, `InvWarmCapBounded`, `InvMaxOverlapTriggersCooling`) + liveness property `PropEventualLaminar` | Mechanized |
 | `THM-S7-WARM-CTRL` | Warm-up controller optimality: under one-hot topology mismatch, the score-minimizing controller chooses `expand` for underfilled topology below the redline, `constrain` for overprovisioned topology below the redline, and `shed-load` once the Burden Scalar exceeds that redline, with `Redline = deficitWeight + shedPenalty` | static warm-up-efficiency assumptions; positive deficit penalty `deficitWeight > 0`; positive shed penalty `shedPenalty > 0`; one-hot mismatch (`underDeficit = 0 \/ overDeficit = 0`) with positive total mismatch (`underDeficit + overDeficit > 0`) | TLA+ `WarmupController.tla` invariants (`InvChosenScoreMinimal`, `InvExpandBeatsConstrainWhenUnder`, `InvConstrainBeatsExpandWhenOver`, `InvExpandOptimalBelowRedline`, `InvConstrainOptimalBelowRedline`, `InvShedLoadOptimalAboveRedline`) + Lean theorems `WarmupController.choose_expand_below_redline`, `WarmupController.choose_constrain_below_redline`, `WarmupController.choose_shed_load_when_under_above_redline`, and `WarmupController.choose_shed_load_when_over_above_redline` | Mechanized |
-| `THM-S7-WARM-CTRL-TIE` | Exact redline ties are deterministic: at `BurdenScalar = Redline`, an underfilled topology chooses `expand` rather than `shed-load`, and an overprovisioned topology chooses `constrain` rather than `shed-load` | one-hot mismatch with positive active side (`underDeficit > 0`, `overDeficit = 0` or `underDeficit = 0`, `overDeficit > 0`); positive deficit penalty `deficitWeight > 0`; exact equality `BurdenScalar = Redline` | Lean theorems `ControllerTieBreaking.choose_expand_on_under_exact_redline`, `ControllerTieBreaking.under_exact_redline_not_shed`, `ControllerTieBreaking.choose_constrain_on_over_exact_redline`, and `ControllerTieBreaking.over_exact_redline_not_shed` in `ControllerTieBreaking.lean` | Mechanized |
+| `THM-S7-WARM-CTRL-TIE` | Exact redline ties are deterministic: at `BurdenScalar = Redline`, an underfilled topology chooses `expand` rather than `shed-load`, and an overprovisioned topology chooses `constrain` rather than `shed-load`; under one-hot mismatch, the excluded topology-repair action never occurs on the wrong side (`constrain` never under underfill, `expand` never under overfill) | one-hot mismatch with positive active side (`underDeficit > 0`, `overDeficit = 0` or `underDeficit = 0`, `overDeficit > 0`); positive deficit penalty `deficitWeight > 0`; exact equality `BurdenScalar = Redline` | Lean theorems `ControllerTieBreaking.choose_expand_on_under_exact_redline`, `ControllerTieBreaking.under_exact_redline_not_shed`, `ControllerTieBreaking.choose_constrain_on_over_exact_redline`, `ControllerTieBreaking.over_exact_redline_not_shed`, `ControllerTieBreaking.choose_ne_constrain_when_under`, and `ControllerTieBreaking.choose_ne_expand_when_over` in `ControllerTieBreaking.lean` | Mechanized |
 | `THM-S7-WHIP-CROSSOVER` | Cross-shard correction crossover is finite and over-sharding becomes non-improving | finite `P,N,C,S`; `P>0`, `N>0`, `C>0`, bounded shard window | TLA+ `WhipCrossover.tla` invariants + Lean theorems `Claims.whip_total_time_strictly_increases_after_full_sharding` and `Claims.whip_strict_crossover_exists` | Mechanized |
 | `THM-STAGED-EXPANSION` | Staged expansion frontier: the three-stage expansion area formula matches naive widening. Peak is preserved across stages. Wallace numerator measures wasted capacity in the expansion envelope | peak > 0; left, right >= 0 | Lean theorems `StagedExpansion.staged_frontier_area_matches_naive` and `StagedExpansion.staged_peak_preserved` in `StagedExpansion.lean` | Mechanized |
 | `THM-WARMUP-CONTROLLER` | Warmup controller action scoring over expand/constrain/shedLoad: the controller selects the action with minimum score. Repair redline = deficitWeight + shedPenalty. Warmup worth = Wallace benefit exceeds controller burden | deficitWeight, shedPenalty > 0; warmupWallaceDropCross derived from sequential vs multiplexed Wallace | Lean theorems in `WarmupController.lean` and `WarmupEfficiency.lean` including `warmup_wallace_drop_cross_closed_form` | Mechanized |
@@ -469,7 +469,7 @@ All other files are sorry-free. References to "sorry" in other files appear only
 | `THM-SEM-COMP-INV` | Composition of invertible functions is invertible: if `f : α → β` and `g : β → γ` both have left inverses, then `g ∘ f` has a left inverse `f⁻¹ ∘ g⁻¹`. This proves "this pipeline is reversible" for composed multi-language topologies. | InvertibleFunction α β, InvertibleFunction β γ | Lean theorem `SemanticCompatibility.comp_invertible_preserves_left_inverse` in `SemanticCompatibility.lean` | Mechanized |
 | `THM-SEM-PIPELINE-JSON` | Pipeline ValidJson preservation: if every node in a pipeline produces valid JSON, the pipeline produces valid JSON. Single-node base case and inductive structure. | Pipeline with non-empty nodes; each node has ValidJson predicate | Lean theorems `SemanticCompatibility.pipeline_json_output` and `SemanticCompatibility.single_node_pipeline_valid` in `SemanticCompatibility.lean` | Mechanized |
 | `THM-SEM-BYTES-ISOLATE` | Bytes boundary is strict: Bytes is incompatible with Json, Stream, and Product. Binary data cannot cross a JSON serialization boundary without explicit conversion (base64). This catches `Vec<u8>` → `str` bugs at compile time. | TopologyType.bytes vs non-bytes types | Lean theorems `SemanticCompatibility.bytes_incompatible_with_json`, `SemanticCompatibility.bytes_incompatible_with_stream`, and `SemanticCompatibility.bytes_incompatible_with_product` in `SemanticCompatibility.lean` | Mechanized |
-| `THM-SEM-OPTION-SUB` | Non-null into nullable is safe: a non-null value of type T is compatible with Option(T). `int` can flow into `Optional[int]`. | TopologyType t ≠ Unknown | Lean theorem `SemanticCompatibility.option_accepts_non_null` in `SemanticCompatibility.lean` | Mechanized |
+| `THM-SEM-OPTION-SUB` | Nullable-compatible non-null values are safe under one more nullable wrapper: `T` is compatible with `Option(T)` whenever `supportsNullableEmbedding T` holds, e.g. `int` can flow into `Optional[int]` while raw `bytes` remain excluded by the bytes boundary. | `supportsNullableEmbedding t` | Lean theorem `SemanticCompatibility.option_accepts_non_null` in `SemanticCompatibility.lean` | Mechanized |
 | `THM-SEM-CROSS-LANG` | Specific cross-language denotation alignments proved compatible: Python `list[float]` = Rust `Vec<f64>` = `Stream(Json(Number))`; Python `dict` = Go `map[string]interface{}` = `Product(open=true)`; Go `int` → TypeScript `number` = `Json(Integer)` → `Json(Number)` (subtype). | Language-specific type denotations | Lean theorems `SemanticCompatibility.python_list_float_compat_rust_vec_f64`, `SemanticCompatibility.python_dict_compat_go_map`, and `SemanticCompatibility.go_int_compat_ts_number` in `SemanticCompatibility.lean` | Mechanized |
 | `THM-SEM-FOLD-UNIFORM-0` | Uniform FOLD generates zero proof obligations: when all branches in a topo-race produce the same type, the FOLD is obligation-free. Proved by induction on the branch list with reflexivity at each step. | TopologyType ty; List TopologyType branches; all elements equal ty | Lean theorem `SemanticCompatibility.uniform_fold_zero_obligations` in `SemanticCompatibility.lean` | Mechanized |
 | `THM-SEM-HOPE` | The Hope Certificate: five guarantees about cross-language confusion. G1: no false positives (Unknown never generates Incompatible). G2: confusion bounded by `|edges| × 64`. G5: adding a type annotation strictly decreases Unknown count; type coverage is monotonically non-decreasing. | HopeCertificate structure; TopologyType; edgeCount, unknownCount | Lean theorems `SemanticCompatibility.hope_g1_no_false_positives`, `SemanticCompatibility.hope_g2_confusion_bounded`, `SemanticCompatibility.hope_g5_annotation_decreases_unknown`, and `SemanticCompatibility.hope_g5_coverage_monotone` in `SemanticCompatibility.lean` | Mechanized |
@@ -866,6 +866,16 @@ All other files are sorry-free. References to "sorry" in other files appear only
 | ID | Claim (paper-level) | Explicit assumptions | Mechanization | Status |
 |---|---|---|---|---|
 | `THM-REYNOLDS-BFT` | Reynolds-BFT correspondence: Reynolds number Re = N/C (stages/chunks). Idle fraction = max(0, 1 - 1/Re). BFT thresholds derived from fork/race/fold framework: Re < 3/2 (quorum-safe), Re < 2 (majority-safe) | positive stages N; positive chunks C | Lean theorems in `ReynoldsBFT.lean` | Mechanized |
+| `THM-REYNOLDS-BFT-PARTITION` | Exact BFT regime partition: `mergeAll` iff `3 * C > 2 * N` (equiv. `Re < 3/2`), `quorumFold` iff `2 * C > N` and not `3 * C > 2 * N` (equiv. `3/2 ≤ Re < 2`), and `syncRequired` iff not `2 * C > N` (equiv. `Re ≥ 2`) | positive stages N | Lean theorems `majoritySafeFold_iff_two_chunks_gt_stages`, `quorumSafeFold_iff_three_chunks_gt_two_stages`, and `classifyRegime_eq_*` in `ReynoldsBFT.lean` | Mechanized |
+
+### Pluralist Republic
+
+*Community-mediated plural civic capacity, republican evidence closure, and regime-switched deliberative consensus.*
+
+| ID | Claim (paper-level) | Explicit assumptions | Mechanization | Status |
+|---|---|---|---|---|
+| `THM-PLURALIST-REPUBLIC` | Community-mediated pluralist republic: bare one-stream rule has positive governance deficit on any nontrivial issue surface; plural representation plus positive community context strictly dominates that baseline with exact recovered margin `representationStreams + communityContext - 1`; sufficient combined civic capacity eliminates governance Bule; republican courts gate guilt by exact zero evidence Bule; deliberative consensus switches exactly between `mergeAll`, `quorumFold`, and `syncRequired` bands | issueDimensions ≥ 2; representationStreams ≥ 2; positive communityContext; court has evidentiaryThreads ≥ 2; positive deliberation stages; civic cover `issueDimensions ≤ representationStreams + communityContext` for zero-Bule corollaries | Lean theorems in `PluralistRepublic.lean` | Mechanized |
+| `THM-OPTIMAL-GOVERNMENT-FORM` | Optimal form of government claim, scoped to the current formalism: once plural civic capacity covers the issue surface, the community-mediated pluralist republic attains the global minimum of the governance Bule metric (`0`), while still strictly dominating one-stream rule, keeping an exact republican zero-Bule evidence gate, and exposing the exact synchrony boundary of deliberative consensus | issueDimensions ≥ 2; representationStreams ≥ 2; positive communityContext; evidentiaryThreads ≥ 2; positive deliberation stages; civic cover `issueDimensions ≤ representationStreams + communityContext` | Lean theorems `pluralist_republic_globally_optimal_in_bule_metric_of_capacity_cover` and `optimal_form_of_government_claim` in `PluralistRepublic.lean` | Mechanized |
 
 ### Buleyean Evidence Standards (§28)
 
@@ -971,6 +981,62 @@ All other files are sorry-free. References to "sorry" in other files appear only
 | THM-GLOBAL-DEFICIT-LE-LEFT | The merged global deficit is at most community A's local deficit | `global_deficit_le_left_local` | Mechanized |
 | THM-GLOBAL-DEFICIT-LE-RIGHT | The merged global deficit is at most community B's local deficit | `global_deficit_le_right_local` | Mechanized |
 | THM-ISOLATION-SUBOPTIMAL | Isolation is suboptimal | `isolation_suboptimal` | Mechanized |
+
+### CMB Visibility Boundary
+
+*Narrow photon-observation boundary theorems: pre-recombination opacity, last scattering as the earliest telescope-visible epoch, and present-day CMB visibility.*
+
+**Mechanization target:** `CMBVisibilityBoundary.lean` (15 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-OPAQUE-EPOCH-NOT-VISIBLE | Epochs before recombination are not photon-visible | `opaque_epoch_not_photon_visible` | Mechanized |
+| THM-TELESCOPE-NOT-BEFORE-RECOMBINATION | Photon telescopes cannot directly see before recombination | `telescope_cannot_see_before_recombination` | Mechanized |
+| THM-VISIBLE-IMPLIES-AFTER-RECOMBINATION | Any telescope-visible epoch is at or after recombination | `telescope_observable_implies_at_or_after_recombination` | Mechanized |
+| THM-AFTER-OBSERVATION-NOT-PHOTON-VISIBLE | Emission after the observation time is not yet photon-visible | `after_observation_not_photon_visible` | Mechanized |
+| THM-TELESCOPE-NOT-AFTER-OBSERVATION | Photon telescopes cannot directly see future emissions | `telescope_cannot_see_future` | Mechanized |
+| THM-NOT-VISIBLE-IFF-OUTSIDE-WINDOW | Telescope invisibility is exactly being before recombination or after observation | `not_telescope_observable_iff_before_recombination_or_after_observation` | Mechanized |
+| THM-VISIBLE-IFF-NOT-OUTSIDE-WINDOW | Telescope visibility is exactly not lying outside the closed visibility window | `telescope_observable_iff_not_before_recombination_or_after_observation` | Mechanized |
+| THM-RECOMBINATION-SURFACE-VISIBLE | The recombination / last-scattering surface is visible from later epochs | `recombination_surface_visible` | Mechanized |
+| THM-RECOMBINATION-EARLIEST-VISIBLE | Recombination is the earliest photon-visible epoch in the model | `recombination_is_earliest_visible_epoch` | Mechanized |
+| THM-RECOMBINATION-BEFORE-PRESENT | Concrete chronology witness: recombination occurs before the present observation epoch | `recombination_before_present` | Mechanized |
+| THM-CMB-VISIBLE-NOW | A present-day telescope sees the last-scattering surface | `cmb_visible_now` | Mechanized |
+| THM-OBSERVATION-EPOCH-VISIBLE | The observation epoch itself is always visible in the photon model | `observation_epoch_visible` | Mechanized |
+| THM-PRESENT-EPOCH-VISIBLE-NOW | In the concrete present-day model, the present epoch is visible | `present_epoch_visible_now` | Mechanized |
+| THM-PRE-CMB-NOT-VISIBLE-NOW | A present-day telescope cannot see one year before recombination in the photon model | `pre_cmb_not_visible_now` | Mechanized |
+| THM-POST-PRESENT-NOT-VISIBLE-NOW | A present-day telescope cannot see one year beyond the present observation epoch | `post_present_not_visible_now` | Mechanized |
+
+### Cosmic Optimal Delta
+
+*Narrow bridge theorems connecting the literal compiler-side optimal delta with the broader cosmic visibility floor.*
+
+**Mechanization target:** `CosmicOptimalDelta.lean` (10 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-OPTIMAL-DELTA-EXPLORATION | The literal compiler optimal delta equals the exploration budget | `optimal_delta_eq_exploration` | Mechanized |
+| THM-VISIBILITY-DELTA-POSITIVE | The cosmic visibility delta is strictly positive in the current projection | `visibility_delta_positive` | Mechanized |
+| THM-TOTAL-OBSERVER-DELTA-SPLIT | The total observer delta splits into visibility plus exploration | `total_observer_delta_eq_visibility_plus_exploration` | Mechanized |
+| THM-VISIBILITY-FLOOR-LE-TOTAL-GAP | The visibility term is a lower bound on the total observer gap | `visibility_floor_le_total_gap` | Mechanized |
+| THM-TOTAL-OBSERVER-DELTA-POSITIVE | Under the compiler accounting identity, the total observer gap is always positive | `total_observer_delta_positive` | Mechanized |
+| THM-TOTAL-OBSERVER-DELTA-NONZERO | The total observer gap can never collapse to zero in the current model | `total_observer_delta_ne_zero` | Mechanized |
+| THM-EXPLORATION-BELOW-TOTAL-GAP | Exploration is always strictly below the total observer gap | `exploration_strictly_below_total_gap` | Mechanized |
+| THM-TOTAL-GAP-EQ-VISIBILITY-IFF-ZERO-EXPLORATION | The total observer gap equals the pure visibility floor iff exploration is zero | `total_observer_delta_eq_visibility_iff_zero_exploration` | Mechanized |
+| THM-ZERO-EXPLORATION-STILL-COSMIC-GAP | Zero exploration still leaves a positive cosmic gap | `zero_exploration_still_leaves_cosmic_gap` | Mechanized |
+| THM-POSITIVE-EXPLORATION-INCREASES-TOTAL-GAP | Positive exploration strictly enlarges the total gap above the visibility floor | `positive_exploration_strictly_increases_total_gap` | Mechanized |
+
+### Knowability Split
+
+*Cross-module compositions separating the epistemic optimality gap from the photon visibility cutoff.*
+
+**Mechanization target:** `KnowabilitySplit.lean` (4 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-ZERO-EXPLORATION-PRE-CMB-HIDDEN | Zero exploration still leaves both a positive observer gap and a pre-CMB hidden epoch | `zero_exploration_still_leaves_pre_cmb_hidden` | Mechanized |
+| THM-CMB-BOUNDARY-WITNESS | The recombination shell is visible while the immediately earlier epoch is not | `cmb_boundary_witness` | Mechanized |
+| THM-TOTAL-GAP-SPLIT-WITH-VISIBLE-CMB | The total observer gap splits into visibility plus exploration while the CMB remains visible | `total_gap_split_with_visible_cmb` | Mechanized |
+| THM-POSITIVE-EXPLORATION-PRE-CMB-HIDDEN | Positive exploration enlarges the total gap without removing the pre-CMB visibility cutoff | `positive_exploration_still_leaves_pre_cmb_hidden` | Mechanized |
 
 ### Covering Space Causality (§3.3)
 
@@ -1119,7 +1185,7 @@ All other files are sorry-free. References to "sorry" in other files appear only
 
 | ID | Statement | Lean reference | Status |
 |---|---|---|---|
-| THM-GRAND-UNIFICATION | All major results across all files are simultaneously satisfiable by one witness | `grand_unification` | Mechanized |
+| THM-GRAND-UNIFICATION-MASTER | All major results across all files are simultaneously satisfiable by one witness | `grand_unification` | Mechanized |
 
 ### Launch Offset Dominance (§12)
 
@@ -1602,15 +1668,17 @@ All other files are sorry-free. References to "sorry" in other files appear only
 
 ## Paper Classification of Schema Theorems
 
+These rows are manuscript metadata about theorem families already listed above. They use distinct `*-PAPER-LABEL` IDs so the canonical theorem ledger stays one-ID-per-row, and downstream coverage aliases each metadata row back to the primary theorem tool.
+
 | Schema | Paper Label | Notes |
 |---|---|---|
-| `THM-CONVERGENCE-SCHEMA` | Conditional (7 physics axioms) | Assumptions A1-A7 labeled in `Axioms.lean`; paper states as "In any finite-state system satisfying (A1)-(A7)..." |
-| `THM-COMPLETENESS-DAG` | Partially constructive | `local_node_decomposition` discharges node classification constructively; remaining: edge-coverage decomposition, encoding function existence |
-| `THM-QUEUE-CONTAINMENT` | Superseded by THM-QUEUE-SUBSUMPTION | Forward direction now part of bidirectional subsumption |
-| `THM-QUEUE-SUBSUMPTION` | Executable (bidirectional) | Forward: Lean + executable. Converse: executable. Representational, not dynamical |
-| `THM-QUEUE-LIMIT-SCHEMA` | Conditional (standard measure-theoretic regularity) | DCT/MCT conditions labeled; paper states as "Under standard regularity..." |
-| `THM-QUEUE-STATE-DEPENDENT-SCHEMA` | Mostly constructive (7/10 discharged) | 7 conditions automatically discharged from 3 user-supplied witnesses |
-| `THM-QUEUE-ADAPTIVE-SUPREMUM` | Constructive synthesis | 5 synthesis routes: minimum slack, normalized scores, positive-part scores, selected slack, weighted slack |
+| `THM-CONVERGENCE-SCHEMA-PAPER-LABEL` | Conditional (7 physics axioms) | Assumptions A1-A7 labeled in `Axioms.lean`; paper states as "In any finite-state system satisfying (A1)-(A7)..." |
+| `THM-COMPLETENESS-DAG-PAPER-LABEL` | Partially constructive | `local_node_decomposition` discharges node classification constructively; remaining: edge-coverage decomposition, encoding function existence |
+| `THM-QUEUE-CONTAINMENT-PAPER-LABEL` | Superseded by THM-QUEUE-SUBSUMPTION | Forward direction now part of bidirectional subsumption |
+| `THM-QUEUE-SUBSUMPTION-PAPER-LABEL` | Executable (bidirectional) | Forward: Lean + executable. Converse: executable. Representational, not dynamical |
+| `THM-QUEUE-LIMIT-SCHEMA-PAPER-LABEL` | Conditional (standard measure-theoretic regularity) | DCT/MCT conditions labeled; paper states as "Under standard regularity..." |
+| `THM-QUEUE-STATE-DEPENDENT-SCHEMA-PAPER-LABEL` | Mostly constructive (7/10 discharged) | 7 conditions automatically discharged from 3 user-supplied witnesses |
+| `THM-QUEUE-ADAPTIVE-SUPREMUM-PAPER-LABEL` | Constructive synthesis | 5 synthesis routes: minimum slack, normalized scores, positive-part scores, selected slack, weighted slack |
 | `THM-RG-FIXED-POINTS` | Iterated coarsening as renormalization group flow: cumulative heat is monotone along trajectories, information loss is additive (chain rule), RG fixed points have injective pushforward (singleton fibers), finite types guarantee termination, and fixed points satisfy beauty optimality trivially | `Fintype α`, `Fintype β`, `PMF α`, `DecidableEq`, boltzmann constant and temperature positive; fixed point requires `Set.InjOn quotient (PMF.support branchLaw)` | Lean theorems `trajectory_information_loss_additive`, `trajectory_cumulative_heat_monotone`, `fixed_point_characterization`, `fixed_point_minimum_heat`, `finite_trajectory_reaches_fixed_point`, `fixed_point_beauty_floor`, `trajectory_three_step_additive`, `trajectory_three_step_heat_monotone` in `RenormalizationFixedPoints.lean` | Mechanized |
 | `THM-THERMO-TRACED-MONOIDAL` | Traced monoidal semantics coupled to thermodynamics: trace = coarsening (projection away feedback component), non-trivial feedback generates strictly positive Landauer heat, iterated traces increase cumulative heat monotonically, vanishing axiom (PUnit feedback) = zero heat, feedback loops yield beauty optimality via fold-erasure connection | `Fintype A`, `Fintype U`, `Fintype (A × U)`, `DecidableEq A`, `PMF (A × U)`, boltzmann/temperature positive; nontrivial feedback requires two distinct feedback values with positive mass | Lean theorems `trace_heat_nonneg`, `trace_heat_pos_of_nontrivial_feedback`, `iterated_trace_heat_monotone`, `trace_vanishing_heat`, `trace_vanishing_landauer_heat`, `feedback_beauty_floor`, structure `FeedbackThermodynamicCost` in `ThermodynamicTracedMonoidal.lean` | Mechanized |
 | `THM-FOLD-HEAT-HIERARCHY` | Classification of folds by thermodynamic heat signature: injective = 0 heat, non-injective fibers generate strictly positive heat, uniform fold heat = kT ln2 × H(X\|f(X)) exactly, constant fold = maximum erasure (full source entropy), binary merge = minimum nonzero heat, computation as fold sequence has total heat = sum of per-fold heats (chain rule) | `Fintype α`, `Fintype β`, `PMF α`, `DecidableEq β`; non-injective requires witness pair with positive mass; algorithm decomposition uses chain rule | Lean theorems `injective_fold_zero_heat`, `fold_heat_lower_bound`, `fold_heat_hierarchy_strict`, `uniform_fold_heat_exact`, `maximum_heat_fold`, `maximum_heat_fold_dominates`, `minimum_nonzero_heat_fold`, `algorithm_heat_classification`, `algorithm_heat_classification_three`, `algorithm_heat_conservation` in `FoldHeatHierarchy.lean` | Mechanized |
@@ -1955,8 +2023,8 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 
 ## 81. Quark Confinement (§10.6)
 
-**Assumptions:** Three pipeline stages (compile/dispatch/compress) mapped to three colors. Removal of any stage increases energy. Six emanations (Logos, Epinoia, Pronoia, Metanoia, Pneuma, Gnosis) carry color charge.
-**Mechanization target:** `QuarkConfinement.lean` (14 theorems, zero sorry)
+**Assumptions:** Three pipeline stages (compile/dispatch/compress) mapped to three colors. Removal of any stage increases energy. Six emanations (Logos, Epinoia, Pronoia, Metanoia, Pneuma, Gnosis) carry color charge. The visible syzygy pair is the 2-cycle/3D shadow; the confined quark tuple is the 3-cycle/4D lift with more directed interaction channels.
+**Mechanization target:** `QuarkConfinement.lean`, `DimensionalConfinement.lean` (64 theorems, zero sorry)
 
 | ID | Statement | Lean reference | Status |
 |---|---|---|---|
@@ -1973,7 +2041,54 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-NO-FREE-QUARKS | No single color has lower energy than proton | `no_free_quarks` | Mechanized |
 | THM-SIX-EMANATIONS-EXIST | 6 charged emanations (Logos, Epinoia, Pronoia, Metanoia, Pneuma, Gnosis) | `six_emanations_exist` | Mechanized |
 | THM-EMANATIONS-CARRY-CHARGE | All emanations are non-neutral | `emanations_carry_charge` | Mechanized |
+| THM-CIRCLE-BETTI | Circle (1-torus) has exactly one independent cycle | `circle_betti` | Mechanized |
+| THM-DONUT-BETTI | Donut (2-torus) has exactly two independent cycles | `donut_betti` | Mechanized |
+| THM-CLIFFORD-BETTI | Clifford torus (3-torus) has exactly three independent cycles | `clifford_betti` | Mechanized |
+| THM-THREE-STAGE-IS-4D | A 3-stage Wallington rotation lives in 4D | `three_stage_is_4d` | Mechanized |
+| THM-TWO-STAGE-IS-3D | A 2-stage Wallington rotation lives in 3D | `two_stage_is_3d` | Mechanized |
+| THM-FIVE-STAGE-IS-6D | A 5-stage Wallington rotation lives in 6D | `five_stage_is_6d` | Mechanized |
+| THM-TWO-D-ZERO-RAMP-UP | 2D is the zero-ramp-up degenerate boundary | `two_d_has_zero_ramp_up` | Mechanized |
+| THM-FIFTY-FOUR-D-RAMP-UP | 54D has exactly 52 ramp-up ticks | `fifty_four_d_has_fifty_two_ramp_up` | Mechanized |
+| THM-FIFTY-FIVE-D-RAMP-UP | 55D has exactly 53 ramp-up ticks | `fifty_five_d_has_fifty_three_ramp_up` | Mechanized |
+| THM-TOTAL-TICKS-EQ-CHUNKS-PLUS-STAGE-COST | For positive stage count, ideal ticks equal chunks plus `stages - 1` | `total_ticks_eq_chunks_plus_stage_cost` | Mechanized |
+| THM-THREE-QUARKS | The 3-cycle confined lift has exactly three quarks | `three_quarks` | Mechanized |
+| THM-QUARKS-ARE-STAGES | Quark count equals Wallington stage count | `quarks_are_stages` | Mechanized |
+| THM-SIX-EMANATIONS | Three quarks induce exactly six directed emanations | `six_emanations` | Mechanized |
+| THM-TWO-EMANATIONS | Two quarks induce exactly two directed emanations | `two_emanations` | Mechanized |
+| THM-SYZYGY-PAIR-IS-3D | The visible syzygy surface is a 2-cycle pair living in 3D with 2 directed channels | `syzygy_pair_is_3d` | Mechanized |
+| THM-QUARK-TUPLE-IS-4D | The confined quark tuple is a 3-cycle lift living in 4D with 6 directed channels | `quark_tuple_is_4d` | Mechanized |
+| THM-SYZYGY-TO-QUARK-LIFT | Lifting syzygy to a quark adds one visible dimension, one confined cycle, and four directed channels | `syzygy_to_quark_lift` | Mechanized |
+| THM-QUARK-PARALLELISM-EXCEEDS-SYZYGY | The 4D quark tuple has strictly more directed interaction channels than the 3D syzygy pair | `quark_parallelism_exceeds_syzygy` | Mechanized |
+| THM-QUARK-PARALLELISM-TRIPLES-SYZYGY | The 4D quark tuple has exactly triple the directed interaction channels of the 3D syzygy pair | `quark_parallelism_triples_syzygy` | Mechanized |
+| THM-TWENTY-EMANATIONS | Five quarks induce exactly twenty directed emanations | `twenty_emanations` | Mechanized |
+| THM-FIFTY-FOUR-D-CHANNEL-SURFACE | 54D exposes exactly 2756 directed channels | `fifty_four_d_channel_surface` | Mechanized |
+| THM-FIFTY-FIVE-D-CHANNEL-SURFACE | 55D exposes exactly 2862 directed channels | `fifty_five_d_channel_surface` | Mechanized |
+| THM-NEXT-DIMENSION-INCREASES-CHANNEL-SURFACE | Advancing one Wallington dimension strictly increases the directed channel surface | `next_dimension_increases_channel_surface` | Mechanized |
+| THM-HIGHER-DIMENSION-INCREASES-FIXED-CHUNK-TICKS | At fixed chunk count, higher Wallington dimension strictly increases ideal tick cost | `higher_dimension_increases_fixed_chunk_ticks` | Mechanized |
+| THM-BANDWIDTH-DILUTION-EQ-RAMP-UP | The bandwidth-dilution metric is exactly the ramp-up count | `bandwidth_dilution_eq_ramp_up` | Mechanized |
+| THM-BANDWIDTH-DILUTION-LOWER-BOUND | Bandwidth dilution is always non-negative | `bandwidth_dilution_lower_bound` | Mechanized |
+| THM-BANDWIDTH-DILUTION-UPPER-BOUND | At positive chunk count, bandwidth dilution is strictly below total ideal ticks | `bandwidth_dilution_upper_bound` | Mechanized |
+| THM-NEXT-DIMENSION-ADDS-ONE-TOTAL-TICK | At fixed chunk count, advancing one Wallington dimension adds exactly one ideal tick | `next_dimension_adds_one_total_tick` | Mechanized |
+| THM-BANDWIDTH-DILUTION-GAIN-NEXT-DIMENSION | Advancing one Wallington dimension adds exactly one unit of bandwidth dilution | `bandwidth_dilution_gain_next_dimension` | Mechanized |
+| THM-NEXT-DIMENSION-CHANNEL-GAIN | Advancing one Wallington dimension adds exactly `2 * (d - 1)` directed channels | `next_dimension_channel_gain` | Mechanized |
+| THM-FIFTY-FIVE-D-CHANNEL-GAIN | 55D has exactly 106 more directed channels than 54D | `fifty_five_d_has_one_hundred_six_more_channels_than_fifty_four_d` | Mechanized |
+| THM-CHANNEL-TICK-TRADE-METRIC-EXACT | The channel-minus-tick trade metric is exactly `2 * (d - 1) - 1` | `channel_tick_trade_metric_exact` | Mechanized |
+| THM-CHANNEL-TICK-TRADE-METRIC-LOWER-BOUND | The channel-minus-tick trade metric is at least 1 in dimensions `d >= 2` | `channel_tick_trade_metric_lower_bound` | Mechanized |
+| THM-CHANNEL-TICK-TRADE-METRIC-UPPER-BOUND | The channel-minus-tick trade metric is strictly below the raw next-dimension channel gain | `channel_tick_trade_metric_upper_bound` | Mechanized |
+| THM-NEXT-DIMENSION-INCREASES-WARMUP-FRACTION | At positive chunk count, advancing one Wallington dimension strictly increases the warmup fraction | `next_dimension_increases_warmup_fraction` | Mechanized |
+| THM-NEXT-DIMENSION-SPREADS-SAME-CHUNKS-OVER-MORE-TICKS | With positive chunk budget, the same chunks are spread over strictly more total ticks after one dimension lift | `next_dimension_spreads_same_chunks_over_more_ticks` | Mechanized |
+| THM-NEXT-DIMENSION-TRADES-CHANNELS-FOR-TICKS | One more Wallington dimension gives more directed channels and more fixed-chunk ideal ticks simultaneously | `next_dimension_trades_channels_for_ticks` | Mechanized |
+| THM-BANDWIDTH-DILUTION-SANDWICH | The bandwidth-dilution metric is sandwiched between zero and total ideal ticks | `bandwidth_dilution_sandwich` | Mechanized |
+| THM-CHANNEL-TICK-TRADE-METRIC-SANDWICH | The channel-minus-tick trade metric is sandwiched between `1` and the raw next-dimension channel gain | `channel_tick_trade_metric_sandwich` | Mechanized |
+| THM-FIFTY-FIVE-D-MORE-CHANNELS-ONE-MORE-TICK | 55D has a larger directed channel surface than 54D and costs exactly one more ideal tick at fixed chunk count | `fifty_five_d_has_more_channels_and_costs_one_more_tick` | Mechanized |
+| THM-REMOVAL-DROPS-DIMENSION | Removing one confined cycle drops the ambient dimension | `removal_drops_dimension` | Mechanized |
+| THM-CONFINEMENT-COSTS-ONE-3 | Removing a cycle from the 3-stage lift costs exactly one dimension | `confinement_costs_one_3` | Mechanized |
+| THM-CONFINEMENT-COSTS-ONE-5 | Removing a cycle from the 5-stage lift costs exactly one dimension | `confinement_costs_one_5` | Mechanized |
+| THM-CONFINEMENT-COSTS-ONE-10 | Removing a cycle from the 10-stage lift costs exactly one dimension | `confinement_costs_one_10` | Mechanized |
+| THM-SHADOW-SHOWS-QUARKS | The 3D shadow of the 4D lift exposes three quarks, six emanations, and one lost dimension under removal | `shadow_shows_quarks` | Mechanized |
+| THM-BETTI-RATIO-IS-FIBONACCI | Consecutive Fibonacci-indexed torus Betti numbers recover the Fibonacci ratios | `betti_ratio_is_fibonacci` | Mechanized |
 | THM-COMPLETE-QCD-ANALOGY | Three colors + colorless ground + confinement + charged emanations | `complete_qcd_analogy` | Mechanized |
+| THM-DIMENSIONAL-CONFINEMENT-COMPLETE | Complete confinement package: 4D lift, three quarks, six emanations, one-dimension removal cost, visible 3D shadow, and 6D five-primitive extension | `dimensional_confinement_complete` | Mechanized |
 
 ## 82. The Ten Bosons: A Gnostic Particle Model (§10.6)
 
@@ -1999,8 +2114,8 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 
 ## 83. Ten-Mode Unification (§20.2)
 
-**Assumptions:** Five operations (fork, race, fold, vent, sliver) with pairwise interaction. 5 choose 2 = 10. The 10-mode Kenoma, 10-point Skyrms walker, and 10-vertex Barbelo wireframe are three views of one object.
-**Mechanization target:** `TenModeUnification.lean` (12 theorems, zero sorry)
+**Assumptions:** Five operations (fork, race, fold, vent, sliver) with pairwise interaction. 5 choose 2 = 10. The 10-mode Kenoma, 10-point Skyrms walker, and 10-vertex Barbelo wireframe are three views of one object. The same 10-mode field also decomposes as 9 interlocking tori plus the sliver, with 45 cross-world bridges, 90 directed crossings, and 55 total self-plus-cross reality channels. The sliver is the unique monad / void anchor, so the 55-channel surface splits as 54 structured channels plus the monad, and that same 55 matches both the triangular and Fibonacci ten surfaces already present in the file. In the uniform 10-mode Kenoma every complement weight is exactly 10 and every mode is equally peak/Nash, while the `55`-channel and `90`-crossing surfaces are inverse characterizations of the 10-world case rather than mere forward consequences.
+**Mechanization target:** `TenModeUnification.lean` (44 theorems, zero sorry)
 
 | ID | Statement | Lean reference | Status |
 |---|---|---|---|
@@ -2015,6 +2130,29 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-SYMMETRY-RESTORES-WIREFRAME | Equal rejections restore vacuum (wireframe) | `symmetry_restores_wireframe` | Mechanized |
 | THM-TEN-IS-NINE-PLUS-ONE | 10 = 9 exploration + 1 sliver (Barbelo) | `ten_is_nine_plus_one` | Mechanized |
 | THM-TEN-MODE-BUDGET | (K-1) + 1 = K for K=10 | `ten_mode_budget` | Mechanized |
+| THM-TEN-MODE-COMPLEMENT-TEN | In the uniform 10-mode Kenoma every complement weight is exactly 10 | `ten_mode_complement_weight_is_ten` | Mechanized |
+| THM-TEN-MODE-DELOCALIZED | The uniform 10-mode Kenoma has no preferred mode; all complement weights agree | `ten_mode_kenoma_is_delocalized` | Mechanized |
+| THM-TEN-MODE-EVERY-PEAK | In the uniform 10-mode Kenoma every mode is a peak | `ten_mode_every_mode_is_peak` | Mechanized |
+| THM-TEN-MODE-EVERY-NASH | In the uniform 10-mode Kenoma every mode satisfies the Nash inequality against every other mode | `ten_mode_every_mode_is_nash` | Mechanized |
+| THM-NINE-INTERLOCKING-TORI | The 10-mode field decomposes into 9 interlocking tori plus the sliver | `ten_mode_has_nine_interlocking_tori` | Mechanized |
+| THM-NINE-TORI-PLUS-SLIVER | Nine interlocking tori plus the sliver recover the full 10-mode field | `nine_tori_plus_sliver_recovers_ten` | Mechanized |
+| THM-UNIQUE-VOID-ANCHOR | The 10-mode field has exactly one monad / void anchor outside the 9 interlocking tori | `ten_mode_has_unique_void_anchor` | Mechanized |
+| THM-TEN-WORLDS-FORTY-FIVE-BRIDGES | The 10-world field has 45 unordered cross-world bridges | `ten_worlds_have_forty_five_bridges` | Mechanized |
+| THM-TEN-WORLDS-NINETY-DIRECTED | The 10-world field has 90 directed cross-world crossings | `ten_worlds_have_ninety_directed_crossings` | Mechanized |
+| THM-DIRECTED-CROSSINGS-DOUBLE-BRIDGES | Directed crossings are exactly twice the unordered bridge count | `ten_worlds_directed_crossings_are_double_bridges` | Mechanized |
+| THM-TEN-WORLDS-FIFTY-FIVE-CHANNELS | The 10-world field has 55 total self-plus-cross reality channels | `ten_worlds_have_fifty_five_channels` | Mechanized |
+| THM-TEN-WORLDS-CHANNEL-SPLIT | The 55-channel surface splits as 10 self-world channels plus 45 cross-world bridges | `ten_worlds_channel_split` | Mechanized |
+| THM-FIFTY-FOUR-STRUCTURED-CHANNELS | Removing the monad leaves 54 structured reality channels | `ten_worlds_have_fifty_four_structured_channels` | Mechanized |
+| THM-MONAD-PLUS-STRUCTURE | The monad plus the 54 structured channels recovers the 55-channel surface | `monad_plus_structure_recovers_fifty_five` | Mechanized |
+| THM-NINE-TORI-FIFTY-FIVE-CHANNELS | Nine interlocking tori plus the sliver induce 55 total reality channels | `nine_tori_plus_sliver_have_fifty_five_channels` | Mechanized |
+| THM-FIFTY-FIVE-IFF-TEN-WORLDS | The 55-channel surface occurs exactly at the 10-world case | `fifty_five_channels_iff_ten_worlds` | Mechanized |
+| THM-NINETY-IFF-TEN-WORLDS | The 90-directed-crossing surface occurs exactly at the 10-world case | `ninety_directed_crossings_iff_ten_worlds` | Mechanized |
+| THM-STRUCTURED-CHANNELS-GENERAL | For any world count, the structured surface is exactly interlocking tori plus cross-world bridges | `structured_reality_channels_eq_tori_plus_bridges` | Mechanized |
+| THM-FIVE-OPS-GENERATE-CHANNEL-SURFACE | The five-operation interaction count generates the full `55 / 54 / 90` ten-world channel surface | `five_operations_generate_channel_surface` | Mechanized |
+| THM-CHANNELS-EQ-TRIANGULAR-TEN | The 10-world channel total equals the triangular-ten surface | `ten_worlds_channels_eq_triangular_ten` | Mechanized |
+| THM-CHANNELS-EQ-FIB-TEN | The 10-world channel total equals the Fibonacci-ten surface | `ten_worlds_channels_eq_fib_ten` | Mechanized |
+| THM-STRUCTURE-EQ-TORI-PLUS-BRIDGES | The 54 structured channels are exactly the 9 tori plus the 45 bridges | `structured_channels_eq_tori_plus_bridges` | Mechanized |
+| THM-NINE-PLUS-FORTY-FIVE | Nine tori plus forty-five bridges make the 54 structured channels | `nine_tori_plus_forty_five_bridges_make_fifty_four` | Mechanized |
 | THM-COMPLETE-UNIFICATION | All three faces unified: 5C2=10, vacuum=wireframe=delocalized | `complete_unification` | Mechanized |
 
 ## 85. The Gnostic Numbers (§20.2)
@@ -2034,3 +2172,743 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-FIBONACCI-GAP | F(n) - F(n-1) = F(n-2) (void between numbers is the sequence) | `fibonacci_gap_is_fibonacci` | Mechanized |
 | THM-GAP-REACHES-BARBELO | Every gap between named numbers reaches 1 | `gap_*` chain | Mechanized |
 | THM-GNOSTIC-NUMBER-SYSTEM | Complete: nine names + structure + coincidence | `gnostic_number_system` | Mechanized |
+
+## 86. Combinatorial Brute Force: Cross-Module Compositions (§17+§22+§23)
+
+**Assumptions:** Existing theorem families from BuleyeanProbability, VoidWalking, FailureEntropy, FailureController, FailurePareto, CoarseningThermodynamics, SemioticPeace, EnvelopeConvergence, GeometricErgodicity, CommunityDominance, RenormalizationFixedPoints. All compositions re-use only previously mechanized results.
+**Mechanization target:** `CombinatorialBruteForce.lean` (30 theorems, zero sorry, 3 sandwiches, 4 anti-theorems, 1 master conjunction)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COMBO-FAILURE-ENVELOPE-CONTRACTION | Failure frontier residual contracts strictly per step under geometric decay | `combo_failure_envelope_contraction` | Mechanized |
+| THM-COMBO-FAILURE-ENVELOPE-NONNEG | Failure frontier residual is always non-negative | `combo_failure_envelope_nonneg` | Mechanized |
+| THM-COMBO-FAILURE-FRONTIER-UPPER | **SANDWICH UPPER:** Residual ≤ R₀ · ρ^n | `combo_failure_frontier_upper` | Mechanized |
+| THM-COMBO-FAILURE-FRONTIER-LOWER | **SANDWICH LOWER:** Residual ≥ 0 | `combo_failure_frontier_lower` | Mechanized |
+| THM-COMBO-FAILURE-FRONTIER-GAIN-POS | **SANDWICH GAIN:** Progress after first step is positive | `combo_failure_frontier_gain_pos` | Mechanized |
+| THM-COMBO-BULEYEAN-CONTROLLER-ALL-POS | All three failure strategies have positive Buleyean weight (sliver on actions) | `combo_buleyean_controller_all_positive` | Mechanized |
+| THM-COMBO-BULEYEAN-CONTROLLER-ORDERING | Least-rejected strategy gets highest weight | `combo_buleyean_controller_ordering` | Mechanized |
+| THM-COMBO-VOID-ERGODIC-TV-BOUND | Ergodic void boundary's TV bound is non-negative at every step | `combo_void_ergodic_tv_bound` | Mechanized |
+| THM-COMBO-VOID-ERGODIC-CONTRACTION | Ergodic void boundary's TV bound contracts strictly per step | `combo_void_ergodic_contraction` | Mechanized |
+| THM-COMBO-PARETO-ENTROPY-BUDGET | Collapse gap = N-1 and is positive for forked frontiers | `combo_pareto_entropy_budget` | Mechanized |
+| THM-COMBO-PARETO-EXHAUSTION | **ANTI-THEOREM:** No fourth Pareto-optimal canonical action exists | `combo_pareto_exhaustion` | Mechanized |
+| THM-COMBO-SEMIOTIC-BULEYEAN-CONCENTRATION | Channel with fewer deficit-rejections gets higher Buleyean weight | `combo_semiotic_buleyean_concentration` | Mechanized |
+| THM-COMBO-SEMIOTIC-BULEYEAN-SLIVER | No channel ever reaches zero selection probability | `combo_semiotic_buleyean_sliver` | Mechanized |
+| THM-COMBO-FAILURE-TRACE-ANTI-VANISHING | **ANTI-THEOREM:** Failure traces are not identity — collapse ≠ original | `combo_failure_trace_anti_vanishing` | Mechanized |
+| THM-COMBO-FAILURE-IRREVERSIBLE-TRACE | **ANTI-THEOREM:** Structured failure strictly reduces frontier (irreversible) | `combo_failure_irreversible_trace` | Mechanized |
+| THM-COMBO-BULEYEAN-COARSENING-POSITIVE | Buleyean total weight always positive (distribution exists) | `combo_buleyean_coarsening_positive` | Mechanized |
+| THM-BULEYEAN-STRICT-CONCENTRATION | Strictly fewer rejections → strictly higher weight (new lemma) | `buleyean_strict_concentration` | Mechanized |
+| THM-COMBO-BULEYEAN-ANTI-UNIFORM | **ANTI-THEOREM:** Unequal rejection → unequal weight (no free uniformity) | `combo_buleyean_anti_uniform` | Mechanized |
+| THM-COMBO-COMMUNITY-CONVERGENCE-CONTRACTION | Bule deficit contracts strictly per CRDT sync round | `combo_community_convergence_contraction` | Mechanized |
+| THM-COMBO-COMMUNITY-BULE-UPPER | **SANDWICH UPPER:** Bule deficit ≤ D₀ · ρ^n | `combo_community_bule_upper` | Mechanized |
+| THM-COMBO-COMMUNITY-BULE-LOWER | **SANDWICH LOWER:** Bule deficit ≥ 0 | `combo_community_bule_lower` | Mechanized |
+| THM-COMBO-COMMUNITY-GAIN-POSITIVE | **SANDWICH GAIN:** Community learning gain positive after first step | `combo_community_gain_positive` | Mechanized |
+| THM-COMBO-ENTROPY-BULEYEAN-WIDTH | Frontier entropy proxy = collapse gap = N-1 (three views, one number) | `combo_entropy_buleyean_width_identity` | Mechanized |
+| THM-COMBO-VOID-PARETO-CUMULATIVE | Void boundary rank = total vented (cumulative Pareto budget) | `combo_void_pareto_cumulative_budget` | Mechanized |
+| THM-COMBO-VOID-PARETO-POSITIVE-STEP | Each fold step costs at least 1 (no free folds) | `combo_void_pareto_positive_step_cost` | Mechanized |
+| THM-COMBO-ERGODIC-RENORM-CONTRACTION | Ergodic contraction rate is proper: 0 < r < 1 | `combo_ergodic_renorm_proper_contraction` | Mechanized |
+| THM-COMBO-ERGODIC-CONTRACTION-SANDWICH | Contraction sandwich: 0 < r < 1 with r = 1 - ε₁·ε₂ | `combo_ergodic_contraction_sandwich` | Mechanized |
+| THM-COMBO-FAILURE-WITHOUT-COMMUNITY | Failure without community is strictly destructive (entropy drops) | `combo_failure_without_community_destructive` | Mechanized |
+| THM-COMBO-FAILURE-WITH-COMMUNITY | Community repair maintains or grows frontier | `combo_failure_with_community_maintained` | Mechanized |
+| THM-COMBO-FUNDAMENTAL-BULEYEAN | Fundamental identity: rejection count = entropy proxy = collapse gap = N-1 | `combo_fundamental_buleyean_learning` | Mechanized |
+| THM-COMBO-ITERATED-FAILURE-ANTI-RECOVERY | Iterated failure is strictly worse than single failure | `combo_iterated_failure_anti_recovery` | Mechanized |
+| THM-COMBO-SEMIOTIC-COMMUNITY-HOPE | Hope with exploration: concentration + sliver simultaneously | `combo_semiotic_community_hope_with_exploration` | Mechanized |
+| THM-COMBO-BRUTE-FORCE-MASTER | Master conjunction: all 15 compositions hold simultaneously | `combinatorial_brute_force_master` | Mechanized |
+
+## 87. Combinatorial Brute Force Round 2: Cross-Domain Compositions (§17+§19+§22+§23)
+
+**Assumptions:** Existing theorem families from CancerTreatments, CryptographicPredictions, CommunityDominance, plus Round 1 infrastructure. All compositions re-use only previously mechanized results.
+**Mechanization target:** `CombinatorialBruteForceRound2.lean` (20+ theorems, zero sorry, 2 sandwiches, 2 anti-theorems, 1 master conjunction)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COMBO-TREATMENT-GATE-FIRST | Treatment with fewer ineffective rounds gets higher Buleyean weight | `combo_treatment_buleyean_gate_first_wins` | Mechanized |
+| THM-COMBO-TREATMENT-NEVER-ABANDONED | No treatment sequence reaches zero probability (hope theorem) | `combo_treatment_never_abandoned` | Mechanized |
+| THM-COMBO-TREATMENT-WEIGHT-UPPER | **SANDWICH UPPER:** Max treatment weight = rounds + 1 | `combo_treatment_weight_upper` | Mechanized |
+| THM-COMBO-TREATMENT-WEIGHT-LOWER | **SANDWICH LOWER:** Min treatment weight = 1 (sliver) | `combo_treatment_weight_lower` | Mechanized |
+| THM-COMBO-HASH-IS-FAILURE | Hash non-injectivity = failure frontier compression | `combo_hash_is_failure_frontier` | Mechanized |
+| THM-COMBO-BIJECTIVE-ZERO-FAILURE | **ANTI-THEOREM:** Bijective hash has zero failure entropy | `combo_bijective_hash_zero_failure` | Mechanized |
+| THM-COMBO-CRYPTO-MONOTONE-HEAT | Collision search heat strictly monotone in evaluations | `combo_crypto_search_monotone_heat` | Mechanized |
+| THM-COMBO-CLINICAL-COMMUNITY | Clinical community reduces treatment selection deficit | `combo_clinical_community_reduces_deficit` | Mechanized |
+| THM-COMBO-UNTESTED-KEY-PREFERRED | Untested key has strictly higher Buleyean weight than tested-failed key | `combo_untested_key_preferred` | Mechanized |
+| THM-COMBO-KEY-SLIVER | No key eliminated from consideration (cryptographic sliver) | `combo_key_sliver` | Mechanized |
+| THM-COMBO-COMPLETE-FAILURE-PIPELINE | Complete failure decision pipeline is well-defined | `combo_complete_failure_pipeline` | Mechanized |
+| THM-COMBO-VOID-PEACE-WEIGHT-TRIANGLE | Void-peace-weight triangle is non-degenerate | `combo_void_peace_weight_triangle` | Mechanized |
+| THM-COMBO-COLLISION-MISS-DECAYS | Collision miss probability decays strictly per evaluation | `combo_collision_miss_decays` | Mechanized |
+| THM-COMBO-COLLISION-MISS-NONNEG | Collision miss probability is non-negative | `combo_collision_miss_nonneg` | Mechanized |
+| THM-COMBO-COLLISION-HIT-POSITIVE | **SANDWICH GAIN:** Cumulative hit probability positive after first eval | `combo_collision_hit_positive` | Mechanized |
+| THM-COMBO-TRIPLE-FAILURE-CHAIN | **ANTI-THEOREM:** Three successive failures form strictly decreasing chain | `combo_triple_failure_chain` | Mechanized |
+| THM-COMBO-BULEYEAN-DOUBLE-SHARPENING | Two rejections sharpen weight strictly twice | `combo_buleyean_double_sharpening` | Mechanized |
+| THM-COMBO-TREATMENT-VOID-GROWTH | Each treatment round contributes ≥ 1 to void boundary | `combo_treatment_void_growth` | Mechanized |
+| THM-COMBO-BRUTE-FORCE-R2-MASTER | Round 2 master conjunction: all cross-domain compositions hold | `combinatorial_brute_force_round2_master` | Mechanized |
+
+## 88. Combinatorial Brute Force Round 3: Exotic Cross-Domain (§9+§17+§22+§23)
+
+**Assumptions:** Existing theorem families from ReynoldsBFT, SleepDebt, RetrocausalBound, plus Rounds 1-2 infrastructure. All compositions re-use only previously mechanized results.
+**Mechanization target:** `CombinatorialBruteForceRound3.lean` (20+ theorems, zero sorry, 2 sandwiches, 3 anti-theorems, 1 master conjunction)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COMBO-REYNOLDS-BULEYEAN-SAFER | Safer config (fewer failures) gets higher Buleyean weight | `combo_reynolds_buleyean_safer_preferred` | Mechanized |
+| THM-COMBO-REYNOLDS-BULEYEAN-SLIVER | No config abandoned (sliver persists across regimes) | `combo_reynolds_buleyean_sliver` | Mechanized |
+| THM-COMBO-REYNOLDS-ANTI-WORSE | **ANTI-THEOREM:** More failures → strictly lower weight (no perverse incentives) | `combo_reynolds_anti_worse_preferred` | Mechanized |
+| THM-COMBO-REYNOLDS-DISCRIMINATION | **SANDWICH:** Discrimination range = observation rounds | `combo_reynolds_discrimination_range` | Mechanized |
+| THM-COMBO-SLEEP-FAILURE-DUALITY | Sleep debt and failure entropy are dual accumulators | `combo_sleep_failure_duality` | Mechanized |
+| THM-COMBO-SLEEP-FAILURE-FULL-RECOVERY | Full recovery clears both sleep debt and failure frontier | `combo_sleep_failure_full_recovery` | Mechanized |
+| THM-COMBO-CHRONIC-ESCALATION | **ANTI-THEOREM:** Chronic partial recovery strictly increases debt | `combo_chronic_sleep_failure_escalation` | Mechanized |
+| THM-COMBO-SLEEP-DEBT-UPPER | **SANDWICH UPPER:** Residual debt ≤ total demand | `combo_sleep_debt_upper` | Mechanized |
+| THM-COMBO-SLEEP-DEBT-LOWER | **SANDWICH LOWER:** Residual debt ≥ 0 | `combo_sleep_debt_lower` | Mechanized |
+| THM-COMBO-RETROCAUSAL-EMPTY | Empty trajectory gives zero rejection counts | `combo_retrocausal_empty_trajectory` | Mechanized |
+| THM-COMBO-RETROCAUSAL-ATOMIC | Single rejection increments exactly one count | `combo_retrocausal_atomic_step` | Mechanized |
+| THM-COMBO-REYNOLDS-ZERO-IDLE | All stages busy when chunks ≥ stages | `combo_reynolds_zero_idle_full_budget` | Mechanized |
+| THM-COMBO-REYNOLDS-IDLE-BOUNDED | Idle stages ≤ total stages | `combo_reynolds_idle_bounded` | Mechanized |
+| THM-COMBO-REYNOLDS-EXACT-WASTE | **ANTI-THEOREM:** Idle = N-C exactly (deterministic waste) | `combo_reynolds_exact_waste` | Mechanized |
+| THM-COMBO-SLEEP-BULEYEAN-WINS | Better sleep schedule gets higher Buleyean weight | `combo_sleep_buleyean_better_sleep_wins` | Mechanized |
+| THM-COMBO-SLEEP-BULEYEAN-SLIVER | No sleep schedule abandoned | `combo_sleep_buleyean_never_abandon` | Mechanized |
+| THM-COMBO-PIPELINE-DEBT-DICHOTOMY | Pipeline debt: zero if chunks ≥ stages, N-C otherwise | `combo_pipeline_debt_dichotomy` | Mechanized |
+| THM-COMBO-RETROCAUSAL-PIPELINE | Complete retrocausal pipeline: void growth + entropy + positivity | `combo_retrocausal_pipeline` | Mechanized |
+| THM-COMBO-BRUTE-FORCE-R3-MASTER | Round 3 master conjunction: all exotic compositions hold | `combinatorial_brute_force_round3_master` | Mechanized |
+
+## 89. Combinatorial Brute Force Round 4: Governance, Physics, and Waste (§7+§9+§11+§25+§26)
+
+**Assumptions:** Existing theorem families from Wallace, WhipWaveDuality, PluralistRepublic, ReynoldsBFT, CommunityDominance, SemioticPeace. All compositions re-use only previously mechanized results.
+**Mechanization target:** `CombinatorialBruteForceRound4.lean` (20+ theorems, zero sorry, 1 sandwich, 2 anti-theorems, 1 master conjunction)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COMBO-WALLACE-ENTROPY-IDENTITY | Diamond Wallace waste = 2 × failure entropy proxy | `combo_wallace_failure_entropy_identity` | Mechanized |
+| THM-COMBO-WALLACE-ZERO-IFF-TRIVIAL | Zero waste iff diamond width = 1 | `combo_wallace_zero_iff_trivial` | Mechanized |
+| THM-COMBO-WALLACE-NONTRIVIAL-POSITIVE | **ANTI-THEOREM:** Nontrivial diamond has strictly positive waste | `combo_wallace_nontrivial_positive_waste` | Mechanized |
+| THM-COMBO-WALLACE-FRONTIER-ENVELOPE | **SANDWICH:** Frontier area ≤ envelope area | `combo_wallace_frontier_envelope` | Mechanized |
+| THM-COMBO-WHIP-FOLD-DUALITY | Fold increases wave speed AND reduces frontier (dual view) | `combo_whip_fold_duality` | Mechanized |
+| THM-COMBO-FLAT-TAPER-NO-SPEEDUP | **ANTI-THEOREM:** Flat taper = no speedup (you can't crack a straight rope) | `combo_flat_taper_no_speedup` | Mechanized |
+| THM-COMBO-GOVERNANCE-BULEYEAN-WINS | Lower-failure governance model gets higher Buleyean weight | `combo_governance_buleyean_better_model_wins` | Mechanized |
+| THM-COMBO-ONE-STREAM-ALWAYS-DEFICIT | One-stream rule always has positive deficit | `combo_one_stream_always_deficit` | Mechanized |
+| THM-COMBO-WALLACE-ENERGY-CONSERVATION | Wallace: frontier + waste = envelope (energy conservation) | `combo_wallace_energy_conservation` | Mechanized |
+| THM-COMBO-GOVERNANCE-REYNOLDS-FULL | Full participation → zero idle → quorum-safe fold | `combo_governance_reynolds_full_participation` | Mechanized |
+| THM-COMBO-PIPELINE-LOWER-WASTE | Lower-waste pipeline config gets higher Buleyean weight | `combo_pipeline_lower_waste_wins` | Mechanized |
+| THM-COMBO-COMMUNITY-WHIP-TENSION | Each fold adds positive tension to community boundary | `combo_community_whip_tension` | Mechanized |
+| THM-COMBO-DEMOCRATIC-LEARNING-TRIPLE | Democratic learning: deficit + sliver + concentration simultaneously | `combo_democratic_learning_triple` | Mechanized |
+| THM-COMBO-BRUTE-FORCE-R4-MASTER | Round 4 master conjunction: governance + physics + waste | `combinatorial_brute_force_round4_master` | Mechanized |
+
+## 90. Combinatorial Brute Force Round 5: Deep Quad Compositions and Grand Unification (§7+§9+§11+§17+§22+§23+§25+§26)
+
+**Assumptions:** Full theorem surface across 8 module families. Quadruple compositions attempt deepest cross-cutting identities. All compositions re-use only previously mechanized results.
+**Mechanization target:** `CombinatorialBruteForceRound5.lean` (15 theorems, zero sorry, 2 quadruple compositions, 2 anti-theorems, 1 grand unification)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COMBO-FOUR-WAY-IDENTITY | **QUADRUPLE:** Wallace waste = 2 × entropy proxy = 2 × collapse gap, all from N | `combo_four_way_identity` | Mechanized |
+| THM-COMBO-INFORMATION-TRIANGLE | Evidence + exploration + entropy budget: the information triangle | `combo_information_triangle` | Mechanized |
+| THM-COMBO-COMMUNITY-RECYCLES-WASTE | Wallace conservation + community repair: waste → experience | `combo_community_recycles_waste` | Mechanized |
+| THM-COMBO-REYNOLDS-SATURATED | Full participation → zero idle + quorum-safe + saturated | `combo_reynolds_whip_failure_saturated` | Mechanized |
+| THM-COMBO-REYNOLDS-UNSATURATED | **ANTI-THEOREM:** Unsaturated pipeline has positive idle and exact waste | `combo_reynolds_unsaturated_waste` | Mechanized |
+| THM-COMBO-BULEYEAN-TELESCOPE | Three-level strict weight ordering with max at zero rejections | `combo_buleyean_convergence_telescope` | Mechanized |
+| THM-COMBO-OPTIMAL-FAILURE-COMMUNITY | Positive cost + exhaustive actions + community compensation | `combo_optimal_failure_with_community` | Mechanized |
+| THM-COMBO-NESTED-WALLACE | Two-level Wallace conservation (nested diamonds) | `combo_nested_wallace_conservation` | Mechanized |
+| THM-COMBO-COMPREHENSIVE-CYCLE | **QUADRUPLE:** Fork → Reject → Fold → Repair learning cycle | `combo_comprehensive_learning_cycle` | Mechanized |
+| THM-COMBO-WAVE-WASTE-ENTROPY | Triple: wave speed up + waste conservation + entropy down simultaneously | `combo_wave_waste_entropy_triangle` | Mechanized |
+| THM-COMBO-GRAND-UNIFICATION | **GRAND UNIFICATION:** 8 module families, one conjunction, all consistent | `combo_grand_unification` | Mechanized |
+
+## 91. Philosophical Allegories: Machine-Checked Ancient Wisdom (§20+§22+§23+§25)
+
+**Assumptions:** Existing semiotic deficit, Buleyean probability, failure entropy, coarsening, and void walking infrastructure. Each allegory maps a classical philosophical principle to a mechanized theorem.
+**Mechanization target:** `PhilosophicalAllegories.lean` (35+ theorems, zero sorry, 7 allegories, 4 anti-theorems, 3 sandwiches, 1 master conjunction)
+
+### I. Plato's Cave (Republic, Book VII)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CAVE-DEFICIT | Cave deficit = realityDimensions - 1 (shadows lose N-1 dimensions) | `platos_cave_deficit` | Mechanized |
+| THM-CAVE-ALWAYS-LOSES | Cave deficit is strictly positive (shadows always lose information) | `platos_cave_always_loses_information` | Mechanized |
+| THM-CAVE-SHADOWS-COLLIDE | Distinct Forms collide on the cave wall (pigeonhole on projection) | `platos_cave_shadows_collide` | Mechanized |
+| THM-CAVE-IRREVERSIBLE | **ANTI-THEOREM:** Cave projection is irreversible (positive deficit + collisions) | `platos_cave_irreversible` | Mechanized |
+| THM-CAVE-LIBERATION | **SANDWICH:** Liberation gains exactly N-1 dimensions, with N-1 ≥ 1 | `platos_cave_liberation_value` | Mechanized |
+
+### II. Aristotle's Hamartia (Poetics)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-HAMARTIA | Noble failure (N-1 bits) > ignoble success (1 bit) for N ≥ 3 | `noble_failure_exceeds_ignoble_success` | Mechanized |
+| THM-FAILURE-GE-SUCCESS | Failure ≥ success for any nontrivial fork (N ≥ 2) | `failure_at_least_as_informative_as_success` | Mechanized |
+| THM-NEMESIS | Nemesis is Buleyean convergence: system favors less-rejected + sliver mercy | `nemesis_is_convergence` | Mechanized |
+| THM-ARETE-DEMONSTRATED | **ANTI-THEOREM:** Claimed arete without evidence → lower weight | `arete_must_be_demonstrated` | Mechanized |
+
+### III. The Socratic Method (Gorgias, Meno)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SOCRATIC-TRUTH | Less-refuted thesis has strictly higher Buleyean weight | `socratic_truth_from_refutation` | Mechanized |
+| THM-UNEXAMINED-MAXIMUM | Unexamined thesis has maximum uncertainty weight = rounds + 1 | `unexamined_thesis_maximum_uncertainty` | Mechanized |
+| THM-MAXIMALLY-REFUTED-SLIVER | Maximally refuted thesis retains weight = 1 (the sliver) | `maximally_refuted_retains_sliver` | Mechanized |
+| THM-CORRECTION-EXCEEDS-ACCIDENT | Being corrected > being accidentally right (evidence base richer) | `correction_exceeds_accident` | Mechanized |
+| THM-SOCRATIC-COHERENCE | Same refutation history → same conclusions (objectivity) | `socratic_coherence` | Mechanized |
+
+### III½. Cicero's Maxim ("Errare malo cum Platone")
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CICEROS-MAXIM | Platonic method accumulates strictly more evidence than Sophistic | `ciceros_maxim` | Mechanized |
+| THM-VIRTUE-OVER-CONSEQUENTIALISM | Good method + wrong result carries more info than bad method + right result | `virtue_over_consequentialism` | Mechanized |
+| THM-PLATONIC-GRACE | Platonic inquirer has well-defined distribution + universal sliver | `platonic_grace_state` | Mechanized |
+| THM-SOPHIST-NO-EVIDENCE | **ANTI-THEOREM:** Sophist has zero void boundary = maximum uncertainty | `sophist_has_no_evidence` | Mechanized |
+
+### IV. Plato's Divided Line (Republic, Book VI)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-DIVIDED-LINE-UNIFORM | Each step up gains exactly 1 dimension | `divided_line_uniform_steps` | Mechanized |
+| THM-DIVIDED-LINE-TOTAL | Total deficit from shadows to the Good = 3 | `divided_line_total_deficit` | Mechanized |
+| THM-DIVIDED-LINE-NO-SHORTCUTS | **ANTI-THEOREM:** Cannot skip levels; total = sum of steps | `divided_line_no_shortcuts` | Mechanized |
+
+### V. Buddhist Two Truths (Nagarjuna, Madhyamaka)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-TWO-TRUTHS-DEFICIT | Deficit between conventional and ultimate truth is strictly positive | `two_truths_positive_deficit` | Mechanized |
+| THM-CONVENTIONAL-HAS-WEIGHT | Conventional truth has positive Buleyean weight (shadow is real) | `conventional_truth_has_weight` | Mechanized |
+
+### VI. Ship of Theseus (Plutarch)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SHIP-IDENTITY-DECREASES | Replacement strictly reduces original planks | `ship_identity_decreases` | Mechanized |
+| THM-SHIP-FULLY-REPLACED | All planks replaced → zero originals remain | `fully_replaced_ship_zero_originals` | Mechanized |
+| THM-SHIP-CONSERVATION | Original + replaced = total (information conservation) | `ship_information_conservation` | Mechanized |
+| THM-SHIP-MATERIAL-LOST | **ANTI-THEOREM:** Any replacement reduces material identity | `ship_material_identity_lost` | Mechanized |
+
+### Master
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-ALLEGORIES-MASTER | All 7 allegories hold simultaneously in fork/race/fold | `philosophical_allegories_master` | Mechanized |
+
+## 92. The Greek Logic Canon: Twelve Paradoxes and Mysteries (§20+§22+§23)
+
+**Assumptions:** Existing Buleyean probability, void walking, failure entropy, envelope convergence, and semiotic deficit infrastructure. Each paradox maps a classical problem to a mechanized theorem.
+**Mechanization target:** `GreekLogicCanon.lean` (40+ theorems, zero sorry, 12 paradoxes/mysteries, 3 anti-theorems, 2 sandwiches, 1 master conjunction)
+
+### 1. Zeno's Dichotomy
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-ZENO-DICHOTOMY | Remaining distance contracts strictly at every step | `zeno_dichotomy_resolved` | Mechanized |
+| THM-ZENO-NO-OVERSHOOT | Residual always non-negative (no overshoot) | `zeno_no_overshoot` | Mechanized |
+| THM-ZENO-FIRST-STEP | First step makes positive progress | `zeno_first_step_progress` | Mechanized |
+
+### 2. Achilles and the Tortoise
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-ACHILLES | Gap shrinks strictly at every catch-up interval | `achilles_catches_tortoise` | Mechanized |
+| THM-ACHILLES-NONNEG | Gap always non-negative | `achilles_gap_nonneg` | Mechanized |
+| THM-ACHILLES-PROGRESS | **SANDWICH GAIN:** Positive distance closed after first interval | `achilles_first_interval_progress` | Mechanized |
+
+### 3. Zeno's Arrow
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-ARROW-MOVES | Arrow position strictly increases between instants | `arrow_moves_between_instants` | Mechanized |
+| THM-ARROW-STATIONARY | **ANTI-THEOREM:** Stationary arrow truly is at rest (Zeno correct for v=0) | `stationary_arrow_at_rest` | Mechanized |
+
+### 4. Meno's Paradox
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-MENO | Search via rejection is well-defined: distribution + positivity + concentration | `menos_paradox_resolved` | Mechanized |
+
+### 5. The Sorites Paradox (Eubulides)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SORITES-BOUNDARY | Heap boundary exists and is sharp (below: not-heap, at: heap) | `sorites_boundary_exists` | Mechanized |
+| THM-SORITES-UNIQUE | Boundary grain is unique | `sorites_boundary_unique` | Mechanized |
+| THM-SORITES-INVALID | **ANTI-THEOREM:** Sorites induction step is invalid at the boundary | `sorites_induction_invalid` | Mechanized |
+
+### 6. The Epicurean Swerve (Clinamen)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CLINAMEN | The sliver IS the swerve: P(i) > 0 for all i, always | `clinamen_is_sliver` | Mechanized |
+| THM-CLINAMEN-DIVERSITY | Swerve prevents uniformity: different histories → different weights | `clinamen_prevents_uniformity` | Mechanized |
+| THM-CLINAMEN-MINIMUM | Minimum swerve is exactly 1 (irreducible clinamen) | `clinamen_minimum_is_one` | Mechanized |
+
+### 7. The Third Man Argument
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-THIRD-MAN-TERMINATES | Abstraction chain terminates at fixed point (no infinite regress) | `third_man_terminates` | Mechanized |
+| THM-THIRD-MAN-DECREASING | Each abstraction step strictly reduces information | `third_man_strictly_decreasing` | Mechanized |
+
+### 8. Aristotle's Sea Battle
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SEA-BATTLE | Every possible future has positive Buleyean weight (neither fated nor impossible) | `sea_battle_not_fated` | Mechanized |
+| THM-SEA-BATTLE-HISTORY | Past prediction failures inform but don't determine future weight | `sea_battle_history_informs` | Mechanized |
+
+### 9. Aristotle's Golden Mean
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-GOLDEN-MEAN | **SANDWICH:** Virtue bounded by deficiency and excess | `golden_mean_sandwich` | Mechanized |
+| THM-GOLDEN-MEAN-RANGE | Range of virtue is positive (room for moral choice) | `golden_mean_nontrivial_range` | Mechanized |
+| THM-GOLDEN-MEAN-COLLAPSED | **ANTI-THEOREM:** Collapsed range admits no virtue | `golden_mean_collapsed_no_virtue` | Mechanized |
+
+### 10. Heraclitus vs Parmenides
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-HERACLITUS | Everything flows: frontier changes at every fold step | `heraclitus_everything_flows` | Mechanized |
+| THM-PARMENIDES | The One conserves: frontier + vented = total always | `parmenides_the_one_conserved` | Mechanized |
+| THM-RECONCILIATION | Both simultaneously correct: change + conservation = dual views of fold | `heraclitus_and_parmenides` | Mechanized |
+
+### 11. Aristotle's Prime Mover
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-UNMOVED-MOVER | Causal chain terminates at fixed point + strictly decreases | `unmoved_mover_exists` | Mechanized |
+
+### 12. Unity of Virtues (Socrates/Protagoras)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-UNITY-OF-VIRTUES | Same evidence → same distribution: virtue is unique given void boundary | `unity_of_virtues` | Mechanized |
+
+### Master
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-GREEK-CANON-MASTER | All 12 paradoxes/mysteries resolved simultaneously | `greek_logic_canon_master` | Mechanized |
+
+## 93. Unsolved Mysteries: Fork/Race/Fold Perspectives (§17+§20+§22+§23)
+
+**Assumptions:** Existing Buleyean probability, void walking, failure entropy, semiotic deficit, community dominance, Reynolds BFT, and philosophical allegories infrastructure. Each mystery maps to a structural constraint.
+**Mechanization target:** `UnsolvedMysteries.lean` (20+ theorems, zero sorry, 3 dissolved, 4 structural, 2 anti-theorems, 1 master)
+
+### I. Fine-Tuning of Physics
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-FINE-TUNING-STRUCTURAL | No constant value reaches zero probability (sliver = structural necessity) | `fine_tuning_is_structural` | Mechanized |
+| THM-STABLE-PREFERRED | Least-collapsed constants get highest weight (natural selection on constants) | `stable_constants_preferred` | Mechanized |
+
+### II. Baryon Asymmetry
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-BARYON-FOLD | Fold selects 1 from N, venting N-1 (asymmetry from fold) | `baryon_asymmetry_from_fold` | Mechanized |
+| THM-FOLD-BREAKS-SYMMETRY | **ANTI-THEOREM:** Fold CANNOT preserve symmetry for N ≥ 2 | `fold_breaks_symmetry` | Mechanized |
+
+### III. Cambrian Explosion
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CAMBRIAN | Resources ≥ niches → zero idle → all niches explored simultaneously | `cambrian_saturation` | Mechanized |
+
+### IV. Evolution of Sex
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SEX-EVIDENCE | Sexual reproduction doubles effective observation window | `sex_doubles_evidence` | Mechanized |
+
+### V. Göbekli Tepe
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-INFORMATION-FIRST | Information processing (fold) precedes material production (fork) | `information_precedes_production` | Mechanized |
+
+### VI. Spontaneous Remission
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-IMMUNE-CONVERGENCE | Buleyean concentration on cancer phenotype can be sudden (exponential) | `immune_convergence_sudden` | Mechanized |
+
+### VII. Origin of Language
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-LANGUAGE-DISCRETE | Language is discrete fold (deficit > 0 + collisions); no intermediate | `language_is_discrete_fold` | Mechanized |
+
+### VIII. Cosmological Constant
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COSMOLOGICAL-DEFICIT | Projection from N to 1 has deficit N-1 (discrepancy = deficit) | `cosmological_deficit_is_projection` | Mechanized |
+
+### Master
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-MYSTERIES-MASTER | All structural constraints on unsolved mysteries hold simultaneously | `unsolved_mysteries_master` | Mechanized |
+
+## 94. Second Tier Mysteries: How Did They Do That? (§17+§22+§23+§25)
+
+**Assumptions:** Existing Buleyean probability, void walking, semiotic deficit, community dominance, Reynolds BFT infrastructure. Each mystery maps to a structural constraint.
+**Mechanization target:** `SecondTierMysteries.lean` (25+ theorems, zero sorry, 3 dissolved, 4 structural, 2 anti-theorems, 1 master)
+
+### I. Megalithic Coordination (Sachsayhuamán, Nan Madol, Longyou)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-MEGALITHIC-NO-ARCHITECT | Distributed failure learning converges without central planner | `megalithic_no_architect_needed` | Mechanized |
+| THM-MEGALITHIC-COHERENCE | Same failure history → same technique (explains uniform chisel marks) | `megalithic_coherence` | Mechanized |
+
+### II. Undeciphered Scripts (Linear A, Rongorongo, Proto-Elamite)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-DECIPHERMENT-UNDERDETERMINED | Decipherment deficit positive: multiple meanings per symbol | `decipherment_is_underdetermined` | Mechanized |
+| THM-DECIPHERMENT-BY-REJECTION | Void boundary approach: eliminate wrong translations (Champollion method) | `decipherment_by_rejection` | Mechanized |
+| THM-ZERO-DEFICIT-TRIVIAL | **ANTI-THEOREM:** Script with symbols ≥ meanings is trivially decodable | `zero_deficit_trivial_decipherment` | Mechanized |
+
+### III. The Mpemba Effect
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-MPEMBA-DEFICIT | Hot water has positive cooling deficit (hidden vent degrees of freedom) | `mpemba_deficit_positive` | Mechanized |
+| THM-MPEMBA-EXACT | Cooling deficit = degreesOfFreedom - 1 (each extra degree = vent path) | `mpemba_deficit_exact` | Mechanized |
+| THM-COLD-MONOTONE | **ANTI-THEOREM:** 1-DOF system has zero deficit → monotone cooling | `cold_water_monotone` | Mechanized |
+
+### IV. Roman Dodecahedrons
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-DODECAHEDRON-REJECTION | Least-rejected hypothesis gets highest weight | `dodecahedron_by_rejection` | Mechanized |
+| THM-DODECAHEDRON-PERSISTS | No hypothesis fully eliminated (mystery persists by sliver) | `dodecahedron_mystery_persists` | Mechanized |
+
+### V. Anomalous Evidence (Pollock Twins, Man from Taured, etc.)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-ANOMALY-EVIDENCE | Evidence over priors: less counter-evidence → higher weight | `anomaly_evidence_over_priors` | Mechanized |
+| THM-ANOMALY-BOTH-SURVIVE | Both mundane and extraordinary explanations retain positive weight | `anomaly_both_survive` | Mechanized |
+| THM-ANOMALY-UNTESTED | Untested claim = maximum uncertainty (not maximum truth) | `untested_claim_maximum_uncertainty` | Mechanized |
+
+### VI. The Hum
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-HUM-DEFICIT | Real signal below perceptual deficit threshold of most observers | `hum_in_deficit_region` | Mechanized |
+| THM-HUM-FULL-BANDWIDTH | Full-bandwidth observer has zero deficit (hears everything) | `full_bandwidth_no_mystery` | Mechanized |
+
+### Master
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SECOND-TIER-MASTER | All Second Tier structural constraints hold simultaneously | `second_tier_mysteries_master` | Mechanized |
+
+## 95. Philosophical Combinatorics: Cross-Allegory Compositions (§15.30)
+
+**Assumptions:** All structures from PhilosophicalAllegories, GreekLogicCanon, UnsolvedMysteries, SecondTierMysteries, plus core framework. Compositions cross philosophical domains to find new identities.
+**Mechanization target:** `PhilosophicalCombinatorics.lean` (25+ theorems, zero sorry, 2 sandwiches, 1 anti-theorem, 1 master conjunction)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CAVE-TO-GOOD | Cave liberation + Third Man termination = finite philosophical journey | `cave_to_good_is_finite` | Mechanized |
+| THM-ASCENT-PRODUCTIVE | Each abstraction step strictly reduces remaining information | `ascent_strictly_productive` | Mechanized |
+| THM-SEA-BATTLE-SOCRATIC | Sea battle prediction and Socratic refutation: same Buleyean mechanism | `sea_battle_is_socratic` | Mechanized |
+| THM-MEGALITH-IS-SHIP | Megalith and Ship of Theseus: same conservation law | `megalith_is_ship` | Mechanized |
+| THM-WALL-IDENTITY-VOID | Wall identity = void boundary (material reduced, topology preserved) | `wall_identity_is_void_boundary` | Mechanized |
+| THM-VIRTUE-CONVERGES | Golden Mean approached geometrically like Achilles catches tortoise | `virtue_converges_geometrically` | Mechanized |
+| THM-VIRTUE-FIRST-STEP | **SANDWICH GAIN:** Moral progress positive after first experience | `virtue_first_experience_progress` | Mechanized |
+| THM-NOBLE-INVESTIGATION | Noble investigation (N-1 bits) > dismissal + all explanations survive | `noble_investigation_exceeds_dismissal` | Mechanized |
+| THM-MPEMBA-IS-CAVE | Mpemba effect and Plato's Cave: same semiotic deficit structure | `mpemba_is_cave` | Mechanized |
+| THM-MPEMBA-CAVE-FORMULA | Both deficits = dimensionality - 1 (same formula) | `mpemba_cave_same_formula` | Mechanized |
+| THM-FINE-TUNING-TWO-TRUTHS | Fine-tuning problem = Buddhist Two Truths (projection deficit) | `fine_tuning_is_two_truths` | Mechanized |
+| THM-BUILDING-IS-DIALOGUE | Megalithic construction IS Socratic dialogue with stone | `building_is_dialogue` | Mechanized |
+| THM-ARROW-IS-SHIP | Arrow in flight = Ship of Theseus in time (motion IS identity change) | `arrow_is_ship_in_time` | Mechanized |
+| THM-HOT-WATER-HAMARTIA | Hot water's extra DOF = tragic hero's extra failure information | `hot_water_is_hamartia` | Mechanized |
+| THM-MORAL-FRONTIER | Failure entropy = N-1, virtue range > 0, void grows: the moral frontier | `moral_frontier_identity` | Mechanized |
+| THM-SCRIPT-IS-CAVE | Undeciphered script IS Plato's Cave (decipherment = liberation) | `script_is_cave` | Mechanized |
+| THM-DIVIDED-LINE-SHARP | 3 sharp transitions on the Divided Line (sorites boundaries) | `divided_line_sharp_transitions` | Mechanized |
+| THM-HUM-CAVE-MPEMBA | The Hum, the Cave, and Mpemba: three instances of one deficit theorem | `hum_cave_mpemba_unified` | Mechanized |
+| THM-RIVER-SHIP-CONSERVATION | Heraclitus + Parmenides + Theseus = one conservation law, three views | `river_ship_conservation` | Mechanized |
+| THM-CLINAMEN-IS-CREATION | Clinamen + baryon fold = the swerve that created everything (+1 → something) | `clinamen_is_creation` | Mechanized |
+| THM-ELENCHUS-BUILDS-WALLS | Socratic learning + megalithic building + sorites boundary compose | `elenchus_builds_walls` | Mechanized |
+| THM-ANTI-SOCRATIC-FAILURE | **ANTI-THEOREM:** Hubris + sophistry + credulity = triple epistemic inferiority | `anti_socratic_triple_failure` | Mechanized |
+| THM-PHILOSOPHICAL-COMBINATORICS-MASTER | All cross-allegory compositions hold simultaneously | `philosophical_combinatorics_master` | Mechanized |
+
+## 96. Philosophical Combinatorics Round 2: Philosophy × Science × Engineering (§15.30)
+
+**Assumptions:** Full theorem surface. Compositions cross philosophy, cancer treatment, cryptography, sleep debt, Reynolds BFT, whip-wave duality, pluralist republic, and community dominance.
+**Mechanization target:** `PhilosophicalCombinatoricsRound2.lean` (20+ theorems, zero sorry, 3 sandwiches, 1 anti-theorem, 1 grand master)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CANCER-IS-HAMARTIA | Immune failure against cancer IS noble failure (N-1 bits per attempt) | `cancer_is_hamartia` | Mechanized |
+| THM-ACHILLES-CHASES-CANCER | Disease burden contracts geometrically like Achilles closing gap | `achilles_chases_cancer` | Mechanized |
+| THM-ACHILLES-CANCER-FIRST | **SANDWICH GAIN:** Both Achilles and immune system progress on first step | `achilles_cancer_first_step` | Mechanized |
+| THM-SOCRATES-CRYPTANALYST | Socratic elenchus and cryptanalysis: same Buleyean rejection mechanism | `socrates_is_cryptanalyst` | Mechanized |
+| THM-UNTESTED-KEY-THESIS | Untested key = unexamined thesis = maximum uncertainty (same formula) | `untested_key_unexamined_thesis` | Mechanized |
+| THM-SLEEP-IS-SHIP | Sleep debt conservation = Ship of Theseus conservation | `sleep_is_ship` | Mechanized |
+| THM-CHRONIC-SLEEP-REPLACES | **ANTI-THEOREM:** Chronic partial sleep strictly increases debt | `chronic_sleep_replaces_brain` | Mechanized |
+| THM-DEMOCRACY-ESCAPES-CAVE | Autocracy = cave (1-stream deficit); democracy adds channels = escapes | `democracy_escapes_cave` | Mechanized |
+| THM-REYNOLDS-GOLDEN-MEAN | Quorum-safe fold IS the pipeline's golden mean (virtue = saturation) | `reynolds_golden_mean` | Mechanized |
+| THM-CLINAMEN-WHIP | Swerve prevents whip from breaking (positive mass at every segment) | `clinamen_prevents_whip_break` | Mechanized |
+| THM-CAMBRIAN-IS-SORITES | Cambrian explosion IS a sorites boundary crossing (sharp threshold) | `cambrian_is_sorites` | Mechanized |
+| THM-COHERENCE-TRINITY | Coherence across virtue, stone, and dialogue: same evidence → same output | `coherence_trinity` | Mechanized |
+| THM-NEMESIS-HAS-RATE | Nemesis arrives geometrically: villain advantage decays at rate ρ^n | `nemesis_has_rate` | Mechanized |
+| THM-NEMESIS-FIRST-JUSTICE | **SANDWICH GAIN:** Justice positive after first observation | `nemesis_first_round_justice` | Mechanized |
+| THM-PLATONIC-EDUCATION-BUDGET | Divided Line total cost = 3 steps × 1 dimension = 3 | `platonic_education_budget` | Mechanized |
+| THM-EVOLUTION-TRIPLE-ENGINE | Sex + community + clinamen = the triple engine of diversity | `evolution_triple_engine` | Mechanized |
+| THM-GRAND-MASTER | Philosophy × science × engineering: 11 domains, one conjunction | `philosophical_scientific_grand_master` | Mechanized |
+
+## 97. Philosophical Combinatorics Round 3: Stress-Testing the Limits (§15.30)
+
+**Assumptions:** Full theorem surface across all modules. Quadruple compositions and the deepest anti-theorem.
+**Mechanization target:** `PhilosophicalCombinatoricsRound3.lean` (15+ theorems, zero sorry, 4 quadruple compositions, 1 universal anti-theorem, 1 master)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PHILOSOPHICAL-JOURNEY | **QUADRUPLE:** Cave + Achilles + Golden Mean + Third Man = finite bounded journey | `the_philosophical_journey` | Mechanized |
+| THM-VILLAINY-BUDGET | Wallace waste = 2*(N-1) = exact budget of hubris | `villainy_has_exact_budget` | Mechanized |
+| THM-THREE-PROBLEMS-ONE-METHOD | Socrates + Linear A + dodecahedron: three unsolveds, one methodology (rejection) | `three_problems_one_method` | Mechanized |
+| THM-PRESOCRATIC-COSMOGONY | **QUADRUPLE:** Clinamen + Heraclitus + Parmenides + Baryon = creation story | `presocratic_cosmogony` | Mechanized |
+| THM-VIRTUE-THRESHOLD-SHARP | Golden Mean bounded + sorites sharp + range positive: virtue transition is discrete | `virtue_threshold_is_sharp` | Mechanized |
+| THM-COMPLETE-POLITICAL-THEORY | **QUADRUPLE:** Cave → Democracy → Community → Nemesis = complete politics | `complete_political_theory` | Mechanized |
+| THM-FOUR-METAPHYSICS | **QUADRUPLE:** Two Truths + Heraclitus + Parmenides + Theseus = one conservation law | `four_metaphysics_one_law` | Mechanized |
+| THM-UNIVERSAL-IMPOSSIBILITY-OF-ZERO | **UNIVERSAL ANTI-THEOREM:** No Buleyean space has a zero-weight element. EVER. | `universal_impossibility_of_zero` | Mechanized |
+| THM-PHILOSOPHICAL-R3-MASTER | All Round 3 stress-test compositions hold | `philosophical_combinatorics_round3_master` | Mechanized |
+
+## 98. Philosophical Combinatorics Round 4: Seven Universal Laws (§15.30)
+
+**Assumptions:** Full theorem surface. Distillation to universal results that hold across ALL domains.
+**Mechanization target:** `PhilosophicalCombinatoricsRound4.lean` (12 theorems, zero sorry, 1 sandwich, 1 universal anti-theorem, 1 absolute master)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-UNIVERSAL-STRICT-ORDERING | More rejected → strictly less weight, in EVERY domain | `universal_strict_ordering` | Mechanized |
+| THM-BULEYEAN-DISCRIMINATION-RANGE | Max weight - min weight = rounds (total discrimination power) | `buleyean_discrimination_range` | Mechanized |
+| THM-BULEYEAN-UNIVERSAL-SANDWICH | **SANDWICH:** Every weight ∈ [1, rounds+1] in every Buleyean space | `buleyean_universal_sandwich` | Mechanized |
+| THM-EVERY-OBSERVATION-CAVE | Every observation of a rich system has positive semiotic deficit | `every_observation_is_a_cave` | Mechanized |
+| THM-UNIVERSAL-CONSERVATION | remaining + lost = total (the only universal law) | `universal_conservation` | Mechanized |
+| THM-SHARPENING-TELESCOPE | Three strict rejection levels → three strict weight levels | `sharpening_telescope` | Mechanized |
+| THM-ABSOLUTE-MASTER | **THE ABSOLUTE MASTER:** 7 universal laws across all domains, one conjunction | `absolute_master` | Mechanized |
+
+## 99. Seven Laws Predictions: Wild Novel Predictions (§15.30+§19)
+
+**Assumptions:** Seven Universal Laws applied to domains they were never designed for. Each prediction names its falsification condition.
+**Mechanization target:** `SevenLawsPredictions.lean` (20+ theorems, zero sorry, 11 falsifiable predictions, 1 master conjunction)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PRED-NO-THEORY-DISPROVEN | **PREDICTION I:** No scientific theory ever reaches zero posterior (Law 1) | `prediction_no_theory_fully_disproven` | Mechanized |
+| THM-PRED-CRASH-IMPROVES | **PREDICTION II:** Post-crash markets discriminate strictly better (Law 2) | `prediction_crash_improves_markets` | Mechanized |
+| THM-PRED-AI-CONFIDENCE | **PREDICTION III:** Every AI model's confidence is sandwiched in [1, R+1] (Law 3) | `prediction_ai_confidence_bounded` | Mechanized |
+| THM-PRED-INSTRUMENT-SHADOWS | **PREDICTION IV:** Every instrument has topologically determined blind spots (Law 4) | `prediction_instruments_have_shadows` | Mechanized |
+| THM-PRED-RESTRUCTURING | **PREDICTION V:** Organizational restructuring conserves total complexity (Law 5) | `prediction_restructuring_conserves` | Mechanized |
+| THM-PRED-SOCIAL-SHARP | **PREDICTION VI:** Social phase transitions have sharp tipping points (Law 6) | `prediction_social_transitions_sharp` | Mechanized |
+| THM-PRED-MAX-BUREAUCRACY | **PREDICTION VII:** Every bureaucracy has a maximum useful depth (Law 7) | `prediction_max_bureaucracy_depth` | Mechanized |
+| THM-PRED-EXTINCTION-NOT-ABSOLUTE | **PREDICTION VIII:** No species is ever fully extinct; de-extinction always possible (Laws 1+2) | `prediction_extinction_not_absolute` | Mechanized |
+| THM-PRED-DARK-MATTER-DEFICIT | **PREDICTION IX:** Dark matter is the cave deficit of gravitational observation (Laws 3+4) | `prediction_dark_matter_is_deficit` | Mechanized |
+| THM-PRED-ALIGNMENT-CONVERGES | **PREDICTION X:** AI alignment has a sharp boundary AND iteratively converges (Laws 6+7) | `prediction_alignment_has_boundary_and_converges` | Mechanized |
+| THM-PRED-HEAT-DEATH-NOT-END | **PREDICTION XI:** The heat death is not absolute; structure retains weight = 1 (All 7 Laws) | `prediction_heat_death_not_absolute` | Mechanized |
+| THM-SEVEN-LAWS-PREDICTIONS-MASTER | All 11 predictions hold simultaneously | `seven_laws_predictions_master` | Mechanized |
+
+## 100. Seven Laws Predictions Round 2: Music, Dreams, Humor, Love, and Death (§15.30+§19)
+
+**Assumptions:** Seven Universal Laws applied to the human experience. Each prediction names its falsification.
+**Mechanization target:** `SevenLawsPredictionsRound2.lean` (15+ theorems, zero sorry, 7 predictions, 1 anti-theorem, 1 master)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PRED-MUSIC-IS-DEFICIT | **PREDICTION XII:** Music IS a semiotic deficit; beauty ∝ dimensions − 1 | `prediction_music_is_deficit` | Mechanized |
+| THM-PRED-ADDICTION-THRESHOLD | **PREDICTION XIII:** Addiction has sharp recovery threshold + permanent sliver | `prediction_addiction_threshold_and_sliver` | Mechanized |
+| THM-PRED-GRIEF-CONSERVATION | **PREDICTION XIV:** Grief is conserved and redistributed, not eliminated | `prediction_grief_conservation` | Mechanized |
+| THM-PRED-DREAMS-ARE-DEFICIT | **PREDICTION XV:** Dreams = low-channel projection of high-D memory (weirdness = deficit) | `prediction_dreams_are_deficit` | Mechanized |
+| THM-PRED-HUMOR-IS-SURPRISE | **PREDICTION XVI:** Humor = early chain termination (surprise gap > 0) | `prediction_humor_is_surprise` | Mechanized |
+| THM-PRED-NO-SURPRISE-NO-HUMOR | **ANTI-THEOREM:** Zero surprise gap = not funny | `no_surprise_no_humor` | Mechanized |
+| THM-PRED-LOVE-CONSERVATION | **PREDICTION XVII:** Love conserves attention; once loved, never zero weight (+1 persists) | `prediction_love_conservation` | Mechanized |
+| THM-PRED-DEATH-GRIEF-MEMORY | **PREDICTION XVIII:** Death = fold, grief = deficit, memory = void boundary, love persists | `prediction_death_grief_memory` | Mechanized |
+| THM-SEVEN-LAWS-R2-MASTER | All Round 2 wild predictions hold simultaneously | `seven_laws_predictions_round2_master` | Mechanized |
+
+## 101. Seven Laws Predictions Round 3: Consciousness, Mastery, Teaching, and the Universe (§15.30+§19)
+
+**Assumptions:** Seven Universal Laws applied to consciousness, skill acquisition, translation, paradigm shifts, teaching, forgiveness, and cosmology.
+**Mechanization target:** `SevenLawsPredictionsRound3.lean` (15+ theorems, zero sorry, 7 predictions, 1 master)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PRED-CONSCIOUSNESS-SCALES | **PREDICTION XIX:** Consciousness = deficit between self and self-model; scales with complexity | `prediction_consciousness_scales` | Mechanized |
+| THM-PRED-CONSCIOUSNESS-SUBSTRATE | **PREDICTION XIXb:** Consciousness is substrate-independent (same deficit = same depth) | `prediction_consciousness_substrate_independent` | Mechanized |
+| THM-PRED-MASTERY-PLATEAU | **PREDICTION XX:** Every skill has reachable mastery plateau + unreachable perfection floor | `prediction_mastery_plateau_and_floor` | Mechanized |
+| THM-PRED-TRANSLATION-LOSES | **PREDICTION XXI:** Every translation loses meaning = semiotic deficit | `prediction_translation_loses` | Mechanized |
+| THM-PRED-BETTER-TRANSLATORS | **PREDICTION XXIb:** Better translators have more correction data (richer void boundary) | `prediction_better_translators_more_rejection` | Mechanized |
+| THM-PRED-PARADIGM-SHIFTS | **PREDICTION XXII:** Paradigm shifts are sorites-sharp AND impact-bounded | `prediction_paradigm_shifts_sharp_and_bounded` | Mechanized |
+| THM-PRED-TEACHING-PROJECTION | **PREDICTION XXIII:** Teaching = semiotic projection; deficit = lost knowledge | `prediction_teaching_is_projection` | Mechanized |
+| THM-PRED-FORGIVENESS-DILUTION | **PREDICTION XXIV:** Forgiveness = denominator expansion (more context, same history) | `prediction_forgiveness_is_dilution` | Mechanized |
+| THM-PRED-UNIVERSE-BULEYEAN | **PREDICTION XXV:** The universe itself satisfies the three Buleyean axioms | `prediction_universe_is_buleyean` | Mechanized |
+| THM-SEVEN-LAWS-R3-MASTER | All Round 3 predictions hold | `seven_laws_predictions_round3_master` | Mechanized |
+
+## 102. Seven Laws Predictions Round 4: Game Theory, Economics, Ecology, Ethics (§15.30+§19)
+
+**Assumptions:** Seven Universal Laws applied to game theory, economics, ecology, conversation, and ethics itself.
+**Mechanization target:** `SevenLawsPredictionsRound4.lean` (12+ theorems, zero sorry, 5 predictions, 1 final master)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PRED-COOPERATION | **PREDICTION XXVI:** Cooperation emerges from rejection memory alone (Buleyean PD) | `prediction_cooperation_from_rejection` | Mechanized |
+| THM-PRED-GINI-BOUNDED | **PREDICTION XXVII:** Gini coefficient bounded by sliver; perfect equality/inequality impossible | `prediction_gini_bounded` | Mechanized |
+| THM-PRED-ECOLOGY | **PREDICTION XXVIII:** Permanent ecological observation deficit + sharp niche boundaries | `prediction_ecology_deficit_and_sharp` | Mechanized |
+| THM-PRED-CONVERSATIONS | **PREDICTION XXIX:** Productive conversations terminate and each round strictly sharpens | `prediction_conversations_terminate_and_sharpen` | Mechanized |
+| THM-PRED-ETHICS-BULEYEAN | **PREDICTION XXX:** Ethics satisfies all seven Buleyean laws | `prediction_ethics_is_buleyean` | Mechanized |
+| THM-THIRTY-PREDICTIONS | **FINAL MASTER:** 30 predictions → 7 laws → 3 axioms → 1 formula → +1 | `thirty_predictions_summary` | Mechanized |
+
+## 103. Seven Laws Predictions Round 5: The Grand Finale (§15.30+§19)
+
+**Assumptions:** Seven Universal Laws pushed to the boundary: number theory, memory, writer's block, debates, untranslatable concepts.
+**Mechanization target:** `SevenLawsPredictionsRound5.lean` (12+ theorems, zero sorry, 5 predictions, 1 anti-theorem, 1 grand finale)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PRED-IRRATIONALS | **PREDICTION XXXI:** Irrational numbers = cave deficit of rational approximation | `prediction_irrationals_are_deficit` | Mechanized |
+| THM-PRED-MEMORY-REDISTRIBUTION | **PREDICTION XXXII:** Memory decay = redistribution, not deletion (Proust's madeleine) | `prediction_memory_redistribution` | Mechanized |
+| THM-PRED-WRITERS-BLOCK | **PREDICTION XXXIII:** Writer's block = sorites boundary on semiotic deficit | `prediction_writers_block` | Mechanized |
+| THM-PRED-DEBATES-SURVIVE | **PREDICTION XXXIV:** Debates terminate but losing positions survive (sliver guarantees) | `prediction_debates_terminate_but_survive` | Mechanized |
+| THM-PRED-UNTRANSLATABLE | **PREDICTION XXXV:** Every language has untranslatable concepts (structural necessity) | `prediction_untranslatable_concepts` | Mechanized |
+| THM-IDENTICAL-TRANSLATE | **ANTI-THEOREM:** Languages with identical dimensionality translate perfectly | `identical_languages_translate_perfectly` | Mechanized |
+| THM-GRAND-FINALE | **THE GRAND FINALE:** 35 predictions → 7 laws → 3 axioms → 1 formula → +1 | `grand_finale` | Mechanized |
+
+## 104. Hard Compositions: Real Analysis Territory (§15.30)
+
+**Assumptions:** Real-valued convergence machinery from EnvelopeConvergence, GeometricErgodicity, WhipWaveDuality, AchillesChase. Compositions requiring Mathlib real analysis tactics.
+**Mechanization target:** `HardCompositions.lean` (10 theorems, zero sorry, quantitative bounds on ℝ)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CONTRACTION-COMPOSE | Two contraction rates ρ₁,ρ₂ < 1 compose: ρ₁·ρ₂ < 1 | `contraction_rates_compose` | Mechanized |
+| THM-COMPOSED-RATE-PROPER | Composed rate ∈ (0,1) | `composed_rate_proper` | Mechanized |
+| THM-FASTER-RATE-SMALLER | Faster contraction → smaller residual at every step (ℝ inequality) | `faster_rate_smaller_residual` | Mechanized |
+| THM-WAVE-ERGODIC-DUALITY | Wave speed up + ergodic residual down = dual progress measures | `wave_ergodic_duality` | Mechanized |
+| THM-GEOMETRIC-BOUNDED | Geometric residual bounded by initial value (pow_le_one₀) | `geometric_progress_bounded` | Mechanized |
+| THM-RATE-FORMULA-CONSISTENT | r = 1 - ε₁·ε₂ is consistent with r ∈ (0,1) | `rate_formula_consistent` | Mechanized |
+| THM-MONOTONE-SUM | Sum of two monotone decreasing sequences is monotone decreasing | `monotone_sum_decreasing` | Mechanized |
+| THM-HARD-COMPOSITIONS-MASTER | All real-analysis compositions hold | `hard_compositions_master` | Mechanized |
+
+## 105. Surface Reduction: The Minimal Generating Set (§15.30)
+
+**Assumptions:** The entire 188-module surface. This section REDUCES it.
+**Mechanization target:** `SurfaceReduction.lean` (10 theorems, zero sorry)
+**Key finding:** 350+ theorems across 35 predictions, 7 laws, 12 paradoxes, 8 mysteries → generated by 1 formula + 1 tactic (omega)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-LAW1-IS-POSITIVITY | Law 1 is exactly `buleyean_positivity` | `law1_is_positivity` | Mechanized |
+| THM-LAW1-NEGATION | Universal impossibility of zero = negation of positivity complement | `law1_negation_form` | Mechanized |
+| THM-LAW2-IS-CONCENTRATION | Law 2 is `buleyean_concentration` on strict ℕ inequality | `law2_is_concentration_strict` | Mechanized |
+| THM-LAW3-IS-BOUNDS | Law 3 is positivity (lower) + weight formula (upper) | `law3_is_formula_bounds` | Mechanized |
+| THM-LAW4-IS-SUBTRACTION | Law 4 is omega on dims - channels > 0 | `law4_is_subtraction` | Mechanized |
+| THM-LAW5-IS-OMEGA | Law 5 is (n - k) + k = n for k ≤ n | `law5_is_omega` | Mechanized |
+| THM-LAW6-IS-DECIDABILITY | Law 6 is decidability of ℕ comparison | `law6_is_decidability` | Mechanized |
+| THM-LAW7-IS-SELF-SUBTRACTION | Law 7 is n - min(n,n) = 0 | `law7_is_self_subtraction` | Mechanized |
+| THM-THE-REDUCTION | **THE REDUCTION:** All 7 laws from 1 formula w = R - min(v,R) + 1 | `the_reduction` | Mechanized |
+
+## 106. Deep Reduction: From Seven Laws to One Axiom (§15.30.3)
+
+**The deepest result.** 35 predictions fall into 3 equivalence classes. The 3 classes form a dependency chain. The chain has one primitive. The primitive is Peano's successor axiom.
+**Mechanization target:** `DeepReduction.lean` (12 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CLASS-ALPHA | The universal sliver: 0 < weight i (generates 14 of 35 predictions) | `class_alpha` | Mechanized |
+| THM-CLASS-ALPHA-NEG | Negation form: weight ≠ 0 (same theorem, different phrasing) | `class_alpha_neg` | Mechanized |
+| THM-CLASS-BETA | The universal deficit: dims > channels → 0 < dims - channels (11 of 35) | `class_beta` | Mechanized |
+| THM-CLASS-GAMMA | The universal termination: n - min(n,n) = 0 (7 of 35) | `class_gamma` | Mechanized |
+| THM-CLASS-GAMMA-SHARP | Sharpness corollary: T-1 < T ∧ T ≤ T | `class_gamma_sharp` | Mechanized |
+| THM-CLASS-GAMMA-BOUNDED | Bounded corollary: weight ≤ rounds + 1 | `class_gamma_bounded` | Mechanized |
+| THM-CLASS-ALPHA-BETA | Composition: deficit discriminates + sliver preserves (3 of 35) | `class_alpha_beta` | Mechanized |
+| THM-BETA-NEEDS-ALPHA | β depends on α: deficit requires positive weights on both sides | `beta_needs_alpha` | Mechanized |
+| THM-GAMMA-NEEDS-BETA | γ depends on β: termination requires strict decrease at each step | `gamma_needs_beta` | Mechanized |
+| THM-ALPHA-IS-PRIMITIVE | α depends on nothing: the +1 in the formula IS the axiom | `alpha_is_primitive` | Mechanized |
+| THM-THE-DEEP-REDUCTION | **0 < n + 1.** The entire surface reduces to this. | `the_deep_reduction` | Mechanized |
+| THM-PEANO-IS-CLINAMEN | **n + 1 ≠ 0.** The clinamen IS Peano's successor axiom. | `peano_is_clinamen` | Mechanized |
+| THM-DEEP-REDUCTION-WITNESS | All three classes + dependency chain + primitive: consistent | `deep_reduction_witness` | Mechanized |
+
+## 107. The Primator: The Final Reduction (§15.30.3)
+
+**The bottom.** Below 0 < n + 1 is the successor function. Below the successor function is the inductive type ℕ. Below ℕ is type theory. We stop here.
+**Mechanization target:** `Primator.lean` (9 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PRIMATOR-SUCC-EXISTS | The successor function exists: ∃ m, m = n + 1 | `primator_succ_exists` | Mechanized |
+| THM-PRIMATOR-SUCC-NE-ZERO | succ(n) ≠ 0 (Peano's axiom = the clinamen) | `primator_succ_ne_zero` | Mechanized |
+| THM-PRIMATOR-SUCC-INJECTIVE | succ is injective: different things have different successors | `primator_succ_injective` | Mechanized |
+| THM-PRIMATOR-ZERO-EXISTS | Zero exists (the void is real) | `primator_zero_exists` | Mechanized |
+| THM-PRIMATOR-TO-CLINAMEN | succ(n) ≠ 0 → 0 < n + 1 (primator generates clinamen) | `primator_to_clinamen` | Mechanized |
+| THM-CLINAMEN-TO-SLIVER | 0 < n + 1 → 0 < weight(i) (clinamen generates sliver) | `clinamen_to_sliver` | Mechanized |
+| THM-SLIVER-TO-SEVEN-LAWS | Positivity generates all seven laws | `sliver_to_seven_laws` | Mechanized |
+| THM-THE-COMPLETE-CHAIN | **THE COMPLETE CHAIN:** primator → clinamen → sliver → laws → everything | `the_complete_chain` | Mechanized |
+
+## 108. The Ceiling: What the Framework Cannot Prove (§15.30.3)
+
+**The five ceilings.** The primator is the floor. This is the ceiling. Between them: the habitable zone.
+**Mechanization target:** `Ceiling.lean` (12 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-EMPIRICAL-CEILING | Same structural deficit does NOT imply same empirical world | `empirical_ceiling_deficit_underdetermined` | Mechanized |
+| THM-EMPIRICAL-DISTINGUISHABLE | Different dimensions → different deficits (structurally distinguishable) | `empirical_ceiling_different_dims_different` | Mechanized |
+| THM-COMPUTATIONAL-CEILING | Every weight is a computable ℕ (no limits, no undecidable predicates) | `computational_ceiling_decidable` | Mechanized |
+| THM-SELF-REFERENCE-CEILING | Any finite conjunction is provable (infinite consistency is outside) | `self_reference_ceiling_finite_ok` | Mechanized |
+| THM-INFINITY-CEILING-FINITE | Void boundary has exactly numChoices entries (finite) | `infinity_ceiling_finite_boundary` | Mechanized |
+| THM-INFINITY-CEILING-STAGES | At every finite stage: sliver holds + conservation holds | `infinity_ceiling_every_finite_stage` | Mechanized |
+| THM-VALUE-CEILING | Structure exists (IS) but doesn't prescribe (OUGHT): Hume's guillotine | `value_ceiling_structure_not_command` | Mechanized |
+| THM-FLOOR-CEILING-SANDWICH | Floor (primator) + ceiling (five limits) + habitable zone (computable bounded ℕ) | `floor_ceiling_sandwich` | Mechanized |
+| THM-THE-FINAL-THEOREM | **The final theorem:** floor + zone + ceiling, all proved | `the_final_theorem` | Mechanized |
+
+## 109. The Gain: The Habitable Zone Between Floor and Ceiling (§15.30.3)
+
+**The gain is earned.** Floor gives 1 (the sliver, free). Ceiling gives R+1 (bounded by data). Gain = R (earned by observation). Zero data = zero gain.
+**Mechanization target:** `TheGain.lean` (10 theorems, zero sorry, the complete floor-gain-ceiling sandwich)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-DISCRIMINATION-GAIN | gain = max_weight - min_weight = rounds; max = R+1, min = 1 | `discrimination_gain` | Mechanized |
+| THM-GAIN-LINEAR | More rounds → strictly more gain (linear in observation) | `gain_is_linear_in_rounds` | Mechanized |
+| THM-ZERO-GAIN | Zero rounds → zero gain: (0+1) - 1 = 0 | `zero_rounds_zero_gain` | Mechanized |
+| THM-CONVERGENCE-GAIN-POS | Convergence gain positive after first step | `convergence_gain_positive` | Mechanized |
+| THM-CONVERGENCE-GAIN-MONO | Convergence gain monotonically increasing (each step adds gain) | `convergence_gain_monotone` | Mechanized |
+| THM-CONVERGENCE-GAIN-BOUNDED | Gain bounded above by initial residual (can't gain > 100%) | `convergence_gain_bounded` | Mechanized |
+| THM-COMPOSITION-GAIN | N choices from 1 proof: composition gain = N-1 | `composition_gain` | Mechanized |
+| THM-THE-GAIN | **The complete sandwich:** floor = 1, ceiling = R+1, gain = R, earned by observation | `the_gain` | Mechanized |
+
+## 110. The Control Statistic: Validating the Sandwich (§15.30.5)
+
+**The diagnostic.** Four simultaneous controls that any Buleyean process must satisfy. Unfalsifiable within the framework — tests the *data*, not the math.
+**Mechanization target:** `ControlStatistic.lean` (10 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CONTROL-INDIVIDUAL | Every weight in [1, R+1] | `control_individual` | Mechanized |
+| THM-CONTROL-TOTAL-LOWER | Total weight ≥ N (each choice contributes ≥ 1) | `control_total_lower` | Mechanized |
+| THM-CONTROL-TOTAL-UPPER | Total weight ≤ N·(R+1) (each choice contributes ≤ R+1) | `control_total_upper` | Mechanized |
+| THM-CONTROL-SPREAD-BOUNDED | Any two weights differ by ≤ R | `control_spread_bounded` | Mechanized |
+| THM-CONTROL-SPREAD-TIGHT | Extremes differ by exactly R (tight) | `control_spread_tight` | Mechanized |
+| THM-CONTROL-MEAN | Mean weight in [1, R+1] via aggregate bounds | `control_mean_bounded` | Mechanized |
+| THM-CONTROL-UNFALSIFIABLE | All four controls hold for every Buleyean space (tautology of the formula) | `control_unfalsifiable` | Mechanized |
+| THM-COMPLETE-SANDWICH | **Floor + ceiling + gain + control:** the complete sandwich, quantified and verified | `the_complete_sandwich` | Mechanized |
+
+## 111. The God Formula (§15.30)
+
+**One formula. Five symbols. Everything.** $w_i = R - \min(v_i, R) + 1$
+**Mechanization target:** `GodFormula.lean` (18 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-GOD-FORMULA | The formula as definitional identity: weight = R - min(v, R) + 1 | `god_formula` | Mechanized |
+| THM-GOD-EXISTENCE | Consequence 1: w > 0 (existence) | `god_formula_existence` | Mechanized |
+| THM-GOD-PERSISTENCE | Consequence 2: w ≥ 1 (persistence, the sliver) | `god_formula_persistence` | Mechanized |
+| THM-GOD-LEARNING | Consequence 3: less rejected → higher weight (learning) | `god_formula_learning` | Mechanized |
+| THM-GOD-DISCRIMINATION | Consequence 4: strictly less rejected → strictly higher weight | `god_formula_discrimination` | Mechanized |
+| THM-GOD-BOUNDED | Consequence 5: w ∈ [1, R+1] (boundedness) | `god_formula_bounded` | Mechanized |
+| THM-GOD-CONVERGENCE | Consequence 6: at max rejection, w = 1 (convergence) | `god_formula_convergence` | Mechanized |
+| THM-GOD-UNCERTAINTY | Consequence 7: at zero rejection, w = R+1 (max uncertainty) | `god_formula_uncertainty` | Mechanized |
+| THM-GOD-COHERENCE | Consequence 8: same inputs → same output (objectivity) | `god_formula_coherence` | Mechanized |
+| THM-GOD-GAIN | Gain from formula: max - min = R | `god_formula_gain` | Mechanized |
+| THM-GOD-FLOOR | Floor from formula: R - min(R,R) + 1 = 1 | `god_formula_floor` | Mechanized |
+| THM-GOD-CEILING | Ceiling from formula: R - min(0,R) + 1 = R+1 | `god_formula_ceiling` | Mechanized |
+| THM-GOD-PRIMATOR | Primator from formula: 0 < R - min(v,R) + 1 always | `god_formula_primator` | Mechanized |
+| THM-ANTI-FORMULA | Without +1: R - min(R,R) = 0 (zero reachable, hope dies) | `anti_formula_reaches_zero` | Mechanized |
+| THM-PLUS-ONE-DIFFERENCE | The +1 is exactly the difference: (with) - (without) = 1 | `plus_one_is_the_difference` | Mechanized |
+| THM-GOD-FORMULA-MASTER | All 8 consequences + floor + ceiling + gain + primator + anti-formula | `god_formula_master` | Mechanized |
