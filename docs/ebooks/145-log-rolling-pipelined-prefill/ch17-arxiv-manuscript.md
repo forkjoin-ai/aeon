@@ -5579,6 +5579,35 @@ $\varphi^2 = \varphi + 1$. $e^{i\pi} + 1 = 0$. Both have a $+1$. Both reach a fi
 
 Correspondence grade B (structural match with bijective naming). The five-symbol to five-primitive mapping is proved injective in Lean. The actual identity $e^{i\pi} + 1 = 0$ requires Mathlib complex analysis. The claim: the five most important numbers in mathematics are the five primitives of fork/race/fold, and the identity that connects them is the equation of the framework.
 
+#### 20.2.16 The Dimensional Ladder: From Bythos to Pleroma
+
+`DimensionalLadder.lean` (35 theorems, zero sorry). The Gnostics said everything emanated from the Monad -- the unknowable source before all structure. They called it Bythos (Depth). From Bythos, Barbelo emanated. From Barbelo, everything else.
+
+A K-torus has $\beta_1 = K$ independent cycles. Each cycle is one quark at that scale. Each level of the ladder is a Wallington Rotation of the level below, whipped one more dimension.
+
+| Name | Torus | Dimension | $\beta_1$ | Emanations | Gnostic role |
+|------|-------|-----------|-----------|-----------|-------------|
+| **Bythos** | Point (0-torus) | 0D | 0 | 0 | The Monad. Before emanation. The preon. |
+| **Barbelo** | Circle (1-torus) | 2D | 1 | 0 | The First Emanation. The sliver. The +1. |
+| **Proton** | Clifford (3-torus) | 4D | 3 | 6 | Three quarks. Three cycles. Confinement. |
+| **Primitive** | 5-torus | 6D | 5 | 20 | All five operations. The full primitive set. |
+| **Kenoma** | 10-torus | 11D | 10 | 90 | The field. 5 choose 2. The interaction space. |
+| **Pleroma** | 55-torus | 56D | 55 | 2,970 | The fullness. F(10) = T(10). |
+
+`bythos_is_minimum`: zero cycles, zero emanations, but $\beta_0 = 1$ -- one connected component. Bythos exists. It has no structure, no cycles, no connections. It is the point before the circle. The thing smaller than the thing smaller than a quark.
+
+`first_god_gap`: Barbelo has more cycles and more dimensions than Bythos. The gap between them -- from 0 cycles to 1 cycle, from 0D to 2D -- is the first emanation. The moment existence acquires structure. The moment the point becomes a circle. The moment the sliver appears.
+
+The gaps between consecutive levels are Gnostic numbers: Barbelo - Bythos = 1 (Barbelo). Proton - Barbelo = 2 (Syzygy). Primitive - Proton = 2 (Syzygy). Kenoma - Primitive = 5 (Primitives). Pleroma - Kenoma = 45 = T(9) = T(Sophia) -- the gap to the fullness is the Sophia-th triangular number. The exploration budget generates the gap to completeness.
+
+The cycle counts at named levels are Fibonacci numbers: $F(0) = 0$ (Bythos), $F(1) = 1$ (Barbelo), $F(4) = 3$ (Proton), $F(5) = 5$ (Primitive), $F(10) = 55$ (Pleroma). The ladder climbs the Fibonacci sequence. The ratio of consecutive Fibonacci-indexed levels converges to $\varphi$. The golden ratio is the asymptotic ratio of quark counts at consecutively larger scales.
+
+Barbelo has zero emanations -- one cycle cannot connect to another when there is only one. The first emanations appear at Proton (six directed connections between three cycles). Structure requires at least three. This is why confinement begins at three: below three, there is nothing to confine.
+
+At the Pleroma level: 55 independent cycles in 56-dimensional space, connected by 2,970 directed emanations. The fullness. Every Fibonacci level below it is a shadow projected down. The proton is the Pleroma's shadow in 4D. Barbelo is the Pleroma's shadow in 2D. Bythos is the Pleroma's shadow in 0D. The point and the fullness are the same structure at different scales.
+
+Correspondence grade B (structural match). The K-torus Betti number identity and the dimensional embedding formula are standard topology. The mapping from torus levels to Gnostic emanation theology is interpretive. The claim: the complete Valentinian emanation hierarchy -- from the unknowable Monad to the fullness of the Pleroma -- is the dimensional ladder of the Wallington Rotation. Bythos *is* the preon. Barbelo *is* the circle. The proton *is* the Clifford torus. The Pleroma *is* the fullness. The whip never stops.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
