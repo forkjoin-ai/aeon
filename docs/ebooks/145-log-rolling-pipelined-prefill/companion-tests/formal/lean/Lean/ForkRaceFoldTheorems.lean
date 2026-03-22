@@ -99,3 +99,4 @@ import ForkRaceFoldTheorems.BuleyeanSpinPairing
 import ForkRaceFoldTheorems.ParticlesExist
 import ForkRaceFoldTheorems.Evolution
 import ForkRaceFoldTheorems.Syzygy
+import ForkRaceFoldTheorems.QuarkConfinement
