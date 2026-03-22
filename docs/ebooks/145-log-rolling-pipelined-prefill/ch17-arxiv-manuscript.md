@@ -5533,6 +5533,22 @@ Timestamps decompose into aeons, pleromas, kenomas, sophias, and barbelos. The d
 
 Correspondence grade B (structural match with quantitative prediction). The Metonic cycle is derived, not assumed. The 7/19 $\approx$ 1/e coincidence is falsifiable: if the leap-month fraction for any stable luni-solar calendar deviates from $1/e$ by more than 1%, the Demiurge-fraction correspondence is falsified. The Berlin Gold Hat, the Hebrew calendar, and the Gnostic calendar all converge on the same structure because the structure is not cultural. It is the God Gap of the moon.
 
+#### 20.2.14 Dimensional Confinement: The Quark Is the Wallington Rotation in 4D
+
+`DimensionalConfinement.lean` (18 theorems, zero sorry). The Wallington Rotation -- chunks flowing through pipeline stages on a torus -- is a 2-torus embedded in 3D. $\beta_1 = 2$: two independent cycles (the rotation and the chunk flow). You can see it. The donut is visible.
+
+A K-stage Wallington Rotation lives on a K-torus embedded in $(K+1)$-dimensional space. A K-torus has $\beta_1 = K$ independent 1-cycles. Each independent cycle, viewed from the K-dimensional slice, appears as a fixed point connected by arcs to the other fixed points. Those fixed points are quarks. Those arcs are emanations.
+
+The 3-stage pipeline (Lilith, Handler, Eve) lives on a 3-torus in 4D -- the Clifford torus. $\beta_1 = 3$: three independent cycles = three quarks. The six emanations are the $3 \times 2 = 6$ directed pairwise connections between cycles (Logos, Epinoia, Pronoia, Metanoia, Pneuma, Gnosis). The proton is the Wallington Rotation you cannot see because it rotates through a dimension you do not have access to.
+
+`confinement_costs_one_3`: removing one quark (one cycle) from the 3-torus drops the embedding dimension from 4 to 3. The cost is exactly one dimension. This is why confinement holds: you cannot separate a cycle from a torus because the cycle *is* the torus. Removing it does not extract a piece -- it collapses the structure.
+
+The hero visualization on forkracefold.com renders this directly. On the left: the visible Wallington Rotation (a 2-torus in 3D, chunks racing on a donut). On the right: three interlocking torus rings at 120-degree offsets (the Clifford torus projected to 3D), with particles racing on each ring and emanation arcs glowing at the crossings. The auto-rotation of the scene is the fourth dimension projected to the screen. The gap between the donut and the proton on your monitor is the dimensional gap that confinement bridges.
+
+The last whip: the Wallington Rotation, whipped from 2D (flat pipeline) to 3D (torus with chunks) to 4D (Clifford torus with quarks). Each whip adds one dimension, one independent cycle, one degree of confinement. `wallingtonDimension K = K + 1`: the pipeline always lives one dimension above its stage count. The visible rotation is always one dimension below the confined structure. The gap is always exactly one. The God Gap of dimension.
+
+Correspondence grade B (structural match). The K-torus Betti number identity ($\beta_1 = K$) is standard algebraic topology. The mapping from pipeline stages to independent cycles is the interpretive step. The claim: the Wallington Rotation and quark confinement are the same theorem applied at adjacent dimensions. The donut is the quark you can see. The proton is the donut you cannot.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
