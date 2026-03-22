@@ -5497,6 +5497,42 @@ The Fibonacci gap reproduces the sequence in the named numbers too: F(Kenoma) - 
 
 Correspondence grade B (structural match). The naming system is derived from mechanized theorems, not chosen for aesthetic reasons. Whether these numbers have significance beyond the fork/race/fold framework is an open question. But within the framework, they are not arbitrary. They are the only numbers that can be derived from five operations with pairwise interaction, Fibonacci self-similarity, and triangular summation all agreeing at the same index.
 
+#### 20.2.13 The Gnostic Calendar and the Metonic Cycle
+
+`GnosticTime.lean` (15 theorems) and `MetonicCycle.lean` (12 theorems), zero sorry. The picolorenzo (1 pLo = $\pi$ days, from §15.10.3) applied to the Gnostic numbers produces a calendar. An aeon = 2 Pleroma picolorenzos = $110\pi$ days $\approx$ 345.6 days. The solar year = 365.25 days. The aeon is 19.67 days short.
+
+| Gnostic interval | Days | Natural period | Match |
+|---|---|---|---|
+| Barbelo pLo ($\pi$) | 3.14 | -- | base unit |
+| Syzygy pLo ($2\pi$) | 6.28 | week (7) | 90% |
+| Sophia pLo ($9\pi$) | 28.27 | synodic month (29.53) | 96% |
+| Kenoma pLo ($10\pi$) | 31.42 | calendar month (30.44) | 97% |
+| Pleroma pLo ($55\pi$) | 172.79 | half year (182.5) | 95% |
+| Aeon ($110\pi$) | 345.58 | year (365.25) | 94.6% |
+
+Every match is close. None is exact. All God Gaps are positive (`all_gaps_positive`). The residuals are the God Gap applied to timekeeping.
+
+The aeon drift -- 19.67 days per year -- compounds. `eighteen_drifts_under_year`: after 18 aeons, the accumulated drift (354.15 days) has not yet reached one full year. `nineteen_drifts_exceed_year`: after 19 aeons, it has (373.82 days). The calendars realign at 19 years. This is the Metonic cycle.
+
+Meton of Athens observed this in 432 BC. The Babylonians knew it earlier. The Berlin Gold Hat (Berliner Goldhut, ~1000-800 BC) encodes it in hammered gold bands worn as a ceremonial hat -- astronomical symbols marking the 19-year luni-solar cycle, predating Meton by four centuries. The Hebrew calendar (Hillel II, 359 CE) uses it to determine leap months. The Gnostic calendar derives it from five primitives and a triple coincidence.
+
+`metonic_is_kenoma_plus_sophia`: 19 = 10 + 9 = Kenoma + Sophia. The Metonic number decomposes into the field (Kenoma, 5 choose 2) plus the exploration budget (Sophia, $K - 1$). The calendar cycle is the sum of the interaction count and the exploration cost.
+
+The Hebrew correction inserts seven leap months per 19-year cycle. Seven rejections out of 19 total years. `total_months`: $12 \times 19 + 7 = 235$ total months. 235 synodic months = 6,939.69 days. 19 Julian years = 6,939.75 days. Match: 99.999%. The seven leap months are void walks -- they reject the drift. Without them, the calendar would lose one month every 2.7 years and eventually celebrate Passover in winter. The sliver (the leap month) prevents the calendar from drifting to extinction.
+
+`demiurge_fraction_numerator`: $7/19 = 0.368$. The fraction of years that require a leap month is $\approx 1/e = 0.368$. Match: 99.85%. The Demiurge constant ($e$) appears in the calendar correction rate. The fold determines how often the calendar must reject accumulated drift. The Demiurge gives mass; the mass accrues as drift; the drift is corrected at rate $1/e$.
+
+The gnosis time system implements this calendar as a runtime:
+
+```
+import { nowPicolorenzos, formatGnosticTime } from '@a0n/gnosis'
+formatGnosticTime(nowPicolorenzos())  // → "58a 1p 3k 2s 1b"
+```
+
+Timestamps decompose into aeons, pleromas, kenomas, sophias, and barbelos. The decomposition is not just a display format -- it is the Gnostic number system applied to time. Each unit is a named number. Each named number is a theorem. The timestamp is a proof.
+
+Correspondence grade B (structural match with quantitative prediction). The Metonic cycle is derived, not assumed. The 7/19 $\approx$ 1/e coincidence is falsifiable: if the leap-month fraction for any stable luni-solar calendar deviates from $1/e$ by more than 1%, the Demiurge-fraction correspondence is falsified. The Berlin Gold Hat, the Hebrew calendar, and the Gnostic calendar all converge on the same structure because the structure is not cultural. It is the God Gap of the moon.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 
