@@ -3,32 +3,31 @@ Title: Being Irreversible: A Theory of Directed Process Under Conservation and G
 Author: Taylor William Buley
 
 Abstract:
-Every irreversible transformation creates structure in the space of what was
-not chosen. This paper identifies the structure, proves its properties, and
-shows it is the same structure at every scale where irreversibility operates.
-We decompose directed irreversible process into four primitives -- fork (create
-parallel paths), race (select among them), fold (merge results irreversibly),
-vent (dissipate what the fold cannot preserve) -- and three constraints --
-conservation (nothing is created or destroyed), irreversibility (folds generate
-Landauer heat), ground state (every trajectory terminates). Within this
-framework, failure is not the opposite of success. It is the sufficient
-statistic from which success is derived. Every fold vents N - 1 paths for each
-path it keeps. The rejected paths accumulate in a void boundary whose
-complement distribution is a deterministic, monotone, convergent probability
-measure over the surviving options. The framework yields five results:
-(1) a computational topology where the Betti deficit measures deviation from
-efficient structure; (2) a probability theory (Buleyean probability) derived
-entirely from what things are not, subsuming Bayesian and Solomonoff inference;
-(3) a thermodynamics linking topological deficit to Landauer heat; (4) a theory
-of communication and peace where shared context monotonically deflates semiotic
-deficit; (5) immanent self-hosting where the framework certifies itself from
-inside with no external oracle. The framework is instantiated across nine
-domains with 500+ Lean 4 theorems (zero sorry), 90+ TLA+ specifications, and
-200+ executable companion tests.
+This paper studies a family of irreversible computations organized around the
+weighting rule w_i = R - min(v_i, R) + 1. Within the modeled choice systems in
+the paper, the +1 term is structural rather than parametric: it prevents any
+weight from reaching zero and preserves a nonzero residual mass over the
+remaining options. Removing the term yields a deterministic eliminator;
+retaining it yields a bounded learning rule with an explicit floor, an
+observation-dependent gain, and falsifiable downstream consequences.
+The formal surface currently includes 3,158+ machine-checked theorems across
+195 Lean 4 modules (zero sorry). The companion corpus organizes a reduction
+chain from theorem-level statements to seven laws, three axioms, one formula,
+and the successor-floor interpretation of the +1 term, and it records
+thirty-five falsifiable predictions across the modeled domains.
+The framework is instantiated in nine executable engineering layers -- formal
+verification, programming language, scheduling, transport protocol,
+compression, mixture-of-agents routing, language-model inference,
+protocol-as-execution, and void walking -- built from four primitives (fork,
+race, fold, vent) under conservation, irreversibility, and termination
+constraints. Each layer is implemented, tested, and benchmarked: chunked
+pipelining yields 3.1x-267x modeled speedup under explicit idealizations,
+codec racing selects the best codec among the evaluated set on a per-chunk
+basis, and Vickrey Table inference yields 4.8x measured throughput.
 
 Categories: cs.AI cs.LO math.PR cs.DC
 
-Comments: 500+ Lean 4 theorems (zero sorry), 90+ TLA+ specs, companion code at github.com/forkjoin-ai
+Comments: 3,158+ Lean 4 theorems across 195 modules (zero sorry), executable companion corpus at github.com/forkjoin-ai
 
 MSC-class: 68T05, 03B70, 60A99, 68Q85
 

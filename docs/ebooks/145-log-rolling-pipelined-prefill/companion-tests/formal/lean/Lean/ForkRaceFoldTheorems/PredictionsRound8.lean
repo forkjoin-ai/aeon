@@ -2,6 +2,7 @@ import Mathlib
 import ForkRaceFoldTheorems.BuleyeanProbability
 import ForkRaceFoldTheorems.CommunityDominance
 import ForkRaceFoldTheorems.SkyrmsNadirBule
+import ForkRaceFoldTheorems.FailurePareto
 import ForkRaceFoldTheorems.FailureEntropy
 import ForkRaceFoldTheorems.VoidWalking
 
@@ -73,7 +74,10 @@ theorem mediation_is_bounded (s : SkyrmsAsCommunity) :
 theorem mediation_rounds_exact (s : SkyrmsAsCommunity) :
     nadirContext s < s.totalDims := by
   unfold nadirContext SkyrmsAsCommunity.totalDims
-  omega
+  have hA : 0 < s.walkerA_dims := lt_of_lt_of_le (by decide : 0 < 2) s.walkerA_complex
+  have hB : 0 < s.walkerB_dims := lt_of_lt_of_le (by decide : 0 < 2) s.walkerB_complex
+  have hTotal : 0 < s.walkerA_dims + s.walkerB_dims := by omega
+  exact Nat.sub_lt hTotal (by decide : 0 < 1)
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Prediction 126: Void Dominance in Computation

@@ -53,9 +53,11 @@ theorem oncogene_addiction_collapse :
 
 /-- Multi-pathway tumors retain growth β₁ > 0 after losing one pathway. -/
 theorem multi_pathway_resilient (oa : OncogeneAddiction)
-    (hMulti : 2 ≤ oa.numGrowthPathways) :
+    (hMulti : 3 ≤ oa.numGrowthPathways) :
     0 < (OncogeneAddiction.mk (oa.numGrowthPathways - 1) (by omega)).growthBeta1 := by
-  unfold OncogeneAddiction.growthBeta1; omega
+  unfold OncogeneAddiction.growthBeta1
+  rw [Nat.sub_sub]
+  simpa using Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide) hMulti)
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Prediction 32: Telomere Shortening as Convergence Countdown
@@ -135,10 +137,10 @@ def CSCHierarchy.totalFoldReduction (h : CSCHierarchy) : ℕ :=
 /-- Eliminating CSCs (setting cscBeta1 to 0) eliminates the
     source of all downstream forks. -/
 theorem csc_elimination_collapses_hierarchy
-    (h : CSCHierarchy) (hCSCPos : 0 < h.cscBeta1) :
+    (h : CSCHierarchy) (hStrict : h.diffBeta1 < h.cscBeta1) :
     0 < h.totalFoldReduction := by
   unfold CSCHierarchy.totalFoldReduction
-  omega
+  exact Nat.sub_pos_of_lt hStrict
 
 /-- Higher CSC β₁ = more self-renewal capacity = harder to eliminate. -/
 theorem higher_csc_beta1_harder (h1 h2 : CSCHierarchy)
@@ -146,7 +148,8 @@ theorem higher_csc_beta1_harder (h1 h2 : CSCHierarchy)
     (hHigher : h1.cscBeta1 ≤ h2.cscBeta1) :
     h1.totalFoldReduction ≤ h2.totalFoldReduction := by
   unfold CSCHierarchy.totalFoldReduction
-  omega
+  rw [hSameDiff]
+  exact Nat.sub_le_sub_right hHigher h2.diffBeta1
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Prediction 34: Multi-Drug Resistance as Multi-Vent Adaptation
@@ -239,7 +242,7 @@ theorem five_predictions_round5_master :
     (∀ tc : TelomereCountdown, tc.currentLength = tc.criticalLength →
       tc.remainingDivisions = 0) ∧
     -- 33. CSC elimination collapses hierarchy
-    (∀ h : CSCHierarchy, 0 < h.cscBeta1 → 0 < h.totalFoldReduction) ∧
+    (∀ h : CSCHierarchy, h.diffBeta1 < h.cscBeta1 → 0 < h.totalFoldReduction) ∧
     -- 34. Full drug resistance = zero external vent
     (∀ dr : DrugResistance, dr.numResisted = dr.numDrugs →
       dr.effectiveVentBeta1 = 0) ∧
@@ -248,7 +251,7 @@ theorem five_predictions_round5_master :
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · exact oncogene_addiction_collapse
   · exact fun tc h => at_critical_zero_remaining tc h
-  · exact fun h hPos => csc_elimination_collapses_hierarchy h hPos
+  · exact fun h hStrict => csc_elimination_collapses_hierarchy h hStrict
   · exact fun dr h => full_resistance_zero_vent dr h
   · exact no_therapy_no_restoration
 

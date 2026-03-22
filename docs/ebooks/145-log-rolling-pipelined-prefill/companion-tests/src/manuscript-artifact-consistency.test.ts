@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 import { describe, expect, it } from 'vitest';
 
+import { resolveCh17ManuscriptPath } from './manuscript-variant.js';
+
 interface Interval {
   readonly low: number;
   readonly high: number;
@@ -289,7 +291,7 @@ interface GnosisMoaTransformerEvidenceReport {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..', '..');
-const MANUSCRIPT_PATH = join(ROOT, 'ch17-arxiv-manuscript.md');
+const MANUSCRIPT_PATH = resolveCh17ManuscriptPath();
 const ARTIFACTS_DIR = join(ROOT, 'companion-tests', 'artifacts');
 
 function loadJson<T>(path: string): T {
@@ -866,6 +868,8 @@ describe('Manuscript artifact consistency', () => {
       'ch17-correspondence-boundary-figure.{json,md,svg}'
     );
     mustContain(manuscript, 'ch17-boundary-expansion-figure.{json,md,svg}');
+    mustContain(manuscript, 'ch17-cosmic-explainer-figure.svg');
+    mustContain(manuscript, 'ch17-dimension-ladder-figure.svg');
     mustContain(
       manuscript,
       'gnosis-moa-transformer-evidence-benchmark.{json,md}'

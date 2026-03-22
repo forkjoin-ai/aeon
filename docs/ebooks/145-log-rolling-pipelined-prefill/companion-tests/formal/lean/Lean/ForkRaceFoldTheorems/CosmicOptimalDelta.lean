@@ -68,6 +68,57 @@ theorem total_observer_delta_eq_visibility_plus_exploration
   unfold totalObserverDelta
   rw [optimal_delta_eq_exploration optimal skyrms exploration h_ge h_sum]
 
+/-- The cosmic visibility gap is a hard floor under the combined
+observer gap. Even before using the compiler accounting identity, the
+sum cannot drop below the visibility term. -/
+theorem visibility_floor_le_total_gap
+    (optimal skyrms : Nat) :
+    visibilityDelta ≤ totalObserverDelta optimal skyrms := by
+  unfold totalObserverDelta optimalDelta
+  omega
+
+/-- Under the compiler accounting identity, the total observer gap is
+always positive. The visibility floor prevents complete collapse to
+zero. -/
+theorem total_observer_delta_positive
+    (optimal skyrms exploration : Nat)
+    (h_ge : optimal ≤ skyrms)
+    (h_sum : skyrms = optimal + exploration) :
+    0 < totalObserverDelta optimal skyrms := by
+  rw [total_observer_delta_eq_visibility_plus_exploration optimal skyrms exploration h_ge h_sum]
+  have hvis : 0 < visibilityDelta := visibility_delta_positive
+  omega
+
+/-- Consequently, the combined observer gap can never be exactly zero
+in the current model. -/
+theorem total_observer_delta_ne_zero
+    (optimal skyrms exploration : Nat)
+    (h_ge : optimal ≤ skyrms)
+    (h_sum : skyrms = optimal + exploration) :
+    totalObserverDelta optimal skyrms ≠ 0 := by
+  exact Nat.ne_of_gt (total_observer_delta_positive optimal skyrms exploration h_ge h_sum)
+
+/-- The exploration budget always sits strictly below the combined
+observer gap because the visibility floor is strictly positive. -/
+theorem exploration_strictly_below_total_gap
+    (optimal skyrms exploration : Nat)
+    (h_ge : optimal ≤ skyrms)
+    (h_sum : skyrms = optimal + exploration) :
+    exploration < totalObserverDelta optimal skyrms := by
+  rw [total_observer_delta_eq_visibility_plus_exploration optimal skyrms exploration h_ge h_sum]
+  have hvis : 0 < visibilityDelta := visibility_delta_positive
+  omega
+
+/-- The combined observer gap collapses to the pure visibility floor
+exactly when exploration has dropped to zero. -/
+theorem total_observer_delta_eq_visibility_iff_zero_exploration
+    (optimal skyrms exploration : Nat)
+    (h_ge : optimal ≤ skyrms)
+    (h_sum : skyrms = optimal + exploration) :
+    totalObserverDelta optimal skyrms = visibilityDelta ↔ exploration = 0 := by
+  rw [total_observer_delta_eq_visibility_plus_exploration optimal skyrms exploration h_ge h_sum]
+  omega
+
 /-- Even when exploration has dropped to zero, a positive cosmic
 visibility gap remains. The compiler can close its local exploration
 budget without exhausting the observable horizon. -/

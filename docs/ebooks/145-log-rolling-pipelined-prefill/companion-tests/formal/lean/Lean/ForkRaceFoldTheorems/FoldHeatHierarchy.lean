@@ -232,14 +232,18 @@ theorem pipeline_heat_ceiling
   | nil => simp
   | cons hd tl ih =>
     simp only [List.sum_cons, List.length_cons]
-    have hhd := hBound hd (List.mem_cons_self _ _)
+    have hhd := hBound hd (by simp)
     have htl := ih (fun h hh => hBound h (List.mem_cons_of_mem _ hh))
-    omega
+    calc
+      hd + tl.sum ≤ maxHeatPerStage + tl.length * maxHeatPerStage := by
+        exact Nat.add_le_add hhd htl
+      _ = (tl.length + 1) * maxHeatPerStage := by
+        rw [Nat.add_mul, Nat.one_mul, Nat.add_comm]
 
 /-- Heat ceiling is tight: equality when every fold is maximally
     wasteful (usefulWork = 0, all energy becomes heat). -/
 theorem heat_ceiling_tight
     (forkEnergy : ℕ) (hPos : 0 < forkEnergy) :
-    forkEnergy = 0 + forkEnergy := by omega
+    forkEnergy = 0 + forkEnergy := by simp
 
 end ForkRaceFoldTheorems

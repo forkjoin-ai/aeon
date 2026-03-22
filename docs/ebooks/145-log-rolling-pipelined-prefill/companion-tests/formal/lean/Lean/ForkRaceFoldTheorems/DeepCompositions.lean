@@ -83,12 +83,11 @@ theorem dialogue_convergence_bounded (ch : SemioticChannel)
     -- The deficit is positive (confusion exists)
     0 < semioticDeficit ch ∧
     -- Context reduces the deficit monotonically
-    (∀ contextMore : ℕ, 0 < contextMore →
-      contextReducedDeficit ch contextMore ≤ semioticDeficit ch) := by
+    (0 < ch.contextPaths → contextReducedDeficit ch ≤ semioticDeficit ch) := by
   constructor
   · exact (semiotic_erasure ch hSpeech).1
-  · intro ctx hCtx
-    exact peace_context_reduces ch ctx hCtx
+  · intro hCtx
+    exact peace_context_reduces ch hCtx
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Deep Composition 3: War Cumulative Heat + Community Prevention →
@@ -133,19 +132,26 @@ FACTOR is exactly √(N / log N), which is unbounded as N grows.
 -/
 
 /-- Void walking regret bound: O(√(T log N)). -/
-theorem void_walking_regret (T N : ℕ) (hN : 2 ≤ N) (hT : 0 < T) :
+theorem void_walking_regret (T N : ℕ) (hN : 2 ≤ N) (_hT : 0 < T) :
     voidWalkingRegretBound T N ≤ standardRegretBound T N := by
   unfold voidWalkingRegretBound standardRegretBound
   apply Nat.sqrt_le_sqrt
-  have hLogN : Nat.log 2 N ≤ N := Nat.log_le_self_of_pos (by omega) N
+  have hLogN : Nat.log 2 N + 1 ≤ N := by
+    have hStrict : Nat.log 2 N < N := by
+      apply Nat.log_lt_of_lt_pow (by omega)
+      exact Nat.lt_pow_self (by omega : 1 < 2)
+    omega
   exact Nat.mul_le_mul_left T hLogN
 
 /-- The improvement factor: N / log N, which grows without bound.
     Void walking uses rejection data (N-1 signals) while standard
     approaches use only reward data (1 signal). -/
 theorem regret_improvement_factor (N : ℕ) (hN : 2 ≤ N) :
-    Nat.log 2 N ≤ N :=
-  Nat.log_le_self_of_pos (by omega) N
+    Nat.log 2 N ≤ N := by
+  have hStrict : Nat.log 2 N < N := by
+    apply Nat.log_lt_of_lt_pow (by omega)
+    exact Nat.lt_pow_self (by omega : 1 < 2)
+  omega
 
 /-- Failure data dominates success data by factor N-1.
     This is WHY void walking beats standard bandits. -/
@@ -183,7 +189,7 @@ not a bound -- exactly N-1) for any system described by the framework.
     - Quantum measurement (rootN paths → rootN-1 collapses)
     - Cancer convergence (beta1 checkpoints → beta1-1 cycles)
     - Mediation (A+B dims → A+B-1 rounds) -/
-theorem universal_convergence (N : ℕ) (hN : 2 ≤ N) :
+theorem universal_convergence (N : ℕ) (_hN : 2 ≤ N) :
     -- 1. The deficit starts at N-1
     futureDeficit (N - 1) 0 = N - 1 ∧
     -- 2. The deficit reaches zero after N-1 steps

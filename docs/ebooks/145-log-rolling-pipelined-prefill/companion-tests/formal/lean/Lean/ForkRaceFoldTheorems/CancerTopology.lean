@@ -224,10 +224,29 @@ theorem healthy_cell_positive_beta1 (hc : HealthyCell) :
   | [] => exact absurd h hc.hasCheckpoint
   | cp :: rest =>
     simp only [List.foldl_cons, List.foldl]
-    have hCp : cp ∈ hc.topology.checkpoints := by rw [h]; exact List.mem_cons_self _ _
+    have hCp : cp ∈ hc.topology.checkpoints := by
+      rw [h]
+      simp
     have hPos := hc.firstFunctional cp hCp
-    suffices 0 + cp.beta1 ≤ List.foldl (fun acc cp => acc + cp.beta1) (0 + cp.beta1) rest by omega
-    exact List.foldl_le_of_le_init _ _ (by intro _ _; omega)
+    have hAccLe :
+        ∀ checkpoints init,
+          init ≤
+            List.foldl (fun acc (checkpoint : CheckpointPathway) => acc + checkpoint.beta1)
+              init checkpoints := by
+      intro checkpoints
+      induction checkpoints with
+      | nil =>
+          intro init
+          simp
+      | cons checkpoint checkpoints ih =>
+          intro init
+          exact le_trans (Nat.le_add_right _ _) (ih (init + checkpoint.beta1))
+    have hFold :
+        cp.beta1 ≤
+          List.foldl (fun acc (checkpoint : CheckpointPathway) => acc + checkpoint.beta1)
+            (0 + cp.beta1) rest := by
+      simpa using hAccLe rest (0 + cp.beta1)
+    exact lt_of_lt_of_le hPos hFold
 
 /-- THM-THERAPEUTIC-RESTORATION: Adding a single checkpoint to a cancer cell
     restores positive vent beta-1. The cell can learn again.
@@ -303,7 +322,7 @@ theorem zero_deficit_is_healthy (tp : TumorProfile)
     (hZero : tp.deficit = 0) :
     tp.tumorBeta1 = tp.healthyBeta1 := by
   unfold TumorProfile.deficit at hZero
-  omega
+  exact Nat.le_antisymm tp.deficit_exists (Nat.sub_eq_zero_iff_le.mp hZero)
 
 /-- Higher deficit means more checkpoints destroyed. Monotone relationship
     between deficit and checkpoint loss. -/
@@ -313,14 +332,14 @@ theorem deficit_monotone_in_loss
     (hMoreLoss : tp2.tumorBeta1 ≤ tp1.tumorBeta1) :
     tp1.deficit ≤ tp2.deficit := by
   unfold TumorProfile.deficit
-  omega
+  rw [hSameHealthy]
+  exact Nat.sub_le_sub_left hMoreLoss tp2.healthyBeta1
 
 /-- Maximum deficit: all checkpoints destroyed (cancer cell).
     deficit = healthyBeta1 when tumorBeta1 = 0. -/
 theorem maximum_deficit (tp : TumorProfile) (hTotal : tp.tumorBeta1 = 0) :
     tp.deficit = tp.healthyBeta1 := by
-  unfold TumorProfile.deficit
-  omega
+  simp [TumorProfile.deficit, hTotal]
 
 /-- A tumor with beta-1 > 0 has strictly lower deficit than one with beta-1 = 0.
     Partial checkpoint retention = strictly less aggressive by topological measure. -/
@@ -331,8 +350,8 @@ theorem partial_retention_less_aggressive
     (hTp1Pos : 0 < tp1.tumorBeta1)
     (hTp2Zero : tp2.tumorBeta1 = 0) :
     tp1.deficit < tp2.deficit := by
-  unfold TumorProfile.deficit
-  omega
+  rw [TumorProfile.deficit, TumorProfile.deficit, hTp2Zero, ← hSameHealthy]
+  exact Nat.sub_lt hHealthyPos hTp1Pos
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- THM-TOPO-MUTATION-DETECTION: Topological Severity Hierarchy
@@ -476,16 +495,18 @@ theorem extreme_separation (drivers : MutationSet)
   unfold driverPassengerPredictionHolds
   rw [hPassengersSilent]
   simp
-  exact Nat.mul_pos (by linarith) passengers.nonempty
+  have hDriversPositive : 0 < drivers.totalSeverity := by
+    exact lt_of_lt_of_le (Nat.mul_pos (by decide) drivers.nonempty) hDriversSevere
+  exact ⟨hDriversPositive, passengers.nonempty⟩
 
 /-- Adding a severe mutation to drivers increases mean severity.
     The prediction is robust to individual additions. -/
 theorem adding_severe_driver_strengthens
     (drivers : MutationSet)
     (newSeverity : ℕ)
-    (hSevere : 3 ≤ newSeverity) :
+    (_hSevere : 3 ≤ newSeverity) :
     drivers.totalSeverity ≤ drivers.totalSeverity + newSeverity := by
-  omega
+  exact Nat.le_add_right _ _
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- GBM-Specific Topological Profiles
@@ -538,15 +559,15 @@ def gbmCombined : TumorProfile where
 
 /-- GBM Classical deficit = 2 Bules. -/
 theorem gbm_classical_deficit : gbmClassical.deficit = 2 := by
-  unfold TumorProfile.deficit gbmClassical healthyVentBeta1; omega
+  norm_num [TumorProfile.deficit, gbmClassical, healthyVentBeta1]
 
 /-- GBM Mesenchymal deficit = 3 Bules. -/
 theorem gbm_mesenchymal_deficit : gbmMesenchymal.deficit = 3 := by
-  unfold TumorProfile.deficit gbmMesenchymal healthyVentBeta1; omega
+  norm_num [TumorProfile.deficit, gbmMesenchymal, healthyVentBeta1]
 
 /-- GBM Combined deficit = 7 Bules. -/
 theorem gbm_combined_deficit : gbmCombined.deficit = 7 := by
-  unfold TumorProfile.deficit gbmCombined healthyVentBeta1; omega
+  norm_num [TumorProfile.deficit, gbmCombined, healthyVentBeta1]
 
 /-- The Combined subtype is strictly more aggressive than Classical
     by the topological deficit measure. -/
@@ -563,7 +584,7 @@ theorem combined_more_aggressive_than_mesenchymal :
     There is still a therapeutic target. buleyean_positivity applies. -/
 theorem gbm_combined_not_fully_collapsed :
     0 < gbmCombined.tumorBeta1 := by
-  unfold gbmCombined; omega
+  norm_num [gbmCombined]
 
 /-- Therapeutic prediction: restoring p53 in GBM Combined would reduce
     deficit from 7 B to 4 B (p53 beta-1 = 3).

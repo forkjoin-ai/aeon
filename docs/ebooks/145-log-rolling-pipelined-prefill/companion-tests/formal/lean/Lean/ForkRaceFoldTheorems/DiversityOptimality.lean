@@ -227,7 +227,7 @@ theorem diversity_optimality_master
   -- Pillar 3: Necessity
   · exact diversity_necessity w.hPathCount
   -- Pillar 4: Optimality
-  · exact diversity_optimality (by omega : 0 < w.pathCount)
+  · exact diversity_optimality (lt_of_lt_of_le (by decide) w.hPathCount)
   -- Pillar 5a: Collapse requires waste
   · exact diversity_collapse_requires_waste w.hAligned w.hForked w.hCollapse
   -- Pillar 5b: Fold erasure

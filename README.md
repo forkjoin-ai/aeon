@@ -175,7 +175,9 @@ The flow protocol, topology analysis, transport helpers, and federation modules 
 
 ## Formal Surface
 
-TLA+ specifications for negotiation convergence (in `companion-tests/formal/`):
+The full machine-checked proof surface is indexed from [FORMAL_LEDGER.md](./FORMAL_LEDGER.md). The canonical deep ledger lives in [docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md), with rerun commands and artifact maps in [docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/README.md).
+
+Selected TLA+ specifications in `companion-tests/formal/`:
 
 | Spec | What it models |
 |------|---------------|
@@ -187,6 +189,7 @@ TLA+ specifications for negotiation convergence (in `companion-tests/formal/`):
 ## Documentation
 
 - [docs/README.md](./docs/README.md) -- repo docs index
+- [FORMAL_LEDGER.md](./FORMAL_LEDGER.md) -- repo-level proof index for the formal surface
 - [src/README.md](./src/README.md) -- source tree index
 - [Manuscript source](./docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md) -- Chapter 17 formal manuscript
 - [Companion tests](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md) -- reproducibility suite

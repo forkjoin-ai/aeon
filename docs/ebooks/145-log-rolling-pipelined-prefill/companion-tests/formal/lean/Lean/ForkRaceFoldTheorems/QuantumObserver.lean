@@ -116,7 +116,8 @@ theorem measurement_deficit_exact (qs : QuantumSystem) :
     they are vented to the void boundary. -/
 theorem path_conservation (qs : QuantumSystem) :
     1 + (qs.rootN - 1) = qs.rootN := by
-  omega
+  simpa [Nat.succ_eq_add_one, Nat.add_comm] using
+    Nat.succ_pred_eq_of_pos (lt_of_lt_of_le (by decide) qs.nontrivial)
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 4: Observer Effect Is Fold
@@ -228,7 +229,7 @@ theorem observer_coherence (bs1 bs2 : BuleyeanSpace)
     The ratio is the deficit plus one. -/
 theorem observer_speedup_is_deficit_plus_one (qs : QuantumSystem) :
     quantumSpeedup qs.rootN = classicalDeficit qs.rootN + 1 := by
-  have hPos : 0 < qs.rootN := by omega
+  have hPos : 0 < qs.rootN := lt_of_lt_of_le (by decide) qs.nontrivial
   exact quantum_speedup_equals_classical_deficit_plus_one hPos
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -274,7 +275,7 @@ theorem quantum_observer_master (qs : QuantumSystem)
       bs1.weight i = bs2.weight (i.cast hSameChoices)) ∧
     -- 8. Speedup = deficit + 1
     quantumSpeedup qs.rootN = classicalDeficit qs.rootN + 1 := by
-  have hPos : 0 < qs.rootN := by omega
+  have hPos : 0 < qs.rootN := lt_of_lt_of_le (by decide) qs.nontrivial
   exact ⟨superposition_is_fork qs.rootN,
          observer_fold_collapses_beta1 qs,
          measurement_deficit_exact qs,

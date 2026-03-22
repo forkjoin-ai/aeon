@@ -366,7 +366,7 @@ theorem ensemble_deficit_exact (se : SemioticEnsemble) :
 theorem ensemble_deficit_positive (se : SemioticEnsemble) :
     0 < se.deficit := by
   unfold SemioticEnsemble.deficit
-  omega
+  exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide) se.nontrivial)
 
 /-- THM-ENSEMBLE-DOMINATES-SINGLE: The ensemble output (the
     least-rejected candidate) has weight at least as high as any

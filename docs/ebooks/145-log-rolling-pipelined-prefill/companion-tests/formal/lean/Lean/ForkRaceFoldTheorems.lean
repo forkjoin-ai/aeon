@@ -50,6 +50,7 @@ import ForkRaceFoldTheorems.CommunityDominance
 import ForkRaceFoldTheorems.SkyrmsNadirBule
 import ForkRaceFoldTheorems.LaunchOffsetDominance
 import ForkRaceFoldTheorems.CommunityCompositions
+import ForkRaceFoldTheorems.PluralistRepublic
 import ForkRaceFoldTheorems.BuleyeanProbability
 import ForkRaceFoldTheorems.CancerTopology
 import ForkRaceFoldTheorems.CancerPredictions
@@ -102,3 +103,4 @@ import ForkRaceFoldTheorems.ParticlesExist
 import ForkRaceFoldTheorems.Evolution
 import ForkRaceFoldTheorems.Syzygy
 import ForkRaceFoldTheorems.QuarkConfinement
+import ForkRaceFoldTheorems.DimensionalConfinement

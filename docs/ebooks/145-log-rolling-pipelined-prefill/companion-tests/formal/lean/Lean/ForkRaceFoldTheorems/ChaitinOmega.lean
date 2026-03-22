@@ -110,7 +110,7 @@ def ProgramSpace.omegaDenominator (ps : ProgramSpace) : ℕ :=
 theorem utm_is_universal_fork (ps : ProgramSpace) :
     ps.totalPrograms = ps.haltingPrograms + ps.nonHalting := by
   unfold ProgramSpace.nonHalting
-  omega
+  exact (Nat.add_sub_of_le ps.haltingBounded).symm
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 2: Execution Is Fold
@@ -217,12 +217,9 @@ theorem omega_is_buleyean_complement (ps : ProgramSpace) :
     ps.haltingPrograms + ps.nonHalting = ps.totalPrograms ∧
     0 < ps.haltingPrograms ∧
     0 < ps.nonHalting := by
-  unfold ProgramSpace.nonHalting
-  constructor
-  · omega
-  constructor
-  · exact ps.haltingPos
-  · omega
+  exact ⟨execution_is_fold ps,
+         ps.haltingPos,
+         Nat.sub_pos_of_lt ps.someNonHalting⟩
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 10: Chaitin-Solomonoff Bridge
@@ -246,12 +243,9 @@ theorem chaitin_solomonoff_bridge (ps : ProgramSpace) :
     (0 < ps.omegaNumerator ∧ ps.omegaNumerator < ps.omegaDenominator) ∧
     -- The non-halting deficit is positive (the void is nonempty)
     0 < ps.nonHalting := by
-  unfold ProgramSpace.nonHalting ProgramSpace.omegaNumerator ProgramSpace.omegaDenominator
-  constructor
-  · omega
-  constructor
-  · exact ⟨ps.haltingPos, ps.someNonHalting⟩
-  · omega
+  exact ⟨execution_is_fold ps,
+         ⟨omega_positivity ps, omega_strict_subuniversality ps⟩,
+         Nat.sub_pos_of_lt ps.someNonHalting⟩
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Theorem 11: Uncomputability Is Infinite Void
@@ -313,19 +307,12 @@ theorem chaitin_omega_master (ps : ProgramSpace) :
     0 < ps.nonHalting ∧
     -- 7. Chaitin-Solomonoff bridge
     (0 < ps.omegaNumerator ∧ ps.omegaNumerator < ps.omegaDenominator) := by
-  unfold ProgramSpace.nonHalting ProgramSpace.omegaNumerator ProgramSpace.omegaDenominator
-  constructor
-  · omega
-  constructor
-  · omega
-  constructor
-  · exact ps.someNonHalting
-  constructor
-  · exact ps.haltingPos
-  constructor
-  · exact ps.someNonHalting
-  constructor
-  · omega
-  · exact ⟨ps.haltingPos, ps.someNonHalting⟩
+  exact ⟨utm_is_universal_fork ps,
+         execution_is_fold ps,
+         halting_survivors_bounded ps,
+         omega_positivity ps,
+         omega_strict_subuniversality ps,
+         Nat.sub_pos_of_lt ps.someNonHalting,
+         ⟨omega_positivity ps, omega_strict_subuniversality ps⟩⟩
 
 end ForkRaceFoldTheorems

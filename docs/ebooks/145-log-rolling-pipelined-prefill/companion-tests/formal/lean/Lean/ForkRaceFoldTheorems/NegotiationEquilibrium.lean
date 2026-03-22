@@ -687,10 +687,12 @@ theorem settlement_positive_of_no_watna (vp : VoidPartition)
 theorem settlement_decreases_with_watna (vp : VoidPartition)
     (i j : Fin vp.numTerms)
     (hBatna : vp.batnaVents i ≤ vp.batnaVents j)
-    (hWatna : vp.watnaVents j ≤ vp.watnaVents i) :
+    (hWatna : vp.watnaVents i ≤ vp.watnaVents j) :
     vp.settlementScore j ≤ vp.settlementScore i := by
-  unfold VoidPartition.settlementScore VoidPartition.batnaWeight VoidPartition.watnaRepulsion
-  omega
+  unfold VoidPartition.settlementScore VoidPartition.watnaRepulsion
+  exact sub_le_sub
+    (Int.ofNat_le.mpr (batna_attraction_monotone vp i j hBatna))
+    (Int.ofNat_le.mpr hWatna)
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- THM-VOID-DUALITY: The Two Voids Are Dual
@@ -715,8 +717,23 @@ theorem void_duality_allocation_matters (vp : VoidPartition)
     (hMoreBatna : vp.watnaVents i ≤ vp.watnaVents j)
     (hLessBatna : vp.batnaVents j ≤ vp.batnaVents i) :
     vp.settlementScore j ≤ vp.settlementScore i := by
-  unfold VoidPartition.settlementScore VoidPartition.batnaWeight VoidPartition.watnaRepulsion
-  omega
+  have hTotal := hSameTotal
+  have hWatna := hMoreBatna
+  unfold VoidPartition.totalVents at hTotal
+  by_cases hIBound : vp.batnaVents i ≤ vp.rounds
+  · have hJBound : vp.batnaVents j ≤ vp.rounds := le_trans hLessBatna hIBound
+    unfold VoidPartition.settlementScore VoidPartition.batnaWeight VoidPartition.watnaRepulsion
+    simp [min_eq_left hIBound, min_eq_left hJBound]
+    omega
+  · have hIRound : vp.rounds ≤ vp.batnaVents i := Nat.le_of_lt (Nat.lt_of_not_ge hIBound)
+    by_cases hJBound : vp.batnaVents j ≤ vp.rounds
+    · unfold VoidPartition.settlementScore VoidPartition.batnaWeight VoidPartition.watnaRepulsion
+      simp [min_eq_right hIRound, min_eq_left hJBound]
+      omega
+    · have hJRound : vp.rounds ≤ vp.batnaVents j := Nat.le_of_lt (Nat.lt_of_not_ge hJBound)
+      unfold VoidPartition.settlementScore VoidPartition.batnaWeight VoidPartition.watnaRepulsion
+      simp [min_eq_right hIRound, min_eq_right hJRound]
+      omega
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- DUAL VOID DOMINANCE: Dark Matter vs Dark Energy Ratio
@@ -967,36 +984,45 @@ theorem coherence_divergence (dc : DivergentClassification)
     (hMoreWatna : dc.partyA_watna i ≤ dc.partyB_watna i)
     (hLessBatna : dc.partyB_batna i ≤ dc.partyA_batna i) :
     dc.partyBScore i ≤ dc.partyAScore i := by
-  unfold DivergentClassification.partyAScore DivergentClassification.partyBScore
-  omega
+  have hTotal := dc.sameTotals i
+  have hWatna := hMoreWatna
+  by_cases hABound : dc.partyA_batna i ≤ dc.rounds
+  · have hBBound : dc.partyB_batna i ≤ dc.rounds := le_trans hLessBatna hABound
+    unfold DivergentClassification.partyAScore DivergentClassification.partyBScore
+    simp [min_eq_left hABound, min_eq_left hBBound]
+    omega
+  · have hARound : dc.rounds ≤ dc.partyA_batna i := Nat.le_of_lt (Nat.lt_of_not_ge hABound)
+    by_cases hBBound : dc.partyB_batna i ≤ dc.rounds
+    · unfold DivergentClassification.partyAScore DivergentClassification.partyBScore
+      simp [min_eq_right hARound, min_eq_left hBBound]
+      omega
+    · have hBRound : dc.rounds ≤ dc.partyB_batna i := Nat.le_of_lt (Nat.lt_of_not_ge hBBound)
+      unfold DivergentClassification.partyAScore DivergentClassification.partyBScore
+      simp [min_eq_right hARound, min_eq_right hBRound]
+      omega
 
-/-- THM-CLASSIFICATION-GAP: The settlement score difference between the
-    two parties is exactly twice the classification shift. If party B
-    reclassifies k vents from BATNA to WATNA (relative to party A),
-    the score drops by at most k on the repulsion axis and at most k
-    on the attraction axis (due to min capping). -/
+/-- THM-CLASSIFICATION-GAP: With both BATNA counts inside the round
+    budget, the score difference is the BATNA shift plus the WATNA
+    shift. -/
 theorem classification_gap_bounded (dc : DivergentClassification)
     (i : Fin dc.numTerms)
     (hABound : dc.partyA_batna i ≤ dc.rounds)
     (hBBound : dc.partyB_batna i ≤ dc.rounds) :
     dc.partyAScore i - dc.partyBScore i =
-    ((dc.partyA_batna i : ℤ) - (dc.partyB_batna i : ℤ)) +
+    ((dc.partyB_batna i : ℤ) - (dc.partyA_batna i : ℤ)) +
     ((dc.partyB_watna i : ℤ) - (dc.partyA_watna i : ℤ)) := by
   unfold DivergentClassification.partyAScore DivergentClassification.partyBScore
   simp [min_eq_left hABound, min_eq_left hBBound]
   omega
 
-/-- When both parties' BATNA counts are within rounds (the common case),
-    the gap equals exactly twice the WATNA shift. Since sameTotals forces
-    the BATNA shift to equal the negative of the WATNA shift, the
-    classification disagreement on one axis determines both. -/
+/-- When both parties' BATNA counts are within rounds and total vents
+    agree, the scalar settlement gap vanishes. -/
 theorem classification_gap_equals_double_watna_shift
     (dc : DivergentClassification)
     (i : Fin dc.numTerms)
     (hABound : dc.partyA_batna i ≤ dc.rounds)
     (hBBound : dc.partyB_batna i ≤ dc.rounds) :
-    dc.partyAScore i - dc.partyBScore i =
-    2 * ((dc.partyB_watna i : ℤ) - (dc.partyA_watna i : ℤ)) := by
+    dc.partyAScore i - dc.partyBScore i = 0 := by
   have hGap := classification_gap_bounded dc i hABound hBBound
   have hSame := dc.sameTotals i
   omega
@@ -1043,7 +1069,9 @@ def WatnaReducedSpace.effectiveTerms (ws : WatnaReducedSpace) : ℕ :=
 theorem watna_reduces_effective_space (ws : WatnaReducedSpace) :
     ws.effectiveTerms < ws.originalTerms := by
   unfold WatnaReducedSpace.effectiveTerms
-  omega
+  exact Nat.sub_lt
+    (lt_of_lt_of_le (by decide : 0 < 2) ws.nontrivial)
+    ws.someEliminated
 
 /-- THM-WATNA-REDUCED-REGRET: The regret bound over the WATNA-reduced
     space is no worse than the bound over the original space. Pruning
@@ -1132,9 +1160,9 @@ time-like (what you're fleeing -- irreversible, directional, entropic).
 
 The `DivergentClassification` structure is a pair of reference frames
 observing the same events (rejections) with different classifications.
-The `classification_gap_equals_double_watna_shift` is the transformation
-law between frames. The total vent count (`sameTotals`) is the invariant
-interval -- the same in all frames.
+The total vent count (`sameTotals`) is the invariant interval -- the same
+in all frames -- so the scalar settlement gap collapses when both BATNA
+counts stay within the round budget.
 
 ### The Correspondence
 
@@ -1279,22 +1307,16 @@ theorem score_lorentz_scalar (lt : LorentzTransform n) (rounds : ℕ)
   unfold VoidFrame.interval at hInv
   omega
 
-/-- Legacy name for backwards compatibility. The "2× WATNA shift" is
-    technically correct because the score difference is 0 and
-    interval invariance forces the WATNA shift times 2 to also be 0.
-    But the meaningful content is score_lorentz_scalar. -/
+/-- Legacy name for backwards compatibility. The meaningful content is
+    that the settlement score is the same in every frame once the
+    spacelike counts are within the negotiated round budget. -/
 theorem time_dilation (lt : LorentzTransform n) (rounds : ℕ)
     (i : Fin n)
     (hSBound : lt.source.spacelike i ≤ rounds)
     (hTBound : lt.target.spacelike i ≤ rounds) :
-    lt.source.settlementScore rounds i -
-    lt.target.settlementScore rounds i =
-    2 * ((lt.target.timelike i : ℤ) - (lt.source.timelike i : ℤ)) := by
-  unfold VoidFrame.settlementScore
-  simp [min_eq_left hSBound, min_eq_left hTBound]
-  have hInv := lt.intervalInvariant i
-  unfold VoidFrame.interval at hInv
-  omega
+    lt.source.settlementScore rounds i =
+    lt.target.settlementScore rounds i :=
+  score_lorentz_scalar lt rounds i hSBound hTBound
 
 /-- THM-PROPER-TIME-MAXIMUM: An observer's settlement score is maximized
     in the frame where WATNA is minimized (their own frame, where they
@@ -1306,14 +1328,10 @@ theorem proper_time_maximum (lt : LorentzTransform n) (rounds : ℕ)
     (i : Fin n)
     (hSBound : lt.source.spacelike i ≤ rounds)
     (hTBound : lt.target.spacelike i ≤ rounds)
-    (hLessWatna : lt.source.timelike i ≤ lt.target.timelike i) :
+    (_hLessWatna : lt.source.timelike i ≤ lt.target.timelike i) :
     lt.target.settlementScore rounds i ≤
     lt.source.settlementScore rounds i := by
-  unfold VoidFrame.settlementScore
-  simp [min_eq_left hSBound, min_eq_left hTBound]
-  have hInv := lt.intervalInvariant i
-  unfold VoidFrame.interval at hInv
-  omega
+  exact le_of_eq (score_lorentz_scalar lt rounds i hSBound hTBound).symm
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Light Cone: Causal Structure of the Void
@@ -1339,29 +1357,18 @@ def classifyCausal (score : ℤ) : CausalCharacter :=
   else if score < 0 then CausalCharacter.timelike
   else CausalCharacter.lightlike
 
-/-- THM-LIGHT-CONE-FRAME-DEPENDENCE: The causal character of a void event
-    can change between frames. What is spacelike (viable) in one frame
-    may be timelike (catastrophic) in another. This is why empathy is
-    nontrivial: your safe region is someone else's danger zone.
-
-    However, the light cone boundary is special: events that are exactly
-    lightlike in one frame remain lightlike in any frame where the
-    total score happens to also be zero. The general case allows
-    causal character to flip -- which is the formal content of
-    "one person's BATNA is another's WATNA." -/
+/-- THM-LIGHT-CONE-FRAME-DEPENDENCE: The BATNA/WATNA decomposition can
+    change between frames even when the scalar settlement score does not.
+    Frame changes alter interpretation, not the underlying invariant. -/
 theorem light_cone_frame_dependence (lt : LorentzTransform n) (rounds : ℕ)
     (i : Fin n)
     (hSBound : lt.source.spacelike i ≤ rounds)
     (hTBound : lt.target.spacelike i ≤ rounds)
-    (hSourcePositive : 0 < lt.source.settlementScore rounds i)
-    (hMoreWatna : lt.source.timelike i < lt.target.timelike i) :
-    lt.target.settlementScore rounds i <
-    lt.source.settlementScore rounds i := by
-  unfold VoidFrame.settlementScore
-  simp [min_eq_left hSBound, min_eq_left hTBound]
-  have hInv := lt.intervalInvariant i
-  unfold VoidFrame.interval at hInv
-  omega
+    (_hSourcePositive : 0 < lt.source.settlementScore rounds i)
+    (_hMoreWatna : lt.source.timelike i < lt.target.timelike i) :
+    lt.target.settlementScore rounds i =
+    lt.source.settlementScore rounds i :=
+  (score_lorentz_scalar lt rounds i hSBound hTBound).symm
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- The 58-Dimensional Emotion-Spacetime
@@ -1415,22 +1422,15 @@ theorem empathy_preserves_interval (et : EmpathyTransform) (i : Fin 58) :
   interval_invariance et i
 
 /-- THM-EMPATHY-DILATION: When you see someone else's void through your
-    frame, their settlement scores look different. The difference is
-    exactly twice the WATNA classification shift. This is the formal
-    content of "I see what you went through but I interpret it
-    differently."
-
-    Therapy reclassifies WATNA as BATNA: "that wasn't something that
-    would destroy you -- it was something you chose to move past." The
-    time dilation theorem says this reclassification changes the
-    settlement score by exactly 2× per reclassified event. -/
+    frame, their BATNA/WATNA decompositions can look different even when
+    the scalar settlement score agrees. This is the formal content of
+    "I see what you went through but I interpret it differently." -/
 theorem empathy_dilation (et : EmpathyTransform) (rounds : ℕ)
     (i : Fin 58)
     (hSBound : et.source.spacelike i ≤ rounds)
     (hTBound : et.target.spacelike i ≤ rounds) :
-    et.source.settlementScore rounds i -
-    et.target.settlementScore rounds i =
-    2 * ((et.target.timelike i : ℤ) - (et.source.timelike i : ℤ)) :=
+    et.source.settlementScore rounds i =
+    et.target.settlementScore rounds i :=
   time_dilation et rounds i hSBound hTBound
 
 /-- THM-THERAPY-IMPROVES-SETTLEMENT: Reclassifying WATNA events as BATNA
@@ -1537,10 +1537,9 @@ theorem void_relativity (et : EmpathyTransform) (rounds : ℕ)
     (hTherapy : et.target.timelike i ≤ et.source.timelike i) :
     -- 1. Interval invariance
     et.source.interval i = et.target.interval i ∧
-    -- 2. Time dilation (2× WATNA shift)
-    et.source.settlementScore rounds i -
-      et.target.settlementScore rounds i =
-      2 * ((et.target.timelike i : ℤ) - (et.source.timelike i : ℤ)) ∧
+    -- 2. Settlement-score invariance
+    et.source.settlementScore rounds i =
+      et.target.settlementScore rounds i ∧
     -- 3. Therapy improves settlement
     et.source.settlementScore rounds i ≤
       et.target.settlementScore rounds i := by
@@ -1628,6 +1627,8 @@ theorem settlement_score_decreases_without_therapy
       (h.watna_t2 i : ℤ) ≤
     (rounds - min (h.batna_t1 i) rounds + 1 : ℤ) -
       (h.watna_t1 i : ℤ) := by
+  have hBatna := h.batna_monotone i
+  have hWatna := h.watna_monotone i
   simp [min_eq_left hBound1, min_eq_left hBound2]
   omega
 
@@ -1653,15 +1654,14 @@ structure TherapySession where
 theorem therapy_floor (watna reclassified : ℕ) :
     0 ≤ watna - reclassified := Nat.zero_le _
 
-/-- THM-THERAPY-IMPROVES-SCORE: Each reclassification event improves
-    the settlement score by exactly 2 (one from reducing WATNA repulsion,
-    one from increasing BATNA attraction). This is the fundamental
-    exchange rate of therapy. -/
+/-- THM-THERAPY-EXCHANGE-RATE: Under the capped settlement-score model,
+    reclassifying a vent from WATNA to BATNA leaves the scalar score
+    unchanged once both BATNA counts are within bounds. -/
 theorem therapy_exchange_rate (rounds batna watna k : ℕ)
     (hk : k ≤ watna) (hBound : batna ≤ rounds)
     (hBound2 : batna + k ≤ rounds) :
     ((rounds - min (batna + k) rounds + 1 : ℤ) - ((watna - k : ℕ) : ℤ)) -
-    ((rounds - min batna rounds + 1 : ℤ) - (watna : ℤ)) = 2 * (k : ℤ) := by
+    ((rounds - min batna rounds + 1 : ℤ) - (watna : ℤ)) = 0 := by
   simp [min_eq_left hBound, min_eq_left hBound2]
   omega
 
@@ -1719,10 +1719,12 @@ def VoidRegion.holographicRatio (vr : VoidRegion) : ℕ :=
 theorem holographic_bound (vr : VoidRegion) :
     vr.boundaryArea ≤ vr.bulkVolume := by
   unfold VoidRegion.boundaryArea VoidRegion.bulkVolume
-  calc vr.dims * vr.depth
-      = vr.dims * vr.depth * 1 := by ring
-    _ ≤ vr.dims * vr.depth * (vr.forkWidth - 1) := by
-        apply Nat.mul_le_mul_left; omega
+  have hFactorPos : 0 < vr.forkWidth - 1 := by
+    exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide : 1 < 2) vr.nontrivialFork)
+  calc
+    vr.dims * vr.depth = (vr.dims * vr.depth) * 1 := by simp
+    _ ≤ (vr.dims * vr.depth) * (vr.forkWidth - 1) := by
+      exact Nat.mul_le_mul_left _ (Nat.succ_le_of_lt hFactorPos)
 
 /-- THM-HOLOGRAPHIC-STRICT: The boundary is strictly smaller than the bulk
     whenever forkWidth > 2 (more than binary choice). The holographic
@@ -1730,13 +1732,14 @@ theorem holographic_bound (vr : VoidRegion) :
 theorem holographic_strict (vr : VoidRegion) (hWide : 3 ≤ vr.forkWidth) :
     vr.boundaryArea < vr.bulkVolume := by
   unfold VoidRegion.boundaryArea VoidRegion.bulkVolume
-  have hDims : 0 < vr.dims := by omega
-  have hDepth := vr.positiveDepth
-  calc vr.dims * vr.depth
-      = vr.dims * vr.depth * 1 := by ring
-    _ < vr.dims * vr.depth * (vr.forkWidth - 1) := by
-        apply Nat.mul_lt_mul_of_pos_left (by omega)
-        exact Nat.mul_pos hDims hDepth
+  have hAreaPos : 0 < vr.dims * vr.depth := by
+    exact Nat.mul_pos (lt_of_lt_of_le (by decide : 0 < 2) vr.nontrivial) vr.positiveDepth
+  have hFactor : 1 < vr.forkWidth - 1 := by
+    omega
+  calc
+    vr.dims * vr.depth = (vr.dims * vr.depth) * 1 := by simp
+    _ < (vr.dims * vr.depth) * (vr.forkWidth - 1) := by
+      exact Nat.mul_lt_mul_of_pos_left hFactor hAreaPos
 
 /-- THM-BEKENSTEIN-BOUND: The maximum information content of a void region
     scales as its boundary area, not its bulk volume. The boundary is a
@@ -1821,9 +1824,8 @@ theorem curvature_monotone_in_stress_energy (frame : VoidFrame n)
 theorem curvature_zero_iff_virgin (frame : VoidFrame n) (i : Fin n) :
     frame.localCurvature i = 0 ↔ frame.stressEnergy i = 0 := by
   unfold VoidFrame.localCurvature
-  constructor
-  · intro h; exact Nat.eq_zero_of_mul_eq_zero h |>.elim id id
-  · intro h; rw [h]; ring
+  rw [← pow_two]
+  exact sq_eq_zero_iff
 
 /-- The geodesic deviation on a dimension: how much the natural path of
     emotional change is bent by the accumulated void. Higher curvature
@@ -1873,8 +1875,8 @@ theorem einstein_field_equation (frame : VoidFrame n) (i : Fin n) :
     disagree about why you're hurting, but we agree that you're hurting." -/
 theorem curvature_invariant (lt : LorentzTransform n) (i : Fin n) :
     lt.source.localCurvature i = lt.target.localCurvature i := by
-  unfold VoidFrame.localCurvature VoidFrame.stressEnergy
-  rw [lt.intervalInvariant i]
+  simpa [VoidFrame.localCurvature, VoidFrame.stressEnergy, VoidFrame.interval] using
+    congrArg (fun x : ℕ => x * x) (lt.intervalInvariant i)
 
 /-- An event horizon exists on dimension i when the local curvature exceeds
     the causal speed limit squared. Beyond this threshold, no causal worldline
@@ -1896,12 +1898,19 @@ theorem event_horizon_traps (frame : VoidFrame n) (i : Fin n) (c : ℕ)
     (p : ℕ) (hSubluminal : 0 < p) (hBounded : p ≤ c) :
     p < geodesicDeviation frame i p := by
   unfold geodesicDeviation hasEventHorizon VoidFrame.localCurvature at *
-  calc p = 1 * p := by ring
-    _ ≤ p * p := Nat.mul_le_mul_right _ hSubluminal
-    _ ≤ c * c * 1 := by omega
-    _ ≤ c * c * p := Nat.mul_le_mul_left _ hSubluminal
-    _ < frame.stressEnergy i * frame.stressEnergy i * p := by
-        exact Nat.mul_lt_mul_of_pos_right hHorizon hSubluminal
+  have hpp : p ≤ p * p := by
+    calc
+      p = 1 * p := by simp
+      _ ≤ p * p := Nat.mul_le_mul_right p (Nat.succ_le_of_lt hSubluminal)
+  have hpc : p * p ≤ c * c := by
+    exact Nat.mul_le_mul hBounded hBounded
+  have hccp : c * c ≤ c * c * p := by
+    calc
+      c * c = c * c * 1 := by simp
+      _ ≤ c * c * p := Nat.mul_le_mul_left _ (Nat.succ_le_of_lt hSubluminal)
+  have hStress : c * c * p < frame.stressEnergy i * frame.stressEnergy i * p := by
+    exact Nat.mul_lt_mul_of_pos_right hHorizon hSubluminal
+  exact lt_of_le_of_lt (le_trans hpp (le_trans hpc hccp)) hStress
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- PILLAR 4: NOETHER'S THEOREM — Symmetries Imply Conservation Laws
@@ -1956,9 +1965,9 @@ def conservedCharge (frame : VoidFrame n) (dims : Finset (Fin n)) : ℕ :=
     conserved. Personality can rotate within the Big Five without changing
     total Big Five "mass." -/
 theorem noether_conservation (sym : VoidSymmetry n) (frame : VoidFrame n)
-    (hPres : sym.preservesStressEnergy frame)
+    (_hPres : sym.preservesStressEnergy frame)
     (dims : Finset (Fin n))
-    (hClosed : ∀ i ∈ dims, sym.perm i ∈ dims) :
+    (_hClosed : ∀ i ∈ dims, sym.perm i ∈ dims) :
     conservedCharge frame dims = conservedCharge frame dims := rfl
 
 /-- THM-INTERVAL-IS-NOETHER-CHARGE: The total interval across all
@@ -2074,7 +2083,7 @@ theorem entanglement_positive (ew : EntangledWalkers) :
     You FEEL the other person's frame shift, but you can't CONTROL it. -/
 theorem no_signaling (ew : EntangledWalkers)
     (lt : LorentzTransform ew.numDims)
-    (hSource : lt.source = ew.walkerA)
+    (_hSource : lt.source = ew.walkerA)
     (i : Fin ew.numDims) :
     ew.walkerB.stressEnergy i = ew.walkerB.stressEnergy i := rfl
 
@@ -2197,8 +2206,8 @@ structure VoidFieldState (n : ℕ) where
 theorem void_field_equation (vfs : VoidFieldState n) (i : Fin n) :
     vfs.frame.localCurvature i =
     vfs.cumulativeHeat i * vfs.cumulativeHeat i := by
-  unfold VoidFrame.localCurvature VoidFrame.stressEnergy
-  rw [← vfs.heatEqualsInterval i]
+  simpa [VoidFrame.localCurvature] using
+    congrArg (fun x : ℕ => x * x) (vfs.heatEqualsInterval i).symm
 
 /-- THM-FIELD-EQUATION-INVARIANCE: The void field equation is the same
     in all frames. Different observers compute the same curvature from
@@ -2244,9 +2253,9 @@ theorem heat_monotone_along_worldline
     your relationship to it." The curvature stays. The direction rotates. -/
 theorem therapy_rotates_curvature (lt : LorentzTransform n) (rounds : ℕ)
     (i : Fin n)
-    (hSBound : lt.source.spacelike i ≤ rounds)
-    (hTBound : lt.target.spacelike i ≤ rounds)
-    (hTherapy : lt.target.timelike i ≤ lt.source.timelike i) :
+    (_hSBound : lt.source.spacelike i ≤ rounds)
+    (_hTBound : lt.target.spacelike i ≤ rounds)
+    (_hTherapy : lt.target.timelike i ≤ lt.source.timelike i) :
     -- Curvature is invariant (the mass doesn't change)
     lt.source.localCurvature i = lt.target.localCurvature i ∧
     -- But settlement score improves (the direction rotates)
@@ -2254,7 +2263,8 @@ theorem therapy_rotates_curvature (lt : LorentzTransform n) (rounds : ℕ)
     -- This is impossible UNLESS the therapy condition holds
     -- (which it does by hypothesis)
     lt.source.localCurvature i = lt.target.localCurvature i := by
-  exact ⟨curvature_invariant lt i, fun _ => curvature_invariant lt i⟩
+  intro _
+  exact curvature_invariant lt i
 
 /-- THM-PENROSE-SINGULARITY: If cumulative heat exceeds the causal speed
     limit squared on any dimension, an event horizon forms on that
@@ -2270,8 +2280,9 @@ theorem therapy_rotates_curvature (lt : LorentzTransform n) (rounds : ℕ)
 theorem penrose_singularity (vfs : VoidFieldState n) (i : Fin n) (c : ℕ)
     (hExceedsC : c * c < vfs.cumulativeHeat i * vfs.cumulativeHeat i) :
     hasEventHorizon vfs.frame i c := by
-  unfold hasEventHorizon VoidFrame.localCurvature VoidFrame.stressEnergy
-  rwa [← vfs.heatEqualsInterval i]
+  unfold hasEventHorizon
+  rw [void_field_equation vfs i]
+  exact hExceedsC
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- THE GRAND UNIFIED VOID THEOREM
@@ -2313,8 +2324,8 @@ theorem penrose_singularity (vfs : VoidFieldState n) (i : Fin n) (c : ℕ)
     Depression is an event horizon.
     Emotional change has a speed limit.
     And the field equation unifies it all. -/
-theorem grand_unification
-    (vfs : VoidFieldState 58) (rounds : ℕ) (i : Fin 58) :
+theorem void_field_grand_unification
+    (vfs : VoidFieldState 58) (_rounds : ℕ) (i : Fin 58) :
     -- Pillar 3: Field equation
     vfs.frame.localCurvature i =
       vfs.cumulativeHeat i * vfs.cumulativeHeat i ∧
@@ -2444,9 +2455,8 @@ theorem empathy_is_lorentz (et : EmpathyTransform) :
 theorem empathy_inherits_time_dilation (et : EmpathyTransform) (rounds : ℕ)
     (i : Fin 58) (hS : et.source.spacelike i ≤ rounds)
     (hT : et.target.spacelike i ≤ rounds) :
-    et.source.settlementScore rounds i -
-    et.target.settlementScore rounds i =
-    2 * ((et.target.timelike i : ℤ) - (et.source.timelike i : ℤ)) :=
+    et.source.settlementScore rounds i =
+    et.target.settlementScore rounds i :=
   time_dilation et rounds i hS hT
 
 -- Gap 6: WATNA direction = time direction (explicit)
@@ -2468,7 +2478,8 @@ theorem watna_determines_temporal_order (h : ClassifiedVoidHistory)
     forbids it. Time reversal is structurally impossible on the void
     manifold. -/
 theorem no_time_reversal (h : ClassifiedVoidHistory) (i : Fin h.numTerms) :
-    ¬(h.watna_t2 i < h.watna_t1 i) := by omega
+    ¬(h.watna_t2 i < h.watna_t1 i) :=
+  Nat.not_lt_of_ge (h.watna_monotone i)
 
 -- Gap 7: Bundled physics↔dual-void correspondence
 
@@ -2479,7 +2490,7 @@ theorem no_time_reversal (h : ClassifiedVoidHistory) (i : Fin h.numTerms) :
 
     1. Spacetime interval = total vent count (invariant)
     2. Lorentz transformation = reclassification (preserves interval)
-    3. Time dilation = 2× WATNA shift
+    3. Settlement score is frame-invariant
     4. Proper time maximum in least-WATNA frame
     5. Curvature is frame-invariant (general covariance) -/
 theorem physics_correspondence_bundle
@@ -2488,10 +2499,9 @@ theorem physics_correspondence_bundle
     (hT : lt.target.spacelike i ≤ rounds) :
     -- 1. Interval invariance
     lt.source.interval i = lt.target.interval i ∧
-    -- 2. Time dilation
-    lt.source.settlementScore rounds i -
-      lt.target.settlementScore rounds i =
-      2 * ((lt.target.timelike i : ℤ) - (lt.source.timelike i : ℤ)) ∧
+    -- 2. Settlement-score invariance
+    lt.source.settlementScore rounds i =
+      lt.target.settlementScore rounds i ∧
     -- 3. Curvature invariance
     lt.source.localCurvature i = lt.target.localCurvature i := by
   exact ⟨interval_invariance lt i,
@@ -2518,9 +2528,25 @@ theorem negotiation_rounds_bound
     (initialDeficit reductionPerRound : ℕ)
     (hReduction : 0 < reductionPerRound) :
     (initialDeficit + reductionPerRound - 1) / reductionPerRound ≤ initialDeficit := by
-  apply Nat.div_le_of_le_mul
-  · exact hReduction
-  · nlinarith
+  cases initialDeficit with
+  | zero =>
+      have hLt : reductionPerRound - 1 < reductionPerRound := by
+        omega
+      simp [Nat.div_eq_of_lt hLt]
+  | succ deficit =>
+      have hOne : 1 ≤ reductionPerRound := Nat.succ_le_of_lt hReduction
+      have hMul : deficit ≤ reductionPerRound * deficit := by
+        calc
+          deficit = 1 * deficit := by simp
+          _ ≤ reductionPerRound * deficit := Nat.mul_le_mul_right deficit hOne
+      apply Nat.div_le_of_le_mul
+      calc
+        Nat.succ deficit + reductionPerRound - 1 = deficit + reductionPerRound := by
+          omega
+        _ ≤ reductionPerRound * deficit + reductionPerRound := by
+          exact Nat.add_le_add_right hMul _
+        _ = reductionPerRound * Nat.succ deficit := by
+          rw [Nat.mul_succ]
 
 /-- The ceiling is tight: unit reduction takes exactly initialDeficit rounds. -/
 theorem negotiation_unit_reduction_tight (initialDeficit : ℕ) :

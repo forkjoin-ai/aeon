@@ -55,6 +55,14 @@ theorem clifford_betti : torusBetti1 3 = 3 := rfl
 
 def wallingtonDimension (stages : Nat) : Nat := stages + 1
 
+def rampUpTicksFromDimension (dimension : Nat) : Nat := dimension - 2
+
+def totalIdealTicks (chunks dimension : Nat) : Nat :=
+  chunks + rampUpTicksFromDimension dimension
+
+def bandwidthDilutionMetric (chunks dimension : Nat) : Nat :=
+  totalIdealTicks chunks dimension - chunks
+
 -- 3-stage pipeline → lives in 4D
 theorem three_stage_is_4d : wallingtonDimension 3 = 4 := rfl
 
@@ -63,6 +71,23 @@ theorem two_stage_is_3d : wallingtonDimension 2 = 3 := rfl
 
 -- 5-stage pipeline (all primitives) → lives in 6D
 theorem five_stage_is_6d : wallingtonDimension 5 = 6 := rfl
+
+theorem two_d_has_zero_ramp_up : rampUpTicksFromDimension 2 = 0 := by
+  unfold rampUpTicksFromDimension
+  omega
+
+theorem fifty_four_d_has_fifty_two_ramp_up : rampUpTicksFromDimension 54 = 52 := by
+  unfold rampUpTicksFromDimension
+  omega
+
+theorem fifty_five_d_has_fifty_three_ramp_up : rampUpTicksFromDimension 55 = 53 := by
+  unfold rampUpTicksFromDimension
+  omega
+
+theorem total_ticks_eq_chunks_plus_stage_cost (chunks stages : Nat) (h : 1 ≤ stages) :
+    totalIdealTicks chunks (wallingtonDimension stages) = chunks + stages - 1 := by
+  unfold totalIdealTicks rampUpTicksFromDimension wallingtonDimension
+  omega
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Quarks = independent cycles of the torus
@@ -88,6 +113,12 @@ theorem quarks_are_stages (K : Nat) : quarks K = K := rfl
 
 def emanationCount (K : Nat) : Nat := K * (K - 1)
 
+def channelSurfaceFromDimension (dimension : Nat) : Nat :=
+  emanationCount (dimension - 1)
+
+def channelTickTradeMetric (dimension : Nat) : Nat :=
+  channelSurfaceFromDimension (dimension + 1) - channelSurfaceFromDimension dimension - 1
+
 -- 3 quarks → 6 emanations
 theorem six_emanations : emanationCount 3 = 6 := by
   unfold emanationCount; omega
@@ -96,9 +127,193 @@ theorem six_emanations : emanationCount 3 = 6 := by
 theorem two_emanations : emanationCount 2 = 2 := by
   unfold emanationCount; omega
 
+-- The visible syzygy surface is the 2-cycle, 3D case.
+theorem syzygy_pair_is_3d :
+    wallingtonDimension 2 = 3 ∧
+    quarks 2 = 2 ∧
+    emanationCount 2 = 2 := by
+  unfold wallingtonDimension quarks torusBetti1 emanationCount
+  omega
+
+-- The quark tuple is the 3-cycle, 4D lift.
+theorem quark_tuple_is_4d :
+    wallingtonDimension 3 = 4 ∧
+    quarks 3 = 3 ∧
+    emanationCount 3 = 6 := by
+  unfold wallingtonDimension quarks torusBetti1 emanationCount
+  omega
+
+-- Lifting a syzygy pair to a quark tuple adds one visible dimension,
+-- one confined cycle, and four extra directed interaction channels.
+theorem syzygy_to_quark_lift :
+    wallingtonDimension 3 = wallingtonDimension 2 + 1 ∧
+    quarks 3 = quarks 2 + 1 ∧
+    emanationCount 3 = emanationCount 2 + 4 := by
+  unfold wallingtonDimension quarks torusBetti1 emanationCount
+  omega
+
+theorem quark_parallelism_exceeds_syzygy :
+    emanationCount 3 > emanationCount 2 := by
+  unfold emanationCount
+  omega
+
+theorem quark_parallelism_triples_syzygy :
+    emanationCount 3 = 3 * emanationCount 2 := by
+  unfold emanationCount
+  omega
+
 -- 5 quarks → 20 emanations (the full primitive interaction set)
 theorem twenty_emanations : emanationCount 5 = 20 := by
   unfold emanationCount; omega
+
+theorem fifty_four_d_channel_surface : channelSurfaceFromDimension 54 = 2756 := by
+  unfold channelSurfaceFromDimension emanationCount
+  omega
+
+theorem fifty_five_d_channel_surface : channelSurfaceFromDimension 55 = 2862 := by
+  unfold channelSurfaceFromDimension emanationCount
+  omega
+
+-- The directed interaction surface grows one step at a time with dimension.
+theorem next_dimension_increases_channel_surface (d : Nat) (h : 2 ≤ d) :
+    channelSurfaceFromDimension d < channelSurfaceFromDimension (d + 1) := by
+  rcases Nat.exists_eq_add_of_le h with ⟨k, rfl⟩
+  have hpos : 0 < k + 1 := Nat.succ_pos k
+  have hklt : k < k + 2 := by
+    omega
+  have hmul : (k + 1) * k < (k + 1) * (k + 2) := by
+    exact Nat.mul_lt_mul_of_pos_left hklt hpos
+  simpa [channelSurfaceFromDimension, emanationCount, Nat.add_assoc, Nat.add_left_comm,
+    Nat.add_comm, Nat.mul_comm, Nat.mul_left_comm] using hmul
+
+theorem higher_dimension_increases_fixed_chunk_ticks (chunks : Nat) {d₁ d₂ : Nat}
+    (h₂ : 2 ≤ d₁) (h : d₁ < d₂) :
+    totalIdealTicks chunks d₁ < totalIdealTicks chunks d₂ := by
+  unfold totalIdealTicks rampUpTicksFromDimension
+  omega
+
+theorem bandwidth_dilution_eq_ramp_up (chunks dimension : Nat) :
+    bandwidthDilutionMetric chunks dimension = rampUpTicksFromDimension dimension := by
+  unfold bandwidthDilutionMetric totalIdealTicks
+  omega
+
+theorem bandwidth_dilution_lower_bound (chunks dimension : Nat) :
+    0 ≤ bandwidthDilutionMetric chunks dimension := by
+  omega
+
+theorem bandwidth_dilution_upper_bound (chunks dimension : Nat) (hchunks : 0 < chunks) :
+    bandwidthDilutionMetric chunks dimension < totalIdealTicks chunks dimension := by
+  unfold bandwidthDilutionMetric totalIdealTicks
+  omega
+
+theorem next_dimension_adds_one_total_tick (chunks d : Nat) (h : 2 ≤ d) :
+    totalIdealTicks chunks (d + 1) = totalIdealTicks chunks d + 1 := by
+  unfold totalIdealTicks rampUpTicksFromDimension
+  omega
+
+theorem bandwidth_dilution_gain_next_dimension (chunks d : Nat) (h : 2 ≤ d) :
+    bandwidthDilutionMetric chunks (d + 1) = bandwidthDilutionMetric chunks d + 1 := by
+  unfold bandwidthDilutionMetric totalIdealTicks rampUpTicksFromDimension
+  omega
+
+theorem next_dimension_channel_gain (d : Nat) (h : 2 ≤ d) :
+    channelSurfaceFromDimension (d + 1) =
+      channelSurfaceFromDimension d + 2 * (d - 1) := by
+  rcases Nat.exists_eq_add_of_le h with ⟨k, rfl⟩
+  have hcalc : (k + 2) * (k + 1) = (k + 1) * k + 2 * (k + 1) := by
+    calc
+      (k + 2) * (k + 1) = ((k + 1) + 1) * (k + 1) := by rfl
+      _ = (k + 1) * (k + 1) + (k + 1) := by
+        simp [Nat.add_mul]
+      _ = ((k + 1) * k + (k + 1)) + (k + 1) := by
+        rw [Nat.mul_succ]
+      _ = (k + 1) * k + ((k + 1) + (k + 1)) := by
+        ac_rfl
+      _ = (k + 1) * k + 2 * (k + 1) := by
+        omega
+  simpa [channelSurfaceFromDimension, emanationCount, Nat.add_assoc, Nat.add_left_comm,
+    Nat.add_comm, Nat.mul_comm, Nat.mul_left_comm] using hcalc
+
+theorem fifty_five_d_has_one_hundred_six_more_channels_than_fifty_four_d :
+    channelSurfaceFromDimension 55 = channelSurfaceFromDimension 54 + 106 := by
+  unfold channelSurfaceFromDimension emanationCount
+  omega
+
+theorem channel_tick_trade_metric_exact (d : Nat) (h : 2 ≤ d) :
+    channelTickTradeMetric d = 2 * (d - 1) - 1 := by
+  unfold channelTickTradeMetric
+  rw [next_dimension_channel_gain d h, Nat.add_sub_cancel_left]
+
+theorem channel_tick_trade_metric_lower_bound (d : Nat) (h : 2 ≤ d) :
+    1 ≤ channelTickTradeMetric d := by
+  rw [channel_tick_trade_metric_exact d h]
+  omega
+
+theorem channel_tick_trade_metric_upper_bound (d : Nat) (h : 2 ≤ d) :
+    channelTickTradeMetric d < 2 * (d - 1) := by
+  rw [channel_tick_trade_metric_exact d h]
+  omega
+
+theorem next_dimension_increases_warmup_fraction (chunks d : Nat)
+    (hchunks : 0 < chunks) (h : 2 ≤ d) :
+    rampUpTicksFromDimension d * totalIdealTicks chunks (d + 1) <
+      rampUpTicksFromDimension (d + 1) * totalIdealTicks chunks d := by
+  rcases Nat.exists_eq_add_of_le h with ⟨k, rfl⟩
+  have hcalc : k * (chunks + (k + 1)) < (k + 1) * (chunks + k) := by
+    calc
+      k * (chunks + (k + 1)) < k * (chunks + (k + 1)) + chunks := by
+        exact Nat.lt_add_of_pos_right hchunks
+      _ = (k * (chunks + k) + k) + chunks := by
+        rw [show chunks + (k + 1) = (chunks + k) + 1 by omega, Nat.mul_succ]
+      _ = k * (chunks + k) + ((k + chunks)) := by
+        ac_rfl
+      _ = k * (chunks + k) + (chunks + k) := by
+        ac_rfl
+      _ = (k + 1) * (chunks + k) := by
+        rw [Nat.succ_mul]
+  simpa [rampUpTicksFromDimension, totalIdealTicks, Nat.add_assoc, Nat.add_left_comm,
+    Nat.add_comm] using hcalc
+
+theorem next_dimension_spreads_same_chunks_over_more_ticks (chunks d : Nat)
+    (hchunks : 0 < chunks) (h : 2 ≤ d) :
+    totalIdealTicks chunks d < totalIdealTicks chunks (d + 1) ∧
+    chunks * totalIdealTicks chunks d < chunks * totalIdealTicks chunks (d + 1) := by
+  constructor
+  · exact higher_dimension_increases_fixed_chunk_ticks chunks h (Nat.lt_succ_self d)
+  · have hticks :
+      totalIdealTicks chunks d < totalIdealTicks chunks (d + 1) := by
+        exact higher_dimension_increases_fixed_chunk_ticks chunks h (Nat.lt_succ_self d)
+    exact Nat.mul_lt_mul_of_pos_left hticks hchunks
+
+theorem bandwidth_dilution_sandwich (chunks d : Nat) (hchunks : 0 < chunks) :
+    0 ≤ bandwidthDilutionMetric chunks d ∧
+    bandwidthDilutionMetric chunks d < totalIdealTicks chunks d := by
+  constructor
+  · exact bandwidth_dilution_lower_bound chunks d
+  · exact bandwidth_dilution_upper_bound chunks d hchunks
+
+theorem channel_tick_trade_metric_sandwich (d : Nat) (h : 2 ≤ d) :
+    1 ≤ channelTickTradeMetric d ∧
+    channelTickTradeMetric d < 2 * (d - 1) := by
+  constructor
+  · exact channel_tick_trade_metric_lower_bound d h
+  · exact channel_tick_trade_metric_upper_bound d h
+
+theorem next_dimension_trades_channels_for_ticks (chunks d : Nat) (h : 2 ≤ d) :
+    channelSurfaceFromDimension d < channelSurfaceFromDimension (d + 1) ∧
+    totalIdealTicks chunks d < totalIdealTicks chunks (d + 1) := by
+  constructor
+  · exact next_dimension_increases_channel_surface d h
+  · exact higher_dimension_increases_fixed_chunk_ticks chunks h (Nat.lt_succ_self d)
+
+theorem fifty_five_d_has_more_channels_and_costs_one_more_tick (chunks : Nat) :
+    channelSurfaceFromDimension 55 > channelSurfaceFromDimension 54 ∧
+    totalIdealTicks chunks 55 = totalIdealTicks chunks 54 + 1 := by
+  constructor
+  · unfold channelSurfaceFromDimension emanationCount
+    omega
+  · unfold totalIdealTicks rampUpTicksFromDimension
+    omega
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Confinement is dimensional: removing a cycle costs a dimension

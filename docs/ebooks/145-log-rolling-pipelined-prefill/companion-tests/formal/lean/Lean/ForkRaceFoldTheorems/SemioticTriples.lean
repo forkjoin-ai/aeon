@@ -67,7 +67,10 @@ theorem negotiation_is_dialogue (nd : NegotiationDialogue) :
     (∀ i : Fin nd.negotiation.numTerms,
       0 < nd.negotiation.toVoidGradient.complementWeight i) := by
   constructor
-  · unfold NegotiationDialogue.confusionDeficit; omega
+  · unfold NegotiationDialogue.confusionDeficit
+    have hDims : 4 ≤ nd.partyA_dims + nd.partyB_dims := by
+      exact Nat.add_le_add nd.partyA_complex nd.partyB_complex
+    exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide : 1 < 4) hDims)
   · exact fun i => void_gradient_complement_positive nd.negotiation.toVoidGradient i
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -102,13 +105,18 @@ def ArrowNegotiation.negotiationDeficit (an : ArrowNegotiation) : ℕ :=
 theorem arrow_bounds_negotiation (an : ArrowNegotiation) :
     an.arrowDeficit < an.negotiationDeficit := by
   unfold ArrowNegotiation.arrowDeficit ArrowNegotiation.negotiationDeficit
+  have hTermsPos : 0 < an.numTerms := lt_of_lt_of_le (by decide : 0 < 3) an.termsNontrivial
+  have hParties : 1 ≤ an.numParties := le_trans (by decide : 1 ≤ 2) an.nontrivial
   omega
 
 /-- Both deficits are positive: no free consensus. -/
 theorem no_free_consensus (an : ArrowNegotiation) :
     0 < an.arrowDeficit ∧ 0 < an.negotiationDeficit := by
   unfold ArrowNegotiation.arrowDeficit ArrowNegotiation.negotiationDeficit
-  constructor <;> omega
+  constructor
+  · exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide : 1 < 2) an.nontrivial)
+  · have hTerms : 1 < an.numTerms := lt_of_lt_of_le (by decide : 1 < 3) an.termsNontrivial
+    exact Nat.sub_pos_of_lt (Nat.lt_of_lt_of_le hTerms (Nat.le_add_left _ _))
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Triple 3: SemioticPeace + GrandfatherParadox + BuleyeanProbability

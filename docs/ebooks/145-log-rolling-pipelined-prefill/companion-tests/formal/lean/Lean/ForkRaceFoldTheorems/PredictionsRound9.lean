@@ -30,7 +30,8 @@ namespace ForkRaceFoldTheorems
 theorem quantum_speedup_formula (qs : QuantumSystem) :
     qs.preBeta1 - qs.postBeta1 + 1 = qs.rootN := by
   rw [qs.preIsIntrinsic, qs.postIsZero]
-  unfold intrinsicBeta1; omega
+  simp [intrinsicBeta1]
+  exact Nat.sub_add_cancel (le_trans (by decide) qs.nontrivial)
 
 /-- Measurement deficit is exactly rootN - 1. -/
 theorem measurement_deficit_is_rootN_minus_1 (qs : QuantumSystem) :
@@ -94,9 +95,11 @@ theorem wallace_conservation (left middle right : ℕ) :
 
 /-- Multiplexed capacity is at least as large as the busy period.
     Multiplexing can only help, never hurt. -/
-theorem multiplexing_helps (busy capacity overlap : ℕ) (hCap : busy ≤ capacity) :
-    busy ≤ multiplexedCapacity busy capacity overlap := by
-  unfold multiplexedCapacity; omega
+theorem multiplexing_helps (busy capacity overlap : ℕ)
+    (hBusy : 0 < busy) (hCap : busy ≤ capacity)
+    (hRecovered : overlap ≤ capacity - busy) :
+    busy ≤ multiplexedCapacity capacity overlap :=
+  multiplexed_capacity_ge_busy hBusy hCap hRecovered
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Master

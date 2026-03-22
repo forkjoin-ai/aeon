@@ -4,6 +4,7 @@ import ForkRaceFoldTheorems.Multiplexing
 import ForkRaceFoldTheorems.FrameOverheadBound
 import ForkRaceFoldTheorems.FailureUniversality
 import ForkRaceFoldTheorems.ReynoldsBFT
+import ForkRaceFoldTheorems.SolomonoffBuleyean
 
 namespace ForkRaceFoldTheorems
 
@@ -95,7 +96,10 @@ theorem marginal_codec_gain_prediction
     -- marginal gain = gap(k) - gap(k+1)
     (contentTypes - k) * (rawPerType - entropyPerType) -
     (contentTypes - (k + 1)) * (rawPerType - entropyPerType) ≤
-    rawPerType - entropyPerType := by omega
+    rawPerType - entropyPerType := by
+  have hk' : contentTypes - k = contentTypes - (k + 1) + 1 := by
+    omega
+  rw [hk', Nat.add_mul, Nat.one_mul, Nat.add_sub_cancel_left]
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- P153: Pipeline Speedup Sandwich
@@ -134,7 +138,23 @@ theorem beta1_separation_prediction
     items + stages - 1 < items * stages := by
   constructor
   · exact queue_separation_floor items stages beta1 hI hS hB hMulti
-  · nlinarith
+  · have hStagesGeOne : 1 ≤ stages := le_trans (by decide) hMultiStage
+    have hStageSlackPos : 0 < stages - 1 := by
+      exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide) hMultiStage)
+    have hStageSlackStrict : stages - 1 < items * (stages - 1) := by
+      exact (Nat.lt_mul_iff_one_lt_left hStageSlackPos).2 hMulti
+    rw [Nat.add_sub_assoc hStagesGeOne]
+    calc
+      items + (stages - 1)
+        < items + items * (stages - 1) := by
+            exact Nat.add_lt_add_left hStageSlackStrict items
+      _ = items * (stages - 1) + items := by rw [Nat.add_comm]
+      _ = items * stages := by
+          calc
+            items * (stages - 1) + items
+              = items * (stages - 1) + items * 1 := by rw [Nat.mul_one]
+            _ = items * ((stages - 1) + 1) := by rw [← Nat.mul_add]
+            _ = items * stages := by rw [Nat.sub_add_cancel hStagesGeOne]
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- P155: Reynolds Regime Prediction
@@ -197,9 +217,16 @@ theorem collapse_cost_sandwich
     | nil => simp
     | cons hd tl ih =>
       simp only [List.sum_cons, List.length_cons]
-      have := hLower hd (List.mem_cons_self _ _)
-      have := ih (fun c hc => hLower c (List.mem_cons_of_mem _ hc))
-      omega
+      have hHd : minPerStage ≤ hd := by simp [hLower]
+      have hTl : tl.length * minPerStage ≤ tl.sum :=
+        ih
+          (fun c hc => hLower c (by simp [hc]))
+          (fun c hc => hUpper c (by simp [hc]))
+      calc
+        (tl.length + 1) * minPerStage
+          = minPerStage + tl.length * minPerStage := by
+              rw [Nat.add_mul, Nat.one_mul, Nat.add_comm]
+        _ ≤ hd + tl.sum := Nat.add_le_add hHd hTl
   · exact pipeline_collapse_cost_ceiling stageCosts maxPerStage hUpper
 
 -- ═══════════════════════════════════════════════════════════════════════════

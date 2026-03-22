@@ -72,7 +72,7 @@ structure CausalChain where
 
 /-- A self-referential fold: an action at the tip of the chain
     that would set the root's weight to zero. -/
-structure SelfReferentialFold where
+structure GrandfatherSelfReferentialFold where
   /-- The causal chain -/
   chain : CausalChain
   /-- The root event (the ancestor) -/
@@ -150,7 +150,7 @@ theorem sliver_prevents_annihilation
     Buleyean operation can reduce any weight to zero
     (buleyean_positivity). Therefore the fold cannot achieve
     its stated goal. The paradox is an impossible operation. -/
-theorem self_referential_fold_impossible (srf : SelfReferentialFold) :
+theorem self_referential_fold_impossible (srf : GrandfatherSelfReferentialFold) :
     -- The root exists (precondition for the fold)
     0 < srf.chain.existenceWeight srf.root ∧
     -- The tip exists (precondition for the traveler)
@@ -306,7 +306,7 @@ theorem time_travel_is_topology (tb : TemporalBranch) :
     not support the operation the paradox requests. -/
 theorem grandfather_paradox_master
     (bs : BuleyeanSpace)
-    (srf : SelfReferentialFold)
+    (srf : GrandfatherSelfReferentialFold)
     (tb : TemporalBranch) :
     -- 1. Append-only: all weights positive
     (∀ i : Fin bs.numChoices, 1 ≤ bs.weight i) ∧

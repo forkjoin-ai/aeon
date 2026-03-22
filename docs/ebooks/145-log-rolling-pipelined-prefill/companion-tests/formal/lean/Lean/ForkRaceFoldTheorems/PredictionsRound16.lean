@@ -103,9 +103,13 @@ theorem pipeline_maximum_heat
   | nil => simp
   | cons hd tl ih =>
     simp only [List.sum_cons, List.length_cons]
-    have := hBound hd (List.mem_cons_self _ _)
-    have := ih (fun h hh => hBound h (List.mem_cons_of_mem _ hh))
-    omega
+    have hHd : hd ≤ maxForkEnergy := by simp [hBound]
+    have hTl : tl.sum ≤ tl.length * maxForkEnergy :=
+      ih (fun h hh => hBound h (by simp [hh]))
+    calc
+      hd + tl.sum ≤ maxForkEnergy + tl.length * maxForkEnergy := Nat.add_le_add hHd hTl
+      _ = (tl.length + 1) * maxForkEnergy := by
+            rw [Nat.add_mul, Nat.one_mul, Nat.add_comm]
 
 /-- S4×S5: Heat sandwich for pipeline.
     stages × (W-1) × kT ≤ totalHeat ≤ stages × maxForkEnergy. -/
@@ -145,7 +149,7 @@ theorem semiotic_negotiation_bound
     0 < (sourceDim - channelStreams + reductionPerRound - 1) / reductionPerRound := by
   apply Nat.div_pos
   · omega
-  · exact reductionPerRound.succ_pos |>.trans_le (by omega)
+  · exact hReduction
 
 /-- S8×S9×S13: Triple composition. Void-informed semiotic negotiation:
     the three sandwiches compose to give tighter convergence bounds. -/
@@ -181,13 +185,13 @@ theorem reynolds_constrains_speedup
 theorem turbulent_collapse_floor
     (stages chunks : ℕ)
     (hTurbulent : classifyRegime stages chunks = FoldRegime.syncRequired) :
-    ¬ majoritySafeFold stages chunks :=
-  syncRequired_not_majoritySafe stages chunks hTurbulent (by
-    unfold classifyRegime at hTurbulent
-    split_ifs at hTurbulent with h1 h2
-    · exact absurd hTurbulent (by decide)
-    · exact absurd hTurbulent (by decide)
-    · omega)
+    ¬ majoritySafeFold stages chunks := by
+  by_cases hStages : 0 < stages
+  · exact (classifyRegime_eq_syncRequired_iff_not_majoritySafe stages chunks hStages).1 hTurbulent
+  · have hZero : stages = 0 := by omega
+    subst hZero
+    unfold majoritySafeFold
+    simp
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- CATEGORY E: DIVERSITY × SUPPLY CHAIN (S17 × S10 × S2)
@@ -217,7 +221,10 @@ theorem full_coverage_any_substrate
 theorem marginal_gain_any_substrate
     (totalTypes perUnitCost k : ℕ) (hk : k < totalTypes) :
     (totalTypes - k) * perUnitCost -
-    (totalTypes - (k + 1)) * perUnitCost ≤ perUnitCost := by omega
+    (totalTypes - (k + 1)) * perUnitCost ≤ perUnitCost := by
+  have hk' : totalTypes - k = totalTypes - (k + 1) + 1 := by
+    omega
+  rw [hk', Nat.add_mul, Nat.one_mul, Nat.add_sub_cancel_left]
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- CATEGORY F: FORK WIDTH × VOID REGRET (S15 × S14)

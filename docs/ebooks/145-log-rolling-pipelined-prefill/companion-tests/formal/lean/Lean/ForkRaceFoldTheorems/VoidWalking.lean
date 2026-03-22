@@ -550,9 +550,12 @@ theorem void_regret_total_ceiling
   | nil => simp
   | cons hd tl ih =>
     simp only [List.sum_cons, List.length_cons]
-    have hhd := hBound hd (List.mem_cons_self _ _)
+    have hhd := hBound hd (by simp)
     have htl := ih (fun r hr => hBound r (List.mem_cons_of_mem _ hr))
-    omega
+    calc
+      hd + tl.sum ≤ maxPerRound + tl.length * maxPerRound := Nat.add_le_add hhd htl
+      _ = (tl.length + 1) * maxPerRound := by
+        rw [Nat.succ_mul, Nat.add_comm]
 
 /-- Regret ceiling is achievable: worst case is boundary at every round. -/
 theorem void_regret_ceiling_tight
@@ -564,11 +567,17 @@ theorem void_regret_ceiling_tight
   induction roundRegrets generalizing T with
   | nil => simp at hLen; subst hLen; simp
   | cons hd tl ih =>
-    simp only [List.length_cons] at hLen
-    simp only [List.sum_cons]
-    have hhd := hAll hd (List.mem_cons_self _ _)
-    have htl := ih (T - 1) (by omega)
-      (fun r hr => hAll r (List.mem_cons_of_mem _ hr))
-    subst hhd; subst hLen; omega
+    cases T with
+    | zero =>
+        simp at hLen
+    | succ T' =>
+        simp at hLen
+        simp only [List.sum_cons]
+        have hhd : hd = boundarySize := hAll hd (by simp)
+        have htl : tl.sum = T' * boundarySize :=
+          ih T' hLen (fun r hr => hAll r (List.mem_cons_of_mem _ hr))
+        subst hhd
+        rw [htl, Nat.succ_mul]
+        simp [Nat.add_comm]
 
 end ForkRaceFoldTheorems

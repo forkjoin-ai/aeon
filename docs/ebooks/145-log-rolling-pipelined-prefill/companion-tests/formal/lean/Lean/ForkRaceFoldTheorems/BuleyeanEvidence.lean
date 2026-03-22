@@ -21,11 +21,10 @@
 -/
 
 import Mathlib.Data.Nat.Basic
-import Mathlib.Tactic.Omega
 import Mathlib.Tactic.Linarith
-import Lean.ForkRaceFoldTheorems.BuleyeanProbability
-import Lean.ForkRaceFoldTheorems.SemioticDeficit
-import Lean.ForkRaceFoldTheorems.LastQuestion
+import ForkRaceFoldTheorems.BuleyeanProbability
+import ForkRaceFoldTheorems.SemioticDeficit
+import ForkRaceFoldTheorems.LastQuestion
 
 open ForkRaceFoldTheorems
 
@@ -79,7 +78,7 @@ def buleyeanVerdict (et : EvidenceTopology) (es : EvidenceState et) : Verdict :=
 
 /-- Evidence that increases the number of uncovered threads -/
 def isPrejudicial (et_before et_after : EvidenceTopology)
-    (es : EvidenceState et_before) : Prop :=
+    (_es : EvidenceState et_before) : Prop :=
   evidentiaryDeficit et_after > evidentiaryDeficit et_before
 
 /-- A discovery state tracks whether all evidence has been disclosed -/
@@ -107,14 +106,17 @@ def isBradyViolation (ds : DiscoveryState) : Prop :=
 theorem evidence_deficit_positive (et : EvidenceTopology)
     (h : et.verdictStreams = 1) :
     evidentiaryDeficit et ≥ 1 := by
-  unfold evidentiaryDeficit
-  omega
+  have hThreads : 1 < et.evidentiaryThreads :=
+    lt_of_lt_of_le (by decide) et.threads_nontrivial
+  exact
+    (by
+      simpa [evidentiaryDeficit, h] using
+        Nat.succ_le_of_lt (Nat.sub_pos_of_lt hThreads))
 
 theorem evidence_deficit_value (et : EvidenceTopology)
     (h : et.verdictStreams = 1) :
     evidentiaryDeficit et = et.evidentiaryThreads - 1 := by
-  unfold evidentiaryDeficit
-  omega
+  simp [evidentiaryDeficit, h]
 
 -- ═══════════════════════════════════════════════════════════════════
 -- THM-PRESUMPTION-OF-INNOCENCE
@@ -131,9 +133,10 @@ def initialEvidenceState (et : EvidenceTopology) : EvidenceState et :=
 
 theorem presumption_of_innocence (et : EvidenceTopology) :
     buleyeanVerdict et (initialEvidenceState et) = Verdict.insufficientData := by
+  have hPos : 0 < et.evidentiaryThreads := lt_of_lt_of_le (by decide) et.threads_nontrivial
+  have hNe : 0 ≠ et.evidentiaryThreads := Nat.ne_of_lt hPos
   unfold buleyeanVerdict initialEvidenceState
-  simp
-  omega
+  simp [hNe]
 
 theorem initial_bule_maximal (et : EvidenceTopology) :
     evidenceBule et (initialEvidenceState et) = et.evidentiaryThreads := by
@@ -164,7 +167,7 @@ theorem evidence_strictly_reduces (et : EvidenceTopology)
     (h : es1.coveredThreads < es2.coveredThreads) :
     evidenceBule et es2 < evidenceBule et es1 := by
   unfold evidenceBule
-  omega
+  exact Nat.sub_lt_sub_left (lt_of_lt_of_le h es2.coverage_bounded) h
 
 -- ═══════════════════════════════════════════════════════════════════
 -- THM-GUILTY-IFF-ZERO-DEFICIT
@@ -180,20 +183,30 @@ theorem guilty_iff_zero_deficit (et : EvidenceTopology)
   · intro h
     split at h <;> simp_all
   · intro h
-    simp
-    omega
+    have hge : et.evidentiaryThreads ≤ es.coveredThreads :=
+      Nat.sub_eq_zero_iff_le.mp h
+    have hEq : es.coveredThreads = et.evidentiaryThreads :=
+      le_antisymm es.coverage_bounded hge
+    simp [hEq]
 
 theorem insufficient_data_iff_positive_deficit (et : EvidenceTopology)
     (es : EvidenceState et) :
     buleyeanVerdict et es = Verdict.insufficientData ↔ evidenceBule et es > 0 := by
-  unfold buleyeanVerdict evidenceBule
   constructor
   · intro h
-    split at h <;> simp_all
-    omega
+    by_cases hEq : es.coveredThreads = et.evidentiaryThreads
+    · have : False := by
+        simp [buleyeanVerdict, hEq] at h
+      exact False.elim this
+    · have hLt : es.coveredThreads < et.evidentiaryThreads :=
+        lt_of_le_of_ne es.coverage_bounded hEq
+      exact Nat.sub_pos_iff_lt.mpr hLt
   · intro h
-    simp
-    omega
+    by_cases hEq : es.coveredThreads = et.evidentiaryThreads
+    · have : False := by
+        simp [evidenceBule, hEq] at h
+      exact False.elim this
+    · simp [buleyeanVerdict, hEq]
 
 -- ═══════════════════════════════════════════════════════════════════
 -- THM-VERDICT-DETERMINISTIC
@@ -265,11 +278,12 @@ theorem more_discovery_more_context (ds1 ds2 : DiscoveryState)
 
 /-- A defense motion identifies a new independent evidentiary thread -/
 def defenseIdentifiesThread (et : EvidenceTopology)
-    (newThreads : Nat) (h : newThreads ≥ 1) :
+    (newThreads : Nat) (_h : newThreads ≥ 1) :
     EvidenceTopology :=
   { evidentiaryThreads := et.evidentiaryThreads + newThreads
     verdictStreams := et.verdictStreams
-    threads_nontrivial := by omega
+    threads_nontrivial := by
+      exact le_trans et.threads_nontrivial (Nat.le_add_right _ _)
     verdict_positive := et.verdict_positive }
 
 theorem defense_increases_deficit (et : EvidenceTopology)
@@ -277,9 +291,10 @@ theorem defense_increases_deficit (et : EvidenceTopology)
     (hv : et.verdictStreams = 1) :
     evidentiaryDeficit (defenseIdentifiesThread et newThreads h) >
     evidentiaryDeficit et := by
-  unfold evidentiaryDeficit defenseIdentifiesThread
-  simp
-  omega
+  have hPos : 0 < newThreads := Nat.succ_le_iff.mp h
+  have hOneLe : 1 ≤ et.evidentiaryThreads := le_trans (by decide) et.threads_nontrivial
+  simp [evidentiaryDeficit, defenseIdentifiesThread, hv]
+  exact Nat.sub_lt_sub_right hOneLe (Nat.lt_add_of_pos_right hPos)
 
 -- ═══════════════════════════════════════════════════════════════════
 -- THM-APPEAL-GROUND
@@ -306,21 +321,20 @@ theorem appeal_ground_exists (et : EvidenceTopology)
     (ac : AppealChallenge et) :
     evidenceBule et ac.trialState > 0 := by
   unfold evidenceBule
-  omega
+  exact Nat.sub_pos_iff_lt.mpr ac.thread_uncovered
 
 theorem appeal_contradicts_verdict (et : EvidenceTopology)
     (ac : AppealChallenge et) :
     buleyeanVerdict et ac.trialState ≠ Verdict.guilty := by
-  unfold buleyeanVerdict
-  simp
-  omega
+  intro hGuilty
+  have hZero := (guilty_iff_zero_deficit et ac.trialState).mp hGuilty
+  have hPos := appeal_ground_exists et ac
+  simp [hZero] at hPos
 
 theorem appeal_reversible (et : EvidenceTopology)
     (ac : AppealChallenge et) :
     buleyeanVerdict et ac.trialState = Verdict.insufficientData := by
-  unfold buleyeanVerdict
-  simp
-  omega
+  exact (insufficient_data_iff_positive_deficit et ac.trialState).mpr (appeal_ground_exists et ac)
 
 -- ═══════════════════════════════════════════════════════════════════
 -- THM-BULEYEAN-EVIDENCE-MASTER

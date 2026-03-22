@@ -12,9 +12,13 @@ ebook_featured_excerpt_chapters: ch14-aeon-flow-protocol, ch21-topology-of-compu
 
 - Parent index: [Ebook Library](../README.md)
 - Live docs home: [docs.aeonflux.dev](https://docs.aeonflux.dev)
-- ArXiv manuscript source: [Manuscript Draft (Chapter 17: The Geometry of Failure)](./ch17-arxiv-manuscript.md)
+- Full theory chapter: [Being Irreversible (full Chapter 17 manuscript)](./ch17-arxiv-manuscript.md)
+- Flagship reviewer-facing manuscript: [Topological Mismatch in Distributed Inference](./ch17-arxiv-manuscript-flagship.md)
+- ArXiv submission helper: [Submission Metadata and Packaging](./arxiv-submission/README.md)
+- Flagship submission helper: [Flagship Metadata and Packaging](./arxiv-submission-flagship/README.md)
 - Author's note: [Author's Note](./AUTHORS_NOTE.md)
 - Citation audit: [Citation Fact-Check Audit](./ch17-arxiv-manuscript-citation-audit.md)
+- Flagship scorecard: [Chapter 17 Flagship Scorecard](./ch17-flagship-scorecard.md)
 - Reader-facing reference implementations and primitive-backed Gnosis examples: [Chapter 17 Reader-Facing Reference Implementations](./ch17-reference-implementations.md)
 - External reviewer quickstart: [Chapter 17 External Reviewer Quickstart](./ch17-external-reviewer-quickstart.md)
 - IP counsel binder: [IP Counsel Monetization Binder](../../../../../docs/IP_COUNSEL_BINDER/README.md)
@@ -65,7 +69,7 @@ The work is framed through the lens of Wally Wallington's "Forgotten Technology"
 
 16. **[The nginx Module: Aeon Flow Behind the Reverse Proxy](ch16-nginx-aeon-flow-module.md)** -- `ngx_aeon_flow_module`: a C module that lets nginx speak Aeon Flow to backends while serving HTTP to browsers. Connection pooling, fork/race/collapse/poison semantics, ESI fragment assembly, and the Rolling Pivot architecture -- browser stays put (HTTP), backend swings forward (Aeon Flow). Zerocopy codec, poison-on-disconnect cleanup, and HPACK-free framing.
 
-17. **[ArXiv Manuscript Draft: The Geometry of Failure](ch17-arxiv-manuscript.md)** -- Full paper draft reframing failure as a topological coordinate, with FMFV and a Foster-Lyapunov drift schema at the foundation, Gnosis/Betti drift-annotated compilation in the programming layer, the Wallington Rotation and Worthington Whip recast as stability laws, bounded coupled-manifold handoff across app boundaries, Aeon Flow transport as the cover-space coordinate system, topological compression as a Pareto search over ratio, portability, random access, and collapse cost, an explicit corollary that a nontrivial hole survives homology-preserving stretch/twist deformation, the named `Harrigan Horizon` boundary for zero remaining recovery slack under transport adversity, and the newer cover-space audit reading where bounded offline-risk password-digest and recovery/trust corollaries are surfaced by witness-preserving logic linting rather than operational exploitation, alongside the existing queueing, formal, and correspondence evidence stack, including constructive Jackson traffic-equation witnesses, bounded vacation/retrial/reneging state-dependent queue families, the bounded affine queue-family `continuousHarris` witness package, and the exported adaptive `α` witness surface for the bounded two-node rerouting closure.
+17. **[ArXiv Manuscript Draft: The Geometry of Failure](ch17-arxiv-manuscript.md)** -- Full paper draft reframing failure as a topological coordinate, with FMFV and a Foster-Lyapunov drift schema at the foundation, Gnosis/Betti drift-annotated compilation in the programming layer, the Wallington Rotation and Worthington Whip recast as stability laws, bounded coupled-manifold handoff across app boundaries, Aeon Flow transport as the cover-space coordinate system, topological compression as a Pareto search over ratio, portability, random access, and collapse cost, an explicit corollary that a nontrivial hole survives homology-preserving stretch/twist deformation, the named `Harrigan Horizon` boundary for zero remaining recovery slack under transport adversity, and the newer cover-space audit reading where bounded offline-risk password-digest and recovery/trust corollaries are surfaced by witness-preserving logic linting rather than operational exploitation, alongside the existing queueing, formal, and correspondence evidence stack, including constructive Jackson traffic-equation witnesses, bounded vacation/retrial/reneging state-dependent queue families, the bounded affine queue-family `continuousHarris` witness package, the exported adaptive `α` witness surface for the bounded two-node rerouting closure, and the explicit sliver-of-hope / exploration link showing that even zero strategic exploration leaves a residual observer gap rather than total knowledge.
 
 18. **[The UDP Transport: TCP Had Its 40-Year Run](ch18-udp-transport.md)** -- Every flow frame carries its own identity (`stream_id` + `sequence`), making TCP's ordered delivery redundant. `UDPFlowTransport` with MTU-aware fragmentation (4-byte header, 255 fragments × 1468 bytes), ACK bitmaps (14 bytes covers 64 sequences), AIMD congestion control, and `FrameReassembler` for per-stream out-of-order reconstruction. `WebTransportFlowTransport` bridges browsers via HTTP/3 unreliable datagrams. Fallback chain: UDP → WebTransport → WebSocket → TCP.
 
@@ -173,7 +177,7 @@ Per-token pipeline speedup approaches N. Chunked pipeline compounds causal maski
 
 ## Manuscript Build
 
-Regenerate the arXiv manuscript TeX and export PDF:
+Regenerate the full theory chapter TeX and export PDF:
 
 ```bash
 ./build-arxiv-manuscript.sh
@@ -186,5 +190,14 @@ Useful variants:
 ./build-arxiv-manuscript.sh --pdf-only
 ```
 
+Build the reviewer-facing flagship manuscript:
+
+```bash
+./build-arxiv-manuscript-flagship.sh
+./build-arxiv-manuscript-flagship.sh --tex-only
+./build-arxiv-manuscript-flagship.sh --pdf-only
+```
+
 PDF export requires one TeX engine: `tectonic`, `latexmk`, or `pdflatex`.
 The build script prepares PNG fallbacks for checked-in SVG figures automatically before TeX compilation.
+It also regenerates the Chapter 17 `aeon-viz` scene artifacts from the canonical markdown source and rewrites those fences to static image includes before `pandoc` runs, so Wallington Lab and the arXiv build share one manuscript-authored source of truth.

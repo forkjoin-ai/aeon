@@ -1,16 +1,22 @@
 # Fork/Race/Fold Is All You Need  --  Companion Tests
 
 - Parent volume README: [open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/README.md](../README.md)
+- Repo proof index: [open-source/aeon/FORMAL_LEDGER.md](../../../../FORMAL_LEDGER.md)
 - Live docs home: [docs.aeonflux.dev](https://docs.aeonflux.dev)
 - External reviewer quickstart: [../ch17-external-reviewer-quickstart.md](../ch17-external-reviewer-quickstart.md)
 - Test sources: [src/README.md](./src/README.md)
 - Formal artifacts: [formal/README.md](./formal/README.md)
+- Canonical theorem ledger: [formal/THEOREM_LEDGER.md](./formal/THEOREM_LEDGER.md)
 - Gnosis compiler boundary: [formal/GNOSIS_COMPILER_BOUNDARY.md](./formal/GNOSIS_COMPILER_BOUNDARY.md)
 - Betti compiler proofs: [../../../../../gnosis/GnosisProofs.lean](../../../../../gnosis/GnosisProofs.lean)
 - Script helpers: [scripts/README.md](./scripts/README.md)
 - Generated artifacts: [artifacts/README.md](./artifacts/README.md)
 
 This package is the reproducibility and validation surface for the manuscript. The fair brag is not that it proves everything by existing. It is that the repo already contains a broad, explicit rerun surface: runtime tests, benchmark harnesses, formal artifacts, figure generation, and external-reviewer entry points.
+The Chapter 17 manuscript now also carries two authored `aeon-viz` scene fences (`cosmic-explainer` and `dimension-ladder`); companion scripts regenerate their JSON/Markdown/SVG artifacts directly from the manuscript so the reader, proof, and arXiv paths stay synchronized.
+The directory now also supports a second manuscript track, `ch17-arxiv-manuscript-flagship.md`, with its own narrower hardening and artifact-consistency tests. The flagship uses the same checked-in artifacts but a smaller claim surface.
+
+If you are here for the proof corpus rather than the runner commands, start with the repo-level [FORMAL_LEDGER.md](../../../../FORMAL_LEDGER.md) or the canonical [formal/THEOREM_LEDGER.md](./formal/THEOREM_LEDGER.md). Those two pages are now the shortest path to the named theorem table and the formal rerun surface.
 
 Adjacent to this companion package, the same repository now carries a bounded cover-space audit surface for the manuscript's theorem-indexed failure vocabulary: `open-source/aeon-logic/src/crypto-cover-space.ts`, the GG corpus in `open-source/gnosis/examples/crypto`, and the red/blue reporting wrapper in `open-source/aeon-crackerjack`. That surface is included here as a documentation-level corollary witness, not as a new mechanized theorem family. It treats `cracking` as metaphorical corollary extraction with preserved witness ancestry, and it calibrates two safe families: offline-risk password-digest negative controls and socio-technical recovery/trust topologies.
 
@@ -54,6 +60,8 @@ bun run test:sleep-debt-weighted
 bun run test:ch17-american-frontier-figure
 bun run test:ch17-figure
 bun run test:ch17-boundary-expansion-figure
+bun run test:ch17-cosmic-explainer-figure
+bun run test:ch17-dimension-ladder-figure
 bun run test:ch17-moa-figure
 bun run test:ch17-moa-topology-figure
 bun run test:ch17-moa-whip-curvature-figure
@@ -64,7 +72,21 @@ bun run test:ch17-external-replication
 bun run test:ch17-evidence
 bun run test:formal:parser
 bun run test:formal
+bun run test:manuscript:current
+bun run test:manuscript:flagship
 ```
+
+## Flagship Manuscript Validation
+
+The flagship reviewer-facing manuscript is validated independently from the
+full chapter:
+
+```bash
+bun run test:manuscript:flagship
+```
+
+That command checks structural scope, artifact-backed numeric claims, and the
+explicit numeric claims retained in the narrowed draft.
 
 ## Compiler-Side Formal Rerun
 

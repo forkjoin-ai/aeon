@@ -1,0 +1,34 @@
+Title: Topological Mismatch in Distributed Inference: Mechanized Models and Protocol-Level Evidence for Fork/Race/Fold Scheduling
+
+Author: Taylor William Buley
+
+Abstract:
+Path-like execution can impose avoidable coordination cost when the
+workload's natural structure has positive parallel-path complexity. This paper
+studies that mismatch in a finite-DAG fork/race/fold model using the
+diagnostic Delta_beta = beta_1* - beta_1^exec and a correctness envelope
+C1-C4. Within that modeled scope, the paper proves a pipeline speedup floor
+and sandwich, classifies Reynolds regimes by Re = N / C, and ties the
+scheduler to a protocol layer with explicit bounded quorum and ordering
+theorems. The engineering surface instantiates the model in distributed staged
+computation and Aeon Flow transport. In the companion artifacts, 8/8 primary
+wall-clock cells pass with median speedups 11.785x-21.620x, and a 144-site,
+12,371-resource protocol corpus shows a 72.252% median framing gain with
+positive latency gains across all 6 primary environments. The claim is not
+that fork/race/fold is universally optimal; it is that Delta_beta provides a
+falsifiable diagnostic for when path-like execution is misfit to the
+workload.
+
+Categories: cs.DC cs.AI cs.LO
+
+Comments: Reviewer-facing flagship manuscript for Chapter 17 with mechanized scheduling and protocol companion evidence
+
+MSC-class: 68M20, 68Q85, 68T05
+
+Journal-ref:
+
+DOI:
+
+Report-no:
+
+License: http://creativecommons.org/licenses/by/4.0/

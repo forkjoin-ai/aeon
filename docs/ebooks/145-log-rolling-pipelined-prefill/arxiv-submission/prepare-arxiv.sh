@@ -21,11 +21,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PARENT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$SCRIPT_DIR/build"
 MANUSCRIPT="$PARENT_DIR/ch17-arxiv-manuscript.md"
+COMPANION_ARTIFACTS="$PARENT_DIR/companion-tests/artifacts"
 
 # ── sanity checks ─────────────────────────────────────────────────────
 if ! command -v pandoc &>/dev/null; then
   echo "ERROR: pandoc is required but not found." >&2
   echo "  Install via: brew install pandoc  (macOS) or apt install pandoc (Linux)" >&2
+  exit 1
+fi
+
+if ! command -v bun &>/dev/null; then
+  echo "ERROR: bun is required but not found." >&2
+  echo "  Install bun, then rerun this script." >&2
   exit 1
 fi
 
@@ -38,13 +45,23 @@ fi
 rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR/figures"
 
-echo "==> Copying manuscript source..."
-cp "$MANUSCRIPT" "$BUILD_DIR/manuscript.md"
+echo "==> Generating embedded aeon-viz scene assets..."
+bun "$PARENT_DIR/companion-tests/scripts/ch17-cosmic-explainer-figure.ts" --assert
+bun "$PARENT_DIR/companion-tests/scripts/ch17-dimension-ladder-figure.ts" --assert
+
+echo "==> Preparing manuscript source..."
+bun "$PARENT_DIR/prepare-arxiv-markdown.ts" --input "$MANUSCRIPT" --output "$BUILD_DIR/manuscript.md"
 
 # ── copy any existing figures ─────────────────────────────────────────
 if [ -d "$PARENT_DIR/figures" ]; then
   echo "==> Copying figures..."
   cp -R "$PARENT_DIR/figures/"* "$BUILD_DIR/figures/" 2>/dev/null || true
+fi
+
+if [ -d "$COMPANION_ARTIFACTS" ]; then
+  echo "==> Copying companion scene artifacts..."
+  mkdir -p "$BUILD_DIR/companion-tests/artifacts"
+  cp -R "$COMPANION_ARTIFACTS/"* "$BUILD_DIR/companion-tests/artifacts/" 2>/dev/null || true
 fi
 
 # also copy local figures placeholder README
@@ -72,6 +89,8 @@ pandoc "$BUILD_DIR/manuscript.md" \
   --variable=date:"2026" \
   --natbib \
   -o "$BUILD_DIR/main.tex"
+
+bun "$PARENT_DIR/prepare-arxiv-figures.ts" --tex "$BUILD_DIR/main.tex"
 
 echo "==> LaTeX generated at build/main.tex"
 
@@ -122,6 +141,7 @@ tar -czf "$TARBALL" \
   main.tex \
   references.bib \
   figures/ \
+  $([ -d "$BUILD_DIR/companion-tests" ] && echo "companion-tests/" || true) \
   $([ -f "$BUILD_DIR/arxiv-metadata.txt" ] && echo "arxiv-metadata.txt" || true)
 
 echo "==> Submission tarball: arxiv-submission.tar.gz"

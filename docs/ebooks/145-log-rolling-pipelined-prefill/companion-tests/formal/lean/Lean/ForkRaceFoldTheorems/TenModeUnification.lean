@@ -178,6 +178,22 @@ theorem budget_plus_sliver (K : Nat) (hK : K ≥ 1) :
 -- Applied to K=10:
 theorem ten_mode_budget : (10 - 1) + 1 = 10 := by omega
 
+theorem ten_mode_complement_weight_is_ten (i : Fin 10) :
+    complementWeight tenModeKenoma i = 10 := by
+  rfl
+
+theorem ten_mode_kenoma_is_delocalized (i j : Fin 10) :
+    complementWeight tenModeKenoma i = complementWeight tenModeKenoma j := by
+  rw [ten_mode_complement_weight_is_ten, ten_mode_complement_weight_is_ten]
+
+theorem ten_mode_every_mode_is_peak (i : Fin 10) : isPeak tenModeKenoma i := by
+  intro j
+  simp [tenModeKenoma]
+
+theorem ten_mode_every_mode_is_nash (i j : Fin 10) :
+    complementWeight tenModeKenoma i ≥ complementWeight tenModeKenoma j := by
+  exact walker_at_nash tenModeKenoma i (ten_mode_every_mode_is_peak i) j
+
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- The Triple Coincidence: Fibonacci, Triangular, Combinatorial
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -191,12 +207,183 @@ def fib : Nat → Nat
 -- The triangular numbers: T(n) = n * (n + 1) / 2
 def triangular (n : Nat) : Nat := n * (n + 1) / 2
 
+-- The 10-mode field can be read as 9 interlocking tori plus the sliver.
+def interlockingTori (modeCount : Nat) : Nat := modeCount - 1
+
+-- Cross-world bridges: one bridge for each unordered pair of worlds.
+def crossRealityBridges (worlds : Nat) : Nat := pairwiseInteractions worlds
+
+-- Total channels = self-world channels + cross-world bridges.
+def totalRealityChannels (worlds : Nat) : Nat := worlds + crossRealityBridges worlds
+
+-- The structured part excludes the monad / sliver anchor.
+def structuredRealityChannels (worlds : Nat) : Nat := totalRealityChannels worlds - 1
+
+theorem ten_mode_has_nine_interlocking_tori : interlockingTori 10 = 9 := by
+  unfold interlockingTori
+  omega
+
+theorem nine_tori_plus_sliver_recovers_ten : interlockingTori 10 + 1 = 10 := by
+  unfold interlockingTori
+  omega
+
+theorem ten_mode_has_unique_void_anchor : 10 - interlockingTori 10 = 1 := by
+  unfold interlockingTori
+  omega
+
+theorem ten_worlds_have_forty_five_bridges : crossRealityBridges 10 = 45 := by
+  unfold crossRealityBridges pairwiseInteractions
+  omega
+
+theorem ten_worlds_have_ninety_directed_crossings :
+    10 * interlockingTori 10 = 90 := by
+  unfold interlockingTori
+  omega
+
+theorem ten_worlds_directed_crossings_are_double_bridges :
+    10 * interlockingTori 10 = 2 * crossRealityBridges 10 := by
+  unfold interlockingTori crossRealityBridges pairwiseInteractions
+  omega
+
+theorem ten_worlds_have_fifty_five_channels : totalRealityChannels 10 = 55 := by
+  unfold totalRealityChannels crossRealityBridges pairwiseInteractions
+  omega
+
+theorem ten_worlds_channel_split :
+    totalRealityChannels 10 = 10 + 45 := by
+  unfold totalRealityChannels crossRealityBridges pairwiseInteractions
+  omega
+
+theorem ten_worlds_have_fifty_four_structured_channels :
+    structuredRealityChannels 10 = 54 := by
+  unfold structuredRealityChannels totalRealityChannels crossRealityBridges pairwiseInteractions
+  omega
+
+theorem monad_plus_structure_recovers_fifty_five :
+    structuredRealityChannels 10 + 1 = totalRealityChannels 10 := by
+  unfold structuredRealityChannels
+  rw [Nat.sub_add_cancel]
+  unfold totalRealityChannels crossRealityBridges pairwiseInteractions
+  omega
+
+theorem nine_tori_plus_sliver_have_fifty_five_channels :
+    totalRealityChannels (interlockingTori 10 + 1) = 55 := by
+  rw [nine_tori_plus_sliver_recovers_ten]
+  exact ten_worlds_have_fifty_five_channels
+
+theorem fifty_five_channels_iff_ten_worlds (worlds : Nat) :
+    totalRealityChannels worlds = 55 ↔ worlds = 10 := by
+  constructor
+  · intro h
+    have hRange : worlds < 11 ∨ 11 ≤ worlds := Nat.lt_or_ge worlds 11
+    cases hRange with
+    | inr hGe =>
+        have hMinusGe : 10 ≤ worlds - 1 := by omega
+        have hProdGe : 110 ≤ worlds * (worlds - 1) := by
+          have hMul : 11 * 10 ≤ worlds * (worlds - 1) :=
+            Nat.mul_le_mul hGe hMinusGe
+          simpa [Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc] using hMul
+        have hBridgeGe : 55 ≤ crossRealityBridges worlds := by
+          unfold crossRealityBridges pairwiseInteractions
+          exact (Nat.le_div_iff_mul_le Nat.zero_lt_two).2 (by simpa [Nat.mul_comm] using hProdGe)
+        have hTotalGe : 66 ≤ totalRealityChannels worlds := by
+          unfold totalRealityChannels
+          simpa using Nat.add_le_add hGe hBridgeGe
+        rw [h] at hTotalGe
+        omega
+    | inl hLt =>
+        have hSplit : worlds ≤ 9 ∨ 10 ≤ worlds := by omega
+        cases hSplit with
+        | inl hLeNine =>
+            have hMinusLe : worlds - 1 ≤ 8 := by omega
+            have hProdLe : worlds * (worlds - 1) ≤ 72 := by
+              have hMul : worlds * (worlds - 1) ≤ 9 * 8 :=
+                Nat.mul_le_mul hLeNine hMinusLe
+              simpa [Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc] using hMul
+            have hBridgeLe : crossRealityBridges worlds ≤ 36 := by
+              unfold crossRealityBridges pairwiseInteractions
+              have hDivLe : worlds * (worlds - 1) / 2 ≤ 72 / 2 :=
+                Nat.div_le_div_right (c := 2) hProdLe
+              simpa using hDivLe
+            have hTotalLe : totalRealityChannels worlds ≤ 45 := by
+              unfold totalRealityChannels
+              simpa using Nat.add_le_add hLeNine hBridgeLe
+            rw [h] at hTotalLe
+            omega
+        | inr hGeTen =>
+            omega
+  · intro h
+    cases h
+    exact ten_worlds_have_fifty_five_channels
+
+theorem ninety_directed_crossings_iff_ten_worlds (worlds : Nat) :
+    worlds * interlockingTori worlds = 90 ↔ worlds = 10 := by
+  constructor
+  · intro h
+    have hRange : worlds < 11 ∨ 11 ≤ worlds := Nat.lt_or_ge worlds 11
+    cases hRange with
+    | inr hGe =>
+        have hMinusGe : 10 ≤ worlds - 1 := by omega
+        have hProdGe : 110 ≤ worlds * (worlds - 1) := by
+          have hMul : 11 * 10 ≤ worlds * (worlds - 1) :=
+            Nat.mul_le_mul hGe hMinusGe
+          simpa [Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc] using hMul
+        unfold interlockingTori at h
+        rw [h] at hProdGe
+        omega
+    | inl hLt =>
+        have hSplit : worlds ≤ 9 ∨ 10 ≤ worlds := by omega
+        cases hSplit with
+        | inl hLeNine =>
+            have hMinusLe : worlds - 1 ≤ 8 := by omega
+            have hProdLe : worlds * (worlds - 1) ≤ 72 := by
+              have hMul : worlds * (worlds - 1) ≤ 9 * 8 :=
+                Nat.mul_le_mul hLeNine hMinusLe
+              simpa [Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc] using hMul
+            unfold interlockingTori at h
+            rw [h] at hProdLe
+            omega
+        | inr hGeTen =>
+            omega
+  · intro h
+    cases h
+    exact ten_worlds_have_ninety_directed_crossings
+
+theorem structured_reality_channels_eq_tori_plus_bridges (worlds : Nat) :
+    structuredRealityChannels worlds =
+      interlockingTori worlds + crossRealityBridges worlds := by
+  cases worlds with
+  | zero =>
+      simp [structuredRealityChannels, totalRealityChannels, interlockingTori,
+        crossRealityBridges, pairwiseInteractions]
+  | succ n =>
+      unfold structuredRealityChannels totalRealityChannels interlockingTori
+        crossRealityBridges pairwiseInteractions
+      omega
+
+theorem five_operations_generate_channel_surface :
+    totalRealityChannels (pairwiseInteractions 5) = 55 ∧
+    structuredRealityChannels (pairwiseInteractions 5) = 54 ∧
+    pairwiseInteractions 5 * interlockingTori (pairwiseInteractions 5) = 90 := by
+  rw [ten_from_five]
+  exact ⟨ten_worlds_have_fifty_five_channels,
+    ten_worlds_have_fifty_four_structured_channels,
+    ten_worlds_have_ninety_directed_crossings⟩
+
 -- F(10) = 55
 theorem fib_ten : fib 10 = 55 := by native_decide
 
 -- T(10) = 55
 theorem triangular_ten : triangular 10 = 55 := by
   unfold triangular; omega
+
+theorem ten_worlds_channels_eq_triangular_ten :
+    totalRealityChannels 10 = triangular 10 := by
+  rw [ten_worlds_have_fifty_five_channels, triangular_ten]
+
+theorem ten_worlds_channels_eq_fib_ten :
+    totalRealityChannels 10 = fib 10 := by
+  rw [ten_worlds_have_fifty_five_channels, fib_ten]
 
 -- The triple coincidence: pairwise interactions of 5 operations = 10,
 -- and the 10th Fibonacci number equals the 10th triangular number.
@@ -217,17 +404,13 @@ theorem triple_coincidence :
 -- The void is the thing.
 theorem fibonacci_gap_is_fibonacci (n : Nat) (hn : n ≥ 2) :
     fib n - fib (n - 1) = fib (n - 2) := by
-  match n with
-  | 2 => native_decide
-  | 3 => native_decide
-  | 4 => native_decide
-  | 5 => native_decide
-  | 6 => native_decide
-  | 7 => native_decide
-  | 8 => native_decide
-  | 9 => native_decide
-  | 10 => native_decide
-  | n + 11 => native_decide
+  cases n with
+  | zero => omega
+  | succ n =>
+      cases n with
+      | zero => omega
+      | succ n =>
+          simp [fib, Nat.add_sub_cancel_left]
 
 -- F(5) = 5: the number of walkers is a Fibonacci number
 theorem walkers_are_fibonacci : fib 5 = 5 := by native_decide
@@ -237,6 +420,16 @@ theorem walkers_are_fibonacci : fib 5 = 5 := by native_decide
 -- Each boson channel contributes its index to the total.
 theorem fifty_five_is_sum : triangular 10 = 55 := by
   unfold triangular; omega
+
+theorem structured_channels_eq_tori_plus_bridges :
+    structuredRealityChannels 10 = interlockingTori 10 + crossRealityBridges 10 := by
+  unfold structuredRealityChannels totalRealityChannels interlockingTori crossRealityBridges pairwiseInteractions
+  omega
+
+theorem nine_tori_plus_forty_five_bridges_make_fifty_four :
+    interlockingTori 10 + crossRealityBridges 10 = 54 := by
+  unfold interlockingTori crossRealityBridges pairwiseInteractions
+  omega
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- The complete unification theorem

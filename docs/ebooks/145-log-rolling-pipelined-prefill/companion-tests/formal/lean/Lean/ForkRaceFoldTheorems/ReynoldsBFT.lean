@@ -109,6 +109,22 @@ theorem majoritySafe_of_two_chunks_gt_stages (N C : ℕ) (hN : 0 < N) (h : 2 * C
   · simp [idleStages, Nat.min_eq_right hle]; omega
   · push_neg at hle; simp [idleStages, Nat.min_eq_left (Nat.le_of_lt hle)]; omega
 
+/-- Exact majority boundary: majority safety holds exactly when `Re < 2`,
+    equivalently `2 * C > N`. -/
+theorem majoritySafeFold_iff_two_chunks_gt_stages
+    (N C : ℕ) (hN : 0 < N) :
+    majoritySafeFold N C ↔ 2 * C > N := by
+  constructor
+  · intro hSafe
+    unfold majoritySafeFold at hSafe
+    by_cases hle : N ≤ C
+    · omega
+    · push_neg at hle
+      rw [idleStages_eq_of_chunks_lt_stages N C hle] at hSafe
+      omega
+  · intro hThreshold
+    exact majoritySafe_of_two_chunks_gt_stages N C hN hThreshold
+
 /-- The Re < 3/2 threshold: when 3C > 2N (equivalently C/N > 2/3,
     equivalently Re = N/C < 3/2), the fold is quorum-safe. -/
 theorem quorumSafe_of_three_chunks_gt_two_stages (N C : ℕ) (hN : 0 < N) (h : 3 * C > 2 * N) :
@@ -117,6 +133,22 @@ theorem quorumSafe_of_three_chunks_gt_two_stages (N C : ℕ) (hN : 0 < N) (h : 3
   by_cases hle : N ≤ C
   · simp [idleStages, Nat.min_eq_right hle]; omega
   · push_neg at hle; simp [idleStages, Nat.min_eq_left (Nat.le_of_lt hle)]; omega
+
+/-- Exact async BFT boundary: quorum safety holds exactly when `Re < 3/2`,
+    equivalently `3 * C > 2 * N`. -/
+theorem quorumSafeFold_iff_three_chunks_gt_two_stages
+    (N C : ℕ) (hN : 0 < N) :
+    quorumSafeFold N C ↔ 3 * C > 2 * N := by
+  constructor
+  · intro hSafe
+    unfold quorumSafeFold at hSafe
+    by_cases hle : N ≤ C
+    · omega
+    · push_neg at hle
+      rw [idleStages_eq_of_chunks_lt_stages N C hle] at hSafe
+      omega
+  · intro hThreshold
+    exact quorumSafe_of_three_chunks_gt_two_stages N C hN hThreshold
 
 -- ─── Bridge to existing quorum theorems ─────────────────────────
 
@@ -175,6 +207,20 @@ theorem mergeAll_is_quorumSafe (N C : ℕ) (hN : 0 < N)
   · exact quorumSafe_of_three_chunks_gt_two_stages N C hN h1
   all_goals simp at h
 
+/-- `mergeAll` is exactly the quorum-safe regime. -/
+theorem classifyRegime_eq_mergeAll_iff_quorumSafe
+    (N C : ℕ) (hN : 0 < N) :
+    classifyRegime N C = FoldRegime.mergeAll ↔ quorumSafeFold N C := by
+  constructor
+  · intro hClass
+    exact mergeAll_is_quorumSafe N C hN hClass
+  · intro hSafe
+    unfold classifyRegime
+    have hThreshold :
+        3 * C > 2 * N :=
+      (quorumSafeFold_iff_three_chunks_gt_two_stages N C hN).1 hSafe
+    simp [hThreshold]
+
 /-- quorumFold regime implies majority safety. -/
 theorem quorumFold_is_majoritySafe (N C : ℕ) (hN : 0 < N)
     (h : classifyRegime N C = FoldRegime.quorumFold) :
@@ -182,6 +228,33 @@ theorem quorumFold_is_majoritySafe (N C : ℕ) (hN : 0 < N)
   unfold classifyRegime at h
   split_ifs at h with h1 h2 <;> first | exact absurd h (by decide) | skip
   exact majoritySafe_of_two_chunks_gt_stages N C hN h2
+
+/-- `quorumFold` is exactly the majority-safe but not quorum-safe band. -/
+theorem classifyRegime_eq_quorumFold_iff_majoritySafe_not_quorumSafe
+    (N C : ℕ) (hN : 0 < N) :
+    classifyRegime N C = FoldRegime.quorumFold ↔
+      majoritySafeFold N C ∧ ¬ quorumSafeFold N C := by
+  constructor
+  · intro hClass
+    constructor
+    · exact quorumFold_is_majoritySafe N C hN hClass
+    · intro hQuorum
+      have hMerge :
+          classifyRegime N C = FoldRegime.mergeAll :=
+        (classifyRegime_eq_mergeAll_iff_quorumSafe N C hN).2 hQuorum
+      rw [hClass] at hMerge
+      cases hMerge
+  · rintro ⟨hMajority, hNotQuorum⟩
+    unfold classifyRegime
+    have hMajorityThreshold :
+        2 * C > N :=
+      (majoritySafeFold_iff_two_chunks_gt_stages N C hN).1 hMajority
+    have hNotMergeThreshold :
+        ¬ 3 * C > 2 * N := by
+      intro hMergeThreshold
+      exact hNotQuorum
+        ((quorumSafeFold_iff_three_chunks_gt_two_stages N C hN).2 hMergeThreshold)
+    simp [hNotMergeThreshold, hMajorityThreshold]
 
 /-- syncRequired regime means neither quorum nor majority safety. -/
 theorem syncRequired_not_majoritySafe (N C : ℕ)
@@ -196,6 +269,34 @@ theorem syncRequired_not_majoritySafe (N C : ℕ)
   by_cases hle : N ≤ C
   · simp [idleStages, Nat.min_eq_right hle] at this; omega
   · push_neg at hle; simp [idleStages, Nat.min_eq_left (Nat.le_of_lt hle)] at this; omega
+
+/-- `syncRequired` is exactly the non-majority-safe regime. -/
+theorem classifyRegime_eq_syncRequired_iff_not_majoritySafe
+    (N C : ℕ) (hN : 0 < N) :
+    classifyRegime N C = FoldRegime.syncRequired ↔ ¬ majoritySafeFold N C := by
+  constructor
+  · intro hClass
+    exact syncRequired_not_majoritySafe N C hClass hN
+  · intro hNotMajority
+    unfold classifyRegime
+    by_cases hMergeThreshold : 3 * C > 2 * N
+    · have hQuorum :
+          quorumSafeFold N C :=
+        (quorumSafeFold_iff_three_chunks_gt_two_stages N C hN).2 hMergeThreshold
+      have hMajority :
+          majoritySafeFold N C :=
+        quorumSafe_implies_majoritySafe N C hQuorum
+      exact (hNotMajority hMajority).elim
+    · have hNotQuorum : ¬ quorumSafeFold N C := by
+        intro hQuorum
+        exact hMergeThreshold
+          ((quorumSafeFold_iff_three_chunks_gt_two_stages N C hN).1 hQuorum)
+      by_cases hMajorityThreshold : 2 * C > N
+      · have hMajority :
+            majoritySafeFold N C :=
+          (majoritySafeFold_iff_two_chunks_gt_stages N C hN).2 hMajorityThreshold
+        exact (hNotMajority hMajority).elim
+      · simp [hMergeThreshold, hMajorityThreshold]
 
 -- ─── The Determinism Chain ───────────────────────────────────────
 --
@@ -249,4 +350,3 @@ theorem diversity_determinism_chain (sys : DiverseSystem) :
    diversity_exceeds_majority sys⟩
 
 end ForkRaceFoldTheorems
-

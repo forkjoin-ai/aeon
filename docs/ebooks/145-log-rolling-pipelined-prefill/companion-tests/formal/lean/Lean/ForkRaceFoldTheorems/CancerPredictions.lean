@@ -133,7 +133,8 @@ def meanSeverityPrediction (mc : MutationCatalog) : Prop :=
 theorem mean_severity_well_defined (mc : MutationCatalog) :
     meanSeverityPrediction mc := by
   unfold meanSeverityPrediction
-  exact ⟨Nat.mul_le_mul_left _ (by omega), mc.nonempty⟩
+  have hCountGeOne : 1 ≤ mc.count := Nat.succ_le_of_lt mc.nonempty
+  exact ⟨Nat.mul_le_mul_left _ hCountGeOne, mc.nonempty⟩
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Prediction 7: Checkpoint Loss Order Matters
@@ -199,8 +200,7 @@ theorem order_produces_different_boundaries
     (hPositiveBeta : 0 < early.lostBeta1) :
     early.rejectionsBeforeLoss < late.rejectionsBeforeLoss := by
   unfold OrderDependentVoidBoundary.rejectionsBeforeLoss
-  rw [hSameBeta]
-  exact Nat.mul_lt_mul_of_pos_right hDiffRound hPositiveBeta
+  simpa [hSameBeta] using Nat.mul_lt_mul_of_pos_right hDiffRound hPositiveBeta
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- Prediction 8: Synthetic Lethality as Topological Phase Transition
@@ -269,7 +269,13 @@ def SyntheticLethalPair.transitionWidth (sl : SyntheticLethalPair) : ℕ :=
 theorem transition_width_equals_marginal (sl : SyntheticLethalPair) :
     sl.transitionWidth = sl.gene2.beta1Contribution := by
   unfold SyntheticLethalPair.transitionWidth
-  omega
+  have hBounded' :
+      sl.gene2.beta1Contribution + sl.gene1.beta1Contribution ≤ sl.healthyBeta1 := by
+    simpa [Nat.add_comm] using sl.bounded
+  have hGene2Fits :
+      sl.gene2.beta1Contribution ≤ sl.healthyBeta1 - sl.gene1.beta1Contribution :=
+    Nat.le_sub_of_add_le hBounded'
+  simpa using Nat.sub_sub_self hGene2Fits
 
 /-- Example: p53 (beta-1=3) and Rb (beta-1=2) are synthetically lethal
     when the viability threshold is 5.
@@ -283,9 +289,9 @@ def p53_rb_synthetic_lethal : SyntheticLethalPair where
   gene1Viable := by norm_num
   gene2Viable := by norm_num
   combinedLethal := by norm_num
-  gene1Pos := by omega
-  gene2Pos := by omega
-  bounded := by omega
+  gene1Pos := by norm_num
+  gene2Pos := by norm_num
+  bounded := by norm_num
 
 theorem p53_rb_is_lethal_pair :
     p53_rb_synthetic_lethal.healthyBeta1 -
@@ -395,7 +401,7 @@ def CellConvergenceBound.convergenceRound (ccb : CellConvergenceBound) : ℕ :=
 theorem convergence_round_positive (ccb : CellConvergenceBound) :
     0 < ccb.convergenceRound := by
   unfold CellConvergenceBound.convergenceRound
-  omega
+  exact Nat.sub_pos_of_lt (lt_of_lt_of_le (by decide) ccb.nontrivial)
 
 /-- After C* rounds, the future deficit is zero (ground state).
     Direct application of future_deficit_eventually_zero. -/

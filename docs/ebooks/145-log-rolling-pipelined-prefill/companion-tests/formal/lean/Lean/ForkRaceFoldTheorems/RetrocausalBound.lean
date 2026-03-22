@@ -62,7 +62,7 @@ structure RetrocausalWitness where
     it induces: for each choice i, count how many times i appears in the
     trajectory. This is the forward map from trajectory to terminal state. -/
 def trajectoryVoidBoundary (n : ℕ) (traj : List (Fin n)) (i : Fin n) : ℕ :=
-  (traj.filter (· == i)).length
+  (traj.filter fun choice => choice = i).length
 
 /-- The trajectory void boundary of the empty trajectory is all zeros.
     No rejections have occurred -- maximum uncertainty. -/
@@ -77,17 +77,17 @@ theorem trajectoryVoidBoundary_cons_eq (n : ℕ) (traj : List (Fin n))
     (j : Fin n) :
     trajectoryVoidBoundary n (j :: traj) j =
       trajectoryVoidBoundary n traj j + 1 := by
-  unfold trajectoryVoidBoundary
-  simp [List.filter_cons, beq_self_eq_true]
+  simp [trajectoryVoidBoundary]
 
 theorem trajectoryVoidBoundary_cons_ne (n : ℕ) (traj : List (Fin n))
     (j i : Fin n) (hne : i ≠ j) :
     trajectoryVoidBoundary n (j :: traj) i =
       trajectoryVoidBoundary n traj i := by
   unfold trajectoryVoidBoundary
-  simp [List.filter_cons]
-  intro h
-  exact absurd (Fin.ext (beq_iff_eq.mp h)) hne
+  have hNe : j ≠ i := by
+    intro h
+    exact hne h.symm
+  simp [hNe]
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- The sum of all void boundary entries equals the trajectory length
@@ -113,11 +113,10 @@ theorem trajectoryVoidBoundary_sum (n : ℕ) (hn : 0 < n)
         congr 1; ext i
         by_cases h : i = hd
         · subst h; simp [trajectoryVoidBoundary_cons_eq]
-        · simp [trajectoryVoidBoundary_cons_ne n tl hd i h]
-      rw [this, Finset.sum_add_const_nat (f := fun i => trajectoryVoidBoundary n tl i)
-        (c := fun i => if i = hd then 1 else 0)]
-      · simp [Finset.sum_ite_eq', Finset.mem_univ]
-      · intro i _; split_ifs <;> omega
+        · simp [trajectoryVoidBoundary_cons_ne n tl hd i h, h]
+      rw [this, Finset.sum_add_distrib]
+      congr 1
+      simp
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Forward Direction: Trajectory Determines Terminal
@@ -149,43 +148,25 @@ theorem retrocausal_trajectory_determines_terminal
     rw1.terminal.voidBoundary i =
       rw2.terminal.voidBoundary (i.cast hSameN) := by
   rw [hValid1 i, hValid2 (i.cast hSameN)]
-  -- Both sides count occurrences in trajectories that are element-wise equal
-  unfold trajectoryVoidBoundary
-  congr 1
-  -- The filtered lists have the same length because the trajectories are
-  -- element-wise equal (modulo the cast)
-  have hLenEq : rw1.trajectory.length = rw2.trajectory.length := hSameTraj
-  induction rw1.trajectory with
-  | nil =>
-    cases rw2.trajectory with
-    | nil => rfl
-    | cons _ _ => simp at hSameTraj
-  | cons hd1 tl1 ih =>
-    cases rw2.trajectory with
-    | nil => simp at hSameTraj
-    | cons hd2 tl2 =>
-      simp only [List.filter_cons, List.length_cons] at *
-      have hHdEq : hd1.val = hd2.val := by
-        have := hTrajEq ⟨0, by omega⟩
-        simpa using this
-      have hTlLen : tl1.length = tl2.length := by omega
-      have hTlTraj : ∀ k : Fin tl1.length,
-          (tl1.get k).val = (tl2.get (k.cast hTlLen)).val := by
-        intro k
-        have := hTrajEq ⟨k.val + 1, by omega⟩
-        simp [List.get_cons_succ] at this
-        exact this
-      have ihApp := ih hTlLen hTlTraj
-      -- The BEq results agree because the heads have equal .val
-      have hBEq : (hd1 == i) = (hd2 == i.cast hSameN) := by
-        simp only [beq_iff_eq, Fin.ext_iff]
-        constructor
-        · intro h; rw [h]; simp [Fin.val_cast]
-        · intro h; have := h; simp [Fin.val_cast] at this; omega
-      rw [hBEq]
-      split_ifs with h
-      · simp [ihApp]
-      · exact ihApp
+  have hTrajValsEq : rw1.trajectory.map Fin.val = rw2.trajectory.map Fin.val := by
+    apply List.ext_get
+    · simpa using hSameTraj
+    · intro k hk1 hk2
+      simpa [List.getElem_map] using hTrajEq ⟨k, by simpa using hk1⟩
+  have hCount1 :
+      trajectoryVoidBoundary rw1.terminal.numChoices rw1.trajectory i =
+        ((rw1.trajectory.map Fin.val).filter (fun value => i.val = value)).length := by
+    simpa [trajectoryVoidBoundary] using
+      congrArg List.length
+        (List.map_filter Fin.val_injective (l := rw1.trajectory) (p := fun choice => choice = i))
+  have hCount2 :
+      trajectoryVoidBoundary rw2.terminal.numChoices rw2.trajectory (i.cast hSameN) =
+        ((rw2.trajectory.map Fin.val).filter (fun value => i.val = value)).length := by
+    simpa [trajectoryVoidBoundary, Fin.val_cast] using
+      congrArg List.length
+        (List.map_filter Fin.val_injective (l := rw2.trajectory)
+          (p := fun choice => choice = i.cast hSameN))
+  rw [hCount1, hCount2, hTrajValsEq]
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Backward Direction: Terminal Bounds Trajectory
@@ -436,7 +417,10 @@ structure LandauerRetrocausalWitness where
 theorem retrocausal_heat_bounds_trajectory_length
     (lw : LandauerRetrocausalWitness) :
     lw.cumulativeHeat / lw.heatPerStep ≤ lw.witness.terminal.rounds := by
-  exact Nat.div_le_of_le_mul lw.heatConsistent
+  have hMul :
+      lw.cumulativeHeat ≤ lw.heatPerStep * lw.witness.terminal.rounds := by
+    simpa [Nat.mul_comm] using lw.heatConsistent
+  exact Nat.div_le_of_le_mul hMul
 
 /-- Stronger form: if we know the exact heat per step, the trajectory
     length is exactly determined by the cumulative heat. -/

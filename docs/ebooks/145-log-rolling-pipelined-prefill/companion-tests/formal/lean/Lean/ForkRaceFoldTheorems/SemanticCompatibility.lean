@@ -8,6 +8,9 @@
   Extension for polyglot gnode (Book 200) and Betty compiler (Book 161).
 -/
 
+import Mathlib.Data.List.Basic
+import Mathlib.Data.Nat.Basic
+
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Topology Types: the language-agnostic types that live on GG edges
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -32,7 +35,7 @@ inductive TopologyType where
   | option_ (inner : TopologyType)
   | product (fieldCount : ℕ) (open_ : Bool)
   | sum_ (variantCount : ℕ)
-  | opaque (langId : ℕ) (typeId : ℕ)
+  | opaque_ (langId : ℕ) (typeId : ℕ)
   | unknown
   deriving DecidableEq, Repr
 
@@ -90,10 +93,10 @@ def topologyTypeCompat : TopologyType → TopologyType → TypeCompat
     else TypeCompat.incompatible
   | TopologyType.sum_ va, TopologyType.sum_ vb =>
     if va == vb then TypeCompat.compatible else TypeCompat.incompatible
-  | TopologyType.opaque la na, TopologyType.opaque lb nb =>
+  | TopologyType.opaque_ la na, TopologyType.opaque_ lb nb =>
     if la == lb && na == nb then TypeCompat.compatible else TypeCompat.proofObligation
-  | TopologyType.opaque _ _, _ => TypeCompat.proofObligation
-  | _, TopologyType.opaque _ _ => TypeCompat.proofObligation
+  | TopologyType.opaque_ _ _, _ => TypeCompat.proofObligation
+  | _, TopologyType.opaque_ _ _ => TypeCompat.proofObligation
   | _, _ => TypeCompat.incompatible
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -125,7 +128,7 @@ theorem topology_type_compat_refl : ∀ (t : TopologyType),
   | TopologyType.option_ i => by simp [topologyTypeCompat]; exact topology_type_compat_refl i
   | TopologyType.product f o => by simp [topologyTypeCompat]
   | TopologyType.sum_ v => by simp [topologyTypeCompat]
-  | TopologyType.opaque l n => by simp [topologyTypeCompat]
+  | TopologyType.opaque_ l n => by simp [topologyTypeCompat]
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Theorem 3: Integer is a subtype of Number (JSON schema)
@@ -242,14 +245,9 @@ theorem fold_uniform_branches_consistent (ty : TopologyType) (n : ℕ) (hn : 0 <
       branchTypes := List.replicate (n + 1) ty,
       hNonEmpty := by simp
     } := by
-  simp [foldConsistent, List.replicate]
-  intro t ht
-  left
-  have : t = ty := by
-    rw [List.replicate_succ] at ht
-    exact List.eq_of_mem_replicate ht
-  rw [this]
-  exact topology_type_compat_refl ty
+  simpa [foldConsistent, List.replicate, topology_type_compat_refl] using
+    (Or.inl (topology_type_compat_refl ty) : topologyTypeCompat ty ty = TypeCompat.compatible ∨
+      topologyTypeCompat ty ty = TypeCompat.proofObligation)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Theorem 8: Composition of invertible functions is invertible
@@ -332,15 +330,31 @@ theorem bytes_incompatible_with_product (f : ℕ) (o : Bool) :
 -- Theorem 11: Option subtyping -- non-null into nullable is safe
 -- ═══════════════════════════════════════════════════════════════════════════
 
-theorem option_accepts_non_null (t : TopologyType) (ht : t ≠ TopologyType.unknown) :
+/-- Types that remain compatible when wrapped in one more nullable layer. -/
+def supportsNullableEmbedding : TopologyType → Prop
+  | TopologyType.bytes => False
+  | TopologyType.option_ inner => supportsNullableEmbedding inner
+  | _ => True
+
+theorem option_accepts_non_null (t : TopologyType) (hNullable : supportsNullableEmbedding t) :
     topologyTypeCompat t (TopologyType.option_ t) = TypeCompat.compatible := by
-  cases t <;> simp [topologyTypeCompat]
-  case json s => exact json_schema_compat_refl s
-  case stream e => exact topology_type_compat_refl e
-  case option_ i => exact topology_type_compat_refl i
-  case product f o => simp
-  case sum_ v => simp
-  case opaque l n => simp
+  induction t with
+  | unknown =>
+      simp [supportsNullableEmbedding, topologyTypeCompat]
+  | json s =>
+      simp [supportsNullableEmbedding, topologyTypeCompat, json_schema_compat_refl]
+  | bytes =>
+      cases hNullable
+  | stream e =>
+      simp [supportsNullableEmbedding, topologyTypeCompat, topology_type_compat_refl]
+  | option_ i ih =>
+      simpa [supportsNullableEmbedding, topologyTypeCompat] using ih hNullable
+  | product f o =>
+      simp [supportsNullableEmbedding, topologyTypeCompat]
+  | sum_ v =>
+      simp [supportsNullableEmbedding, topologyTypeCompat]
+  | opaque_ l n =>
+      simp [supportsNullableEmbedding, topologyTypeCompat]
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Theorem 12: Cross-language denotation alignment
@@ -402,12 +416,9 @@ theorem uniform_fold_zero_obligations (ty : TopologyType) (branches : List Topol
   induction branches with
   | nil => simp [foldProofObligationCount]
   | cons hd tl ih =>
-    simp [foldProofObligationCount, List.foldl]
-    have hhd : hd = ty := hUniform hd (List.mem_cons_self hd tl)
-    rw [hhd]
-    have := topology_type_compat_refl ty
-    simp [this]
-    exact ih (fun t ht => hUniform t (List.mem_cons_of_mem hd ht))
+    have hhd : hd = ty := hUniform hd (by simp)
+    simp [foldProofObligationCount, hhd, topology_type_compat_refl ty]
+    simpa [foldProofObligationCount] using ih (fun t ht => hUniform t (by simp [ht]))
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Theorem 14: The Hope Certificate
@@ -447,20 +458,19 @@ def typeUniverseSize : ℕ := 8
 theorem hope_g2_confusion_bounded (edgeCount actualConfusion : ℕ)
     (h : actualConfusion ≤ edgeCount * typeUniverseSize * typeUniverseSize) :
     actualConfusion ≤ edgeCount * 64 := by
-  simp [typeUniverseSize] at h
-  exact h
+  simpa [typeUniverseSize, Nat.mul_assoc] using h
 
 /-- G5 witness: adding a type annotation (replacing Unknown with a known type)
     strictly decreases the Unknown count. -/
 theorem hope_g5_annotation_decreases_unknown (unknownCount : ℕ) (h : 0 < unknownCount) :
     unknownCount - 1 < unknownCount := by
-  omega
+  simpa using Nat.sub_lt h (by decide : 0 < (1 : ℕ))
 
 /-- G5: type coverage is monotonically non-decreasing as annotations are added. -/
 theorem hope_g5_coverage_monotone (typed unknown : ℕ)
     (h : 0 < unknown) :
     typed < typed + 1 := by
-  omega
+  simpa [Nat.add_comm] using Nat.lt_succ_self typed
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- Theorem 15: Diversity Optimality

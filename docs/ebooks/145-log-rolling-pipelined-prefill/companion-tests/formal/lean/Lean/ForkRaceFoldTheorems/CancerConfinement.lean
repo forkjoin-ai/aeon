@@ -126,7 +126,7 @@ def ConfinementCost.costNum (c : ConfinementCost) : ℕ :=
 /-- At zero deficit, cost equals base * total (denominator cancels to base). -/
 theorem confinement_at_zero_deficit (c : ConfinementCost) (h : c.deficit = 0) :
     c.costNum = c.baseBeta1 * c.totalBeta1 := by
-  unfold ConfinementCost.costNum; omega
+  simp [ConfinementCost.costNum, h]
 
 /-- Confinement cost is monotonically increasing in deficit. -/
 theorem confinement_monotone_in_deficit (c1 c2 : ConfinementCost)
@@ -135,7 +135,8 @@ theorem confinement_monotone_in_deficit (c1 c2 : ConfinementCost)
     (hDeficit : c1.deficit ≤ c2.deficit) :
     c1.costNum ≤ c2.costNum := by
   unfold ConfinementCost.costNum
-  omega
+  rw [hBase, hTotal]
+  exact Nat.mul_le_mul_left _ (Nat.add_le_add_left hDeficit _)
 
 /-- Higher deficit means strictly higher cost when base > 0. -/
 theorem confinement_strict_monotone (c1 c2 : ConfinementCost)
@@ -145,7 +146,10 @@ theorem confinement_strict_monotone (c1 c2 : ConfinementCost)
     (hPos : 0 < c1.baseBeta1) :
     c1.costNum < c2.costNum := by
   unfold ConfinementCost.costNum
-  omega
+  have hPos' : 0 < c2.baseBeta1 := by
+    simpa [hBase] using hPos
+  rw [hBase, hTotal]
+  exact Nat.mul_lt_mul_of_pos_left (Nat.add_lt_add_left hDeficit _) hPos'
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- THM-SCREENING-EFFECT: Successive restorations get cheaper
@@ -181,7 +185,7 @@ theorem screening_reduces_deficit (r : TwoStepRestoration) :
 theorem screening_cheaper_second_step (r : TwoStepRestoration) :
     r.beta1B * (r.totalBeta1 + r.deficitAfterA) ≤
     r.beta1B * (r.totalBeta1 + r.initialDeficit) := by
-  unfold TwoStepRestoration.deficitAfterA; omega
+  exact Nat.mul_le_mul_left _ (Nat.add_le_add_left (screening_reduces_deficit r) _)
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- THM-ASYMPTOTIC-FREEDOM: Low deficit permits independent targeting
@@ -195,27 +199,28 @@ inductive ConfinementRegime where
   deriving DecidableEq, Repr
 
 /-- Classify a deficit into a confinement regime. -/
-def classifyRegime (deficit freeThreshold confinedThreshold : ℕ) : ConfinementRegime :=
+def classifyConfinementRegime (deficit freeThreshold confinedThreshold : ℕ) : ConfinementRegime :=
   if deficit ≤ freeThreshold then .free
   else if deficit ≤ confinedThreshold then .transitional
   else .confined
 
 /-- Zero deficit is always in the free regime. -/
 theorem zero_deficit_is_free (ft ct : ℕ) :
-    classifyRegime 0 ft ct = .free := by
-  unfold classifyRegime; simp
+    classifyConfinementRegime 0 ft ct = .free := by
+  unfold classifyConfinementRegime; simp
 
 /-- Maximum deficit (all suppressors lost) is confined when total > threshold. -/
 theorem max_deficit_is_confined (total : ℕ) (ft ct : ℕ)
-    (hThresh : ct < total) :
-    classifyRegime total ft ct = .confined := by
-  unfold classifyRegime; omega
+    (hFree : ft < total) (hThresh : ct < total) :
+    classifyConfinementRegime total ft ct = .confined := by
+  unfold classifyConfinementRegime
+  simp [Nat.not_le.mpr hFree, Nat.not_le.mpr hThresh]
 
 /-- Regime is monotone: higher deficit never produces a freer regime. -/
 theorem regime_monotone (d1 d2 ft ct : ℕ) (h : d1 ≤ d2)
-    (hConfined : classifyRegime d1 ft ct = .confined) :
-    classifyRegime d2 ft ct = .confined := by
-  unfold classifyRegime at *
+    (hConfined : classifyConfinementRegime d1 ft ct = .confined) :
+    classifyConfinementRegime d2 ft ct = .confined := by
+  unfold classifyConfinementRegime at *
   split_ifs at * <;> omega
 
 /-- In the free regime, the confinement cost is at most 2x base
@@ -223,7 +228,10 @@ theorem regime_monotone (d1 d2 ft ct : ℕ) (h : d1 ≤ d2)
 theorem free_regime_bounded_cost (c : ConfinementCost)
     (hFree : c.deficit ≤ c.totalBeta1) :
     c.costNum ≤ c.baseBeta1 * (2 * c.totalBeta1) := by
-  unfold ConfinementCost.costNum; omega
+  unfold ConfinementCost.costNum
+  have hBound : c.totalBeta1 + c.deficit ≤ 2 * c.totalBeta1 := by
+    simpa [two_mul] using Nat.add_le_add_left hFree c.totalBeta1
+  exact Nat.mul_le_mul_left _ hBound
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- THM-BYPASS-MONOTONE: Bypass risk increases with deficit
@@ -285,7 +293,7 @@ def HubDependentSystem.depFirstGain (s : HubDependentSystem) : ℕ :=
 theorem hub_first_dominates (s : HubDependentSystem) :
     s.depFirstGain < s.hubFirstGain := by
   unfold HubDependentSystem.hubFirstGain HubDependentSystem.depFirstGain
-  omega
+  exact Nat.lt_add_of_pos_left s.hubPositive
 
 /-- Hub-first gain is at least the hub's own beta-1. -/
 theorem hub_first_at_least_hub (s : HubDependentSystem) :
@@ -295,7 +303,8 @@ theorem hub_first_at_least_hub (s : HubDependentSystem) :
 /-- Hub-first gain exceeds dependent-first gain by at least the hub's beta-1. -/
 theorem hub_first_advantage (s : HubDependentSystem) :
     s.hubFirstGain - s.depFirstGain = s.beta1Hub := by
-  unfold HubDependentSystem.hubFirstGain HubDependentSystem.depFirstGain; omega
+  unfold HubDependentSystem.hubFirstGain HubDependentSystem.depFirstGain
+  exact Nat.add_sub_cancel_right _ _
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- THM-GLUON-SEVERING: Knockout severs crosstalk connections
@@ -321,7 +330,9 @@ theorem two_knockouts_severs_all :
 /-- A system with all gluons intact has full crosstalk. -/
 theorem all_gluons_means_neutral (activeCount : ℕ)
     (h : activeCount = 3) :
-    activeCount * (activeCount - 1) = gluonsInCompleteTriangle := by omega
+    activeCount * (activeCount - 1) = gluonsInCompleteTriangle := by
+  rw [h]
+  norm_num [gluonsInCompleteTriangle]
 
 -- ═══════════════════════════════════════════════════════════════════════════════
 -- THM-SCALE-TOWER: DNA sigma propagates to pathway beta-1
@@ -379,7 +390,7 @@ theorem cancer_confinement_master :
     -- 3. Screening reduces deficit for second step
     (∀ (r : TwoStepRestoration), r.deficitAfterA ≤ r.initialDeficit) ∧
     -- 4. Zero deficit is always free regime
-    (∀ (ft ct : ℕ), classifyRegime 0 ft ct = .free) ∧
+    (∀ (ft ct : ℕ), classifyConfinementRegime 0 ft ct = .free) ∧
     -- 5. Bypass risk is zero at zero deficit
     (∀ (br : BypassRisk), br.deficit = 0 → br.riskNum = 0) ∧
     -- 6. Hub-first dominates dependent-first

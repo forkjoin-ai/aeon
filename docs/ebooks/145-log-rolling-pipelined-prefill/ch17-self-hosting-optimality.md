@@ -216,7 +216,7 @@ We built a Skyrms void walker (`forest/skyrms-walk.ts`) that takes Forest's 2,43
 
 **The identity.** `ExplorationIdentity.lean` (7 theorems, zero sorry) proves:
 
-$$\text{Optimal} - \text{Skyrms} = \text{Exploration}$$
+$$\text{Skyrms} - \text{Optimal} = \text{Exploration}$$
 
 The gap between the globally optimal assignment and the Skyrms Nash equilibrium is exactly the exploration budget. This is not an inequality. It is an accounting identity. The exploration is not overhead. It is the distance between what you know and what you could know.
 
@@ -225,6 +225,8 @@ The gap between the globally optimal assignment and the Skyrms Nash equilibrium 
 $$\text{Total Gap} = \text{God Gap} + \text{Exploration}$$
 
 Two unknowns. Both finite. Both measurable. Both shrinking. Neither provably zero. The God Gap is what you *can't* know (global optimality is undecidable). The Exploration is what you *choose* not to exploit (the sliver nodes). The first gap is epistemological. The second is strategic. The sum is the price of being alive in a world you haven't finished exploring.
+
+**The sliver of exploration.** `SliverOfHope.lean` proves the `+1` sliver is what prevents any live option from being driven to zero: hope is not sentiment, it is the structural remainder that survives the fold. The exploration-side analogue is now explicit in `CosmicOptimalDelta.lean`, `CMBVisibilityBoundary.lean`, and `KnowabilitySplit.lean`. `total_observer_delta_eq_visibility_iff_zero_exploration` proves that when the strategic gap closes, the remaining observer gap collapses only to the visibility floor, not to zero. `zero_exploration_still_leaves_pre_cmb_hidden` makes the same point concretely: even when exploration budget is zero, a positive observer gap remains and the pre-CMB epoch stays hidden. That residual is the sliver in strategic form. Hope says no choice reaches zero weight. Exploration says no live search surface collapses to total knowledge.
 
 **The oscillation.** `SliverExploration.lean` (14 theorems, zero sorry) proves the purity-diversity oscillation:
 

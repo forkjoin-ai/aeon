@@ -49,7 +49,8 @@ theorem quantum_cancer_retrocausally_indistinguishable
 
 theorem collapse_deficit_positive (rc : RetrocausalCollapse) :
     0 < rc.deficit := by
-  unfold RetrocausalCollapse.deficit; omega
+  unfold RetrocausalCollapse.deficit
+  exact lt_of_lt_of_le (by decide : 0 < 2) rc.preNontrivial
 
 theorem retrocausal_terminal_positive (bs : BuleyeanSpace)
     (i : Fin bs.numChoices) :

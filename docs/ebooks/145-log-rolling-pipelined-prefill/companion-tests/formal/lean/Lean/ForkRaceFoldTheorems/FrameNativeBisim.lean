@@ -3,7 +3,7 @@ import ForkRaceFoldTheorems.Claims
 
 namespace ForkRaceFoldTheorems
 
-/--
+/-!
 Track Alpha: Frame-Native Bisimulation
 
 THM-FRAME-BISIM — Frame-native execution (frameRace, frameFold) produces
@@ -49,11 +49,17 @@ structure ExecutionModel (N : ℕ) where
 
 /-- Frame-native race result: first to complete wins. -/
 def frameRaceResult {N : ℕ} (model : ExecutionModel N) : ℕ :=
-  model.workResult ⟨0, by omega⟩  -- simplified: first completer wins
+  if h : 0 < N then
+    model.workResult ⟨0, h⟩
+  else
+    0
 
 /-- Stream-based race result: first to complete wins (same semantics). -/
 def streamRaceResult {N : ℕ} (model : ExecutionModel N) : ℕ :=
-  model.workResult ⟨0, by omega⟩  -- same deterministic outcome
+  if h : 0 < N then
+    model.workResult ⟨0, h⟩
+  else
+    0
 
 /-- Frame-native fold: all complete, merge via deterministic reducer. -/
 def frameFoldResult {N : ℕ} (model : ExecutionModel N) (merge : (Fin N → ℕ) → ℕ) : ℕ :=
