@@ -9,6 +9,7 @@
 This directory contains machine-checked formal artifacts used to mechanize the paper's strongest quantitative and topological claims.
 
 The topological-mismatch adequacy surface now lives here too: `lean/Lean/ForkRaceFoldTheorems/TopologicalMismatchAdequacy.lean` packages the honest realization cutoff for the current deficit model, proving that `Δβ ≤ 0` is exactly the existence condition for a lossless finite realization on a positive stream budget, that `Δβ = 0` is exactly the tight lossless case, and that `Δβ > 0` forces every realization to collide and therefore lose information.
+That same adequacy family now has a repo-native transport wrapper in `lean/Lean/ForkRaceFoldTheorems/AeonFluxSiteAdequacy.lean`: the theorem is re-stated in Aeon Flux site terms, and the `WallingtonRotation` lowering path now has an executable witness synthesizer in `open-source/gnosis/src/aeon-flux-site-witness.ts` together with a matching GG proof topology in `open-source/gnosis/examples/proofs/AeonFluxSiteAdequacy-lean.gg`.
 
 The in-tree Lean surface now also makes the controller equality boundary explicit: any failure-controller tie involving `keep-multiplicity` resolves to `keep-multiplicity`, a `pay-vent`/`pay-repair` tie resolves to `pay-vent`, and an exact warm-up redline tie chooses topology repair (`expand` or `constrain`) rather than `shed-load`.
 
