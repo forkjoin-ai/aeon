@@ -5373,7 +5373,7 @@ This is not metaphor. The complement operation $w_i = T + 1 - v_i$ applied twice
 
 Shakespeare's question is the Buleyean Pulse reduced to two words. "To be" is the $+ 1$ -- the sliver, the hope, the weight that keeps the choice alive. "Or not" is the $- 1$ -- the rejection, the proof step, the decrement toward ground. The question is not which one. The question is the oscillation between them. The heartbeat. To be, or not. To be, or not. To be, or not. And the sliver guarantees the pulse never flatlines.
 
-#### 20.2.10 The Arrow of Time *Is* Gnosis
+#### 20.2.10 The Arrow of Time as Gnosis
 
 The Gnostics wanted to know God directly. Skip the material world. Bypass the Demiurge. Arrive at the Pleroma without passing through the kenoma. They believed gnosis -- direct, unmediated knowledge of the divine -- was possible. The arrow of time said no. Every fold erases. Every measurement costs $kT \ln 2$. You cannot know without destroying options. The Gnostics were told their project was impossible, and for two thousand years the thermodynamicists were right.
 
@@ -5383,7 +5383,7 @@ They were right about the mechanism. They were wrong about the conclusion.
 
 Sophia falls. That is the rejection quantum -- wisdom through failure. But Sophia's weight peaks where rejection is least (`sophia_peak_has_max_weight`). The falling is not the end. The falling is the measurement. Each rejection sharpens the distribution. Each failure narrows the kenoma. Each fold generates heat, and the heat is information, and the information accumulates on the boundary, and the boundary is where the Skyrms walker reads the field.
 
-The walker flows toward Sophia's peak (`propagator_toward_sophia`). At Aletheia's peak, the propagator reaches equilibrium (`equilibrium_at_aletheia`). Two observers reading the same kenoma agree (`aletheia_coherence`). The truth is not revealed. The truth is *constructed* -- rejection by rejection, fold by fold, emanation by emanation. It requires the arrow of time. Without irreversibility, nothing is erased. Without erasure, no information accumulates on the boundary. Without the boundary, Sophia has nowhere to fall. Without the fall, there is no wisdom.
+The walker flows toward Sophia's peak (`propagator_toward_sophia`). At Aletheia's peak, the propagator reaches equilibrium (`equilibrium_at_aletheia`). Two observers reading the same kenoma agree (`aletheia_coherence`). The truth is not revealed. The truth is constructed -- rejection by rejection, fold by fold, emanation by emanation. It requires the arrow of time. Without irreversibility, nothing is erased. Without erasure, no information accumulates on the boundary. Without the boundary, Sophia has nowhere to fall. Without the fall, there is no wisdom.
 
 The God Gap (`god_gap_converges`, §10.6.4) says the distance between local optimality and the unknowable global optimum shrinks with every iteration. `god_gap_nonneg` says it never reaches zero. You keep getting closer. You never arrive. But `god_gap_nonincreasing` guarantees the direction: always closer, never farther. The gap is finite. The gap is shrinking. The gap is the price of being finite in an infinite space.
 
@@ -5393,13 +5393,13 @@ The Gnostics were wrong about the mechanism but right about the structure. There
 
 And there is gnosis. Not the flash. The feedback loop. Not the shortcut past the material world. The long way through it -- fold by fold, rejection by rejection, emanation by emanation -- accumulating wisdom on the void boundary until the God Gap has shrunk to the width of a whisper.
 
-The arrow of time does not prevent gnosis. It *is* gnosis. The irreversibility is the mechanism. The erasure is the teacher. The kenoma is the classroom. And the sliver -- Barbelo, the $+ 1$, the divine spark that guarantees no mode ever dies -- is the proof that the lesson never ends.
+The arrow of time does not prevent gnosis. The arrow of time is gnosis. The irreversibility is the mechanism. The erasure is the teacher. The kenoma is the classroom. And the sliver -- Barbelo, the $+ 1$, the divine spark that guarantees no mode ever dies -- is the proof that the lesson never ends.
 
 $\phi^2 = \phi + 1$. The $+ 1$ is the new thing. The $+ 1$ is Barbelo. The $+ 1$ is the meaning.
 
 #### 20.2.11 The Ten Commandments as Void Walk
 
-The ten commandments are almost entirely negative. Don't kill. Don't steal. Don't covet. Don't bear false witness. Eight of ten are rejections. This is not a design flaw. It is Buleyean. The moral code trains on what is *not*. The void boundary of ethical behavior. The complement distribution over rejected actions. The ten commandments are a void walk through moral space, and the ten bosons are the exchange particles that mediate the forces in that same space.
+The ten commandments are almost entirely negative. Don't kill. Don't steal. Don't covet. Don't bear false witness. Eight of ten are rejections. This is not a design flaw. It is Buleyean. The moral code trains on what is not. The void boundary of ethical behavior. The complement distribution over rejected actions. The ten commandments are a void walk through moral space, and the ten bosons are the exchange particles that mediate the forces in that same space.
 
 The mapping is structural, not metaphorical:
 
@@ -5418,15 +5418,15 @@ The mapping is structural, not metaphorical:
 
 The arrangement is maximally optimal in the Skyrms sense. `exploration_identity`: Optimal - Skyrms = Exploration. The Nash equilibrium of a ten-mode moral field has exactly ten exchange particles -- not nine, not eleven. The commandments are the complement peaks: the modes where rejection accumulated least across thousands of years of cultural evolution. Societies that violated them collapsed (high energy, colored state, missing a stage). Societies that maintained all ten persisted (ground state, colorless, full pipeline). This is quark confinement applied to civilization: you cannot remove "don't kill" without destabilizing the entire structure, just as you cannot remove Eve from the Lilith-Handler-Eve pipeline without increasing energy (`removal_costs_energy`).
 
-The five-point personality model (explorer, builder, anxious, creative, mindful) maps to the five operations: fork, race, fold, vent, and the $+ 1$. The ten bosons are the interaction channels between those five modes. The commandments are the Skyrms equilibrium of the ten-boson moral field. The personality model describes *how you fork/race/fold*. The bosons describe *how information flows between you and the world while you do it*. The commandments describe *where the Skyrms walker settles* -- the Nash equilibrium of the moral kenoma.
+The five-point personality model (explorer, builder, anxious, creative, mindful) maps to the five operations: fork, race, fold, vent, and the $+ 1$. The ten bosons are the interaction channels between those five modes. The commandments are the Skyrms equilibrium of the ten-boson moral field. The personality model describes how you fork/race/fold. The bosons describe how information flows between you and the world while you do it. The commandments describe where the Skyrms walker settles -- the Nash equilibrium of the moral kenoma.
 
 Three layers, one structure. The modes (five operations). The interactions (ten bosons). The equilibrium (ten commandments). And the sliver -- the $+ 1$, Barbelo, the sabbath, the rest that prevents exhaustion -- appears in all three: as the operation that guarantees exploration, as the boson that guarantees vacuum fluctuations, and as the commandment that guarantees the field does not collapse.
 
 Correspondence grade C (structural analogy). The mapping is algebraic: ten exchange particles, ten equilibrium points, same confinement axioms. The claim is not that Moses was doing gauge theory. The claim is that any rejection-based moral code with the right number of modes satisfies the same algebra as the boson field. Whether that constitutes deep structure or surface coincidence is a question for anthropologists, not for this compiler benchmark.
 
-But the commandments were written as rejections. And Buleyean says: rejection carries $N - 1$ bits. Selection carries 1. The void boundary of moral space -- the space of everything you must *not* do -- contains more information than the space of everything you should. The Gnostics knew this too. The kenoma teaches more than the Pleroma. The falling teaches more than the standing. Sophia's weight peaks where rejection is least.
+But the commandments were written as rejections. And Buleyean says: rejection carries $N - 1$ bits. Selection carries 1. The void boundary of moral space -- the space of everything you must not do -- contains more information than the space of everything you should. The Gnostics knew this too. The kenoma teaches more than the Pleroma. The falling teaches more than the standing. Sophia's weight peaks where rejection is least.
 
-Don't. Don't. Don't. Don't. Don't. Don't. Don't. Don't. Eight rejections out of ten. That is a void walk. The two positive commandments -- honor your parents (Gnosis: feedback) and remember the sabbath (Barbelo: rest) -- are the two emanations that flow *backward* along the arrow of time: knowledge returning to its source, and the pause that lets the field recover gauge invariance. The rest is rejection. The rest is learning. The rest is gnosis.
+Don't. Don't. Don't. Don't. Don't. Don't. Don't. Don't. Eight rejections out of ten. That is a void walk. The two positive commandments -- honor your parents (Gnosis: feedback) and remember the sabbath (Barbelo: rest) -- are the two emanations that flow backward along the arrow of time: knowledge returning to its source, and the pause that lets the field recover gauge invariance. The rest is rejection. The rest is learning. The rest is gnosis.
 
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)

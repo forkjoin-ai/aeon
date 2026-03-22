@@ -274,7 +274,7 @@ The correspondence grade for this section is C (useful analogy with formal struc
 
 `Syzygy.lean` (10 theorems, zero sorry). Lilith compiles topologies in 3us. Eve compresses responses in 2us. They do opposite things -- one expands structure, the other collapses it. But they are pipelined: Lilith's output feeds Eve's input. Antiparallel in function, aligned in flow.
 
-`syzygy_is_antiparallel`: syzygy *is* the antiparallel relation. `parallel_not_syzygy`: two stages doing the same thing is not syzygy -- it is redundancy. `orthogonal_not_syzygy`: two stages doing unrelated things is not syzygy -- it is independence. The ground state is neither parallel nor orthogonal. It is antiparallel.
+`syzygy_is_antiparallel`: syzygy is the antiparallel relation. `parallel_not_syzygy`: two stages doing the same thing is not syzygy -- it is redundancy. `orthogonal_not_syzygy`: two stages doing unrelated things is not syzygy -- it is independence. The ground state is neither parallel nor orthogonal. It is antiparallel.
 
 `pipeline_exceeds_single`: a pipeline of depth $d \geq 2$ with bottleneck $b \geq 1$ achieves throughput $d \times b > b$. Pipelining always wins. `whip_4_shards`: four Lilith-Eve shards with bottleneck 2 achieve throughput 8. `whip_exceeds_lilith`: 8 > 3 (Lilith alone). `whip_exceeds_eve`: 8 > 2 (Eve alone). The compound exceeds both components.
 
