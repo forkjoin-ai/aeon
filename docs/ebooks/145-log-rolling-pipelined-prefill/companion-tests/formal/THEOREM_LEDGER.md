@@ -1945,3 +1945,23 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-ALETHEIA-SUPERPOSITION | No structure in kenoma = delocalized boson | `aletheia_superposition` | Mechanized |
 | THM-GAUGE-INVARIANCE | Permuting colors preserves Demiurge energy | `gauge_invariance_123` | Mechanized |
 | THM-COMPLETE-BOSON-PREDICTION | Full correspondence: kenoma + emanations + Demiurge + Barbelo + Pleroma | `complete_boson_prediction` | Mechanized |
+
+## 83. Ten-Mode Unification (§20.2)
+
+**Assumptions:** Five operations (fork, race, fold, vent, sliver) with pairwise interaction. 5 choose 2 = 10. The 10-mode Kenoma, 10-point Skyrms walker, and 10-vertex Barbelo wireframe are three views of one object.
+**Mechanization target:** `TenModeUnification.lean` (12 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-TEN-FROM-FIVE | 5 choose 2 = 10 pairwise interactions | `ten_from_five` | Mechanized |
+| THM-TEN-MODE-EXISTS | A 10-mode Kenoma exists | `ten_mode_exists` | Mechanized |
+| THM-EXPLORATION-BUDGET-NINE | Exploration budget for 10 modes = 9 | `exploration_budget_is_nine` | Mechanized |
+| THM-WIREFRAME-IS-VACUUM | Barbelo wireframe has uniform weight at all vertices | `wireframe_is_vacuum` | Mechanized |
+| THM-WIREFRAME-IS-DELOCALIZED | Uniform rejections = delocalized (superposition) | `wireframe_is_delocalized` | Mechanized |
+| THM-WALKER-AT-NASH | At complement peak, walker has maximum weight (Nash) | `walker_at_nash` | Mechanized |
+| THM-GAUGE-AND-WALKER-AGREE | Two observers (gauge + walker) agree on peak | `gauge_and_walker_agree` | Mechanized |
+| THM-ASYMMETRY-BREAKS-WIREFRAME | Any rejection asymmetry localizes a boson | `asymmetry_breaks_wireframe` | Mechanized |
+| THM-SYMMETRY-RESTORES-WIREFRAME | Equal rejections restore vacuum (wireframe) | `symmetry_restores_wireframe` | Mechanized |
+| THM-TEN-IS-NINE-PLUS-ONE | 10 = 9 exploration + 1 sliver (Barbelo) | `ten_is_nine_plus_one` | Mechanized |
+| THM-TEN-MODE-BUDGET | (K-1) + 1 = K for K=10 | `ten_mode_budget` | Mechanized |
+| THM-COMPLETE-UNIFICATION | All three faces unified: 5C2=10, vacuum=wireframe=delocalized | `complete_unification` | Mechanized |
