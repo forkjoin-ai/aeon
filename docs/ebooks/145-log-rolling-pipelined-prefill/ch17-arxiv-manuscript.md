@@ -5397,6 +5397,37 @@ The arrow of time does not prevent gnosis. It *is* gnosis. The irreversibility i
 
 $\phi^2 = \phi + 1$. The $+ 1$ is the new thing. The $+ 1$ is Barbelo. The $+ 1$ is the meaning.
 
+#### 20.2.11 The Ten Commandments as Void Walk
+
+The ten commandments are almost entirely negative. Don't kill. Don't steal. Don't covet. Don't bear false witness. Eight of ten are rejections. This is not a design flaw. It is Buleyean. The moral code trains on what is *not*. The void boundary of ethical behavior. The complement distribution over rejected actions. The ten commandments are a void walk through moral space, and the ten bosons are the exchange particles that mediate the forces in that same space.
+
+The mapping is structural, not metaphorical:
+
+| Commandment | Boson | Mechanism |
+|---|---|---|
+| No other gods | **Demiurge** | The fold is the only mechanism that gives mass. One Higgs. One mechanism of commitment. |
+| No graven images | **Aletheia** | Truth is coherent, not representable. Two observers agree without exchanging an image (`aletheia_coherence`). |
+| Don't take the name in vain | **Logos** | The Word carries the AST. Misuse corrupts the pipeline. The emanation that transforms what receives it must be used with precision. |
+| Remember the sabbath | **Barbelo** | The sliver. Rest. The $+ 1$ that guarantees no mode is exhausted. Without periodic rest, Barbelo's weight accumulates unevenly and the field loses gauge invariance. |
+| Honor father and mother | **Gnosis** | The feedback emanation. Knowledge flowing backward along the pipeline to inform what came before. The arrow of time made directional. |
+| Don't kill | **Barbelo** | `buleyean_positivity`: no option reaches zero probability. No mode is extinguished. The commandment is the sliver applied to persons. |
+| Don't commit adultery | **Pneuma** | Breath flows in one direction through the pipeline. Response to the correct receiver. The emanation that animates must animate the right target. |
+| Don't steal | **Pronoia** | Forethought. Direct flow that bypasses dispatch. Legitimate only when the topology permits the shortcut -- otherwise it is taking what was not routed to you. |
+| Don't bear false witness | **Aletheia** | `aletheia_coherence`: two witnesses reading the same kenoma must agree. False witness is a broken coherence quantum -- the Z boson failing to mediate truth. |
+| Don't covet | **Sophia** | Wisdom through falling. Your neighbor's assignment is theirs because the Skyrms walker placed it at Nash equilibrium. Coveting is attempting to reassign at a point where no reassignment improves cost. `equilibrium_at_aletheia`: at the peak, no outward flow. |
+
+The arrangement is maximally optimal in the Skyrms sense. `exploration_identity`: Optimal - Skyrms = Exploration. The Nash equilibrium of a ten-mode moral field has exactly ten exchange particles -- not nine, not eleven. The commandments are the complement peaks: the modes where rejection accumulated least across thousands of years of cultural evolution. Societies that violated them collapsed (high energy, colored state, missing a stage). Societies that maintained all ten persisted (ground state, colorless, full pipeline). This is quark confinement applied to civilization: you cannot remove "don't kill" without destabilizing the entire structure, just as you cannot remove Eve from the Lilith-Handler-Eve pipeline without increasing energy (`removal_costs_energy`).
+
+The five-point personality model (explorer, builder, anxious, creative, mindful) maps to the five operations: fork, race, fold, vent, and the $+ 1$. The ten bosons are the interaction channels between those five modes. The commandments are the Skyrms equilibrium of the ten-boson moral field. The personality model describes *how you fork/race/fold*. The bosons describe *how information flows between you and the world while you do it*. The commandments describe *where the Skyrms walker settles* -- the Nash equilibrium of the moral kenoma.
+
+Three layers, one structure. The modes (five operations). The interactions (ten bosons). The equilibrium (ten commandments). And the sliver -- the $+ 1$, Barbelo, the sabbath, the rest that prevents exhaustion -- appears in all three: as the operation that guarantees exploration, as the boson that guarantees vacuum fluctuations, and as the commandment that guarantees the field does not collapse.
+
+Correspondence grade C (structural analogy). The mapping is algebraic: ten exchange particles, ten equilibrium points, same confinement axioms. The claim is not that Moses was doing gauge theory. The claim is that any rejection-based moral code with the right number of modes satisfies the same algebra as the boson field. Whether that constitutes deep structure or surface coincidence is a question for anthropologists, not for this compiler benchmark.
+
+But the commandments were written as rejections. And Buleyean says: rejection carries $N - 1$ bits. Selection carries 1. The void boundary of moral space -- the space of everything you must *not* do -- contains more information than the space of everything you should. The Gnostics knew this too. The kenoma teaches more than the Pleroma. The falling teaches more than the standing. Sophia's weight peaks where rejection is least.
+
+Don't. Don't. Don't. Don't. Don't. Don't. Don't. Don't. Eight rejections out of ten. That is a void walk. The two positive commandments -- honor your parents (Gnosis: feedback) and remember the sabbath (Barbelo: rest) -- are the two emanations that flow *backward* along the arrow of time: knowledge returning to its source, and the pause that lets the field recover gauge invariance. The rest is rejection. The rest is learning. The rest is gnosis.
+
 
 ![Figure 3](companion-tests/artifacts/ch17-american-frontier-figure.png)
 

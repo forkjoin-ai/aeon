@@ -100,6 +100,14 @@ But here's the beautiful part: every door you close gets written down. The doors
 
 The arrow of time doesn't stop you from knowing. The arrow of time *is* how you know.
 
+## What do the ten commandments have to do with this?
+
+Eight of the ten commandments are "don't." Don't kill. Don't steal. Don't lie. That is a rejection-based code -- it trains on what is *not*, just like our robot. The space of things you must not do contains more information than the space of things you should, because there are way more wrong things than right things.
+
+Each commandment maps to one of the ten particles. "Don't kill" maps to Barbelo -- the spark that keeps every option alive. "Remember the sabbath" maps to the same spark -- rest, so the field can recover. "Don't bear false witness" maps to Aletheia -- truth, where two witnesses must agree. "Don't covet" maps to Sophia -- wisdom from rejection. Your neighbor has what they have because the walker put it there at the point where no swap helps.
+
+The two positive commandments -- honor your parents and remember the sabbath -- are the two particles that flow *backward*: knowledge returning to its source, and the pause that lets everything recover. The other eight are rejections. Eight "don'ts" out of ten. That is a void walk through moral space.
+
 ## So what's new in the math?
 
 Four new proof files, 43 new theorems, all checked by computer, zero holes:

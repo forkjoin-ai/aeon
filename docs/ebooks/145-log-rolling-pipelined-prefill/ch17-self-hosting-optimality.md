@@ -346,3 +346,4 @@ Correspondence grade C (structural analogy with falsifiable prediction). The ken
 15. *Boson localization*. If the Skyrms walker's complement peak does not correlate with where data flow concentrates in a three-color pipeline across 100+ iterations, `complete_boson_prediction` is falsified.
 16. *Gauge invariance*. If permuting the order of pipeline stages (compile, dispatch, compress) changes the field energy or boson position prediction, `gauge_invariance_123` is falsified.
 17. *Vacuum fluctuation*. If any mode in a sliver-active field reaches zero weight (complete extinction), `vacuum_fluctuation` is falsified -- the sliver failed to prevent extinction.
+18. *Moral confinement*. If a society can remove any one of the ten rejection-based moral equilibrium points (commandments) without destabilizing the others across 10+ generations, the confinement analogy to `removal_costs_energy` is falsified for moral fields.
