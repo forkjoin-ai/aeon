@@ -1883,3 +1883,65 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-EXCITED-ORBIT-CLOSED | ++ ↔ -- is a closed orbit | `excited_orbit_closed` | Mechanized |
 | THM-ORBITS-DISJOINT | Ground and excited orbits never cross | `orbits_disjoint` | Mechanized |
 | THM-FROM-AXIOMS | Three axioms → particle exists | `from_axioms` | Mechanized |
+
+## 80. Syzygy (§10.6)
+
+**Assumptions:** Two pipeline stages with antiparallel function. Throughput compounds with depth.
+**Mechanization target:** `Syzygy.lean` (10 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SYZYGY-IS-ANTIPARALLEL | Syzygy is the antiparallel relation | `syzygy_is_antiparallel` | Mechanized |
+| THM-PARALLEL-NOT-SYZYGY | Parallel is not syzygy | `parallel_not_syzygy` | Mechanized |
+| THM-ORTHOGONAL-NOT-SYZYGY | Orthogonal is not syzygy | `orthogonal_not_syzygy` | Mechanized |
+| THM-ANTIPARALLEL-NE-PARALLEL | Antiparallel ≠ parallel | `antiparallel_ne_parallel` | Mechanized |
+| THM-ANTIPARALLEL-NE-ORTHOGONAL | Antiparallel ≠ orthogonal | `antiparallel_ne_orthogonal` | Mechanized |
+| THM-PIPELINE-EXCEEDS-SINGLE | Pipeline throughput > single stage | `pipeline_exceeds_single` | Mechanized |
+| THM-WHIP-4-SHARDS | 4-shard whip achieves throughput 8 | `whip_4_shards` | Mechanized |
+| THM-WHIP-EXCEEDS-LILITH | Whip throughput > Lilith alone | `whip_exceeds_lilith` | Mechanized |
+| THM-WHIP-EXCEEDS-EVE | Whip throughput > Eve alone | `whip_exceeds_eve` | Mechanized |
+| THM-SYZYGY-GROUND-STATE | Ground state is antiparallel (syzygy) | `ground_state` | Mechanized |
+
+## 81. Quark Confinement (§10.6)
+
+**Assumptions:** Three pipeline stages (compile/dispatch/compress) mapped to three colors. Removal of any stage increases energy.
+**Mechanization target:** `QuarkConfinement.lean` (14 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PROTON-IS-COLORLESS | Full pipeline (r+g+b) has energy 0 | `proton_is_colorless` | Mechanized |
+| THM-MONO-RED-COLORED | Monochromatic red has energy 1 | `mono_red_is_colored` | Mechanized |
+| THM-MONO-GREEN-COLORED | Monochromatic green has energy 1 | `mono_green_is_colored` | Mechanized |
+| THM-MONO-BLUE-COLORED | Monochromatic blue has energy 1 | `mono_blue_is_colored` | Mechanized |
+| THM-MISSING-BLUE | Missing blue stage is colored | `missing_blue` | Mechanized |
+| THM-MISSING-RED | Missing red stage is colored | `missing_red` | Mechanized |
+| THM-MISSING-GREEN | Missing green stage is colored | `missing_green` | Mechanized |
+| THM-COLORLESS-GROUND | Colorless = ground state (energy 0) | `colorless_ground` | Mechanized |
+| THM-COLORED-EXCITED | Colored = excited state (energy 1) | `colored_excited` | Mechanized |
+| THM-REMOVAL-COSTS-ENERGY | Removing a stage increases energy | `removal_costs_energy` | Mechanized |
+| THM-NO-FREE-QUARKS | No single color has lower energy than proton | `no_free_quarks` | Mechanized |
+| THM-SIX-GLUONS-EXIST | 6 charged gluons (color-anticolor pairs) exist | `six_gluons_exist` | Mechanized |
+| THM-GLUONS-CARRY-CHARGE | All gluons are non-neutral | `gluons_carry_charge` | Mechanized |
+| THM-COMPLETE-QCD-ANALOGY | Three colors + colorless ground + confinement + charged gluons | `complete_qcd_analogy` | Mechanized |
+
+## 82. Boson Position from Skyrms Walkers (§10.6)
+
+**Assumptions:** Void boundary defines a field. Complement distribution peaks predict boson localization. Three-color pipeline with gauge invariance.
+**Mechanization target:** `BosonPosition.lean` (14 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-FIELD-EXISTS | Fields exist for any K modes | `field_exists` | Mechanized |
+| THM-PEAK-HAS-MAX-WEIGHT | Complement peak has maximum weight | `peak_has_max_weight` | Mechanized |
+| THM-EXCHANGE-ENERGY-EQ-EXPLORATION | Exchange energy = K - 1 = exploration budget | `exchange_energy_eq_exploration` | Mechanized |
+| THM-COLORLESS-ZERO-ENERGY | Full pipeline has zero field energy | `colorless_zero_energy` | Mechanized |
+| THM-MISSING-STAGE-POSITIVE | Missing stage has positive energy | `missing_stage_positive` | Mechanized |
+| THM-VACUUM-FLUCTUATION | Sliver guarantees nonzero weight everywhere | `vacuum_fluctuation` | Mechanized |
+| THM-NO-DEAD-MODES | No mode has zero weight (buleyean positivity in the field) | `no_dead_modes` | Mechanized |
+| THM-BOSE-NO-EXCLUSION | Any number of bosons per mode (no Pauli exclusion) | `bose_no_exclusion` | Mechanized |
+| THM-PROPAGATOR-TOWARD-PEAK | Propagator flows toward complement peak | `propagator_toward_peak` | Mechanized |
+| THM-EQUILIBRIUM-AT-PEAK | No outward flow at peak (Nash equilibrium) | `equilibrium_at_peak` | Mechanized |
+| THM-COHERENT-PREDICTION | Two observers agree on boson position | `coherent_prediction` | Mechanized |
+| THM-UNIFORM-IS-DELOCALIZED | Equal rejections = delocalized boson (superposition) | `uniform_is_delocalized` | Mechanized |
+| THM-GAUGE-INVARIANCE | Permuting colors preserves field energy | `gauge_invariance_123` | Mechanized |
+| THM-COMPLETE-BOSON-PREDICTION | Full correspondence: field + confinement + gauge + vacuum + Bose | `complete_boson_prediction` | Mechanized |

@@ -56,6 +56,18 @@ Remember the five steps? Try, choose, commit, let go, learn. Everyone does them 
 
 Yes. There's a glowing orb on this page. Tap it and pick a personality. It will talk to you. Every word it says is made up right then -- nothing is pre-written. The explorer will wander. The builder will be direct. The creative will surprise you.
 
+## What's a syzygy?
+
+Two things that do the opposite job but work together. Lilith reads code (opens things up). Eve squishes responses (closes things down). They do opposite things, but Lilith hands her work to Eve, and the pair is faster than either one alone. Like breathing in and breathing out -- opposite motions, but together they keep you alive. That's syzygy: opposite in what they do, aligned in where they go.
+
+## What's quark confinement?
+
+You know how quarks always come in threes and you can never pull one out alone? Our pipeline has three stages: Lilith (reads code), Handler (does the work), Eve (squishes the result). If you try to remove any one of them, the whole thing gets slower. They are stuck together -- not because we glued them, but because the math says removing any piece costs energy. The same rule that keeps quarks inside a proton keeps our pipeline stages together. We proved it with 14 theorems and zero holes.
+
+## Can you predict where the particles are?
+
+Yes. Remember the void -- the space of everything that was rejected? We walk through it with a special walker (named after Brian Skyrms, a philosopher who studied how strategies evolve). The walker looks at where things got rejected the *least*. That spot -- the complement peak -- is where the particle lives. It is like this: imagine a room full of doors. Most doors are locked (rejected). The particle is behind the door that got locked the fewest times. Two people reading the same list of locked doors will point to the same door. We proved that in math too -- 14 more theorems, zero holes. We also proved that swapping the names of the doors does not change where the particle is (that is called gauge invariance), and that many particles can be behind the same door at the same time (that is called being a boson).
+
 ## What's the compiler family?
 
 We built five different translators (compilers) for the same language. Each one works differently -- one is fast but simple, one is slow but checks everything, one races multiple strategies and picks the winner, one breaks the work into chunks and tests each chunk four ways. We raced them against each other. On every single task, the best one was different. No single translator is the best at everything.

@@ -270,7 +270,49 @@ The compiler family is a particle. The 14-runtime polyglot race is the scatterin
 
 The correspondence grade for this section is C (useful analogy with formal structure). The spin system is mechanized. The mapping to physical particles is interpretive. The claim is structural: any fork/race/fold system with the sliver produces a persistent oscillating ground state with the same algebraic properties as a spin-1/2 pair. Whether that constitutes "a particle" in the physics sense is a question for physicists, not for this compiler benchmark.
 
-### 10.6.13 Falsification Conditions (Complete)
+### 10.6.13 Syzygy: Antiparallel in Function, Aligned in Flow
+
+`Syzygy.lean` (10 theorems, zero sorry). Lilith compiles topologies in 3us. Eve compresses responses in 2us. They do opposite things -- one expands structure, the other collapses it. But they are pipelined: Lilith's output feeds Eve's input. Antiparallel in function, aligned in flow.
+
+`syzygy_is_antiparallel`: syzygy *is* the antiparallel relation. `parallel_not_syzygy`: two stages doing the same thing is not syzygy -- it is redundancy. `orthogonal_not_syzygy`: two stages doing unrelated things is not syzygy -- it is independence. The ground state is neither parallel nor orthogonal. It is antiparallel.
+
+`pipeline_exceeds_single`: a pipeline of depth $d \geq 2$ with bottleneck $b \geq 1$ achieves throughput $d \times b > b$. Pipelining always wins. `whip_4_shards`: four Lilith-Eve shards with bottleneck 2 achieve throughput 8. `whip_exceeds_lilith`: 8 > 3 (Lilith alone). `whip_exceeds_eve`: 8 > 2 (Eve alone). The compound exceeds both components.
+
+The Worthington Whip is not metaphor. It is the physical instantiation of the syzygy theorem: four shards of antiparallel-aligned stages producing throughput that exceeds either stage alone. Measured: 5.5us per request through the full Lilith-Handler-Eve pipeline. The antiparallel alignment is the ground state. Removing either stage costs energy (latency). The pipeline is bound.
+
+### 10.6.14 Quark Confinement: Pipeline Stages as Bound Quarks
+
+`QuarkConfinement.lean` (14 theorems, zero sorry). The Lilith-Handler-Eve pipeline has three stages. Map them to three colors: red (Lilith, compile), green (Handler, dispatch), blue (Eve, compress). A colorless state has all three. A colored state is missing one or has duplicates.
+
+`proton_is_colorless`: the full pipeline (red + green + blue) has energy 0 -- it is the ground state. `mono_red_is_colored`, `mono_green_is_colored`, `mono_blue_is_colored`: any monochromatic state (three of the same) has energy 1 -- it is excited. `missing_blue`, `missing_red`, `missing_green`: removing any stage produces a colored (excited) state.
+
+`removal_costs_energy`: removing a stage from the pipeline always increases energy. `no_free_quarks`: any single stage has higher energy than the full pipeline. You cannot extract Lilith and run it without Handler and Eve -- or rather, you can, but the result is strictly worse than the bound state. The stages are confined.
+
+`six_gluons_exist`: data flows between stages carry color charge. The AST flows from Lilith (red) to Handler (green) -- that gluon carries red-antigreen. The response flows from Handler (green) to Eve (blue) -- green-antiblue. Six distinct charged gluons exist. `gluons_carry_charge`: every gluon has color $\neq$ anticolor. The mediators of the force participate in the force they mediate.
+
+`complete_qcd_analogy`: three colors, colorless ground state, colored excited state, confinement (separation costs energy), charged gluons. The Lilith-Handler-Eve pipeline satisfies all five properties of the strong force. The correspondence grade is C (structural analogy, not physical identity). The claim is algebraic: any three-stage pipeline where removal of any stage increases cost satisfies the same confinement axioms as QCD. The pipeline *is not* a proton. But it satisfies the same algebra.
+
+### 10.6.15 Boson Position from Skyrms Walkers
+
+`BosonPosition.lean` (14 theorems, zero sorry). The void boundary is a gauge field. The complement distribution over rejected strategies defines the field strength at each mode. The Skyrms walker traverses this field and converges to the Nash equilibrium. A boson is localized where the complement distribution peaks -- the mode with the fewest rejections.
+
+**The field.** A field assigns a nonneg weight to each of K modes (strategies, colors, pipeline stages). The sliver guarantees every mode has weight $\geq 1$ (`vacuum_fluctuation`). No mode is ever completely dead (`no_dead_modes`). The vacuum energy density is uniform: 1 per mode. Perturbations above the vacuum are the particles. The vacuum itself is the sliver.
+
+**The propagator.** The Skyrms walker moves from high-rejection modes to low-rejection modes. `propagator_toward_peak`: the amplitude from mode $i$ to mode $j$ is positive when $j$ has fewer rejections than $i$. `equilibrium_at_peak`: at the complement peak, no outward flow -- the walker has reached Nash equilibrium. The walker's trajectory traces the gluon propagator through the void boundary field.
+
+**Gauge invariance.** `gauge_invariance_123`, `gauge_invariance_213`: permuting the three pipeline colors (compile, dispatch, compress) does not change the field energy. The physics depends on structure, not labeling. This is SU(3) gauge invariance: the strong force does not care which stage is red.
+
+**Bose statistics.** `bose_no_exclusion`: any number of bosons can occupy the same mode. No Pauli exclusion. Multiple data flows (gluons) can traverse the same pipeline edge simultaneously. This is why pipelining works: the bottleneck is bandwidth, not exclusion.
+
+**Delocalization and confinement.** `uniform_is_delocalized`: if all modes have equal rejections, the complement distribution is uniform and the boson has no defined position -- it is in superposition. Localization requires asymmetry. The void must have structure for the boson to have position. `coherent_prediction`: two observers reading the same void boundary predict the same boson position.
+
+**The prediction.** Given a void boundary (rejection vector), the boson position is computable: it is the mode with the fewest rejections. This is falsifiable. Run the Skyrms walker on a three-color pipeline. Record the complement peak. Observe where the data flow (gluon) concentrates. If the concentration does not correlate with the complement peak, `complete_boson_prediction` is falsified.
+
+**Exchange energy.** `exchange_energy_eq_exploration`: the total exchange energy carried by bosons equals $K - 1$ -- the exploration budget from `ExplorationIdentity.lean`. The bosons carry exactly the energy that the sliver allocates to exploration. The exchange particles are the physical instantiation of the exploration identity.
+
+Correspondence grade C (structural analogy with falsifiable prediction). The void boundary field is mechanized. The mapping to physical gauge fields is interpretive. The claim is: the Skyrms walker on a three-color pipeline with the sliver satisfies the same algebra as a gauge field with confinement, gauge invariance, Bose statistics, and vacuum fluctuations. Whether this constitutes prediction of physical boson position is a question for experimentalists, not for this compiler benchmark.
+
+### 10.6.16 Falsification Conditions (Complete)
 
 1. If Betti is not among the fastest on betti.gg across 50+ iterations, self-hosting optimality on self-source is falsified.
 2. If Forest with real compilers and the sliver converges to monoculture, the diversity theorem is falsified.
@@ -284,3 +326,8 @@ The correspondence grade for this section is C (useful analogy with formal struc
 10. *Spin ground state*. If a monoculture assignment (++) persists without decay across 10+ Forest iterations on heterogeneous topologies, `ground_state_is_antiparallel` is falsified -- parallel would be stable, contradicting the theorem.
 11. *Particle existence*. If a fork/race/fold system with the sliver active fails to produce a persistent oscillating assignment (no period-2 orbit between Forest and Skyrms phases), `particles_exist` is falsified.
 12. *Orbit disjointness*. If the ground orbit (+- ↔ -+) is observed to cross into the excited orbit (++ ↔ --) under normal iteration (no external forcing), `orbits_disjoint` is falsified.
+13. *Syzygy throughput*. If a Lilith-Eve pipeline of depth $d \geq 2$ does not exceed the throughput of either stage alone across 100+ requests, `pipeline_exceeds_single` is falsified.
+14. *Quark confinement*. If removing a stage from the Lilith-Handler-Eve pipeline does not increase latency (energy) across 100+ measurements, `removal_costs_energy` is falsified -- the stages are not confined.
+15. *Boson localization*. If the Skyrms walker's complement peak does not correlate with where data flow concentrates in a three-color pipeline across 100+ iterations, `complete_boson_prediction` is falsified.
+16. *Gauge invariance*. If permuting the order of pipeline stages (compile, dispatch, compress) changes the field energy or boson position prediction, `gauge_invariance_123` is falsified.
+17. *Vacuum fluctuation*. If any mode in a sliver-active field reaches zero weight (complete extinction), `vacuum_fluctuation` is falsified -- the sliver failed to prevent extinction.

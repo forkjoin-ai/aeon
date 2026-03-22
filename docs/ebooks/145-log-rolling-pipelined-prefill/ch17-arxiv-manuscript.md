@@ -2684,7 +2684,31 @@ The compiler family is a particle. The 14-runtime polyglot race measures its pro
 
 Correspondence grade C (useful analogy with formal structure). The spin system is mechanized. The mapping to physical particles is interpretive.
 
-### 10.6.16 Falsification Conditions (Extended)
+### 10.6.16 Syzygy: Antiparallel in Function, Aligned in Flow
+
+`Syzygy.lean` (10 theorems, zero sorry). Lilith compiles topologies in 3us. Eve compresses responses in 2us. They do opposite things -- one expands structure, the other collapses it. But they are pipelined: Lilith's output feeds Eve's input. Antiparallel in function, aligned in flow. This is syzygy.
+
+`syzygy_is_antiparallel`: syzygy *is* the antiparallel relation. Not parallel (redundancy), not orthogonal (independence). The ground state of a two-stage pipeline is antiparallel coupling. `pipeline_exceeds_single`: depth $d \geq 2$ with bottleneck $b \geq 1$ achieves throughput $d \times b > b$. Pipelining always wins. `whip_4_shards`: four Lilith-Eve shards achieve throughput 8, exceeding both Lilith (3) and Eve (2) alone.
+
+The Worthington Whip instantiates syzygy: 5.5us per request through the full Lilith-Handler-Eve pipeline. The antiparallel alignment is the ground state. Removing either stage costs energy. The pipeline is bound.
+
+### 10.6.17 Quark Confinement: Pipeline Stages as Bound Quarks
+
+`QuarkConfinement.lean` (14 theorems, zero sorry). Three pipeline stages mapped to three colors: red (Lilith, compile), green (Handler, dispatch), blue (Eve, compress). `proton_is_colorless`: the full pipeline has energy 0 (ground state). `removal_costs_energy`: removing any stage increases energy. `no_free_quarks`: no single stage achieves lower energy than the full pipeline. The stages are confined.
+
+Six data flows between stages carry color charge: AST (red-antigreen), response (green-antiblue), etc. `gluons_carry_charge`: every gluon has color $\neq$ anticolor -- the mediators participate in the force they mediate. `complete_qcd_analogy`: three colors, colorless ground state, confinement, charged gluons. The pipeline satisfies the same algebra as QCD.
+
+Correspondence grade C (structural analogy). The claim is algebraic: any three-stage pipeline where removal of any stage increases cost satisfies the same confinement axioms. The pipeline is not a proton. But it satisfies the same algebra.
+
+### 10.6.18 Boson Position from Skyrms Walkers
+
+`BosonPosition.lean` (14 theorems, zero sorry). The void boundary is a gauge field. The complement distribution peaks predict boson localization. The Skyrms walker traverses this field and converges to Nash equilibrium at the complement peak -- the mode with fewest rejections.
+
+Key results: `propagator_toward_peak` (walker flows toward complement peak), `equilibrium_at_peak` (no outward flow at Nash), `gauge_invariance_123` (permuting colors preserves energy), `bose_no_exclusion` (multiple bosons per mode), `vacuum_fluctuation` (sliver guarantees nonzero weight everywhere), `coherent_prediction` (two observers agree on position), `uniform_is_delocalized` (equal rejections = superposition).
+
+The exchange energy carried by bosons equals $K - 1$ (the exploration budget from `ExplorationIdentity.lean`). The bosons are the physical instantiation of the exploration identity. Correspondence grade C (structural analogy with falsifiable prediction).
+
+### 10.6.19 Falsification Conditions (Extended)
 
 5. *Diversity at convergence*. If Forest converges to a monoculture (one strategy for all nodes) on a topology with structurally heterogeneous nodes (mix of FORK, RACE, FOLD, VENT, PROCESS) and the sliver is active, the diversity theorem is falsified for that topology.
 
