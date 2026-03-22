@@ -29,6 +29,8 @@ That orbital surface now has a concrete planet taxonomy in `ForkRaceFoldTheorems
 
 The lower-dimensional edge is now explicit in `ForkRaceFoldTheorems/CelestialOffByOneTaxonomy.lean`: the existing off-by-one law `wallingtonDimension stages = stages + 1` is used to place photon-like objects at the one-cycle floor and Earth-like compact rocky objects at the two-cycle / ambient `3D` floor, separating low-dimensional non-gas worlds from the higher-dimensional gas/ring taxonomy.
 
+That same off-by-one law now closes the universe-shape boundary in `ForkRaceFoldTheorems/UniverseShapeByDimension.lean`: the visible ambient `3D` slice is proved to be a `2`-torus with `β₁ = 2`, the Earth-like floor witness is used as the `3D` anchor, and the matching anti-theorem makes the scope explicit by proving that ambient dimensions `≥ 4` are not `2`-torus slices.
+
 That taxonomy now has an executable prediction layer in `ForkRaceFoldTheorems/CelestialGainControlPrediction.lean`: lower/upper orbital windows are repackaged as gain/control statistics, ring taxa are classified directly from those statistics, and concrete photon-like, compact rocky, diffuse-ring, halo-locked, and super-ring packets are all predicted constructively.
 
 The next bridge is `ForkRaceFoldTheorems/CelestialSurveySearch.lean`: the same math is lifted onto observed catalog packets `(ambientDimension, visibleBudget, gain, control, skyrmsLocation)`, yielding an executable candidate filter and a small formal demo of a math-only SETI-style search that retains candidate packets and rejects unresolved noise.

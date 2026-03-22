@@ -35,6 +35,8 @@ That predictive layer now has a concrete `54D` planet taxonomy in `lean/Lean/For
 
 The lower-dimensional rocky edge is now explicit in `lean/Lean/ForkRaceFoldTheorems/CelestialOffByOneTaxonomy.lean`: the off-by-one dimension law places one-cycle photon-like objects on the ambient `2D` floor and two-cycle compact rocky objects on the ambient `3D` floor, with an Earth-like halo-free witness proving that non-gas low-dimensional worlds sit below the ringed taxonomy.
 
+That same off-by-one law now closes the dimension-dependent universe-shape surface in `lean/Lean/ForkRaceFoldTheorems/UniverseShapeByDimension.lean`: the visible ambient `3D` slice is proved to be a `2`-torus with `β₁ = 2`, the Earth-like floor witness anchors that `3D` slice, and the matching anti-theorem shows that ambient dimensions `≥ 4` are not `2`-torus slices.
+
 That low-dimensional and ring-taxonomy surface now has an executable prediction layer in `lean/Lean/ForkRaceFoldTheorems/CelestialGainControlPrediction.lean`: gain and control are promoted to first-class statistics, ring taxa are classified directly from those statistics, and the package emits concrete prediction packets for photon-like, compact rocky, diffuse-ring, halo-locked, and super-ring witnesses.
 
 The observational bridge now lives in `lean/Lean/ForkRaceFoldTheorems/CelestialSurveySearch.lean`: measured packets `(ambientDimension, visibleBudget, gain, control, skyrmsLocation)` are classified into taxa, a boolean math-only candidate filter is exposed, and a small formal survey shows that candidate packets survive the search while unresolved noise is filtered out.

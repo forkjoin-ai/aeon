@@ -1587,18 +1587,35 @@ All other files are sorry-free. References to "sorry" in other files appear only
 | THM-SLIVER-BRIDGES | Sliver bridges probability and logic | `sliver_bridges_probability_and_logic` | Mechanized |
 | THM-SLIVER-OF-HOPE | Master: sliver of hope | `sliver_of_hope` | Mechanized |
 
+### Deceptacon Head Elimination (§15.30.8)
+
+*Buleyean head elimination for transformers: floor-weight heads contribute zero discrimination, elimination preserves fold, at least one head survives.*
+
+**Mechanization target:** `Deceptacon.lean` (29 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-DECEPTACON-FLOOR-ZERO-GAIN | Head at floor weight (w=1) has zero discrimination gain | `floor_zero_gain` | Mechanized |
+| THM-DECEPTACON-ELIMINATION-PRESERVES-FOLD | Eliminating floor-weight heads preserves O-projection fold output | `head_elimination_preserves_fold` | Mechanized |
+| THM-DECEPTACON-AT-LEAST-ONE-SURVIVES | At least one head survives elimination (the sliver guarantees it) | `at_least_one_survives` | Mechanized |
+| THM-DECEPTACON-REDUCTION | Speedup proportional to delta-beta: totalHeads - activeHeads | `deceptacon_reduction` | Mechanized |
+| THM-DECEPTACON-CONSERVATION | Total weight is conserved under head elimination | `deceptacon_conservation` | Mechanized |
+
 ### Statistical Teleportation (§15)
 
 *Transferring certainty without data via the Bule deficit integer.*
 
-**Mechanization target:** `StatisticalTeleportation.lean` (8 theorems, zero sorry)
+**Mechanization target:** `Deceptacon.lean` (29 theorems, zero sorry)
 
 | ID | Statement | Lean reference | Status |
 |---|---|---|---|
-| THM-TELEPORTATION-FROM-DEFICIT | Teleportation trajectory from deficit | `teleportation_trajectory_from_deficit` | Mechanized |
-| THM-TELEPORTATION-PRIVACY | Teleportation preserves privacy | `teleportation_privacy` | Mechanized |
+| THM-TELEPORTATION-TRAJECTORY | Deficit at future round k is deficit - min(k, deficit) | `teleportation_trajectory_from_deficit` | Mechanized |
+| THM-TELEPORTATION-CONVERGENCE | Convergence happens at round = deficit | `teleportation_convergence_round` | Mechanized |
+| THM-TELEPORTATION-MONOTONE | Deficit trajectory only decreases | `teleportation_monotone` | Mechanized |
+| THM-TELEPORTATION-PRIVACY | Two senders with different void boundaries but same N transmit same deficit | `teleportation_privacy` | Mechanized |
+| THM-TELEPORTATION-INDISTINGUISHABLE | Both senders produce identical trajectories for receiver | `teleportation_indistinguishable` | Mechanized |
 | THM-CAUSAL-SYMMETRY | Causal direction is a frame artifact | `causal_symmetry` | Mechanized |
-| THM-STATISTICAL-TELEPORTATION | Master statistical teleportation | `statistical_teleportation` | Mechanized |
+| THM-TELEPORTATION-MASTER | Master statistical teleportation | `statistical_teleportation` | Mechanized |
 
 ### Time Travel Topology (§15.23)
 
@@ -2206,10 +2223,10 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-FIXED-FIFTY-FOUR-D-BUDGET-NOT-FIX-RING-TAXON | **ANTI-THEOREM:** Fixed `54D` budget does not determine the ring taxon | `fixed_fifty_four_d_budget_does_not_fix_ring_taxon` | Mechanized |
 | THM-FIXED-FIFTY-FOUR-D-BUDGET-NOT-FIX-LOCATION-WINDOW | **ANTI-THEOREM:** Fixed `54D` budget does not determine the orbital location window | `fixed_fifty_four_d_budget_does_not_fix_location_window` | Mechanized |
 
-## 81G. Celestial Off-By-One Taxonomy (§10.6)
+## 81G. Celestial Off-By-One Taxonomy and Universe Shape (§10.6)
 
-**Assumptions:** The local dimension law is `wallingtonDimension stages = stages + 1`. The one-cycle floor therefore lives in ambient `2D`, while the two-cycle compact rocky floor lives in ambient `3D`.
-**Mechanization target:** `CelestialOffByOneTaxonomy.lean` (9 theorems, zero sorry)
+**Assumptions:** The local dimension law is `wallingtonDimension stages = stages + 1`. The one-cycle floor therefore lives in ambient `2D`, while the two-cycle compact rocky floor lives in ambient `3D`. The same off-by-one inversion means a visible ambient `3D` slice is a `2`-torus with `β₁ = 2`, while higher ambient dimensions lift the torus rank instead of freezing it.
+**Mechanization targets:** `CelestialOffByOneTaxonomy.lean`, `UniverseShapeByDimension.lean` (18 theorems, zero sorry)
 
 | ID | Statement | Lean reference | Status |
 |---|---|---|---|
@@ -2222,6 +2239,15 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-PHOTON-FLOOR-BELOW-ROCKY-FLOOR | The photon-like floor sits exactly one ambient dimension below the rocky floor | `photon_floor_sits_below_rocky_floor` | Mechanized |
 | THM-COMPACT-ROCKY-BELOW-RING-TAXA | Compact rocky planets sit below the ring-taxonomy lower bound | `compact_rocky_sits_below_ring_taxa` | Mechanized |
 | THM-LOWER-DIMENSIONAL-NON-GAS-TYPES-EXIST | Photon-like and compact rocky lower-dimensional non-gas types exist constructively | `lower_dimensional_non_gas_types_exist` | Mechanized |
+| THM-VISIBLE-TORUS-RANK-OFF-BY-ONE | The visible torus rank is ambient dimension minus one | `visible_torus_rank_is_off_by_one` | Mechanized |
+| THM-POSITIVE-DIMENSIONS-HAVE-TOROIDAL-SHAPE | Every positive ambient dimension closes to a toroidal visible shape via the off-by-one law | `positive_dimensions_have_toroidal_visible_shape` | Mechanized |
+| THM-OUR-VISIBLE-AMBIENT-DIMENSION-IS-THREE | The current visible ambient anchor is `3D` | `our_visible_ambient_dimension_is_three` | Mechanized |
+| THM-THREE-D-SLICE-IS-TWO-TORUS | The current visible `3D` slice is a `2`-torus | `our_visible_three_d_slice_is_two_torus` | Mechanized |
+| THM-THREE-D-SLICE-BETTI-TWO | The current visible `3D` slice has `β₁ = 2` | `our_visible_three_d_slice_has_betti_two` | Mechanized |
+| THM-EARTH-LIKE-ANCHORS-THREE-D-TWO-TORUS | The Earth-like floor witness anchors the `3D` / two-cycle torus slice | `earth_like_floor_anchors_three_d_two_torus` | Mechanized |
+| THM-HIGHER-D-NOT-TWO-TORUS | **ANTI-THEOREM:** Ambient dimensions `≥ 4` are not `2`-torus slices | `higher_dimensions_are_not_two_torus` | Mechanized |
+| THM-TWO-TORUS-NOT-DIMENSION-FREE | **ANTI-THEOREM:** The `2`-torus claim is not dimension-free | `two_torus_is_not_dimension_free` | Mechanized |
+| THM-UNIVERSE-SHAPE-DEPENDS-ON-DIMENSION | The visible torus rank increases with ambient dimension | `universe_shape_depends_on_dimension` | Mechanized |
 
 ## 81H. Celestial Gain / Control Prediction (§10.6)
 

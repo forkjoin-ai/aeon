@@ -1,0 +1,49 @@
+{
+  "document": {
+    "id": "cli:ch17-wallington-rotation-site.gg",
+    "title": "ch17-wallington-rotation-site.gg",
+    "sourceOrigin": "repo-file",
+    "sourcePath": "/Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-site.gg",
+    "updatedAt": "2026-03-22T22:21:09.808Z"
+  },
+  "loweredSource": "// ch17-wallington-rotation-site.gg\n// Minimal reviewer-facing WallingtonRotation source used to emit the\n// Aeon Flux site witness cited by the flagship manuscript.\n\n(prompt: FlowFrame { role: 'prompt-sequence', items: '8' })\n// WallingtonRotation 'rotated_output' expanded into chunked stage-pipeline topology.\n(rotated_output__ingress: FlowFrame { role: 'wallington-rotation-ingress', primitive: 'WallingtonRotation' })\n(rotated_output__scheduler: RotationScheduler { schedule: 'wallington_rotation', stages: '4', chunks: '4', role: 'wallington-rotation' })\n(rotated_output__chunk_0: EncoderChunk { ordinal: '0' })\n(rotated_output__chunk_1: EncoderChunk { ordinal: '1' })\n(rotated_output__chunk_2: EncoderChunk { ordinal: '2' })\n(rotated_output__chunk_3: EncoderChunk { ordinal: '3' })\n(rotated_output__stage_aligned: FlowFrame { role: 'stage-aligned-chunks', primitive: 'WallingtonRotation' })\n(embed: EncoderShard { stage: 'embed', parameters: '1', stage_index: '0' })\n(attend: EncoderShard { stage: 'attend', parameters: '1', stage_index: '1' })\n(ffn: EncoderShard { stage: 'ffn', parameters: '1', stage_index: '2' })\n(project: EncoderShard { stage: 'project', parameters: '1', stage_index: '3' })\n(rotated_output: FlowFrame { primitive: 'WallingtonRotation', schedule: 'wallington_rotation', stages: '4', chunks: '4', role: 'rotated-output' })\n(rotated_output__ingress)-[:PROCESS]->(rotated_output__scheduler)\n(rotated_output__scheduler)-[:FORK { schedule: 'wallington_rotation' }]->(rotated_output__chunk_0 | rotated_output__chunk_1 | rotated_output__chunk_2 | rotated_output__chunk_3)\n(rotated_output__chunk_0 | rotated_output__chunk_1 | rotated_output__chunk_2 | rotated_output__chunk_3)-[:FOLD { strategy: 'chunk-order' }]->(rotated_output__stage_aligned)\n(rotated_output__stage_aligned)-[:PROCESS]->(embed)\n(embed)-[:PROCESS]->(attend)\n(attend)-[:PROCESS]->(ffn)\n(ffn)-[:PROCESS]->(project)\n(project)-[:PROCESS]->(rotated_output)\n\n(prompt)-[:PROCESS]->(rotated_output__ingress)\n",
+  "run": {
+    "documentId": "cli:ch17-wallington-rotation-site.gg",
+    "sourceFingerprint": "fnv1a-13316ea9",
+    "nodeCount": 13,
+    "edgeCount": 15,
+    "diagnosticsCount": 3,
+    "b1": 0,
+    "buleyMeasure": 7.5,
+    "witnessCount": 1,
+    "theoremRefs": [
+      "aeon_flux_site_zero_deficit_iff_tight_lossless_transport"
+    ],
+    "witnesses": [
+      {
+        "primitive": "WallingtonRotation",
+        "primitiveId": "rotated_output",
+        "pathCount": 4,
+        "streamCount": 4,
+        "deficit": 0,
+        "regime": "tight_lossless_transport_exists",
+        "theoremRef": "aeon_flux_site_zero_deficit_iff_tight_lossless_transport",
+        "chunkNodeIds": [
+          "rotated_output__chunk_0",
+          "rotated_output__chunk_1",
+          "rotated_output__chunk_2",
+          "rotated_output__chunk_3"
+        ],
+        "stageNodeIds": [
+          "embed",
+          "attend",
+          "ffn",
+          "project"
+        ]
+      }
+    ],
+    "id": "run:cli:ch17-wallington-rotation-site.gg",
+    "repoId": "cli",
+    "createdAt": "2026-03-22T22:21:09.826Z"
+  }
+}

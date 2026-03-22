@@ -78,6 +78,7 @@ The companion suite now exercises this package through `@a0n/aeon-logic`'s Lean 
 - `Lean/ForkRaceFoldTheorems/CosmicOptimalDelta.lean`: narrow bridge theorems combining the literal compiler-side optimal delta `skyrms - optimal = exploration` with the cosmic visibility gap `maxObservable - sizeNow`, proving that total observer delta splits as cosmic visibility plus exploration and stays positive even when exploration has fallen to zero.
 - `Lean/ForkRaceFoldTheorems/CMBVisibilityBoundary.lean`: narrow photon-visibility theorems for the last-scattering boundary, proving that epochs before recombination are not telescope-observable, that the recombination surface is the earliest photon-visible epoch in the model, and that the present-day sky contains the CMB but not earlier photon emissions.
 - `Lean/ForkRaceFoldTheorems/KnowabilitySplit.lean`: cross-module compositions tying the compiler-side optimal delta to the photon last-scattering boundary, proving that zero exploration still leaves a positive observer gap together with a pre-CMB hidden epoch, and that positive exploration enlarges the total gap without removing the photon cutoff.
+- `Lean/ForkRaceFoldTheorems/UniverseShapeByDimension.lean`: constructive dimension-dependent universe-shape theorems proving that the visible ambient `3D` slice is a `2`-torus with `β₁ = 2`, with the Earth-like floor witness as the `3D` anchor, together with anti-theorems excluding a dimension-free `2`-torus claim for higher ambient dimensions.
 
 ## Stable Throughput Witness `α`
 

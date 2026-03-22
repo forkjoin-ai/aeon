@@ -1,0 +1,8 @@
+// ch17-wallington-rotation-site.gg
+// Minimal reviewer-facing WallingtonRotation source used to emit the
+// Aeon Flux site witness cited by the flagship manuscript.
+
+(prompt: FlowFrame { role: 'prompt-sequence', items: '8' })
+(rotated_output: WallingtonRotation { stages: '4', chunks: '4', stageNames: '[embed,attend,ffn,project]' })
+
+(prompt)-[:PROCESS]->(rotated_output)
