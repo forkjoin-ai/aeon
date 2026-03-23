@@ -1,7 +1,7 @@
 # Aeon Docs
 
 - Parent README: [open-source/aeon/README.md](../README.md)
-- Repo proof index: [open-source/aeon/FORMAL_LEDGER.md](../FORMAL_LEDGER.md)
+- Repo proof index: [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md)
 - Child index: [open-source/aeon/docs/ebooks/README.md](./ebooks/README.md)
 - Narrative bridge: [open-source/aeon/docs/HERO_JOURNEY.md](./HERO_JOURNEY.md)
 - Live docs home: [docs.aeonflux.dev](https://docs.aeonflux.dev)

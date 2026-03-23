@@ -1998,7 +1998,7 @@ The compilation pipeline is itself fork/race/fold:
   -[:PROCESS]-> (executable_binary)
 ```
 
-After stability analysis, Betty runs a **theorem-backed optimization pass manager** that consumes the emitted spectral and drift certificates to guide topology rewrites. Each pass is backed by a mechanized theorem from the formal ledger documented in [FORMAL_LEDGER.md](../../../FORMAL_LEDGER.md) and the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), so the optimization is not heuristic but provably sound:
+After stability analysis, Betty runs a **theorem-backed optimization pass manager** that consumes the emitted spectral and drift certificates to guide topology rewrites. Each pass is backed by a mechanized theorem from the formal ledger documented in [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md) and the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), so the optimization is not heuristic but provably sound:
 
 1. **Coarsening** (THM-RECURSIVE-COARSENING-SYNTHESIS): identifies connected components of stable nodes, computes aggregate arrival/service/drift per coarse node via the proven drift conservation identity ($\sum_{\text{fine}} d_i = \sum_{\text{coarse}} d_j$), and collapses them into a smaller graph when all coarse nodes have negative drift. The synthesis soundness theorem guarantees that the emitted drift certificate is valid whenever the fine graph is stable.
 
@@ -5998,7 +5998,7 @@ $L = \lambda W$,” *Operations Research*, 9(3):383–387, 1961.
 
 ## Reproducibility
 
-Source code, test suites and protocol comparison benchmarks are available under open-source license [2, 8, 9, 13, 15, 18, 40]. The scheduler, flow protocol, compression subsystem, computation topology engine, deploy-control-plane invariants, formal parser/tooling layer and topological programming language are independently testable. The validation totals reported in §16 are reproducible from the linked suites. For the shortest route into the proof corpus, start with [FORMAL_LEDGER.md](../../../FORMAL_LEDGER.md), which points to the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), the formal rerun surface, and the external-reviewer quickstart.
+Source code, test suites and protocol comparison benchmarks are available under open-source license [2, 8, 9, 13, 15, 18, 40]. The scheduler, flow protocol, compression subsystem, computation topology engine, deploy-control-plane invariants, formal parser/tooling layer and topological programming language are independently testable. The validation totals reported in §16 are reproducible from the linked suites. For the shortest route into the proof corpus, start with [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md), which points to the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md), the formal rerun surface, and the external-reviewer quickstart.
 
 ## Transparency Disclosure
 
@@ -6234,7 +6234,7 @@ A personality is not what you are. It is what you are not. The void boundary -- 
 
 ## Appendix C: Named Theorem Index
 
-79 named theorems are cited in this manuscript. Each cited theorem is mechanized in Lean 4 and referenced by at least one section. This appendix is a manuscript-local index; the broader proof corpus, current counts, and corpus-wide `sorry` status are tracked in [FORMAL_LEDGER.md](../../../FORMAL_LEDGER.md) and the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md). This index maps theorem name to primary section, Lean file, and what it proves.
+79 named theorems are cited in this manuscript. Each cited theorem is mechanized in Lean 4 and referenced by at least one section. This appendix is a manuscript-local index; the broader proof corpus, current counts, and corpus-wide `sorry` status are tracked in [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md) and the canonical [companion-tests/formal/THEOREM_LEDGER.md](./companion-tests/formal/THEOREM_LEDGER.md). This index maps theorem name to primary section, Lean file, and what it proves.
 
 | Theorem | § | Lean File | What It Proves |
 |---|---|---|---|

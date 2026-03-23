@@ -1,7 +1,7 @@
 # Fork/Race/Fold Is All You Need  --  Companion Tests
 
 - Parent volume README: [open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/README.md](../README.md)
-- Repo proof index: [open-source/aeon/FORMAL_LEDGER.md](../../../../FORMAL_LEDGER.md)
+- Repo proof index: [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md)
 - Live docs home: [docs.aeonflux.dev](https://docs.aeonflux.dev)
 - External reviewer quickstart: [../ch17-external-reviewer-quickstart.md](../ch17-external-reviewer-quickstart.md)
 - Test sources: [src/README.md](./src/README.md)
@@ -25,7 +25,7 @@ Editorial routing for those two tracks is strict:
 - If a change enriches the broader chapter but does not tighten the bounded
   flagship argument, keep the flagship tests and manuscript untouched.
 
-If you are here for the proof corpus rather than the runner commands, start with the repo-level [FORMAL_LEDGER.md](../../../../FORMAL_LEDGER.md) or the canonical [formal/THEOREM_LEDGER.md](./formal/THEOREM_LEDGER.md). Those two pages are now the shortest path to the named theorem table and the formal rerun surface.
+If you are here for the proof corpus rather than the runner commands, start with the repo-level [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md) or the canonical [formal/THEOREM_LEDGER.md](./formal/THEOREM_LEDGER.md). Those two pages are now the shortest path to the named theorem table and the formal rerun surface.
 
 Adjacent to this companion package, the same repository now carries a bounded cover-space audit surface for the manuscript's theorem-indexed failure vocabulary: `open-source/aeon-logic/src/crypto-cover-space.ts`, the GG corpus in `open-source/gnosis/examples/crypto`, and the red/blue reporting wrapper in `open-source/aeon-crackerjack`. That surface is included here as a documentation-level corollary witness, not as a new mechanized theorem family. It treats `cracking` as metaphorical corollary extraction with preserved witness ancestry, and it calibrates two safe families: offline-risk password-digest negative controls and socio-technical recovery/trust topologies.
 

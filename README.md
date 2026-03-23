@@ -176,8 +176,8 @@ The flow protocol, topology analysis, transport helpers, and federation modules 
 ## Formal Surface
 
 The full machine-checked proof surface is now indexed from
-[FORMAL_LEDGER.md](./FORMAL_LEDGER.md), which points to the canonical Gnosis
-formal home in [../gnosis/FORMAL_LEDGER.md](../gnosis/FORMAL_LEDGER.md) and the
+[FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md), with the canonical Gnosis
+human index on GitHub and the
 canonical theorem ledger in [../gnosis/THEOREM_LEDGER.md](../gnosis/THEOREM_LEDGER.md).
 The old `docs/ebooks/.../companion-tests/formal` subtree remains only as a
 legacy manuscript compatibility shell.
@@ -196,7 +196,7 @@ Selected TLA+ specifications in `companion-tests/formal/`:
 
 - [docs/README.md](./docs/README.md) -- repo docs index
 - [docs/HERO_JOURNEY.md](./docs/HERO_JOURNEY.md) -- Campbell's Hero's Journey mapped into Aeon's formal vocabulary
-- [FORMAL_LEDGER.md](./FORMAL_LEDGER.md) -- repo-level proof index for the formal surface
+- [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md) -- canonical human proof index for the formal surface
 - [src/README.md](./src/README.md) -- source tree index
 - [Manuscript source](./docs/ebooks/145-log-rolling-pipelined-prefill/ch17-arxiv-manuscript.md) -- Chapter 17 formal manuscript
 - [Companion tests](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md) -- reproducibility suite

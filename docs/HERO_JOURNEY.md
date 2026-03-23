@@ -1,7 +1,7 @@
 # Campbell's Hero's Journey in Aeon Terms
 
 - Parent README: [README.md](./README.md)
-- Repo proof index: [FORMAL_LEDGER.md](../FORMAL_LEDGER.md)
+- Repo proof index: [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md)
 - Canonical theorem ledger: [THEOREM_LEDGER.md](./ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md)
 
 This note is a documentation-layer formalization of Campbell's Hero's Journey

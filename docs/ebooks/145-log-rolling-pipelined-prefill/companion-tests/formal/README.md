@@ -1,7 +1,7 @@
 # Legacy Formal Shell
 
 - Parent README: [../README.md](../README.md)
-- Canonical formal surface: [../../../../../../gnosis/FORMAL_LEDGER.md](../../../../../../gnosis/FORMAL_LEDGER.md)
+- Canonical formal surface: [FORMAL_LEDGER.md](https://github.com/forkjoin-ai/gnosis/blob/main/FORMAL_LEDGER.md)
 - Canonical theorem ledger: [../../../../../../gnosis/THEOREM_LEDGER.md](../../../../../../gnosis/THEOREM_LEDGER.md)
 - Canonical compiler boundary: [../../../../../../gnosis/GNOSIS_COMPILER_BOUNDARY.md](../../../../../../gnosis/GNOSIS_COMPILER_BOUNDARY.md)
 
