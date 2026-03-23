@@ -65,7 +65,7 @@ theorem reject_at_ground : bReject 0 = 0 := by
   simp [bReject]
 
 /-- Rejection decreases the Bule count by 1 when positive. -/
-theorem reject_decreases (p : BProp) (hp : 0 < p) :
+theorem reject_decreases (p : BProp) (_hp : 0 < p) :
     bReject p = p - 1 := by
   rfl
 
@@ -75,7 +75,7 @@ theorem n_rejections_reach_ground (n : ℕ) :
   induction n with
   | zero => rfl
   | succ k ih =>
-    simp [Function.iterate_succ', bReject]
+    simp [bReject]
     omega
 
 -- ═══════════════════════════════════════════════════════════════════════
@@ -139,8 +139,8 @@ theorem bOr_proved_iff (a b : BProp) : bIsProved (bOr a b) ↔ bIsProved a ∨ b
 /-- Double complement: NOT NOT A = A (when A ≤ maxB). -/
 theorem bNot_bNot (a : BProp) (maxB : ℕ) (h : a ≤ maxB) :
     bNot (bNot a maxB) maxB = a := by
-  simp [bNot]
-  omega
+  unfold bNot
+  exact Nat.sub_sub_self h
 
 /-- NOT of proved = maximally open. -/
 theorem bNot_proved (maxB : ℕ) : bNot 0 maxB = maxB := by
@@ -158,15 +158,15 @@ theorem bImplies_refl (a : BProp) : bImplies a a = 0 := by
 
 /-- If A is harder than B, A → B is proved. -/
 theorem bImplies_of_ge (a b : BProp) (h : b ≤ a) : bImplies a b = 0 := by
-  simp [bImplies]
-  omega
+  unfold bImplies
+  exact Nat.sub_eq_zero_of_le h
 
 -- --- OR is cheaper than AND ---
 
 /-- OR ≤ AND always. Disjunction costs less than conjunction. -/
 theorem bOr_le_bAnd (a b : BProp) : bOr a b ≤ bAnd a b := by
-  simp [bOr, bAnd]
-  omega
+  unfold bOr bAnd
+  exact le_trans (Nat.min_le_left a b) (Nat.le_add_right a b)
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- Boolean Embedding: Buleyean subsumes Boolean

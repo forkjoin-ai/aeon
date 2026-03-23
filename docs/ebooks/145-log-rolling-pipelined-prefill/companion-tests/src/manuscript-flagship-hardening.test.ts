@@ -18,6 +18,23 @@ function classifyReynolds(reynolds: number): 'laminar' | 'transitional' | 'turbu
   return 'turbulent';
 }
 
+function classifyAdequacy(
+  pathCount: number,
+  streamCount: number
+):
+  | 'lossless_transport_exists'
+  | 'tight_lossless_transport_exists'
+  | 'collision_and_information_loss_forced' {
+  const deficit = pathCount - streamCount;
+  if (deficit > 0) {
+    return 'collision_and_information_loss_forced';
+  }
+  if (deficit === 0 && pathCount > 0) {
+    return 'tight_lossless_transport_exists';
+  }
+  return 'lossless_transport_exists';
+}
+
 describe('Flagship manuscript hardening', () => {
   it('keeps the chunked-pipeline formula exact', () => {
     expect(pipelineHandoffs(100, 25, 4)).toBe(7);
@@ -57,6 +74,14 @@ describe('Flagship manuscript hardening', () => {
     expect(orderedPipeBeta1).toBe(0);
     expect(workloadBeta1 - orderedPipeBeta1).toBe(9);
     expect(workloadBeta1 - streamPreservingBeta1).toBe(0);
+  });
+
+  it('keeps the Aeon Flux site adequacy trichotomy exact', () => {
+    expect(classifyAdequacy(4, 4)).toBe('tight_lossless_transport_exists');
+    expect(classifyAdequacy(3, 5)).toBe('lossless_transport_exists');
+    expect(classifyAdequacy(9, 0)).toBe(
+      'collision_and_information_loss_forced'
+    );
   });
 
   it('keeps Reynolds regime boundaries exact', () => {

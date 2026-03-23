@@ -5,42 +5,38 @@
 
 ## Abstract
 
-Path-like execution can impose avoidable coordination cost when the workload's natural structure has positive parallel-path complexity. This paper studies that mismatch in a finite-DAG fork/race/fold model using the diagnostic Delta_beta = beta_1* - beta_1^exec, operationalized by bounded graph extraction at a fixed layer, and a correctness envelope C1-C4. Within that modeled scope, the paper proves a pipeline speedup floor and sandwich, classifies Reynolds regimes by Re = N / C, and separates transport path-collapse boundaries from within-class protocol efficiency. The engineering surface instantiates the model in distributed staged computation and Aeon Flow transport. In the companion artifacts, 8/8 primary wall-clock cells pass with median speedups 11.785x-21.620x, and an Aeon Flow versus HTTP/3 protocol corpus over 144 sites and 12,371 resources shows a 72.252% median framing gain with positive latency gains across all 6 primary environments. The claim is not that fork/race/fold is universally optimal; it is that bounded graph pairs make Delta_beta falsifiable and useful for diagnosing when path-like execution is misfit to the workload.
+Path-like execution can impose avoidable coordination cost when the workload's natural structure has multiple useful paths. This paper studies that mismatch in a finite-DAG fork/race/fold model using the diagnostic Delta_beta = beta_1* - beta_1^exec, computed from bounded workload/execution graph pairs under a correctness envelope C1-C4. The novelty claim is not pipelining, DAG scheduling, or stream multiplexing by themselves. The main formal result is an adequacy trichotomy for emitted Aeon Flux sites: nonpositive deficit iff a lossless transport realization exists, zero deficit iff a tight lossless realization exists, and positive deficit forces path collision and information loss within the declared model class. The engineering surface instantiates that model in distributed staged computation and Aeon Flow transport, and a compiler-emitted WallingtonRotation witness pair reports matched pathCount = 4, streamCount = 4, Delta_beta = 0 and collided pathCount = 4, streamCount = 2, Delta_beta = 2 cases. In the companion artifacts, 8/8 primary wall-clock cells pass with median speedups 11.785x-21.620x, and an Aeon Flow versus HTTP/3 protocol corpus over 144 sites and 12,371 resources shows a 72.252% median framing gain with positive completion-latency gains across all 6 primary environments. The claim is local: bounded graph pairs and emitted witnesses make Delta_beta operational enough to distinguish structural path collapse from within-class protocol cost.
 
 ## 1. Problem and Claim
 
 **Thesis.** Path-like execution topologies impose avoidable coordination cost when the workload's natural structure has positive parallel-path complexity.
 
-The narrow target in this paper is distributed inference and the protocol stack around it. A staged inference workload naturally contains branch points, joins, and independent paths that can be processed without violating correctness. A path-like runtime collapses that structure into a single ordered line. Sometimes that is exactly the right choice. Sometimes it is a mismatch that inserts waiting, framing waste, or unnecessary synchronization even though the workload itself would allow more structure.
+The target is narrow: distributed inference and the transport surface that carries it across machines. A staged inference workload can contain branch points, joins, and independent paths that are correct to keep alive simultaneously. A path-like runtime collapses that structure into one ordered line. Sometimes that is the right topology. Sometimes it is a mismatch that inserts waiting, framing waste, or unnecessary synchronization even though the workload itself would allow more structure.
 
-This paper isolates that mismatch as a topological question rather than a hardware or implementation-style question. The central diagnostic is `Delta_beta`, the gap between the parallel-path complexity required by the workload and the path budget actually exposed by the execution topology. When `Delta_beta = 0`, the schedule is structurally matched to the workload at the chosen abstraction layer. When `Delta_beta > 0`, some coordination cost is being imposed by the topology rather than by the problem.
+This paper isolates that mismatch as a bounded structural question. The diagnostic is `Delta_beta`, the difference between workload-side path demand and runtime-side path budget at one declared abstraction layer. The main paper-side claim is stronger than "parallelism helps." Within the declared Aeon Flux site model, `Delta_beta` is an obstruction variable:
 
-**What is new here.** The flagship claim is not that overlap, pipelining, or multi-stream transport were previously unknown. The novelty is narrower.
+1. `Delta_beta <= 0` iff a lossless transport realization exists.
+2. `Delta_beta = 0` iff a tight lossless transport realization exists.
+3. `Delta_beta > 0` forces path collision and information loss.
 
-1. It separates workload-side path demand `beta_1*` from runtime-side path budget `beta_1^exec`, computes both from bounded graph pairs at the same declared layer, and uses `Delta_beta` as the mismatch coordinate between them.
-2. It binds the main body claims to a theorem-to-observable surface: each positive claim has a local formal anchor, a measured observable, and a stated falsifier.
-3. It treats scheduler and transport as one coupled execution surface, so the wire is allowed to reintroduce path-like collapse even when the scheduler itself exposes concurrency.
+That theorem family is the center of the flagship. The scheduler and protocol sections exist to show that the obstruction is not only formal. A staged runtime can expose useful paths and then lose them again at the wire if the transport silently reserializes the flow. Conversely, a stream-preserving transport cannot help if the scheduler never exposes more than one useful path. The paper therefore studies one coupled execution surface: scheduler plus transport.
 
-The contribution is intentionally narrow.
+The contribution is intentionally small.
 
-1. It gives a finite DAG scheduling model with four primitives: fork, race, fold, and vent.
-2. It states an explicit correctness envelope, C1-C4, under which the model is used.
-3. It identifies a small theorem-to-observable bridge sufficient for the scheduler and protocol claims used here.
-4. It evaluates that bridge with artifact-backed wall-clock evidence, protocol-corpus evidence, and an explicit path-boundary control rather than with analogy-driven extrapolation.
+1. It gives a finite-DAG fork/race/fold model with an explicit correctness envelope C1-C4.
+2. It operationalizes `Delta_beta` on bounded workload/execution graph pairs instead of leaving it as prose.
+3. It proves the adequacy trichotomy above for emitted Aeon Flux sites and shows a matched/collided emitted `WallingtonRotation` witness pair.
+4. It tests the same bridge with bounded wall-clock evidence, protocol-corpus evidence, and a one-path boundary control.
 
-The flagship stays short on purpose because the claim is local and falsifiable. If the bridge needs a survey-length manuscript to survive compression, it is not yet sharp enough.
+The paper therefore does not ask novelty credit for overlap, dataflow, or stream multiplexing in isolation. If the adequacy trichotomy and the emitted witness bridge were removed, the remaining artifact would be a bounded scheduler-and-protocol note. The flagship claim, if it earns any novelty credit at all, is narrower: the same deficit quantity appears as a graph-pair diagnostic, the antecedent of an existence/impossibility theorem, and the payload of a compiler-emitted witness consumed by the paper.
 
-The point is not to rename ordinary pipelining. Classical pipelining already explains why overlapping stages can reduce latency. Dataflow and bounded DAG systems already explain how forks and joins can be made explicit. Modern transports already reduce some head-of-line and framing costs. The stronger claim here is different: some execution failures are best understood as forcing a workload with positive intrinsic parallel-path complexity through a topology that exposes too little of that structure. In that setting, the useful question is not only "how much parallel hardware exists?" but also "how much of the workload's path structure has the runtime allowed to exist, and where is the missing path budget being collapsed?"
-
-The scheduler and transport story are studied together because they fail together. A staged pipeline can preserve local concurrency and still lose it at the protocol layer if the wire format, ordering policy, or collapse semantics reserialize the flow. Likewise, a richer transport can still fail to help if the scheduler never exposes multiple useful paths. The flagship claim is therefore a bridge claim: the same mismatch diagnostic can be used to reason about staged execution and about the protocol that carries staged execution across machines.
-
-This paper does not ask the reader to grant a universal theory. It asks for a smaller standard. Given a finite DAG workload under explicit correctness conditions, do the mechanized model and the checked artifacts jointly support the claim that path-like execution can impose avoidable coordination cost? The answer argued here is yes.
+The flagship stays short on purpose because the claim is local and falsifiable. If the argument cannot survive as one theorem family, one emitted witness, and two bounded gates, then it is not yet ready for publication.
 
 ## 2. Model and Notation
 
 ### 2.1 Finite DAG Scheduling Surface
 
-Let `G = (V, E)` be a finite DAG representing a bounded execution slice. Nodes denote local computations or transport actions. Edges denote causality. A fork node has out-degree greater than one, a fold node has in-degree greater than one, and a linear chain has in-degree and out-degree at most one. The model uses four operational primitives:
+Let `G = (V, E)` be a finite DAG representing a bounded execution slice. Nodes denote local computations or transport actions. Edges denote causality. A fork node has out-degree greater than one, a fold node has in-degree greater than one, and a linear chain has in-degree and out-degree at most one. The model uses four primitives:
 
 1. `Fork(S, O) -> {S_1, ..., S_k}` creates branch-local states.
 2. `Race({S_i}) -> (S_w, i_w)` advances branches concurrently and accepts the first valid completion.
@@ -51,13 +47,13 @@ The paper does not need a larger primitive set. The local questions are scheduli
 
 ### 2.2 Parallel-Path Complexity and Delta_beta
 
-Let `beta_1*` denote the intrinsic parallel-path complexity of the workload at the abstraction layer under study. This is not claimed to be an invariant of reality at every scale; it is a model-side count of how many independent paths the workload can profitably expose while preserving correctness. Let `beta_1^exec` denote the path budget exposed by the execution topology at that same layer. The diagnostic is
+Let `beta_1*` denote the workload-side path demand at the abstraction layer under study, and let `beta_1^exec` denote the path budget exposed by the execution topology at that same layer. The diagnostic is
 
 $$
 \Delta_\beta = \beta_1^* - \beta_1^{\mathrm{exec}}.
 $$
 
-If `Delta_beta = 0`, the schedule is structurally matched. If `Delta_beta > 0`, the execution surface is forcing some part of the workload through a narrower path than the workload requires. The diagnostic is directional and local. It is not a universal score. It only answers whether the chosen runtime is narrower than the modeled workload.
+If `Delta_beta = 0`, the schedule is structurally matched at that layer. If `Delta_beta > 0`, the execution surface is narrower than the modeled workload. The diagnostic is directional and local. It is not a universal system score.
 
 To keep that claim falsifiable, the paper uses one explicit extraction rule. Fix one abstraction layer and one bounded execution slice. Build a workload graph `G*` whose nodes are bounded events and whose edges are only the dependencies required for correctness at that layer. Build an effective execution graph `G^exec` for the same slice after scheduler and transport ordering have been applied. Then compute
 
@@ -65,9 +61,17 @@ $$
 \beta_1(G) = \max(0, |E| - |V| + \beta_0(G))
 $$
 
-on each graph, using the same event vocabulary on both sides. In the companion, this is implemented directly over bounded trace and protocol graphs rather than inferred from benchmark scalars alone.
+on each graph, using the same event vocabulary on both sides. In this paper `beta_1` is not presented as a universal measure of executable multiplicity in every model. It is the bounded graph-side quantity used by the adequacy theorem and the emitted witness surface.
 
-A concrete worked example is enough to show the rule. A 10-stream fork/join workload has `|V| = 12`, `|E| = 20`, and `beta_0 = 1`, so `beta_1* = 9`. If an ordered single-pipe transport forces the same slice into a chain, then `|E| = 11`, `beta_1^exec = 0`, and `Delta_beta = 9`. If the effective transport preserves the same 10 branch-local streams through independent recovery, then `beta_1^exec = 9` and `Delta_beta = 0`. This paper uses that graph-pair rule as the operational meaning of the diagnostic.
+A worked example is enough to show the rule. A 10-stream fork/join workload has `|V| = 12`, `|E| = 20`, and `beta_0 = 1`, so `beta_1* = 9`. If an ordered single-pipe transport forces the same slice into a chain, then `|E| = 11`, `beta_1^exec = 0`, and `Delta_beta = 9`. If the transport preserves the same 10 branch-local streams through independent recovery, then `beta_1^exec = 9` and `Delta_beta = 0`. This graph-pair rule is the operational meaning of the diagnostic throughout the flagship.
+
+The extraction rule is deliberately small.
+
+1. Declare one abstraction layer and one event vocabulary.
+2. Build `G*` using only the dependencies required for correctness at that layer.
+3. Build `G^exec` for the same slice after scheduler and transport ordering have been applied.
+4. Compute `beta_1(G*)` and `beta_1(G^exec)` on the same bounded event set.
+5. Report `Delta_beta = beta_1* - beta_1^exec`, and if the slice is an emitted Aeon Flux site, compare the resulting `pathCount` and `streamCount` against the adequacy regime.
 
 Three execution classes matter in this paper.
 
@@ -77,20 +81,17 @@ Three execution classes matter in this paper.
 | Chunked pipeline | stage-local concurrency without workload branching | positive but bounded by stage occupancy | staged baseline |
 | Fork/race/fold schedule | explicit branch, race, and deterministic collapse surface | matched to positive `beta_1*` when the workload contains multiple useful paths | target topology |
 
-The flagship claim is not that every problem has positive `beta_1*`. Some workloads are truly path-like. For those, `Delta_beta = 0` under a sequential schedule and no theorem in this paper predicts a win from adding concurrency. The diagnostic becomes useful only when the workload is naturally richer than the schedule that carries it.
+The flagship claim is not that every problem has positive `beta_1*`. Some workloads are truly path-like. For those, `Delta_beta = 0` under a sequential schedule and no theorem in this paper predicts a structural win from adding concurrency.
 
-The paper does not ask `Delta_beta` to replace classical metrics. It adds it because the existing metrics answer different questions.
+The paper also does not ask `Delta_beta` to replace serial-fraction or occupancy language. Those metrics answer different questions.
 
-| Quantity | What it answers | What it is useful for | What it does not localize |
-|---|---|---|---|
-| serial fraction | how much work is currently marked serial | classical scaling ceilings | whether the serialization is inherent to the workload or inserted by the runtime |
-| occupancy / utilization | how full stages or streams are | idle-slot and saturation diagnosis | whether a lower layer has silently collapsed the path structure back to one ordered flow |
-| exposed path budget `beta_1^exec` | how many independent paths the runtime actually keeps alive | describing the execution surface | whether the workload needed more than that many paths |
-| `Delta_beta` | how much modeled path structure is missing from the execution surface | locating topological mismatch | absolute system quality outside the chosen model boundary |
+| Quantity | Useful for | What it does not localize |
+|---|---|---|
+| serial fraction | classical scaling ceilings | whether the serial bottleneck was demanded by the workload or inserted by the execution surface |
+| occupancy / utilization | idle-slot and saturation diagnosis | whether a lower layer silently collapsed visible path structure |
+| `Delta_beta` | locating missing path budget on a bounded slice | absolute system quality or a universal speedup scalar |
 
-The point is therefore comparative, not imperial. Serial fraction and occupancy remain useful. `Delta_beta` earns its keep when they are not enough. An application can expose multiple logical streams and still inherit a path-like transport below it. In that case occupancy at the stream layer may look healthy while the transport still forces `beta_1^exec = 0`. The diagnostic names that contradiction directly. Conversely, if the workload is genuinely one-path, then `beta_1* = 0`, `Delta_beta = 0`, and the model predicts no structural win from richer scheduling.
-
-That is the indispensable use-case for `Delta_beta` in this paper: concurrency can be visible in the application graph and absent in the effective execution graph at the same time.
+`Delta_beta` earns its keep when concurrency is visible in the workload graph and absent in the effective execution graph at the same time.
 
 ### 2.3 C1-C4 Correctness Envelope
 
@@ -112,13 +113,13 @@ Within the formal companion, C1-C4 are checked in two ways. TLA+ models make the
 For a prompt or batch with `P` items, chunk size `B`, stage count `N`, and chunk count
 
 $$
-C = \lceil P / B \rceil,
+Q = \lceil P / B \rceil,
 $$
 
 the chunked pipeline time under the modeled schedule is
 
 $$
-T_{\mathrm{pipe}} = \lceil P/B \rceil + N - 1,
+T_{\mathrm{pipe}} = Q + N - 1,
 $$
 
 while the fully serialized baseline is
@@ -145,14 +146,12 @@ Those assumptions matter. The step-count theorem is a model claim about scheduli
 The pipeline Reynolds number is defined as
 
 $$
-Re = N / C.
+Re = N / Q.
 $$
 
-This quantity measures how dense the pipeline is in stages per chunk. Low `Re` means many chunks relative to stage count, which pushes the system toward steady-state occupancy. High `Re` means few chunks relative to stage count, which magnifies ramp-up and drain effects and makes multiplexing recovery more important.
+This quantity measures how dense the pipeline is in stages per chunk. Low `Re` means many chunks relative to stage count, which pushes the system toward steady-state occupancy. High `Re` means few chunks relative to stage count, which magnifies ramp-up and drain effects.
 
-Figure 1 is the model-side picture used throughout the paper. The same figure carries both the inverted-scaling workload curves and the regime map induced by `Re`.
-
-Figure 1 shows the scheduling logic that the later artifact-backed measurements are tested against.
+Figure 1 is a supporting model-side picture rather than a second contribution claim. It carries the inverted-scaling workload curves and the regime map induced by `Re`.
 
 ![Figure 1. Inverted scaling and Reynolds regime map from the Chapter 17 companion artifacts. The same analytic surface supports the speedup ceiling, the speedup floor, and the regime thresholds used to classify laminar, transitional, and turbulent execution.](companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.png)
 
@@ -160,14 +159,9 @@ Figure 1 shows the scheduling logic that the later artifact-backed measurements 
 
 ### 3.1 Correctness Under Finite DAG Decomposition
 
-The first theorem family is a sufficiency surface. Under finite DAG decomposition and C1-C4, fork/race/fold scheduling can preserve correctness without requiring a globally serialized path. The paper does not claim a universal completeness theorem for all distributed systems. It uses a narrower constructive claim: finite DAG workloads can be decomposed into linear chains, fork points, and join points, and the scheduler may operate on that decomposition without changing the result when the four conditions hold.
+The first theorem surface is sufficiency, not universality. Under finite-DAG decomposition and C1-C4, fork/race/fold scheduling can preserve correctness without requiring a globally serialized path. The paper does not claim a completeness theorem for all distributed systems. It uses the narrower constructive claim that a bounded workload can be decomposed into linear chains, fork points, and join points, and that the scheduler may operate on that decomposition without changing the result when the four conditions hold.
 
-This surface is backed by executable finite-DAG decomposition checks and by a bounded formal stack. The TLA+ side verifies the local invariants that define the safe scheduling envelope. The Lean side verifies the quantitative statements used in the rest of the paper. The paper therefore separates two questions that are often blurred together in systems writing:
-
-1. Is the richer schedule well-defined?
-2. Does the richer schedule help?
-
-The first question is answered locally by C1-C4 and the finite DAG decomposition surface. The rest of this section answers the second question.
+That surface answers the first question: is the richer schedule well-defined? The remaining results address the second question: when does the richer schedule matter?
 
 ### 3.2 Pipeline Speedup Floor and Sandwich
 
@@ -189,13 +183,13 @@ $$
 1 \le \mathrm{speedup} \le B \cdot N.
 $$
 
-The value of the theorem is not that the ceiling is surprising. The value is that the floor is explicit. A staged pipeline under the modeled assumptions is not only potentially faster; it is structurally non-worse than the serialized baseline. This is what makes a mismatch diagnostic possible. If the workload admits a pipeline and the deployment still measures a loss, that loss is evidence against the assumptions or evidence that the schedule is not the schedule the model claims to analyze.
+The value of the theorem is not that the ceiling is surprising. The value is that the floor is explicit. A staged pipeline under the modeled assumptions is structurally non-worse than the serialized baseline. If the workload admits a pipeline and the deployment still measures a loss, that loss is evidence against the assumptions or evidence that the deployed schedule is not the one the model claims to analyze.
 
 The companion packages both the floor and the strict-speedup refinement. The strict version applies for `P >= 2` and `N >= 2`, ruling out the degenerate single-item and single-stage boundaries where the pipeline collapses to the path.
 
 ### 3.3 Reynolds Classification
 
-The second theorem family classifies execution regimes with the Reynolds number. The mechanized claim used here is operational:
+The second theorem family is a supporting classifier for execution regimes. The mechanized claim used here is operational:
 
 1. `Re < 1/3` is laminar.
 2. `1/3 <= Re < 2/3` is transitional.
@@ -203,69 +197,57 @@ The second theorem family classifies execution regimes with the Reynolds number.
 
 The companion theorem names `reynolds_regime_exhaustive`, `classifyRegime`, and `turbulent_collapse_floor` are used because they make the schedule-level consequence explicit: the regime is not only a label, it constrains which fold policies are safe and how much collapse work the runtime should expect to pay.
 
-The practical use of the classification is modest but important. It turns the sentence "this pipeline feels too thin to keep all stages busy" into a falsifiable condition on `N/C`. The paper does not need a fluid identity claim. It only needs the regime map as a schedule-selection tool.
+The practical use of the classification is modest. It turns the sentence "this pipeline is too thin to keep stages busy" into a falsifiable condition on `N/Q`. The paper does not need a fluid identity claim. It only needs the regime map as a schedule-selection tool for interpreting Gate1.
 
-### 3.4 Delta_beta as a Diagnostic Coordinate
+### 3.4 Aeon Flux Site Adequacy
 
-The step-count theorem and the regime classification would already justify a technical note on staged execution. `Delta_beta` adds the bridge to richer workloads. When a workload has positive intrinsic path structure, a path-like execution collapses part of that structure into the base path and pays for the collapse as waiting, framing, or coordination overhead. The diagnostic claim is:
+The central theorem family in the flagship is now the emitted-site adequacy surface. For positive-stream-budget Aeon Flux sites, the mechanized trichotomy is:
 
-1. `Delta_beta = 0` predicts structural match.
-2. `Delta_beta > 0` predicts that some observed waste comes from the execution topology rather than from the problem alone.
-3. Larger positive `Delta_beta` widens the room in which a richer schedule can help, but does not by itself prove that a particular implementation will help.
+1. `Delta_beta <= 0` iff a lossless FlowFrame transport realization exists.
+2. `Delta_beta = 0` iff a tight lossless realization exists.
+3. `Delta_beta > 0` forces path collision and positive information loss for every realization in the model class.
 
-This is the point of the bridge to protocol evidence. A scheduler can expose multiple useful paths and still lose them if the transport collapses everything back into one coupled delivery stream. In that case the scheduling layer and the protocol layer share the same failure: both are enforcing a base-space path on a workload that still has unused path structure.
+This is the point at which `Delta_beta` stops being a descriptive label and becomes an obstruction variable. Once `pathCount` and `streamCount` are emitted from lowered GG, the deficit is no longer being inferred from benchmark scalars or read off diagrams by hand. It is a concrete input to a proved trichotomy.
 
-The paper does not infer `Delta_beta` from the deployed gate scalars themselves. It computes the diagnostic on bounded graph pairs, then asks whether the measured scheduler and transport surfaces behave like positive-deficit cases, zero-deficit cases, or the exact one-path boundary.
+The importance of that result is narrow but decisive. The paper no longer asks the reader to believe that positive deficit merely "sounds like" trouble. Within the declared site model, positive deficit means lossless transport is impossible. Zero deficit means tight lossless transport is possible. That is the exact coup de grace the flagship needs.
 
-### 3.5 Protocol Theorem Surface
+That is also the boundary against the obvious relabeling objection. Classical DAG scheduling already says that richer dependency structure can matter. The claim here is not merely that the graph has branches. It is that one emitted, bounded quantity is sufficient to state an iff adequacy result for the declared site model and to classify concrete lowered sources without hand interpretation.
 
-The protocol story in this paper is bounded and concrete. The companion formal surface includes the following claims.
+### 3.5 What the Formal Surface Certifies
 
-| Claim family | Scope used here | Artifact pair |
-|---|---|---|
-| quorum visibility | acknowledged values remain visible to legal quorum reads in the bounded crash/recover model | `QuorumReadWrite.tla` + `QuorumVisibility.lean` |
-| connected-quorum exactness | connected live quorums read committed values exactly under explicit partition assumptions | `QuorumAsyncNetwork.tla` + `QuorumAsyncNetwork.lean` |
-| committed-session consistency | read-your-writes and monotonic reads hold when reads are restricted to committed states | `QuorumSessionConsistency.tla` + `QuorumConsistency.lean` |
-| multi-writer committed ordering | latest-ballot and latest-writer properties hold under unique ordered ballots | `QuorumMultiWriter.tla` + `QuorumOrdering.lean` |
+The formal surface certifies an existence/impossibility claim in the declared site model. It does not certify wall-clock speedups, and it does not certify Gate2 latency numbers. Those are measured. The theorem family tells us which transport regimes are structurally possible, and the gates tell us how the deployed scheduler and protocol behave inside those regimes.
 
-These theorems are not claims about all asynchronous distributed protocols. They are boundary statements for the specific transport and collapse rules used by the companion surface. Their role in the flagship is limited: they justify saying that the protocol layer itself is not hand-waved. The wire semantics and the fold rules are also given bounded formal treatment.
-
-Just as important, these theorems are not the source of the Gate2 latency numbers. In the flagship they certify bounded stream legality, ordering, and fold semantics for the protocol surface being discussed. Gate2 then measures a narrower question: whether Aeon Flow improves framing and completion behavior relative to HTTP/3 on the declared corpus and impairment matrix. Crash-recovery completeness or general consistency claims are outside what Gate2 directly measures.
+That distinction matters for the protocol story. In the flagship, the transport-side formal anchor is the Aeon Flux site adequacy theorem plus executable framing/stream tests. Gate2 then asks a narrower empirical question: once stream preservation has been separated from gross path collapse, does Aeon Flow still reduce residual framing and completion cost relative to explicit `HTTP/3` baselines on the declared corpus?
 
 ## 4. Systems Instantiation
 
 ### 4.1 Distributed Staged Computation
 
-The concrete scheduler studied in the companion is a distributed staged computation surface for inference prefill. Prompt chunks move across stage nodes. Each node preserves stage-local order for the stream it owns, while the overall runtime overlaps multiple chunks across stages. This is exactly the sort of setting where C1 matters: correctness follows from local ordering rather than from a single total order over all work in flight.
+The concrete scheduler studied in the companion is distributed staged computation for inference prefill. Prompt chunks move across stage nodes. Each node preserves stage-local order for the stream it owns, while the overall runtime overlaps multiple chunks across stages. This is exactly the sort of setting where C1 matters: correctness follows from local ordering rather than from a single total order over all work in flight.
 
-At the implementation level the schedule is a chunked pipeline rather than a speculative executor. A chunk enters stage 1, advances when that stage is free, and continues through the remaining stages while later chunks begin behind it. The modeled makespan is the `ceil(P/B) + N - 1` surface from Section 2.4. The measured wall-clock evidence later in the paper tests whether the deployed system preserves enough of that shape to separate chunked execution from the serialized baseline.
+At the implementation level the schedule is a chunked pipeline rather than a speculative executor. A chunk enters stage 1, advances when that stage is free, and continues through the remaining stages while later chunks begin behind it. The modeled makespan is the `Q + N - 1` surface from Section 2.4. The measured wall-clock evidence later in the paper tests whether the deployed system preserves enough of that shape to separate chunked execution from the serialized baseline.
 
-The important structural point is that the scheduler does not treat every token or chunk as if it needed to wait for global completion. It exposes just enough concurrency to keep independent stage work alive while retaining a deterministic fold at the stage boundaries. That is the flagship example of reducing `Delta_beta` without abandoning determinism.
+### 4.2 Emitted Witness Pair from Lowered GG
 
-### 4.2 Aeon Flow
+The flagship now uses a matched pair of compiler-emitted witnesses rather than only a verbal example. From two minimal `WallingtonRotation` sources in the companion artifact directory, the Gnosis/Aeon Forge exporter emits the following Aeon Flux site witnesses:
 
-The scheduler runs over Aeon Flow, a binary framing layer whose unit of transport is a `FlowFrame`. The header width is 10 bytes:
+| Site | Primitive id | `pathCount` | `streamCount` | `Delta_beta` | Regime | Theorem ref |
+|---|---|---:|---:|---:|---|---|
+| matched site | `rotated_output` | `4` | `4` | `0` | `tight_lossless_transport_exists` | `aeon_flux_site_zero_deficit_iff_tight_lossless_transport` |
+| collided site | `collapsed_output` | `4` | `2` | `2` | `collision_and_information_loss_forced` | `aeon_flux_site_positive_deficit_forces_collision_and_information_loss` |
+
+This table is intentionally plain. It is the concrete object the theorem talks about. The paper no longer needs to ask the reader to imagine what matched and collided sites look like. It points to lowered source files and emitted witness packets for both.
+
+### 4.3 Transport Scope and Explicit Baseline
+
+The scheduler runs over Aeon Flow, a binary framing layer whose unit of transport is a `FlowFrame` with a 10-byte header:
 
 1. `stream_id`: 2 bytes
 2. `sequence`: 4 bytes
 3. `flags`: 1 byte
 4. `length`: 3 bytes
 
-That small fact matters because the protocol question here is not only throughput. It is whether the transport preserves enough path structure for the scheduler to remain visible at the wire. Aeon Flow is designed to carry multiple logical streams without forcing them through the stronger coupling of a one-path ordered-delivery model. A stream can therefore correspond to a computation path or a staged chunk sequence rather than to the entire request as one inseparable line.
-
-In the flagship argument, Aeon Flow is not interesting because it is a custom protocol. It is interesting because it makes the scheduler's branch structure legible at the transport layer. A richer schedule over a transport that immediately reserializes everything would only shift the mismatch boundary downward. The purpose of the protocol layer is to keep the transport from becoming the hidden place where `Delta_beta` turns positive again.
-
-### 4.3 The Scheduler-Transport Bridge
-
-The scheduler and protocol bridge can be stated directly.
-
-1. The scheduler decomposes work into stage-local paths.
-2. The transport preserves those paths as explicit streams and deterministic folds.
-3. The empirical gates measure whether the resulting surface actually reduces observed waste.
-
-This is why the bridge thesis needs both gate1 and gate2, plus an explicit transport boundary check. Gate1 checks that the staged execution surface separates chunked and serialized wall-clock behavior on external multi-host endpoints. The boundary checks isolate the gross path-collapse question on bounded graph pairs. Gate2 then asks the narrower protocol question: once the transport is at least stream-preserving, does Aeon Flow still retain a framing and completion advantage over HTTP/3 across a heterogeneous site corpus?
-
-No claim in this section depends on unrelated correspondence material. The only claim is that the runtime and the transport are shaped to expose and preserve path structure that a path-like baseline would hide.
+That fact matters because the protocol question here is not only throughput. It is whether the transport preserves enough path structure for the scheduler to remain visible at the wire. Gate2 uses an explicit `HTTP/3` baseline, and the claim is narrow: once stream preservation has already been separated from gross path collapse, Aeon Flow may still reduce residual framing and completion cost.
 
 ## 5. Evaluation
 
@@ -273,44 +255,43 @@ No claim in this section depends on unrelated correspondence material. The only 
 
 Only artifact-backed quantitative claims are used in the flagship body. The evaluation surface is intentionally small:
 
-1. Gate1 for wall-clock staged execution.
-2. Gate2 for protocol-corpus framing and completion behavior.
-3. A path-boundary control showing that the same surface predicts parity or collapse when the path budget really is one.
-4. The analytic figure for the Reynolds/speedup model.
+1. one emitted witness pair from lowered GG;
+2. bounded graph-pair and one-path controls;
+3. Gate1 for wall-clock staged execution;
+4. Gate2 for protocol-corpus framing and completion behavior.
 
-This is enough to test the bridge thesis without importing unrelated sections of the larger chapter.
+The paper only makes claims attached to an anchor, an observable, and a failure condition.
 
-The paper only makes claims that are attached to an observable and a failure condition.
-
-| Paper-side claim | Formal or executable anchor | Observable used here | What would count against the claim |
+| Paper-side claim | Anchor | Observable used here | What would count against the claim |
 |---|---|---|---|
-| chunked staged execution can remove path-imposed coordination cost under A1-A2 | pipeline floor and sandwich theorem family | Gate1 latency separation between serialized and chunked execution | chunked execution fails to separate from, or reverses against, the serialized baseline on the declared primary cells |
-| `Delta_beta` can be computed rather than only described | bounded workload/execution graph-pair extraction plus protocol deficit boundary checks | exact recovery of one-path, ordered-pipe-collapse, and per-stream-preservation cases | the extracted graph pairs fail to separate `Delta_beta = 0` from positive-deficit boundary cases |
-| once gross path collapse has been separated, protocol structure still changes residual coordination cost | FlowFrame protocol checks plus Gate2 corpus harness (`Aeon Flow` versus `HTTP/3`) | Gate2 framing and completion behavior across the primary environment matrix | framing or completion gains collapse against the explicit HTTP/3 baseline |
+| emitted sites can classify `Delta_beta` by theorem regime rather than by prose | Aeon Flux site adequacy theorems plus emitted witness export | the `WallingtonRotation` witness packet | emitted `pathCount`, `streamCount`, and theorem regime disagree |
+| `Delta_beta` can be computed on bounded graph pairs | workload/execution graph comparison over explicit traces | exact recovery of one-path, ordered-pipe-collapse, and per-stream-preserving cases | graph pairs fail to separate `Delta_beta = 0` from positive-deficit cases |
+| chunked staged execution can remove path-imposed coordination cost under A1-A2 | pipeline floor and sandwich theorem family | Gate1 latency separation between serialized and chunked execution | chunked execution fails to separate from, or reverses against, the serialized baseline on the primary cells |
+| once stream preservation is already present, protocol structure still changes residual coordination cost | FlowFrame protocol checks plus Gate2 corpus harness (`Aeon Flow` versus `HTTP/3`) | Gate2 framing and completion behavior across the primary environment matrix | framing or completion gains collapse against the explicit HTTP/3 baseline |
 
-### 5.2 Operational Delta_beta Checks
+### 5.2 Emitted Witness and Boundary Checks
 
-Before reading the deployment gates, the paper fixes the diagnostic on explicit graph pairs. The companion already contains the bounded cases used for that calibration.
+Before reading the deployment gates, the paper fixes the diagnostic on explicit witnesses and graph pairs.
 
-| Case | `beta_1*` from workload graph | `beta_1^exec` from effective execution graph | `Delta_beta` | Expected reading |
+| Case | `beta_1*` or `pathCount` | `beta_1^exec` or `streamCount` | `Delta_beta` | Reading |
 |---|---:|---:|---:|---|
+| emitted matched site | `4` | `4` | `0` | tight zero-deficit witness from lowered GG |
+| emitted collided site | `4` | `2` | `2` | positive-deficit witness; the emitted site itself falls into the collision regime |
 | one-path chain | `0` | `0` | `0` | exact parity boundary; no structural win is predicted |
 | 10-stream fork/join over one ordered pipe | `9` | `0` | `9` | positive mismatch; the transport has collapsed visible concurrency back into one path |
-| 10-stream fork/join over per-stream recovery (`HTTP/3` or `Aeon Flow`) | `9` | `9` | `0` | stream independence is preserved; remaining differences are protocol cost, not gross path collapse |
+| 10-stream fork/join over per-stream recovery (`HTTP/3` or `Aeon Flow`) | `9` | `9` | `0` | stream independence is preserved; remaining differences are protocol cost |
 
-This is the direct operational check for the diagnostic. `Delta_beta` is not being reverse-engineered from Gate1 or Gate2 outcomes. It is being computed on bounded graph pairs first, then used to sort later measurements into positive-deficit, zero-deficit, and one-path-boundary cases.
+This is the direct operational check for the diagnostic. `Delta_beta` is not being reverse-engineered from Gate1 or Gate2 outcomes. It is being computed on bounded graph pairs first and emitted witness packets second. The matched/collided witness pair matters because it shows the adequacy theorem classifying concrete lowered sources on both sides of the boundary instead of only on the zero-deficit side.
 
-### 5.3 Boundary Control: The One-Path Case Must Collapse
-
-The same surface that supports the positive gate results also predicts a no-win boundary. This matters because it answers the obvious reviewer objection that the diagnostic is merely a new way to say "parallelism helps." In the companion boundary checks, setting `beta_1 = 0` forces `C = 1`, and the pipeline equation recovers exact sequential execution:
+The same surface also predicts the no-win boundary. In the companion, the one-path control is realized as single-chunk execution `Q = 1`, and the pipeline equation recovers the serial `N`-step path:
 
 $$
-T = (N + 1 - 1) \cdot t_{\mathrm{stage}} = N \cdot t_{\mathrm{stage}}.
+T_{\mathrm{pipe}} = Q + N - 1 = 1 + N - 1 = N.
 $$
 
-There is no hidden speedup term left once the path budget has collapsed to one. The same companion boundary surface also makes the protocol version explicit: a richer application layer can still inherit a path-like transport bottleneck, so exposing concurrency above the wire is not enough if the transport below it reserializes recovery and delivery. This section is not a new headline result. It is a control. It shows that the flagship does not use `Delta_beta` as a universal success score. The framework is allowed to predict parity when the workload is one-path, and it is allowed to predict collapse when the scheduler's extra path structure disappears at the transport layer.
+There is no hidden speedup term left once the path budget has collapsed to one. This is a control, not a headline result. It shows that the flagship is allowed to predict parity.
 
-### 5.4 Gate1: External Multi-Host Wall-Clock Evidence
+### 5.3 Gate1: External Multi-Host Wall-Clock Evidence
 
 Gate1 measures chunked versus serialized execution on an external multi-host setup. The flagship uses the external multi-host report because it is the cleanest bridge from the formal pipeline model to deployed staged execution. The artifact uses two workloads, multiple RTT and loss settings, bootstrap confidence intervals, and six distinct endpoint hosts.
 
@@ -324,44 +305,45 @@ Figure 2 shows the deployed wall-clock separation that corresponds to the model-
 
 ![Figure 2. Gate1 wall-clock evidence from the Chapter 17 companion artifacts. The chart summarizes the ten-cell external multi-host matrix and shows the separation between serialized and chunked execution together with bootstrap speedup intervals.](companion-tests/artifacts/ch17-gate1-wallclock-figure.png)
 
-The flagship does not claim that the gate1 scalar is a universal constant. The point is narrower: on a bounded external deployment surface, the measured behavior matches the qualitative prediction of the formal scheduler. A path-like baseline is paying coordination cost that the staged schedule avoids. Just as important, the one-path boundary above tells us what would have happened if the workload or runtime had really been `beta_1 = 0`: the measured separation would have had no structural reason to appear.
+The flagship does not claim that the Gate1 scalar is a universal constant. The point is narrower: on a bounded external deployment surface, the measured behavior matches the qualitative prediction of the formal scheduler. A path-like baseline is paying coordination cost that the staged schedule avoids.
 
-### 5.5 Gate2: Protocol-Corpus Evidence
+### 5.4 Gate2: Protocol-Corpus Evidence
 
-Gate2 tests the transport side of the bridge on a seeded heterogeneous corpus. The corpus contains 144 sites and 12,371 resources, and the six primary environments span increasing RTT, decreasing bandwidth, and rising loss. The explicit baseline is HTTP/3. That distinction matters. Gate2 is not where the paper establishes the positive-deficit ordered-pipe collapse case; the companion boundary checks already do that on bounded graph pairs. Gate2 asks the narrower question of within-class protocol efficiency: once the transport is already stream-preserving, do Aeon Flow's smaller framing and fold semantics still improve framing and completion behavior relative to HTTP/3 across the declared impairment matrix?
+Gate2 tests the transport side of the bridge on a seeded heterogeneous corpus. The corpus contains 144 sites and 12,371 resources, and the six primary environments span increasing RTT, decreasing bandwidth, and rising loss. The explicit baseline is `HTTP/3`. That distinction matters. Gate2 is not where the paper establishes the positive-deficit ordered-pipe collapse case; the companion boundary checks already do that on bounded graph pairs. Gate2 asks the narrower question of within-class protocol efficiency: once the transport is already stream-preserving, do Aeon Flow's framing and fold semantics still improve framing and completion behavior relative to `HTTP/3` across the declared impairment matrix?
 
 Again the result is compact. 6/6 primary Gate2 cells pass. The framing median gain is 72.252%, and the minimum primary-cell framing CI low is 72.19%. At the benign primary edge, the `rtt12-bw80-loss0` environment still yields 23.62 ms median completion gain and 23.79 ms p95 completion gain. At the harsh primary edge, `rtt110-bw7-loss2pct` yields 92.39 ms median completion gain and 110.5 ms p95 completion gain.
 
-This is the key within-class transport result. The framing advantage is nearly invariant across environments because it comes from protocol structure. The completion gain grows with impairment because the lower framing and recovery burden compounds as the network gets worse. The flagship does not read Gate2 as proof that HTTP/3 is a one-path transport. It reads Gate2 more narrowly: after the path-collapse boundary has been separated elsewhere, protocol structure still changes the residual coordination cost of carrying the staged workload over the wire.
+The framing gain is nearly invariant across environments because it is dominated by the declared framing models rather than by network impairment. The completion gains are the network-sensitive part, and they widen as impairment increases. The flagship therefore reads Gate2 narrowly and honestly: after the path-collapse boundary has been separated elsewhere, protocol structure still changes the residual coordination cost of carrying the staged workload over the wire.
 
 Figure 3 makes the split visible: nearly constant framing advantage, widening completion advantage.
 
 ![Figure 3. Gate2 protocol-corpus evidence from the Chapter 17 companion artifacts. The chart separates framing gains from completion gains across the heterogeneous site corpus and shows that the protocol advantage persists across all six primary environments.](companion-tests/artifacts/ch17-gate2-protocol-corpus-figure.png)
 
-### 5.6 Interpreting the Evaluation Surface Together
+### 5.5 Interpreting the Evaluation Surface Together
 
-The graph-pair checks, Gate1, and Gate2 do different jobs.
+The emitted witness, graph-pair checks, Gate1, and Gate2 do different jobs.
 
-1. The graph-pair checks operationalize `Delta_beta` and separate one-path, ordered-pipe-collapse, and per-stream-preserving cases before any deployment scalar is discussed.
-2. Gate1 checks the staged scheduler against the serialized baseline.
-3. Gate2 checks Aeon Flow against the explicit HTTP/3 baseline once the gross collapse-vs-preservation question has already been isolated.
-4. The one-path control checks that the same formal surface also predicts the no-gain case when the path budget really is one.
+1. The emitted witness shows that a lowered site can be assigned a theorem regime directly.
+2. The graph-pair checks separate one-path, ordered-pipe-collapse, and per-stream-preserving cases before any deployment scalar is discussed.
+3. Gate1 checks the staged scheduler against the serialized baseline.
+4. Gate2 checks Aeon Flow against the explicit `HTTP/3` baseline once the gross collapse-vs-preservation question has already been isolated.
+5. The one-path control checks that the same surface predicts the no-gain case when the path budget really is one.
 
-Taken together they support one bounded conclusion: bounded graph pairs make `Delta_beta` operational enough to separate positive-deficit path-collapse cases from matched cases, and on that foundation the staged runtime plus transport surface shows artifact-backed reductions in observed coordination cost. That is the precise role of `Delta_beta` in the flagship: not a one-number oracle, but a way to state where missing path budget is being inserted.
-
-The paper does not need more than that. It does not need a claim that every transport problem is topological, or that every pipeline problem should be reframed through Betti numbers. It only needs the evidence to show that the diagnostic is usable on the targeted scheduler-plus-transport bridge, that it cleanly recovers the one-path and ordered-pipe boundaries, and that the deployment gates do not contradict those local predictions.
+Taken together they support one bounded conclusion: `Delta_beta` is operational enough to separate positive-deficit path-collapse cases from matched cases, and on that foundation the staged runtime plus transport surface shows artifact-backed reductions in observed coordination cost. That is the precise role of `Delta_beta` in the flagship: not a one-number oracle, but a way to state where missing path budget is being inserted.
 
 ## 6. Limitations and Non-Claims
 
 The flagship deliberately narrows scope. The following boundaries are part of the claim, not footnotes to it.
 
 1. The model is a finite DAG model. Infinite-state, adversarially adaptive, or unrestricted asynchronous systems are outside the direct theorem surface used here.
-2. The pipeline speedup formula is a modeled step-count claim under A1-A2. It is not a universal wall-clock predictor.
-3. `Delta_beta` is a diagnostic coordinate, not a one-number oracle for system quality. A positive value says the execution topology is narrower than the modeled workload, not that a particular implementation must improve by a fixed amount.
-4. Gate1 is a bounded external multi-host matrix, not a claim about every deployment.
-5. Gate2 is a seeded heterogeneous corpus with explicit impairment environments, and its protocol comparison is Aeon Flow versus HTTP/3 rather than a universal transport shootout.
-6. The paper does not claim universal superiority of richer schedules. For small workloads, extremely fast serial paths, or high coordination overhead, the correct topology may be `beta_1 = 0`.
-7. No body claim in this paper depends on extra-domain correspondence surfaces outside distributed systems and bounded protocol models.
+2. The graph-side `beta_1` used here is a bounded site metric, not a claim that one topological object canonically measures executable multiplicity in every system model.
+3. The emitted witness path shown in the flagship is currently scoped to lowered `WallingtonRotation` sites. The theorem family is broader than that one example, but the paper only needs one emitted witness.
+4. The pipeline speedup formula is a modeled step-count claim under A1-A2. It is not a universal wall-clock predictor.
+5. `Delta_beta` is an obstruction variable inside the declared model, not a one-number oracle for system quality.
+6. Gate1 is a bounded external multi-host matrix, not a claim about every deployment.
+7. Gate2 is a seeded heterogeneous corpus with explicit impairment environments, and its protocol comparison is Aeon Flow versus `HTTP/3` rather than a universal transport shootout. Its framing gain is partly structural from declared framing models; its completion gains are the network-sensitive measurements.
+8. The paper does not claim universal superiority of richer schedules. For small workloads, extremely fast serial paths, or high coordination overhead, the correct topology may be `beta_1 = 0`.
+9. No body claim in this paper depends on extra-domain correspondence surfaces outside distributed systems and bounded protocol models.
 
 These limitations sharpen the result rather than weaken it. The claim is strong precisely because it stays local.
 
@@ -369,25 +351,23 @@ These limitations sharpen the result rather than weaken it. The claim is strong 
 
 This section is intentionally not a survey. It covers only the literatures needed to identify the incremental claim of the flagship.
 
-The speedup formulas in this paper sit beside, not above, the classical scaling laws. Amdahl studies fixed-workload speed limits under an explicit serial fraction, while Gustafson reframes the bound under scaled workloads [1, 2]. Those laws remain the right tools for ceiling questions. The current paper adds a different question: when is part of the apparent serial fraction coming from the execution surface rather than from the workload's natural structure? `Delta_beta` is meant as a local mismatch diagnostic for that narrower question, not as a replacement for classical scaling analysis.
+The speedup formulas in this paper sit beside, not above, the classical scaling laws. Amdahl studies fixed-workload speed limits under an explicit serial fraction, while Gustafson reframes the bound under scaled workloads [1, 2]. Those laws remain the right tools for ceiling questions. The current paper adds a different question: when is part of the apparent serial bottleneck being inserted by the execution surface rather than demanded by the workload?
 
-The scheduling model is likewise adjacent to older work on explicit concurrency surfaces. Kahn process networks and early dataflow architectures made it normal to reason in terms of bounded dependency graphs rather than one total order [3, 4]. MapReduce made fork-and-fold structure operational on large bounded computations [6]. The flagship does not claim novelty for DAG execution itself. Its narrower claim is that separating workload-side path demand from runtime-side path budget makes certain scheduling failures easier to localize, especially when the system appears parallel at one layer and path-like at another.
+The scheduling model is likewise adjacent to older work on explicit concurrency surfaces. Kahn process networks, early dataflow architectures, micropipelines, and MapReduce all make it natural to reason over bounded dependency graphs and fork/fold structure rather than one total order [3-6]. The flagship does not claim novelty for DAG execution itself. Its narrower claim is that separating workload-side path demand from runtime-side path budget, then binding that gap to an adequacy theorem and an emitted witness, makes certain failures easier to localize.
 
-Classical pipeline overlap and asynchronous stage composition are also established. Micropipelines already show that local stage ordering can be enough to preserve correctness while allowing overlap [5]. The scheduler claim here is therefore not "pipelining exists." It is that a staged system can still be under-provisioned in path structure relative to the workload it carries, and that the under-provisioning can be stated as a path-budget mismatch rather than only as low occupancy or poor hardware utilization.
+Put differently, prior work already supplies the language of explicit concurrency. The flagship only claims one extra step beyond that language: the deficit is not merely descriptive but theorem-bearing in the emitted site model. If that step is uninteresting, then the paper should be read as a small notation result rather than as a new scheduler theory.
 
-The protocol side belongs to a familiar lineage as well. HTTP/2 reduces framing waste and introduces application-layer multiplexing, while QUIC moves recovery and ordering decisions closer to individual streams [8, 9]. The paper does not claim to supersede that literature. Its narrower bridge claim is that transport should be evaluated partly by whether it preserves the scheduler's exposed path structure or silently collapses it back toward one ordered recovery path. That is why the flagship studies scheduler and protocol together instead of treating them as unrelated optimizations.
+The protocol side belongs to a familiar lineage as well. HTTP/2 reduces framing waste and introduces application-layer multiplexing, while QUIC moves recovery and ordering decisions closer to individual streams [8, 9]. The paper does not claim to supersede that literature. Its narrower claim is that, for the scheduler-plus-transport bridge studied here, it is useful to distinguish gross path preservation from within-class protocol cost instead of blending both questions into one benchmark.
 
-Finally, the formal-methods layer is deliberately conventional in the best sense. TLA+ and related specification practice already provide a language for bounded protocol safety and progress arguments [7]. The novelty claim here is not "formal methods for systems" in general. It is the tighter connection between a bounded formal surface, a small set of measured observables, and explicit falsifiers in the main paper, all backed by a public rerun surface rather than by prose alone [10]. That is what is meant to keep the flagship from collapsing into either pure systems benchmarking or pure notation.
+Finally, the formal-methods layer is deliberately conventional in the best sense. TLA+ and related specification practice already provide a language for bounded safety and progress arguments [7]. The novelty claim here is not "formal methods for systems" in general. It is the tighter connection between one bounded theorem family, one emitted witness surface, and a small set of measured observables, all backed by a public rerun surface rather than by prose alone [10].
 
 ## 8. Conclusion
 
 Path-like execution topologies impose avoidable coordination cost when the workload's natural structure has positive parallel-path complexity.
 
-That sentence is the whole paper. The finite DAG model provides the vocabulary. C1-C4 provide the correctness envelope. The speedup floor, speedup sandwich, and Reynolds classification provide the model-side quantitative surface. Aeon Flow provides a transport that preserves the scheduler's path structure instead of silently collapsing it. Gate1 and Gate2 show that the bridge is not only formal: the staged runtime and the protocol layer both exhibit artifact-backed gains on bounded evaluation surfaces.
+That sentence is the whole paper. The finite-DAG model provides the vocabulary. C1-C4 provide the correctness envelope. The pipeline floor and Reynolds classification provide the scheduler-side quantitative surface. The Aeon Flux site adequacy theorem turns `Delta_beta` into an obstruction result. The emitted `WallingtonRotation` witness shows the theorem on a concrete lowered source. Gate1 and Gate2 then show that the bridge is not only formal: the staged runtime and the protocol layer both exhibit artifact-backed gains on bounded evaluation surfaces.
 
-The result is narrow, but it is enough. One does not need a universal theory of computation to say something useful about topological mismatch in distributed inference. One needs a finite DAG model, explicit assumptions, mechanized local claims, and measured evidence. That is what this flagship paper provides.
-
-The topological vocabulary only matters to the extent that it distinguishes two things standard prose often blends together: path structure inherent to the workload and path collapse inserted by the execution surface. That is the only place `Delta_beta` is meant to earn its keep.
+The result is narrow, and that is the point. One does not need a universal theory of computation to say something useful about topological mismatch in distributed inference. One needs one theorem family, one emitted witness, explicit assumptions, and measured evidence. If the theorem-plus-witness bridge is judged unimportant, the paper fails on novelty. If it is judged useful, the claim is already as small as it should be.
 
 ## Appendix A: Theorem-to-Artifact Map
 
@@ -398,11 +378,11 @@ The topological vocabulary only matters to the extent that it distinguishes two 
 | pipeline floor `T_pipe <= T_seq` | `THM-PIPELINE-SPEEDUP-FLOOR` | `formal/lean/Multiplexing.lean` |
 | speedup interval `1 <= speedup <= B*N` | `pipeline_speedup_floor`, `pipeline_strict_speedup`, `pipeline_speedup_sandwich` | `formal/lean/Multiplexing.lean`, `formal/lean/PredictionsRound15.lean` |
 | Reynolds regime cut points | `reynolds_regime_exhaustive`, `classifyRegime`, `turbulent_collapse_floor` | `formal/lean/ReynoldsBFT.lean`, `companion-tests/artifacts/ch17-inverted-scaling-reynolds-figure.{json,md,png,svg}` |
+| Aeon Flux site adequacy trichotomy | `aeon_flux_site_nonpositive_deficit_iff_lossless_transport`, `aeon_flux_site_zero_deficit_iff_tight_lossless_transport`, `aeon_flux_site_positive_deficit_forces_collision_and_information_loss` | `formal/lean/Lean/ForkRaceFoldTheorems/AeonFluxSiteAdequacy.lean`, `open-source/gnosis/examples/proofs/AeonFluxSiteAdequacy-lean.gg` |
+| emitted matched/collided witness pair from lowered GG | Gnosis/Aeon Forge site witness export | `companion-tests/artifacts/ch17-wallington-rotation-site.gg`, `companion-tests/artifacts/ch17-wallington-rotation-site-witness.{json,md}`, `companion-tests/artifacts/ch17-wallington-rotation-positive-deficit-site.gg`, `companion-tests/artifacts/ch17-wallington-rotation-positive-deficit-site-witness.{json,md}` |
 | operational `Delta_beta` extraction from bounded graph pairs | workload/execution graph comparison over explicit traces | `companion-tests/src/deficit-evidence.test.ts` |
 | 10-byte FlowFrame header and stream semantics | framing law plus runtime protocol tests | `companion-tests/src/flow-protocol.test.ts` |
-| bounded quorum visibility and ordering surface | quorum theorem family | `QuorumReadWrite.tla`, `QuorumVisibility.lean`, `QuorumAsyncNetwork.tla`, `QuorumAsyncNetwork.lean`, `QuorumSessionConsistency.tla`, `QuorumConsistency.lean`, `QuorumMultiWriter.tla`, `QuorumOrdering.lean` |
 | one-path boundary recovers sequential execution | explicit `beta_1 = 0` boundary check | `companion-tests/src/pipeline-topology.test.ts` |
-| transport can reintroduce path collapse below the application layer | protocol deficit boundary | `companion-tests/src/deficit-evidence.test.ts` |
 | deployed scheduler evidence | Gate1 wall-clock matrix | `companion-tests/artifacts/gate1-wallclock-external-multihost.json`, `companion-tests/artifacts/ch17-gate1-wallclock-figure.{json,md,png,svg}` |
 | deployed protocol evidence | Gate2 protocol corpus | `companion-tests/artifacts/gate2-protocol-corpus.json`, `companion-tests/artifacts/ch17-gate2-protocol-corpus-figure.{json,md,png,svg}` |
 
@@ -416,6 +396,38 @@ The flagship paper has its own build and validation path so that it can be check
 pnpm run manuscript:arxiv:flagship:tex
 pnpm run manuscript:arxiv:flagship:build
 pnpm run manuscript:arxiv:flagship:package
+```
+
+### Emitted witness rerun
+
+```bash
+pnpm --dir apps/aeon-forge exec bun src/cli/cli.tsx topology analyze \
+  /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-site.gg \
+  --format summary
+
+pnpm --dir apps/aeon-forge exec bun src/cli/cli.tsx topology export \
+  /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-site.gg \
+  --format json \
+  --out /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-site-witness.json
+
+pnpm --dir apps/aeon-forge exec bun src/cli/cli.tsx topology export \
+  /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-site.gg \
+  --format markdown \
+  --out /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-site-witness.md
+
+pnpm --dir apps/aeon-forge exec bun src/cli/cli.tsx topology analyze \
+  /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-positive-deficit-site.gg \
+  --format summary
+
+pnpm --dir apps/aeon-forge exec bun src/cli/cli.tsx topology export \
+  /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-positive-deficit-site.gg \
+  --format json \
+  --out /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-positive-deficit-site-witness.json
+
+pnpm --dir apps/aeon-forge exec bun src/cli/cli.tsx topology export \
+  /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-positive-deficit-site.gg \
+  --format markdown \
+  --out /Users/buley/Documents/Code/emotions/open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/artifacts/ch17-wallington-rotation-positive-deficit-site-witness.md
 ```
 
 ### Targeted manuscript validation

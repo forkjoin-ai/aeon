@@ -28,7 +28,7 @@ This ledger turns top-level manuscript claims into named theorems with explicit 
 
 All other files are sorry-free. References to "sorry" in other files appear only in doc comments confirming zero-sorry status.
 
-**Sorry-free files (complete mechanization):** IrreversibilityPredictions.lean (20 theorems -- entangle, deficit, erasure, aleph, verify), SemioticPeace.lean (13 theorems), SemioticDeficit.lean, CoarseningThermodynamics.lean, ThermodynamicTracedMonoidal.lean, RenormalizationFixedPoints.lean, DataProcessingInequality.lean, MonoidalCoherence.lean, TracedMonoidal.lean, RateDistortionFrontier.lean, InfiniteErasure.lean, GeometricErgodicity.lean, ContinuousHarris.lean, AmericanFrontier.lean (4 theorems), NetflixFrontier.lean (9 theorems -- monotone algo/team, positive below, pigeonhole, recursive, residual gap, independent convergence, master conjunction; all `omega` on concrete ℕ from published RMSE × 10⁴), VoidWalking.lean (7 theorems, 17 definitions/lemmas), NegotiationEquilibrium.lean (90+ theorems, 40+ structures/definitions spanning negotiation theory, dual void, void relativity, and the Six Pillars: Arrow of Time, Holographic Principle, General Relativity, Noether's Theorem, Entanglement, and Unification), RecursiveCoarseningSynthesis.lean (5 theorems -- synthesis_sound, drift_conservation, fine_stability_implies_coarse_stability, identity_quotient_preserves_stability, certificate_provides_drift_witness), CodecRacing.lean, DualProtocol.lean, MolecularTopology.lean, ProtocolDeficitLatency.lean, FrameNativeBisim.lean, FrameOverheadBound.lean, FailureEntropy.lean, FailureDurability.lean, FailureFamilies.lean, HeteroMoAFabric.lean, CommunityDominance.lean (7 theorem families -- community attenuation, nondegradation, strict domination, tare bridging, Bule convergence, diversity amplification, master dominance theory), SkyrmsNadirBule.lean (12 theorems -- Skyrms-as-community mapping, Bule-zero-iff-nadir biconditional, algebraic nadir identification, mediation-is-attenuation, master theorem composing CommunityDominance + NegotiationEquilibrium + VoidWalking), ReynoldsBFT.lean (24 theorems -- exact `Re < 3/2` quorum-safe and `Re < 2` majority-safe iff boundaries, plus exact `mergeAll`/`quorumFold`/`syncRequired` regime classification), PluralistRepublic.lean (17 theorems -- one-stream positive deficit, exact strict-dominance gap, global Bule optimality under civic cover, republican evidence gate, and exact deliberative regime wrappers), SleepDebt.lean, SleepDebtSchedule.lean, SleepDebtWeightedSchedule.lean, StagedExpansion.lean, WarmupController.lean, ControllerTieBreaking.lean (22 theorems -- failure-controller and warm-up-controller equality/tie boundaries, iff characterizations, and anti-selection laws), WarmupEfficiency.lean, Multiplexing.lean, Wallace.lean, MetacognitiveDaisyChain.lean, QuorumAsyncNetwork.lean, QuorumConsistency.lean, QuorumLinearizability.lean, QuorumOrdering.lean, QuorumVisibility.lean, QueueBoundary.lean, QueueStability.lean, MeasureQueueing.lean, StateDependentQueueFamilies.lean, JacksonQueueing.lean, JacksonExactClosure.lean, JacksonFeedForwardClosure.lean, JacksonEnvelopeClosure.lean, JacksonRawClosure.lean, RetrocausalBound.lean (13 theorems -- backward count recovery, ordering preservation, concentrated boundary uniqueness, multinomial positivity, RG fixed-point composition, Landauer heat composition, master theorem), CancerTreatments.lean (12 theorems -- metabolic gate sequencing, checkpoint cascade amplification, senescence-then-senolytic two-step, viral oncoprotein displacement, counter-vent depletion before immunotherapy, master treatment predictions theorem), CryptographicPredictions.lean (15 theorems -- hash collision heat floor, one-way inversion side-information, ZK deficit-zero simulability, commitment semiotic folds, password hashing side-channel floor, master cryptographic predictions theorem), RaceWinnerPredictions.lean (15 theorems -- election winner validity, election winner minimality, election winner isolation, training drift convergence, training stall, learning rate monotonicity, geometric convergence, contraction ordering, bound ordering, org level positive loss, adding level increases loss, hierarchy fixed point, monolingual positive deficit, code-switching reduces deficit, shared context reduces deficit, master theorem), FinalCompositions.lean (15 theorems -- negotiation settlement fixed point, concession reduces terms, settlement Lyapunov stability, quotient preserves cardinality, quotient preserves nontriviality, interference survives coarsening, rate-distortion monotonicity, zero rate max distortion, full rate zero distortion, vacation queue bounded, queue drains when active, vacation increases occupancy, unified information-processing chain), and others in the passing umbrella build.
+**Sorry-free files (complete mechanization):** IrreversibilityPredictions.lean (20 theorems -- entangle, deficit, erasure, aleph, verify), SemioticPeace.lean (13 theorems), SemioticDeficit.lean, CoarseningThermodynamics.lean, ThermodynamicTracedMonoidal.lean, RenormalizationFixedPoints.lean, DataProcessingInequality.lean, MonoidalCoherence.lean, TracedMonoidal.lean, RateDistortionFrontier.lean, InfiniteErasure.lean, GeometricErgodicity.lean, ContinuousHarris.lean, AmericanFrontier.lean (4 theorems), NetflixFrontier.lean (9 theorems -- monotone algo/team, positive below, pigeonhole, recursive, residual gap, independent convergence, master conjunction; all `omega` on concrete ℕ from published RMSE × 10⁴), VoidWalking.lean (7 theorems, 17 definitions/lemmas), NegotiationEquilibrium.lean (90+ theorems, 40+ structures/definitions spanning negotiation theory, dual void, void relativity, and the Six Pillars: Arrow of Time, Holographic Principle, General Relativity, Noether's Theorem, Entanglement, and Unification), RecursiveCoarseningSynthesis.lean (5 theorems -- synthesis_sound, drift_conservation, fine_stability_implies_coarse_stability, identity_quotient_preserves_stability, certificate_provides_drift_witness), CodecRacing.lean, DualProtocol.lean, MolecularTopology.lean, ProtocolDeficitLatency.lean, FrameNativeBisim.lean, FrameOverheadBound.lean, FailureEntropy.lean, FailureDurability.lean, FailureFamilies.lean, HeteroMoAFabric.lean, CommunityDominance.lean (7 theorem families -- community attenuation, nondegradation, strict domination, tare bridging, Bule convergence, diversity amplification, master dominance theory), SkyrmsNadirBule.lean (12 theorems -- Skyrms-as-community mapping, Bule-zero-iff-nadir biconditional, algebraic nadir identification, mediation-is-attenuation, master theorem composing CommunityDominance + NegotiationEquilibrium + VoidWalking), BlackHoleVoidSingularity.lean (12 theorems -- collapsed-mode boundary dominance, anti-equilibrium and non-Aletheia singularity, positive Hawking-style leakage, unique ten-mode candidate touchpoint, and model-relative monad localization on the explicit `9 + 1` global surface), FibonacciSizeSurface.lean (9 theorems -- proton and floor-packet Fibonacci hits, black-hole touchpoint-count hit, and exact non-Fibonacci counterexamples for the certified ring packets), PhotonSliverFrontier.lean (6 theorems -- photon floor positioning packet, zero-plus-sliver gain/control, Barbelo natural division, picolorenzo floor, consolidated frontier, and honest rocky-floor companion theorem), NestedWallingtonTower.lean (12 theorems -- immediate nesting law, photon/rocky/quark initial rungs, exact two-level photon packet, explicit three-rung certified ladder, finite ten-mode envelope, and non-closure of the local ladder at full ten levels), WallingtonSurfaceAdmissibility.lean (9 theorems -- exact admissibility of the visible torus rank, uniqueness of the ambient-matching surface, undershoot/overshoot anti-theorems, and the concrete `3D -> 2` best-surface witness), KnowableUniverseMap.lean (7 theorems plus master atlas -- finite observable ceiling, positive visibility gap, CMB cutoff, best ambient surface, nested ladder inside the ten-level envelope, base `1 -> 0` sliver edge, survey packet map, and black-hole monad recovery), ReynoldsBFT.lean (24 theorems -- exact `Re < 3/2` quorum-safe and `Re < 2` majority-safe iff boundaries, plus exact `mergeAll`/`quorumFold`/`syncRequired` regime classification), PluralistRepublic.lean (17 theorems -- one-stream positive deficit, exact strict-dominance gap, global Bule optimality under civic cover, republican evidence gate, and exact deliberative regime wrappers), SleepDebt.lean, SleepDebtSchedule.lean, SleepDebtWeightedSchedule.lean, StagedExpansion.lean, WarmupController.lean, ControllerTieBreaking.lean (22 theorems -- failure-controller and warm-up-controller equality/tie boundaries, iff characterizations, and anti-selection laws), WarmupEfficiency.lean, Multiplexing.lean, Wallace.lean, MetacognitiveDaisyChain.lean, QuorumAsyncNetwork.lean, QuorumConsistency.lean, QuorumLinearizability.lean, QuorumOrdering.lean, QuorumVisibility.lean, QueueBoundary.lean, QueueStability.lean, MeasureQueueing.lean, StateDependentQueueFamilies.lean, JacksonQueueing.lean, JacksonExactClosure.lean, JacksonFeedForwardClosure.lean, JacksonEnvelopeClosure.lean, JacksonRawClosure.lean, RetrocausalBound.lean (13 theorems -- backward count recovery, ordering preservation, concentrated boundary uniqueness, multinomial positivity, RG fixed-point composition, Landauer heat composition, master theorem), CancerTreatments.lean (12 theorems -- metabolic gate sequencing, checkpoint cascade amplification, senescence-then-senolytic two-step, viral oncoprotein displacement, counter-vent depletion before immunotherapy, master treatment predictions theorem), CryptographicPredictions.lean (15 theorems -- hash collision heat floor, one-way inversion side-information, ZK deficit-zero simulability, commitment semiotic folds, password hashing side-channel floor, master cryptographic predictions theorem), RaceWinnerPredictions.lean (15 theorems -- election winner validity, election winner minimality, election winner isolation, training drift convergence, training stall, learning rate monotonicity, geometric convergence, contraction ordering, bound ordering, org level positive loss, adding level increases loss, hierarchy fixed point, monolingual positive deficit, code-switching reduces deficit, shared context reduces deficit, master theorem), FinalCompositions.lean (15 theorems -- negotiation settlement fixed point, concession reduces terms, settlement Lyapunov stability, quotient preserves cardinality, quotient preserves nontriviality, interference survives coarsening, rate-distortion monotonicity, zero rate max distortion, full rate zero distortion, vacation queue bounded, queue drains when active, vacation increases occupancy, unified information-processing chain), and others in the passing umbrella build.
 
 **Proof techniques by file:**
 | File | Theorem | Technique |
@@ -1038,6 +1038,22 @@ All other files are sorry-free. References to "sorry" in other files appear only
 | THM-CMB-BOUNDARY-WITNESS | The recombination shell is visible while the immediately earlier epoch is not | `cmb_boundary_witness` | Mechanized |
 | THM-TOTAL-GAP-SPLIT-WITH-VISIBLE-CMB | The total observer gap splits into visibility plus exploration while the CMB remains visible | `total_gap_split_with_visible_cmb` | Mechanized |
 | THM-POSITIVE-EXPLORATION-PRE-CMB-HIDDEN | Positive exploration enlarges the total gap without removing the pre-CMB visibility cutoff | `positive_exploration_still_leaves_pre_cmb_hidden` | Mechanized |
+
+### Observable Universe Finitude
+
+*Observable/effective-universe finitude theorems: the named observable epochs in the current cosmic projection are all finite and share one finite ceiling.*
+
+**Assumptions:** The claim is scoped to the observable/effective universe represented by the named `CosmicProjection` epochs. The bound is the explicit observable ceiling `maxObservable`, not an unrestricted theorem about every possible total-universe extrapolation.
+**Mechanization target:** `ObservableUniverseFinite.lean` (6 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-OBSERVABLE-EPOCH-POSITIVE | Every named observable epoch has positive finite size | `observable_epoch_positive` | Mechanized |
+| THM-OBSERVABLE-EPOCH-LE-CEILING | Every named observable epoch lies below the effective observable ceiling | `observable_epoch_le_ceiling` | Mechanized |
+| THM-EFFECTIVE-UNIVERSE-HAS-FINITE-CEILING | One finite bound covers all named observable epochs | `effective_universe_has_finite_ceiling` | Mechanized |
+| THM-CURRENT-OBSERVABLE-UNIVERSE-NOT-INFINITE | The current observable universe lies strictly below a finite bound | `current_observable_universe_not_infinite` | Mechanized |
+| THM-NAMED-OBSERVABLE-EPOCHS-NOT-INFINITE | The named projected observable epochs remain below one finite bound | `named_observable_epochs_not_infinite` | Mechanized |
+| THM-OBSERVABLE-UNIVERSE-FINITUDE | Master observable/effective-universe finitude conjunction | `observable_universe_finitude` | Mechanized |
 
 ### Covering Space Causality (§3.3)
 
@@ -2285,6 +2301,714 @@ The bounded raw adaptive rerouting witness now has the same bridge: `AdaptiveWit
 | THM-DEMO-CANDIDATES-PASS-FILTER | The demo candidate packets all pass the math-only candidate filter | `demo_candidates_pass_math_filter` | Mechanized |
 | THM-NOISE-FAILS-FILTER | The unresolved noise packet fails the math-only candidate filter | `noise_fails_math_filter` | Mechanized |
 | THM-SEARCH-KEEPS-CANDIDATES-DROPS-NOISE | The math-only survey search keeps the candidate packets and drops the unresolved noise | `search_keeps_math_candidates_and_drops_noise` | Mechanized |
+
+## 81J. Celestial Natural Division (§10.6)
+
+**Assumptions:** The orbital window spread is exactly the control statistic. Natural division re-reads that exact window-size quantity into the Gnostic number system and into the picolorenzo (`π`) time unit, yielding an executable ranking surface for the concrete celestial packets.
+**Mechanization target:** `CelestialNaturalDivision.lean` (21 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-NATURAL-DIVISION-EQ-SPREAD | Natural division is exactly the orbital-window spread | `natural_division_eq_orbital_spread` | Mechanized |
+| THM-FLOOR-NATURAL-DIVISION-BARBELO | Photon-like and Earth-like floor packets both have Barbelo natural division | `photon_natural_division_is_barbelo`, `earth_like_natural_division_is_barbelo` | Mechanized |
+| THM-DIFFUSE-NATURAL-DIVISION-PLEROMA-PLUS-SYZYGY | The diffuse-ring `54D` witness lands at `Pleroma + Syzygy` | `diffuse_ring_natural_division_is_pleroma_plus_syzygy` | Mechanized |
+| THM-HALO-LOCKED-NATURAL-DIVISION-PLEROMA-MINUS-SYZYGY | The halo-locked `54D` Saturn witness lands at `Pleroma - Syzygy` | `halo_locked_natural_division_is_pleroma_minus_syzygy` | Mechanized |
+| THM-SUPER-NATURAL-DIVISION-PLEROMA-MINUS-EMANATIONS | The super-ring `54D` witness lands at `Pleroma - Emanations` | `super_ring_natural_division_is_pleroma_minus_emanations` | Mechanized |
+| THM-NATURAL-DIVISION-IN-PICOLORENZOS | The concrete packet sizes lift to exact picolorenzo (`π`) scales | `concrete_packets_have_picolorenzo_scales` | Mechanized |
+| THM-NATURAL-DIVISION-RANKS-RING-TAXA | Natural division strictly orders the ring taxa as `super < halo-locked < diffuse` | `natural_division_orders_ring_taxa` | Mechanized |
+| THM-CONCRETE-PACKETS-HAVE-NATURAL-DIVISION-RANKS | The executable rank classifier assigns the concrete packet bands correctly | `concrete_packets_have_natural_division_ranks` | Mechanized |
+
+## 81K. Black Hole Void Singularity (§10.6)
+
+**Assumptions:** In the finite kenoma boundary model, one collapsed mode carries a positive singularity gap above a uniform exterior background and the exterior boundary retains positive residual leakage. The ten-mode surface still splits as nine interlocking tori plus one monad / void anchor, and the explicit global cosmology model localizes the singularity at that monad node.
+**Mechanization target:** `BlackHoleVoidSingularity.lean` (12 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COLLAPSED-MODE-BOUNDARY-DOMINATES | The collapsed mode has strictly higher boundary rejection than any exterior mode | `collapsed_mode_boundary_dominates` | Mechanized |
+| THM-BOUNDARY-RECOVERS-COLLAPSED-MODE | Boundary reading uniquely recovers the collapsed mode | `boundary_recovers_collapsed_mode` | Mechanized |
+| THM-EXTERIOR-WEIGHT-EXCEEDS-COLLAPSED | Exterior complement weight strictly exceeds the collapsed-mode weight | `exterior_weight_exceeds_collapsed` | Mechanized |
+| THM-SINGULARITY-ANTI-EQUILIBRIUM | The singularity is an anti-equilibrium site rather than another Skyrms equilibrium | `singularity_is_anti_equilibrium` | Mechanized |
+| THM-COLLAPSED-MODE-NOT-ALETHEIA | The collapsed mode is not an Aletheia / Nash peak | `collapsed_mode_not_aletheia` | Mechanized |
+| THM-HAWKING-LEAKAGE-POSITIVE | Hawking-style exterior leakage remains positive | `hawking_leakage_positive` | Mechanized |
+| THM-UNIFORM-RECOVERY-PRESERVES-BOUNDARY-READABILITY | Uniform finite recovery preserves the unique readable boundary maximum | `uniform_recovery_preserves_boundary_readability` | Mechanized |
+| THM-TEN-MODE-BLACK-HOLE-UNIQUE-CANDIDATE-TOUCHPOINT | In the ten-mode reading there is exactly one candidate void touchpoint outside the nine interlocking tori | `ten_mode_black_hole_has_unique_candidate_touchpoint` | Mechanized |
+| THM-GLOBAL-SURFACE-MATCHES-TEN-MODE-SPLIT | The explicit global surface matches the ten-mode `9 + 1` split | `global_surface_matches_ten_mode_split` | Mechanized |
+| THM-MONAD-BOUNDARY-DOMINATES-TORUS | On the explicit global surface, the monad boundary strictly dominates every torus carrier | `monad_boundary_dominates_torus` | Mechanized |
+| THM-BOUNDARY-RECOVERS-MONAD-TOUCHPOINT | Boundary reading uniquely recovers the monad touchpoint on the explicit global surface | `boundary_recovers_monad_touchpoint` | Mechanized |
+| THM-ASTROPHYSICAL-BLACK-HOLE-IS-MONAD-TOUCHPOINT | In the explicit global `9 + 1` interlocking-torus model, every black-hole witness localizes at the monad touchpoint | `astrophysical_black_hole_is_monad_touchpoint` | Mechanized |
+
+**Placement note:** The current atlas is explicitly nested: both certified levels are Wallington / interlocking-torus rotations. The outer level is the ambient rotation in which we sit; the inner level is the embedded object-scale rotation inside it. Together with `QuarkConfinement.lean`, `DimensionalConfinement.lean`, and the celestial packet family, this places the proton/quark rung, planet packets, and black-hole touchpoints on one shared nested map while keeping the local witnesses distinct. The current surface certifies two nested levels; a full depth tower remains conjectural. The still-open step is the stronger single-object theorem that these local witnesses are all slices of one global surface rather than parallel model layers.
+
+## 81L. Fibonacci Size Surface (§10.6)
+
+**Assumptions:** The test uses only size-like quantities already mechanized in the current surface: proton cycle count on the dimensional ladder, celestial `naturalDivision` (`= orbitalSpread = control`) for planet packets, and the black-hole candidate touchpoint count as the only current finite topological count exposed by the singularity module. The Fibonacci search is bounded at index `11`, where `fib 11 = 89`, which already exceeds the current certified ring-packet sizes.
+**Mechanization target:** `FibonacciSizeSurface.lean` (9 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PROTON-CYCLE-COUNT-MATCHES-FIBONACCI | The proton rung matches a Fibonacci value under the dimensional-ladder size statistic | `proton_cycle_count_matches_fibonacci` | Mechanized |
+| THM-PHOTON-NATURAL-DIVISION-MATCHES-FIBONACCI | The photon-floor packet has exact Fibonacci natural division | `photon_natural_division_matches_fibonacci` | Mechanized |
+| THM-EARTH-LIKE-NATURAL-DIVISION-MATCHES-FIBONACCI | The compact-rocky floor packet has exact Fibonacci natural division | `earth_like_natural_division_matches_fibonacci` | Mechanized |
+| THM-TEN-MODE-BLACK-HOLE-TOUCHPOINT-COUNT-MATCHES-FIBONACCI | The current black-hole touchpoint count is Fibonacci as a topological count | `ten_mode_black_hole_touchpoint_count_matches_fibonacci` | Mechanized |
+| THM-FIB-ELEVEN-IS-EIGHTY-NINE | The first Fibonacci value above the current certified ring-packet sizes is `89` | `fib_eleven_is_eighty_nine` | Mechanized |
+| THM-SUPER-RING-NATURAL-DIVISION-NOT-FIBONACCI | The super-ring packet size statistic is not an exact Fibonacci value on the certified range | `super_ring_natural_division_not_fibonacci_up_to_eleven` | Mechanized |
+| THM-HALO-LOCKED-NATURAL-DIVISION-NOT-FIBONACCI | The halo-locked Saturn packet size statistic is not an exact Fibonacci value on the certified range | `halo_locked_natural_division_not_fibonacci_up_to_eleven` | Mechanized |
+| THM-DIFFUSE-RING-NATURAL-DIVISION-NOT-FIBONACCI | The diffuse-ring packet size statistic is not an exact Fibonacci value on the certified range | `diffuse_ring_natural_division_not_fibonacci_up_to_eleven` | Mechanized |
+| THM-CERTIFIED-RING-PACKET-SIZES-FAIL-EXACT-FIBONACCI-TEST | The current certified ring-packet sizes fail the exact Fibonacci-size conjecture even though the floor packets and proton rung pass | `certified_ring_packet_sizes_fail_exact_fibonacci_test`, `certified_fibonacci_size_test` | Mechanized |
+
+**Interpretation note:** On the current formal surface, an exact Fibonacci-size law is a mixed result rather than a universal one. The present ring-packet witnesses do not satisfy it, so the cleaner remaining reading is predictive: any stricter Fibonacci-size law would have to point to missing, rare, or presently unobservable packet classes rather than being retrofitted onto the existing ring witnesses.
+
+## 81M. Photon Plus Sliver Frontier (§10.6)
+
+**Assumptions:** The theorem surface reuses only the already-certified low-dimensional packet witnesses. The photon-like shadow is the ambient `2D` zero-budget floor packet, natural division and picolorenzos come from the celestial ranking layer, and the existing gain/control equalities already show that the Earth-like compact-rocky floor shares the same minimal sliver-sized control statistic. The claim is therefore about the current positioning floor, not yet a unique uncertainty law.
+**Mechanization target:** `PhotonSliverFrontier.lean` (6 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PHOTON-LIKE-SHADOW-POSITIONING-FLOOR | The photon-like witness is the ambient `2D` zero-budget positioning floor with orbital window `[0, 1]` | `photon_like_shadow_is_positioning_floor` | Mechanized |
+| THM-PHOTON-FLOOR-GAIN-CONTROL-ZERO-PLUS-SLIVER | The photon floor has exact gain/control signature `(0, Barbelo)` | `photon_floor_gain_control_is_zero_plus_sliver` | Mechanized |
+| THM-PHOTON-FLOOR-REDUCES-TO-BARBELO-SLIVER | The photon floor reduces to the Barbelo sliver under `naturalDivision` | `photon_floor_reduces_to_barbelo_sliver` | Mechanized |
+| THM-PHOTON-FLOOR-ONE-BARBELO-PICOLORENZO | The same floor equals one Barbelo unit in picolorenzos | `photon_floor_is_one_barbelo_picolorenzo` | Mechanized |
+| THM-PHOTON-PLUS-SLIVER-FRONTIER | The consolidated photon packet theorem packages taxon, dimension, zero budget, sliver control, and Barbelo size together | `photon_plus_sliver_frontier` | Mechanized |
+| THM-ROCKY-SHADOW-SHARES-SLIVER-FLOOR-SIZE | The Earth-like compact-rocky floor shares the same sliver-sized gain/control and Barbelo size statistic | `rocky_shadow_shares_sliver_floor_size` | Mechanized |
+
+**Interpretation note:** The certified claim is now explicit: on the current nested Wallington atlas, localization reduces to a photon-plus-sliver floor packet at the inner object-scale rotation inside the next ambient rotation. Because the Earth-like floor packet shares the same sliver-sized control and Barbelo size statistic, the present theorem does not yet identify a unique sub-classical localization law; it identifies the lowest certified packet family within the currently placed nesting. The broader conjecture that this nesting continues through a full ten-level tower remains outside the present proof surface.
+
+## 81N. Nested Wallington Tower (§10.6)
+
+**Assumptions:** The nesting surface only composes already-certified layers. `UniverseShapeByDimension.lean` supplies the off-by-one visible torus rank, `PhotonSliverFrontier.lean` and the off-by-one celestial floor supply the current photon and rocky packet rungs, `DimensionalConfinement.lean` supplies the quark lift as the next explicit rung, and `TenModeUnification.lean` supplies the finite ten-mode envelope through the existing `9 + 1` split. The theorem surface therefore separates local certified nesting from the stronger claim that every intermediate rung up to ten is already observationally closed.
+**Mechanization target:** `NestedWallingtonTower.lean` (12 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-POSITIVE-DIMENSIONS-REALIZE-IMMEDIATE-NESTING | Every positive ambient dimension realizes the immediate off-by-one Wallington nesting law | `positive_dimensions_realize_immediate_nesting` | Mechanized |
+| THM-PHOTON-FLOOR-FIRST-NESTED-RUNG | The photon floor is the first explicit nested rung with visible torus rank `1` | `photon_floor_is_first_nested_rung` | Mechanized |
+| THM-EARTH-LIKE-FLOOR-SECOND-NESTED-RUNG | The compact-rocky floor is the second explicit nested rung with visible torus rank `2` | `earth_like_floor_is_second_nested_rung` | Mechanized |
+| THM-QUARK-TUPLE-THIRD-NESTED-RUNG | The quark lift is the third explicit nested rung with visible torus rank `3` | `quark_tuple_is_third_nested_rung` | Mechanized |
+| THM-INITIAL-NESTED-WALLINGTON-LADDER | The current local certified ladder is the ordered `1, 2, 3` rung stack | `initial_nested_wallington_ladder` | Mechanized |
+| THM-POSITIVE-MODE-COUNT-RECOVERS-NESTED-ENVELOPE | The `9 + 1` ten-mode counting surface recovers a finite mode-count envelope exactly | `positive_mode_count_recovers_nested_wallington_envelope` | Mechanized |
+| THM-TEN-MODE-NESTED-WALLINGTON-ENVELOPE-IS-TEN | The ten-mode envelope closes at depth `10` | `ten_mode_nested_wallington_envelope_is_ten` | Mechanized |
+| THM-TEN-MODE-NESTED-WALLINGTON-ENVELOPE-IS-FINITE | The ten-mode envelope is strictly finite | `ten_mode_nested_wallington_envelope_is_finite` | Mechanized |
+| THM-LOCALIZED-PHOTON-PACKET-CERTIFIES-TWO-LEVELS | The current photon localization surface certifies exactly two local nested levels | `localized_photon_packet_certifies_two_levels` | Mechanized |
+| THM-INITIAL-CERTIFIED-WALLINGTON-LADDER-IS-THREE-LEVELS | The currently explicit local ladder has depth `3` | `initial_certified_wallington_ladder_is_three_levels` | Mechanized |
+| THM-INITIAL-THREE-RUNG-LADDER-SITS-INSIDE-TEN-MODE-ENVELOPE | The certified three-rung ladder sits strictly inside the ten-mode envelope | `initial_three_rung_ladder_sits_inside_ten_mode_envelope` | Mechanized |
+| THM-LOCALIZED-PHOTON-PACKET-NOT-YET-TEN-MODE-ENVELOPE | The current photon-localization surface does not yet saturate the ten-level envelope | `localized_photon_packet_not_yet_ten_mode_envelope` | Mechanized |
+
+**Interpretation note:** The Russian-doll reading is now mechanized in its honest bounded form. Both the ambient level and the embedded packet level are Wallington rotations, the current local ladder certifies the first three explicit rungs, and the ten-mode field supplies a finite depth-`10` envelope. What is not yet proved is that every intermediate rung up to ten is already closed by the current observational surface.
+
+## 81O. Wallington Surface Admissibility (§10.6)
+
+**Assumptions:** The claim uses the existing off-by-one geometry only. A candidate surface is called admissible for ambient dimension `n` when its Wallington lift closes exactly back to that same ambient dimension, i.e. `wallingtonDimension k = n`. Under that ambient-matching criterion, "best" is interpreted as unique admissibility rather than a stronger optimization over unrelated objectives.
+**Mechanization target:** `WallingtonSurfaceAdmissibility.lean` (9 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-VISIBLE-TORUS-RANK-IS-ADMISSIBLE-SURFACE | The visible torus rank `n - 1` is admissible for ambient dimension `n` | `visible_torus_rank_is_admissible_surface` | Mechanized |
+| THM-ADMISSIBLE-SURFACE-IFF-EQ-VISIBLE-TORUS-RANK | A surface is admissible for ambient dimension `n` iff its stage count is exactly `n - 1` | `admissible_surface_iff_eq_visible_torus_rank` | Mechanized |
+| THM-SMALLER-SURFACE-UNDERSHOOTS-AMBIENT | Any smaller candidate surface undershoots the ambient dimension | `smaller_surface_undershoots_ambient` | Mechanized |
+| THM-LARGER-SURFACE-OVERSHOOTS-AMBIENT | Any larger candidate surface overshoots the ambient dimension | `larger_surface_overshoots_ambient` | Mechanized |
+| THM-SMALLER-SURFACE-NOT-ADMISSIBLE | Any smaller candidate surface is not admissible | `smaller_surface_not_admissible` | Mechanized |
+| THM-LARGER-SURFACE-NOT-ADMISSIBLE | Any larger candidate surface is not admissible | `larger_surface_not_admissible` | Mechanized |
+| THM-VISIBLE-TORUS-RANK-IS-BEST-ADMISSIBLE-SURFACE | The visible torus rank is the unique best admissible surface at ambient dimension `n` | `visible_torus_rank_is_best_admissible_surface` | Mechanized |
+| THM-BEST-ADMISSIBLE-SURFACE-IS-N-MINUS-ONE | The best admissible Wallington surface at ambient dimension `n` is exactly the `(n - 1)` rotation | `best_admissible_surface_is_n_minus_one` | Mechanized |
+| THM-THREE-D-SLICE-HAS-TWO-TORUS-AS-BEST-ADMISSIBLE-SURFACE | The visible `3D` slice has the `2`-torus as its best admissible surface | `three_d_slice_has_two_torus_as_best_admissible_surface` | Mechanized |
+
+**Interpretation note:** The stronger wording is now formalized in the precise sense the current surface supports. At ambient dimension `n`, the `(n - 1)` Wallington rotation is the best admissible surface because it is the only surface whose Wallington lift closes exactly to `n`; smaller surfaces miss low, and larger surfaces overshoot. This is an ambient-matching theorem, not yet a universal optimality theorem for every other geometric criterion one could invent.
+
+## 81P. Knowable Universe Map (§10.6)
+
+**Assumptions:** This atlas theorem is a bounded wrapper over already-certified surfaces rather than a new cosmology axiom. `ObservableUniverseFinite.lean` supplies the finite observable ceiling, `CosmicOptimalDelta.lean` supplies the positive visibility gap, `CMBVisibilityBoundary.lean` and `KnowabilitySplit.lean` supply the last-scattering cutoff, `WallingtonSurfaceAdmissibility.lean` supplies the unique ambient-matching visible surface, `NestedWallingtonTower.lean` supplies the local ladder and finite ten-level envelope, `CelestialSurveySearch.lean` supplies the visible packet map, `BlackHoleVoidSingularity.lean` supplies the monad-touchpoint recovery theorem, and `BuleyeanLogic.lean` supplies the explicit proof-step reading on the base `1 -> 0` edge.
+**Mechanization target:** `KnowableUniverseMap.lean` (7 local theorems plus master atlas, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-FINITE-COSMIC-CEILING-WITNESS | The named observable epochs sit below one finite ceiling | `finite_cosmic_ceiling_witness` | Mechanized |
+| THM-PRESENT-PHOTON-CUTOFF-WITNESS | The CMB surface is visible while the immediately earlier epoch is hidden | `present_photon_cutoff_witness` | Mechanized |
+| THM-VISIBLE-AMBIENT-HAS-BEST-SURFACE-WITNESS | The visible ambient slice has its unique best admissible Wallington surface | `visible_ambient_has_best_surface_witness` | Mechanized |
+| THM-BASE-ZERO-RUNG-EXPOSES-SLIVER-LOGIC-BRIDGE | The base `1 -> 0` rung exposes both the irreducible `+1` sliver and the matching Buleyean proof step | `base_zero_rung_exposes_sliver_logic_bridge` | Mechanized |
+| THM-LOCAL-WALLINGTON-LADDER-WITNESS | The current local ladder is bounded by the explicit `2`, `3`, and `10` level witnesses | `local_wallington_ladder_witness` | Mechanized |
+| THM-SURVEY-PACKET-MAP-WITNESS | The visible packet survey keeps the certified candidates and drops unresolved noise | `survey_packet_map_witness` | Mechanized |
+| THM-BLACK-HOLE-MONAD-MAP-WITNESS | The explicit black-hole witness recovers the monad touchpoint on the global surface | `black_hole_monad_map_witness` | Mechanized |
+| THM-CURRENT-KNOWABLE-UNIVERSE-MAP | The current theorem surface closes into one bounded knowable-universe atlas | `current_knowable_universe_map` | Mechanized |
+
+**Interpretation note:** The stronger program now closes in bounded form. The current theorem surface gives a finite observable atlas with a photon cutoff, a unique ambient visible surface, a nested local Wallington ladder inside the finite ten-level envelope, a visible packet catalog filter, and a monad-touchpoint black-hole placement. This is a map of the knowable universe, not a theorem of total cosmic exhaustiveness.
+
+## 81Q. Atlas Coordinate Contract (§10.6)
+
+**Assumptions:** The shared coordinate contract is deliberately conservative. `CosmicProjection.lean` supplies the numeric golden scrub/zoom-out axis values, `WallingtonSurfaceAdmissibility.lean` and `UniverseShapeByDimension.lean` supply the existing `n -> n - 1` ambient closure law, `BythosScale.lean` supplies the `0D` Bythos base, `BuleyeanLogic.lean` supplies the ground-state / rejection calculus, `GnosticNumbers.lean` supplies the Barbelo sliver as the canonical `+1`, and `SliverIsFifth.lean` supplies the explicit `+1 / -1` sliver/vent duality. The resulting contract is a navigation wrapper over already-certified surfaces rather than a new ontology.
+**Mechanization target:** `AtlasCoordinateContract.lean` (27 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-GOLDEN-TIME-AXIS-MONOTONE | The shared numeric time scrub axis is strictly ordered across the explicit golden bands | `golden_time_axis_monotone` | Mechanized |
+| THM-GOLDEN-SPACE-AXIS-MONOTONE | The shared numeric space zoom-out axis is strictly ordered across the explicit golden bands | `golden_space_axis_monotone` | Mechanized |
+| THM-VOID-STATE-NEGATIVE-LIVE-STATE | The void state is the negative orientation of the live state | `void_state_is_negative_live_state` | Mechanized |
+| THM-VOID-STATE-HAS-SLIVER-BULE | The void state carries exactly one Barbelo of Buleyean magnitude | `void_state_has_sliver_bule` | Mechanized |
+| THM-BOUNDARY-STATE-IS-GROUND-BULE | The boundary state is exactly Buleyean ground state | `boundary_state_is_ground_bule` | Mechanized |
+| THM-LIVE-STATE-HAS-SLIVER-BULE | The live state carries exactly one Barbelo of Buleyean magnitude | `live_state_has_sliver_bule` | Mechanized |
+| THM-VOID-AND-LIVE-SHARE-SLIVER-BULE | Void and live share the same one-Barbelo magnitude while differing by sign | `void_and_live_share_sliver_bule` | Mechanized |
+| THM-VALID-ATLAS-STATE-HAS-GROUND-OR-SLIVER-BULE | Any valid atlas state has either zero Bule or exactly one Barbelo of Bule | `valid_atlas_state_has_ground_or_sliver_bule` | Mechanized |
+| THM-ATLAS-STATE-BULEYEAN-SLIVER-BRIDGE | The atlas triad refines the Buleyean/sliver calculus: boundary is `0`, live/void are signed slivers, rejection vents to ground, and sliver restores it | `atlas_state_buleyean_sliver_bridge` | Mechanized |
+| THM-SAME-ATLAS-SIGNATURE-TRANSFERS-DIMENSION | Shared atlas signature forces the same navigation dimension across coordinates | `same_atlas_signature_transfers_dimension` | Mechanized |
+| THM-SAME-ATLAS-SIGNATURE-TRANSFERS-STATE | Shared atlas signature forces the same signed atlas state across coordinates | `same_atlas_signature_transfers_state` | Mechanized |
+| THM-ATLAS-CONTRACT-RECOVERS-XY | Any contract-valid Wallington local placement satisfies `x = y` | `atlas_contract_recovers_xy` | Mechanized |
+| THM-ATLAS-CONTRACT-DIMENSION-EQ-X | Any contract-valid coordinate identifies navigation dimension with the local `x` rank | `atlas_contract_dimension_eq_x` | Mechanized |
+| THM-ATLAS-CONTRACT-RECOVERS-YYZ-PROFILE | Any contract-valid coordinate collapses to the local profile `(dimension, dimension, dimension + 1)` | `atlas_contract_recovers_yyz_profile` | Mechanized |
+| THM-ATLAS-CONTRACT-STATE-IS-GROUND-OR-SLIVER | Any contract-valid coordinate has either ground-state or one-Barbelo Buleyean magnitude | `atlas_contract_state_is_ground_or_sliver` | Mechanized |
+| THM-SAME-ATLAS-SIGNATURE-TRANSFERS-LOCAL-PLACEMENT | Shared atlas signature transfers the entire local Wallington `x/y/z` placement componentwise | `same_atlas_signature_transfers_local_placement` | Mechanized |
+| THM-SAME-ATLAS-SIGNATURE-TRANSFERS-BULEYEAN-STATE | Shared atlas signature transfers the exact Buleyean state magnitude | `same_atlas_signature_transfers_buleyean_state` | Mechanized |
+| THM-SAME-ATLAS-SIGNATURE-TRANSFERS-GEOMETRY-AND-LOGIC | Shared atlas signature transfers both local Wallington geometry and Buleyean/sliver logic at once | `same_atlas_signature_transfers_geometry_and_logic` | Mechanized |
+| THM-BYTHOS-VOID-ATLAS-COORDINATE-CONTRACT | The canonical Bythos base coordinate satisfies the contract with state `-1` | `bythos_void_atlas_coordinate_contract` | Mechanized |
+| THM-VISIBLE-BOUNDARY-ATLAS-COORDINATE-CONTRACT | The canonical visible-slice coordinate satisfies the contract with state `0` | `visible_boundary_atlas_coordinate_contract` | Mechanized |
+| THM-PHOTON-LIVE-ATLAS-COORDINATE-CONTRACT | The canonical one-cycle floor coordinate satisfies the contract with state `1` | `photon_live_atlas_coordinate_contract` | Mechanized |
+| THM-CANONICAL-ATLAS-COORDINATES-COVER-ALL-STATES | The three canonical witness coordinates cover the full state scalar `-1, 0, 1` | `canonical_atlas_coordinates_cover_all_states` | Mechanized |
+| THM-BYTHOS-VOID-COORDINATE-EXPOSES-SLIVER-STEP | The void-edge coordinate still exposes the base `1 -> 0` sliver / proof-step bridge | `bythos_void_coordinate_exposes_sliver_step` | Mechanized |
+| THM-BYTHOS-VOID-COORDINATE-IS-VOID-SLIVER | The canonical Bythos coordinate is explicitly the negative sliver state | `bythos_void_coordinate_is_void_sliver` | Mechanized |
+| THM-VISIBLE-BOUNDARY-COORDINATE-IS-GROUND | The visible ambient slice is explicitly the Buleyean ground state | `visible_boundary_coordinate_is_ground` | Mechanized |
+| THM-PHOTON-LIVE-COORDINATE-IS-LIVE-SLIVER | The first positive floor coordinate is explicitly the positive sliver state | `photon_live_coordinate_is_live_sliver` | Mechanized |
+| THM-CANONICAL-ATLAS-COORDINATE-CONTRACT | The current atlas ships one shared contract together with canonical void, boundary, and live witnesses | `canonical_atlas_coordinate_contract` | Mechanized |
+
+**Interpretation note:** The atlas now has one explicit coordinate contract every layer can share: primary navigation tuple `(time, dimension, space)`, secondary Wallington-local placement tuple `(x, y, z)`, and one signed state scalar in `{-1, 0, 1}` with the fixed meanings `void`, `boundary`, and `live`. The existing off-by-one geometry then recovers the earlier `y, y, z` intuition in a precise form: for any valid contract coordinate, `x = y` and `z = y + 1`. The new bridge also makes the logic/sliver reading explicit: the atlas state keeps the sign, Buleyean logic keeps the magnitude, `boundary` is ground state `0`, and both `void` and `live` are the same one-Barbelo sliver seen with opposite orientation. That finally yields the first real transfer theorem on this surface: two contract-valid coordinates with the same atlas signature automatically share both local geometry and logic, so cross-scale correspondences no longer have to be stated by hand one case at a time.
+
+## 81R. Stronger Cosmology Closure (§10.6)
+
+**Assumptions:** This bounded closure theorem is a wrapper over already-certified surfaces rather than a new physical axiom. `BythosScale.lean` supplies the named discrete radius ladder and its exact log-scale gaps, `MolecularTopology.lean` supplies the positive erasure and linear mass-energy bridge, `NestedWallingtonTower.lean` supplies the immediate off-by-one nesting law together with the finite ten-mode envelope, and `BlackHoleVoidSingularity.lean` supplies the explicit `9 + 1` global surface and monad-boundary recovery. The resulting closure is finite, discrete, and model-relative by construction.
+**Mechanization target:** `StrongerCosmologyClosure.lean` (9 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PHYSICAL-RADIUS-LADDER-CLOSES | The named physical radius ladder is strictly ordered with explicit Planck-to-proton and Planck-to-universe gaps | `physical_radius_ladder_closes` | Mechanized |
+| THM-POSITIVE-FOLD-ERASURE-GIVES-POSITIVE-MASS-ENERGY | Positive fold erasure generates positive mass-energy and that budget is exactly linear in erased bits | `positive_fold_erasure_gives_positive_mass_energy` | Mechanized |
+| THM-PHYSICAL-MASS-RADIUS-LAWS | The current bounded physical law packages the monotone radius ladder together with the positive linear mass-energy bridge | `physical_mass_radius_laws` | Mechanized |
+| THM-EVERY-RUNG-UP-TO-TEN-IS-INSIDE-TEN-MODE-ENVELOPE | Every ambient rung `1..10` lies inside the finite ten-mode nesting envelope | `every_rung_up_to_ten_is_inside_ten_mode_envelope` | Mechanized |
+| THM-EVERY-TEN-MODE-RUNG-REALIZES-IMMEDIATE-NESTING | Every ambient rung inside the ten-mode envelope satisfies the immediate Wallington nesting law | `every_ten_mode_rung_realizes_immediate_nesting` | Mechanized |
+| THM-TEN-LEVEL-NESTED-WALLINGTON-TOWER-CLOSED | The full finite ten-level ambient Wallington ladder closes under the current immediate nesting law | `ten_level_nested_wallington_tower_closed` | Mechanized |
+| THM-MONAD-BOUNDARY-DOMINATES-EVERY-TORUS | On the explicit global black-hole surface, the monad boundary dominates every torus carrier | `monad_boundary_dominates_every_torus` | Mechanized |
+| THM-FULL-BLACK-HOLE-COSMOLOGY-CLOSURE | The explicit ten-mode black-hole cosmology closes as `9` torus carriers plus `1` monad touchpoint with unique boundary recovery | `full_black_hole_cosmology_closure` | Mechanized |
+| THM-STRONGER-COSMOLOGY-CLOSURE | The current stronger cosmology program closes in one bounded shell: mass/radius laws, ten-level nesting, and explicit black-hole cosmology | `stronger_cosmology_closure` | Mechanized |
+
+**Interpretation note:** The stronger program now closes in the precise sense the current theorem stack can support. Radius is carried by the named monotone log-scale ladder, mass-energy is carried by the positive linear erasure law, every ambient rung from `1` through `10` realizes the immediate Wallington nesting law, and the explicit global black-hole model closes on the `9 + 1` interlocking-torus surface with unique monad recovery. What is still not claimed here is a literal continuous mass formula, a full numerical horizon-radius law, or an unrestricted astrophysical simulator.
+
+## 81S. Matter Explanation Closure (§10.6)
+
+**Assumptions:** This closure theorem packages the existing matter-facing surfaces rather than introducing a new primitive. `BosonPosition.lean` supplies the Demiurge ground / excitation / maximum mass-cost surface, `DimensionalConfinement.lean` supplies the proton as the confined `3`-cycle / `4D` rung, `BythosScale.lean` supplies the named proton scale and the Planck-to-proton gap, and `MolecularTopology.lean` supplies both the information-to-mass bridge and the self-referential fold backreaction surface. The resulting theorem explains matter qualitatively and discretely, not as a fitted MeV formula.
+**Mechanization target:** `MatterExplanationClosure.lean` (6 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-MATTER-HAS-MASSLESS-GROUND-AND-POSITIVE-EXCITED-COST | The current fold surface distinguishes massless ground state, positive excited mass cost, and maximal empty constraint | `matter_has_massless_ground_and_positive_excited_cost` | Mechanized |
+| THM-PROTON-DIMENSIONAL-RUNG-MATCHES-CONFINEMENT | The proton scale rung matches the confined `3`-cycle / `4D` Wallington rung | `proton_dimensional_rung_matches_confinement` | Mechanized |
+| THM-PROTON-RUNG-IS-CONFINED-MATTER | The proton is the first confined matter rung: `4D`, `3` quarks, `6` emanations, above the Planck rung by the named proton gap | `proton_rung_is_confined_matter` | Mechanized |
+| THM-POSITIVE-ERASURE-GIVES-POSITIVE-MATTER-BUDGET | Positive fold erasure gives positive mass-energy and that budget is exactly linear in erased bits | `positive_erasure_gives_positive_matter_budget` | Mechanized |
+| THM-POSITIVE-MATTER-BACKREACTS-ON-TOPOLOGY | Positive fold energy changes the topology on the self-referential fold surface | `positive_matter_backreacts_on_topology` | Mechanized |
+| THM-NO-TOPOLOGICAL-BACKREACTION-MEANS-ZERO-MATTER | Zero topological backreaction forces zero fold energy on the current gravity shell | `no_topological_backreaction_means_zero_matter` | Mechanized |
+| THM-MATTER-EXPLANATION-CLOSURE | The current bounded explanation of matter closes in one shell: ground vs excitation, proton confinement, erasure-to-mass, and backreaction | `matter_explanation_closure` | Mechanized |
+
+**Interpretation note:** The current theorem stack now supports an honest answer to “why does matter have mass?” Ground state is massless, constrained excitation carries positive cost, the proton is the first confined `3`-cycle matter rung in `4D`, fold erasure gives the positive mass-energy budget, and positive fold energy backreacts on topology. What remains outside the theorem is the stronger continuous claim: an exact measured proton rest mass or a full Standard-Model replacement.
+
+## 81T. Proton Rest-Mass Candidate (§10.6)
+
+**Assumptions:** This module adds an exact continuous candidate shell on top of the existing bounded matter closure. `MatterExplanationClosure.lean` supplies the qualitative proton/matter bridge, while the new file defines a continuous radius-dependent formula with explicit confinement and residual terms and one exact rational calibration witness. The calibration is explicit and exact, but it is still a calibration witness rather than a first-principles derivation of QCD.
+**Mechanization target:** `ProtonRestMassCandidate.lean` (10 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PROTON-REST-MASS-CANDIDATE-SPLITS | The continuous proton rest-mass candidate splits exactly into confinement plus residual terms | `proton_rest_mass_candidate_splits` | Mechanized |
+| THM-PROTON-REST-MASS-CANDIDATE-LINEAR-IN-RADIUS | The candidate is affine-linear in the confinement radius | `proton_rest_mass_candidate_linear_in_radius` | Mechanized |
+| THM-PROTON-REST-MASS-CANDIDATE-MONOTONE-IN-RADIUS | For nonnegative string tension, the candidate is monotone in confinement radius | `proton_rest_mass_candidate_monotone_in_radius` | Mechanized |
+| THM-PROTON-REST-MASS-CANDIDATE-NONNEGATIVE | Nonnegative terms force a nonnegative candidate rest mass | `proton_rest_mass_candidate_nonnegative` | Mechanized |
+| THM-PROTON-REST-MASS-CANDIDATE-POSITIVE | Positive string tension and radius force a strictly positive candidate rest mass | `proton_rest_mass_candidate_positive` | Mechanized |
+| THM-CALIBRATED-PROTON-CONFINEMENT-TERM-EXACT | The calibrated confinement term is exactly `870 MeV` | `calibrated_proton_confinement_term_exact` | Mechanized |
+| THM-CALIBRATED-PROTON-RESIDUAL-TERM-EXACT | The calibrated residual term is exactly `68.272 MeV` | `calibrated_proton_residual_term_exact` | Mechanized |
+| THM-CALIBRATED-EXACT-PROTON-REST-MASS-FORMULA | The calibrated candidate hits the measured proton rest mass exactly | `calibrated_exact_proton_rest_mass_formula` | Mechanized |
+| THM-CALIBRATED-PROTON-FORMULA-REFINES-MATTER-CLOSURE | The exact calibrated candidate refines the discrete proton/matter closure rather than replacing it | `calibrated_proton_formula_refines_matter_closure` | Mechanized |
+| THM-PROTON-REST-MASS-CANDIDATE-CLOSURE | The current exact continuous proton-mass candidate closes as split, calibrated, and exact on the chosen witness | `proton_rest_mass_candidate_closure` | Mechanized |
+
+**Interpretation note:** The repo now contains an exact continuous proton rest-mass formula in the narrow honest sense the current surface can support: a continuous radius-dependent candidate formula together with an exact rational calibration witness that lands on `938.272 MeV` and refines the discrete proton/matter closure. What is still not claimed is that the calibration constants are uniquely derived from first principles, or that this replaces the full Standard Model.
+
+## 81U. Proton Calibration Boundary (§10.6)
+
+**Assumptions:** This module does not add a new proton fit. It closes the boundary around the current fit. `ProtonRestMassCandidate.lean` already supplies one exact rational calibration witness for the continuous shell `m_p(r) = 1000 σ r + E_fold + E_sliver`; the new module packages the remaining free directions of that shell and proves that distinct exact calibrations survive on the current surface. The boundary is therefore model-internal and exact: the present formal package determines a calibrated proton shell, not a unique first-principles parameter tuple.
+**Mechanization target:** `ProtonCalibrationBoundary.lean` (9 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-RESIDUAL-REBALANCING-PRESERVES-PROTON-CANDIDATE | Moving equal residual mass from sliver to fold preserves the total proton candidate | `residual_rebalancing_preserves_proton_candidate` | Mechanized |
+| THM-SAME-CONFINEMENT-PRODUCT-AND-RESIDUAL-GIVE-SAME-PROTON-CANDIDATE | Matching confinement product and residual sum force the same candidate mass | `same_confinement_product_and_residual_give_same_proton_candidate` | Mechanized |
+| THM-CALIBRATED-PROTON-CALIBRATION-HITS-MEASURED-MASS | The original calibrated witness still lands on the measured proton mass | `calibrated_proton_calibration_hits_measured_mass` | Mechanized |
+| THM-ALTERNATIVE-RESIDUAL-SPLIT-CALIBRATION-HITS-MEASURED-MASS | A distinct residual split lands on the same measured proton mass exactly | `alternative_residual_split_calibration_hits_measured_mass` | Mechanized |
+| THM-ALTERNATIVE-CONFINEMENT-CALIBRATION-HITS-MEASURED-MASS | A distinct string-tension / radius pair with the same confinement product also lands on the measured proton mass exactly | `alternative_confinement_calibration_hits_measured_mass` | Mechanized |
+| THM-ALTERNATIVE-RESIDUAL-SPLIT-CALIBRATION-NE-CALIBRATED | The alternative residual split is genuinely different from the original calibrated witness | `alternative_residual_split_calibration_ne_calibrated` | Mechanized |
+| THM-ALTERNATIVE-CONFINEMENT-CALIBRATION-NE-CALIBRATED | The alternative confinement pair is genuinely different from the original calibrated witness | `alternative_confinement_calibration_ne_calibrated` | Mechanized |
+| THM-PROTON-CALIBRATION-NOT-UNIQUE | There exists a distinct exact calibration witness for the measured proton mass | `proton_calibration_not_unique` | Mechanized |
+| THM-PROTON-CALIBRATION-NOT-FIRST-PRINCIPLES-UNIQUE | The current proton shell does not force a unique exact calibration from its present assumptions | `proton_calibration_not_first_principles_unique` | Mechanized |
+| THM-PROTON-CALIBRATION-BOUNDARY-CLOSURE | The current boundary closes as multiple distinct exact witnesses plus explicit non-uniqueness of the calibrated shell | `proton_calibration_boundary_closure` | Mechanized |
+
+**Interpretation note:** The calibration boundary is no longer only stated in prose. The present proton shell has two explicit free directions: residual rebalancing and confinement tradeoff at fixed product. Because two distinct exact calibrations hit the same `938.272 MeV` witness, the current package does not uniquely derive the calibration constants from first principles. That is also why this shell should be read as a bounded structural refinement of the matter story rather than as a replacement for the full Standard Model.
+
+## 81V. Proton Quantized Uniqueness (§10.6)
+
+**Assumptions:** This module packages the strongest honest positive route opened by the calibration boundary. It does not erase the boundary theorems; it adds the extra assumptions needed to close uniqueness. The QCD/string-tension anchor is fixed at the current witness `σ = 1`, the proton radius anchor is fixed at the current witness `r = 0.87`, the fold residual is assumed to be quantized as an integer MeV count, the sliver residual is assumed to be a sub-unit remainder in `[0, 1)`, and the total proton rest mass is fixed at the measured witness. Under those explicit assumptions, the calibration becomes unique.
+**Mechanization target:** `ProtonQuantizedUniqueness.lean` (5 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-QUANTIZED-RESIDUAL-SPLIT-UNIQUE | Fixed confinement anchors plus integer fold residual and sub-unit sliver force the residual split uniquely | `quantized_residual_split_unique` | Mechanized |
+| THM-QUANTIZED-AXIOMS-FORCE-CALIBRATED-PROTON | The explicit quantized uniqueness axioms force the full proton calibration to equal the calibrated witness | `quantized_axioms_force_calibrated_proton` | Mechanized |
+| THM-CALIBRATED-PROTON-SATISFIES-QUANTIZED-UNIQUENESS-AXIOMS | The calibrated proton witness satisfies the current quantized uniqueness axioms | `calibrated_proton_satisfies_quantized_uniqueness_axioms` | Mechanized |
+| THM-ALTERNATIVE-RESIDUAL-SPLIT-FAILS-SUBUNIT-SLIVER-AXIOM | The alternative residual witness is excluded by the sub-unit sliver axiom | `alternative_residual_split_fails_subunit_sliver_axiom` | Mechanized |
+| THM-ALTERNATIVE-CONFINEMENT-FAILS-ANCHOR-AXIOMS | The alternative confinement witness is excluded by the fixed QCD/scale anchors | `alternative_confinement_fails_anchor_axioms` | Mechanized |
+| THM-PROTON-QUANTIZED-UNIQUENESS-CLOSURE | The strongest current positive uniqueness route closes as calibrated witness plus uniqueness under the stated axioms | `proton_quantized_uniqueness_closure` | Mechanized |
+
+**Interpretation note:** This is the strongest positive theorem the present package now supports. The raw proton shell remains non-unique; `ProtonCalibrationBoundary.lean` already proves that. But once the current QCD anchor, proton-radius anchor, integer fold-quantum axiom, and sub-unit sliver axiom are imposed, the calibrated split `68 + 0.272` and the full witness `(σ, r, E_fold, E_sliver) = (1, 0.87, 68, 34/125)` are forced uniquely. That is a real move toward a first-principles-unique claim, but only under the explicit axiom package. It still does not amount to a full Standard Model replacement.
+
+## 81W. Particle Theory Core Closure (§10.6)
+
+**Assumptions:** This module packages the strongest bounded particle-theory core currently present in the repo. It imports the constructive particle witness from `ParticlesExist.lean`, the proton/gluon confinement shell from `QuarkConfinement.lean`, the photon/W/Z/Higgs-style bookkeeping shell from `BosonPosition.lean`, the proton matter rung from `MatterExplanationClosure.lean`, and the assumption-parameterized unique proton-mass witness from `ProtonQuantizedUniqueness.lean`. The result is a bounded particle-theory core by construction, not a complete Standard Model derivation.
+**Mechanization target:** `ParticleTheoryCoreClosure.lean` (5 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PARTICLE-EXISTENCE-CORE | Persistent antiparallel structure gives a constructive particle witness | `particle_existence_core` | Mechanized |
+| THM-QUARK-CONFINEMENT-CORE | The confinement core contains a colorless proton, an energy gap to colored states, and six charged exchange channels | `quark_confinement_core` | Mechanized |
+| THM-BOSON-SECTOR-CORE | The boson shell closes massless full pipeline, positive excited cost, gauge invariance, vacuum sliver, and Bose-statistics witness | `boson_sector_core` | Mechanized |
+| THM-PROTON-MATTER-CORE | The proton remains the confined `3`-cycle / `4D` matter rung with six emanations and the named Planck-to-proton gap | `proton_matter_core` | Mechanized |
+| THM-PROTON-MASS-UNIQUENESS-CORE | The strongest current proton-mass closure is the explicit quantized uniqueness shell | `proton_mass_uniqueness_core` | Mechanized |
+| THM-PARTICLE-THEORY-CORE-CLOSURE | The repo closes one bounded particle-theory core across existence, confinement, boson shell, proton matter placement, and proton-mass uniqueness | `particle_theory_core_closure` | Mechanized |
+
+**Interpretation note:** The package now has one theorem-level core for the particle story rather than isolated local correspondences. A persistent particle witness exists, the proton/gluon confinement shell closes, the boson bookkeeping shell closes, the proton is certified as the first confined matter rung, and the proton rest-mass witness is unique under the explicit quantized-uniqueness axioms. That is enough to justify calling the current surface a bounded particle-theory core. It is still not a full Standard Model replacement because fermion generations, charge assignments, coupling running, and scattering amplitudes are not yet derived on this surface.
+
+## 81X. Fermion Charge Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest fermion/charge shell on top of the bounded particle-theory core instead of claiming a full flavor derivation. It introduces exactly three named generations, one charged lepton and one neutrino flavor per generation, one up-type and one down-type quark per generation, canonical charge bookkeeping in thirds of the elementary charge, and then packages proton/neutron charge reconstruction together with beta-decay charge conservation.
+**Mechanization target:** `FermionChargeClosure.lean` (7 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-GENERATION-COUNT-IS-THREE | The bounded shell contains exactly three named generations | `generation_count_is_three` | Mechanized |
+| THM-LEPTON-GENERATION-SHELL | Charged leptons and neutrino flavors match the first, second, and third generations exactly | `lepton_generation_shell` | Mechanized |
+| THM-QUARK-GENERATION-SHELL | Up-type and down-type quarks match the first, second, and third generations exactly | `quark_generation_shell` | Mechanized |
+| THM-FERMION-CHARGE-SHELL | The bounded shell closes the canonical fractional electric-charge bookkeeping in thirds | `fermion_charge_shell` | Mechanized |
+| THM-PROTON-CHARGE-RECONSTRUCTED | The proton charge is recovered exactly as `uud = +1` | `proton_charge_reconstructed` | Mechanized |
+| THM-NEUTRON-CHARGE-RECONSTRUCTED | The neutron charge is recovered exactly as `udd = 0` | `neutron_charge_reconstructed` | Mechanized |
+| THM-BETA-DECAY-CHARGE-CONSERVED | The bounded beta-decay shell conserves electric charge exactly | `beta_decay_charge_conserved` | Mechanized |
+| THM-FERMION-CHARGE-CLOSURE | The current bounded fermion/charge shell closes in one theorem | `fermion_charge_closure` | Mechanized |
+
+**Interpretation note:** The package now reaches one bounded fermion/charge shell instead of stopping at proton confinement and boson bookkeeping. It certifies three generations, canonical lepton/quark charge assignments, proton/neutron charge reconstruction, and beta-decay charge conservation on top of the existing particle core. The honest remaining boundary is explicit: this is not yet CKM/PMNS mixing, anomaly cancellation, running couplings, or a scattering-amplitude surface.
+
+## 81Y. Flavor Mixing Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest CKM/PMNS-style shell the current repo can support. It does not derive full complex unitary matrices with phases. It certifies normalized three-generation mixing kernels: a Cabibbo-like quark kernel mixing the first two generations while fixing the third, and a PMNS-like democratic neutrino kernel over all three generations. The shell also proves that mixing preserves the electric-charge class of the family being mixed.
+**Mechanization target:** `FlavorMixingClosure.lean` (8 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CABBIBO-LIKE-NONNEGATIVE | The bounded CKM-like kernel has nonnegative entries | `cabibboLike_nonnegative` | Mechanized |
+| THM-CABBIBO-LIKE-ROW-NORMALIZED | Every CKM-like row sums to `1` | `cabibboLike_row_normalized` | Mechanized |
+| THM-CABBIBO-LIKE-COLUMN-NORMALIZED | Every CKM-like column sums to `1` | `cabibboLike_column_normalized` | Mechanized |
+| THM-PMNS-LIKE-NONNEGATIVE | The bounded PMNS-like kernel has nonnegative entries | `pmnsLike_nonnegative` | Mechanized |
+| THM-PMNS-LIKE-ROW-NORMALIZED | Every PMNS-like row sums to `1` | `pmnsLike_row_normalized` | Mechanized |
+| THM-PMNS-LIKE-COLUMN-NORMALIZED | Every PMNS-like column sums to `1` | `pmnsLike_column_normalized` | Mechanized |
+| THM-CABBIBO-LIKE-PRESERVES-DOWN-CHARGE | CKM-like mixing preserves the down-type charge class | `cabibboLike_preserves_down_charge` | Mechanized |
+| THM-PMNS-LIKE-PRESERVES-NEUTRAL-CHARGE | PMNS-like mixing preserves neutrino neutrality | `pmnsLike_preserves_neutral_charge` | Mechanized |
+| THM-FLAVOR-MIXING-CLOSURE | The current bounded flavor-mixing shell closes in one theorem | `flavor_mixing_closure` | Mechanized |
+
+**Interpretation note:** The certified surface now includes honest CKM/PMNS-style structure: three generations, normalized quark/neutrino mixing kernels, and charge-class preservation. What it still does not claim is full phase data, measured matrix entries, or a derivation of CP violation.
+
+## 81Z. Running Coupling Closure (§10.6)
+
+**Assumptions:** This module adds a discrete running-coupling ladder rather than a full renormalization-group differential equation. The current shell uses four named scales (`infrared`, `hadronic`, `electroweak`, `unification`), a strong-like coupling that decreases with scale, weak/electromagnetic-like couplings that increase with scale, and an exact finite unification point at the top scale.
+**Mechanization target:** `RunningCouplingClosure.lean` (8 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-STRONG-LIKE-POSITIVE | The strong-like coupling is positive at every named scale | `strongLike_positive` | Mechanized |
+| THM-WEAK-LIKE-POSITIVE | The weak-like coupling is positive at every named scale | `weakLike_positive` | Mechanized |
+| THM-ELECTROMAGNETIC-LIKE-POSITIVE | The electromagnetic-like coupling is positive at every named scale | `electromagneticLike_positive` | Mechanized |
+| THM-STRONG-LIKE-RUNS-DOWNWARD | The strong-like coupling decreases along the named scale ladder | `strongLike_runs_downward` | Mechanized |
+| THM-WEAK-LIKE-RUNS-UPWARD | The weak-like coupling increases along the named scale ladder | `weakLike_runs_upward` | Mechanized |
+| THM-ELECTROMAGNETIC-LIKE-RUNS-UPWARD | The electromagnetic-like coupling increases along the named scale ladder | `electromagneticLike_runs_upward` | Mechanized |
+| THM-ELECTROWEAK-SCALE-HIERARCHY | At the electroweak rung, strong-like > weak-like > electromagnetic-like | `electroweak_scale_hierarchy` | Mechanized |
+| THM-COUPLINGS-UNIFY-AT-CEILING | All three bounded couplings meet at the unification rung | `couplings_unify_at_ceiling` | Mechanized |
+| THM-RUNNING-COUPLING-CLOSURE | The current bounded running-coupling shell closes in one theorem | `running_coupling_closure` | Mechanized |
+
+**Interpretation note:** The package now has a bounded discrete running-coupling shell rather than none. It still does not mechanize continuous beta functions or measured renormalization-group flow.
+
+## 81AA. Electroweak Scattering Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest scattering shell the current repo can support. It packages named electroweak-style channels with exact conservation laws and mediator bookkeeping instead of claiming amplitudes or cross sections. The canonical witnesses are beta decay, neutral-current neutrino-electron scattering, and elastic proton-electron scattering.
+**Mechanization target:** `ElectroweakScatteringClosure.lean` (12 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-BETA-DECAY-CHANNEL-CONSERVES-CHARGE | The beta-decay witness conserves electric charge | `betaDecayChannel_conserves_charge` | Mechanized |
+| THM-BETA-DECAY-CHANNEL-CONSERVES-BARYON | The beta-decay witness conserves baryon number | `betaDecayChannel_conserves_baryon` | Mechanized |
+| THM-BETA-DECAY-CHANNEL-CONSERVES-LEPTON | The beta-decay witness conserves total lepton number | `betaDecayChannel_conserves_lepton` | Mechanized |
+| THM-NEUTRINO-ELECTRON-NEUTRAL-CHANNEL-CONSERVES-CHARGE | The neutral-current neutrino-electron witness conserves charge | `neutrinoElectronNeutralChannel_conserves_charge` | Mechanized |
+| THM-NEUTRINO-ELECTRON-NEUTRAL-CHANNEL-CONSERVES-BARYON | The neutral-current neutrino-electron witness conserves baryon number | `neutrinoElectronNeutralChannel_conserves_baryon` | Mechanized |
+| THM-NEUTRINO-ELECTRON-NEUTRAL-CHANNEL-CONSERVES-LEPTON | The neutral-current neutrino-electron witness conserves total lepton number | `neutrinoElectronNeutralChannel_conserves_lepton` | Mechanized |
+| THM-PROTON-ELECTRON-ELASTIC-CHANNEL-CONSERVES-CHARGE | The elastic proton-electron witness conserves charge | `protonElectronElasticChannel_conserves_charge` | Mechanized |
+| THM-PROTON-ELECTRON-ELASTIC-CHANNEL-CONSERVES-BARYON | The elastic proton-electron witness conserves baryon number | `protonElectronElasticChannel_conserves_baryon` | Mechanized |
+| THM-PROTON-ELECTRON-ELASTIC-CHANNEL-CONSERVES-LEPTON | The elastic proton-electron witness conserves total lepton number | `protonElectronElasticChannel_conserves_lepton` | Mechanized |
+| THM-CHARGED-CURRENT-CHANGES-FLAVOR | The charged-current beta-decay witness is explicitly flavor-changing | `charged_current_changes_flavor` | Mechanized |
+| THM-NEUTRAL-CURRENTS-PRESERVE-FLAVOR | The neutral-current witnesses preserve flavor bookkeeping | `neutral_currents_preserve_flavor` | Mechanized |
+| THM-ELECTROWEAK-MEDIATOR-ASSIGNMENT | The named channels are anchored to the bounded weak/electromagnetic mediator strengths | `electroweak_mediator_assignment` | Mechanized |
+| THM-WEAK-LIKE-SCATTERING-DOMINATES-ELECTROMAGNETIC-LIKE-AT-ELECTROWEAK | Weak-like scattering dominates electromagnetic-like scattering at the electroweak rung | `weak_like_scattering_dominates_electromagnetic_like_at_electroweak` | Mechanized |
+| THM-ELECTROWEAK-SCATTERING-CLOSURE | The current bounded scattering shell closes in one theorem | `electroweak_scattering_closure` | Mechanized |
+
+**Interpretation note:** The certified scattering surface is now explicit: named channels, exact conservation laws, current-type bookkeeping, and bounded mediator assignment. It is still not a cross-section, amplitude, or collider-phenomenology package.
+
+## 81AB. Standard Model Shell Closure (§10.6)
+
+**Assumptions:** This module packages the strongest bounded Standard-Model-style shell the current repo can honestly support: particle-theory core, fermion/charge shell, normalized CKM/PMNS-style mixing kernels, bounded discrete running couplings, and bounded conservation-law scattering channels. It remains explicitly scoped below a full Standard Model derivation.
+**Mechanization target:** `StandardModelShellClosure.lean` (1 master theorem, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-STANDARD-MODEL-SHELL-CLOSURE | The current bounded Standard-Model-style shell closes as particle core + fermion charges + flavor mixing + running couplings + scattering | `standard_model_shell_closure` | Mechanized |
+
+**Interpretation note:** The repo no longer has to say that CKM/PMNS, running couplings, and scattering all sit entirely outside the certified surface. They now exist in the bounded sense the package can honestly support: exact three-generation bookkeeping, normalized mixing kernels, discrete running ladders, and named conservation-law scattering channels. What still remains outside the theorem boundary is full phase data, anomaly cancellation, continuous renormalization-group flow, amplitudes/cross sections, and a literal replacement of the full Standard Model.
+
+## 81AC. Flavor Phase Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest phase shell on top of the bounded flavor-mixing surface. It does not claim full complex measured CKM/PMNS matrices. It introduces a discrete quarter-turn phase vocabulary, explicit conjugation, and named CKM/PMNS-style phase assignments on the three-generation shell.
+**Mechanization target:** `FlavorPhaseClosure.lean` (7 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PHASE-CONJUGATE-INVOLUTIVE | Phase conjugation is an involution on the bounded quarter-turn vocabulary | `phaseConjugate_involutive` | Mechanized |
+| THM-PHASE-VALUE-BOUNDED | Every bounded phase value lies in `[0, 1]` | `phaseValue_bounded` | Mechanized |
+| THM-CKM-PHASE-DIAGONAL-ZERO | The bounded CKM-style phase assignment has zero diagonal | `ckmPhase_diagonal_zero` | Mechanized |
+| THM-CKM-PHASE-OFFDIAGONAL-CONJUGATE | The first-second and second-first CKM-style phases are conjugates | `ckmPhase_offdiagonal_conjugate` | Mechanized |
+| THM-PMNS-PHASE-DIAGONAL-ZERO | The bounded PMNS-style phase assignment has zero diagonal | `pmnsPhase_diagonal_zero` | Mechanized |
+| THM-PMNS-PHASE-FIRST-SECOND-CONJUGATE | The first-second and second-first PMNS-style phases are conjugates | `pmnsPhase_first_second_conjugate` | Mechanized |
+| THM-PMNS-PHASE-FIRST-THIRD-HALF-TURN | The first-third PMNS-style bridge is a half turn fixed by conjugation | `pmnsPhase_first_third_half_turn` | Mechanized |
+| THM-FLAVOR-PHASE-CLOSURE | The bounded flavor-phase shell closes as involutive conjugation plus named CKM/PMNS-style assignments | `flavor_phase_closure` | Mechanized |
+
+**Interpretation note:** The repo no longer has to leave all flavor-phase structure outside the certified surface. It now contains an honest bounded phase shell: discrete quarter turns, exact conjugation, and explicit CKM/PMNS-style assignments on the current three-generation witness. What it still does not claim is measured complex phase data or a derivation of CP violation.
+
+## 81AD. Anomaly Cancellation Closure (§10.6)
+
+**Assumptions:** This module adds a bounded one-generation anomaly-cancellation shell using the standard left-handed Weyl hypercharge bookkeeping. It is a finite algebraic closure, not a full gauge-theory derivation.
+**Mechanization target:** `AnomalyCancellationClosure.lean` (4 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SU3-SQUARED-U1-ANOMALY-CANCELS | The bounded `SU(3)^2 U(1)` anomaly cancels exactly | `su3SquaredU1_cancels` | Mechanized |
+| THM-SU2-SQUARED-U1-ANOMALY-CANCELS | The bounded `SU(2)^2 U(1)` anomaly cancels exactly | `su2SquaredU1_cancels` | Mechanized |
+| THM-GRAVITATIONAL-SQUARED-U1-ANOMALY-CANCELS | The bounded gravitational-`U(1)` anomaly cancels exactly | `gravitationalSquaredU1_cancels` | Mechanized |
+| THM-CUBIC-U1-ANOMALY-CANCELS | The bounded cubic `U(1)` anomaly cancels exactly | `cubicU1_cancels` | Mechanized |
+| THM-ANOMALY-CANCELLATION-CLOSURE | The bounded one-generation anomaly-cancellation shell closes exactly | `anomaly_cancellation_closure` | Mechanized |
+
+**Interpretation note:** The theorem surface now contains an honest algebraic anomaly-cancellation shell rather than leaving anomaly cancellation entirely outside the package. The scope stays narrow: one-generation hypercharge bookkeeping closes exactly, but a full gauge-theory replacement or a derivation of family replication is still outside the present surface.
+
+## 81AE. Continuous Beta Function Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest continuous beta-function shell on top of the bounded running-coupling ladder. It certifies continuous real-valued flows with the expected sign behavior; it does not solve the full physical renormalization-group equations.
+**Mechanization target:** `ContinuousBetaFunctionClosure.lean` (10 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-STRONG-FLOW-CONTINUOUS | The bounded strong-like flow is continuous | `strongFlow_continuous` | Mechanized |
+| THM-WEAK-FLOW-CONTINUOUS | The bounded weak-like flow is continuous | `weakFlow_continuous` | Mechanized |
+| THM-ELECTROMAGNETIC-FLOW-CONTINUOUS | The bounded electromagnetic-like flow is continuous | `electromagneticFlow_continuous` | Mechanized |
+| THM-STRONG-BETA-NEGATIVE | The bounded strong beta function stays negative | `strongBeta_negative` | Mechanized |
+| THM-WEAK-BETA-POSITIVE | The bounded weak beta function stays positive | `weakBeta_positive` | Mechanized |
+| THM-ELECTROMAGNETIC-BETA-POSITIVE | The bounded electromagnetic beta function stays positive | `electromagneticBeta_positive` | Mechanized |
+| THM-STRONG-FLOW-ANTITONE | The bounded strong-like flow decreases with scale parameter | `strongFlow_antitone` | Mechanized |
+| THM-WEAK-FLOW-MONOTONE | The bounded weak-like flow increases with scale parameter | `weakFlow_monotone` | Mechanized |
+| THM-ELECTROMAGNETIC-FLOW-MONOTONE | The bounded electromagnetic-like flow increases with scale parameter | `electromagneticFlow_monotone` | Mechanized |
+| THM-CONTINUOUS-FLOWS-ANCHOR-AT-ZERO | All bounded continuous flows are normalized to `1` at the origin | `continuous_flows_anchor_at_zero` | Mechanized |
+| THM-CONTINUOUS-BETA-FUNCTION-CLOSURE | The bounded continuous beta-function shell closes as continuity + sign + monotonicity + normalization | `continuous_beta_function_closure` | Mechanized |
+
+**Interpretation note:** The package no longer has to leave continuous renormalization-group structure completely outside the theorem boundary. It now contains an honest sign-correct continuous shell: strong-like flow decreases, weak/electromagnetic-like flows increase, and all three are continuous and normalized. What is still absent is a full perturbative beta-function derivation with measured coefficients.
+
+## 81AF. Scattering Amplitude Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest amplitude/cross-section shell the current repo can support. The amplitudes are bounded tree-level proxies derived from the named mediator strengths; they are not collider-level amplitudes.
+**Mechanization target:** `ScatteringAmplitudeClosure.lean` (10 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-BETA-DECAY-CHANNEL-AMPLITUDE-POSITIVE | The bounded beta-decay channel has positive amplitude proxy | `betaDecayChannel_amplitude_positive` | Mechanized |
+| THM-NEUTRINO-ELECTRON-NEUTRAL-CHANNEL-AMPLITUDE-POSITIVE | The bounded neutral-current neutrino-electron channel has positive amplitude proxy | `neutrinoElectronNeutralChannel_amplitude_positive` | Mechanized |
+| THM-PROTON-ELECTRON-ELASTIC-CHANNEL-AMPLITUDE-POSITIVE | The bounded elastic proton-electron channel has positive amplitude proxy | `protonElectronElasticChannel_amplitude_positive` | Mechanized |
+| THM-WEAK-CHANNELS-HAVE-EQUAL-AMPLITUDE | The two bounded weak channels have equal amplitude proxy | `weak_channels_have_equal_amplitude` | Mechanized |
+| THM-WEAK-CHANNEL-AMPLITUDE-DOMINATES-ELECTROMAGNETIC-CHANNEL | The bounded weak-channel amplitude exceeds the bounded electromagnetic elastic amplitude | `weak_channel_amplitude_dominates_electromagnetic_channel` | Mechanized |
+| THM-BETA-DECAY-CHANNEL-CROSS-SECTION-POSITIVE | The bounded beta-decay channel has positive cross-section proxy | `betaDecayChannel_crossSection_positive` | Mechanized |
+| THM-NEUTRINO-ELECTRON-NEUTRAL-CHANNEL-CROSS-SECTION-POSITIVE | The bounded neutral-current neutrino-electron channel has positive cross-section proxy | `neutrinoElectronNeutralChannel_crossSection_positive` | Mechanized |
+| THM-PROTON-ELECTRON-ELASTIC-CHANNEL-CROSS-SECTION-POSITIVE | The bounded elastic proton-electron channel has positive cross-section proxy | `protonElectronElasticChannel_crossSection_positive` | Mechanized |
+| THM-WEAK-CHANNELS-HAVE-EQUAL-CROSS-SECTION | The two bounded weak channels have equal cross-section proxy | `weak_channels_have_equal_crossSection` | Mechanized |
+| THM-WEAK-CHANNEL-CROSS-SECTION-DOMINATES-ELECTROMAGNETIC-CHANNEL | The bounded weak-channel cross-section proxy exceeds the bounded electromagnetic elastic proxy | `weak_channel_crossSection_dominates_electromagnetic_channel` | Mechanized |
+| THM-SCATTERING-AMPLITUDE-CLOSURE | The bounded amplitude/cross-section proxy shell closes in one theorem | `scattering_amplitude_closure` | Mechanized |
+
+**Interpretation note:** The certified scattering surface now reaches one more layer up: not just named channels and conservation laws, but also positive amplitude proxies and positive cross-section proxies with the expected weak-versus-electromagnetic ordering. The scope stays honest: these are bounded tree-level proxies, not collider amplitudes or measured cross sections.
+
+## 81AG. Extended Standard Model Shell Closure (§10.6)
+
+**Assumptions:** This module packages the strongest bounded Standard-Model-style shell the current repo now supports: the earlier particle/flavor/coupling/scattering surface plus discrete phases, one-generation anomaly cancellation, continuous beta-function sign structure, and amplitude/cross-section proxies.
+**Mechanization target:** `ExtendedStandardModelShellClosure.lean` (1 master theorem, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-EXTENDED-STANDARD-MODEL-SHELL-CLOSURE | The extended bounded Standard-Model-style shell closes as the earlier shell plus phases, anomaly cancellation, continuous beta signs, and amplitude proxies | `extended_standard_model_shell_closure` | Mechanized |
+
+**Interpretation note:** The package now reaches the strongest bounded Standard-Model-style shell it has ever had. The remaining honest boundary is narrower: full measured complex phases, family-by-family gauge derivation, perturbative beta coefficients, collider amplitudes, and literal full Standard Model replacement still remain outside the theorem surface, but they are no longer absent in every bounded form.
+
+## 81AH. Gauge Representation Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest gauge-representation table on top of the bounded anomaly-cancellation shell. It fixes one explicit one-generation `SU(3) × SU(2) × U(1)` representation assignment for the Weyl fields together with a Higgs-doublet witness. It is not a full Lie-algebra or covariant-derivative derivation.
+**Mechanization target:** `GaugeRepresentationClosure.lean` (5 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-QUARK-DOUBLET-GAUGE-REPRESENTATION | The left quark witness is an `SU(3)` triplet and `SU(2)` doublet with dimensions `(3, 2)` | `quark_doublet_gauge_representation` | Mechanized |
+| THM-UP-QUARK-SINGLET-SHELL | The right up quark witness is `SU(3)` antitriplet and `SU(2)` singlet | `up_quark_singlet_shell` | Mechanized |
+| THM-DOWN-QUARK-SINGLET-SHELL | The right down quark witness is `SU(3)` antitriplet and `SU(2)` singlet | `down_quark_singlet_shell` | Mechanized |
+| THM-LEPTON-GAUGE-REPRESENTATION | The lepton witnesses are color singlets with the expected doublet/singlet split | `lepton_gauge_representation` | Mechanized |
+| THM-HIGGS-DOUBLET-SHELL | The Higgs witness is an `SU(3)` singlet, `SU(2)` doublet with hypercharges `±1/2` | `higgs_doublet_shell` | Mechanized |
+| THM-GAUGE-REPRESENTATION-CLOSURE | The bounded gauge-representation table closes in one theorem | `gauge_representation_closure` | Mechanized |
+
+**Interpretation note:** The package now contains an explicit representation table rather than only downstream anomaly or charge consequences. The scope remains deliberately bounded: one explicit witness table, not a full gauge-theory derivation.
+
+## 81AI. Yukawa Mass Generation Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest Higgs/Yukawa mass-generation shell on top of the bounded gauge-representation table. It fixes one positive Higgs vev, exact hypercharge-balance witnesses for charged Yukawa terms, positive charged-fermion Yukawa couplings, vanishing neutrino Yukawa on the current bounded shell, and exact mass generation as `vev × Yukawa`.
+**Mechanization target:** `YukawaMassGenerationClosure.lean` (15 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-HIGGS-VACUUM-EXPECTATION-POSITIVE | The bounded Higgs vacuum expectation witness is positive | `higgs_vacuum_expectation_positive` | Mechanized |
+| THM-UP-YUKAWA-BALANCE-ZERO | The up-type Yukawa term is hypercharge-balanced | `up_yukawa_balance_zero` | Mechanized |
+| THM-DOWN-YUKAWA-BALANCE-ZERO | The down-type Yukawa term is hypercharge-balanced | `down_yukawa_balance_zero` | Mechanized |
+| THM-CHARGED-LEPTON-YUKAWA-BALANCE-ZERO | The charged-lepton Yukawa term is hypercharge-balanced | `charged_lepton_yukawa_balance_zero` | Mechanized |
+| THM-NEUTRINO-YUKAWA-ZERO | Neutrino Yukawa is zero on the current bounded shell | `neutrino_yukawa_zero` | Mechanized |
+| THM-CHARGED-LEPTON-MASS-HIERARCHY | Charged-lepton masses satisfy electron `<` muon `<` tau | `charged_lepton_mass_hierarchy` | Mechanized |
+| THM-UP-TYPE-MASS-HIERARCHY | Up-type quark masses satisfy up `<` charm `<` top | `up_type_mass_hierarchy` | Mechanized |
+| THM-DOWN-TYPE-MASS-HIERARCHY | Down-type quark masses satisfy down `<` strange `<` bottom | `down_type_mass_hierarchy` | Mechanized |
+| THM-YUKAWA-MASS-GENERATION-CLOSURE | The bounded Higgs/Yukawa shell closes as vev + hypercharge balance + generated masses + hierarchies | `yukawa_mass_generation_closure` | Mechanized |
+
+**Interpretation note:** The current package now reaches an explicit bounded Higgs/Yukawa mass surface. It still does not claim a full spontaneous-symmetry-breaking, seesaw, or measured-parameter derivation.
+
+## 81AJ. Gauge Mass Shell Closure (§10.6)
+
+**Assumptions:** This module packages the next simplified-frontier step: the extended bounded Standard-Model-style shell together with explicit gauge representations and bounded Yukawa/Higgs mass generation.
+**Mechanization target:** `GaugeMassShellClosure.lean` (1 master theorem, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-GAUGE-MASS-SHELL-CLOSURE | The bounded gauge/mass shell closes as extended SM shell + gauge representations + Yukawa/Higgs generation | `gauge_mass_shell_closure` | Mechanized |
+
+**Interpretation note:** The repo now has a bounded gauge/mass completion shell rather than separate anomaly, phase, coupling, and mass fragments.
+
+## 81AK. Measured Flavor Closure (§10.6)
+
+**Assumptions:** This module refines the bounded flavor-mixing shell to measured CKM/PMNS data: exact rational CKM magnitudes, Cabibbo suppression, a positive Jarlskog witness, PMNS angle hierarchy, and decay-rate ordering.
+**Mechanization target:** `MeasuredFlavorClosure.lean` (11 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-CKM-ROW1-NEAR-UNITY | The first CKM row sum is within 1% of unity | `ckm_row1_near_unity` | Mechanized |
+| THM-CABIBBO-SUPPRESSION | The stored CKM data satisfy `|Vus|² < |Vud|²` | `cabibbo_suppression` | Mechanized |
+| THM-CKM-DIAGONAL-DOMINANCE | The stored CKM diagonal entries dominate the tracked off-diagonal witnesses | `ckm_diagonal_dominance` | Mechanized |
+| THM-CP-VIOLATION-POSITIVE | The Jarlskog invariant is positive | `cp_violation_positive` | Mechanized |
+| THM-PMNS-ANGLE-HIERARCHY | The PMNS angle witnesses satisfy `θ13 < θ12 < θ23` | `pmns_angle_hierarchy` | Mechanized |
+| THM-DECAY-ORDERING | The decay witnesses satisfy `τ(π⁰) < τ(K±) < τ(π±)` | `decay_ordering` | Mechanized |
+| THM-MEASURED-FLAVOR-CLOSURE | The measured flavor shell closes as CKM + Jarlskog + PMNS + decays | `measured_flavor_closure` | Mechanized |
+
+**Interpretation note:** The flavor surface is no longer only a normalized mixing shell. It now contains a bounded measured-data layer without claiming full complex matrix reconstruction.
+
+## 81AL. Perturbative Beta Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest one-loop beta-coefficient shell on top of the bounded running-coupling ladder. It uses explicit coefficient witnesses and the signs of the induced cubic beta terms for positive couplings.
+**Mechanization target:** `PerturbativeBetaClosure.lean` (9 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-STRONG-COEFFICIENT-NEGATIVE | The bounded one-loop strong coefficient is negative | `strong_coefficient_negative` | Mechanized |
+| THM-WEAK-COEFFICIENT-NEGATIVE | The bounded one-loop weak coefficient is negative | `weak_coefficient_negative` | Mechanized |
+| THM-HYPERCHARGE-COEFFICIENT-POSITIVE | The bounded one-loop hypercharge coefficient is positive | `hypercharge_coefficient_positive` | Mechanized |
+| THM-ONE-LOOP-STRONG-BETA-NEGATIVE | Positive coupling gives negative one-loop strong beta term | `oneLoopStrongBeta_negative` | Mechanized |
+| THM-ONE-LOOP-WEAK-BETA-NEGATIVE | Positive coupling gives negative one-loop weak beta term | `oneLoopWeakBeta_negative` | Mechanized |
+| THM-ONE-LOOP-HYPERCHARGE-BETA-POSITIVE | Positive coupling gives positive one-loop hypercharge beta term | `oneLoopHyperchargeBeta_positive` | Mechanized |
+| THM-PERTURBATIVE-BETA-CLOSURE | The bounded perturbative beta shell closes as coefficients + sign-correct cubic beta terms | `perturbative_beta_closure` | Mechanized |
+
+**Interpretation note:** The package now has an explicit one-loop sign shell in addition to the earlier continuous and discrete running surfaces.
+
+## 81AM. Kinematic Scattering Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest kinematic shell on top of the amplitude proxies. It introduces named energy shells with positive weights and the induced channel cross-section proxies.
+**Mechanization target:** `KinematicScatteringClosure.lean` (7 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-KINEMATIC-WEIGHT-POSITIVE | Every named energy-shell weight is positive | `kinematicWeight_positive` | Mechanized |
+| THM-BETA-DECAY-KINEMATIC-POSITIVE | The bounded beta-decay kinematic cross-section proxy is positive on every shell | `betaDecay_kinematic_positive` | Mechanized |
+| THM-WEAK-CHANNELS-EQUAL-ON-ALL-SHELLS | The two bounded weak channels remain equal on every named shell | `weak_channels_equal_on_all_shells` | Mechanized |
+| THM-WEAK-CHANNEL-DOMINATES-ON-ALL-SHELLS | The bounded weak channel dominates the electromagnetic elastic channel on every shell | `weak_channel_dominates_on_all_shells` | Mechanized |
+| THM-BETA-DECAY-SHELL-ORDER | The beta-decay witness obeys low `>` resonant `>` high shell ordering | `betaDecay_shell_order` | Mechanized |
+| THM-KINEMATIC-SCATTERING-CLOSURE | The bounded kinematic scattering shell closes in one theorem | `kinematic_scattering_closure` | Mechanized |
+
+**Interpretation note:** This is still not collider kinematics. It is a bounded shell-weighted scattering surface sitting above the amplitude proxies.
+
+## 81AN. Gravitational Dynamics Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest local-gravity shell on top of the bounded Yukawa/Higgs mass-generation surface. It uses a discrete inverse-square radial law and generated-mass witnesses.
+**Mechanization target:** `GravitationalDynamicsClosure.lean` (7 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-INVERSE-SQUARE-WEIGHT-POSITIVE | Every named radial-shell weight is positive | `inverseSquareWeight_positive` | Mechanized |
+| THM-INVERSE-SQUARE-SHELL-ORDER | The radial-shell weights satisfy unit `>` double `>` quad | `inverseSquare_shell_order` | Mechanized |
+| THM-GRAVITATIONAL-FORCE-SYMMETRIC | The bounded gravitational force is symmetric in its two masses | `gravitationalForce_symmetric` | Mechanized |
+| THM-GRAVITATIONAL-FORCE-POSITIVE | Positive source masses induce positive attraction on every shell | `gravitationalForce_positive` | Mechanized |
+| THM-HEAVIER-SOURCES-GRAVITATE-MORE | Heavier generated-mass witnesses source stronger attraction on the unit shell | `heavier_sources_gravitate_more` | Mechanized |
+| THM-GRAVITATIONAL-DYNAMICS-CLOSURE | The bounded inverse-square gravitational shell closes in one theorem | `gravitational_dynamics_closure` | Mechanized |
+
+**Interpretation note:** This is a simplified local gravity shell beneath the later stronger `LocalGravityLaw.lean` package, not a tensorial gravity theory.
+
+## 81AO. Residual Strong Force Closure (§10.6)
+
+**Assumptions:** This module adds the smallest honest nucleus-level shell on top of the confinement surface. It packages short-range residual attraction, Coulomb repulsion for proton-proton pairs, and the proton-neutron advantage.
+**Mechanization target:** `ResidualStrongForceClosure.lean` (7 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-NET-NUCLEAR-BINDING-SYMMETRIC | The bounded net nuclear binding is symmetric in the nucleon pair | `netNuclearBinding_symmetric` | Mechanized |
+| THM-RESIDUAL-STRONG-SHELL-ORDER | Contact `>` bound `>` far on the residual-strong witness ladder | `residualStrong_shell_order` | Mechanized |
+| THM-CONTACT-SHELL-BINDS-ALL-NUCLEONS | Every nucleon pair binds positively on the contact shell | `contact_shell_binds_all_nucleons` | Mechanized |
+| THM-FAR-SHELL-HAS-NO-POSITIVE-BINDING | The far shell has no positive net binding | `far_shell_has_no_positive_binding` | Mechanized |
+| THM-PROTON-NEUTRON-ADVANTAGE | Proton-neutron binding exceeds proton-proton binding on contact and bound shells | `proton_neutron_contact_advantage` | Mechanized |
+| THM-RESIDUAL-STRONG-FORCE-CLOSURE | The bounded residual-strong-force shell closes in one theorem | `residual_strong_force_closure` | Mechanized |
+
+**Interpretation note:** This is the simplified nucleus-level binding shell beneath the later pion/Yukawa package, not a full nuclear chart.
+
+## 81AP. Unified Replacement Closure (§10.6)
+
+**Assumptions:** This module packages the strongest bounded replacement-style shell below the later eight-leg replacement closure: gauge/mass completion, precision flavor, perturbative beta signs, kinematic scattering, simplified local gravity, simplified residual strong force, and the bounded dark-sector shell.
+**Mechanization target:** `UnifiedReplacementClosure.lean` (1 master theorem, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-UNIFIED-REPLACEMENT-CLOSURE | The simplified bounded replacement shell closes as gauge/mass + flavor + beta + kinematics + gravity + residual strong force + dark sector | `unified_replacement_closure` | Mechanized |
+
+**Interpretation note:** This is the simplified replacement scaffold that sits underneath the later stronger replacement package with measured flavor, local Poisson gravity, Yukawa nuclear force, perturbative scattering witnesses, and dark-sector force laws.
+
+## 81AQ. Standard Model Replacement Sweep (§21)
+
+**Assumptions:** These modules close the stronger eight-leg replacement sweep used in Chapter 17: local gravity, residual nuclear force, precision flavor, measured flavor, perturbative scattering, dark-sector shell, dark-sector force law, and the prior bounded matter/coupling/scattering/anomaly/proton/confinement surface.
+**Mechanization targets:** `LocalGravityLaw.lean`, `ResidualNuclearForce.lean`, `PerturbativeScatteringClosure.lean`, `DarkSectorForceLawClosure.lean`, `StandardModelReplacementClosure.lean` (component theorem families plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-LOCAL-GRAVITY-CLOSURE | The stronger local-gravity shell closes as Poisson equation + graviton + positive amplitude + attractive Newtonian limit + self-reference | `local_gravity_closure` | Mechanized |
+| THM-RESIDUAL-NUCLEAR-FORCE-CLOSURE | The stronger residual-nuclear shell closes as pion + Yukawa attraction/screening + binding witnesses + saturation + confinement link | `residual_nuclear_force_closure` | Mechanized |
+| THM-BETA-HIERARCHY-STORED-WITNESS | On the stored one-loop witnesses, `|b₀(SU3)| > |b₀(U1)| > |b₀(SU2)|` | `beta_coefficient_hierarchy` | Mechanized |
+| THM-PERTURBATIVE-SCATTERING-CLOSURE | The stronger perturbative shell closes as stored beta witnesses + Mandelstam + Z-pole data + `αs(Mz)` + optical-theorem witness | `perturbative_scattering_closure` | Mechanized |
+| THM-DARK-SECTOR-FORCE-LAW-CLOSURE | The dark-sector force-law shell closes as silent dark matter + `w = -1` dark energy + Planck 2018 budget + coincidence + vacuum gap | `dark_sector_force_law_closure` | Mechanized |
+| THM-STANDARD-MODEL-REPLACEMENT | The stronger eight-leg replacement theorem closes as 13 conjuncts across 8 legs | `standard_model_replacement_closure` | Mechanized |
+
+**Interpretation note:** The stronger replacement sweep is now fully green in the current repo: the simplified replacement scaffold remains available in `UnifiedReplacementClosure.lean`, and the later Chapter 17 package swaps in the stronger measured/local witness modules where they exist. The honest remaining boundary is scope, not broken proofs.
+
+## 81AR. P ≠ NP Structural Separation (§10.6)
+
+**Assumptions:** This module works inside the fold axiom surface rather than the full Turing-machine model. Nontrivial folds vent at least one path, vent recovery requires re-acquiring the lost entropy, and NP-complete search spaces are modeled as exponentially large candidate sets while verification remains polynomial.
+**Mechanization target:** `PneNP.lean` (13 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-P-NE-NP-STRUCTURAL | In the fold axiom system, NP-complete search stays exponentially larger than verification because nontrivial folds are irreversible and reversing them requires examining the full candidate set | `p_ne_np_structural`, `god_formula_implies_p_ne_np` | Mechanized |
+
+## 81AS. Hierarchy Problem Closure (§10.6)
+
+**Assumptions:** The bounded shell compares gauge interaction multiplicity against self-referential gravitational suppression across the Planck-to-proton scale gap. Gauge strength scales with emanation count while gravity is diluted by topology-changing self-reference.
+**Mechanization target:** `HierarchyProblemClosure.lean` (10 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-HIERARCHY-PROBLEM-CLOSURE | The hierarchy problem closes structurally as gauge channels scale combinatorially while self-referential gravitational branching suppresses effective coupling across the named scale gap | `hierarchy_problem_closure` | Mechanized |
+
+## 81AT. Strong CP Closure (§10.6)
+
+**Assumptions:** The bounded shell treats the QCD vacuum as a fold over theta vacua with positive topological susceptibility, so theta `= 0` is the unique lowest-energy configuration and the fold concentrates weight there without requiring an axion field.
+**Mechanization target:** `StrongCPClosure.lean` (9 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-STRONG-CP-CLOSURE | The strong CP shell closes as theta-vacuum positivity, unique preference for theta `= 0`, consistency with the experimental bound, and a structural non-necessity claim for axions on the bounded surface | `strong_cp_closure` | Mechanized |
+
+## 81AU. Yang-Mills Mass Gap (§10.6)
+
+**Assumptions:** The bounded shell interprets confinement as a positive dimensional excitation cost. The lightest confined excitation remains strictly above vacuum, and asymptotic freedom stabilizes that positive gap on the present surface.
+**Mechanization target:** `YangMillsMassGap.lean` (10 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-YANG-MILLS-MASS-GAP-CLOSURE | The bounded Yang-Mills mass-gap shell closes as positive confinement cost, positive lightest excitation, asymptotic-freedom stabilization, and a universal SU(N) gap witness | `yang_mills_mass_gap_closure` | Mechanized |
+
+## 81AV. Baryogenesis Closure (§10.6)
+
+**Assumptions:** The bounded shell maps Sakharov's three conditions into fold structure: fold irreversibility supplies non-equilibrium, measured flavor data supplies CP violation, and the fold itself supplies baryon-number violation at the selection surface.
+**Mechanization target:** `BaryogenesisClosure.lean` (8 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-BARYOGENESIS-CLOSURE | The bounded baryogenesis shell closes as fold-level Sakharov conditions together with a positive baryon-to-photon witness consistent with the measured flavor asymmetry surface | `baryogenesis_closure` | Mechanized |
+
+## 81AW. Cosmological Constant Closure (§10.6)
+
+**Assumptions:** The bounded shell compares the observed vacuum to the full emanation product over the dimensional ladder, treating the residual vacuum as the fold-selected ground state inside a vastly larger topological configuration space.
+**Mechanization target:** `CosmologicalConstantClosure.lean` (12 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-COSMOLOGICAL-CONSTANT-CLOSURE | The bounded cosmological-constant shell closes as the exact 120-order gap, the 54-rung Planck-to-Pleroma span, a rapidly growing emanation suppression factor, and the observed vacuum as the fold ground state | `cosmological_constant_closure` | Mechanized |
+
+## 81AX. Dark Matter Identity Closure (§10.6)
+
+**Assumptions:** The bounded shell treats dark matter as gravitating fold energy that is structurally invisible to gauge channels, with the dark-to-baryon ratio read as a deficit between full gravitational topology and gauge-visible topology.
+**Mechanization target:** `DarkMatterIdentityClosure.lean` (9 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-DARK-MATTER-IDENTITY-CLOSURE | The bounded dark-matter identity shell closes as gauge-silent gravitating fold energy with a positive observed dark-to-baryon ratio bracketed by the dimensional-deficit witnesses | `dark_matter_identity_closure` | Mechanized |
+
+## 81AY. Dark Sector Closure (§10.6)
+
+**Assumptions:** This shell adds the smallest honest dark-sector package above the simplified gravitational surface: positive baryon, dark-matter, and dark-energy densities, neutral dark matter, negative dark-energy pressure, and positive dark-matter gravity on baryons.
+**Mechanization target:** `DarkSectorClosure.lean` (10 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-DARK-SECTOR-CLOSURE | The bounded dark-sector shell closes as gravitationally active neutral dark matter, negative-pressure dark energy, and density bookkeeping with dark-energy dominance | `dark_sector_closure` | Mechanized |
+
+## 81AZ. Physics from the God Formula (§10.6)
+
+**Assumptions:** The shell uses only the floor, ceiling, and monotone properties of `w = R - min(v, R) + 1`. Those three properties are used as a common structural source for multiple physics-style closure claims on the present bounded surface.
+**Mechanization target:** `PhysicsFromGodFormula.lean` (13 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-SIX-MYSTERIES-FROM-ONE-FORMULA | The God Formula packages strong CP, Yang-Mills gap, hierarchy, baryogenesis, dark matter, and the cosmological constant as six structural corollaries of the same floor/ceiling/monotone surface | `six_mysteries_from_one_formula` | Mechanized |
+
+## 81BA. Physics Grand Unification (§10.6)
+
+**Assumptions:** This shell packages the physics-style mystery closures into one conjunction without adding new axioms beyond the already-certified component witnesses.
+**Mechanization target:** `PhysicsGrandUnification.lean` (7 theorems, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PHYSICS-GRAND-UNIFICATION | The bounded physics-unification shell closes as one joint witness across hierarchy, baryogenesis, dark-matter identity, and the cosmological-constant surface | `physics_grand_unification` | Mechanized |
+
+## 81BB. Precision Flavor Closure (§10.6)
+
+**Assumptions:** This shell refines the bounded flavor surface with stored CKM/PMNS witnesses, a nontrivial CP-phase witness, and broad measured hierarchy relations rather than a full matrix-by-matrix reconstruction.
+**Mechanization target:** `PrecisionFlavorClosure.lean` (11 theorems plus master closure, zero sorry)
+
+| ID | Statement | Lean reference | Status |
+|---|---|---|---|
+| THM-PRECISION-FLAVOR-CLOSURE | The precision flavor shell closes as measured CKM/PMNS hierarchy witnesses together with nontrivial CKM and PMNS phase structure on the stored bounded data | `precision_flavor_closure` | Mechanized |
 
 ## 82. The Ten Bosons: A Gnostic Particle Model (§10.6)
 

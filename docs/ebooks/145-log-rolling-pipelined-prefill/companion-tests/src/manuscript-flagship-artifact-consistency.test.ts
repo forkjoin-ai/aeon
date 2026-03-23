@@ -50,6 +50,18 @@ interface Gate2Report {
   };
 }
 
+interface WitnessArtifact {
+  readonly run: {
+    readonly witnesses: readonly Array<{
+      readonly primitiveId: string;
+      readonly pathCount: number;
+      readonly streamCount: number;
+      readonly deficit: number;
+      readonly theoremRef: string;
+    }>;
+  };
+}
+
 function loadJson<T>(path: string): T {
   return JSON.parse(readFileSync(path, 'utf8')) as T;
 }
@@ -144,5 +156,35 @@ describe('Flagship manuscript artifact consistency', () => {
     mustContain(manuscript, gate2Benign!.completionP95GainMs.toFixed(2));
     mustContain(manuscript, gate2Harsh!.completionMedianGainMs.toFixed(2));
     mustContain(manuscript, gate2Harsh!.completionP95GainMs.toFixed(1));
+  });
+
+  it('pins the emitted witness claims to the checked-in export', () => {
+    const manuscript = readFileSync(resolveCh17ManuscriptPath('flagship'), 'utf8');
+    const artifactsDir = join(CH17_CHAPTER_ROOT, 'companion-tests', 'artifacts');
+    const matchedWitnessArtifact = loadJson<WitnessArtifact>(
+      join(artifactsDir, 'ch17-wallington-rotation-site-witness.json')
+    );
+    const positiveWitnessArtifact = loadJson<WitnessArtifact>(
+      join(
+        artifactsDir,
+        'ch17-wallington-rotation-positive-deficit-site-witness.json'
+      )
+    );
+    const [matchedWitness] = matchedWitnessArtifact.run.witnesses;
+    const [positiveWitness] = positiveWitnessArtifact.run.witnesses;
+
+    expect(matchedWitness).toBeDefined();
+    expect(positiveWitness).toBeDefined();
+
+    mustContain(manuscript, matchedWitness!.primitiveId);
+    mustContain(manuscript, `pathCount = ${matchedWitness!.pathCount}`);
+    mustContain(manuscript, `streamCount = ${matchedWitness!.streamCount}`);
+    mustContain(manuscript, `Delta_beta = ${matchedWitness!.deficit}`);
+    mustContain(manuscript, matchedWitness!.theoremRef);
+
+    mustContain(manuscript, positiveWitness!.primitiveId);
+    mustContain(manuscript, `streamCount = ${positiveWitness!.streamCount}`);
+    mustContain(manuscript, `Delta_beta = ${positiveWitness!.deficit}`);
+    mustContain(manuscript, positiveWitness!.theoremRef);
   });
 });
