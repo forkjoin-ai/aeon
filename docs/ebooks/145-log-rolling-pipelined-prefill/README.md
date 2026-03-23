@@ -13,7 +13,7 @@ ebook_featured_excerpt_chapters: ch14-aeon-flow-protocol, ch21-topology-of-compu
 - Parent index: [Ebook Library](../README.md)
 - Live docs home: [docs.aeonflux.dev](https://docs.aeonflux.dev)
 - Catchall full theory chapter: [Being Irreversible (full Chapter 17 manuscript)](./ch17-arxiv-manuscript.md)
-- `TLDR` reviewer-facing manuscript: [Topological Mismatch in Distributed Inference](./ch17-arxiv-manuscript-flagship.md)
+- `TLDR` reviewer-facing manuscript: [Topological Mismatch in Distributed Inference](./ch17-arxiv-manuscript-flagship.md) -- centered on the Aeon Flux site adequacy theorem, a matched/collided emitted `WallingtonRotation` witness pair, and two bounded gates
 - ArXiv submission helper: [Submission Metadata and Packaging](./arxiv-submission/README.md)
 - Flagship submission helper: [Flagship Metadata and Packaging](./arxiv-submission-flagship/README.md)
 - Author's note: [Author's Note](./AUTHORS_NOTE.md)
@@ -28,6 +28,7 @@ ebook_featured_excerpt_chapters: ch14-aeon-flow-protocol, ch21-topology-of-compu
 - Companion tests: [Companion Test Suite](./companion-tests/README.md)
 
 The Chapter 17 companion formal subtree now separates mechanized theorems from theorem-indexed derived vocabulary, including the documentation definitions for `optionality`, `structured ambiguity processor`, `coupled manifold`, `Harrigan Margin`, `Harrigan Horizon`, `volatility budget`, `dynamic Harrigan Horizon`, `Harrigan Cascade`, `coherence field`, `coherence bandwidth`, `culture field`, `cultural memory`, `Brainwash Principle`, `forced amnesia`, `cover-space corollary cracking`, `offline-risk negative control`, `recovery-trust surface`, `witness ancestry`, `ancestry-preserving reconciliation`, and `void-preserving fold`, and it now records a finite/countable/measurable finite-type Landauer calibration boundary together with an observable-pushforward shell for deterministic collapse covering equiprobable frontiers, arbitrary finite-support branch laws, the sharp finite equality cases, arbitrary Bernoulli binary laws, the countable-support entropy/heat shells, coarse-grained finite/countable observable codomains for arbitrary source PMFs, finite-effective-support source-side monotonicity under deterministic observable coarsening, the direct finite-type measurable entropy/heat lifts, and a molecular-topology corollary stating that a nontrivial hole survives any homology-preserving stretch/twist deformation, together with a bounded coupled-kernel stability theorem for inter-app handoff pressure. It also now includes an explicit beauty boundary witness showing that bare topological deficit bookkeeping does not, by itself, force latency/waste optimality, a manuscript-ready American Frontier curve-family figure with a recursive wire witness showing diversity selecting the response and then carrying it over the wire, names the open compiler modularity target `THM-RECURSIVE-COARSENING-SYNTHESIS`: syntax-driven bottom-up collapse of verified Gnosis subgraphs into reusable coarse nodes with transferred drift certificates, adds the bounded cover-space audit companion for offline-risk password-digest and recovery/trust corollaries where `cracking` is used only as a metaphor for witness-producing corollary extraction, and adds the full `x-gnosis` benchmark evidence stack: deterministic hostile-network matrix, compression-recovered browser path, local nginx control, and March 17, 2026 Cloud Run before/after witness, so the manuscript cleanly separates schedule optimality from transport-envelope degradation while identifying a coupled recoverability margin, a volatility-aware dynamic horizon, the recursive cross-layer mechanism that carries inherited burden downstream, the CRDT as operational cultural memory, the censorship boundary where suppressed failure marks become forced amnesia, and the audit boundary where preserved witness ancestry matters as much as the final verdict.
+The same surface now also records a documentation-level black-hole bridge: black holes are treated as collapse-side void-boundary singularities on the torus / interlocking-torus geometry, explicitly separated from the mechanized orbital Skyrms equilibrium family until the singular touchpoint limit itself is Lean-closed.
 
 ## Manuscript Routing
 
@@ -214,6 +215,12 @@ Build the reviewer-facing flagship manuscript:
 ./build-arxiv-manuscript-flagship.sh
 ./build-arxiv-manuscript-flagship.sh --tex-only
 ./build-arxiv-manuscript-flagship.sh --pdf-only
+```
+
+Create the reviewer-facing zip bundle that can accompany the flagship PDF:
+
+```bash
+pnpm run manuscript:arxiv:flagship:bundle
 ```
 
 Wallington Lab maps these tracks directly: the `TLDR` button shows

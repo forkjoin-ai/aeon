@@ -1,0 +1,494 @@
+{
+  "label": "ch17-inverted-scaling-reynolds-figure-v1",
+  "speedupFormula": "Speedup = (P × N) / (C + N - 1)",
+  "idleFormula": "idle = (N - 1) / (C + N - 1)",
+  "reynoldsFormula": "Re = N / C",
+  "balancedChunkRule": "Left-panel curves use the balanced-chunk cross-section C = N to expose the inverted-scaling slope directly.",
+  "stageFamilies": [2, 4, 8, 10],
+  "workloadRange": {
+    "low": 10,
+    "high": 512
+  },
+  "reynoldsRange": {
+    "low": 0.1,
+    "high": 20
+  },
+  "speedupRange": {
+    "low": 3.111111111111111,
+    "high": 341.3333333333333
+  },
+  "idleRange": {
+    "low": 0.06976744186046512,
+    "high": 0.94
+  },
+  "speedupCurves": [
+    {
+      "stageCount": 2,
+      "chunkCount": 2,
+      "points": [
+        {
+          "workload": 10,
+          "speedup": 6.666666666666667
+        },
+        {
+          "workload": 16,
+          "speedup": 10.666666666666666
+        },
+        {
+          "workload": 24,
+          "speedup": 16
+        },
+        {
+          "workload": 32,
+          "speedup": 21.333333333333332
+        },
+        {
+          "workload": 48,
+          "speedup": 32
+        },
+        {
+          "workload": 64,
+          "speedup": 42.666666666666664
+        },
+        {
+          "workload": 96,
+          "speedup": 64
+        },
+        {
+          "workload": 128,
+          "speedup": 85.33333333333333
+        },
+        {
+          "workload": 192,
+          "speedup": 128
+        },
+        {
+          "workload": 256,
+          "speedup": 170.66666666666666
+        },
+        {
+          "workload": 384,
+          "speedup": 256
+        },
+        {
+          "workload": 512,
+          "speedup": 341.3333333333333
+        }
+      ]
+    },
+    {
+      "stageCount": 4,
+      "chunkCount": 4,
+      "points": [
+        {
+          "workload": 10,
+          "speedup": 5.714285714285714
+        },
+        {
+          "workload": 16,
+          "speedup": 9.142857142857142
+        },
+        {
+          "workload": 24,
+          "speedup": 13.714285714285714
+        },
+        {
+          "workload": 32,
+          "speedup": 18.285714285714285
+        },
+        {
+          "workload": 48,
+          "speedup": 27.428571428571427
+        },
+        {
+          "workload": 64,
+          "speedup": 36.57142857142857
+        },
+        {
+          "workload": 96,
+          "speedup": 54.857142857142854
+        },
+        {
+          "workload": 128,
+          "speedup": 73.14285714285714
+        },
+        {
+          "workload": 192,
+          "speedup": 109.71428571428571
+        },
+        {
+          "workload": 256,
+          "speedup": 146.28571428571428
+        },
+        {
+          "workload": 384,
+          "speedup": 219.42857142857142
+        },
+        {
+          "workload": 512,
+          "speedup": 292.57142857142856
+        }
+      ]
+    },
+    {
+      "stageCount": 8,
+      "chunkCount": 8,
+      "points": [
+        {
+          "workload": 10,
+          "speedup": 5.333333333333333
+        },
+        {
+          "workload": 16,
+          "speedup": 8.533333333333333
+        },
+        {
+          "workload": 24,
+          "speedup": 12.8
+        },
+        {
+          "workload": 32,
+          "speedup": 17.066666666666666
+        },
+        {
+          "workload": 48,
+          "speedup": 25.6
+        },
+        {
+          "workload": 64,
+          "speedup": 34.13333333333333
+        },
+        {
+          "workload": 96,
+          "speedup": 51.2
+        },
+        {
+          "workload": 128,
+          "speedup": 68.26666666666667
+        },
+        {
+          "workload": 192,
+          "speedup": 102.4
+        },
+        {
+          "workload": 256,
+          "speedup": 136.53333333333333
+        },
+        {
+          "workload": 384,
+          "speedup": 204.8
+        },
+        {
+          "workload": 512,
+          "speedup": 273.06666666666666
+        }
+      ]
+    },
+    {
+      "stageCount": 10,
+      "chunkCount": 10,
+      "points": [
+        {
+          "workload": 10,
+          "speedup": 5.2631578947368425
+        },
+        {
+          "workload": 16,
+          "speedup": 8.421052631578947
+        },
+        {
+          "workload": 24,
+          "speedup": 12.631578947368421
+        },
+        {
+          "workload": 32,
+          "speedup": 16.842105263157894
+        },
+        {
+          "workload": 48,
+          "speedup": 25.263157894736842
+        },
+        {
+          "workload": 64,
+          "speedup": 33.68421052631579
+        },
+        {
+          "workload": 96,
+          "speedup": 50.526315789473685
+        },
+        {
+          "workload": 128,
+          "speedup": 67.36842105263158
+        },
+        {
+          "workload": 192,
+          "speedup": 101.05263157894737
+        },
+        {
+          "workload": 256,
+          "speedup": 134.73684210526315
+        },
+        {
+          "workload": 384,
+          "speedup": 202.10526315789474
+        },
+        {
+          "workload": 512,
+          "speedup": 269.4736842105263
+        }
+      ]
+    }
+  ],
+  "regimeCurves": [
+    {
+      "stageCount": 4,
+      "points": [
+        {
+          "reynolds": 0.1,
+          "idleFraction": 0.06976744186046512
+        },
+        {
+          "reynolds": 0.15,
+          "idleFraction": 0.10112359550561797
+        },
+        {
+          "reynolds": 0.2,
+          "idleFraction": 0.13043478260869565
+        },
+        {
+          "reynolds": 0.25,
+          "idleFraction": 0.15789473684210525
+        },
+        {
+          "reynolds": 0.3,
+          "idleFraction": 0.18367346938775508
+        },
+        {
+          "reynolds": 0.4,
+          "idleFraction": 0.23076923076923078
+        },
+        {
+          "reynolds": 0.5,
+          "idleFraction": 0.2727272727272727
+        },
+        {
+          "reynolds": 0.7,
+          "idleFraction": 0.34426229508196715
+        },
+        {
+          "reynolds": 1,
+          "idleFraction": 0.42857142857142855
+        },
+        {
+          "reynolds": 1.5,
+          "idleFraction": 0.5294117647058824
+        },
+        {
+          "reynolds": 2,
+          "idleFraction": 0.6
+        },
+        {
+          "reynolds": 4,
+          "idleFraction": 0.75
+        },
+        {
+          "reynolds": 8,
+          "idleFraction": 0.8571428571428571
+        },
+        {
+          "reynolds": 16,
+          "idleFraction": 0.9230769230769231
+        }
+      ]
+    },
+    {
+      "stageCount": 8,
+      "points": [
+        {
+          "reynolds": 0.1,
+          "idleFraction": 0.08045977011494253
+        },
+        {
+          "reynolds": 0.15,
+          "idleFraction": 0.11602209944751381
+        },
+        {
+          "reynolds": 0.2,
+          "idleFraction": 0.14893617021276595
+        },
+        {
+          "reynolds": 0.25,
+          "idleFraction": 0.1794871794871795
+        },
+        {
+          "reynolds": 0.3,
+          "idleFraction": 0.20792079207920788
+        },
+        {
+          "reynolds": 0.4,
+          "idleFraction": 0.25925925925925924
+        },
+        {
+          "reynolds": 0.5,
+          "idleFraction": 0.30434782608695654
+        },
+        {
+          "reynolds": 0.7,
+          "idleFraction": 0.37984496124031003
+        },
+        {
+          "reynolds": 1,
+          "idleFraction": 0.4666666666666667
+        },
+        {
+          "reynolds": 1.5,
+          "idleFraction": 0.5675675675675677
+        },
+        {
+          "reynolds": 2,
+          "idleFraction": 0.6363636363636364
+        },
+        {
+          "reynolds": 4,
+          "idleFraction": 0.7777777777777778
+        },
+        {
+          "reynolds": 8,
+          "idleFraction": 0.875
+        },
+        {
+          "reynolds": 16,
+          "idleFraction": 0.9333333333333333
+        }
+      ]
+    },
+    {
+      "stageCount": 16,
+      "points": [
+        {
+          "reynolds": 0.1,
+          "idleFraction": 0.08571428571428572
+        },
+        {
+          "reynolds": 0.15,
+          "idleFraction": 0.1232876712328767
+        },
+        {
+          "reynolds": 0.2,
+          "idleFraction": 0.15789473684210525
+        },
+        {
+          "reynolds": 0.25,
+          "idleFraction": 0.189873417721519
+        },
+        {
+          "reynolds": 0.3,
+          "idleFraction": 0.2195121951219512
+        },
+        {
+          "reynolds": 0.4,
+          "idleFraction": 0.2727272727272727
+        },
+        {
+          "reynolds": 0.5,
+          "idleFraction": 0.3191489361702128
+        },
+        {
+          "reynolds": 0.7,
+          "idleFraction": 0.3962264150943396
+        },
+        {
+          "reynolds": 1,
+          "idleFraction": 0.4838709677419355
+        },
+        {
+          "reynolds": 1.5,
+          "idleFraction": 0.5844155844155845
+        },
+        {
+          "reynolds": 2,
+          "idleFraction": 0.6521739130434783
+        },
+        {
+          "reynolds": 4,
+          "idleFraction": 0.7894736842105263
+        },
+        {
+          "reynolds": 8,
+          "idleFraction": 0.8823529411764706
+        },
+        {
+          "reynolds": 16,
+          "idleFraction": 0.9375
+        }
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "table-14x2",
+      "label": "14 tokens / 2 nodes",
+      "workload": 14,
+      "stageCount": 2,
+      "chunkCount": 7,
+      "speedup": 3.111111111111111,
+      "idleFraction": 0.125,
+      "reynolds": 0.2857142857142857,
+      "regime": "laminar",
+      "note": "includes one extra orchestration step in the companion table surface"
+    },
+    {
+      "id": "table-100x4",
+      "label": "100 tokens / 4 nodes",
+      "workload": 100,
+      "stageCount": 4,
+      "chunkCount": 4,
+      "speedup": 57.142857142857146,
+      "idleFraction": 0.42857142857142855,
+      "reynolds": 1,
+      "regime": "turbulent"
+    },
+    {
+      "id": "table-500x8",
+      "label": "500 tokens / 8 nodes",
+      "workload": 500,
+      "stageCount": 8,
+      "chunkCount": 8,
+      "speedup": 266.6666666666667,
+      "idleFraction": 0.4666666666666667,
+      "reynolds": 1,
+      "regime": "turbulent"
+    },
+    {
+      "id": "table-100x10",
+      "label": "100 tokens / 10 nodes",
+      "workload": 100,
+      "stageCount": 10,
+      "chunkCount": 10,
+      "speedup": 52.63157894736842,
+      "idleFraction": 0.47368421052631576,
+      "reynolds": 1,
+      "regime": "turbulent"
+    },
+    {
+      "id": "http1-microfrontend",
+      "label": "95 resources / HTTP-1.1",
+      "stageCount": 95,
+      "chunkCount": 6,
+      "idleFraction": 0.94,
+      "reynolds": 15.833333333333334,
+      "regime": "turbulent",
+      "note": "six-connection browser limit keeps the page-load pipeline deeply turbulent"
+    },
+    {
+      "id": "aeon-flow-microfrontend",
+      "label": "95 resources / Aeon Flow",
+      "stageCount": 95,
+      "chunkCount": 256,
+      "idleFraction": 0.26857142857142857,
+      "reynolds": 0.37109375,
+      "regime": "transitional",
+      "note": "widened transport capacity pulls the same resource graph into the transitional band"
+    }
+  ]
+}

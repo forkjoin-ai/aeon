@@ -364,7 +364,7 @@ theorem semiotic_deficit_theory (ch : SemioticChannel)
 /-- THM-SEMIOTIC-PRESERVATION-CEILING: A channel with k streams
     preserves at most k dimensions of a d-dimensional source. -/
 theorem semiotic_preservation_ceiling
-    (sourceDimensions channelStreams : ℕ)
+    (_sourceDimensions channelStreams : ℕ)
     (preserved : ℕ)
     (hPreserved : preserved ≤ channelStreams) :
     preserved ≤ channelStreams := hPreserved

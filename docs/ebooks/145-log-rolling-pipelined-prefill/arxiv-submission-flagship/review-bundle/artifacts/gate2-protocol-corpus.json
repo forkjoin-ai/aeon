@@ -1,0 +1,376 @@
+{
+  "protocol": {
+    "id": "gate2-protocol-corpus-v1",
+    "corpusRule": "Seeded heterogeneous site corpus spanning resource-count, MIME-type, and byte-size diversity; all environments evaluated with identical per-site trial budgets.",
+    "scoringRules": [
+      "Cell pass requires positive 95% bootstrap CI lower bounds for median framing gain (%), median completion gain (ms), and p95 completion gain (ms).",
+      "Cell pass also requires minimum per-site win rates on framing, median completion, and p95 completion metrics.",
+      "Gate pass requires all primary environments to pass."
+    ]
+  },
+  "config": {
+    "seed": 11403777,
+    "corpusSize": 144,
+    "trialsPerSite": 8,
+    "bootstrapResamples": 2000,
+    "environments": [
+      {
+        "name": "rtt4-bw120-loss0",
+        "rttMs": 4,
+        "jitterMs": 0.4,
+        "bandwidthMbps": 120,
+        "lossRate": 0,
+        "primary": false
+      },
+      {
+        "name": "rtt12-bw80-loss0",
+        "rttMs": 12,
+        "jitterMs": 1.2,
+        "bandwidthMbps": 80,
+        "lossRate": 0,
+        "primary": true
+      },
+      {
+        "name": "rtt24-bw40-loss0.2pct",
+        "rttMs": 24,
+        "jitterMs": 2.4,
+        "bandwidthMbps": 40,
+        "lossRate": 0.002,
+        "primary": true
+      },
+      {
+        "name": "rtt35-bw28-loss0.5pct",
+        "rttMs": 35,
+        "jitterMs": 3.5,
+        "bandwidthMbps": 28,
+        "lossRate": 0.005,
+        "primary": true
+      },
+      {
+        "name": "rtt48-bw18-loss1pct",
+        "rttMs": 48,
+        "jitterMs": 4.8,
+        "bandwidthMbps": 18,
+        "lossRate": 0.01,
+        "primary": true
+      },
+      {
+        "name": "rtt75-bw10-loss1.5pct",
+        "rttMs": 75,
+        "jitterMs": 7.5,
+        "bandwidthMbps": 10,
+        "lossRate": 0.015,
+        "primary": true
+      },
+      {
+        "name": "rtt110-bw7-loss2pct",
+        "rttMs": 110,
+        "jitterMs": 11,
+        "bandwidthMbps": 7,
+        "lossRate": 0.02,
+        "primary": true
+      },
+      {
+        "name": "rtt150-bw4-loss3pct",
+        "rttMs": 150,
+        "jitterMs": 15,
+        "bandwidthMbps": 4,
+        "lossRate": 0.03,
+        "primary": false
+      }
+    ],
+    "thresholds": {
+      "framingMedianLowerCiPct": 0,
+      "completionMedianLowerCiMs": 0,
+      "completionP95LowerCiMs": 0,
+      "minFramingWinRate": 0.9,
+      "minCompletionMedianWinRate": 0.75,
+      "minCompletionP95WinRate": 0.75
+    }
+  },
+  "corpus": {
+    "siteCount": 144,
+    "totalResources": 12371,
+    "medianResourcesPerSite": 73,
+    "medianRawBytesPerSite": 15952313.5,
+    "p95RawBytesPerSite": 32581339.15
+  },
+  "cells": [
+    {
+      "cellId": "rtt4-bw120-loss0",
+      "environment": {
+        "name": "rtt4-bw120-loss0",
+        "rttMs": 4,
+        "jitterMs": 0.4,
+        "bandwidthMbps": 120,
+        "lossRate": 0,
+        "primary": false
+      },
+      "siteCount": 144,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.1946683199008,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 23.470470596673906,
+      "completionMedianGainMsCi": {
+        "low": 19.317888614472622,
+        "high": 26.068444664506842
+      },
+      "completionP95GainMs": 23.610012015225266,
+      "completionP95GainMsCi": {
+        "low": 19.52606099923213,
+        "high": 25.996320182777254
+      },
+      "framingWinRate": 1,
+      "completionMedianWinRate": 1,
+      "completionP95WinRate": 1,
+      "passed": true,
+      "failedCriteria": []
+    },
+    {
+      "cellId": "rtt12-bw80-loss0",
+      "environment": {
+        "name": "rtt12-bw80-loss0",
+        "rttMs": 12,
+        "jitterMs": 1.2,
+        "bandwidthMbps": 80,
+        "lossRate": 0,
+        "primary": true
+      },
+      "siteCount": 144,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.19465716757308,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 23.618683545026244,
+      "completionMedianGainMsCi": {
+        "low": 20.24026406653695,
+        "high": 26.464984061683197
+      },
+      "completionP95GainMs": 23.792106205263337,
+      "completionP95GainMsCi": {
+        "low": 19.993947275127084,
+        "high": 25.98356732895195
+      },
+      "framingWinRate": 1,
+      "completionMedianWinRate": 1,
+      "completionP95WinRate": 1,
+      "passed": true,
+      "failedCriteria": []
+    },
+    {
+      "cellId": "rtt24-bw40-loss0.2pct",
+      "environment": {
+        "name": "rtt24-bw40-loss0.2pct",
+        "rttMs": 24,
+        "jitterMs": 2.4,
+        "bandwidthMbps": 40,
+        "lossRate": 0.002,
+        "primary": true
+      },
+      "siteCount": 144,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.18981282743775,
+        "high": 72.33058146645442
+      },
+      "completionMedianGainMs": 25.07154629228387,
+      "completionMedianGainMsCi": {
+        "low": 21.373820812988924,
+        "high": 27.33975941242943
+      },
+      "completionP95GainMs": 24.78900077386311,
+      "completionP95GainMsCi": {
+        "low": 21.56460195217219,
+        "high": 28.010133093080185
+      },
+      "framingWinRate": 1,
+      "completionMedianWinRate": 1,
+      "completionP95WinRate": 1,
+      "passed": true,
+      "failedCriteria": []
+    },
+    {
+      "cellId": "rtt35-bw28-loss0.5pct",
+      "environment": {
+        "name": "rtt35-bw28-loss0.5pct",
+        "rttMs": 35,
+        "jitterMs": 3.5,
+        "bandwidthMbps": 28,
+        "lossRate": 0.005,
+        "primary": true
+      },
+      "siteCount": 144,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.1946683199008,
+        "high": 72.3347234817295
+      },
+      "completionMedianGainMs": 28.240254781109115,
+      "completionMedianGainMsCi": {
+        "low": 25.463718158902566,
+        "high": 30.626082790410166
+      },
+      "completionP95GainMs": 29.122878062706377,
+      "completionP95GainMsCi": {
+        "low": 25.90789868232597,
+        "high": 31.359601216495548
+      },
+      "framingWinRate": 1,
+      "completionMedianWinRate": 1,
+      "completionP95WinRate": 1,
+      "passed": true,
+      "failedCriteria": []
+    },
+    {
+      "cellId": "rtt48-bw18-loss1pct",
+      "environment": {
+        "name": "rtt48-bw18-loss1pct",
+        "rttMs": 48,
+        "jitterMs": 4.8,
+        "bandwidthMbps": 18,
+        "lossRate": 0.01,
+        "primary": true
+      },
+      "siteCount": 144,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.19504968042935,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 37.87865315525505,
+      "completionMedianGainMsCi": {
+        "low": 34.327145556263076,
+        "high": 42.562264225216495
+      },
+      "completionP95GainMs": 40.793433875341634,
+      "completionP95GainMsCi": {
+        "low": 36.43693752366562,
+        "high": 47.38734601846045
+      },
+      "framingWinRate": 1,
+      "completionMedianWinRate": 1,
+      "completionP95WinRate": 1,
+      "passed": true,
+      "failedCriteria": []
+    },
+    {
+      "cellId": "rtt75-bw10-loss1.5pct",
+      "environment": {
+        "name": "rtt75-bw10-loss1.5pct",
+        "rttMs": 75,
+        "jitterMs": 7.5,
+        "bandwidthMbps": 10,
+        "lossRate": 0.015,
+        "primary": true
+      },
+      "siteCount": 144,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.1946683199008,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 60.355124691906894,
+      "completionMedianGainMsCi": {
+        "low": 54.83340908484206,
+        "high": 66.96778057898882
+      },
+      "completionP95GainMs": 71.12945481094812,
+      "completionP95GainMsCi": {
+        "low": 63.87783756146018,
+        "high": 78.48592000071585
+      },
+      "framingWinRate": 1,
+      "completionMedianWinRate": 1,
+      "completionP95WinRate": 1,
+      "passed": true,
+      "failedCriteria": []
+    },
+    {
+      "cellId": "rtt110-bw7-loss2pct",
+      "environment": {
+        "name": "rtt110-bw7-loss2pct",
+        "rttMs": 110,
+        "jitterMs": 11,
+        "bandwidthMbps": 7,
+        "lossRate": 0.02,
+        "primary": true
+      },
+      "siteCount": 144,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.1946683199008,
+        "high": 72.3347234817295
+      },
+      "completionMedianGainMs": 92.39255619772393,
+      "completionMedianGainMsCi": {
+        "low": 83.37851987241902,
+        "high": 104.42619521173037
+      },
+      "completionP95GainMs": 110.5002382097864,
+      "completionP95GainMsCi": {
+        "low": 98.22322737802915,
+        "high": 126.00597468954038
+      },
+      "framingWinRate": 1,
+      "completionMedianWinRate": 1,
+      "completionP95WinRate": 1,
+      "passed": true,
+      "failedCriteria": []
+    },
+    {
+      "cellId": "rtt150-bw4-loss3pct",
+      "environment": {
+        "name": "rtt150-bw4-loss3pct",
+        "rttMs": 150,
+        "jitterMs": 15,
+        "bandwidthMbps": 4,
+        "lossRate": 0.03,
+        "primary": false
+      },
+      "siteCount": 144,
+      "framingMedianGainPct": 72.25171515554133,
+      "framingMedianGainPctCi": {
+        "low": 72.19222093113598,
+        "high": 72.3343163122769
+      },
+      "completionMedianGainMs": 192.0124693562102,
+      "completionMedianGainMsCi": {
+        "low": 172.43254870038072,
+        "high": 230.960666150615
+      },
+      "completionP95GainMs": 254.51470610167235,
+      "completionP95GainMsCi": {
+        "low": 214.96085103870814,
+        "high": 277.32229145041674
+      },
+      "framingWinRate": 1,
+      "completionMedianWinRate": 1,
+      "completionP95WinRate": 1,
+      "passed": true,
+      "failedCriteria": []
+    }
+  ],
+  "gate": {
+    "pass": true,
+    "primaryCells": [
+      "rtt12-bw80-loss0",
+      "rtt24-bw40-loss0.2pct",
+      "rtt35-bw28-loss0.5pct",
+      "rtt48-bw18-loss1pct",
+      "rtt75-bw10-loss1.5pct",
+      "rtt110-bw7-loss2pct"
+    ],
+    "passedPrimaryCells": [
+      "rtt12-bw80-loss0",
+      "rtt24-bw40-loss0.2pct",
+      "rtt35-bw28-loss0.5pct",
+      "rtt48-bw18-loss1pct",
+      "rtt75-bw10-loss1.5pct",
+      "rtt110-bw7-loss2pct"
+    ],
+    "failedPrimaryCells": []
+  }
+}

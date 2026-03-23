@@ -53,6 +53,12 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - `adaptive-supremum-witness.md`: human-readable summary of the concrete two-node adaptive ceiling/drift witness.
 - `adaptive-supremum-family-sweep.json`: machine-readable raw-parameter sweep over bounded two-node adaptive rerouting cases that all satisfy the same ceiling/drift closure.
 - `adaptive-supremum-family-sweep.md`: human-readable summary table for the adaptive raw-parameter family sweep.
+- `ch17-wallington-rotation-site.gg`: minimal reviewer-facing `WallingtonRotation` source used by the flagship manuscript as the concrete emitted-site example.
+- `ch17-wallington-rotation-site-witness.json`: machine-readable emitted Aeon Flux site witness packet for the minimal `WallingtonRotation` source, including `pathCount`, `streamCount`, `Δβ`, regime, theorem ref, and lowered GG.
+- `ch17-wallington-rotation-site-witness.md`: human-readable emitted-site witness summary for the same minimal `WallingtonRotation` source.
+- `ch17-wallington-rotation-positive-deficit-site.gg`: minimal reviewer-facing lowered `WallingtonRotation` source whose exposed chunk paths outnumber its declared transport streams, used by the flagship manuscript as the positive-deficit emitted-site example.
+- `ch17-wallington-rotation-positive-deficit-site-witness.json`: machine-readable emitted Aeon Flux site witness packet for the positive-deficit `WallingtonRotation` source, including `pathCount`, `streamCount`, `Δβ`, regime, theorem ref, and lowered GG.
+- `ch17-wallington-rotation-positive-deficit-site-witness.md`: human-readable emitted-site witness summary for the same positive-deficit `WallingtonRotation` source.
 - `sleep-debt-bounded-witness.json`: machine-readable bounded sleep-debt witness report for full recovery, partial recovery, residual debt, next-cycle capacity, and intrusion-threshold scenarios.
 - `sleep-debt-bounded-witness.md`: human-readable bounded sleep-debt summary with theorem references for the three canonical recovery/debt scenarios.
 - `sleep-debt-schedule-threshold-witness.json`: machine-readable coarse schedule-threshold witness report for subcritical, critical, and supercritical repeated-cycle schedules.
@@ -125,6 +131,19 @@ Generated benchmark/formal outputs used by manuscript evidence notes.
 - Framing median gain across cells: `72.252%` (CI low approximately `72.19%`)
 - Primary-cell completion median CI lows: `20.24 ms` to `83.38 ms`
 - Primary-cell completion p95 CI lows: `19.99 ms` to `98.22 ms`
+
+## Emitted Witness Snapshot
+
+- Matched source file: `ch17-wallington-rotation-site.gg`
+- Matched primitive id: `rotated_output`
+- Matched regime: `tight_lossless_transport_exists`
+- Matched witness values: `pathCount = 4`, `streamCount = 4`, `Δβ = 0`
+- Matched theorem ref: `aeon_flux_site_zero_deficit_iff_tight_lossless_transport`
+- Collided source file: `ch17-wallington-rotation-positive-deficit-site.gg`
+- Collided primitive id: `collapsed_output`
+- Collided regime: `collision_and_information_loss_forced`
+- Collided witness values: `pathCount = 4`, `streamCount = 2`, `Δβ = 2`
+- Collided theorem ref: `aeon_flux_site_positive_deficit_forces_collision_and_information_loss`
 
 ## Gate 3 Snapshot
 

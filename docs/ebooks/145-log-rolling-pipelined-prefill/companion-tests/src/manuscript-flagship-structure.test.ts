@@ -152,6 +152,10 @@ describe('Flagship manuscript structure', () => {
     expect(mainBody.includes('C4')).toBe(true);
     expect(mainBody.includes('Delta_beta')).toBe(true);
     expect(mainBody.includes('graph pairs')).toBe(true);
+    expect(mainBody.includes('serial fraction')).toBe(true);
+    expect(mainBody.includes('Aeon Flux site')).toBe(true);
+    expect(mainBody.includes('WallingtonRotation')).toBe(true);
+    expect(mainBody.includes('collapsed_output')).toBe(true);
     expect(mainBody.includes('Aeon Flow')).toBe(true);
     expect(mainBody.includes('HTTP/3')).toBe(true);
   });

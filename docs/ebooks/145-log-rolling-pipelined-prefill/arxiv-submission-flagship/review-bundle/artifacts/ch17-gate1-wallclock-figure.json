@@ -1,0 +1,276 @@
+{
+  "label": "ch17-gate1-wallclock-figure-v1",
+  "sourceLabel": "workers-dev-external-multihost6-distinct",
+  "executionMode": "external-endpoints",
+  "distinctEndpointHostCount": 6,
+  "primaryPassed": 8,
+  "primaryTotal": 8,
+  "speedupMedianRange": {
+    "low": 11.785469072555966,
+    "high": 21.62038112821915
+  },
+  "minSpeedupCiLow": 11.36462164106584,
+  "minImprovementCiLowMs": 3560.977374000002,
+  "cells": [
+    {
+      "cellId": "prompt24-n4-b6__rtt1-loss0",
+      "workloadLabel": "24 tok • 4 nodes • B6",
+      "networkLabel": "RTT 1 ms • loss 0%",
+      "primary": false,
+      "sequentialP50Ms": 3923.991291999997,
+      "sequentialP50Ci": {
+        "low": 3898.384083000001,
+        "high": 4088.335416
+      },
+      "chunkedP50Ms": 331.5714375000007,
+      "chunkedP50Ci": {
+        "low": 325.17312500000116,
+        "high": 336.3897080000006
+      },
+      "speedupMedian": 11.980186668873777,
+      "speedupMedianCi": {
+        "low": 11.731687692892317,
+        "high": 12.693521252926107
+      },
+      "improvementMedianMs": 3596.437729499996,
+      "improvementMedianMsCi": {
+        "low": 3560.977374000002,
+        "high": 3751.9457079999993
+      }
+    },
+    {
+      "cellId": "prompt24-n4-b6__rtt3-loss0",
+      "workloadLabel": "24 tok • 4 nodes • B6",
+      "networkLabel": "RTT 3 ms • loss 0%",
+      "primary": true,
+      "sequentialP50Ms": 4153.871563000001,
+      "sequentialP50Ci": {
+        "low": 3988.6995000000024,
+        "high": 4623.547458000001
+      },
+      "chunkedP50Ms": 349.6022290000001,
+      "chunkedP50Ci": {
+        "low": 330.57816699999967,
+        "high": 358.85312500000146
+      },
+      "speedupMedian": 11.912250058741092,
+      "speedupMedianCi": {
+        "low": 11.618442531210913,
+        "high": 12.520950829840029
+      },
+      "improvementMedianMs": 3811.4006675000055,
+      "improvementMedianMsCi": {
+        "low": 3595.8060000000114,
+        "high": 4251.210123999997
+      }
+    },
+    {
+      "cellId": "prompt24-n4-b6__rtt3-loss2pct",
+      "workloadLabel": "24 tok • 4 nodes • B6",
+      "networkLabel": "RTT 3 ms • loss 2%",
+      "primary": true,
+      "sequentialP50Ms": 4321.586396000006,
+      "sequentialP50Ci": {
+        "low": 3933.910124999995,
+        "high": 4941.872291000007
+      },
+      "chunkedP50Ms": 357.2872500000012,
+      "chunkedP50Ci": {
+        "low": 337.8997090000048,
+        "high": 363.0650000000023
+      },
+      "speedupMedian": 12.097941363139508,
+      "speedupMedianCi": {
+        "low": 11.36462164106584,
+        "high": 13.611535926073776
+      },
+      "improvementMedianMs": 3964.299146000005,
+      "improvementMedianMsCi": {
+        "low": 3572.973582999999,
+        "high": 4578.807291000005
+      }
+    },
+    {
+      "cellId": "prompt24-n4-b6__rtt7-loss0",
+      "workloadLabel": "24 tok • 4 nodes • B6",
+      "networkLabel": "RTT 7 ms • loss 0%",
+      "primary": true,
+      "sequentialP50Ms": 4353.186625000017,
+      "sequentialP50Ci": {
+        "low": 4283.966916000005,
+        "high": 4446.324791999999
+      },
+      "chunkedP50Ms": 372.1159170000028,
+      "chunkedP50Ci": {
+        "low": 363.6091669999878,
+        "high": 380.73393699999724
+      },
+      "speedupMedian": 11.785469072555966,
+      "speedupMedianCi": {
+        "low": 11.508082880641094,
+        "high": 12.197732539869254
+      },
+      "improvementMedianMs": 3987.5432290000026,
+      "improvementMedianMsCi": {
+        "low": 3920.357749000017,
+        "high": 4069.170750999998
+      }
+    },
+    {
+      "cellId": "prompt24-n4-b6__rtt7-loss2pct",
+      "workloadLabel": "24 tok • 4 nodes • B6",
+      "networkLabel": "RTT 7 ms • loss 2%",
+      "primary": true,
+      "sequentialP50Ms": 4324.910437999992,
+      "sequentialP50Ci": {
+        "low": 4293.132125000004,
+        "high": 4413.8375839999935
+      },
+      "chunkedP50Ms": 358.3869790000026,
+      "chunkedP50Ci": {
+        "low": 347.9961875000008,
+        "high": 370.6316250000091
+      },
+      "speedupMedian": 12.159381901423481,
+      "speedupMedianCi": {
+        "low": 11.697892020555809,
+        "high": 12.421975520823478
+      },
+      "improvementMedianMs": 3968.093375499986,
+      "improvementMedianMsCi": {
+        "low": 3904.1262080000015,
+        "high": 4053.0046679999796
+      }
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt1-loss0",
+      "workloadLabel": "36 tok • 6 nodes • B9",
+      "networkLabel": "RTT 1 ms • loss 0%",
+      "primary": false,
+      "sequentialP50Ms": 8813.820624500004,
+      "sequentialP50Ci": {
+        "low": 8695.390458000009,
+        "high": 8923.190084000002
+      },
+      "chunkedP50Ms": 432.98068700000294,
+      "chunkedP50Ci": {
+        "low": 423.07500000001164,
+        "high": 450.6561250000086
+      },
+      "speedupMedian": 20.162759307294237,
+      "speedupMedianCi": {
+        "low": 19.720571220123464,
+        "high": 20.959943109723795
+      },
+      "improvementMedianMs": 8369.790104000014,
+      "improvementMedianMsCi": {
+        "low": 8280.532917000004,
+        "high": 8472.533958999993
+      }
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt3-loss0",
+      "workloadLabel": "36 tok • 6 nodes • B9",
+      "networkLabel": "RTT 3 ms • loss 0%",
+      "primary": true,
+      "sequentialP50Ms": 8827.364000000001,
+      "sequentialP50Ci": {
+        "low": 8719.008708000008,
+        "high": 9339.741709000024
+      },
+      "chunkedP50Ms": 446.7543955000001,
+      "chunkedP50Ci": {
+        "low": 425.18291699996917,
+        "high": 464.00325000000885
+      },
+      "speedupMedian": 20.125198469623015,
+      "speedupMedianCi": {
+        "low": 19.565401240555758,
+        "high": 21.58295296331524
+      },
+      "improvementMedianMs": 8380.609604500001,
+      "improvementMedianMsCi": {
+        "low": 8281.106750000035,
+        "high": 8926.424209000019
+      }
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt3-loss2pct",
+      "workloadLabel": "36 tok • 6 nodes • B9",
+      "networkLabel": "RTT 3 ms • loss 2%",
+      "primary": true,
+      "sequentialP50Ms": 9104.46016649998,
+      "sequentialP50Ci": {
+        "low": 8912.028292000003,
+        "high": 9218.522583000013
+      },
+      "chunkedP50Ms": 464.1901249999937,
+      "chunkedP50Ci": {
+        "low": 454.95304100000067,
+        "high": 500.30641700001433
+      },
+      "speedupMedian": 19.153904618963804,
+      "speedupMedianCi": {
+        "low": 18.165301935353163,
+        "high": 20.047570597511356
+      },
+      "improvementMedianMs": 8626.830437499972,
+      "improvementMedianMsCi": {
+        "low": 8406.107666999975,
+        "high": 8730.093999999983
+      }
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt7-loss0",
+      "workloadLabel": "36 tok • 6 nodes • B9",
+      "networkLabel": "RTT 7 ms • loss 0%",
+      "primary": true,
+      "sequentialP50Ms": 10427.67133350001,
+      "sequentialP50Ci": {
+        "low": 9974.852583000029,
+        "high": 11252.918958999973
+      },
+      "chunkedP50Ms": 488.5335419999901,
+      "chunkedP50Ci": {
+        "low": 461.6155409999774,
+        "high": 503.8204999999143
+      },
+      "speedupMedian": 21.62038112821915,
+      "speedupMedianCi": {
+        "low": 20.110390692949355,
+        "high": 23.016232447272547
+      },
+      "improvementMedianMs": 9944.953313000064,
+      "improvementMedianMsCi": {
+        "low": 9443.386999000038,
+        "high": 10764.006667000009
+      }
+    },
+    {
+      "cellId": "prompt36-n6-b9__rtt7-loss2pct",
+      "workloadLabel": "36 tok • 6 nodes • B9",
+      "networkLabel": "RTT 7 ms • loss 2%",
+      "primary": true,
+      "sequentialP50Ms": 10214.98775000003,
+      "sequentialP50Ci": {
+        "low": 10038.18883400003,
+        "high": 11311.003167000017
+      },
+      "chunkedP50Ms": 481.7058539999998,
+      "chunkedP50Ci": {
+        "low": 473.64100000006147,
+        "high": 489.14858399995137
+      },
+      "speedupMedian": 21.04214038283631,
+      "speedupMedianCi": {
+        "low": 20.87910964084696,
+        "high": 24.438737339147696
+      },
+      "improvementMedianMs": 9733.592958000023,
+      "improvementMedianMsCi": {
+        "low": 9557.65229099989,
+        "high": 10849.255292000016
+      }
+    }
+  ]
+}

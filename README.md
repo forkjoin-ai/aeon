@@ -175,7 +175,13 @@ The flow protocol, topology analysis, transport helpers, and federation modules 
 
 ## Formal Surface
 
-The full machine-checked proof surface is indexed from [FORMAL_LEDGER.md](./FORMAL_LEDGER.md). The canonical deep ledger lives in [docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md), with rerun commands and artifact maps in [docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/README.md](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/README.md).
+The full machine-checked proof surface is now indexed from
+[FORMAL_LEDGER.md](./FORMAL_LEDGER.md), which points to the canonical Gnosis
+formal home in [../gnosis/FORMAL_LEDGER.md](../gnosis/FORMAL_LEDGER.md) and the
+canonical theorem ledger in [../gnosis/THEOREM_LEDGER.md](../gnosis/THEOREM_LEDGER.md).
+The old `docs/ebooks/.../companion-tests/formal` subtree remains only as a
+legacy manuscript compatibility shell.
+The current cosmic bridge is explicit about scope: orbital and ten-mode equilibrium claims are mechanized, while the black-hole reading is presently indexed only as a documentation-layer void-boundary singularity extension pending a Lean definition of the singular touchpoint limit.
 
 Selected TLA+ specifications in `companion-tests/formal/`:
 

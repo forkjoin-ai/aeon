@@ -145,7 +145,7 @@ theorem void_dominance_linear (c : ConstantWidthComputation) :
     We prove: T*(N-1) * (T*(N-1) + N) ≥ T*(N-1) * T*(N-1)
     i.e., the void is the majority of the computation space. -/
 theorem void_fraction_dominates (c : ConstantWidthComputation)
-    (hT : 1 ≤ c.steps) :
+    (_hT : 1 ≤ c.steps) :
     c.voidVolume * 1 ≤ c.voidVolume * (c.voidVolume + c.activePaths) := by
   apply Nat.mul_le_mul_left
   have := void_volume_positive c; omega
@@ -160,7 +160,7 @@ def nestedVoidVolume (N d T : ℕ) : ℕ := T * (N ^ d - 1)
     structure that guides future forks. The void fraction approaches 1
     as T grows, exactly as the dark energy fraction of the universe
     approaches 1 as the universe expands. -/
-theorem void_dominance_nested (N d T : ℕ) (hN : 2 ≤ N) (hd : 1 ≤ d) (hT : 1 ≤ T) :
+theorem void_dominance_nested (N d T : ℕ) (hN : 2 ≤ N) (hd : 1 ≤ d) (_hT : 1 ≤ T) :
     T ≤ nestedVoidVolume N d T + N ^ d := by
   unfold nestedVoidVolume
   have hPow : 1 ≤ N ^ d := Nat.one_le_pow _ _ (by omega)
@@ -203,8 +203,8 @@ def boundaryStorage (T logN : ℕ) : ℕ := T * logN
     Ratio: Ω(N * m_min / log N).
     The boundary is a sufficient statistic for optimal fork distributions. -/
 theorem void_boundary_sufficient_statistic (N T payloadBits logN : ℕ)
-    (hN : 2 ≤ N) (hT : 0 < T) (hPayload : 1 ≤ payloadBits)
-    (hLog : 1 ≤ logN) (hLogBound : logN ≤ N - 1) :
+    (_hN : 2 ≤ N) (_hT : 0 < T) (hPayload : 1 ≤ payloadBits)
+    (_hLog : 1 ≤ logN) (hLogBound : logN ≤ N - 1) :
     boundaryStorage T logN ≤ fullPathStorage N T payloadBits := by
   unfold boundaryStorage fullPathStorage
   suffices hKey : logN ≤ (N - 1) * payloadBits by
@@ -309,7 +309,7 @@ def voidWalkingRegretBound (T N : ℕ) : ℕ :=
 
     The void IS the "expert advice" -- not what the experts said,
     but the record of which experts failed. -/
-theorem void_walking_regret_bound (T N : ℕ) (hT : 0 < T) (hN : 2 ≤ N) :
+theorem void_walking_regret_bound (T N : ℕ) (_hT : 0 < T) (hN : 2 ≤ N) :
     voidWalkingRegretBound T N ≤ standardRegretBound T N + 1 := by
   unfold voidWalkingRegretBound standardRegretBound
   -- √(T * log N) ≤ √(T * N) since log N ≤ N
@@ -517,14 +517,14 @@ theorem skyrms_equilibrium_coherent
 /-- THM-FORK-WIDTH-CEILING: wider fork than affordable exceeds budget. -/
 theorem fork_exceeds_budget
     (budget perPathCost forkWidth : ℕ)
-    (hCost : 0 < perPathCost)
+    (_hCost : 0 < perPathCost)
     (hWide : budget < forkWidth * perPathCost) :
     ¬ (forkWidth * perPathCost ≤ budget) := by omega
 
 /-- Affordable fork width is bounded by budget / cost. -/
 theorem affordable_fork_bounded
     (budget perPathCost : ℕ)
-    (hCost : 0 < perPathCost) :
+    (_hCost : 0 < perPathCost) :
     (budget / perPathCost) * perPathCost ≤ budget :=
   Nat.div_mul_le_self budget perPathCost
 
