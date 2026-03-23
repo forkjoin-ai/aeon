@@ -12,6 +12,7 @@ This is the repo-level entry point for Aeon's machine-checked proof surface. The
 ## Start Here
 
 - [Canonical theorem ledger](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md): named theorem index mapping paper claims to assumptions, Lean modules, TLA+ specs, GG proof topologies, and status.
+- [Deceptacon / DualVoidDeceptacon bridge](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md): the Chapter 17 `VOID` contract tying transformer Q/K/V reading to the dual BATNA/WATNA branch model, with the local mapping `BATNA = sphere`, `WATNA = torus`; theorem support remains composed over existing rows, and the in-tree shape layer now lives in `DeceptaconVariants.lean` for `Deceptacon`, `DualVoidDeceptacon`, `TridentDeceptacon`, and the oscillated meta-LAMINAR head pipeline.
 - [Formal artifacts README](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/README.md): formal package map plus the smallest rerun commands.
 - [Companion tests README](./docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/README.md): reproducibility surface spanning runtime tests, artifacts, figures, and formal gates.
 - [GnosisProofs.lean](../gnosis/GnosisProofs.lean): compiler-side emitted theorem workspace for Betti/Gnosis proofs.

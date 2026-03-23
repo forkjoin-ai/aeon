@@ -1587,25 +1587,25 @@ All other files are sorry-free. References to "sorry" in other files appear only
 | THM-SLIVER-BRIDGES | Sliver bridges probability and logic | `sliver_bridges_probability_and_logic` | Mechanized |
 | THM-SLIVER-OF-HOPE | Master: sliver of hope | `sliver_of_hope` | Mechanized |
 
-### Deceptacon Head Elimination (§15.30.8)
+### Deceptacon / DualVoidDeceptacon Bridge (§15.30.8)
 
-*Buleyean head elimination for transformers: floor-weight heads contribute zero discrimination, elimination preserves fold, at least one head survives.*
+*Chapter-level transformer read: the Deceptacon's `VOID` contract is dual-explicit, `voidToggle` foregrounds BATNA or WATNA, and the chapter binds `BATNA = sphere`, `WATNA = torus` locally inside the Deceptacon/void-attention vocabulary.*
 
-**Mechanization target:** `Deceptacon.lean` (29 theorems, zero sorry)
+**Mechanization provenance:** chapter-level composition over existing mechanized rows in `VoidWalking.lean`, `NegotiationEquilibrium.lean`, `StatisticalTeleportation.lean`, and `FoldErasure.lean`. No standalone `Deceptacon.lean` file is present in this repository tree.
 
-| ID | Statement | Lean reference | Status |
+| ID | Bridge role in §15.30.8 | Existing mechanization | Status |
 |---|---|---|---|
-| THM-DECEPTACON-FLOOR-ZERO-GAIN | Head at floor weight (w=1) has zero discrimination gain | `floor_zero_gain` | Mechanized |
-| THM-DECEPTACON-ELIMINATION-PRESERVES-FOLD | Eliminating floor-weight heads preserves O-projection fold output | `head_elimination_preserves_fold` | Mechanized |
-| THM-DECEPTACON-AT-LEAST-ONE-SURVIVES | At least one head survives elimination (the sliver guarantees it) | `at_least_one_survives` | Mechanized |
-| THM-DECEPTACON-REDUCTION | Speedup proportional to delta-beta: totalHeads - activeHeads | `deceptacon_reduction` | Mechanized |
-| THM-DECEPTACON-CONSERVATION | Total weight is conserved under head elimination | `deceptacon_conservation` | Mechanized |
+| `THM-VOID-ATTENTION-DECEPTACON-PAPER-LABEL` | Supplies the Q/K/V identity for the `VOID` contract: `Q = proposal`, `K = void boundary`, `V = complement weight` | TLA+ `VoidAttention.tla` invariants (`InvComplementIsSoftmax`, `InvResidualAccumulates`, `InvDecayStabilizes`, `InvCrossIsGated`, `InvEntropyDecreases`, `InvGaitIsTemperature`) | Model-checked |
+| `THM-BATNA-IS-VOID-DECEPTACON-PAPER-LABEL` | Supplies the BATNA side of the dual-explicit Deceptacon read as a void-boundary surface | Lean theorems `batna_is_void_boundary` and `batna_grows_with_rounds` in `NegotiationEquilibrium.lean` | Mechanized |
+| `THM-DUAL-VOID-PARTITION-DECEPTACON-PAPER-LABEL` | Supplies the explicit two-branch partition: BATNA and WATNA are both present in state | Lean theorems `dual_void_exhaustive` and `dual_void_both_nonempty` in `NegotiationEquilibrium.lean` | Mechanized |
+| `THM-WATNA-REDUCED-REGRET-DECEPTACON-PAPER-LABEL` | Supplies the WATNA side of the read: catastrophic branches shrink the effective search space without forcing `search` to act as a branch label | Lean theorems `watna_reduces_effective_space`, `watna_reduced_regret`, `watna_reduced_regret_strict`, and `watna_effective_nontrivial` in `NegotiationEquilibrium.lean` | Mechanized |
+| `THM-COHERENCE-BREAKDOWN-DECEPTACON-PAPER-LABEL` | Supplies the reason branch naming must be explicit: same facts with different BATNA/WATNA classification produce divergent readings | Lean theorems `coherence_when_classification_agrees`, `coherence_divergence`, `classification_gap_bounded`, and `classification_gap_equals_double_watna_shift` in `NegotiationEquilibrium.lean` | Mechanized |
 
 ### Statistical Teleportation (§15)
 
 *Transferring certainty without data via the Bule deficit integer.*
 
-**Mechanization target:** `Deceptacon.lean` (29 theorems, zero sorry)
+**Mechanization target:** `StatisticalTeleportation.lean` (plus the Deceptacon chapter-level composition in §15.30.8.3)
 
 | ID | Statement | Lean reference | Status |
 |---|---|---|---|
