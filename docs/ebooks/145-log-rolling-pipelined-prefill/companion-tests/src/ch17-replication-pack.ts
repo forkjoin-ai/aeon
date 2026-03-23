@@ -338,7 +338,7 @@ const replicationPaths = [
   [
     'Theorem ledger',
     'formal',
-    'open-source/aeon/docs/ebooks/145-log-rolling-pipelined-prefill/companion-tests/formal/THEOREM_LEDGER.md',
+    'open-source/gnosis/THEOREM_LEDGER.md',
   ],
   [
     'Gnosis theorem workspace',
